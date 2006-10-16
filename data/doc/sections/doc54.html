@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.27. Review of Chapter 3</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.1. New kinds</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,110 +8,42 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc53.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc55.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.27. Review of Chapter 3</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc53.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc55.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.1. New kinds</b></font></td></tr></table>
 <p>
-<p>1. Inform turns our description of the initial situation into a <b>model world</b>, in which the places and items important to the story are <b>objects</b>. These objects come in different <b>kinds</b>. In the course of Chapter 3, we have seen all of the kinds of object built into Inform. If we turn to the Kinds tab in the Index of any project, we can see these kinds set out:
+<p>Everything has a kind: but kinds can have more specific kinds. Inform makes the world out of three fundamental kinds of object, &quot;room&quot;, &quot;thing&quot; and &quot;direction&quot;: but, browsing the Kinds index, we find a dozen or so kinds built into Inform. For instance, &quot;container&quot; is a kind of &quot;thing&quot;, and &quot;woman&quot; is a kind of &quot;person&quot; which is in turn a kind of &quot;thing&quot;. The character &quot;Elizabeth&quot; might be a &quot;woman&quot;, and we call this her kind since it is her most specific attribute, even though she is also a &quot;person&quot; and indeed also a &quot;thing&quot;. Everything with physical existence in Inform's model world has a kind.
 <p>
-<blockquote><font color="#000080">room
-<br>thing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;door
-<br>&nbsp;&nbsp;&nbsp;&nbsp;container
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player's holdall
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vehicle
-<br>&nbsp;&nbsp;&nbsp;&nbsp;supporter
-<br>&nbsp;&nbsp;&nbsp;&nbsp;backdrop
-<br>&nbsp;&nbsp;&nbsp;&nbsp;person
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animal
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;man
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;woman
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;player-character
-<br>&nbsp;&nbsp;&nbsp;&nbsp;device
-<br>direction
-<br>region
+<p>Because taxonomy - setting up kinds for everything - is so difficult, and depends so much on what you want it for, Inform creates relatively few kinds in advance: it has &quot;animal&quot; built in, but not &quot;mammal&quot; or &quot;Bengal tiger&quot;. When we need more, we must make them ourselves.
+<p>
+<p>Any new kind must be created as a special case of an existing one. Here we sub-categorise rooms:
+<p>
+<blockquote><font color="#000080">A dead end is a kind of room.
 </font></blockquote><p>
 <p>
-<p>2. Inform automatically creates a player-character (called &quot;yourself&quot;) and some directions (north, east, south, and so on). We are allowed to create new instances of any of these kinds except &quot;direction&quot;: those are fixed, though we may rename the ones that are built in. The only absolute requirement is that we must create at least one room, so that the player can begin somewhere.
+<p>Any dead end that we make is also a room, but can also have other properties in addition, if we so decide. Recall that some rooms are &quot;dark&quot;, meaning that there is no light present unless something &quot;lit&quot; is visible.
 <p>
-<p>Sometimes we explicitly declare the kind of something, as here:
-<p>
-<blockquote><font color="#000080">In the Counting House is a device called the clockwork register.
+<blockquote><font color="#000080">A dead end is a kind of room with printed name &quot;Dead End&quot; and description &quot;This is a dead end. You'll have to go back the way you came.&quot; A dead end is usually dark.
 </font></blockquote><p>
 <p>
-<p>But Inform also deduces kinds from context. For instance, from
-<p>
-<blockquote><font color="#000080">The Royal Treasury is north of the Counting House.
-<br>The glass vase is on the mantelpiece.
+<blockquote><font color="#000080">The Undertomb is a dark room. East is a dead end. South is a dead end with printed name &quot;Collapsed Dead End&quot;. Northwest is a dead end called the Tortuous Alcove.
 </font></blockquote><p>
 <p>
-<p>Inform deduces that the Treasury and Counting House have kind &quot;room&quot;, and that the mantelpiece is a &quot;supporter&quot;.
-<p>
-<p>3. All these objects are <b>related</b> in order to make up the model world.
-<p>
-<p>The <b>map</b> lays out the rooms with connections between them, each in its own direction. A map connection either connects two rooms, or one room and one door. Inform assumes that map connections are two-way unless told otherwise. We can see the map for a project using the World index.
-<p>
-<p>A <b>door</b> is normally present in two rooms at once, and connected to each as part of the map:
-<p>
-<blockquote><font color="#000080">The red door is north of the Counting House and south of the Treasury.
+<blockquote><font color="#000080">In the Undertomb is the candle lantern. It is lit.
 </font></blockquote><p>
 <p>
-<p>A <b>backdrop</b> is a piece of scenery which can be touched by the player, but not picked up or moved, and which is present in several rooms at once. Except for doors and backdrops, a thing can only be in one room at a time.
+<p>Three different rooms adjoin the Undertomb as a result. Notice how much more concise this is thanks to having the &quot;dead end&quot; kind to hand.
 <p>
-<p>Things can then be <b>in</b> rooms or containers; <b>on</b> supporters; <b>part of</b> other things; or <b>carried by</b> or <b>worn by</b> people. (We shall see how to create new relations in the chapter on Relations: this will allow us to make much more subtle, or conceptually different, model worlds.)
+<p>For the most part, Inform does not mind in what order it is told about the world, but it may need to know the name of a kind before that kind can be used. For example,
 <p>
-<p>4. The Kinds index tells us that things are
-<p>
-<blockquote><font color="#000080">Normally unlit not lit, inedible not edible, opaque not transparent, described not undescribed, portable not fixed in place, unmarked for listing not marked for listing.
+<blockquote><font color="#000080">A coffer is a kind of container. In the Crypt is an open coffer.
 </font></blockquote><p>
 <p>
-<p><b>Lit</b> things give light to their surroundings; unlit things do not. <b>Edible</b> things can be eaten by the player, and when this happens they vanish from the game world. <b>Transparent</b> things - usually containers - reveal their contents even when closed, and allow light to pass through. <b>Portable</b> things can be carried. (The &quot;described&quot; and &quot;marked for listing&quot; properties are not relevant for setting up the world, but are instead used in play to organise room descriptions: see the chapter on Activities.)
+<p>makes sense to Inform and results in the creation of a new thing, just called &quot;coffer&quot; in the absence of any other name to give it, whose kind is &quot;coffer&quot; and which is initially open. Whereas if Inform reads:
 <p>
-<p>The Kinds index continues with the information that things are
-<p>
-<blockquote><font color="#000080">Not normally enterable, scenery, wearable, handled, pushable between rooms, mentioned.
+<blockquote><font color="#000080">In the Crypt is an open coffer.
 </font></blockquote><p>
 <p>
-<p><b>Enterable</b> things respond to ENTER or SIT ON, and are usually either containers or supporters. <b>Scenery</b> cannot be picked up, and is not included in the
+<p>when it does not know that &quot;coffer&quot; is a kind, it simply makes a thing called &quot;open coffer&quot; and which has no containment properties. Inform has to be careful like this: English is simply too overflowing with multiple meanings. (An &quot;open railway ticket&quot;, for instance, is not a &quot;railway ticket&quot; that one can put objects into.)
 <p>
-<blockquote><font color="#000080">You can see...
-</font></blockquote><p>
-<p>
-<p>paragraph which sometimes concludes a room description: it is best used for items which are named in the room's description. <b>Wearable</b> things are those which can be worn by people: Inform assumes that anything worn at the start of play is wearable. Things <b>pushable between rooms</b> respond to such commands as PUSH CART WEST. (&quot;Handled&quot; and &quot;mentioned&quot; are, again, to do with behaviour in play: something is <b>handled</b> once it has been taken for the first time; &quot;mentioned&quot; is used in constructing room descriptions.)
-<p>
-<p>5. Moving on to properties with values, a thing
-<p>
-<blockquote><font color="#000080">Can have description, printed name, initial appearance, printed plural name, inventory listing, indefinite article.
-</font></blockquote><p>
-<p>
-<p>The <b>description</b> is what we see after &quot;LOOK AT THING&quot;, and the <b>initial appearance</b>, if provided, is a paragraph about the object that will appear in the room description where the object is (provided it has never been taken - hence &quot;initial&quot;). The <b>printed name</b> is the name used in all sentences such as
-<p>
-<blockquote><font color="#000080">You can see a dog here...
-</font></blockquote><p>
-<p>
-<p>and the <b>printed plural name</b> is used when the item is one of several of the same kind, as in
-<p>
-<blockquote><font color="#000080">You can see seven dogs here.
-</font></blockquote><p>
-<p>
-<p>It is usually not necessary to set these by hand, though occasionally if we have items oddly named it is worth doing so. (We can also override these entirely with more complicated instructions using the &quot;printing the name...&quot; and &quot;printing the plural name...&quot; activities described later.)
-<p>
-<p>Likewise Inform will do its best to assign a sensible indefinite article (&quot;a&quot; or &quot;some&quot; by default), but we can override its opinions and set this ourselves, for items such as &quot;your mother&quot;. Calling an object &quot;Some bread...&quot; or similar at the first mention will establish that that object is to be considered as grammatically plural. Saying something like &quot;a thing called the door&quot; will indicate that the door should always be called &quot;the&quot; and never &quot;a&quot;; and leaving off the article entirely will prevent one from being printed afterward, as Inform decides that the object has a proper name like Matilda or Jerome.
-<p>
-<p>6. Other kinds have additional properties: containers and doors can be <b>open</b> or closed, <b>locked</b> or unlocked, <b>lockable</b> or not lockable, all of which have the meanings we might expect. We may give something its own key by saying, for instance,
-<p>
-<blockquote><font color="#000080">The blue key unlocks the grey door.
-</font></blockquote><p>
-<p>
-<p>Devices may be <b>switched on</b> or switched off, though we will have to add our own instructions about what they do when these conditions pertain.
-<p>
-<p>Containers, supporters, and people may be assigned a <b>carrying capacity</b>, determining how many things they are allowed to contain, support, or possess; things worn are not counted towards the carrying capacity of a person.
-<p>
-<p>7. Rooms may be <b>lighted</b> or dark, <b>visited</b> or unvisited. The former we may set ourselves at the outset of play, and it will not change unless we say so. (Whether there is actually darkness in a &quot;dark&quot; room depends on the circumstances: a player who takes a lit candle into the room will be able to see.)
-<p>
-<p>The <b>visited</b> property is used by Inform to keep track of whether or not the player has been to any given room, or - to be more specific - whether the player has ever completed a LOOK action in that room. Therefore, if we ask
-<p>
-<blockquote><font color="#000080">if the Lawn Furniture Sales Department is visited...
-</font></blockquote><p>
-<p>
-<p>the answer will be &quot;no&quot; up to and during the first printing of the room's description, and &quot;yes&quot; forever thereafter.
+<p>What is a kind, really? In the end it is a name for a bundle of properties, and the key differences between a kind (such as &quot;container&quot;) and a property (such as &quot;fixed in place&quot;) are that, firstly, something only has one kind (except in the sense that a container is also a thing, and so on), and secondly, it has that kind forever, whereas properties may change.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc53.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc55.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

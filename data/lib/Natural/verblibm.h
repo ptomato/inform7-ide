@@ -640,6 +640,7 @@ Global I7_wlf_sp;
     }
     #ifdef TARGET_ZCODE; @pull I7_wlf_sp; #endif;
     #ifdef TARGET_GLULX; @copy sp I7_wlf_sp; #endif;
+
 ]; ! end of WriteListR
 #ifnot; ! NI_BUILD_COUNT
 [ WriteListFrom o style depth;
@@ -2330,7 +2331,7 @@ Global I7_wlf_sp;
 ];
 
 #ifdef NI_BUILD_COUNT;
-[ Locale descin text1 text2 o k p j f2 flag ssp;
+[ Locale descin text1 text2 o o2 k p j f2 flag ssp;
     I7_Locale(descin, text1, text2);
     objectloop (o ofclass Object) give o ~workflag;
 #ifnot;
@@ -2407,11 +2408,27 @@ Global I7_wlf_sp;
             else {
                 if (o has supporter && child(o) ~= 0) {
                     #ifdef NI_BUILD_COUNT;
-                    I7_DivideParagraph();
-                    #endif;
+!                    objectloop (o2 in o) {
+!                    	if (o2 has I7_mentioned) print o2, " is mentioned.^";
+!                    }
+                    k = 0;
+                    objectloop (o2 in o) {
+                    	give o2 ~workflag;
+                    	if (o2 hasnt I7_mentioned && o2 hasnt scenery) {
+                    		give o2 workflag; k++;
+                    	}
+                    }
+                    if (k > 0) {
+						I7_DivideParagraph();
+						print "On ", (the) o;
+						WriteListFrom(child(o),
+							ENGLISH_BIT+RECURSE_BIT+PARTINV_BIT+
+							TERSE_BIT+CONCEAL_BIT+ISARE_BIT+WORKFLAG_BIT);
+						print ".^";
+	                    if (say__p) ssp = true;
+	                }
+                    #ifnot;
                     SayWhatsOn(o);
-                    #ifdef NI_BUILD_COUNT;
-                    if (say__p) ssp = true;
                     #endif;
                 }
             }

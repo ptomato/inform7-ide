@@ -288,6 +288,8 @@ info: info-am
 info-am:
 
 install-data-am: install-grahamnelsonDATA
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 
 install-exec-am:
 
@@ -314,17 +316,36 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-grahamnelsonDATA uninstall-info-am
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
 
 .PHONY: all all-am check check-am clean clean-generic distclean \
 	distclean-generic distdir dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-exec \
-	install-exec-am install-grahamnelsonDATA install-info \
-	install-info-am install-man install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
-	pdf-am ps ps-am uninstall uninstall-am \
-	uninstall-grahamnelsonDATA uninstall-info-am
+	install install-am install-data install-data-am \
+	install-data-hook install-exec install-exec-am \
+	install-grahamnelsonDATA install-info install-info-am \
+	install-man install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic pdf pdf-am ps ps-am uninstall \
+	uninstall-am uninstall-grahamnelsonDATA uninstall-hook \
+	uninstall-info-am
 
+
+install-data-hook:
+	pushd "$(grahamnelsondir)"; \
+	mv RideableVehicles Rideable\ Vehicles; \
+	mv StandardRules Standard\ Rules; \
+	mv UnicodeCharacterNames Unicode\ Character\ Names; \
+	mv UnicodeFullCharacterNames Unicode\ Full\ Character\ Names; \
+	popd
+
+uninstall-hook:
+	pushd "$(grahamnelsondir)"; \
+	rm -f Rideable\ Vehicles; \
+	rm -f Standard\ Rules; \
+	rm -f Unicode\ Character\ Names; \
+	rm -f Unicode\ Full\ Character\ Names; \
+	popd
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

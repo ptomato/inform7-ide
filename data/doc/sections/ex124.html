@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.4. Persuasion</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.10. Printing the plural name of something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,129 +8,94 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc165.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc167.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.4. Persuasion</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc262.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc264.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.10. Printing the plural name of something</b></font></td></tr></table>
 <p>
-<p>&quot;Asking ... to try ...&quot; actions run through their Before and Instead rules like any other actions, but then (if no rule has intervened) something different happens: Inform has to decide whether the person asked consents to try the action or not. By default, the answer is always no, and text like the following will be printed:
+<p><b>1. When it happens.</b> Only when a group of identical items is present in the same place, and are being described jointly with text like &quot;You can see five gold rings here.&quot; The action happens after &quot;five&quot; and before &quot;here.&quot;
 <p>
-<blockquote><font color="#000080">> will, go west
-<br>Will has better things to do.
-</font></blockquote><p>
+<p><b>2. The default behaviour.</b> The plural name - in this case &quot;gold rings&quot; - is printed out.
 <p>
-<p>However, we can intervene to make the answer &quot;yes&quot;, using a special kind of rule which produces a yes/no answer. The following examples show how we can give broad or narrow permission, as we choose:
-<p>
-<blockquote><font color="#000080">Persuasion rule for asking people to try going: persuasion succeeds.
-<br>Persuasion rule for asking Will to try going west: persuasion succeeds.
-</font></blockquote><p>
-<p>
-<p>Such a rule can either declare that &quot;persuasion succeeds&quot;, or that &quot;persuasion fails&quot;, or make no decision and leave it to another rule to say. If it decides that persuasion fails, it is also allowed to say something, describing why: in that event, the standard message (&quot;Will has better things to do.&quot;) is suppressed. For example,
-<p>
-<blockquote><font color="#000080">Persuasion rule for asking Will to try going:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Will looks put out, and mutters under his breath.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;persuasion fails.
-</font></blockquote><p>
-<p>
-<p>The following rule, which is really only suitable for testing, makes everybody infinitely obliging:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode32(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('Persuasion rule for asking people to try doing something: persuasion succeeds.\n\n');
-}
-</script>
-<a href="javascript:pasteCode32()"><img border=0 src=../doc_images/paste.png></a> Persuasion rule for asking people to try doing something: persuasion succeeds.
-</font></blockquote><p>
-<p>
-<p>Supposing that Will does decide to cooperate, a new action is generated:
-<p>
-<blockquote><font color="#000080">Will trying going west
-</font></blockquote><p>
-<p>
-<p>and this is then subject to all of the usual action machinery. For instance, we could write a rule such as:
-<p>
-<blockquote><font color="#000080">Instead of Will trying going west, say &quot;He runs out into the waves, but soon returns, rueful.&quot;
-</font></blockquote><p>
-<p>
-<p>So in this case the new action (&quot;Will trying going west&quot;) failed: but the original action, &quot;asking Will to try going west&quot;, is still deemed to have succeeded - after all, Will <i>did</i> try. To put it more formally, &quot;asking X to try A&quot; succeeds if the persuasion rules succeed, and otherwise fails.
-<p>
-<p>Note also that &quot;Instead of...&quot; rules written for other people will be treated by Inform as failures, even if we write something like
-<p>
-<blockquote><font color="#000080">Instead of Will trying pulling the cord:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The bell rings.&quot;
-</font></blockquote><p>
-<p>
-<p>and thus may produce unsatisfactory results such as
-<p>
-<blockquote><font color="#000080">>WILL, PULL CORD
-<br>The bell rings.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Will is unable to do that.
-</font></blockquote><p>
-<p>
-<p>If we wish to write new successful actions for another character, we will need to create appropriate carry out and report rules for them: these will be explained in the sections to follow.
+<p><b>3. Examples.</b> See below.
 <p>
 <p><hr><p>
-<a name="e124"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc166.html#e124 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>145</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc166.html#e124 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Hypnotist of Blois</font></b></a><br>A hypnotist who can make people obedient and then set them free again.<p></td></tr></table>
+<a name="e124"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc263.html#e124 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>245</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc263.html#e124 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Hudsucker Industries</font></b></a><br>Letters which are described differently as a group, depending on whether the player has read none, some, or all of them, and on whether they are alike or unlike.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode219(code) {
+function pasteCode218(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"The Hypnotist of Blois"\n\nA person is either hypnotized or alert. A person is usually alert.\n\nPersuasion rule for asking a hypnotized person to try doing something:\n\tpersuasion succeeds.\n\nUnderstand "hypnotize [someone]" as hypnotizing.\n\nHypnotizing is an action applying to one thing.\n\nCheck hypnotizing:\n\tif the noun is hypnotized, say "Already done." instead.\n\nCarry out hypnotizing:\n\tnow the noun is hypnotized.\n\nReport hypnotizing:\n\tsay "[The noun] slips under your control."\n\nInstead of waking someone hypnotized:\n\tnow the noun is alert;\n\tsay "[The noun] returns abruptly to consciousness."\n\n[We will learn more about check rules for other characters shortly, but the following prevents the hypnosis patient from trying to hypnotize us in turn:]\n\nCheck someone trying hypnotizing someone:\n\tstop the action.\n\nMaison de la Magie is a room. "In a darkened room, a few hundreds of paces from the chateau of Blois, you give to tourists three shows a day: displaying to them power they do not comprehend and spectacles they do not deserve."\n\nA volunteer is a woman in the Maison. "A volunteer from the audience stands facing you, [if alert]skeptically awaiting hypnosis[otherwise]her face worshipful and obedient[end if]." The printed name of the volunteer is "volunteer from the audience". The description is "A distracted, susceptible woman." The volunteer wears a t-shirt and a baseball hat.\n\nThe player wears a top hat and a cape.\n\nTest me with "volunteer, remove hat / hypnotize volunteer / look / volunteer, remove hat / wake volunteer / volunteer, wear hat".\n');
+    myProject.pasteCode('"Hudsucker Industries"\n\nTone is a kind of value. The tones are effusive, affectionate, polite, curt, and flamingly rude.\n\nA letter is a kind of thing. The description of a letter is usually "On inspection, it turns out to be quite [tone]." A letter has a tone. The tone of a letter is usually polite.\n\nBefore printing the name of a letter (called the subject): if we have examined the subject, say "[tone] ".\n\nBefore printing the plural name of a letter (called the subject):\n\tif we have not examined the subject, make no decision;\n\tlet standard tone be the tone of the subject;\n\trepeat with X running through letters which are next to the subject\n\tbegin;\n\t\tif we have not examined X, make no decision;\n\t\tif the tone of X is not the standard tone\n\t\tbegin;\n\t\t\tsay "unsorted ";\n\t\t\tmake no decision;\n\t\tend if;\n\tend repeat;\n\tsay "[tone] ".\n\nAfter printing the plural name of a letter (called the subject):\n\tlet the read count be 0; let the unread count be 0;\n\trepeat with X running through letters which are next to the subject\n\tbegin;\n\t\tif we have examined X, let the read count be the read count plus 1;\n\t\totherwise let the unread count be the unread count plus 1;\n\tend repeat;\n\tif the unread count > 0\n\tbegin;\n\t\tif the read count is 0\n\t\tbegin;\n\t\t\tsay " (all unread, at the moment)";\n\t\totherwise;\n\t\t\tsay " (some as yet unread)";\n\t\tend if;\n\tend if;\n\nProximity relates a thing (called X) to a thing (called Y) when the holder of X is the holder of Y. The verb to be next to implies the proximity relation.\n\nThe Mailroom is a room. "Usually a thrumming hive of bee-like workers, but you got in early to get a jump on the day\'s work."\n\nThe satchel is carried by the player. Two flamingly rude letters are in the satchel. Five polite letters are in the satchel.\n\nThe mail wall are fixed in place in the mailroom. "Before you is a wall of mailboxes, including [list of mailboxes which are part of the mail wall]."\n\nThe plural of mailbox is mailboxes. A mailbox is a kind of container. The CEO box is a mailbox. The Hold box is a mailbox. The Trash box is a mailbox.\n\nWhen play begins: now every mailbox is part of the mail wall;\n\trepeat with switch count running from 1 to 5\n\tbegin;\n\t\tmove a random letter to the satchel;\n\tend repeat.\n\nTest me with "inventory / examine letter / get letter / put letter in ceo box / inventory".\n\n');
 }
 </script>
-<a href="javascript:pasteCode219()"><img border=0 src=../doc_images/paste.png></a> &quot;The Hypnotist of Blois&quot;
+<a href="javascript:pasteCode218()"><img border=0 src=../doc_images/paste.png></a> &quot;Hudsucker Industries&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A person is either hypnotized or alert. A person is usually alert.
+<blockquote><font color="#000080">Tone is a kind of value. The tones are effusive, affectionate, polite, curt, and flamingly rude.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Persuasion rule for asking a hypnotized person to try doing something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;persuasion succeeds.
+<blockquote><font color="#000080">A letter is a kind of thing. The description of a letter is usually &quot;On inspection, it turns out to be quite [tone].&quot; A letter has a tone. The tone of a letter is usually polite.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;hypnotize [someone]&quot; as hypnotizing.
+<blockquote><font color="#000080">Before printing the name of a letter (called the subject): if we have examined the subject, say &quot;[tone] &quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Hypnotizing is an action applying to one thing.
+<blockquote><font color="#000080">Before printing the plural name of a letter (called the subject):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if we have not examined the subject, make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let standard tone be the tone of the subject;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with X running through letters which are next to the subject
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if we have not examined X, make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the tone of X is not the standard tone
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;unsorted &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[tone] &quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check hypnotizing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is hypnotized, say &quot;Already done.&quot; instead.
+<blockquote><font color="#000080">After printing the plural name of a letter (called the subject):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the read count be 0; let the unread count be 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with X running through letters which are next to the subject
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if we have examined X, let the read count be the read count plus 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise let the unread count be the unread count plus 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the unread count > 0
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the read count is 0
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; (all unread, at the moment)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; (some as yet unread)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out hypnotizing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is hypnotized.
+<blockquote><font color="#000080">Proximity relates a thing (called X) to a thing (called Y) when the holder of X is the holder of Y. The verb to be next to implies the proximity relation.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report hypnotizing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] slips under your control.&quot;
+<blockquote><font color="#000080">The Mailroom is a room. &quot;Usually a thrumming hive of bee-like workers, but you got in early to get a jump on the day's work.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of waking someone hypnotized:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is alert;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] returns abruptly to consciousness.&quot;
+<blockquote><font color="#000080">The satchel is carried by the player. Two flamingly rude letters are in the satchel. Five polite letters are in the satchel.
 </font></blockquote><p>
 <p>
-<p>We will learn more about check rules for other characters shortly, but the following prevents the hypnosis patient from trying to hypnotize us in turn:
-<p>
-<blockquote><font color="#000080">Check someone trying hypnotizing someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+<blockquote><font color="#000080">The mail wall are fixed in place in the mailroom. &quot;Before you is a wall of mailboxes, including [list of mailboxes which are part of the mail wall].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Maison de la Magie is a room. &quot;In a darkened room, a few hundreds of paces from the chateau of Blois, you give to tourists three shows a day: displaying to them power they do not comprehend and spectacles they do not deserve.&quot;
+<blockquote><font color="#000080">The plural of mailbox is mailboxes. A mailbox is a kind of container. The CEO box is a mailbox. The Hold box is a mailbox. The Trash box is a mailbox.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A volunteer is a woman in the Maison. &quot;A volunteer from the audience stands facing you, [if alert]skeptically awaiting hypnosis[otherwise]her face worshipful and obedient[end if].&quot; The printed name of the volunteer is &quot;volunteer from the audience&quot;. The description is &quot;A distracted, susceptible woman.&quot; The volunteer wears a t-shirt and a baseball hat.
+<blockquote><font color="#000080">When play begins: now every mailbox is part of the mail wall;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with switch count running from 1 to 5
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move a random letter to the satchel;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player wears a top hat and a cape.
+<blockquote><font color="#000080">Test me with &quot;inventory / examine letter / get letter / put letter in ceo box / inventory&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;volunteer, remove hat / hypnotize volunteer / look / volunteer, remove hat / wake volunteer / volunteer, wear hat&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc166.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e191"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex191.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>146</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex191.html#e191 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Police State</font></b></a><br>Several friends who obey you; a policeman who doesn't (but who takes a dim view of certain kinds of antics).<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc165.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc167.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>That last &quot;repeat&quot; is merely a device to shuffle the order of items in the satchel so that the player will not always encounter the letters in a neatly presorted order, despite our defining them that way. (Of course, that means that the test produced by TEST ME cannot be very exciting...)
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc263.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc262.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc264.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

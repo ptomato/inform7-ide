@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.1. Introduction to scenes</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.10. Calculating times</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,14 +8,29 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc135.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Scenes</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc137.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.1. Introduction to scenes</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc135.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc137.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.10. Calculating times</b></font></td></tr></table>
 <p>
-<p>As we have seen, Inform divides up space into individual places called &quot;rooms&quot;, and allows us to group rooms together into &quot;regions&quot; if we find that convenient. And Inform also divides time up, into individual turns. These too we can group together: the equivalent of a region is a &quot;scene&quot;.
+<p>We will occasionally need to perform more complex calculations with time, and in order to do that, we have a way to convert the time of day to numbers. Thus the phrase &quot;the minutes part of ...&quot; takes a time and produces a number from 0 to 59; similarly &quot;the hours part of ...&quot; extracts a number from 0 to 23, using the twenty-four hour clock.
 <p>
-<p>To put this another way, if we think of the interactive fiction as a stage play, then up to now it has simply contained endless dialogue and stage directions - there has been no convenient way to divide up its running time into dramatic episodes, in the same way that a playwright might make Act I and Act II take place in the same drawing-room with the same characters, but (let us say) six months later, after many things have changed. The script contains cues for one scene to end and another to begin: when those cues are reached, the stage hands rearrange props, actors reposition themselves and so on.
+<p>To go the other way, we can convert any number to a duration by writing &quot;minutes&quot; or &quot;hours&quot; after it. For instance:
 <p>
-<p>Inform also allows us to create scenes, with cues for them to start and end, and some stage machinery (so to speak) making it easy to move the action on. But interactive fiction is <i>interactive</i>, so the metaphor of the theatre only goes so far. We can have several different scenes going on at once - perhaps with the relevant events taking place in different rooms, which the player is free to walk between. And the player may make a choice which changes the story-line, causing scenes to happen which otherwise would not have happened, and so on. Scenes can even repeat themselves.
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode26(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('The clock error is a number that varies. To thump the mechanism: change the clock error to a random number from -10 to 10.\n\nThe broken grandfather clock is in the Chamber. "An erratic grandfather clock seems to say it is [clock error minutes after the time of day]."\n\nWhen play begins, thump the mechanism. Instead of attacking the broken clock: thump the mechanism; say "You thump the clock, which now reads [clock error minutes after the time of day].".\n\n');
+}
+</script>
+<a href="javascript:pasteCode26()"><img border=0 src=../doc_images/paste.png></a> The clock error is a number that varies. To thump the mechanism: change the clock error to a random number from -10 to 10.
+</font></blockquote><p>
 <p>
-<p>So organising the story-line into scenes is not simply a matter of making a list (Scene 1, then Scene 2, then Scene 3, <i>finis</i>). It is more like a chart in which one scene can lead in several possible ways to others - a sort of map of time, which as we shall see Inform displays in its &quot;Scenes&quot; index.
+<blockquote><font color="#000080">The broken grandfather clock is in the Chamber. &quot;An erratic grandfather clock seems to say it is [clock error minutes after the time of day].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins, thump the mechanism. Instead of attacking the broken clock: thump the mechanism; say &quot;You thump the clock, which now reads [clock error minutes after the time of day].&quot;.
+</font></blockquote><p>
+<p>
+<p>Note that &quot;clock error&quot; is a number, but &quot;clock error minutes&quot; is a time.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc135.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc137.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

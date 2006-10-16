@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.12. Let and temporary variables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.5. If</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,42 +8,49 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc155.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap10.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 10: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc157.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.12. Let and temporary variables</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc155.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc157.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.5. If</b></font></td></tr></table>
 <p>
-<p>A variable, as we have seen, is a name for a value which changes, though always remaining of the same kind. For instance, if &quot;target&quot; is a number variable (or &quot;number that varies&quot;) then it may change value from 2 to 4, but not from 2 to &quot;fishknife&quot;.
+<p>We now run through a few special phrases which control other phrases: causing them to repeat, perhaps, or to be skipped. These phrases are equivalent to the &quot;control structures&quot; of other computer programming languages: no system for interactive fiction can possibly be adequate unless it allows us to carry out arbitrary computations, so the pretence that Inform is not really a programming language must be dropped sooner or later. That time is now.
 <p>
-<p>To make complicated decisions, phrases often need to remember values on a temporary basis. We have already seen this for the counter in a &quot;repeat&quot; loop, which exists only inside that loop, and then is no longer needed. Now we define named values which exist only inside the current phrase. For instance:
+<p>The phrase:
 <p>
-<blockquote><font color="#000080">let outer bull be 25;
-<br>let the current appearance be &quot;reddish brown&quot;;
-<br>let the special room be Marley Wood;
+<blockquote><font color="#000080">if (... condition ...) then (... another whole phrase ...)
 </font></blockquote><p>
 <p>
-<p>creates temporary variables &quot;outer bull&quot;, &quot;current appearance&quot; and &quot;special room&quot;. The kinds of these are deduced from the values given, so that, for instance,
+<p>causes the phrase after &quot;then&quot; to be followed only if the condition holds. Some people prefer to use a comma, which is treated just the same:
 <p>
-<blockquote><font color="#000080">say &quot;The outer bull scores [the outer bull in words] when you practice archery in [special room].&quot;
+<blockquote><font color="#000080">if (... condition ...), (... another whole phrase ...)
 </font></blockquote><p>
 <p>
-<p>produces
+<p>Because of this conventional use of a comma, it is a good idea to avoid using a comma in the condition itself:
 <p>
-<blockquote><font color="#000080">The outer bull scores twenty-five when you practice archery in Marley Wood.
+<blockquote><font color="#000080">if opening, closing a door, ...
 </font></blockquote><p>
 <p>
-<p>Temporary variables made by &quot;let&quot; are only temporarily in existence while a phrase is being carried out. Their values often change: we could say
+<p>tends to confuse Inform.
 <p>
-<blockquote><font color="#000080">let x be 10;
-<br>change x to 11;
+<p>There are many different forms of condition in Inform (and, as we shall see, we can easily add more), but the simplest is:
+<p>
+<blockquote><font color="#000080">(first value) is (second value)
 </font></blockquote><p>
 <p>
-<p>for instance, or indeed we could &quot;let x be 10&quot; and then &quot;let x be 11&quot;. But although we are allowed to change the value, we are not allowed to change the kind of value. The name &quot;x&quot; must always have the same kind of value throughout the phrase to which it belongs, so the following will not be allowed:
+<p>As always, Inform checks that these two values are of kinds which can be compared. The following will produce an objection, for instance:
 <p>
-<blockquote><font color="#000080">let x be 45;
-<br>change x to &quot;Norway&quot;;
+<blockquote><font color="#000080">if 10 is a door then say &quot;Huzzah!&quot;
 </font></blockquote><p>
 <p>
-<p>(The difference between &quot;let&quot; and &quot;change&quot; is that &quot;let&quot; can create a new temporary variable, whereas &quot;change&quot; can only alter one which already exists: on the other hand, &quot;change&quot; can change many other things as well, whereas &quot;let&quot; applies only to temporary variables.)
+<p>since it makes no sense to ask the question, and the only result will be the baffled reply:
 <p>
-<p><hr><p>
-<a name="e195"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex195.html#e195 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>136</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex195.html#e195 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">A pushable box</font></b></a><br>More on using kinds of value inside phrases, this time to simulate something new: a box which, although it cannot be picked up, can be pushed around between three different places on the floor.<p></td></tr></table>
-<a name="e269"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex269.html#e269 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>137</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex269.html#e269 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Tinted wallpaper</font></b></a><br>A worked example using a new kind of value, "colour", within phrases to talk about tinted wallpaper.<p></td></tr></table>
+<blockquote><font color="#000080"><b>Problem.</b> In the line 'if 10 is a door then say &quot;Huzzah!&quot;' <img border=0 src=../doc_images/Reveal.png>, I can't determine whether or not '10 is a door', because it seems to ask if a number is some sort of door.
+</font></blockquote><p>
+<p>
+<p>This, however, would be fine:
+<p>
+<blockquote><font color="#000080">To comment upon (whatever - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is transparent then say &quot;I see right through this!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is an open door then say &quot;Oh look, an open door!&quot;.
+</font></blockquote><p>
+<p>
+<p>since &quot;whatever&quot; is known to be a thing, and Inform knows that things are indeed sometimes transparent and sometimes open doors.
+<p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc155.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc157.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

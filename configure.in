@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(gnome-inform7, 0.1)
+AM_INIT_AUTOMAKE(gnome-inform7, 0.2)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(config.h)
 
@@ -17,6 +17,13 @@ AC_SUBST(PACKAGE_LIBS)
 
 dnl Add user c-flags
 CFLAGS=$CFLAGS
+
+dnl Check for the correct UUID library and its location
+AC_CHECK_LIB(uuid, uuid_create, [], AC_MSG_ERROR([You need the OSSP UUID library to
+	compile GNOME Inform 7.]))
+AC_CHECK_HEADER(ossp/uuid.h,
+	AC_DEFINE([OSSP_UUID], [], [Define if the OSSP UUID header is <ossp/uuid.h>
+	instead of <uuid.h>]), [])
 
 GETTEXT_PACKAGE=gnome-inform7
 AC_SUBST(GETTEXT_PACKAGE)

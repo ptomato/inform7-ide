@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.27. Printing the player's obituary</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.19. Writing a paragraph about</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,38 +8,34 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc271.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc273.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.27. Printing the player's obituary</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc271.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc273.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.19. Writing a paragraph about</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> The obituary is the text &quot;*** You have died ***&quot; or similar, usually followed by the final score.
+<p><b>1. When it happens.</b> Just <i>before</i> writing a paragraph about some item in a room description.
 <p>
-<p><b>2. The default behaviour.</b> Printing the aforementioned text, then the final score, and reducing the status line to a largely blank state.
+<p><b>2. The default behaviour.</b> Is to do nothing. However, if a rule is supplied which prints something up, then this replaces the paragraph which would otherwise have been printed. Moreover, any items whose names are said in the course of this rule - for instance, by being listed - are then excluded from the remainder of the room description, because they are considered as having been described sufficiently already.
 <p>
-<p><b>3. Examples.</b> (a) For a work with no meaningful score, it would be odd to wind up with a final reckoning of 0, so:
+<p><b>3. Examples.</b> (a) This is a neat way to wrap several things together into the same paragraph:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode81(code) {
+function pasteCode67(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('Procedural rule: ignore the print final score rule.\n\n');
+    myProject.pasteCode('Rule for writing a paragraph about Mr Wickham:\n\tsay "Mr Wickham looks speculatively at [list of women in the location]."\n\n');
 }
 </script>
-<a href="javascript:pasteCode81()"><img border=0 src=../doc_images/paste.png></a> Procedural rule: ignore the print final score rule.
+<a href="javascript:pasteCode67()"><img border=0 src=../doc_images/paste.png></a> Rule for writing a paragraph about Mr Wickham:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Mr Wickham looks speculatively at [list of women in the location].&quot;
 </font></blockquote><p>
 <p>
-<p>(b) Or we could add to the verdict:
+<p>because now &quot;Mr Wickham looks speculatively at Velma and Daphne&quot; will now prevent the appearance of the subsequent text &quot;You can also see Velma and Daphne.&quot;
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode82(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After printing the player\'s obituary: say "And you visited [number of visited rooms] place[s]."\n\n');
-}
-</script>
-<a href="javascript:pasteCode82()"><img border=0 src=../doc_images/paste.png></a> After printing the player's obituary: say &quot;And you visited [number of visited rooms] place[s].&quot;
-</font></blockquote><p>
+<p>Inform keeps track of which objects have already been named with an either/or property called &quot;mentioned&quot;, which it assigns whenever the name of an object has been automatically printed. So in this case, Velma and Daphne are now mentioned. Note &quot;automatically printed&quot;, though: if the text printed had just been &quot;Mr Wickham looks speculatively at Velma and Daphne&quot;, rather than the text-substitution list used above, then Inform would not know that Velma and Daphne have been described.
+<p>
+<p>If we ever need to override this - say, we want to list all the women but make sure that Velma gets another paragraph anyway - we could change Velma to unmentioned again after the listing.
 <p>
 <p><hr><p>
-<a name="e80"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex80.html#e80 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>265</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex80.html#e80 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Battle of Ridgefield</font></b></a><br>Completely replacing the endgame text and stopping the game without giving the player a chance to restart or restore.<p></td></tr></table>
+<a name="e219"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex219.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>253</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex219.html#e219 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Reflections</font></b></a><br>Emphasizing the reflective quality of shiny objects whenever they are described in the presence of the torch.<p></td></tr></table>
+<a name="e78"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex78.html#e78 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>254</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex78.html#e78 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Emma</font></b></a><br>Social dynamics in which groups of people form and circulate during a party.<p></td></tr></table>
+<a name="e254"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex254.html#e254 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>255</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex254.html#e254 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Air Conditioning is Standard</font></b></a><br>Uses "writing a paragraph about" to make person and object descriptions that vary considerably depending on what else is going on in the room, including some randomized NPC interactions with objects or with each other.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc271.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc273.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

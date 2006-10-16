@@ -17,9 +17,14 @@
  */
  
 #include <gnome.h>
-#include <uuid.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+#ifdef OSSP_UUID
+#  include <ossp/uuid.h> /* For Debian-like systems */
+#else
+#  include <uuid.h>
+#endif
 
 #include "support.h"
 #include "compile.h"

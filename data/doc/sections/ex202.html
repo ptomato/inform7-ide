@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.6. Units</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.16. Understanding mistakes</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,105 +8,68 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc199.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc201.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.6. Units</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc251.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc253.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.16. Understanding mistakes</b></font></td></tr></table>
 <p>
-<p>Some of the examples in the last few sections were slightly strained because they used numbers where an English speaker not quite do so. We tend not to say &quot;Isabella has height 68&quot;: we would more normally say &quot;Isabella is 5 foot 8.&quot; Perhaps the computer will need to store that measurement as the number 68 in some register or other, but we really don't want to know that.
+<p>When inspiration strikes the player, he can usually be relied upon to make a good-faith effort to communicate the new idea: he will guess the right command. If he guesses wrongly, the mistake is probably the author's, because a good author will try to anticipate all possible wordings and make all of them work.
 <p>
-<p>Inform allows us to create new, basically numerical kinds of value, like so:
+<p>Nevertheless it is sometimes good practice to nudge the player towards the right wording - particularly if the player has the right idea but is not explicit enough: for instance, typing TALK TO JUDGE when we really want to know what is to be said (JUDGE, GUILTY); or if the player tries something like PLAY CHESS rather than MOVE PAWN TO KING 4. Similarly, if we make a casual reference such as &quot;In your childhood days, you loved sliding in stocking feet across this hallway&quot;, a player might type SLIDE IN STOCKING FEET: a nice idea, and which deserves a nice response, even though it asks to do something beyond the scope of the game.
 <p>
-<blockquote><font color="#000080">A weight is a kind of value. 10kg specifies a weight.
+<p>Inform provides a simple mechanism for recognising a command but at the same time recognising that <i>it does not properly specify an action</i>. Such commands are called &quot;mistakes&quot;, for the sake of a memorable term, but the player has not really behaved badly, and should be helped rather than reproved. For instance:
+<p>
+<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake.
 </font></blockquote><p>
 <p>
-<p>By contrast, the kinds of value seen so far have been set up thus:
+<p>While that works - the command to &quot;act&quot; is indeed rejected - it is not very good, because no very helpful message is brought up. The following is much better:
 <p>
-<blockquote><font color="#000080">A colour is a kind of value. The colours are red, green and blue.
+<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;).
 </font></blockquote><p>
 <p>
-<p>We can choose to make a new kind of value of either variety, but we can't mix the two in the same kind: it will either be numerical at heart (&quot;10kg&quot;) or verbal at heart (&quot;blue&quot;).
+<p>Or we could once again insist on a given context:
 <p>
-<p>The effect of &quot;10kg specifies a weight&quot; is to tell Inform that text matching this form is a constant value of kind &quot;weight&quot;. So, for instance,
-<p>
-<blockquote><font color="#000080">The maximum load is a weight that varies. The maximum load is 8000kg.
+<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;) when the location is the Garden Theatre.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">if the maximum load <= 8000kg, ...
+<p>That still has the drawback that the command &quot;act hamlet&quot; will not be recognised: so the final version we want is probably
+<p>
+<blockquote><font color="#000080">Understand &quot;act [text]&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;) when the location is the Garden Theatre.
 </font></blockquote><p>
 <p>
-<p>Weights behave just like numbers in the ways we can compare them: but Inform respects the fact that a weight is not just any number, so it would not allow us to compare (say) &quot;8000kg&quot; and &quot;5 foot 8&quot;. Weights can meaningfully be compared only with other weights.
+<p>since the &quot;[text]&quot; part will soak up any words the player types (or none), meaning that any command at all whose first word is &quot;act&quot; will be matched.
 <p>
-<p>We can also say weights:
+<p>The following is often useful during beta-testing of a new work, though we would not want it in the final published edition. Many authors like to ask their testers not to try anything in particular, simply to play naturally: but to record the transcript of the session, and email it back to the author. The following command is a device to allow the tester to type a comment in to the transcript:
 <p>
-<blockquote><font color="#000080">The Weighbridge is a room. &quot;A sign declares that the maximum load is [maximum load].&quot;
+<blockquote><font color="#000080">Understand &quot;! [text]&quot; as a mistake (&quot;Noted.&quot;).
 </font></blockquote><p>
 <p>
-<p>...which will produce the text &quot;A sign declares that the maximum load is 8000kg.&quot;
+<p>For instance, the tester might type &quot;! DIDN'T WE SAY DARCY WAS TALL?&quot;, to which the game would reply &quot;Noted.&quot; - and the author can search for such comments when receiving the transcript.
+<p>
+<p>If we are careful, we can make the reply depend on what was typed in the mistaken command:
+<p>
+<blockquote><font color="#000080">Understand &quot;steal [something]&quot; as a mistake (&quot;Just TAKE [the noun] and leave without paying: that's stealing in my book.&quot;).
+</font></blockquote><p>
+<p>
+<p>The care comes in because Inform applies much less checking to mistakes than to other actions, and odd errors will result if we try to refer to (say) &quot;the second noun&quot; in a command which did not have a second noun.
 <p>
 <p><hr><p>
-<a name="e245"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex245.html#e245 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>185</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex245.html#e245 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> rBGH</font></b></a><br>The player character's height is selected randomly at the start of play.<p></td></tr></table>
-<a name="e202"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc200.html#e202 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>186</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc200.html#e202 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Wonderland</font></b></a><br>Hiking Mount Rainier, with attention to which locations are higher and which lower than the present location.<p></td></tr></table>
+<a name="e202"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc252.html#e202 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>234</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc252.html#e202 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Responding to questions starting with WHO, WHAT, etc.</font></b></a><br>Catching all questions that begin with WHO, WHAT, WHERE, and similar question words, and responding with the instruction to use commands, instead.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we have a landscape with a great deal of up and down variation, where GO UP and GO DOWN will be significant almost everywhere, and specifying them all individually a tremendous pain:
+<p>First, we create a single &quot;[query]&quot; token so that we can capture all instances of such sentences in a single line:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode298(code) {
+function pasteCode297(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Wonderland"\n\nAn altitude is a kind of value. 1000 feet specifies an altitude. A room has an altitude.\n\nDefinition: a room is low if its altitude is 3000 feet or less. Definition: a room is high if its altitude is 5000 feet or more.\n\nInstead of going down:\n\tif an adjacent room is lower than the location\n\tbegin;\n\t\tlet the valley be the lowest adjacent room;\n\t\tlet the way be the best route from the location to the valley;\n\t\tsay "(that is, [way])[paragraph break]";\n\t\ttry going the way;\n\totherwise;\n\t\tsay "You\'re in a local valley: there\'s no down from here.";\n\tend if.\n\nInstead of going up:\n\tif an adjacent room is higher than the location\n\tbegin;\n\t\tlet the peak be the highest adjacent room;\n\t\tlet the way be the best route from the location to the peak;\n\t\tsay "(that is, [way])[paragraph break]";\n\t\ttry going the way;\n\totherwise;\n\t\tsay "You\'re on a local peak.";\n\tend if.\n\n\nParadise is a room. Paradise has altitude 5400 feet. "A handsome parking lot, a picnic ground, and the Henry M. Jackson Memorial Visitor Center. The latter offers, for serious climbers, a hot shower; for nature enthusiasts, an interpretive museum; and for car-trippers, a gift shop selling canned slugs. All of which is a largely unsuccessful distraction from the peak of Mt. Rainier beyond."\n\nCougar Rock is southwest of Paradise. The altitude of Cougar Rock is 3180 feet. "Numerous individual campsites and (on the road inventively labeled \'F\') a handful of larger campgrounds suitable for church groups and family reunions."\n\nLongmire is southwest of Cougar Rock. It has altitude 2760 feet. "A tiny town: it has to offer a few groceries, a post office, and a lodge for people who do not care to camp, all built in a rustic Park Service way."\n\nPanorama Point is north of Paradise. It has altitude 6800 feet. Camp Muir is north of Panorama Point. It has altitude 10188 feet. Columbia Crest is northwest of Camp Muir. It has altitude 14410 feet. St Andrews Rock is west of Columbia Crest. It has altitude 10992 feet. Camp Schuman is northeast of Columbia Crest. It has altitude 9510 feet.\n\n[Since Mount Rainier National Park runs to over 235,000 acres, we will omit the rest of the locations, but it does seem fair to give a little more credit to anyone who makes the summit:]\n\nInstead of going up in the highest room:\n\tsay "You\'re standing at the summit of Mt. Rainier, the highest point in the state of Washington. There is no up."\n\nTest me with "up / up / up / down / down / up / up".\n');
+    myProject.pasteCode('Understand "who" or "what" or "when" or "where" or "why" or "how" or "who\'s" or "what\'s" or "when\'s" or "where\'s" or "why\'s" or "how\'s" as "[query]".\n\nUnderstand "[query] [text]" as a mistake ("[story title] understands commands, such as \'[command prompt]examine [a random thing that can be seen by the player]\', but not questions. For more instructions, type HELP.").\n\n');
 }
 </script>
-<a href="javascript:pasteCode298()"><img border=0 src=../doc_images/paste.png></a> &quot;Wonderland&quot;
+<a href="javascript:pasteCode297()"><img border=0 src=../doc_images/paste.png></a> Understand &quot;who&quot; or &quot;what&quot; or &quot;when&quot; or &quot;where&quot; or &quot;why&quot; or &quot;how&quot; or &quot;who's&quot; or &quot;what's&quot; or &quot;when's&quot; or &quot;where's&quot; or &quot;why's&quot; or &quot;how's&quot; as &quot;[query]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">An altitude is a kind of value. 1000 feet specifies an altitude. A room has an altitude.
+<blockquote><font color="#000080">Understand &quot;[query] [text]&quot; as a mistake (&quot;[story title] understands commands, such as '[command prompt]examine [a random thing that can be seen by the player]', but not questions. For more instructions, type HELP.&quot;).
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a room is low if its altitude is 3000 feet or less. Definition: a room is high if its altitude is 5000 feet or more.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going down:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if an adjacent room is lower than the location
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the valley be the lowest adjacent room;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location to the valley;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(that is, [way])[paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try going the way;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're in a local valley: there's no down from here.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going up:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if an adjacent room is higher than the location
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the peak be the highest adjacent room;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location to the peak;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(that is, [way])[paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try going the way;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're on a local peak.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Paradise is a room. Paradise has altitude 5400 feet. &quot;A handsome parking lot, a picnic ground, and the Henry M. Jackson Memorial Visitor Center. The latter offers, for serious climbers, a hot shower; for nature enthusiasts, an interpretive museum; and for car-trippers, a gift shop selling canned slugs. All of which is a largely unsuccessful distraction from the peak of Mt. Rainier beyond.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Cougar Rock is southwest of Paradise. The altitude of Cougar Rock is 3180 feet. &quot;Numerous individual campsites and (on the road inventively labeled 'F') a handful of larger campgrounds suitable for church groups and family reunions.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Longmire is southwest of Cougar Rock. It has altitude 2760 feet. &quot;A tiny town: it has to offer a few groceries, a post office, and a lodge for people who do not care to camp, all built in a rustic Park Service way.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Panorama Point is north of Paradise. It has altitude 6800 feet. Camp Muir is north of Panorama Point. It has altitude 10188 feet. Columbia Crest is northwest of Camp Muir. It has altitude 14410 feet. St Andrews Rock is west of Columbia Crest. It has altitude 10992 feet. Camp Schuman is northeast of Columbia Crest. It has altitude 9510 feet.
-</font></blockquote><p>
-<p>
-<p>Since Mount Rainier National Park runs to over 235,000 acres, we will omit the rest of the locations, but it does seem fair to give a little more credit to anyone who makes the summit:
-<p>
-<blockquote><font color="#000080">Instead of going up in the highest room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're standing at the summit of Mt. Rainier, the highest point in the state of Washington. There is no up.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;up / up / up / down / down / up / up&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc200.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc199.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc201.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>Now the game will respond to all questions novice players might type with this reminder to look for help information.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc252.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e242"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex242.html#e242 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>235</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex242.html#e242 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Gorge at George</font></b></a><br>If the player tries to TALK TO a character, suggest alternative modes of conversation.<p></td></tr></table>
+<a name="e67"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex67.html#e67 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>236</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex67.html#e67 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hot Glass Looks Like Cold Glass</font></b></a><br>Responding to references to a property that the player isn't yet allowed to mention (or when not to use "understand as a mistake").<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc251.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc253.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

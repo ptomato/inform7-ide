@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.4. Conditions and questions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.5. Assemblies and body parts</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,141 +8,87 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc147.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap10.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 10: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc149.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.4. Conditions and questions</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc57.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc59.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.5. Assemblies and body parts</b></font></td></tr></table>
 <p>
-<p>A variety of &quot;conditions&quot; have already appeared in this documentation. A condition is a phrase which describes a situation which might be true, or might be false, and examples might include:
+<p>In the previous chapter, we saw that it was possible to make sub-parts of things. For instance,
 <p>
-<blockquote><font color="#000080">Mr Kite is in Bishopsgate
-<br>the score is greater than 10
-<br>Sherlock Holmes suspects a woman
+<blockquote><font color="#000080">The white door is in the Drawing Room. The handle is part of the white door.
 </font></blockquote><p>
 <p>
-<p>These are all examples of sentences, formed by putting nouns either side of a verb, and clearly a wide range of conditions can be written this way. But there are also a few special conditions built into Inform which have a fixed wording, and test questions difficult to address with ordinary sentences. For instance, the condition
+<p>creates a door with an attached handle. But what if we want to say that not just this door, but every door, should have a handle? To do this we first need to create a kind called &quot;handle&quot;, since there will clearly need to be many handles. The solution is:
 <p>
-<blockquote><font color="#000080">in darkness
+<blockquote><font color="#000080">A handle is a kind of thing. A handle is part of every door.
 </font></blockquote><p>
 <p>
-<p>(e.g., &quot;if in darkness...&quot;) tests whether the player is currently in the dark, and this is better than the more obvious-looking
+<p>&quot;Every&quot; is a loaded word and best used sparingly. A sentence like &quot;A handle is part of every handle&quot; would, if taken literally, mean that a handle takes forever to make and is never finished. Inform will reject this, but the moral is clear: we should think about what we are doing with &quot;every&quot;. Another restriction is it is not safe to meddle with the three fundamental kinds &quot;room&quot;, &quot;container&quot; or &quot;supporter&quot;, but in fact this one can be got around quite easily, like so -
 <p>
-<blockquote><font color="#000080">the player is in a dark room
+<blockquote><font color="#000080">A silver coin is a kind of thing. A banking room is a kind of room. Five silver coins are in every banking room.
 </font></blockquote><p>
 <p>
-<p>since the player might have a torch, or be inside a cage which is itself in a dark room, and so on. Another example of a condition not easily written as a sentence is
+<p>The effect of sentences like these is to make what we might call &quot;assemblies&quot; instead of single things. When a banking room is created, so are five more silver coins; when a door is created, so is another handle. Such sentences act not only on items created later on in the source text, but also on all those created so far.
 <p>
-<blockquote><font color="#000080">player consents
+<p>This is especially useful for body parts. If we would like to explore Voltaire's suggestion that history would have been very different if only Cleopatra's nose had been shorter, we will need noses:
+<p>
+<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person.
 </font></blockquote><p>
 <p>
-<p>(e.g., &quot;if the player consents...&quot;) which is unusual in doing something and not simply making a silent check: it waits for the player to type YES (or Y) or NO (or N) at the keyboard.
+<p>Something to bear in mind, though, is that in play the following may well happen:
+<p>
+<blockquote><font color="#000080">>examine nose
+<br>Which do you mean, your nose, Antony's nose or Cleopatra's nose?
+</font></blockquote><p>
+<p>
+<p>...because the player, being also a &quot;person&quot;, is as susceptible to the invention of noses as anyone else.
+<p>
+<p>Note that Inform names the otherwise nameless noses after their owners. It will always do this unless there are multiple indistinguishable things being created, as in the &quot;five silver coins are in every banking room&quot; example: those will all just be called &quot;silver coin&quot;.
 <p>
 <p><hr><p>
-<a name="e194"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc148.html#e194 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>130</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc148.html#e194 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Proposal</font></b></a><br>Asking the player a yes/no question which he must answer, and another which he may answer or not as he chooses.<p></td></tr></table>
+<a name="e194"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc58.html#e194 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>38</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc58.html#e194 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Being Prepared</font></b></a><br>A kind for jackets, which always includes a container called a pocket.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we want to ask the player a question where he might say yes or no in response. There are two possible forms of this: the modal question where the player must pick one to proceed, and the non-modal question where he might also type other verbs.
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode290(code) {
+function pasteCode289(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Proposal"\n\nThe story genre is "A Worked Example about Yes/No Questions".\n\nSection 1 - Asking a Modal Yes/No Question\n\nWhen play begins:\n\tsay "Do you like Mr Spruce? ";\n\tif player consents, now Spruce is handsome;\n\totherwise now Spruce is ugly;\n\tsay paragraph break.\n\nSection 2 - Mr Spruce\'s Non-Modal Question\n\nUse full-length room descriptions.\n\nThe Conservatory is a room. "You are in a room full of plants."\n\nMr Spruce is a man in the Conservatory. Mr Spruce can be apprehensive or calm. Mr Spruce is calm. Mr Spruce can be handsome or ugly.\n\nAt 9:02 AM: say "Mr Spruce flings himself to his knees and implores you to become his lawfully wedded wife.";\n\tnow Mr Spruce is apprehensive;\n\tMr Spruce gives up in two minutes from now.\n\nWhen Mr Spruce gives up:\n\tsay "Mr Spruce sighs heavily, seeing that you don\'t intend to reply. \'Never mind, my dear, I\'ll ask later. Perhaps I should have spoken to your Papa first... yes, a gently-bred female... no wonder...\'";\n\tnow Mr Spruce is calm;\n\tMr Spruce departs in one minute from now.\n\nWhen Mr Spruce departs:\n\tif the player can see Mr Spruce, say "Mr Spruce takes his leave of you.";\n\totherwise say "Mr Spruce pokes his head in to say that he is leaving.";\n\tend the game saying "Well, that is over..."\n\nInstead of saying yes in the presence of an ugly apprehensive Mr Spruce:\n\tnow Mr Spruce is calm;\n\tsay "Remembering what your mother said to you about the stock exchange and Dear Papa, you close your eyes and accept Mr Spruce.";\n\tend the game saying "Alas for your maiden hopes."\n\nInstead of saying yes in the presence of a handsome apprehensive Mr Spruce:\n\tnow Mr Spruce is calm;\n\tsay "You are silent with delight for a moment before you say yes, yes!";\n\tend the game saying "How Genevieve Stubbs will cry!"\n\nInstead of saying no in the presence of an ugly apprehensive Mr Spruce:\n\tnow Mr Spruce is calm;\n\tsay "Gently you inform Mr Spruce that it is impossible. He seems less deflated than you had expected.";\n\tend the game saying "Odd, that..."\n\nInstead of saying no in the presence of a handsome apprehensive Mr Spruce:\n\tnow Mr Spruce is calm;\n\tsay "You lower your eyes and refuse petulantly, hoping to stir him to a more ardent repetition of these same requests. But then -- alack! -- he says \'I see how it is!\' in a strangled voice, and strides from the room!";\n\tend the game saying "A fatal error!"\n\n[And since the player might SAY YES TO SPRUCE, we had better reroute the relevant options:]\n\nInstead of answering Mr Spruce that "no", try saying no.\n\nInstead of answering Mr Spruce that "yes", try saying yes.\n\nInstead of asking Mr Spruce to try saying yes, try saying yes.\n\nInstead of asking Mr Spruce to try saying no, try saying no.\n\nInstead of saying sorry, try saying no.\n\nInstead of asking Mr Spruce to try saying sorry, try saying no.\n\nInstead of answering Mr Spruce that "sorry", try saying no.\n\nTest me with "z / z / z / yes".\n\nTest more with "z / z / z / no".\n\n');
+    myProject.pasteCode('"Being Prepared"\n\nA jacket is a kind of thing. A jacket is always wearable.\n\nA pocket is a kind of container. A pocket is part of every jacket. The carrying capacity of a pocket is always 2.\n\nAfter examining a jacket:\n\tlet target be a random pocket which is part of the noun;\n\tsay "[The target] contains [a list of things in the target]."\n\n[Now we\'ve created the rules that will govern any specific jackets we might happen to put in our game: each one will always have one pocket, which will be able to contain no more than two things. The description of "a list of things" is text with a list, which we will learn about further in a few sections.]\n\n[Next we might want to create the environment and an actual example of the jacket kind:]\n\nTent is a room. "A dome made of two flexible rods and a lot of bright green ripstop nylon. It bills itself as a one-man tent, but you\'d call it a two-dwarf tent: there is no way to arrange yourself on its square floor so that you can stretch out completely."\n\nThe windbreaker is a jacket. "Your windbreaker is balled up in the corner." The description of the windbreaker is "Both elbows are stained from yesterday\'s entrenching project."\n\nThe windbreaker\'s pocket contains a Swiss army knife and a folded map. The windbreaker is in the Tent.\n\n[Notice that, since Inform has created a pocket for the windbreaker, we can now refer to it by name in our source, giving it any additional properties we need to define. Here we simply put a few items into it.]\n\nThe player wears a whistle. The description of the whistle is "To frighten bears."\n\nTest me with "x windbreaker / get windbreaker / get knife / get map / i / put windbreaker in pocket / put whistle in pocket / put map in pocket / put knife in pocket / i".\n\n');
 }
 </script>
-<a href="javascript:pasteCode290()"><img border=0 src=../doc_images/paste.png></a> &quot;Proposal&quot;
+<a href="javascript:pasteCode289()"><img border=0 src=../doc_images/paste.png></a> &quot;Being Prepared&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The story genre is &quot;A Worked Example about Yes/No Questions&quot;.
+<blockquote><font color="#000080">A jacket is a kind of thing. A jacket is always wearable.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 1 - Asking a Modal Yes/No Question
+<blockquote><font color="#000080">A pocket is a kind of container. A pocket is part of every jacket. The carrying capacity of a pocket is always 2.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Do you like Mr Spruce? &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if player consents, now Spruce is handsome;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now Spruce is ugly;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
+<blockquote><font color="#000080">After examining a jacket:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let target be a random pocket which is part of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The target] contains [a list of things in the target].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 2 - Mr Spruce's Non-Modal Question
+<p>Now we've created the rules that will govern any specific jackets we might happen to put in our game: each one will always have one pocket, which will be able to contain no more than two things. The description of &quot;a list of things&quot; is text with a list, which we will learn about further in a few sections.
+<p>
+<p>Next we might want to create the environment and an actual example of the jacket kind:
+<p>
+<blockquote><font color="#000080">Tent is a room. &quot;A dome made of two flexible rods and a lot of bright green ripstop nylon. It bills itself as a one-man tent, but you'd call it a two-dwarf tent: there is no way to arrange yourself on its square floor so that you can stretch out completely.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Use full-length room descriptions.
+<blockquote><font color="#000080">The windbreaker is a jacket. &quot;Your windbreaker is balled up in the corner.&quot; The description of the windbreaker is &quot;Both elbows are stained from yesterday's entrenching project.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Conservatory is a room. &quot;You are in a room full of plants.&quot;
+<blockquote><font color="#000080">The windbreaker's pocket contains a Swiss army knife and a folded map. The windbreaker is in the Tent.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Mr Spruce is a man in the Conservatory. Mr Spruce can be apprehensive or calm. Mr Spruce is calm. Mr Spruce can be handsome or ugly.
+<p>Notice that, since Inform has created a pocket for the windbreaker, we can now refer to it by name in our source, giving it any additional properties we need to define. Here we simply put a few items into it.
+<p>
+<blockquote><font color="#000080">The player wears a whistle. The description of the whistle is &quot;To frighten bears.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">At 9:02 AM: say &quot;Mr Spruce flings himself to his knees and implores you to become his lawfully wedded wife.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Mr Spruce is apprehensive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Mr Spruce gives up in two minutes from now.
+<blockquote><font color="#000080">Test me with &quot;x windbreaker / get windbreaker / get knife / get map / i / put windbreaker in pocket / put whistle in pocket / put map in pocket / put knife in pocket / i&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When Mr Spruce gives up:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Mr Spruce sighs heavily, seeing that you don't intend to reply. 'Never mind, my dear, I'll ask later. Perhaps I should have spoken to your Papa first... yes, a gently-bred female... no wonder...'&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Mr Spruce is calm;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Mr Spruce departs in one minute from now.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When Mr Spruce departs:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player can see Mr Spruce, say &quot;Mr Spruce takes his leave of you.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Mr Spruce pokes his head in to say that he is leaving.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Well, that is over...&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of saying yes in the presence of an ugly apprehensive Mr Spruce:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Mr Spruce is calm;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Remembering what your mother said to you about the stock exchange and Dear Papa, you close your eyes and accept Mr Spruce.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Alas for your maiden hopes.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of saying yes in the presence of a handsome apprehensive Mr Spruce:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Mr Spruce is calm;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are silent with delight for a moment before you say yes, yes!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;How Genevieve Stubbs will cry!&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of saying no in the presence of an ugly apprehensive Mr Spruce:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Mr Spruce is calm;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Gently you inform Mr Spruce that it is impossible. He seems less deflated than you had expected.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Odd, that...&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of saying no in the presence of a handsome apprehensive Mr Spruce:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Mr Spruce is calm;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You lower your eyes and refuse petulantly, hoping to stir him to a more ardent repetition of these same requests. But then -- alack! -- he says 'I see how it is!' in a strangled voice, and strides from the room!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;A fatal error!&quot;
-</font></blockquote><p>
-<p>
-<p>And since the player might SAY YES TO SPRUCE, we had better reroute the relevant options:
-<p>
-<blockquote><font color="#000080">Instead of answering Mr Spruce that &quot;no&quot;, try saying no.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of answering Mr Spruce that &quot;yes&quot;, try saying yes.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking Mr Spruce to try saying yes, try saying yes.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking Mr Spruce to try saying no, try saying no.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of saying sorry, try saying no.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking Mr Spruce to try saying sorry, try saying no.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of answering Mr Spruce that &quot;sorry&quot;, try saying no.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;z / z / z / yes&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test more with &quot;z / z / z / no&quot;.
-</font></blockquote><p>
-<p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc148.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc147.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc149.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>Notice that Inform automatically refuses to put the windbreaker into its own pocket: as a default, a container cannot contain something of which it is itself a part.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc58.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e57"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex57.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>39</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex57.html#e57 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Model Shop</font></b></a><br>An "on/off button" which controls whatever device it is part of.<p></td></tr></table>
+<a name="e45"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex45.html#e45 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>40</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex45.html#e45 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> U-Stor-It</font></b></a><br>A "chest" kind which consists of a container which has a lid as a supporter.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc57.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

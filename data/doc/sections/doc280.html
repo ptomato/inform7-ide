@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.7. Success and failure</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.27. Printing the banner text</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,42 +8,51 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc279.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc281.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.7. Success and failure</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc279.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc281.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.27. Printing the banner text</b></font></td></tr></table>
 <p>
-<p>Though we have blurred over this point so far, every rule has one of three outcomes: success, failure and neither. The default outcome is neither, and for many rules (the every turn rules, for instance) success or failure would be ignored anyway, which is how we managed not to mention all this before. Indeed, the instruction
+<p><b>1. When it happens.</b> The banner is the bibliographic masthead text, which typically looks something like this:
 <p>
-<blockquote><font color="#000080">follow the appraisal rules
+<blockquote><font color="#000080">Relations
+<br>An Interactive Fiction by Emily Short
+<br>Release 1 / Serial number 050630 / Inform 7 build 2U98 (I6/v6.30 lib 6/10N) SD
 </font></blockquote><p>
 <p>
-<p>throws away the result, whatever it may be, which is why results have not come up in the discussion so far. All the same, results can make a difference even in examples like this one. When a rulebook is working through a list of rules, any rule which succeeds or fails (we say that it &quot;stops&quot;) causes the rulebook to stop at once, so that no subsequent rules in the book will be invoked. For instance, if any &quot;check taking&quot; rule fails, the whole &quot;check taking&quot; rulebook immediately fails, and that is the end of the action.
+<p>The banner is printed at the start of play, and when the player types &quot;version&quot; at the command line, and when say &quot;[banner text]&quot; occurs.
 <p>
-<p>When a rule or rulebook &quot;stops&quot;, a value can optionally also result: this means that rulebooks can be used to calculate quantities, as well as taking yes/no decisions, or simply carrying out activities.
+<p><b>2. The default behaviour.</b> Prints the text above, giving the title, the genre, the author, the release number, the date of compilation (that's the serial number: YYMMDD), and version numbers of the Inform components used to put the game together.
 <p>
-<p>Generally speaking, stops are needed for different reasons in different rulebooks, so there are specialised syntaxes for bringing them about. We saw an example of this with the &quot;reaching inside&quot; rulebook:
+<p><b>3. Examples.</b> (a) Adding a line to the banner:
 <p>
-<blockquote><font color="#000080">A rule for reaching inside the flask: say &quot;Your hand passes through the glass as if it were not there, chilling you to the bone.&quot;; allow access.
+<blockquote><font color="#000080">After printing the banner text, say &quot;DRM authentication code: 13S-451-2034u75y65u%%a1248.&quot;
 </font></blockquote><p>
 <p>
-<p>&quot;Allow access&quot; does nothing more than cause the rule, and therefore the rulebook, to stop and succeed: &quot;deny access&quot; causes it to fail.
+<p>(b) Simplifying the banner:
 <p>
-<p>The following phrases work in any rulebook:
-<p>
-<blockquote><font color="#000080">rule succeeds
-<br>rule fails
-<br>rule succeeds with result (...)
-<br>rule fails with result (...)
+<blockquote><font color="#000080">Rule for printing the banner text: say &quot;Welcome.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>The result can be a room, a thing or a text. It can be referred to as
+<p>(c) Delaying the banner for later:
 <p>
-<blockquote><font color="#000080">the result of the rule
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode80(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Bikini Atoll" by Edward Teller\n\nThe Hut and the Tropical Beach are rooms.\n\nThe conch shell is in the Hut. After taking the shell for the first time: say "As you gather the oddly-warm conch shell into your arms, you experience a sudden flash of deja-vu...[line break][banner text]"; move the player to the Tropical Beach.\n\nRule for printing the banner text: if the player is not carrying the shell, do nothing instead.\n\n');
+}
+</script>
+<a href="javascript:pasteCode80()"><img border=0 src=../doc_images/paste.png></a> &quot;Bikini Atoll&quot; by Edward Teller
 </font></blockquote><p>
 <p>
-<p>which is nothing if the rule ended without success or failure.
+<blockquote><font color="#000080">The Hut and the Tropical Beach are rooms.
+</font></blockquote><p>
 <p>
-<p>Thus, &quot;the result of the rule&quot; will refer to the result of whatever rule or rulebook we last consulted. Similarly, &quot;if rule succeeded&quot; and &quot;if rule failed&quot; will tell us how the last-consulted rule or rulebook ended.
+<blockquote><font color="#000080">The conch shell is in the Hut. After taking the shell for the first time: say &quot;As you gather the oddly-warm conch shell into your arms, you experience a sudden flash of deja-vu...[line break][banner text]&quot;; move the player to the Tropical Beach.
+</font></blockquote><p>
 <p>
-<p><hr><p>
-<a name="e87"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex87.html#e87 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>278</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex87.html#e87 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Feline Behavior</font></b></a><br>A cat which reacts to whatever items it has handy, returning the result of a rulebook for further processing.<p></td></tr></table>
-<a name="e246"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex246.html#e246 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>279</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex246.html#e246 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Kyoto</font></b></a><br>Expanding the effects of the THROW something AT something command so that objects do make contact with one another.<p></td></tr></table>
+<blockquote><font color="#000080">Rule for printing the banner text: if the player is not carrying the shell, do nothing instead.
+</font></blockquote><p>
+<p>
+<p>(By tradition, and as a courtesy to all the people who have worked on Inform, authors ensure that the banner is printed some time near the beginning of each game played. So please only defer it, rather than suppress it altogether.)
+<p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc279.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc281.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.8. Moving the player</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.13. Out of world actions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,78 +8,35 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc109.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc111.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.8. Moving the player</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc182.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc184.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.13. Out of world actions</b></font></td></tr></table>
 <p>
-<p>The player is a thing, too, and can also be moved, which has the effect of instantaneous transportation, without the need for a suitable map connection to the new location. For instance:
+<p>The actions seen so far are all impulses causing the protagonist inside the fictional world to do something, or at least try to. But when the player types &quot;quit&quot; or &quot;save&quot;, that is not a request for anything to happen in the fictional world: it is an instruction to the program simulating that world. In fact, just the same, such requests are treated as actions, but of a special category called &quot;out of world&quot; actions. They do not cause time to pass by, so the turn counter does not advance, nor does this command cycle count as a turn at all; and they are altogether exempt from &quot;Before&quot;, &quot;Instead&quot; and &quot;After&quot; rules. Only the player is allowed to try them.
 <p>
-<blockquote><font color="#000080">move the player to the Bodleian Library
+<p>We can also create new out-of-world actions. Suppose we want a dialogue like so:
+<p>
+<blockquote><font color="#000080">>ROOMS
+<br>You have been to 1 out of 8 rooms.
 </font></blockquote><p>
 <p>
-<p>This will ordinarily result in a room description of the Bodleian Library being printed up, but that might not always be desirable. For instance:
+<p>Here is a complete implementation:
 <p>
-<blockquote><font color="#000080">Instead of waiting in the Schola Maleficorum: say &quot;A bored demon catches your eye (they really do have very inquisitive fingers) and throws you back out into the Antechamber.&quot;; move the player to the Antechamber, without printing a room description.
+<blockquote><font color="#000080">Requesting the room tally is an action out of world.
+<br>Report requesting the room tally: say &quot;You have been to [number of visited rooms] out of [number of rooms] room[s].&quot;
+<br>Understand &quot;rooms&quot; as requesting the room tally.
 </font></blockquote><p>
 <p>
-<p>Thus tacking on the option &quot;without printing a room description&quot;, remembering to add the comma, omits the description which would otherwise be produced. A compromise is to use the option &quot;printing an abbreviated room description&quot;: this gives a full description if the player has never been here before, but only a brief one if it is a familiar scene.
-<p>
-<p>We will see further examples of phrase options such as &quot;without printing a room description&quot;, which can modify the normal behaviour of phrases, in subsequent chapters.
+<p>It is important not to use &quot;out of world&quot; actions for anything affecting what goes on in the fictional world, or realism will collapse, and action-processing may also fail to work in the usual way. &quot;Out of world&quot; actions should be reserved for providing commands like ROOMS, which monitor events rather than participate in them.
 <p>
 <p><hr><p>
-<a name="e260"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc110.html#e260 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>95</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc110.html#e260 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Terror of the Sierra Madre</font></b></a><br>Multiple player characters who take turns controlling the action.<p></td></tr></table>
+<a name="e260"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc183.html#e260 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>165</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc183.html#e260 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Spellbreaker</font></b></a><br>P. David Lebling's classic "Spellbreaker" (1986) includes a room where the game cannot be saved: here is an Inform implementation.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we have a game where we want the player to control two different characters, swapping bodies from one turn to the next. One player-character called &quot;yourself&quot; is predefined by default, but we can create more:
+<p>The answer is easy, but there is a trap:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode355(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Terror of the Sierra Madre"\n\nTeresa is a female player-character. Teresa is in the Hay-Strewn Corridor. "Teresa stands opposite you[if Teresa carries something], her fingers wrapped tightly around [list of things carried by Teresa][end if]." Teresa carries a bulb of garlic and a cross.\n\n[And we need to make the "yourself" player-character interesting to look out from the outside, as well:]\n\nThe initial appearance of yourself is "Maleska watches you from eyes entirely black." Understand "Maleska" as yourself. Yourself carries a skull. Yourself is male.\n\n[And if we wanted to give our two player-characters some different abilities:]\n\nThe carrying capacity of a player-character is always 2. A player-character has a number called strength. The strength of Teresa is 3. The strength of yourself is 5\n\n[Now for the exchange of power. The player is a player-character that varies, which means that we can set it to another player-character when we choose:]\n\nEvery turn:\n\tif the player is not Teresa, change the player to Teresa;\n\totherwise change the player to yourself.\n\nWhen play begins:\n\tchange the command prompt to "[bold type][player][roman type] > ";\n\tchange the left hand status line to "[player]";\n\tchange the right hand status line to "STR: [strength of the player]".\n\n[And since we need to override the standard behavior that player-characters are called "yourself" under some circumstances:]\n\nRule for printing the name of Teresa: say "Teresa".\n\nRule for printing the name of yourself: say "Maleska".\n\nThe Hay-Strewn Corridor is a room. "[if the player is yourself]The horse stalls are empty: you have already drained the animals, and carried off their corpses. The house will not long sustain you now.\n\nThe window throws on the floor a bright square of malevolent sunlight[otherwise]The stalls for horses run down one side of the room, but the house has long stood empty. A square window without shutters looks out over the ranch, away toward the Sierras[end if]."\n\nTest me with "look / look".\n');
-}
-</script>
-<a href="javascript:pasteCode355()"><img border=0 src=../doc_images/paste.png></a> &quot;Terror of the Sierra Madre&quot;
+<blockquote><font color="#000080">Check saving the game when in the Vault: say &quot;That spell does not work here.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Teresa is a female player-character. Teresa is in the Hay-Strewn Corridor. &quot;Teresa stands opposite you[if Teresa carries something], her fingers wrapped tightly around [list of things carried by Teresa][end if].&quot; Teresa carries a bulb of garlic and a cross.
-</font></blockquote><p>
+<p>The trap is that &quot;Before saving the game...&quot;, which might have been our first guess, does not work: because out of world actions are exempt from Before, Instead and After rules.
 <p>
-<p>And we need to make the &quot;yourself&quot; player-character interesting to look out from the outside, as well:
-<p>
-<blockquote><font color="#000080">The initial appearance of yourself is &quot;Maleska watches you from eyes entirely black.&quot; Understand &quot;Maleska&quot; as yourself. Yourself carries a skull. Yourself is male.
-</font></blockquote><p>
-<p>
-<p>And if we wanted to give our two player-characters some different abilities:
-<p>
-<blockquote><font color="#000080">The carrying capacity of a player-character is always 2. A player-character has a number called strength. The strength of Teresa is 3. The strength of yourself is 5
-</font></blockquote><p>
-<p>
-<p>Now for the exchange of power. The player is a player-character that varies, which means that we can set it to another player-character when we choose:
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not Teresa, change the player to Teresa;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change the player to yourself.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;[bold type][player][roman type] > &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the left hand status line to &quot;[player]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot;STR: [strength of the player]&quot;.
-</font></blockquote><p>
-<p>
-<p>And since we need to override the standard behavior that player-characters are called &quot;yourself&quot; under some circumstances:
-<p>
-<blockquote><font color="#000080">Rule for printing the name of Teresa: say &quot;Teresa&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for printing the name of yourself: say &quot;Maleska&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Hay-Strewn Corridor is a room. &quot;[if the player is yourself]The horse stalls are empty: you have already drained the animals, and carried off their corpses. The house will not long sustain you now.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The window throws on the floor a bright square of malevolent sunlight[otherwise]The stalls for horses run down one side of the room, but the house has long stood empty. A square window without shutters looks out over the ranch, away toward the Sierras[end if].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;look / look&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc110.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc109.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc111.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>&quot;Spellbreaker&quot; pulls this unpleasant, but in context witty, stunt as part of a situation which is engineered to force the player to reason through a weighing-objects puzzle using the perfect strategy rather than by guesswork. The illusion that the situation is fair - not rigged against the player, that is - would collapse if the player could save the game and keep retrying possibilities in the light of knowledge gained from earlier attempts. The moral of this story is that any attempt to use in-world situations to influence out-of-world commands should be <i>extremely uncommon</i>.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc183.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e140"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex140.html#e140 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>166</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex140.html#e140 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">A point for never saving the game</font></b></a><br>In some of the late 1970s "cave crawl" adventure games, an elaborate scoring system might still leave the player perplexed as to why an apparently perfect play-through resulted in a score which was still one point short of the supposed maximum. Why only 349 out of 350? The answer varied, but sometimes the last point was earned by never saving the game - in other words by playing it right through with nothing to guard against mistakes (except perhaps UNDO for the last command), and in one long session.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc182.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc184.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

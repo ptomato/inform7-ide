@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.15. Changing reachability</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.23. Reading a command</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,98 +8,173 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc176.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc178.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.15. Changing reachability</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc275.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc277.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.23. Reading a command</b></font></td></tr></table>
 <p>
-<p>The question of what the player can, and cannot, reach is important in interactive fiction. It contains some of the subtlest ideas in the model world, though they often go unnoticed. For instance, if a key is on a shelf which is part of a closed box, can we reach for the key? This comes down to whether the shelf, described only as &quot;part of&quot; the box, is on the inside or the outside: and in fact, because it cannot know which is the case, Inform allows either. So in general it is best to regard &quot;parts&quot; as being exterior parts, but to avoid having parts on containers that might in the course of play be closed up with the player inside.
+<p><b>1. When it happens.</b> When reading a command from the keyboard.
 <p>
-<p>We can, if we wish, change the principles of what can be touched by writing new reaching inside or reaching outside rules. Returning to the example of the conical flask:
+<p><b>2. The default behaviour.</b> Print the prompt text; wait for the player to type something and press return. Reject an entirely blank line, and treat a command beginning &quot;oops&quot; is considered a correction to the previous one. This is a fairly complicated business, so it is probably best not to change the &quot;for&quot; rules for this activity: &quot;before&quot;, and especially &quot;after&quot;, are another matter.
 <p>
-<blockquote><font color="#000080">A rule for reaching inside the flask: say &quot;Your hand passes through the glass as if it were not there, chilling you to the bone.&quot;; allow access.
+<p><b>3. Examples.</b> (a) To lead absolute beginners in gently:
+<p>
+<blockquote><font color="#000080">Before reading a command while the turn count is 1, say &quot;(This is your chance to say what the protagonist should do next. After the '>', try typing 'take inventory'.)&quot;
 </font></blockquote><p>
 <p>
-<p>(Or this could equally be called &quot;a reaching inside rule for the flask&quot;.) More generally, we could give the usual flexible description of what the rule applies to:
+<p>(b) The following responds politely but firmly if the player tries to type &quot;please look&quot;, say, instead of just &quot;look&quot;:
 <p>
-<blockquote><font color="#000080">A rule for reaching inside open containers: say &quot;Your hands seem enigmatically too large for [the container in question].&quot;; deny access.
-</font></blockquote><p>
-<p>
-<p>The &quot;container in question&quot; is the one to which the rule is being applied. Note that a reaching inside rule can &quot;deny access&quot; (stopping with fail), or &quot;allow access&quot; (stopping with success), or neither, in which case the decision is left up to any subsequent rules in the rulebook to make. If none of them decide, access is allowed.
-<p>
-<p>If it seems possible that these rules will be employed by people other than the player, then we need to write them a little more carefully, and in particular we need to ensure that they print nothing for other people. In the first case below, anybody can reach through the glass; in the second case, only the player cannot reach into open containers.
-<p>
-<blockquote><font color="#000080">A rule for reaching inside the flask:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person reaching is the player, say &quot;Your hand passes through the glass as if it were not there, chilling you to the bone.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;allow access.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A rule for reaching inside open containers:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person reaching is the player begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your hands seem enigmatically too large for [the container in question].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deny access.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>The &quot;person reaching&quot; is, as its name suggests, the person trying to reach through the barrier in question.
-<p>
-<p><hr><p>
-<a name="e135"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc177.html#e135 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>166</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc177.html#e135 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Magneto's Revenge</font></b></a><br>Kitty Pryde of the X-Men is able to reach through solid objects, so we might implement her with special powers that the player does not have...<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode230(code) {
+function pasteCode72(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Magneto\'s Revenge"\n\nThe School for Gifted Youngsters is a room. Kitty Pryde is a woman in the School for Gifted Youngsters. "Kitty Pryde waits for you to say why you summoned her out of class." The description is "You see nothing special about Kitty Pryde. But that is only because she has learned to conceal her mutant powers: in fact she has the alternative name Shadowcat, and the ability to phase through solid objects."\n\nThe glass box is a container in the School for Gifted Youngsters. It is closed, openable, and transparent. In the box is a quantity of poisonous gas. In the box is a message from Magneto.\n\nInstead of examining the message when the player is not carrying the message:\n\tsay "You\'d need to be holding it before you could read it."\n\nInstead of opening the glass box: say "You\'re deterred by the swirling bottle-green mist within."\n\nCheck someone trying taking the gas (this is the gaseous object rule): rule fails.\n\nUnsuccessful attempt by someone trying taking the gas: say "The gas isn\'t something one can pick up in one\'s bare hands."\n\nEvery turn: if the player can touch the gas\n\tbegin;\n\t\tsay "The gas has reached your lungs!";\n\t\tend the game in death;\n\tend if.\n\nA rule for reaching inside something:\n\tif the person asked is Kitty, allow access.\n\nPersuasion rule for asking someone to try doing something: persuasion succeeds.\n\nTest me with "get message / kitty, get message / open box / kitty, open box".\n\n');
+    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "Please do not say please.";\n\t\treject the player\'s command;\n\tend if.\n\n');
 }
 </script>
-<a href="javascript:pasteCode230()"><img border=0 src=../doc_images/paste.png></a> &quot;Magneto's Revenge&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The School for Gifted Youngsters is a room. Kitty Pryde is a woman in the School for Gifted Youngsters. &quot;Kitty Pryde waits for you to say why you summoned her out of class.&quot; The description is &quot;You see nothing special about Kitty Pryde. But that is only because she has learned to conceal her mutant powers: in fact she has the alternative name Shadowcat, and the ability to phase through solid objects.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The glass box is a container in the School for Gifted Youngsters. It is closed, openable, and transparent. In the box is a quantity of poisonous gas. In the box is a message from Magneto.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining the message when the player is not carrying the message:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'd need to be holding it before you could read it.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of opening the glass box: say &quot;You're deterred by the swirling bottle-green mist within.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check someone trying taking the gas (this is the gaseous object rule): rule fails.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Unsuccessful attempt by someone trying taking the gas: say &quot;The gas isn't something one can pick up in one's bare hands.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn: if the player can touch the gas
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The gas has reached your lungs!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in death;
+<a href="javascript:pasteCode72()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Please do not say please.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A rule for reaching inside something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is Kitty, allow access.
+<p>To explain. Fragments of what the player has typed are called snippets: &quot;the player's command&quot; is the entire thing. We can test if a snippet matches a given pattern like so:
+<p>
+<blockquote><font color="#000080">if the player's command matches &quot;room [number]&quot;, ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Persuasion rule for asking someone to try doing something: persuasion succeeds.
+<p>This requires an exact match: the weaker condition &quot;includes&quot; only means that the pattern occurs somewhere in the given snippet, so that
+<p>
+<blockquote><font color="#000080">if the player's command includes &quot;please&quot;, ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;get message / kitty, get message / open box / kitty, open box&quot;.
+<p>matches &quot;please look&quot; or &quot;look please&quot;, etc. Lastly, the phrase
+<p>
+<blockquote><font color="#000080">reject the player's command
 </font></blockquote><p>
 <p>
-<p>Now the player can get Kitty to take the message without releasing the poisonous gas:
+<p>tells Inform not to bother analysing the text further, but to go back to the keyboard. (No time passes; no turn elapses; nothing happens in the simulated world.)
 <p>
-<blockquote><font color="#000080">Kitty Pride waits for you to tell her why you summoned her out of class.
+<p>(c) An improved version takes commands like &quot;please drop the coin&quot; and strips &quot;please&quot; from them, but then allows them to proceed normally:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode73(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "(Quelle politesse! But no need to say please.)";\n\t\tcut the matched text;\n\tend if.\n\n');
+}
+</script>
+<a href="javascript:pasteCode73()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(Quelle politesse! But no need to say please.)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cut the matched text;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">You can also see a glass box (closed) (in which are some poisonous gas and a message from Magneto) here.
+<p>&quot;Matched text&quot; is a snippet containing the words which matched against the pattern in the most recent &quot;includes&quot; condition, so in this case it contains just the single word &quot;please&quot;. Two phrases allow snippets to be altered:
+<p>
+<blockquote><font color="#000080">replace (... snippet ...) with (... text ...)
+<br>cut (...snippet ...)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">>kitty, get message
-<br>Kitty Pryde picks up a message from Magneto.
+<p>(d) To make the word &quot;grab&quot; an abbreviation for &quot;take all&quot;:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode74(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('After reading a command:\n\tif the player\'s command matches "grab", replace the player\'s command with "take all".\n\n');
+}
+</script>
+<a href="javascript:pasteCode74()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command matches &quot;grab&quot;, replace the player's command with &quot;take all&quot;.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc177.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e279"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex279.html#e279 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>167</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex279.html#e279 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Dinner is Served</font></b></a><br>A window between two locations. When the window is open, the player can reach through into the other location; when it isn't, access is barred.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc176.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc178.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>
+<p>(&quot;Snippet&quot; is actually a kind of value, so we could say &quot;Ah, you typed '[the player's command]'!&quot; or some such if we liked. But in practice only three snippets are likely to be useful: the two mentioned above, &quot;player's command&quot; and &quot;matched text&quot;, and the &quot;topic understood&quot;, used when matching the &quot;[text]&quot; token in command grammar.)
+<p>
+<p><hr><p>
+<a name="e220"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex220.html#e220 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>262</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex220.html#e220 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fore</font></b></a><br>Understand "fore", "aft", "port", and "starboard", but only when the player is on a vessel.<p></td></tr></table>
+<a name="e1"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex1.html#e1 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>263</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex1.html#e1 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloves</font></b></a><br>Accepting adverbs anywhere in a command, registering what the player typed but then cutting them out before interpreting the command.<p></td></tr></table>
+<a name="e123"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex123.html#e123 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>264</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex123.html#e123 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fragment of a Greek Tragedy</font></b></a><br>Responding to the player's input based on keywords only, and overriding the original parser entirely.<p></td></tr></table>
+<a name="e135"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc276.html#e135 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>265</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc276.html#e135 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Complimentary Peanuts</font></b></a><br>A character who responds to keywords in the player's instructions and remarks, even if there are other words included.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>The &quot;reading a command&quot; activity is not the only point at which we can interact with snippets, as it happens; it is merely the most useful. &quot;The player's command&quot; can be consulted at other points, however, as in this example of your somewhat deaf (or distracted, or simply cussed) Aunt:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode229(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Complimentary Peanuts"\n\nInstead of asking Aunt Martha to try doing something:\n\trepeat through Table of Aunt Martha\'s Commentary\n\tbegin;\n\t\tif player\'s command includes topic entry\n\t\tbegin;\n\t\t\tsay "[commentary entry][paragraph break]";\n\t\t\trule succeeds;\n\t\tend if;\n\tend repeat;\n\tsay "\'Hmmf,\' says Aunt Martha."\n\n[The topic understood is also a snippet, so that whenever one has been generated, we can treat it in the same way as "the player\'s command":]\n\nAsking someone about something is speech.\nTelling someone about something is speech.\nAnswering someone that something is speech.\nAsking someone for something is speech.\n\nInstead of speech when the noun is Aunt Martha:\n\trepeat through Table of Aunt Martha\'s commentary\n\tbegin;\n\t\tif the topic understood includes topic entry\n\t\tbegin;\n\t\t\tsay "[commentary entry][paragraph break]";\n\t\t\trule succeeds;\n\t\tend if;\n\tend repeat;\n\tsay "\'Hmmf,\' says Aunt Martha."\n\n[This is superior to checking "the player\'s command" because we do not want ASK MARTHA ABOUT FRENCH FRIES to trigger the "Martha" keyword, only the "french fries" keywords.]\n\nThe Empyrean Shuttle Bay is a room. "From here you have an excellent view of the colony world, which looks... well, it looks discouragingly orange. But terraforming is in progress."\n\nAunt Martha is a woman in the Empyrean Shuttle Bay. A gleaming shuttle and a stack of rations are in the Shuttle Bay. The shuttle is a vehicle. "Your shuttle awaits."\n\nTable of Aunt Martha\'s Commentary\ntopic\tcommentary\n"shuttle"\t"\'Shuttles! I hate shuttles,\' Aunt Martha grumbles. \'Give me an airplane! AIRPLANE.\'"\n"airplane/airport"\t"\'Those were the days,\' Aunt Martha agrees, plainly reliving the days when she wore a blue-and-white uniform and passed out packets of salted pretzels."\n"rations"\t"\'Do you think there are any peanuts in there?\' she asks in a wistful tone."\n\nTest me with "martha, get in the shuttle / martha, for pity\'s sake, do you see an airplane around here? / martha, pass me the rations".\n\n');
+}
+</script>
+<a href="javascript:pasteCode229()"><img border=0 src=../doc_images/paste.png></a> &quot;Complimentary Peanuts&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking Aunt Martha to try doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Aunt Martha's Commentary
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if player's command includes topic entry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[commentary entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Hmmf,' says Aunt Martha.&quot;
+</font></blockquote><p>
+<p>
+<p>The topic understood is also a snippet, so that whenever one has been generated, we can treat it in the same way as &quot;the player's command&quot;:
+<p>
+<blockquote><font color="#000080">Asking someone about something is speech.
+<br>Telling someone about something is speech.
+<br>Answering someone that something is speech.
+<br>Asking someone for something is speech.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of speech when the noun is Aunt Martha:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Aunt Martha's commentary
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the topic understood includes topic entry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[commentary entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Hmmf,' says Aunt Martha.&quot;
+</font></blockquote><p>
+<p>
+<p>This is superior to checking &quot;the player's command&quot; because we do not want ASK MARTHA ABOUT FRENCH FRIES to trigger the &quot;Martha&quot; keyword, only the &quot;french fries&quot; keywords.
+<p>
+<blockquote><font color="#000080">The Empyrean Shuttle Bay is a room. &quot;From here you have an excellent view of the colony world, which looks... well, it looks discouragingly orange. But terraforming is in progress.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Aunt Martha is a woman in the Empyrean Shuttle Bay. A gleaming shuttle and a stack of rations are in the Shuttle Bay. The shuttle is a vehicle. &quot;Your shuttle awaits.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Aunt Martha's Commentary
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">commentary</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;shuttle&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;'Shuttles! I hate shuttles,' Aunt Martha grumbles. 'Give me an airplane! AIRPLANE.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;airplane/airport&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;'Those were the days,' Aunt Martha agrees, plainly reliving the days when she wore a blue-and-white uniform and passed out packets of salted pretzels.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;rations&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;'Do you think there are any peanuts in there?' she asks in a wistful tone.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;martha, get in the shuttle / martha, for pity's sake, do you see an airplane around here? / martha, pass me the rations&quot;.
+</font></blockquote><p>
+<p>
+<p>This means that Martha will respond to keywords regardless of the setting in which they occur. For instance:
+<p>
+<blockquote><font color="#000080">>martha, get in the shuttle
+<br>&quot;Shuttles! I hate shuttles,&quot; Aunt Martha grumbles. &quot;Give me an airplane! AIRPLANE.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">>martha, for pity's sake, do you see an airplane around here?
+<br>&quot;Those were the days,&quot; Aunt Martha agrees, plainly reliving the days when she wore a blue-and-white uniform and passed out packets of salted peanuts.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">>martha, pass me the rations
+<br>&quot;Do you think there are any peanuts in there?&quot; she asks in a wistful tone.
+</font></blockquote><p>
+<p>
+<p>This is not the stuff of which Loebner-winning chatbots are made, admittedly, but it is occasionally a useful alternative to stricter modes of command-parsing.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc276.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc275.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc277.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

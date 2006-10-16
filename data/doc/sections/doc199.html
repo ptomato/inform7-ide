@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.5. Superlatives</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.11. Indirect relations</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,22 +8,45 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc198.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc200.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.5. Superlatives</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc198.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc200.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.11. Indirect relations</b></font></td></tr></table>
 <p>
-<p>Lastly, if we define an adjective in this calibrating way, we also automatically benefit from the use of the superlative form. That is, if we define
+<p>We have already seen, in the chapter on Descriptions which is a forerunner of this one, that Inform provides not only &quot;adjacent&quot; as a way of seeing if one room is directly connected to another, but also &quot;the best route from A to B&quot;, which allows us to see if any sequence of moves connects them.
 <p>
-<blockquote><font color="#000080">Definition: A container is large if its carrying capacity is 10 or more.
-<br>Definition: A container is small if its carrying capacity is 5 or less.
+<p>Something similar - in fact, simpler - is allowed for any relation. Suppose we would like to go sledging: we can go downhill, but not up. Some quite distant places may be reachable, while others close by may not be, even if lower than us, because they would involve climbing again at some point. The following would implement this:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode34(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Overlooking relates various rooms to various rooms.\n\nThe verb to overlook (it overlooks, they overlook, it overlooked, it is overlooked, it is overlooking) implies the overlooking relation.\n\nThe Garden overlooks the Shrubbery. The Folly overlooks the Garden. The Shrubbery overlooks the Sundial Plot. The Old Ice House overlooks the Garden.\n\nAfter looking:\n\tsay "This wintry vantage point overlooks [the list of rooms overlooked by the location].";\n\tlet the way be the next step via the overlooking relation from the location to the Sundial Plot;\n\tif the way is a room, say "To sledge downhill to the Sundial, aim for [the way].";\n\totherwise say "It is not possible to sledge downhill to the Sundial."\n\n');
+}
+</script>
+<a href="javascript:pasteCode34()"><img border=0 src=../doc_images/paste.png></a> Overlooking relates various rooms to various rooms.
 </font></blockquote><p>
 <p>
-<p>then we can talk about things like this:
-<p>
-<blockquote><font color="#000080">the largest container
-<br>the smallest open container
+<blockquote><font color="#000080">The verb to overlook (it overlooks, they overlook, it overlooked, it is overlooked, it is overlooking) implies the overlooking relation.
 </font></blockquote><p>
 <p>
-<p>Though we should be careful, in the second case, because we might get nothing: maybe all the containers are closed at the moment this is used. And in general there might be several equally large largest containers, in which case we should not rely on getting any particular one of those rather than another.
+<blockquote><font color="#000080">The Garden overlooks the Shrubbery. The Folly overlooks the Garden. The Shrubbery overlooks the Sundial Plot. The Old Ice House overlooks the Garden.
+</font></blockquote><p>
 <p>
-<p>Note that Inform constructs comparatives and superlatives by a pretty simplistic system. If we want to use these forms for an adjective expressing the relatively large size of a room, we had better go with &quot;roomy&quot; (roomier, roomiest) - not &quot;spacious&quot; (spaciouser, spaciousest).
+<blockquote><font color="#000080">After looking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;This wintry vantage point overlooks [the list of rooms overlooked by the location].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the way be the next step via the overlooking relation from the location to the Sundial Plot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the way is a room, say &quot;To sledge downhill to the Sundial, aim for [the way].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;It is not possible to sledge downhill to the Sundial.&quot;
+</font></blockquote><p>
 <p>
+<p>Another example would be the &quot;six degrees of separation&quot; game, where it is claimed that any two people on Earth are connected by a sequence of up to six acquaintances. In an Inform implementation, we might talk about &quot;the next step via the friendship relation from George Bush to Saddam Hussein&quot;, for instance, a phrase likely to evaluate to Donald Rumsfeld, and then
+<p>
+<blockquote><font color="#000080">the number of steps via the friendship relation from George Bush to Saddam Hussein
+</font></blockquote><p>
+<p>
+<p>would be... but that would be telling.
+<p>
+<p>We can calculate the number of steps like this for any of the relations we have defined so far: it works exactly analogously to &quot;the number of moves from A to B&quot;, which reads the map. The same conventions apply: the result is 0 if the two things are the same, and -1 if there is no way to get from one to the other. (For &quot;any of the relations... so far&quot;, not &quot;for any relation&quot;: we are not able to calculate such things for relations which express conditions, as we shall see in the next section.)
+<p>
+<p><hr><p>
+<a name="e27"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex27.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>182</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex27.html#e27 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Problem of Edith</font></b></a><br>A conversation in which the main character tries to build logical connections between what the player is saying now and what went immediately before.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc198.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc200.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

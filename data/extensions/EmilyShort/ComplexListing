@@ -1,4 +1,4 @@
-Version 2 of Complex Listing by Emily Short begins here.
+Version 3 of Complex Listing by Emily Short begins here.
 
 "Complex Listing provides more sophisticated listing options: the ability to impose special ordering instructions on a list, and also the ability to change the delimiters of the list to produce different styles and effects."
 
@@ -12,16 +12,20 @@ To empty out (selected table - a table-name):
 	begin;
 		blank out the whole row;
 	end repeat. 
-	
-To prepare a list of (OS - object-specification):
-	(- objectloop (say__c ofclass Object) if ({OS}) 
-		give say__c i7listflag; else give say__c ~i7listflag;
-	-).
 		
 A thing can be marked for special listing or unmarked for special listing. A thing is usually unmarked for special listing. A room can be marked for special listing or unmarked for special listing. A room is usually unmarked for special listing. A direction can be marked for special listing or unmarked for special listing. A direction is usually unmarked for special listing.
-
-Marked for special listing translates into Inform as "i7listflag". 
-
+	
+To prepare a list of (selection - description):
+	now every thing is unmarked for special listing;
+	now every direction is unmarked for special listing;
+	now every room is unmarked for special listing;
+	now every region is unmarked for special listing;
+	repeat with item running through members of the selection
+	begin;
+		now the item is marked for special listing;
+	end repeat;
+	register things marked for listing.
+ 
 To register things marked for listing:
 	empty out the Table of Scored Listing;
 	repeat with item running through directions which are marked for special listing
@@ -49,14 +53,12 @@ Include (-
 Array printed_text buffer 64;
 #endif;
 
-[ CountLettersInName item depth j; 
-!	@output_stream 3 printed_text;
-!	print (name) item;
-!	@output_stream -3;
-!	j = printed_text-->0;
-	j = PrintToBuffer(printed_text, 64, item);
-	return j;
-]; 
+[ CountLettersInName item j;
+ j = PrintToBuffer(printed_text, 64, PrintObjName, item);
+ return j;
+];
+
+[ PrintObjName item; print (name) item; ];
  
 -)
 
@@ -196,15 +198,15 @@ Delimiting a list is an activity.
 
 Rule for delimiting a list (this is the standard delimiting rule):
 	choose row with list style of current list style in the Table of List Style Assignments;
-		if current listing index is 1
-		begin;
-			if current listing total > 2, say "[second delimiter entry]";
-			otherwise say "[alternate second delimiter entry]";
-		otherwise;
-			if current listing index > 0, say "[first delimiter entry]";
-		end if.
+	if current listing index is 1
+	begin;
+		if current listing total > 2, say "[second delimiter entry]";
+		otherwise say "[alternate second delimiter entry]";
+	otherwise;
+		if current listing index > 0, say "[first delimiter entry]";
+	end if.
 
-Version 2 of Complex Listing ends here.
+Version 3 of Complex Listing ends here.
 
 ---- DOCUMENTATION ----
 
@@ -212,7 +214,7 @@ Complex Listing provides two significant abilities: the ability to change the wa
 
 (Because Complex Listing is relatively powerful, the complete description of what it does may be a bit daunting, especially for less experienced users. It may be more congenial to skip down to the examples and then return to the full instructions later.)
 
-There are four stages to setting up and printing a complex list: marking the items we are going to include; registering these items; arranging the list in order; and printing the list.
+There are three stages to setting up and printing a complex list: marking the items we are going to include; arranging the list in order; and printing the list.
 
 (1) First we must
 
@@ -222,15 +224,15 @@ For instance, we might say
 
 	prepare a list of furry animals which are visible.
 	
-This marks the items that are going to be in our list. If we prefer, we may also do this task by hand by changing the desired items to "marked for special listing" (and undesired items to "unmarked for special listing").
-
-(2) When we have marked everything that is to be included in our list, we must
+This marks the items that are going to be in our list. If we prefer, we may also do this task by hand by changing the desired items to "marked for special listing" (and undesired items to "unmarked for special listing"). If we do the task by hand, we must finish with 
 
 	register things marked for listing.
 
-This sets up a table, called the Table of Scored Listing, which contains all the items that we are going to describe in our list, in two columns: output (the thing that is going to be named) and assigned score (the value we've given this item to order it with respect to everything else). 
+This sets up a table, called the Table of Scored Listing, which contains all the items that we are going to describe in our list, in two columns: output (the thing that is going to be named) and assigned score (the value we've given this item to order it with respect to everything else). (In versions prior to version three, it was necessary to register things marked for listing even after preparing a list. This is no longer the case.)
 
-(3) At this point we may optionally choose to arrange the list in order in some way. One approach is to write our own phrase to go through the Table of Scored Listing and assign scores to each item. 
+Things marked for listing are registered automatically if we say "prepare a list of...".
+
+(2) At this point we may optionally choose to arrange the list in order in some way. One approach is to write our own phrase to go through the Table of Scored Listing and assign scores to each item. 
 
 For instance, we might write a phrase to order the Table of Scored Listing according to the monetary value of items, their current relevance to the plot, their size, etc., etc., etc. -- it can be anything we want to include for the purpose of adding nuance to the descriptive prose. We can already
 
@@ -240,7 +242,7 @@ to arrange according to the number of letters in the name of the item. (This is 
 
 The list arranging activity automatically sorts the Table according to its assigned score entry, but like all activities this can be overwritten if we would rather do something else; so that one could instruct the list arranging activity to sort the table randomly or in inverse order, if so desired.
 
-(4) Now we're ready to use the list, which we may do by saying "[prepared list]". At that point the items in the list will be printed in the order we have established (with an indefinite article, matching the behavior of "[list]"), and the table cleared. Failing to prepare the table properly before listing it may cause bugs, though if it finds itself entirely empty it will say "nothing" rather than giving run-time errors. There are the following variants as well:
+(3) Now we're ready to use the list, which we may do by saying "[prepared list]". At that point the items in the list will be printed in the order we have established (with an indefinite article, matching the behavior of "[list]"), and the table cleared. Failing to prepare the table properly before listing it may cause bugs, though if it finds itself entirely empty it will say "nothing" rather than giving run-time errors. There are the following variants as well:
 
 	say "[the prepared list]."
 	say "[a prepared list]."
@@ -313,8 +315,7 @@ A common descriptive strategy in listing numerous objects is to save the most as
 	Use the serial comma.
 
 	Rule for writing a paragraph about something:
-		prepare a list of the unmentioned other things in the location;
-		register things marked for listing; 
+		prepare a list of the unmentioned other things in the location; 
 		set off the odd things;
 		say "You can see here [a prepared list]."
 		 
@@ -353,8 +354,7 @@ Example: * Taxidermy - Arranging a list so that the items in the list are presen
 	Use the serial comma.
 
 	Rule for writing a paragraph about something in the Stuffed Room:	say "Your eye is drawn inexplicably to [a random other thing in the room], about which there hovers, however briefly, a kind of holy significance, a spiritual spotlight. ";
-		prepare a list of the unmentioned other things in the Stuffed room;
-		register things marked for listing; 
+		prepare a list of the unmentioned other things in the Stuffed room; 
 		order list by length;
 		say "What here can compare: [the prepared list delimited in comma style]?"
 	 	
@@ -377,8 +377,7 @@ Imagine we've gotten the (somewhat frightening) idea of writing a game about Emi
 	dashed	" -- "	" -- and then "	" -- and -- "	"[a current listed object]"	"[the current listed object]"
 
 	Instead of taking inventory:
-		prepare a list of things carried by the player;
-		register things marked for listing;  
+		prepare a list of things carried by the player; 
 		say "Your possessions are few and small -- in your hands [is/are a prepared list delimited in dashed style]."
 	 	
 	Definition: a thing is other if it is not the player.

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.15. Going from, going to</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.8. Rules applying to more than one action</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,54 +8,33 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc96.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc98.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.15. Going from, going to</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc96.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc98.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.8. Rules applying to more than one action</b></font></td></tr></table>
 <p>
-<p>Going is an action defined like any other: it is the one which happens when the player tries to go from one location to another. But it is unlike other actions because it happens in two locations, not just one, and has other complications such as vehicles and doors to contend with. To make it easier to write legible and flexible rules, &quot;going&quot; is allowed to be described in a number of special ways not open to other actions, as demonstrated by the following example game:
+<p>A description can include more than one choice of action. For instance:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode15(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Going Going"\n\nThe Catalogue Room is east of the Front Stacks. South of the Catalogue Room is the Musicology Section.\n\nInstead of going nowhere from the Front Stacks, say "Bookcases obstruct almost all passages out of here."\n\nInstead of going nowhere, say "You really can\'t wander around at random in the Library."\n\nBefore going to the Catalogue Room, say "You emerge back into the Catalogue Room."\n\n');
-}
-</script>
-<a href="javascript:pasteCode15()"><img border=0 src=../doc_images/paste.png></a> &quot;Going Going&quot;
+<blockquote><font color="#000080">examining or searching the desk
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Catalogue Room is east of the Front Stacks. South of the Catalogue Room is the Musicology Section.
+<p>matches either of &quot;examining the desk&quot; or &quot;searching the desk&quot;. We can have more than two actions, of course:
+<p>
+<blockquote><font color="#000080">examining, looking under or searching the desk
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going nowhere from the Front Stacks, say &quot;Bookcases obstruct almost all passages out of here.&quot;
+<p>The actions combined like this need to be compatible with each other, at least a little. For instance, this will generate a problem message:
+<p>
+<blockquote><font color="#000080">waiting or searching the desk
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going nowhere, say &quot;You really can't wander around at random in the Library.&quot;
+<p>because it makes no sense to &quot;wait the desk&quot;. On the other hand, this is fine:
+<p>
+<blockquote><font color="#000080">waiting or searching
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before going to the Catalogue Room, say &quot;You emerge back into the Catalogue Room.&quot;
+<p>The general rule is that if we specify one or more objects (&quot;the desk&quot; in the above example), then each of the actions we quote must take at least that many objects.
+<p>
+<p>For example, the following saves us writing the same basic rule three times over:
+<p>
+<blockquote><font color="#000080">Instead of examining, looking under or searching the desk: say &quot;There's no use poking around in that old desk.&quot;
 </font></blockquote><p>
 <p>
-<p>Note that &quot;going nowhere&quot; means trying a map connection which is blank, and if no rules intervene then &quot;You can't go that way&quot; is normally printed. Unless &quot;nowhere&quot; is specified, descriptions of going apply only when there is a map connection. So &quot;going from the Musicology Section&quot; would not match if the player were trying to go east from there, since there is no map connection to the east. Similarly, &quot;going somewhere&quot; excludes blank connections.
-<p>
-<p>The places gone &quot;from&quot; or &quot;to&quot; can be regions instead of rooms. This is convenient when there are several different ways into or out of an area of map but a common rule needs to apply to all: so, for example,
-<p>
-<blockquote><font color="#000080">Before going from the Cultivated Land to the Wilderness, ...
-<br>Before going nowhere from the Wilderness, say &quot;Tangled brush forces you back.&quot;
-</font></blockquote><p>
-<p>
-<p>Note that it must be &quot;going nowhere from the Wilderness&quot;, not &quot;...in the Wilderness&quot;.
-<p>
-<p>An important point about &quot;going... from&quot; is that, as mentioned in general terms above, it requires that there is actually a map connection that way: whereas &quot;going... in&quot; does not. Suppose there is no map connection north from the Wilderness. Then:
-<p>
-<blockquote><font color="#000080">Instead of going north from the Wilderness, say &quot;You'll never read this.&quot;
-<br>Instead of going north in the Wilderness, say &quot;Oh, it's too cold.&quot;
-</font></blockquote><p>
-<p>
-<p>The first of these never happens, because it is logically impossible to go north from the Wilderness: but the second does happen. (Technically, this is because &quot;going north&quot; is the action, and &quot;in the Wilderness&quot; a separate condition tacked onto the rule.) This distinction is often useful - it allows us to write rules which apply only to feasible movements.
-<p>
-<p><hr><p>
-<a name="e109"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex109.html#e109 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>80</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex109.html#e109 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hagia Sophia</font></b></a><br>If the player tries to go a valid direction while on a supporter, make him stand up first; if he tries to go a nonexistent one, print a special refusal.<p></td></tr></table>
-<a name="e264"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex264.html#e264 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>81</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex264.html#e264 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A&E</font></b></a><br>Using regions to block access to an entire area when the player does not carry a pass, regardless of which entrance he uses.<p></td></tr></table>
-<a name="e223"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex223.html#e223 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>82</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex223.html#e223 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bumping into Walls</font></b></a><br>Offering the player a list of valid directions if he tries to go in a direction that leads nowhere.<p></td></tr></table>
-<a name="e95"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex95.html#e95 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>83</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex95.html#e95 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Polarity</font></b></a><br>A "go back" command that keeps track of the direction from which the player came, and sends him back.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc96.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc98.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

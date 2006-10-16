@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.8. Understanding any, understanding rooms</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.14. Understanding things by their properties</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,98 +8,109 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc234.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc236.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.8. Understanding any, understanding rooms</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc249.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc251.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.14. Understanding things by their properties</b></font></td></tr></table>
 <p>
-<p>Ordinarily, if we write
+<p>Items are ordinarily understood only by their original given names. For instance, if we have:
 <p>
-<blockquote><font color="#000080">Understand &quot;manipulate [something]&quot;.
+<blockquote><font color="#000080">In the Herb Garden is a china pot.
 </font></blockquote><p>
 <p>
-<p>then the &quot;[something]&quot; will only match what is within reach or sight: this is the concept of &quot;scope&quot;, which is what prevents a player from spookily acting on objects from a distance. The parser itself prevents the manipulation rules from ever being invoked on such distant items, which is as it should be.
+<p>then the player could refer to this as &quot;pot&quot;, &quot;china pot&quot; or &quot;china&quot;. We can embellish this by adding extra forms:
 <p>
-<p>Sometimes, though, we positively want to allow this possibility. If we use the special word &quot;any&quot;, as in
-<p>
-<blockquote><font color="#000080">Understand &quot;manipulate [any door]&quot;.
+<blockquote><font color="#000080">Understand &quot;chinese pot&quot; or &quot;chinese vase&quot; as the china pot.
 </font></blockquote><p>
 <p>
-<p>then any door, anywhere in the model world, can be allowed in the player's command. (Of course, the manipulation rules may not do what the player hopes: all that has happened is that the command is now possible to type.) The &quot;any&quot; can be followed by any description of items or rooms, and the latter opens up new possibilities, since rooms are ordinarily never allowed to be named in the player's commands.
+<p>But suppose the pot changes its nature in the course of play? If we have:
 <p>
-<p>For example, the following gives the player the ability to walk between rooms without giving explicit directions of movement.
-<p>
-<blockquote><font color="#000080">Going by name is an action applying to one thing.
+<blockquote><font color="#000080">The china pot can be unbroken or broken. The china pot is unbroken. After dropping the china pot: say &quot;Crack!&quot;; now the china pot is broken; change the printed name of the pot to &quot;broken pot&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out going by name: say &quot;You walk to [the noun].&quot;; move the player to the noun.
+<p>So now the player would reasonably expect to call it &quot;broken pot&quot;, a wording which would have been rejected before. We can achieve this by writing:
+<p>
+<blockquote><font color="#000080">Understand the unbroken property as describing the pot.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;go to [any adjacent visited room]&quot; as going by name.
-</font></blockquote><p>
-<p>
-<p>(This is really only a sketch: in a finished work, &quot;go to&quot; would produce helpful errors if non-adjacent but visited rooms were named, and we might also worry about rules applying to movement, because the method above will circumvent them.)
-<p>
-<p><hr><p>
-<a name="e163"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex163.html#e163 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>223</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex163.html#e163 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> One of Those Mornings</font></b></a><br>A FIND command that allows the player to find a lost object anywhere<p></td></tr></table>
-<a name="e92"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc235.html#e92 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>224</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc235.html#e92 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Actaeon</font></b></a><br>A FOLLOW command allowing the player to pursue a person who has just left the room.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we want the player to be able to go after characters who are moving around the map. The trick, of course, is that once characters are gone they are no longer visible to &quot;follow [person]&quot;, so we need &quot;follow [any person]&quot; to find them.
+<p>which allows &quot;unbroken&quot; or &quot;broken&quot; to describe the pot, depending on its state. This is something of a toy example, but the feature looks rather more useful when there are more pots than just one:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode186(code) {
+function pasteCode62(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Actaeon"\n\nA person has a room called last location.\n\nUnderstand "follow [any person]" as following. Understand the commands "chase" and "pursue" as "follow".\n\nFollowing is an action applying to one visible thing.\n\nCheck following:\n\tif the noun is the player, say "Wherever you go, there you are." instead;\n\tif the noun is visible, say "[The noun] is right here." instead;\n\tif the last location of the noun is not the location, say "It\'s not clear where [the noun] has gone." instead.\n\n[Here again the best route comes in handy:]\n\nCarry out following:\n\tlet the destination be a random room which contains the noun;\n\tif the destination is not a room, say "[The noun] isn\'t anywhere you can follow." instead;\n\tlet aim be the best route from the location to the destination;\n\tsay "(heading [aim])[line break]";\n\ttry going aim.\n\nCorinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.\n\nArtemis is a woman in Corinth.\n\n[We do also have to make sure that whenever we move a person from room to room, we record where they were moved from; otherwise, our clever restrictions about whom the player can pursue will not work properly.]\n\nTo move (pawn - a person) tidily to (target - a room):\n\tchange the last location of the pawn to the holder of the pawn;\n\tmove the pawn to the target.\n\nEvery turn:\n\tlet current location be the location of Artemis;\n\tlet next location be a random room which is adjacent to the current location;\n\tif Artemis is visible, say "Artemis heads to [the next location].";\n\tmove Artemis tidily to next location;\n\tif Artemis is visible, say "Artemis arrives from [the current location]."\n\nTest me with "wait / follow artemis / follow artemis / follow artemis".\n');
+    myProject.pasteCode('"Terracotta"\n\nA flowerpot is a kind of thing. A flowerpot can be unbroken or broken. Understand the broken property as describing a flowerpot.\n\nAfter dropping an unbroken flowerpot: say "Crack!"; now the noun is broken; change the printed name of the noun to "broken flowerpot"; change the printed plural name of the noun to "broken flowerpots".\n\nThe Herb Garden is a room. In the Herb Garden are ten unbroken flowerpots.\n\n');
 }
 </script>
-<a href="javascript:pasteCode186()"><img border=0 src=../doc_images/paste.png></a> &quot;Actaeon&quot;
+<a href="javascript:pasteCode62()"><img border=0 src=../doc_images/paste.png></a> &quot;Terracotta&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A person has a room called last location.
+<blockquote><font color="#000080">A flowerpot is a kind of thing. A flowerpot can be unbroken or broken. Understand the broken property as describing a flowerpot.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;follow [any person]&quot; as following. Understand the commands &quot;chase&quot; and &quot;pursue&quot; as &quot;follow&quot;.
+<blockquote><font color="#000080">After dropping an unbroken flowerpot: say &quot;Crack!&quot;; now the noun is broken; change the printed name of the noun to &quot;broken flowerpot&quot;; change the printed plural name of the noun to &quot;broken flowerpots&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Following is an action applying to one visible thing.
+<blockquote><font color="#000080">The Herb Garden is a room. In the Herb Garden are ten unbroken flowerpots.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check following:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the player, say &quot;Wherever you go, there you are.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is visible, say &quot;[The noun] is right here.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last location of the noun is not the location, say &quot;It's not clear where [the noun] has gone.&quot; instead.
+<p>We then have the dialogue:
+<p>
+<blockquote><font color="#000080">Herb Garden
+<br>You can see ten flowerpots here.
+<br>>get two flowerpots
+<br>flowerpot: Taken.
+<br>flowerpot: Taken.
+<br>>drop all
+<br>flowerpot: Crack!
+<br>flowerpot: Crack!
+<br>>look
+<br>Herb Garden
+<br>You can see two broken flowerpots and eight flowerpots here.
+<br>>get an unbroken flowerpot
+<br>Taken.
 </font></blockquote><p>
 <p>
-<p>Here again the best route comes in handy:
+<p>and so on and so forth.
 <p>
-<blockquote><font color="#000080">Carry out following:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the destination be a random room which contains the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the destination is not a room, say &quot;[The noun] isn't anywhere you can follow.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let aim be the best route from the location to the destination;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(heading [aim])[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try going aim.
+<p>There are in fact two slightly different forms of this kind of sentence:
+<p>
+<blockquote><font color="#000080">Understand the broken property as describing a flowerpot.
+<br>Understand the broken property as referring to a flowerpot.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.
+<p>The only difference is that in the &quot;describing&quot; case, the property's name alone can mean the thing in question - so &quot;take unbroken&quot; will work; whereas, in the &quot;referring to&quot;, the property's name can only be used as an adjective preceding the name of thing itself - so &quot;take unbroken flowerpot&quot; will work but &quot;take unbroken&quot; will not.
+<p>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width=&quot;100%&quot;><tr><TD width=38px valign=top><img border=&quot;0&quot; src=../doc_images/beta.png id=&quot;betaoval&quot; style=&quot;height:31px; width=40px&quot;></td><td valign=top><font size=2>At present, the implementation of this feature has a restriction: if we define a new kind of value (say, colour) and give it to something as a property, then define a new textual form of one of those values (say making &quot;crimson&quot; a synonym for &quot;red&quot;), this new textual form will not be understood when used adjectivally in the above way.
+<p>
+<p></font></td></tr></table><hr><p>
+<a name="e184"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex184.html#e184 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>230</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex184.html#e184 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Peers</font></b></a><br>The peers of the English realm come in six flavours - Baron, Viscount, Earl, Marquess, Duke and Prince - and must always be addressed properly. While a peerage is for life, it may at the royal pleasure be promoted.<p></td></tr></table>
+<a name="e92"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc250.html#e92 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>231</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc250.html#e92 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Terracottissima</font></b></a><br>The flowerpots once again, but this time arranged so that after the first breakage all undamaged pots are said to be "unbroken", to distinguish them from the others.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>This easiest way to do this uses the &quot;printing the name of&quot; activity, which will come up in the following chapter:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode185(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Terracottissima"\n\nA flowerpot is a kind of thing. A flowerpot can be unbroken or broken. After dropping an unbroken flowerpot: say "Crack!"; now the noun is broken. Understand the broken property as describing a flowerpot.\n\nBefore printing the name of a broken flowerpot, say "broken ". Before printing the name of an unbroken flowerpot: if a flowerpot is broken, say "unbroken ".\n\nBefore printing the plural name of a broken flowerpot, say "broken ". Before printing the plural name of an unbroken flowerpot: if a flowerpot is broken, say "unbroken ".\n\nThe Herb Garden is a room. In the Herb Garden are ten unbroken flowerpots.\n\nTest me with "get three flowerpots / drop all / look".\n');
+}
+</script>
+<a href="javascript:pasteCode185()"><img border=0 src=../doc_images/paste.png></a> &quot;Terracottissima&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Artemis is a woman in Corinth.
+<blockquote><font color="#000080">A flowerpot is a kind of thing. A flowerpot can be unbroken or broken. After dropping an unbroken flowerpot: say &quot;Crack!&quot;; now the noun is broken. Understand the broken property as describing a flowerpot.
 </font></blockquote><p>
 <p>
-<p>We do also have to make sure that whenever we move a person from room to room, we record where they were moved from; otherwise, our clever restrictions about whom the player can pursue will not work properly.
-<p>
-<blockquote><font color="#000080">To move (pawn - a person) tidily to (target - a room):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last location of the pawn to the holder of the pawn;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the pawn to the target.
+<blockquote><font color="#000080">Before printing the name of a broken flowerpot, say &quot;broken &quot;. Before printing the name of an unbroken flowerpot: if a flowerpot is broken, say &quot;unbroken &quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let current location be the location of Artemis;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let next location be a random room which is adjacent to the current location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis heads to [the next location].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move Artemis tidily to next location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis arrives from [the current location].&quot;
+<blockquote><font color="#000080">Before printing the plural name of a broken flowerpot, say &quot;broken &quot;. Before printing the plural name of an unbroken flowerpot: if a flowerpot is broken, say &quot;unbroken &quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;wait / follow artemis / follow artemis / follow artemis&quot;.
+<blockquote><font color="#000080">The Herb Garden is a room. In the Herb Garden are ten unbroken flowerpots.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc235.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc234.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc236.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get three flowerpots / drop all / look&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc250.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e238"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex238.html#e238 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>232</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex238.html#e238 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Snip 2</font></b></a><br>Strings that can be divided arbitrarily and then named by length.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc249.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc251.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

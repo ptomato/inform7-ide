@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.7. Properties depend on kind</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.8. Scenery</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,20 +8,37 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc33.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc35.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.7. Properties depend on kind</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc33.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc35.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.8. Scenery</b></font></td></tr></table>
 <p>
-<p>Properties depend very much on kind. It makes no sense to ask whether a room is transparent or opaque, for instance, so Inform will not allow this either to be specified or queried.
+<p>As we have just seen, making something &quot;fixed in place&quot; will prevent it from being picked up or moved. But it remains substantial enough to be described in its own paragraph of text when the player visits its location. This can be unfortunate if it has also been described already in the body of the main description for that location. For instance, if we wrote:
 <p>
-<p>Another way that kind influences properties can be seen from an earlier example:
-<p>
-<blockquote><font color="#000080">The Gazebo is a room. A billiards table is in the Gazebo. On it is a trophy cup. A starting pistol is in the cup.
+<blockquote><font color="#000080">The Orchard is a room. &quot;Within this quadrille of pear trees, a single gnarled old oak remains as a memory of centuries past.&quot; The gnarled old oak tree is fixed in place in the Orchard.
 </font></blockquote><p>
 <p>
-<p>The cup, the pistol and the table are all allowed to have the &quot;fixed in place&quot; property, but in fact only the table actually has it: the cup and the pistol are created as &quot;portable&quot; instead. This is because Inform knows that most things are portable, but that supporters - such as the table - are usually fixed in place. If this assumption is wrong, we need only add the line:
+<p>This would end up describing the oak twice, once in the paragraph about the Orchard, then again in a list of things within it:
 <p>
-<blockquote><font color="#000080">The table is portable.
+<blockquote><font color="#000080"><b>Orchard</b>
+<br>Within this quadrille of pear trees, a single gnarled old oak remains as a memory of centuries past.
 </font></blockquote><p>
+<p>
+<blockquote><font color="#000080">You can see a gnarled old oak tree here.
+</font></blockquote><p>
+<p>
+<p>We avoid this by making it &quot;scenery&quot; instead of &quot;fixed in place&quot;:
+<p>
+<blockquote><font color="#000080">The gnarled old oak tree is scenery in the Orchard.
+</font></blockquote><p>
+<p>
+<p>Any thing can be scenery, and this does not bar it from playing a part in the game: it simply means that it will be immobile and that it will not be described independently of its room. Being immobile, scenery should not be used for portable objects that are meant to be left out of the room description.
+<p>
+<p>If a supporter is scenery, it may still be mentioned in the room description after all, but only as part of a paragraph about other items, such as
+<p>
+<blockquote><font color="#000080">On the teak table are a candlestick and a copy of the Financial Times.
+</font></blockquote><p>
+<p>
+<p>If the player takes the candlestick and the Times, the teak table will disappear from mention. (Scenery containers do not behave in this way: their contents are assumed to be less immediately visible, and will be mentioned only if the player looks inside them.)
 <p>
 <p><hr><p>
-<a name="e28"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex28.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>12</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex28.html#e28 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Disappointment Bay 1</font></b></a><br>A running example in this chapter, Disappointment Bay, involves chartering a boat. This is the first step: creating the cabin.<p></td></tr></table>
+<a name="e175"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex175.html#e175 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>12</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex175.html#e175 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Replanting</font></b></a><br>Changing the response when the player tries to take something that is scenery.<p></td></tr></table>
+<a name="e32"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex32.html#e32 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>13</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex32.html#e32 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Disappointment Bay 2</font></b></a><br>Disappointment Bay: creating some of the objects in the cabin's description.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc33.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc35.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

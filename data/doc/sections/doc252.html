@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.7. Introduction to the list of built-in activities</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.16. Understanding mistakes</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,10 +8,50 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc251.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc253.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.7. Introduction to the list of built-in activities</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc251.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc253.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.16. Understanding mistakes</b></font></td></tr></table>
 <p>
-<p>Activities tend to be about process, rather than outcome. Many of the things Inform does - printing up lists of items, reading commands from the keyboard, and so on - are done as activities, because that way the process can be nudged a little. Too many works of interactive fiction betray their mechanical nature by making it visible that the general machinery being used does not quite seem natural for this or that situation. Activities enable us to add the many graceful touches which avoid that: which contribute nothing to a work, and also everything.
+<p>When inspiration strikes the player, he can usually be relied upon to make a good-faith effort to communicate the new idea: he will guess the right command. If he guesses wrongly, the mistake is probably the author's, because a good author will try to anticipate all possible wordings and make all of them work.
 <p>
-<p>The rest of this chapter covers every activity built in to Inform, with one section for each. It is intended primarily for reference, but may be worth skimming through at a first reading, to give a sense of the possibilities.
+<p>Nevertheless it is sometimes good practice to nudge the player towards the right wording - particularly if the player has the right idea but is not explicit enough: for instance, typing TALK TO JUDGE when we really want to know what is to be said (JUDGE, GUILTY); or if the player tries something like PLAY CHESS rather than MOVE PAWN TO KING 4. Similarly, if we make a casual reference such as &quot;In your childhood days, you loved sliding in stocking feet across this hallway&quot;, a player might type SLIDE IN STOCKING FEET: a nice idea, and which deserves a nice response, even though it asks to do something beyond the scope of the game.
 <p>
+<p>Inform provides a simple mechanism for recognising a command but at the same time recognising that <i>it does not properly specify an action</i>. Such commands are called &quot;mistakes&quot;, for the sake of a memorable term, but the player has not really behaved badly, and should be helped rather than reproved. For instance:
+<p>
+<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake.
+</font></blockquote><p>
+<p>
+<p>While that works - the command to &quot;act&quot; is indeed rejected - it is not very good, because no very helpful message is brought up. The following is much better:
+<p>
+<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;).
+</font></blockquote><p>
+<p>
+<p>Or we could once again insist on a given context:
+<p>
+<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;) when the location is the Garden Theatre.
+</font></blockquote><p>
+<p>
+<p>That still has the drawback that the command &quot;act hamlet&quot; will not be recognised: so the final version we want is probably
+<p>
+<blockquote><font color="#000080">Understand &quot;act [text]&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;) when the location is the Garden Theatre.
+</font></blockquote><p>
+<p>
+<p>since the &quot;[text]&quot; part will soak up any words the player types (or none), meaning that any command at all whose first word is &quot;act&quot; will be matched.
+<p>
+<p>The following is often useful during beta-testing of a new work, though we would not want it in the final published edition. Many authors like to ask their testers not to try anything in particular, simply to play naturally: but to record the transcript of the session, and email it back to the author. The following command is a device to allow the tester to type a comment in to the transcript:
+<p>
+<blockquote><font color="#000080">Understand &quot;! [text]&quot; as a mistake (&quot;Noted.&quot;).
+</font></blockquote><p>
+<p>
+<p>For instance, the tester might type &quot;! DIDN'T WE SAY DARCY WAS TALL?&quot;, to which the game would reply &quot;Noted.&quot; - and the author can search for such comments when receiving the transcript.
+<p>
+<p>If we are careful, we can make the reply depend on what was typed in the mistaken command:
+<p>
+<blockquote><font color="#000080">Understand &quot;steal [something]&quot; as a mistake (&quot;Just TAKE [the noun] and leave without paying: that's stealing in my book.&quot;).
+</font></blockquote><p>
+<p>
+<p>The care comes in because Inform applies much less checking to mistakes than to other actions, and odd errors will result if we try to refer to (say) &quot;the second noun&quot; in a command which did not have a second noun.
+<p>
+<p><hr><p>
+<a name="e202"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex202.html#e202 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>234</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex202.html#e202 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Responding to questions starting with WHO, WHAT, etc.</font></b></a><br>Catching all questions that begin with WHO, WHAT, WHERE, and similar question words, and responding with the instruction to use commands, instead.<p></td></tr></table>
+<a name="e242"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex242.html#e242 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>235</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex242.html#e242 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Gorge at George</font></b></a><br>If the player tries to TALK TO a character, suggest alternative modes of conversation.<p></td></tr></table>
+<a name="e67"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex67.html#e67 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>236</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex67.html#e67 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hot Glass Looks Like Cold Glass</font></b></a><br>Responding to references to a property that the player isn't yet allowed to mention (or when not to use "understand as a mistake").<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc251.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc253.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

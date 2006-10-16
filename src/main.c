@@ -17,8 +17,6 @@
  */
  
 /* To do
-- desktop shortcut
-- RPM package
 
 FOLLOWING RELEASES
 - Skein, Transcript
@@ -26,10 +24,13 @@ FOLLOWING RELEASES
 - Search documentation
 - I6 projects
 
+- Clear errors tab when opening a project, display index tab if it exists
+- Watch the source file for external changes
+- Find out how to highlight markup brackets in strings
+
 BUGS
 - use libxml2 as it ought to be used
 - get glulx compiling to work (new version of Inform 6??)
-- Find out how to highlight markup brackets in strings
 - If files are missing when loading, create default ones
 */
 
@@ -63,8 +64,7 @@ main (int argc, char *argv[])
 
     gnome_program_init(PACKAGE, VERSION, LIBGNOMEUI_MODULE,
       argc, argv,
-      GNOME_PARAM_APP_DATADIR, /*"/home/fliep/workspace/gnome-inform/data"*/
-      PACKAGE_DATA_DIR,
+      GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR,
       NULL);
     
     /* Create the .gnome-inform7 dir if it doesn't already exist */

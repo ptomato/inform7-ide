@@ -87,6 +87,8 @@ Constant DARKNAME_ACT 17;
 Constant DARKDESC_ACT 18;
 Constant DETAILS_ACT 19;
 Constant PARSERERROR_ACT 20;
+Constant IMPLICITTAKE_ACT 21;
+Constant VERYEARLY_ACT 22;
 
 Constant PARA_COMPLETED = 1;
 Constant PARA_LINEBREAK = 2;
@@ -2054,6 +2056,7 @@ Object  InformParser "(Inform Parser)"
                 ! and for now tell the player what's happening and return a "take" request
                 ! instead...
 
+#IFNDEF NI_BUILD_COUNT;
                 if (not_holding ~= 0 && actor == player) {
                     action = ##Take;
                     i = RunRoutines(not_holding, before_implicit);
@@ -2078,6 +2081,7 @@ Object  InformParser "(Inform Parser)"
                 ! (Notice that implicit takes are only generated for the player, and not
                 ! for other actors.  This avoids entirely logical, but misleading, text
                 ! being printed.)
+#ENDIF; ! NI_BUILD_COUNT
 
                 ! ...and return from the parser altogether, having successfully matched
                 ! a line.
@@ -3431,7 +3435,7 @@ Constant SCORE__DIVISOR = 20;
             BeginActivity(ALL_ACT, j);
             if ((ForActivity(ALL_ACT, j)) == 0) {
             #endif; ! NI_BUILD_COUNT
-            
+
                 if (j hasnt concealed && j hasnt worn) flag = 1;
             
                 #ifndef NI_BUILD_COUNT;
@@ -3443,9 +3447,12 @@ Constant SCORE__DIVISOR = 20;
                 #endif; ! NI_BUILD_COUNT
                 if (context == MULTIHELD_TOKEN or MULTIEXCEPT_TOKEN && parent(j) ~= actor)
                     flag = 0;
+
                 if (action_to_be == ##Take or ##Remove && parent(j) == actor)
                     flag = 0;
+
                 k = ChooseObjects(j, flag);
+
                 if (k == 1)
                     flag = 1;
                 else {
@@ -4078,7 +4085,7 @@ Constant SCORE__DIVISOR = 20;
 ! ----------------------------------------------------------------------------
 
 [ DoScopeAction thing s p1;
-    s = scope_reason; p1 = parser_one;
+	s = scope_reason; p1 = parser_one;
     #Ifdef DEBUG;
     if (parser_trace >= 6)
         print "[DSA on ", (the) thing, " with reason = ", scope_reason,
@@ -4109,7 +4116,7 @@ Constant SCORE__DIVISOR = 20;
       TESTSCOPE_REASON:
         if (thing == parser_one) parser_two = 1;
       LOOPOVERSCOPE_REASON:
-        indirect(parser_one, thing);
+        if (parser_one ofclass Routine) indirect(parser_one, thing);
         parser_one=p1;
     }
     scope_reason = s;
@@ -4785,6 +4792,11 @@ Constant SCORE__DIVISOR = 20;
 
 Object  InformLibrary "(Inform Library)"
   with  play [ i j k l;
+            #Ifdef NI_BUILD_COUNT;
+            ProcessRulebook(Activity_before_rulebooks-->VERYEARLY_ACT);
+            ProcessRulebook(Activity_when_rulebooks-->VERYEARLY_ACT);
+            ProcessRulebook(Activity_after_rulebooks-->VERYEARLY_ACT);
+            #Endif;
 
             #Ifdef TARGET_ZCODE;
             standard_interpreter = HDR_TERPSTANDARD-->0;
@@ -4860,7 +4872,6 @@ Object  InformLibrary "(Inform Library)"
                 I7_DivideParagraph();
                 #endif; ! NI_BUILD_COUNT
             }
-
             MoveFloatingObjects();
             lightflag = OffersLight(parent(player));
             if (lightflag == 0) {
@@ -5557,8 +5568,8 @@ Object  InformLibrary "(Inform Library)"
     return (obj hasnt enterable);
 ];
 
-[ HasLightSource i j ad;
-    if (i == 0) rfalse;
+[ HasLightSource i j ad sr po;
+   if (i == 0) rfalse;
     if (i has light) rtrue;
     if (i has enterable || IsSeeThrough(i) == 1)
         if (~~(HidesLightSource(i)))
@@ -5568,10 +5579,10 @@ Object  InformLibrary "(Inform Library)"
     if (parent(i) ~= 0 && ad ~= 0) {
         if (metaclass(ad-->0) == Routine) {
             ats_hls = 0; ats_flag = 1;
-            #ifdef TARGET_ZCODE; @push scope_reason; #ifnot; @copy scope_reason sp; #endif;
-            scope_reason = LOOPOVERSCOPE_REASON;
+            sr = scope_reason; po = parser_one;
+            scope_reason = LOOPOVERSCOPE_REASON; parser_one = 0;
             RunRoutines(i, add_to_scope);
-            #ifdef TARGET_ZCODE; @pull scope_reason; #ifnot; @copy sp scope_reason; #endif;
+            scope_reason = sr; parser_one = po;
             ats_flag = 0; if (ats_hls == 1) rtrue;
         }
         else {
@@ -6291,8 +6302,10 @@ statuswin_current = true;
     if (gg_mainwin == 0) {
         ! Open the story window.
         res = InitGlkWindow(GG_MAINWIN_ROCK);
-        if (res == 0)
+        if (res == 0) {
+			glk($00B0, 3, 3, 2, 0); ! stylehint_set: left-justify style_Header
             gg_mainwin = glk($0023, 0, 0, 0, 3, GG_MAINWIN_ROCK); ! window_open
+		}
         if (gg_mainwin == 0) {
             ! If we can't even open one window, there's no point in going on.
             quit;
@@ -6307,6 +6320,8 @@ statuswin_current = true;
         res = InitGlkWindow(GG_STATUSWIN_ROCK);
         if (res == 0) {
             gg_statuswin_cursize = gg_statuswin_size;
+			for (res=0: res<=10: res++)
+				glk($00B0, 4, res, 9, 1); ! stylehint_set: enable ReverseColor
             gg_statuswin = glk($0023, gg_mainwin, $12, gg_statuswin_cursize,
                 4, GG_STATUSWIN_ROCK); ! window_open
         }
@@ -6499,9 +6514,9 @@ Array AnyToStrArr -> GG_ANYTOSTRING_LEN+1;
 #IfV5;
 
 #Ifdef VN_1630;
-Array StorageForShortName buffer 160;
+Array StorageForShortName buffer 250;
 #Ifnot;
-Array StorageForShortName -> 160 + WORDSIZE;
+Array StorageForShortName -> 250 + WORDSIZE;
 #Endif; ! VN_1630
 
 #Endif; ! V5
@@ -6536,11 +6551,15 @@ Array StorageForShortName -> 160 + WORDSIZE;
         if (metaclass(a) == Object && a.#b == WORDSIZE
             && metaclass(a.b) == String)
             buf-->0 = PrintAnyToArray(buf+WORDSIZE, len, a.b);
+		else if (metaclass(a) == Routine)
+			buf-->0 = PrintAnyToArray(buf+WORDSIZE, len, a, b, c);
         else
-            buf-->0 = PrintAnyToArray(buf+WORDSIZE, len, a, b, c);
+            buf-->0 = PrintAnyToArray(buf+WORDSIZE, len, a, b);
     }
-    else
+    else if (metaclass(a) == Routine)
         buf-->0 = PrintAnyToArray(buf+WORDSIZE, len, a, b, c);
+    else
+		buf-->0 = PrintAnyToArray(buf+WORDSIZE, len, a);
     if (buf-->0 > len) buf-->0 = len;
     return buf-->0;
 ];
@@ -6722,14 +6741,23 @@ Array StorageForShortName -> 160 + WORDSIZE;
     #Ifdef LanguagePrintShortName;
     if (LanguagePrintShortName(o)) rtrue;
     #Endif; ! LanguagePrintShortName
-    if (indef_mode && o.&short_name_indef ~= 0 && PrintOrRun(o, short_name_indef, 1) ~= 0) rtrue;
+    if (indef_mode && o.&short_name_indef ~= 0 &&
+    	PrintOrRun(o, short_name_indef, 1) ~= 0) rtrue;
+	#Ifdef NI_BUILD_COUNT;
+    if (I7_caps_mode &&
+    	o.&I7_cap_short_name ~= 0 && PrintOrRun(o, I7_cap_short_name, 1) ~= 0) {
+    	I7_caps_mode = false;
+    	rtrue;
+    }
+	#Endif; ! NI_BUILD_COUNT
     if (o.&short_name ~= 0 && PrintOrRun(o, short_name, 1) ~= 0) rtrue;
     print (object) o;
 ];
 
 [ Indefart o i;
+	if (o == 0) { print (string) NOTHING__TX; rtrue; }
     i = indef_mode; indef_mode = true;
-    if (o has proper) { indef_mode = NULL; print (PSN__) o; return; }
+    if (o has proper) { indef_mode = NULL; print (PSN__) o; indef_mode = i; return; }
     if (o provides article) {
         PrintOrRun(o, article, 1); print " ", (PSN__) o; indef_mode = i;
         return;
@@ -6738,8 +6766,14 @@ Array StorageForShortName -> 160 + WORDSIZE;
 ];
 
 [ CInDefArt o i;
+	if (o == 0) { PrintCapitalised(NOTHING__TX, 0); rtrue; }
     i = indef_mode; indef_mode = true;
-    if (o has proper) { indef_mode = NULL; print (PSN__) o; return; }
+    if (o has proper) {
+    	indef_mode = NULL; I7_caps_mode = true;
+    	print (PSN__) o;
+    	indef_mode = i; I7_caps_mode = false;
+    	return;
+    }
     if (o provides article) {
         PrintCapitalised(o, article, 1); print " ", (PSN__) o; indef_mode = i;
         return;
@@ -6764,6 +6798,12 @@ Array StorageForShortName -> 160 + WORDSIZE;
     }
     #Endif;
     i = indef_mode; indef_mode = false;
+    if ((o ofclass Object) && (o has proper)) {
+    	indef_mode = NULL; I7_caps_mode = true;
+    	print (PSN__) o;
+    	indef_mode = i; I7_caps_mode = false;
+    	return;
+    }
     if ((~~o ofclass Object) || o has proper) {
         indef_mode = NULL; print (PSN__) o; indef_mode = i;
         return;

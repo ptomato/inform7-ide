@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.7. The Treaty of Babel and the IFID</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.9. Success and failure</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,17 +8,42 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc291.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Publishing</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc293.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.7. The Treaty of Babel and the IFID</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc291.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc293.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.9. Success and failure</b></font></td></tr></table>
 <p>
-<p>During March and April 2006, an agreement was reached between the IF archive and most of the different systems for creating IF - of which Inform is only one - called the Treaty of Babel. While these different systems create computer programs which are quite different internally, the Treaty provides for works of IF to come with bibliographic data which identifies them in a standard way.
+<p>Though we have blurred over this point so far, every rule has one of three outcomes: success, failure and neither. The default outcome is neither, and for many rules (the every turn rules, for instance) success or failure would be ignored anyway, which is how we managed not to mention all this before. Indeed, the instruction
 <p>
-<p>Inform is fully compliant with the Treaty. In particular, each new project created by Inform is allocated a unique identification number called its IFID. The IFID is the equivalent for IF of the ISBN of a printed book. Inform copies it onto the &quot;library card&quot; for the benefit of Internet-based libraries which may eventually accession the work. Of course many projects start but never see the light of day, so many possible IFIDs are &quot;wasted&quot;: but that hardly matters, as there are plenty more numbers in the world.
-<p>
-<p>The important thing is that
-<p>
-<blockquote><font color="#000080"><b>The IFID number must be unique to this one work out of all the IF ever created</b>
+<blockquote><font color="#000080">follow the appraisal rules
 </font></blockquote><p>
 <p>
-<p>Inform will make sure this is true, <b>unless</b> we do something to break this ourselves. For instance, if we take an existing project, copy it as a file, then work divergently on the original and on the copy so that they become two radically different works, they will still each have the same ID. This is a bad thing: if we want to duplicate a project but then turn it into something new, the best way to do that is to create a new project, and to copy and paste the source from the old to the new.
+<p>throws away the result, whatever it may be, which is why results have not come up in the discussion so far. All the same, results can make a difference even in examples like this one. When a rulebook is working through a list of rules, any rule which succeeds or fails (we say that it &quot;stops&quot;) causes the rulebook to stop at once, so that no subsequent rules in the book will be invoked. For instance, if any &quot;check taking&quot; rule fails, the whole &quot;check taking&quot; rulebook immediately fails, and that is the end of the action.
 <p>
+<p>When a rule or rulebook &quot;stops&quot;, a value can optionally also result: this means that rulebooks can be used to calculate quantities, as well as taking yes/no decisions, or simply carrying out activities.
+<p>
+<p>Generally speaking, stops are needed for different reasons in different rulebooks, so there are specialised syntaxes for bringing them about. We saw an example of this with the &quot;reaching inside&quot; rulebook:
+<p>
+<blockquote><font color="#000080">A rule for reaching inside the flask: say &quot;Your hand passes through the glass as if it were not there, chilling you to the bone.&quot;; allow access.
+</font></blockquote><p>
+<p>
+<p>&quot;Allow access&quot; does nothing more than cause the rule, and therefore the rulebook, to stop and succeed: &quot;deny access&quot; causes it to fail.
+<p>
+<p>The following phrases work in any rulebook:
+<p>
+<blockquote><font color="#000080">rule succeeds
+<br>rule fails
+<br>rule succeeds with result (...)
+<br>rule fails with result (...)
+</font></blockquote><p>
+<p>
+<p>The result can be a room, a thing or a text. It can be referred to as
+<p>
+<blockquote><font color="#000080">the result of the rule
+</font></blockquote><p>
+<p>
+<p>which is nothing if the rule ended without success or failure.
+<p>
+<p>Thus, &quot;the result of the rule&quot; will refer to the result of whatever rule or rulebook we last consulted. Similarly, &quot;if rule succeeded&quot; and &quot;if rule failed&quot; will tell us how the last-consulted rule or rulebook ended.
+<p>
+<p><hr><p>
+<a name="e88"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex88.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>280</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex88.html#e88 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Feline Behavior</font></b></a><br>A cat which reacts to whatever items it has handy, returning the result of a rulebook for further processing.<p></td></tr></table>
+<a name="e247"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex247.html#e247 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>281</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex247.html#e247 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Kyoto</font></b></a><br>Expanding the effects of the THROW something AT something command so that objects do make contact with one another.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc291.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc293.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

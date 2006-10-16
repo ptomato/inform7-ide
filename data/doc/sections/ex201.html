@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.17. Understanding mistakes</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.13. Topic columns</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,68 +8,138 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc243.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc245.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.17. Understanding mistakes</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc230.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Tables</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc232.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.13. Topic columns</b></font></td></tr></table>
 <p>
-<p>When inspiration strikes the player, he can usually be relied upon to make a good-faith effort to communicate the new idea: he will guess the right command. If he guesses wrongly, the mistake is probably the author's, because a good author will try to anticipate all possible wordings and make all of them work.
+<p>When double-quoted matter appears in a column of a table, Inform will normally treat that as text for printing out. The exception is when the column is called &quot;topic&quot;, where it is treated as text for comparing against what the player has typed. There is really only one operation allowed with topic columns, the &quot;...listed in...&quot; construction, but fortunately it is the one most often needed.
 <p>
-<p>Nevertheless it is sometimes good practice to nudge the player towards the right wording - particularly if the player has the right idea but is not explicit enough: for instance, typing TALK TO JUDGE when we really want to know what is to be said (JUDGE, GUILTY); or if the player tries something like PLAY CHESS rather than MOVE PAWN TO KING 4. Similarly, if we make a casual reference such as &quot;In your childhood days, you loved sliding in stocking feet across this hallway&quot;, a player might type SLIDE IN STOCKING FEET: a nice idea, and which deserves a nice response, even though it asks to do something beyond the scope of the game.
-<p>
-<p>Inform provides a simple mechanism for recognising a command but at the same time recognising that <i>it does not properly specify an action</i>. Such commands are called &quot;mistakes&quot;, for the sake of a memorable term, but the player has not really behaved badly, and should be helped rather than reproved. For instance:
-<p>
-<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake.
-</font></blockquote><p>
-<p>
-<p>While that works - the command to &quot;act&quot; is indeed rejected - it is not very good, because no very helpful message is brought up. The following is much better:
-<p>
-<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;).
-</font></blockquote><p>
-<p>
-<p>Or we could once again insist on a given context:
-<p>
-<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;) when the location is the Garden Theatre.
-</font></blockquote><p>
-<p>
-<p>That still has the drawback that the command &quot;act hamlet&quot; will not be recognised: so the final version we want is probably
-<p>
-<blockquote><font color="#000080">Understand &quot;act [text]&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;) when the location is the Garden Theatre.
-</font></blockquote><p>
-<p>
-<p>since the &quot;[text]&quot; part will soak up any words the player types (or none), meaning that any command at all whose first word is &quot;act&quot; will be matched.
-<p>
-<p>The following is often useful during beta-testing of a new work, though we would not want it in the final published edition. Many authors like to ask their testers not to try anything in particular, simply to play naturally: but to record the transcript of the session, and email it back to the author. The following command is a device to allow the tester to type a comment in to the transcript:
-<p>
-<blockquote><font color="#000080">Understand &quot;! [text]&quot; as a mistake (&quot;Noted.&quot;).
-</font></blockquote><p>
-<p>
-<p>For instance, the tester might type &quot;! DIDN'T WE SAY DARCY WAS TALL?&quot;, to which the game would reply &quot;Noted.&quot; - and the author can search for such comments when receiving the transcript.
-<p>
-<p>If we are careful, we can make the reply depend on what was typed in the mistaken command:
-<p>
-<blockquote><font color="#000080">Understand &quot;steal [something]&quot; as a mistake (&quot;Just TAKE [the noun] and leave without paying: that's stealing in my book.&quot;).
-</font></blockquote><p>
-<p>
-<p>The care comes in because Inform applies much less checking to mistakes than to other actions, and odd errors will result if we try to refer to (say) &quot;the second noun&quot; in a command which did not have a second noun.
-<p>
-<p><hr><p>
-<a name="e201"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc244.html#e201 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>232</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc244.html#e201 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Responding to questions starting with WHO, WHAT, etc.</font></b></a><br>Catching all questions that begin with WHO, WHAT, WHERE, and similar question words, and responding with the instruction to use commands, instead.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>First, we create a single &quot;[query]&quot; token so that we can capture all instances of such sentences in a single line:
+<p>Let us suppose that the Sybil has a penchant for telling passers-by which is the Greek muse for what. We might write:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode297(code) {
+function pasteCode54(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('Understand "who" or "what" or "when" or "where" or "why" or "how" or "who\'s" or "what\'s" or "when\'s" or "where\'s" or "why\'s" or "how\'s" as "[query]".\n\nUnderstand "[query] [text]" as a mistake ("[story title] understands commands, such as \'[command prompt]examine [a random thing that can be seen by the player]\', but not questions. For more instructions, type HELP.").\n\n');
+    myProject.pasteCode('After asking the Sybil about a topic listed in the Table of Sybil\'s Replies, say "The Sybil declaims for a while, the gist being that the muse in question looks after [muse entry]."\n\n[We can then provide a simple table giving her responses:]\n\nTable of Sybil\'s Replies\nTopic\tMuse\n"calliope"\t"epic poetry"\n"clio"\t"history"\n"erato"\t"love poetry"\n"euterpe"\t"music"\n"melpomene"\t"tragedy"\n"polyhymnia"\t"sacred poetry"\n"terpsichore"\t"dancing"\n"thalia"\t"comedy"\n"urania"\t"astronomy"\n"monica"\t"tidiness"\n"phoebe"\t"massage"\n"rachel"\t"oval hair-cuts"\n\n');
 }
 </script>
-<a href="javascript:pasteCode297()"><img border=0 src=../doc_images/paste.png></a> Understand &quot;who&quot; or &quot;what&quot; or &quot;when&quot; or &quot;where&quot; or &quot;why&quot; or &quot;how&quot; or &quot;who's&quot; or &quot;what's&quot; or &quot;when's&quot; or &quot;where's&quot; or &quot;why's&quot; or &quot;how's&quot; as &quot;[query]&quot;.
+<a href="javascript:pasteCode54()"><img border=0 src=../doc_images/paste.png></a> After asking the Sybil about a topic listed in the Table of Sybil's Replies, say &quot;The Sybil declaims for a while, the gist being that the muse in question looks after [muse entry].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;[query] [text]&quot; as a mistake (&quot;[story title] understands commands, such as '[command prompt]examine [a random thing that can be seen by the player]', but not questions. For more instructions, type HELP.&quot;).
+<p>We can then provide a simple table giving her responses:
+<p>
+<blockquote><font color="#000080">Table of Sybil's Replies
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">Topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">Muse</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;calliope&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;epic poetry&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;clio&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;history&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;erato&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;love poetry&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;euterpe&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;music&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;melpomene&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;tragedy&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;polyhymnia&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;sacred poetry&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;terpsichore&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;dancing&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;thalia&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;comedy&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;urania&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;astronomy&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;monica&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;tidiness&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;phoebe&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;massage&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;rachel&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;oval hair-cuts&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<p>Now the game will respond to all questions novice players might type with this reminder to look for help information.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc244.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e241"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex241.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>233</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex241.html#e241 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Gorge at George</font></b></a><br>If the player tries to TALK TO a character, suggest alternative modes of conversation.<p></td></tr></table>
-<a name="e66"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex66.html#e66 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>234</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex66.html#e66 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hot Glass Looks Like Cold Glass</font></b></a><br>Responding to references to a property that the player isn't yet allowed to mention (or when not to use "understand as a mistake").<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc243.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc245.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>Topics can use the full range of abilities of the &quot;understanding&quot; system which Inform uses to parse text, and which will be the subject of a later chapter. For now, note that the Sybil's topics might equally include &quot;flora/eve&quot; (matching the single word &quot;flora&quot; or the single word &quot;eve&quot;), or something more elaborate such as:
+<p>
+<blockquote><font color="#000080">&quot;Bridget&quot; or &quot;Bridge&quot; or &quot;Bridget Jones&quot;
+</font></blockquote><p>
+<p>
+<p><hr><p>
+<a name="e209"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex209.html#e209 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>205</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex209.html#e209 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Merlin</font></b></a><br>A REMEMBER command which accepts any text and looks up a response in a table of recollections.<p></td></tr></table>
+<a name="e118"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex118.html#e118 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>206</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex118.html#e118 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Questionable Revolutions</font></b></a><br>An expansion on the previous idea, only this time we store information and let characters answer depending on their expertise in a given area.<p></td></tr></table>
+<a name="e201"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc231.html#e201 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>207</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc231.html#e201 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Queen of Sheba</font></b></a><br>Allowing the player to use question words, and using that information to modify the response given by the other character.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>Suppose we want the player to ask questions of slightly more complexity - we might want to build in a system that understood &quot;who&quot;, &quot;what&quot;, &quot;where&quot;, and &quot;when&quot;, for instance. We could use a topic table for this, too:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode296(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"The Queen of Sheba"\n\nInterrogative is a kind of value. The interrogatives are who, what, when, where, how, and why.\n\nCurrent question is an interrogative that varies.\n\nAfter asking someone about something: respond to the question. After answering someone that something: respond to the question.\n\nAfter telling someone about something: say "You\'re here to ask questions and test Solomon\'s wisdom, not to give him a sample of your own."\n\nTable of Wise Answers\ntopic\tquestion type\treply\n"rain/weather/clouds/cloud/rains"\twhat\t"\'Clouds are a disturbance made by the paths of birds,\' Solomon replies. \'The air beaten by their wings becomes agitated, as when a river is stirred and the mud churns up.\'"\n"rain/weather/clouds/cloud/rains"\twhere\t"\'Weather is contained in a great silk bag which holds in the heavens,\' replies Solomon."\n"hunger/food/eating"\twhen\t"\'Sorry, are you getting hungry?\' he says, and rings a bell to summon servants."\n"hunger/food/eating"\twhy\t"\'Men were made to need food in order that they must farm and cook and dine together,\' Solomon replies. \'Otherwise, they might live apart, each sufficient in himself. But no man can feed himself alone all through his life.\'"\n"Solomon/he/himself"\twho\t"\'As you see,\' he says, holding out his arms to each side."\n"Solomon/he/himself"\twhat\t"\'I am an ordinary man,\' he answers."\n\n[One of the nice things about this system is that it only resets the "current question" when we get a new question word. For instance, this test will produce different replies to the question about Solomon himself, because the second time he is still in the mode of answering "what" questions:]\n\nTest me with "ask solomon about himself / ask solomon what rain is / ask solomon about himself".\n\n[If Solomon is to live up to his reputation at all, his wisdom table will have to be quite a bit longer - though one also would want to be careful, because forcing the game to cycle through a really immense table could be quite time-consuming. In fact, for the sake of this example, let\'s reward the player for managing to stay within the (narrow) range of Solomon\'s knowledge:]\n\nThe Hall of Almug Tree Pillars is a room. "The pillars of the room are made of almug tree, the ceiling made of silk and the floor of glass." Solomon is a man in the Hall of Almug Tree Pillars. Solomon has a number called wisdom. The wisdom of Solomon is 0.\n\nEvery turn:\n\tif the wisdom of Solomon is 3\n\tbegin;\n\t\tsay "Truly, Solomon has answered all your questions, and his wisdom is even as great as you had heard!";\n\t\tend the game saying "Your heart beats strangely fast";\n\tend if.\n\nWhen play begins, say "\'Oh, you\'ve arrived,\' says Solomon."\n\n[In a real game we\'d need to be a great deal subtler. All the same, if we have a character of quite limited resources to present to the player, it\'s a good idea to give the player some incentive to stay on topic, ask questions the character can answer, and generally interact within the parameters we\'re prepared for.]\n\n[Now, this last bit requires some trickery from later chapters, particularly those on Understanding and Activities, to pull the question words out of the player\'s command:]\n\nAfter reading a command:\n\tif the player\'s command includes "[interrogative]", change the current question to the interrogative understood.\n\nTo respond to the question:\n\trepeat through the Table of Wise Answers\n\tbegin;\n\t\tif the topic understood includes topic entry\n\t\tbegin;\n\t\t\tif the current question is the question type entry\n\t\t\tbegin;\n\t\t\t\tsay "[reply entry][paragraph break]";\n\t\t\t\tincrease the wisdom of Solomon by 1;\n\t\t\t\trule succeeds;\n\t\t\tend if;\n\t\tend if;\n\tend repeat;\n\tsay "Solomon looks blank, appalled by a question for which he was not prepared.";\n\tend the game saying "You have befuddled Solomon!"\n\nUnderstand "ask [someone] [text]" as asking it about.\n\n');
+}
+</script>
+<a href="javascript:pasteCode296()"><img border=0 src=../doc_images/paste.png></a> &quot;The Queen of Sheba&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Interrogative is a kind of value. The interrogatives are who, what, when, where, how, and why.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Current question is an interrogative that varies.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After asking someone about something: respond to the question. After answering someone that something: respond to the question.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After telling someone about something: say &quot;You're here to ask questions and test Solomon's wisdom, not to give him a sample of your own.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Wise Answers
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">question type</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;rain/weather/clouds/cloud/rains&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">what</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;'Clouds are a disturbance made by the paths of birds,' Solomon replies. 'The air beaten by their wings becomes agitated, as when a river is stirred and the mud churns up.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;rain/weather/clouds/cloud/rains&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">where</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;'Weather is contained in a great silk bag which holds in the heavens,' replies Solomon.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;hunger/food/eating&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">when</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;'Sorry, are you getting hungry?' he says, and rings a bell to summon servants.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;hunger/food/eating&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">why</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;'Men were made to need food in order that they must farm and cook and dine together,' Solomon replies. 'Otherwise, they might live apart, each sufficient in himself. But no man can feed himself alone all through his life.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;Solomon/he/himself&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">who</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;'As you see,' he says, holding out his arms to each side.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">&quot;Solomon/he/himself&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">what</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;'I am an ordinary man,' he answers.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<p>One of the nice things about this system is that it only resets the &quot;current question&quot; when we get a new question word. For instance, this test will produce different replies to the question about Solomon himself, because the second time he is still in the mode of answering &quot;what&quot; questions:
+<p>
+<blockquote><font color="#000080">Test me with &quot;ask solomon about himself / ask solomon what rain is / ask solomon about himself&quot;.
+</font></blockquote><p>
+<p>
+<p>If Solomon is to live up to his reputation at all, his wisdom table will have to be quite a bit longer - though one also would want to be careful, because forcing the game to cycle through a really immense table could be quite time-consuming. In fact, for the sake of this example, let's reward the player for managing to stay within the (narrow) range of Solomon's knowledge:
+<p>
+<blockquote><font color="#000080">The Hall of Almug Tree Pillars is a room. &quot;The pillars of the room are made of almug tree, the ceiling made of silk and the floor of glass.&quot; Solomon is a man in the Hall of Almug Tree Pillars. Solomon has a number called wisdom. The wisdom of Solomon is 0.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the wisdom of Solomon is 3
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Truly, Solomon has answered all your questions, and his wisdom is even as great as you had heard!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Your heart beats strangely fast&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins, say &quot;'Oh, you've arrived,' says Solomon.&quot;
+</font></blockquote><p>
+<p>
+<p>In a real game we'd need to be a great deal subtler. All the same, if we have a character of quite limited resources to present to the player, it's a good idea to give the player some incentive to stay on topic, ask questions the character can answer, and generally interact within the parameters we're prepared for.
+<p>
+<p>Now, this last bit requires some trickery from later chapters, particularly those on Understanding and Activities, to pull the question words out of the player's command:
+<p>
+<blockquote><font color="#000080">After reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;[interrogative]&quot;, change the current question to the interrogative understood.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To respond to the question:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Wise Answers
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the topic understood includes topic entry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current question is the question type entry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase the wisdom of Solomon by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Solomon looks blank, appalled by a question for which he was not prepared.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;You have befuddled Solomon!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;ask [someone] [text]&quot; as asking it about.
+</font></blockquote><p>
+<p>
+<p>And now we have a game that will accept (though not always respond very sensibly to) questions of almost any form we might put to another character: ASK SOLOMON WHAT RAIN IS will be answered, but then again, it won't be distinguished from, say, ASK SOLOMON WHETHER THIS PERSISTENT RAIN IS A DIVINE PUNISHMENT OR WHAT.
+<p>
+<p>All the same, a system that allowed the player a bit more specification of questions than simple keyword-use might be useful in a mystery game, for instance, where we might want to let our detective conduct inquiries into specific details. An alternative approach to the rather free one above would be to force the player to use only questions of the form WHAT IS RAIN? or WHO ARE YOU?: this would cut down on false-positive matches. But we might still choose to store the responses in a table of this type.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc231.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc230.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc232.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

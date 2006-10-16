@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.14. Kinds of value</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5.2. Text which names things</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,20 +8,39 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc67.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc69.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.14. Kinds of value</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc67.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap5.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 5: Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc69.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>5.2. Text which names things</b></font></td></tr></table>
 <p>
-<p>Several kinds of value have appeared so far, chiefly numbers, 1, 2, 3, ... and 0, -1, -2, ... and texts, such as &quot;Jackdaws love my big sphinx of quartz&quot;. We can give objects properties holding such values, and we can also endow them with either/or properties such as &quot;dark&quot;/&quot;lighted&quot;.
+<p>We can put almost any description of a value in square brackets in text, and Inform will work out what kind of value it is and print something accordingly.
 <p>
-<p>These arrangements are all very well, but not ideal when it comes to simulating something which can be in, say, one of four states. Suppose we would like the candle lantern to burn down, gradually diminishing in brightness. A property attached to the lantern should hold the current strength of the flame. We could do this like so:
+<p>A special convention applies to the names of objects. If we simply put the name of what we want into square brackets, this will be substituted by the full printed name. So:
 <p>
-<blockquote><font color="#000080">The lantern has a number called the brightness level.
+<blockquote><font color="#000080">&quot;You admire [lantern].&quot;
+<br><i>becomes</i> &quot;You admire candle lantern.&quot;
 </font></blockquote><p>
 <p>
-<p>(Thus far we have only given new properties to kinds, but in fact we can also give them to individual things, as here. It would be cumbersome to make a new kind called, say, &quot;lamp&quot; and then make the lantern the only lamp in the game, just as a way of attaching a number to it.) We could then set the brightness level to be 1, 2, 3 or 4 according to the strength of flame, and find some way of conveying this to the player. That would work, but is not very elegant. Brightness is not, in the end, a number, and it seems strange to have to pretend that it is. A much better solution is:
+<p>But this reads oddly - clearly &quot;the&quot; or &quot;a&quot; is missing. By convention, then, if our work of IF includes things called &quot;candle lantern&quot; and &quot;grey African elephant&quot;:
 <p>
-<blockquote><font color="#000080">Brightness is a kind of value. The brightnesses are guttering, weak, radiant and blazing.
+<blockquote><font color="#000080">&quot;You admire [the lantern].&quot;
+<br><i>becomes</i> &quot;You admire the candle lantern.&quot;
+<br>&quot;[The lantern] gleams.&quot;
+<br><i>becomes</i> &quot;The candle lantern gleams.&quot;
+<br>&quot;You admire [a lantern].&quot;
+<br><i>becomes</i> &quot;You admire a candle lantern.&quot;
+<br>&quot;[An elephant] trumpets.&quot;
+<br><i>becomes</i> &quot;A grey African elephant trumpets.&quot;
 </font></blockquote><p>
 <p>
-<p>This makes &quot;brightness&quot; a kind of value on a par with (for instance) &quot;number&quot; or &quot;text&quot;, except that there are only four possible values, named as above.
+<p>That is, if the substitution begins with the, The, a, A, an or An, then this article and this form of casing will be used when the name is substituted back.
+<p>
+<p>This may not look very useful, because why not simply put &quot;the&quot;, or whatever, into the ordinary text? The answer is that there are times when we do not know in advance which object will be involved. For instance, as we shall later see, there is a special value called &quot;the noun&quot; which is the thing to which the player's current command is applied (thus, if the player typed TAKE BALL, it will be the ball).
+<p>
+<blockquote><font color="#000080">&quot;You find [a noun].&quot;
+<br><i>might become</i> &quot;You find a solid rubber ball.&quot;
+<br><i>or</i> &quot;You find an ink-stained blouse.&quot;
+<br><i>or</i> &quot;You find some elastic bands.&quot;
+<br><i>or even</i> &quot;You find Mr Polycarp.&quot;
+</font></blockquote><p>
+<p>
+<p>So the &quot;[a ...]&quot; substitution automatically looks after whether to use &quot;a&quot;, &quot;an&quot;, &quot;some&quot; or even nothing at all as the indefinite article for whatever object is required.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc67.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc69.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

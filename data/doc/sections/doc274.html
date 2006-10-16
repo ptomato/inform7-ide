@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.1. On rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.21. Deciding the scope of something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,49 +8,50 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc273.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc275.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.1. On rules</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc273.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc275.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.21. Deciding the scope of something</b></font></td></tr></table>
 <p>
-<p>When we open the casing and look inside the machinery of Inform, what we see are rules and rulebooks. We seldom need to know how this machinery works, but every once in a while we want to replace components, or even install new mechanisms of our own. This chapter is in some ways the most remote from practical, day-to-day writing, but in the same way that a maintenance manual is remote from everyday driving: worth knowing where to find when the time comes.
+<p><b>1. When it happens.</b> &quot;Scope&quot; is a term of art in interactive fiction programming: it means the collection of things which can be interacted with at any given moment, which depends on who you are and where you are. Commands typed by the player will only be allowed to go forward into actions if the things they refer to are &quot;in scope&quot;. Inform also needs to determine scope at other times, too: for instance, when deciding whether a rule conditional on being &quot;in the presence of&quot; something is valid. It is a bad idea to say anything during this activity.
 <p>
-<p>So far we have seen many rules, and the term &quot;rulebook&quot; has frequently but vaguely been used. Here is a summary of the rulebooks seen so far:
+<p><b>2. The default behaviour.</b> Is complicated: see the Inform Designer's Manual, 4th edition, page 227. Briefly, the scope for someone consists of everything in the same place as them, unless it is dark.
 <p>
-<blockquote><font color="#000080">before
-<br>instead
-<br>after
-<br>check taking, carry out taking, report taking
-<br><i>and three similar rulebooks for each of the 90 or so actions</i>
-<br>persuasion
-<br>unsuccessful attempt
-<br>reaching inside
-<br>reaching outside
-<br>visibility
+<p><b>3. Examples.</b> (a) We very rarely want to forbid the player to refer to things close at hand, but often want to allow references to distant ones. For instance, a mirage of something which is not present at all:
+<p>
+<blockquote><font color="#000080">After deciding the scope of the player while in the Shrine: place the holy grail in scope.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">when play begins
-<br>when play ends
-<br>every turn
-<br>when Confrontation Scene begins
-<br>when Confrontation Scene ends
-<br><i>and two similar rulebooks for each scene we create, if any</i>
+<p>The special phrase &quot;place ... in scope&quot; does what it suggests. Ordinarily if something is placed in scope, then so are its parts and (in the case of a supporter or a transparent or open container) its contents; but we can also &quot;place the box in scope, but not its contents&quot; if we really need to place just the box itself in scope.
+<p>
+<p>(b) Another useful device is to be able to see, but not touch, another room:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode70(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('The Cloakroom is a room. "This is just a cloakroom, but through a vague, misty mirror-window you can make out the Beyond." After looking in the Cloakroom, say "In the mirror you can see [list of things in the Beyond]."\n\nAfter deciding the scope of the player while in the Cloakroom: place the Beyond in scope.\n\nThe Beyond is a room. Johnny Depp is a man in the Beyond.\n\n');
+}
+</script>
+<a href="javascript:pasteCode70()"><img border=0 src=../doc_images/paste.png></a> The Cloakroom is a room. &quot;This is just a cloakroom, but through a vague, misty mirror-window you can make out the Beyond.&quot; After looking in the Cloakroom, say &quot;In the mirror you can see [list of things in the Beyond].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">before printing the name of
-<br>for printing the name of
-<br>after printing the name of
-<br><i>and three similar rulebooks for each of the 20 or so activities</i>
+<blockquote><font color="#000080">After deciding the scope of the player while in the Cloakroom: place the Beyond in scope.
 </font></blockquote><p>
 <p>
-<p>Which makes around 340 rulebooks before we even start to write - and two more are going to turn up later in this chapter:
-<p>
-<blockquote><font color="#000080">procedural
-<br>turn sequence
+<blockquote><font color="#000080">The Beyond is a room. Johnny Depp is a man in the Beyond.
 </font></blockquote><p>
 <p>
-<p>All the same, not everything in Inform is a rule - timed events, newly-created phrases, and definitions may look vaguely as if they define rules, but they do not, so the following are not rulebooks:
+<p>(This must, however, also be a mirage, as at time of writing Mr Depp is alive and as well as can be expected following the reviews of &quot;Charlie and the Chocolate Factory&quot;.) When a room is placed in scope, this is understood as placing its contents in scope rather than the room-object itself. So &quot;place the Ballroom in scope&quot; allows the player to talk about the dancers, the chamber musicians and so forth, but not to &quot;EXAMINE BALLROOM&quot; as such. (This is sensible because actions like examining apply to things: and a room, unlike a container or a supporter, is not a kind of thing.)
 <p>
-<blockquote><font color="#000080">At 11:10 PM: ...
-<br>To dislodge the shelf: ...
-<br>Definition: ...
+<p>(c) In darkness, the scope of someone is ordinarily restricted to his or her possessions (and body), but we can override that:
+<p>
+<blockquote><font color="#000080">After deciding the scope of the player while in darkness: place the location in scope.
 </font></blockquote><p>
 <p>
+<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows the action it would be taking if the current line of command grammar were to be accepted, but it does not yet know to what objects that command would be applied. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
+<p>
+<p><hr><p>
+<a name="e112"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex112.html#e112 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>257</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex112.html#e112 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Peeled</font></b></a><br>Two different approaches to adjusting what the player can interact with, compared.<p></td></tr></table>
+<a name="e274"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex274.html#e274 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>258</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex274.html#e274 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Scope for listening different from scope for seeing</font></b></a><br>Using "deciding the scope" to change the content of lists such as "the list of audible things which can be touched by the player".<p></td></tr></table>
+<a name="e18"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex18.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>259</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex18.html#e18 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ginger Beer</font></b></a><br>A portable magic telescope which allows the player to view items in another room of his choice.<p></td></tr></table>
+<a name="e231"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex231.html#e231 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>260</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex231.html#e231 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Stately Gardens</font></b></a><br>An open landscape where the player can see landmarks in nearby areas, and automatically moves to interact with them.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc273.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc275.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

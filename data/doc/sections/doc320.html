@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.12. Defining phrases in Inform 6</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.23. Rubrics</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,49 +8,20 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc319.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc321.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.12. Defining phrases in Inform 6</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc319.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Publishing</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc321.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.23. Rubrics</b></font></td></tr></table>
 <p>
-<p>The phrases described in this documentation, such as &quot;end the game in death&quot;, are all defined in the Standard Rules, and are for the most part defined not in terms of other I7 phrases but instead reduced to equivalents in I6. For instance:
+<p>Lastly, we can add our own arbitrary text to the map: perhaps to annotate points, perhaps just to add more heading matter (such as the author's name, or the date). Each individual line added - and only single lines can be added, not typeset paragraphs - is called a &quot;rubric&quot;. (There can be up to 100 of these.) We can create a rubric like so:
 <p>
-<blockquote><font color="#000080">To end the game in death: (- deadflag=1; -).
+<blockquote><font color="#000080">Index map with rubric &quot;Here Be Wyverns&quot; size 16 font &quot;Helvetica-Oblique&quot; colour &quot;Thistle&quot; at 150&0 from Cloud-Cuckoo-Land.
 </font></blockquote><p>
 <p>
-<p>The notation &quot;(-&quot; and &quot;-)&quot; indicates that what comes in between is I6 code. The minus sign is supposed to be a mnemonic for the decrease from 7 to 6: later we shall use &quot;(+&quot; and &quot;+)&quot; to go back up the other way, from 6 to 7.
+<p>This gives rather more detailed information than is needed: &quot;size 16&quot; could have been omitted, giving us 12-point type by default, and similarly there is no need to specify a font unless it differs from the main &quot;font&quot; setting for the whole map; and the colour will be black if unspecified. The &quot;at&quot; position does need to be given, though. Note that it is relative to a given room on the map, and that the position specified is that of the centre-point of the text. (If we had written just &quot;at 100&100&quot;, say, that would specify a position relative to the bottom left hand corner of the map.) So, for instance:
 <p>
-<p>When a phrase is defined as containing only a single command, and that command is defined using I6 - as here - it is compiled in-line. This means that the phrase &quot;end the game in death&quot; will always be translated as &quot;deadflag=1;&quot;, rather than being translated into a call to a suitable function whose only statement is &quot;deadflag=1;&quot;.
-<p>
-<p>This is an easy case since the wording never varies. More typical examples would be:
-<p>
-<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
-<br>To sort (T - table-name) in (TC - table-column) order:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
+<blockquote><font color="#000080">Index map with rubric &quot;trapped door&quot; size 8 at -60&-60 from Longwall.
 </font></blockquote><p>
 <p>
-<p>When the braced name of one of the variables in the phrase preamble appears, this is compiled to the corresponding I6 expression at the relevant position in the I6 code. So, for instance,
+<p>would add a little 8-point-type safety tip for naive map-followers.
 <p>
-<blockquote><font color="#000080">say the capacity of the basket
-</font></blockquote><p>
+<p>Inevitably, the settings in the map-maker will fail to get exactly the effect desired (though they will offer an excellent opportunity to waste entire days). But that is the whole point of producing output in EPS format: Inform aims not to produce final print-ready professional art, but to produce the raw material for making that final work of art. And if all that's required is a sketch-map, then Inform's output should be good enough quickly and without too much fuss.
 <p>
-<p>might be compiled to
-<p>
-<blockquote><font color="#000080">print O17_basket.capacity;
-</font></blockquote><p>
-<p>
-<p>because &quot;{something}&quot; is expanded to &quot;capacity of the basket&quot; (I7 code) and then translated to &quot;O17_basket.capacity&quot; (I6 code), which is then spliced into the original I6 definition &quot;print {something};&quot;.
-<p>
-<p>Braces &quot;{&quot; are of course significant in I6. A real brace can be obtained by making the character following it a space, and then I7 will not attempt to read it as a request for substitution.
-<p>
-<p>Finally, note that while a normal I7 phrase definition can give a kind as what must be matched, e.g.,
-<p>
-<blockquote><font color="#000080">To release wild tigers into (arena - a room): ...
-</font></blockquote><p>
-<p>
-<p>it is in general a bad idea, and will result in inefficient code, for an phrase defined using I6 to do this. Instead, if possible, match against &quot;object&quot;, where any room, region, thing or direction will be a valid match:
-<p>
-<blockquote><font color="#000080">To release wild tigers into (arena - an object): ...
-</font></blockquote><p>
-<p>
-<p><hr><p>
-<a name="e129"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex129.html#e129 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>287</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex129.html#e129 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Odins</font></b></a><br>Making [is/are] and [it/them] say tokens that will choose appropriately based on the last object mentioned.<p></td></tr></table>
-<a name="e103"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex103.html#e103 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>288</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex103.html#e103 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Pink or Blue</font></b></a><br>Asking the player to select a gender to begin play.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc319.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc321.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5.7. Adjacent rooms and routes through the map</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.17. Precedence</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,81 +8,153 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc78.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap5.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 5: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc80.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>5.7. Adjacent rooms and routes through the map</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc252.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc254.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.17. Precedence</b></font></td></tr></table>
 <p>
-<p>Another useful adjective built into Inform is &quot;adjacent&quot;. Two rooms are said to be adjacent if there is a map connection between them which does not pass through some barrier such as a door. This is easily tested:
+<p>When several different lines of grammar are supplied to meet the same circumstances, it makes a big difference what order they are tried in. For instance, suppose we have:
 <p>
-<blockquote><font color="#000080">if the Hallway is adjacent to the Study ...
+<blockquote><font color="#000080">Understand &quot;photograph [a door]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>We usually want to know about the places adjacent to the current scene of the action, so that is what the adjective &quot;adjacent&quot; means when applied to rooms. For instance:
-<p>
-<blockquote><font color="#000080">if somebody is in an adjacent room, ...
+<blockquote><font color="#000080">Understand &quot;photograph [an open door]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>As with the case of &quot;visible&quot;, the adjective is a cut-down version of the more general relationship. This often happens: &quot;worn&quot; and &quot;carried&quot;, for instance, imply &quot;by the player&quot; unless something else is specified.
+<p>The second line is more specific than the first, so Inform takes these grammar lines the other way around: it checks for &quot;open door&quot; before it checks for &quot;door&quot;. That didn't matter here, since both lines came out with the same result (the action of photographing), but it matters very much in the next example:
 <p>
-<p>While on the subject of navigating the map, the phrase &quot;the best route from A to B&quot; gives the direction to take in order to get from A to B by the shortest number of movements between rooms - if there is any way through at all. For example, here is a lure:
-<p>
-<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room].&quot;
+<blockquote><font color="#000080">Understand &quot;employ [a door]&quot; as opening.
 </font></blockquote><p>
 <p>
-<p>Best routes are ordinarily forbidden to go through doors, but if the suffix &quot;using doors&quot; is added as an option then any open or openable and unlocked door may be used on the way; and if &quot;using even locked doors&quot; is given, then any door at all will do. Since magnetism is no respecter of property, that seems right here:
-<p>
-<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room, using even locked doors].&quot;
+<blockquote><font color="#000080">Understand &quot;employ [an open door]&quot; as entering.
 </font></blockquote><p>
 <p>
-<p>The phrase &quot;the best route from A to B&quot; gives the direction to take next, if we are at A and want to end up at B. Suppose this is east. We can find out where we go next by looking up &quot;the room east from A&quot;: similarly for any other direction, of course. (This can see through any doors, locked or not.)
+<p>More subtle is a line already seen:
 <p>
-<p>Finally, we can also stipulate that only certain rooms may be used for the journey, as in the following example:
-<p>
-<blockquote><font color="#000080">best route from the Drawbridge to the Keep through visited rooms
+<blockquote><font color="#000080">Understand &quot;on/in/inside&quot; or &quot;on top of&quot; as &quot;[within]&quot;.
 </font></blockquote><p>
 <p>
-<p>The condition - in this case, that &quot;visited rooms&quot; must be used - also applies to both ends of the journey. (Also, saying something like &quot;...through containers&quot; would mean there is never a route, since it is only rooms which appear on the map.)
+<p>Here Inform puts &quot;on top of&quot; before &quot;on/in/inside&quot;, since otherwise only the &quot;on&quot; of &quot;on top of&quot; will be recognised.
 <p>
-<p>We can also find out how long the journey would be:
+<p>Mistakes always take precedence over non-mistakes: this is intended to make sure that
 <p>
-<blockquote><font color="#000080">The description of the proximity gadget is &quot;You are now [number of moves from the location to the Sundial] moves from the Sundial.&quot;;
+<blockquote><font color="#000080">Understand &quot;take umbrage&quot; as a mistake (&quot;Nobody takes umbrage in this game, mister.&quot;).
 </font></blockquote><p>
 <p>
-<p>This number is, of course, 0 if the location is already the Sundial. If there is no way at all to get to the Sundial, the number is -1.
+<p>will take precedence over
+<p>
+<blockquote><font color="#000080">Understand &quot;take [something]&quot; as taking.
+</font></blockquote><p>
+<p>
+<p>even if there is, in fact, a character called Mr Nimbus Umbrage so that the command could conceivably make sense.
 <p>
 <p><hr><p>
-<a name="e184"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex184.html#e184 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>59</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex184.html#e184 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> All Roads Lead to Mars</font></b></a><br>Layout where the player is allowed to wander any direction he likes, and the map will arrange itself in order so that he finds the correct "next" location.<p></td></tr></table>
-<a name="e8"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex8.html#e8 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>60</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex8.html#e8 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mistress of Animals</font></b></a><br>A person who moves randomly between rooms of the map.<p></td></tr></table>
-<a name="e221"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc79.html#e221 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>61</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc79.html#e221 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Hotel Stechelberg</font></b></a><br>Signposts such as those provided on hiking paths in the Swiss Alps, which show the correct direction and hiking time to all other locations.<p></td></tr></table>
+<a name="e221"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc253.html#e221 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>237</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc253.html#e221 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Some Assembly Required</font></b></a><br>Building different styles of shirt from component sleeves and collars.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>The following rule appends a paragraph to every room description. We need not worry about doors (despite the pass in the Bernese Oberland known figuratively as the &quot;Little Door&quot;).
+<p>We now have the mechanisms in place to do some fairly sophisticated renaming of objects. For instance:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode316(code) {
+function pasteCode315(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('After looking:\n\tsay "Yellow arms on the signpost point:-[line break]";\n\trepeat with destination running through rooms begin;\n\t\tlet the way be the best route from the location to the destination;\n\t\tif the way is a direction, say "  [way] for [the destination]: [number of moves from the location to the destination] Std.";\n\tend repeat.\n\n');
+    myProject.pasteCode('"Some Assembly Required"\n\nGarment type is a kind of value. The garment types are vest, t-shirt, polo shirt, mandarin blouse, button-down, shell, experiment.\n\nEvery turn:\n\tassign identities.\n\nWhen play begins: assign identities.\n\nTo assign identities:\n\trepeat with item running through torsos\n\tbegin;\n\t\treassess item;\n\tend repeat.\n\nTo reassess (item - a torso):\n\tif the number of things which are part of the item is 0\n\tbegin;\n\t\tchange garment type of the item to vest;\n\t\trule succeeds;\n\tend if;\n\tif exactly two short sleeves are part of the item\n\tbegin;\n\t\tif a collar is part of the item,\n\t\t\tchange garment type of the item to polo shirt;\n\t\totherwise change garment type of the item to t-shirt;\n\t\trule succeeds;\n\tend if;\n\tif exactly two long sleeves are part of the item\n\tbegin;\n\t\tif a collar is part of the item,\n\t\t\tchange garment type of the item to button-down;\n\t\totherwise change garment type of the item to mandarin blouse;\n\t\trule succeeds;\n\tend if;\n\tif a collar is part of the item and the number of sleeves which are part of the item is 0, change garment type of the item to shell;\n\totherwise change garment type of the item to experiment.\n\nBefore cutting something which is worn by the player:\n\ttry taking off the noun.\n\nInstead of cutting something when something is part of the noun:\n\tsay "You cut up [the noun], snipping off [a list of things which are part of the noun].";\n\tnow every thing which is part of the noun is in the holder of the noun.\n\nInstead of cutting something which is part of something:\n\tsay "You carefully snip [the noun] free.";\n\tnow the player carries the noun.\n\nRule for printing the name of a torso: say "[garment type]".\n\nA torso is a kind of thing. A torso is always wearable. Understand "shirt" or "blouse" as a torso. A torso has a garment type. Understand the garment type property as describing a torso. A sleeve is a kind of thing. A short sleeve is a kind of sleeve. A long sleeve is a kind of sleeve. A collar is a kind of thing.\n\nUnderstand "sew [something] to [something]" as affixing it to. Affixing it to is an action applying to two things. Carry out affixing something to something: now the noun is part of the second noun. Report affixing something to something: assign identities; say "You sew [the noun] on, creating [a second noun]." Understand the command "stitch" as "sew".\n\nInstead of affixing something to something when the second noun is worn: say "You\'re wearing [the second noun]!"\n\nInstead of affixing a torso to something:\n\tif the second noun is a torso, say "Couture for Siamese twins is a daring field, but a bit of a niche market.";\n\totherwise try affixing the second noun to the noun.\n\nInstead of affixing a sleeve to something when at least two sleeves are part of the second noun: say "[The second noun] already sports [a list of sleeves that are part of the second noun]."\n\nInstead of affixing a collar to something when a collar is part of the second noun: say "[The second noun] already sports [a list of collars that are part of the second noun]."\n\nInstead of examining something when something is part of the noun: say "Stitched to [the noun] [is/are list of things which are part of the noun]."\n\n[Here is where the issue of precedence arises. We want to encourage Inform to select a cuttable object that is part of something else, rather than one of the spares:]\n\nDefinition: a thing is removable if it is part of something. Understand "cut [removable thing]" as cutting.\n\nThe Boutique is a room. "Still festively strewn with the confetti and streamers of the Grand Opening party, and still almost totally customer-free."\n\nThe player carries a torso. The player carries three short sleeves. The player carries two long sleeves. The player carries two collars.\n\nTest me with "sew collar to shirt / i / sew short sleeve to shirt / g / i / x polo shirt / cut collar / i / cut shirt / sew long sleeve to shirt / i / sew long sleeve to shirt / i / sew collar to shirt / g / i / wear button-down".\n\n');
 }
 </script>
-<a href="javascript:pasteCode316()"><img border=0 src=../doc_images/paste.png></a> After looking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Yellow arms on the signpost point:-[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with destination running through rooms begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location to the destination;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the way is a direction, say &quot;  [way] for [the destination]: [number of moves from the location to the destination] Std.&quot;;
+<a href="javascript:pasteCode315()"><img border=0 src=../doc_images/paste.png></a> &quot;Some Assembly Required&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Garment type is a kind of value. The garment types are vest, t-shirt, polo shirt, mandarin blouse, button-down, shell, experiment.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;assign identities.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins: assign identities.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To assign identities:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through torsos
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reassess item;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>The result might be:
-<p>
-<blockquote><font color="#000080">Hotel Stechelberg
-<br>The wooden hiking inn at the end of the road, with flowerboxes, canton flags, outdoor tables and a triangular paddock for the cows contesting the annual Miss Stechelberg competition. Otto and Marianne do cheerful innkeeper things, while the sun blazes from a gentian-blue sky.
+<blockquote><font color="#000080">To reassess (item - a torso):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things which are part of the item is 0
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change garment type of the item to vest;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if exactly two short sleeves are part of the item
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a collar is part of the item,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change garment type of the item to polo shirt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise change garment type of the item to t-shirt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if exactly two long sleeves are part of the item
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a collar is part of the item,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change garment type of the item to button-down;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise change garment type of the item to mandarin blouse;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a collar is part of the item and the number of sleeves which are part of the item is 0, change garment type of the item to shell;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change garment type of the item to experiment.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Yellow arms on the signpost point:-
-<br>&nbsp;&nbsp;&nbsp;&nbsp;north for Lauterbrunnen: 2 Std.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;west for Sefinental: 2 Std.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;west for Schilthorn: 6 Std.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;southeast for Trachsellauenen: 1 Std.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;southeast for Oberhornsee: 3 Std.
+<blockquote><font color="#000080">Before cutting something which is worn by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try taking off the noun.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc79.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e9"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>62</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex9.html#e9 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A View of Green Hills</font></b></a><br>A LOOK [direction] command which allows the player to see descriptions of the nearby landscape.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc78.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc80.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>
+<blockquote><font color="#000080">Instead of cutting something when something is part of the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You cut up [the noun], snipping off [a list of things which are part of the noun].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing which is part of the noun is in the holder of the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of cutting something which is part of something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You carefully snip [the noun] free.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for printing the name of a torso: say &quot;[garment type]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A torso is a kind of thing. A torso is always wearable. Understand &quot;shirt&quot; or &quot;blouse&quot; as a torso. A torso has a garment type. Understand the garment type property as describing a torso. A sleeve is a kind of thing. A short sleeve is a kind of sleeve. A long sleeve is a kind of sleeve. A collar is a kind of thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;sew [something] to [something]&quot; as affixing it to. Affixing it to is an action applying to two things. Carry out affixing something to something: now the noun is part of the second noun. Report affixing something to something: assign identities; say &quot;You sew [the noun] on, creating [a second noun].&quot; Understand the command &quot;stitch&quot; as &quot;sew&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of affixing something to something when the second noun is worn: say &quot;You're wearing [the second noun]!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of affixing a torso to something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is a torso, say &quot;Couture for Siamese twins is a daring field, but a bit of a niche market.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise try affixing the second noun to the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of affixing a sleeve to something when at least two sleeves are part of the second noun: say &quot;[The second noun] already sports [a list of sleeves that are part of the second noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of affixing a collar to something when a collar is part of the second noun: say &quot;[The second noun] already sports [a list of collars that are part of the second noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining something when something is part of the noun: say &quot;Stitched to [the noun] [is/are list of things which are part of the noun].&quot;
+</font></blockquote><p>
+<p>
+<p>Here is where the issue of precedence arises. We want to encourage Inform to select a cuttable object that is part of something else, rather than one of the spares:
+<p>
+<blockquote><font color="#000080">Definition: a thing is removable if it is part of something. Understand &quot;cut [removable thing]&quot; as cutting.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Boutique is a room. &quot;Still festively strewn with the confetti and streamers of the Grand Opening party, and still almost totally customer-free.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries a torso. The player carries three short sleeves. The player carries two long sleeves. The player carries two collars.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;sew collar to shirt / i / sew short sleeve to shirt / g / i / x polo shirt / cut collar / i / cut shirt / sew long sleeve to shirt / i / sew long sleeve to shirt / i / sew collar to shirt / g / i / wear button-down&quot;.
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc253.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e137"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex137.html#e137 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>238</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex137.html#e137 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lakeside Living</font></b></a><br>Similar to "Lemonade", but with bodies of liquid that can never be depleted, and some adjustments to the "fill" command so that it will automatically attempt to fill from a large liquid source if possible.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc252.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc254.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

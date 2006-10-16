@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.10. In what order?</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.30. Starting the virtual machine</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,35 +8,14 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc282.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc284.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.10. In what order?</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc282.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc284.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.30. Starting the virtual machine</b></font></td></tr></table>
 <p>
-<p>Large works created by Inform are heaped high with rules, most of them instead rules, but with a leavening of befores and afters as well. What will happen if these conflict with each other? For instance:
+<p><b>1. When it happens.</b> This activity is provided solely as a &quot;hook&quot; for any low-level tasks which need to be performed when the virtual computer which runs Inform story files is starting up. This happens much earlier than &quot;when play begins&quot; rules, and should be used only as a last resort.
 <p>
-<blockquote><font color="#000080">Instead of opening a container, say &quot;Your mother-in-law looks on with such evident disappointment that you withdraw your hand again.&quot;
-</font></blockquote><p>
+<p>It should be remembered that Inform can produce story files for several different virtual computers. On some of these, it will not be safe to print any text during this activity, as the windows which would display such text do not yet exist.
 <p>
-<blockquote><font color="#000080">Instead of opening an open container, say &quot;Your daughter tuts in theatrical exasperation at your, like, lameness.&quot;
-</font></blockquote><p>
+<p><b>2. The default behaviour.</b> None.
 <p>
-<p>If the player tries to open something which is closed, there is no conflict and it is clearly the mother-in-law who gets in the way. But what if the player tries to open a container which is already open? In this case both rules are applicable, but they cannot both take effect: they are instead rules and whichever happens first will stop the action.
-<p>
-<p>The answer is that Inform does not allow rules simply to heap up chaotically, nor simply list them in the order they are described, but sorts them according to what it believes to be a logical sequence. Given any two rules A and B, it tries to see which rule is more specific - narrower in application, that is - and applies that one first. In this case Inform finds that any open container is also a container, but not vice versa. That means that the daughter rule is more specific than the mother-in-law rule, so it is given priority. But the following rule would trump either of them:
-<p>
-<blockquote><font color="#000080">Instead of opening the jewelled box, say &quot;Such exquisite boxes are notorious for traps such as poisoned needles concealed around the lid.&quot;
-</font></blockquote><p>
-<p>
-<p>Note that a rule applying only in certain rooms always beats a rule which is applicable everywhere. Here is a larger example:
-<p>
-<blockquote><font color="#000080">(R1) Before taking something in the Swamp: ...
-<br>(R2) Before taking the bucket: ...
-<br>(R3) Before taking the frog: ...
-<br>(R4) Before taking an open container: ...
-<br>(R5) Before taking a container: ...
-<br>(R6) Before taking something: ...
-</font></blockquote><p>
-<p>
-<p>Rule (R1) wins because it specifies a room, whereas (R2) and (R3) do not. (R2) and (R3) then trump the others because they name specific objects, not general classes of objects. We then have (R4), (R5) and (R6) in that order since every open container is also a container, and every container is a thing.
-<p>
-<p>The full method used by Inform to sort rules is complicated, and will not always be quite right. We have now seen two different ways to change the ordering if need be. But in practice, when we need rule A to come before rule B, it will usually be a clear-cut case which comes out right. In trickier cases to judge, it mostly doesn't matter anyway.
+<p><b>3. Examples.</b> No detailed examples will be given here, but the activity might be used (for instance) to set styles for the Glulx windows shortly to be brought into existence.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc282.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc284.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

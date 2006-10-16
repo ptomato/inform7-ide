@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.15. Understanding things by their properties</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.2. Changing the command prompt</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,127 +8,111 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc241.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc243.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.15. Understanding things by their properties</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc109.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc111.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.2. Changing the command prompt</b></font></td></tr></table>
 <p>
-<p>Items are ordinarily understood only by their original given names. For instance, if we have:
+<p>The command prompt is the text printed by Inform to ask the player for another command. Ordinarily this is simply a greater-than-sign, &quot;>&quot;, so we tend not to notice it as text at all. Internally, though, it is a variable value called &quot;command prompt&quot;, which means we can change it.
 <p>
-<blockquote><font color="#000080">In the Herb Garden is a china pot.
+<p>For example, this will be a more conversational sort of prompt:
+<p>
+<blockquote><font color="#000080">When play begins: change the command prompt to &quot;What now? &quot;.
 </font></blockquote><p>
 <p>
-<p>then the player could refer to this as &quot;pot&quot;, &quot;china pot&quot; or &quot;china&quot;. We can embellish this by adding extra forms:
+<p>Whereas this will be more up-to-the-minute and demanding:
 <p>
-<blockquote><font color="#000080">Understand &quot;chinese pot&quot; or &quot;chinese vase&quot; as the china pot.
+<blockquote><font color="#000080">When play begins: change the command prompt to &quot;[time of day] >&quot;.
 </font></blockquote><p>
 <p>
-<p>But suppose the pot changes its nature in the course of play? If we have:
+<p>(&quot;Time of day&quot; is another variable value, which is fairly self-explanatory, but will be covered in detail later on.) The prompt can be changed at any point, so can be used to indicate the current situation, or even as a sly way to introduce a sort of conversation between computer and player.
 <p>
-<blockquote><font color="#000080">The china pot can be unbroken or broken. The china pot is unbroken. After dropping the china pot: say &quot;Crack!&quot;; now the china pot is broken; change the printed name of the pot to &quot;broken pot&quot;.
-</font></blockquote><p>
-<p>
-<p>So now the player would reasonably expect to call it &quot;broken pot&quot;, a wording which would have been rejected before. We can achieve this by writing:
-<p>
-<blockquote><font color="#000080">Understand the unbroken property as describing the pot.
-</font></blockquote><p>
-<p>
-<p>which allows &quot;unbroken&quot; or &quot;broken&quot; to describe the pot, depending on its state. This is something of a toy example, but the feature looks rather more useful when there are more pots than just one:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode62(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Terracotta"\n\nA flowerpot is a kind of thing. A flowerpot can be unbroken or broken. Understand the broken property as describing a flowerpot.\n\nAfter dropping an unbroken flowerpot: say "Crack!"; now the noun is broken; change the printed name of the noun to "broken flowerpot"; change the printed plural name of the noun to "broken flowerpots".\n\nThe Herb Garden is a room. In the Herb Garden are ten unbroken flowerpots.\n\n');
-}
-</script>
-<a href="javascript:pasteCode62()"><img border=0 src=../doc_images/paste.png></a> &quot;Terracotta&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A flowerpot is a kind of thing. A flowerpot can be unbroken or broken. Understand the broken property as describing a flowerpot.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After dropping an unbroken flowerpot: say &quot;Crack!&quot;; now the noun is broken; change the printed name of the noun to &quot;broken flowerpot&quot;; change the printed plural name of the noun to &quot;broken flowerpots&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Herb Garden is a room. In the Herb Garden are ten unbroken flowerpots.
-</font></blockquote><p>
-<p>
-<p>We then have the dialogue:
-<p>
-<blockquote><font color="#000080">Herb Garden
-<br>You can see ten flowerpots here.
-<br>>get two flowerpots
-<br>flowerpot: Taken.
-<br>flowerpot: Taken.
-<br>>drop all
-<br>flowerpot: Crack!
-<br>flowerpot: Crack!
-<br>>look
-<br>Herb Garden
-<br>You can see two broken flowerpots and eight flowerpots here.
-<br>>get an unbroken flowerpot
-<br>Taken.
-</font></blockquote><p>
-<p>
-<p>and so on and so forth.
-<p>
-<p>There are in fact two slightly different forms of this kind of sentence:
-<p>
-<blockquote><font color="#000080">Understand the broken property as describing a flowerpot.
-<br>Understand the broken property as referring to a flowerpot.
-</font></blockquote><p>
-<p>
-<p>The only difference is that in the &quot;describing&quot; case, the property's name alone can mean the thing in question - so &quot;take unbroken&quot; will work; whereas, in the &quot;referring to&quot;, the property's name can only be used as an adjective preceding the name of thing itself - so &quot;take unbroken flowerpot&quot; will work but &quot;take unbroken&quot; will not.
-<p>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width=&quot;100%&quot;><tr><TD width=38px valign=top><img border=&quot;0&quot; src=../doc_images/beta.png id=&quot;betaoval&quot; style=&quot;height:31px; width=40px&quot;></td><td valign=top><font size=2>At present, the implementation of this feature has a restriction: if we define a new kind of value (say, colour) and give it to something as a property, then define a new textual form of one of those values (say making &quot;crimson&quot; a synonym for &quot;red&quot;), this new textual form will not be understood when used adjectivally in the above way.
-<p>
-<p></font></td></tr></table><hr><p>
-<a name="e183"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc242.html#e183 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>228</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc242.html#e183 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Peers</font></b></a><br>The peers of the English realm come in six flavours - Baron, Viscount, Earl, Marquess, Duke and Prince - and must always be addressed properly. While a peerage is for life, it may at the royal pleasure be promoted.<p></td></tr></table>
+<p><hr><p>
+<a name="e183"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc110.html#e183 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>89</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc110.html#e183 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Don Pedro's Revenge</font></b></a><br>Combat scenario in which the player's footing and position changes from move to move, and the command prompt also changes to reflect that.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Almost all of this example is the flummery of pomp and circumstance: only the first two paragraphs really do anything.
+<p>Suppose our game features a detailed simulated combat between the player character and his opponent. He might have several weapons available, and several types of attack available; and at any given time he might be perched up in the rigging of his ship, standing on the open deck, or boxed in between some barrels. His options will vary depending on his position, and obviously it would detract from the pacing to make the player keep LOOKing in the middle of combat in order to remind himself where he is. Instead, we'll roll this information into the command prompt:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode279(code) {
+function pasteCode278(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Peers" by Elizabeth II R\n\nA title is a kind of value. The titles are Baron, Viscount, Earl, Marquess, Duke and Prince.\n\nA peer is a kind of man. A peer has a title. A peer is usually a Baron. Before printing the name of a peer, say "[title] ". Understand the title property as describing a peer.\n\nThe House of Lords is a room. Maltravers, Pollifax, Omnium and St Vincent are peers in the House of Lords. Omnium is a Duke. St Vincent is an Earl.\n\nEnnobling is an action applying to one thing and one title.\n\nCheck ennobling:\n\tif the noun is the player, say "The Sovereign is the fountain of honour, and may not be ennobled." instead;\n\tif the noun is not a peer, say "Commoners should remain so." instead;\n\tif the title of the noun is the title understood, say "But that is his title already." instead;\n\tif the title of the noun is greater than the title understood, say "As he is already of the rank of [title of the noun], any such letters patent are liable to be deemed invalid, following the precedent of the Buckhurst Peerage Case (1876). Best not." instead.\n\nCarry out ennobling:\n\tchange the title of the noun to the title understood.\n\nReport ennobling:\n\tsay "\'Whereas Our Parliament for arduous and urgent affairs concerning Us the state and defence of Our United Kingdom and the Church is now met at Our City of Westminster We strictly enjoining Command you upon the faith and allegiance by which you are bound to Us that the weightness of the said affairs and imminent perils considered (waiving all excuses) you be at the said day and place personally present with Us and with the said Prelates Great Men and Peers to treat and give your counsel upon the affairs aforesaid And this as you regard Us and Our honour and the safety and defence of the said Kingdom and Church and dispatch of the said affairs in nowise do you omit Witness Ourself at Westminster the Fifth day of November in the 43rd year of Our Reign,\' you say, with unpunctuated serenity. The new [noun] bows stiffly."\n\nUnderstand "dub [someone] a/an [title]" as ennobling.\n\nTest me with "dub st vincent a baron / dub maltravers a marquess / look / examine marquess".\n');
+    myProject.pasteCode('"Don Pedro\'s Revenge"\n\nThe Deck of the Helene Marie is a room. "The two crews are embattled all around you, but your attention is reserved for your particular enemy: Don Pedro."\n\nTable of Random Prompts\nposition\tprompt\nboxed\t"So securely boxed-in that you can really only parry or thrust, you try to "\nboxed\t"Trapped between your barrels, you decide to "\nperched\t"Able to slice at your attackers but not to advance or retreat, you choose to "\nperched\t"Perched up here with the advantage of height (but little mobility), you attempt to "\nfree\t"Out on the open deck with no impediments, free to advance or retreat, you decide to "\n\nWhen play begins: reset the prompt.\n\nEvery turn: reset the prompt.\n\nTo reset the prompt:\n\tsort the Table of Random Prompts in random order;\n\trepeat through the Table of Random Prompts\n\tbegin;\n\t\tif the position entry is the placement of the player\n\t\tbegin;\n\t\t\tchange the command prompt to prompt entry;\n\t\t\tstop;\n\t\tend if;\n\tend repeat.\n\nAfter reading a command: say line break.\n\nA placement is a kind of value. The placements are boxed, perched, free. The player has a placement. The player is free.\n\nUnderstand "retreat" or "parry" as retreating. Retreating is an action applying to nothing.\n\nCheck retreating:\n\tif the player is perched, say "You can\'t move backward or parry very successfully from this position." instead.\n\nCarry out retreating:\n\tnow the player is boxed;\n\tsay "You protect yourself, but end up wedged in between two barrels."\n\nUnderstand "thrust" or "advance" as advancing. Advancing is an action applying to nothing.\n\nCheck advancing:\n\tif the player is perched, say "You can\'t move forward from here, only slash." instead.\n\nCarry out advancing:\n\tnow the player is free;\n\tsay "You push forward aggressively, making your way to the open deck."\n\nInstead of jumping:\n\tnow the player is perched;\n\tsay "You leap and swing yourself boldly up into the rigging, leaving your attackers beneath you."\n\nInstead of jumping when the player is perched:\n\tnow the player is free;\n\tsay "You leap down from your position, into the middle of the deck."\n\nTest me with "advance / jump / advance / retreat / jump / retreat / retreat / advance".\n\n');
 }
 </script>
-<a href="javascript:pasteCode279()"><img border=0 src=../doc_images/paste.png></a> &quot;Peers&quot; by Elizabeth II R
+<a href="javascript:pasteCode278()"><img border=0 src=../doc_images/paste.png></a> &quot;Don Pedro's Revenge&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A title is a kind of value. The titles are Baron, Viscount, Earl, Marquess, Duke and Prince.
+<blockquote><font color="#000080">The Deck of the Helene Marie is a room. &quot;The two crews are embattled all around you, but your attention is reserved for your particular enemy: Don Pedro.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A peer is a kind of man. A peer has a title. A peer is usually a Baron. Before printing the name of a peer, say &quot;[title] &quot;. Understand the title property as describing a peer.
+<blockquote><font color="#000080">Table of Random Prompts
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">position</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">prompt</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">boxed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;So securely boxed-in that you can really only parry or thrust, you try to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">boxed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Trapped between your barrels, you decide to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">perched</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Able to slice at your attackers but not to advance or retreat, you choose to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">perched</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Perched up here with the advantage of height (but little mobility), you attempt to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">free</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Out on the open deck with no impediments, free to advance or retreat, you decide to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The House of Lords is a room. Maltravers, Pollifax, Omnium and St Vincent are peers in the House of Lords. Omnium is a Duke. St Vincent is an Earl.
+<blockquote><font color="#000080">When play begins: reset the prompt.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Ennobling is an action applying to one thing and one title.
+<blockquote><font color="#000080">Every turn: reset the prompt.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check ennobling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the player, say &quot;The Sovereign is the fountain of honour, and may not be ennobled.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a peer, say &quot;Commoners should remain so.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the title of the noun is the title understood, say &quot;But that is his title already.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the title of the noun is greater than the title understood, say &quot;As he is already of the rank of [title of the noun], any such letters patent are liable to be deemed invalid, following the precedent of the Buckhurst Peerage Case (1876). Best not.&quot; instead.
+<blockquote><font color="#000080">To reset the prompt:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Random Prompts in random order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Random Prompts
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the position entry is the placement of the player
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to prompt entry;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out ennobling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the title of the noun to the title understood.
+<blockquote><font color="#000080">After reading a command: say line break.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report ennobling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Whereas Our Parliament for arduous and urgent affairs concerning Us the state and defence of Our United Kingdom and the Church is now met at Our City of Westminster We strictly enjoining Command you upon the faith and allegiance by which you are bound to Us that the weightness of the said affairs and imminent perils considered (waiving all excuses) you be at the said day and place personally present with Us and with the said Prelates Great Men and Peers to treat and give your counsel upon the affairs aforesaid And this as you regard Us and Our honour and the safety and defence of the said Kingdom and Church and dispatch of the said affairs in nowise do you omit Witness Ourself at Westminster the Fifth day of November in the 43rd year of Our Reign,' you say, with unpunctuated serenity. The new [noun] bows stiffly.&quot;
+<blockquote><font color="#000080">A placement is a kind of value. The placements are boxed, perched, free. The player has a placement. The player is free.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;dub [someone] a/an [title]&quot; as ennobling.
+<blockquote><font color="#000080">Understand &quot;retreat&quot; or &quot;parry&quot; as retreating. Retreating is an action applying to nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;dub st vincent a baron / dub maltravers a marquess / look / examine marquess&quot;.
+<blockquote><font color="#000080">Check retreating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is perched, say &quot;You can't move backward or parry very successfully from this position.&quot; instead.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc242.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e91"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex91.html#e91 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>229</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex91.html#e91 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Terracottissima</font></b></a><br>The flowerpots once again, but this time arranged so that after the first breakage all undamaged pots are said to be "unbroken", to distinguish them from the others.<p></td></tr></table>
-<a name="e237"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex237.html#e237 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>230</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex237.html#e237 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Snip 2</font></b></a><br>Strings that can be divided arbitrarily and then named by length.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc241.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc243.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>
+<blockquote><font color="#000080">Carry out retreating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is boxed;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You protect yourself, but end up wedged in between two barrels.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;thrust&quot; or &quot;advance&quot; as advancing. Advancing is an action applying to nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check advancing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is perched, say &quot;You can't move forward from here, only slash.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out advancing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is free;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You push forward aggressively, making your way to the open deck.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of jumping:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is perched;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You leap and swing yourself boldly up into the rigging, leaving your attackers beneath you.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of jumping when the player is perched:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is free;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You leap down from your position, into the middle of the deck.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;advance / jump / advance / retreat / jump / retreat / retreat / advance&quot;.
+</font></blockquote><p>
+<p>
+<p>Of course, this won't be much fun until we also provide the player with a few weapons, some more fighting maneuvers, and, most of all, a Don Pedro to defeat.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc110.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc109.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc111.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

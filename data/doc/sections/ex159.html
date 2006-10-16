@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.5. The text token</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.12. Report rules for actions by other people</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,86 +8,126 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc231.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc233.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.5. The text token</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc181.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc183.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.12. Report rules for actions by other people</b></font></td></tr></table>
 <p>
-<p>Most actions involve items: taking a vase, perhaps. As we shall see, they might also involve values, or a mixture of the two: turning a dial to 17 would involve both a thing (the dial) and a number (17). A few of Inform's built-in actions, however, can act on any text at all. For instance, asking the Sybil about the Persian army would involve a thing (the Sybil) and some text (&quot;Persian army&quot;). Inform does not try to understand automatically what that text might mean, or to relate it to any items, places or values it knows about: instead, Inform leaves that to the specific story to work out for itself, since the answer is bound to depend on the context. (In the chapter on Tables, we saw ways to compile tables of responses to particular topics of conversation.)
+<p>Report rules for the player's actions are easy to write, and for many actions, they are not much harder for other people either:
 <p>
-<p>The token for &quot;accept any text here&quot; is just &quot;[text]&quot;. For instance, if we create an action with:
-<p>
-<blockquote><font color="#000080">Getting help about is an action applying to one topic.
+<blockquote><font color="#000080">Report photographing: say &quot;Click!&quot;
+<br>Report someone trying photographing: say &quot;Click! [The person asked] takes a snapshot of [the noun].&quot;
 </font></blockquote><p>
 <p>
-<p>We can then provide grammar for this action like so:
+<p>But once other people are involved, we have to go to some trouble to get all of the possibilities right. Here is a case which did not immediately occur to the author of the &quot;going&quot; action, for instance:
 <p>
-<blockquote><font color="#000080">Understand &quot;help on [text]&quot; as getting help about.
+<blockquote><font color="#000080">>get in cage
+<br>You get into the cage.
+<br>>clark, get in automobile
+<br>Clark Gable gets into the automobile.
+<br>>clark, push cage west
+<br>Clark Gable goes west in the automobile, pushing the cage in front, and you along too.
 </font></blockquote><p>
 <p>
-<p>When text like this is successfully matched, it is placed in a value called &quot;the topic understood&quot;. (The term &quot;topic&quot; is used traditionally, really: most of the times one needs this feature, it's for a topic of conversation, or a topic being looked up in a book.)
+<blockquote><font color="#000080"><b>The Lot</b> (in the cage)
+<br>In the Lot you can see an automobile (in which is Clark Gable).
+</font></blockquote><p>
+<p>
+<p>We said before that report rules are skipped if the action is running &quot;silently&quot;, or if the action is one that the player does not witness. But that is also a tricky concept. Inform's doctrine is that you witness an action if you can see any of the actor, the noun or the second noun at either the beginning or the end of the action; except that being able to see a backdrop does not count. Thus if Clark Gable, in Beverly Hills, photographs the Hollywood sign then we do not witness this from Sunset Boulevard merely because we, too, can see the Hollywood sign.
+<p>
+<p>While the report rules for actions by the player must actually report something, report rules for other people's actions are under no such obligation. For instance, if Clark unlocks a door from the other side to the player, then this counts as an action that the player witnesses - and after all, it could be argued that the player should hear the key turning in the lock - but in fact the standard rules for reporting locking choose to say nothing.
 <p>
 <p><hr><p>
-<a name="e159"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc232.html#e159 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>218</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc232.html#e159 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Ish.</font></b></a><br>A (very) simple HELP command, using tokens to accept and interpret the player's  text whatever it might be.<p></td></tr></table>
+<a name="e49"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex49.html#e49 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>163</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex49.html#e49 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Reporting rules for other characters' behavior</font></b></a><br>Elaborating the report rules to be more interesting than "Clark goes west."<p></td></tr></table>
+<a name="e159"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc182.html#e159 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>164</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc182.html#e159 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Fate Steps In</font></b></a><br>Fate entity which attempts to make things happen, by hook or by crook, including taking preliminary actions to set the player up a bit.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>One of the nice things about before rules for actions is that they allow us to express some planning for characters other than the player: we've already seen how this works, a bit. But we could also use before rules to write plans for an abstract story-driving entity, rather than for other individual characters. This story-driver could be in charge of all the non-player characters, as well as spontaneous or natural changes in the environment, shaping the narrative around the player's behavior.
+<p>
+<p>The following example is a very simple one, but the same concept could be worked out in a great deal more complexity, with all sorts of alternative procedures available to our story-manager:
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode253(code) {
+function pasteCode252(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Ish."\n\nIchiro\'s Dubious Sushi Hut is a room.  "Despite the allure of the dusty plastic sushi models in the window, you\'re beginning to have second thoughts about the selection of this particular restaurant for your rendezvous with Agent Fowler.  There are no other patrons, for one thing. Afternoon sunlight filters lazily through the window and illuminates a number of empty glass-topped tables, at each of which is a chopstick dispenser (in form of cute ceramic cat) and a pitcher of soy sauce (sticky).\n\nThe sushi bar itself is what gives the most pause, however. Behind it sits an angry-looking Japanese woman, aggressively eating a Quarter Pounder with Cheese."\n\n[We can, when necessary, accept any text at all as a token:]\n\nUnderstand "help [text]" or "help about [text]" as getting help about. Understand the commands "instructions" or "hint" or "hints" or "menu" or "info" or "about" as "help".\n\nGetting help about is an action applying to one topic.\n\n[After that, we can use "the topic understood" to refer to the text we read:]\n\nCarry out getting help about:\n\tif the topic understood is a topic listed in the Table of Standard Help\n\tbegin;\n\t\tsay "[explanation entry][paragraph break]";\n\totherwise;\n\t\tsay "You\'re out of ideas.";\n\tend if.\n\nTable of Standard Help\ntopic\ttitle\tsummary\texplanation\n"sushi"\t"sushi"\t"Really it\'s just vinegary rice"\t"Popular misconception says that sushi inevitably entails raw fish, but it is in fact just rice with rice vinegar on it.  It\'s just that the really good kinds have raw fish in."\n"cucumber roll" or "cucumber"\t"Cucumber roll"\t"Sushi for people who are afraid of sushi"\t"It is just rice and slivers of cucumber in the middle, and as long as you don\'t go too crazy with the wasabi, all should be well."\n"california roll" or "california"\t"California roll"\t"Travesty of the sushi concept"\t"It\'s. Fake. Crab."\n"monkfish liver"\t"monkfish liver"\t"Expert eaters only"\t"The odds of Ichiro\'s having this unusual delicacy is near zero."\n"microdot"\t"microdot"\t"What you came here to deliver"\t"There\'ll be time enough for that later. If Fowler ever turns up. Where is she, anyway?"\n\n[Since the player may not know what all the help options are, we might as well let him get an overview, as well.]\n\nUnderstand "help" as summoning help.  Summoning help is an action applying to nothing.\n\nCarry out summoning help:\n\tsay "Help is available about the following topics.  Typing HELP followed by the name of a topic will give further information.[line break]";\n\trepeat through the Table of Standard Help\n\tbegin;\n\t\tsay "  [title entry]: [summary entry][line break]";\n\tend repeat;\n\tsay line break.\n\nTest me with "help / help about microdot / help cucumber / help california roll".\n');
+    myProject.pasteCode('"Fate Steps In"\n\nFate is a woman. After deciding the scope of the player: place Fate in scope. The description of Fate is "Not smiling." Instead of doing something other than examining to fate: say "As if."\n\nEvery turn: try fate trying tripping.\n\nTripping is an action applying to nothing.\n\nCarry out someone trying tripping:\n\tif something dangerous (called the trap) is in the location\n\tbegin;\n\t\tsay "Lise chooses this moment to lick her fingers -- it\'s not gross, it\'s natural, you decide -- stand up, and head for the door. Unfortunately, her path crosses directly over [the trap]. There is a vaudevillesque moment where you try to warn or catch her; the next moment she\'s on the floor, looking shocked and also in quite a lot of pain. \'I\'m not sure,\' she says to you steadily but with unfocused gaze, \'but I think I might have broken my tailbone.\'";\n\t\tend the game saying "Well, she\'s paying attention to you now";\n\tend if.\n\nBefore someone trying tripping when the location does not contain a dangerous thing: try the person asked trying making a mess instead.\n\nMaking a mess is an action applying to nothing.\n\nCarry out someone trying making a mess:\n\tlet calamitous object be a random visible supporter which supports at least three things;\n\tif calamitous object is a supporter\n\tbegin;\n\t\tsay "[The calamitous object] tips over, spilling [the list of things on calamitous object] all over the place.";\n\t\tmove the calamitous object to the location;\n\t\tnow every thing on the calamitous object is in the location;\n\tend if.\n\nDefinition: a thing is dangerous if it is not the carton and it is not the table and it is not a person.\n\nBefore someone trying making a mess when a safe supporter (called target) is visible:\n\tif Lise carries something, try Lise trying putting a random thing carried by Lise on the target instead.\n\nInstead of someone trying making a mess when the tray is on the table:\n\tsay "Just at that moment, a large blond man-thing in a red jacket walks more or less through you, and you come into violent contact with the table, knocking [the list of the things on the table] onto the floor.";\n\tnow every thing on the table is in the location;\n\tnow every thing on the tray is in the location instead.\n\nDefinition: a supporter is safe if the number of things on it is less than two.\n\nMcQuerry Dining Hall is a room.\n\nThe table is scenery in the dining hall. The table is a supporter.\n\nLise Fitzwallace is a woman in the Dining Hall. "Lise is at the nearest table, not apparently paying any attention to you." The description of Lise is "A capella singer, women\'s rugby champion, general object of attention from all genders. Unlikely to notice you unless fate smiles broadly." Lise carries a fork, a napkin, an empty glass, and a plate of half-eaten eggplant parmesan.\n\nReport Lise trying putting something on something:\n\tsay "Lise, still deep in thought, absently puts [the noun] on [the second noun]." instead.\n\nThe carrying capacity of the player is 2. The carton of chocolate milk is in the Hall. "There\'s a carton of milk beside you, which you set down for a moment -- but you do want it."\n\nInstead of taking something when the player carries the tray:\n\tsay "You\'ve got both hands full with this tray."\n\nThe player carries the tray. On the tray is some macaroni and some overdone chicken. The macaroni and the chicken are edible. The tray is portable.\n\nTest me with "get milk / put tray on table / get milk".\n\nTest again with "drop tray".\n');
 }
 </script>
-<a href="javascript:pasteCode253()"><img border=0 src=../doc_images/paste.png></a> &quot;Ish.&quot;
+<a href="javascript:pasteCode252()"><img border=0 src=../doc_images/paste.png></a> &quot;Fate Steps In&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Ichiro's Dubious Sushi Hut is a room.  &quot;Despite the allure of the dusty plastic sushi models in the window, you're beginning to have second thoughts about the selection of this particular restaurant for your rendezvous with Agent Fowler.  There are no other patrons, for one thing. Afternoon sunlight filters lazily through the window and illuminates a number of empty glass-topped tables, at each of which is a chopstick dispenser (in form of cute ceramic cat) and a pitcher of soy sauce (sticky).
+<blockquote><font color="#000080">Fate is a woman. After deciding the scope of the player: place Fate in scope. The description of Fate is &quot;Not smiling.&quot; Instead of doing something other than examining to fate: say &quot;As if.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The sushi bar itself is what gives the most pause, however. Behind it sits an angry-looking Japanese woman, aggressively eating a Quarter Pounder with Cheese.&quot;
+<blockquote><font color="#000080">Every turn: try fate trying tripping.
 </font></blockquote><p>
 <p>
-<p>We can, when necessary, accept any text at all as a token:
-<p>
-<blockquote><font color="#000080">Understand &quot;help [text]&quot; or &quot;help about [text]&quot; as getting help about. Understand the commands &quot;instructions&quot; or &quot;hint&quot; or &quot;hints&quot; or &quot;menu&quot; or &quot;info&quot; or &quot;about&quot; as &quot;help&quot;.
+<blockquote><font color="#000080">Tripping is an action applying to nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Getting help about is an action applying to one topic.
-</font></blockquote><p>
-<p>
-<p>After that, we can use &quot;the topic understood&quot; to refer to the text we read:
-<p>
-<blockquote><font color="#000080">Carry out getting help about:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the topic understood is a topic listed in the Table of Standard Help
+<blockquote><font color="#000080">Carry out someone trying tripping:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if something dangerous (called the trap) is in the location
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[explanation entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're out of ideas.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lise chooses this moment to lick her fingers -- it's not gross, it's natural, you decide -- stand up, and head for the door. Unfortunately, her path crosses directly over [the trap]. There is a vaudevillesque moment where you try to warn or catch her; the next moment she's on the floor, looking shocked and also in quite a lot of pain. 'I'm not sure,' she says to you steadily but with unfocused gaze, 'but I think I might have broken my tailbone.'&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Well, she's paying attention to you now&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Standard Help
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">title</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">summary</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">explanation</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">&quot;sushi&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;sushi&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Really it's just vinegary rice&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Popular misconception says that sushi inevitably entails raw fish, but it is in fact just rice with rice vinegar on it.  It's just that the really good kinds have raw fish in.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">&quot;cucumber roll&quot; or &quot;cucumber&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Cucumber roll&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Sushi for people who are afraid of sushi&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;It is just rice and slivers of cucumber in the middle, and as long as you don't go too crazy with the wasabi, all should be well.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">&quot;california roll&quot; or &quot;california&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;California roll&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Travesty of the sushi concept&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;It's. Fake. Crab.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">&quot;monkfish liver&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;monkfish liver&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Expert eaters only&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;The odds of Ichiro's having this unusual delicacy is near zero.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">&quot;microdot&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;microdot&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;What you came here to deliver&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;There'll be time enough for that later. If Fowler ever turns up. Where is she, anyway?&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">Before someone trying tripping when the location does not contain a dangerous thing: try the person asked trying making a mess instead.
 </font></blockquote><p>
 <p>
-<p>Since the player may not know what all the help options are, we might as well let him get an overview, as well.
-<p>
-<blockquote><font color="#000080">Understand &quot;help&quot; as summoning help.  Summoning help is an action applying to nothing.
+<blockquote><font color="#000080">Making a mess is an action applying to nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out summoning help:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Help is available about the following topics.  Typing HELP followed by the name of a topic will give further information.[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Standard Help
+<blockquote><font color="#000080">Carry out someone trying making a mess:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let calamitous object be a random visible supporter which supports at least three things;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if calamitous object is a supporter
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [title entry]: [summary entry][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say line break.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The calamitous object] tips over, spilling [the list of things on calamitous object] all over the place.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the calamitous object to the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now every thing on the calamitous object is in the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;help / help about microdot / help cucumber / help california roll&quot;.
+<blockquote><font color="#000080">Definition: a thing is dangerous if it is not the carton and it is not the table and it is not a person.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc232.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e47"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex47.html#e47 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>219</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex47.html#e47 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Nameless</font></b></a><br>ASKing someone about an object rather than about a topic.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc231.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc233.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>
+<blockquote><font color="#000080">Before someone trying making a mess when a safe supporter (called target) is visible:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Lise carries something, try Lise trying putting a random thing carried by Lise on the target instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of someone trying making a mess when the tray is on the table:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Just at that moment, a large blond man-thing in a red jacket walks more or less through you, and you come into violent contact with the table, knocking [the list of the things on the table] onto the floor.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing on the table is in the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing on the tray is in the location instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a supporter is safe if the number of things on it is less than two.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">McQuerry Dining Hall is a room.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The table is scenery in the dining hall. The table is a supporter.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Lise Fitzwallace is a woman in the Dining Hall. &quot;Lise is at the nearest table, not apparently paying any attention to you.&quot; The description of Lise is &quot;A capella singer, women's rugby champion, general object of attention from all genders. Unlikely to notice you unless fate smiles broadly.&quot; Lise carries a fork, a napkin, an empty glass, and a plate of half-eaten eggplant parmesan.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Lise trying putting something on something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lise, still deep in thought, absently puts [the noun] on [the second noun].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The carrying capacity of the player is 2. The carton of chocolate milk is in the Hall. &quot;There's a carton of milk beside you, which you set down for a moment -- but you do want it.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of taking something when the player carries the tray:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You've got both hands full with this tray.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries the tray. On the tray is some macaroni and some overdone chicken. The macaroni and the chicken are edible. The tray is portable.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get milk / put tray on table / get milk&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test again with &quot;drop tray&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc182.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc181.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc183.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

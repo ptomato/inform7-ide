@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.2. Creating a scene</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.7. Adjacent rooms and routes through the map</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,96 +8,84 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc136.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Scenes</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc138.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.2. Creating a scene</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc85.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc87.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.7. Adjacent rooms and routes through the map</b></font></td></tr></table>
 <p>
-<p>As usual, we only need to say that something is a scene to make it so:
+<p>Another useful adjective built into Inform is &quot;adjacent&quot;. Two rooms are said to be adjacent if there is a map connection between them which does not pass through some barrier such as a door. This is easily tested:
 <p>
-<blockquote><font color="#000080">Train Stop is a scene.
+<blockquote><font color="#000080">if the Hallway is adjacent to the Study ...
 </font></blockquote><p>
 <p>
-<p>We conventionally write scene names with capital letters, as this demonstrates.
+<p>We usually want to know about the places adjacent to the current scene of the action, so that is what the adjective &quot;adjacent&quot; means when applied to rooms. For instance:
 <p>
-<p>This works, and shows up in the &quot;Scenes&quot; index, but does nothing. We have given no instructions on when it begins - no cue, in stage-play terms - so it never will begin, and even if it did, nobody would notice since it does nothing. First, to give it a beginning:
-<p>
-<blockquote><font color="#000080">Train Stop begins when the player is in the Station for the third turn.
+<blockquote><font color="#000080">if somebody is in an adjacent room, ...
 </font></blockquote><p>
 <p>
-<p>Every scene has two rulebooks attached, one at each end, so to speak. These look very like &quot;when play begins&quot; and &quot;when play ends&quot;, and work in the same way. Thus:
+<p>As with the case of &quot;visible&quot;, the adjective is a cut-down version of the more general relationship. This often happens: &quot;worn&quot; and &quot;carried&quot;, for instance, imply &quot;by the player&quot; unless something else is specified.
 <p>
-<blockquote><font color="#000080">When Train Stop begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the Flying Scotsman to the Station;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The Flying Scotsman pulls up at the platform, to a billow of steam and hammering.&quot;
+<p>While on the subject of navigating the map, the phrase &quot;the best route from A to B&quot; gives a direction to take in order to get from A to B by the shortest number of movements between rooms - if there is any way through at all. For example, here is a lure:
+<p>
+<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When Train Stop ends:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the Flying Scotsman from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Station, say &quot;The Flying Scotsman inches away, with a squeal of released brakes, gathering speed invincibly until it disappears around the hill. All is abruptly still once more.&quot;
+<p>Best routes are ordinarily forbidden to go through doors, but if the suffix &quot;using doors&quot; is added as an option then any open or openable and unlocked door may be used on the way; and if &quot;using even locked doors&quot; is given, then any door at all will do. Since magnetism is no respecter of property, that seems right here:
+<p>
+<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room, using even locked doors].&quot;
 </font></blockquote><p>
 <p>
-<p>Thus when the scene begins, our imaginary stage-hands wheel in a steam train; when it ends, they get rid of it again. Note that we know where the player will be at the start of the scene, but by the end he may have wandered off across the fields, so we must be careful not to report something he might not be in a position to see.
+<p>The phrase &quot;the best route from A to B&quot; gives the direction to take next, if we are at A and want to end up at B. Suppose this is east. We can find out where we go next by looking up &quot;the room east from A&quot;: similarly for any other direction, of course. (This can see through any doors, locked or not.)
+<p>
+<p>We can also stipulate that only certain rooms may be used for the journey, as in the following example:
+<p>
+<blockquote><font color="#000080">best route from the Drawbridge to the Keep through visited rooms
+</font></blockquote><p>
+<p>
+<p>The condition - in this case, that &quot;visited rooms&quot; must be used - also applies to both ends of the journey. (Also, saying something like &quot;...through containers&quot; would mean there is never a route, since it is only rooms which appear on the map.)
+<p>
+<p>Lastly, we can find out how long the journey would be:
+<p>
+<blockquote><font color="#000080">The description of the proximity gadget is &quot;You are now [number of moves from the location to the Sundial] moves from the Sundial.&quot;;
+</font></blockquote><p>
+<p>
+<p>This number is, of course, 0 if the location is already the Sundial. If there is no way at all to get to the Sundial, the number is -1.
 <p>
 <p><hr><p>
-<a name="e185"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc137.html#e185 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>117</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc137.html#e185 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Pine 1</font></b></a><br>Pine: Using a scene to watch for the solution of a puzzle, however arrived-at by the player.<p></td></tr></table>
+<a name="e185"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc86.html#e185 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>59</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc86.html#e185 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> All Roads Lead to Mars</font></b></a><br>Layout where the player is allowed to wander any direction he likes, and the map will arrange itself in order so that he finds the correct "next" location.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Because scene rules are checked every turn, they can be useful for designing puzzles which have multiple solutions. Instead of deciding the puzzle is &quot;solved&quot; when the player does a certain action, we set up a scene that checks to see whether the player has achieved a certain outcome -- however he accomplished it.
-<p>
-<p>For instance, in this scenario, we're waiting for Sleeping Beauty to wake up, and it doesn't much matter how...
+<p>Suppose we want to allow the player to wander freely in any direction, but ourselves maintain control over the order in which he encounters the rooms. This sort of effect emphasizes the order of the story-telling over any kind of rigorous simulation of space; on multiple play-throughs, the player might not find all the same rooms in the same locations.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode281(code) {
+function pasteCode280(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Pine"\n\nA person can be asleep or awake. A person can be active or passive.\n\nThe Spinning Tower is a room. "A remote corner of the old castle, reserved for spinning and weaving tasks."\n\nSleeping Beauty is an asleep woman in the Spinning Tower. "[if asleep]Sleeping Beauty lies here, oblivious to your presence[otherwise]Sleeping Beauty stands beside you, looking a little confused[end if]." The description is "She is even more magnificent than the rumors suggested." Understand "woman" or "girl" or "princess" or "lady" as Sleeping Beauty.\n\nDiscovery is a scene. Discovery begins when play begins. Discovery ends when Sleeping Beauty is awake. Marriage Proposal is a scene. Marriage Proposal begins when Discovery ends.\n\nWhen Discovery ends: say "Throughout the palace you can hear the other sounds of stirring and movement as the spell of centuries is broken."\n\nInstead of waking an awake person: say "Redundant."\n\nInstead of waking an asleep person: say "Yes, but how?"\n\nInstead of attacking an asleep person:\n\tnow the noun is awake;\n\tsay "[The noun] sits bolt upright. \'Hey! Ow!\' So much for that true love\'s kiss nonsense."\n\nInstead of kissing an asleep person:\n\tnow the noun is awake;\n\tsay "[The noun] slowly stirs to wakefulness!"\n\nInstead of throwing water at an asleep person:\n\tnow the second noun is awake;\n\tremove the noun from play;\n\tsay "You pour out [the noun] on [the second noun].\n\n[The second noun] wakes, shuddering. \'Agh! I had a terrible dream about drowning and then-- Hey!\'"\n\nThe player carries a jug of water. Understand "pour [something] on [something]" or "splash [something] at/on [something]" as throwing it at.\n\nTest me with "x beauty / wake beauty / pour water on beauty".\n');
+    myProject.pasteCode('"All Roads Lead to Mars"\n\nBefore going a direction (called way) when a room (called next location) is not visited:\n\tlet further place be the room the way from the location;\n\tif further place is a room, continue the action;\n\tchange the way exit of the location to the next location;\n\tlet reverse be the opposite of the way;\n\tchange the reverse exit of the next location to the location.\n\nThe Open Plain is a room. "A wide-open grassy expanse, from which you could really go any way at all."\n\nThe Hilly Place is a room. "The grassland gives way to a somewhat more hilly area, though there is still very little to guide you any particular way."\n\nThe Stream is a room. "This is the third place you\'ve been today, and so the stream is welcome. How refreshing!"\n\nTest me with "n / s / e / e".\n\n');
 }
 </script>
-<a href="javascript:pasteCode281()"><img border=0 src=../doc_images/paste.png></a> &quot;Pine&quot;
+<a href="javascript:pasteCode280()"><img border=0 src=../doc_images/paste.png></a> &quot;All Roads Lead to Mars&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A person can be asleep or awake. A person can be active or passive.
+<blockquote><font color="#000080">Before going a direction (called way) when a room (called next location) is not visited:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let further place be the room the way from the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if further place is a room, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the way exit of the location to the next location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let reverse be the opposite of the way;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the reverse exit of the next location to the location.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Spinning Tower is a room. &quot;A remote corner of the old castle, reserved for spinning and weaving tasks.&quot;
+<blockquote><font color="#000080">The Open Plain is a room. &quot;A wide-open grassy expanse, from which you could really go any way at all.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Sleeping Beauty is an asleep woman in the Spinning Tower. &quot;[if asleep]Sleeping Beauty lies here, oblivious to your presence[otherwise]Sleeping Beauty stands beside you, looking a little confused[end if].&quot; The description is &quot;She is even more magnificent than the rumors suggested.&quot; Understand &quot;woman&quot; or &quot;girl&quot; or &quot;princess&quot; or &quot;lady&quot; as Sleeping Beauty.
+<blockquote><font color="#000080">The Hilly Place is a room. &quot;The grassland gives way to a somewhat more hilly area, though there is still very little to guide you any particular way.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Discovery is a scene. Discovery begins when play begins. Discovery ends when Sleeping Beauty is awake. Marriage Proposal is a scene. Marriage Proposal begins when Discovery ends.
+<blockquote><font color="#000080">The Stream is a room. &quot;This is the third place you've been today, and so the stream is welcome. How refreshing!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When Discovery ends: say &quot;Throughout the palace you can hear the other sounds of stirring and movement as the spell of centuries is broken.&quot;
+<blockquote><font color="#000080">Test me with &quot;n / s / e / e&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of waking an awake person: say &quot;Redundant.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of waking an asleep person: say &quot;Yes, but how?&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of attacking an asleep person:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is awake;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] sits bolt upright. 'Hey! Ow!' So much for that true love's kiss nonsense.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of kissing an asleep person:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is awake;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] slowly stirs to wakefulness!&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of throwing water at an asleep person:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the second noun is awake;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You pour out [the noun] on [the second noun].
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">[The second noun] wakes, shuddering. 'Agh! I had a terrible dream about drowning and then-- Hey!'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries a jug of water. Understand &quot;pour [something] on [something]&quot; or &quot;splash [something] at/on [something]&quot; as throwing it at.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x beauty / wake beauty / pour water on beauty&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc137.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e266"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex266.html#e266 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>118</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex266.html#e266 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Entrapment</font></b></a><br>A scene in which the player is allowed to explore as much as he likes, but another character strolls in as soon as he has gotten himself into an awkward or embarrassing situation.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc136.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc138.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>If we wanted still to be able to find routes between places, we could define a relationship of connection between rooms, which we would add to as we went along.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc86.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e8"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex8.html#e8 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>60</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex8.html#e8 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mistress of Animals</font></b></a><br>A person who moves randomly between rooms of the map.<p></td></tr></table>
+<a name="e222"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex222.html#e222 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>61</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex222.html#e222 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hotel Stechelberg</font></b></a><br>Signposts such as those provided on hiking paths in the Swiss Alps, which show the correct direction and hiking time to all other locations.<p></td></tr></table>
+<a name="e9"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>62</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex9.html#e9 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A View of Green Hills</font></b></a><br>A LOOK [direction] command which allows the player to see descriptions of the nearby landscape.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc85.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc87.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

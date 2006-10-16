@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.15. What are relations for?</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.10. Making actions work for other people</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,75 +8,70 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc193.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc195.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.15. What are relations for?</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc179.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc181.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.10. Making actions work for other people</b></font></td></tr></table>
 <p>
-<p>It is easy to say what verbs are for: they are to express relations. But what are relations for?
+<p>The &quot;photographing&quot; action now works very nicely when the player does it. But not when others try. Suppose that neither the player, not Clark Gable, is holding the camera:
 <p>
-<p>Inform 7's focus on relations between objects is unusual as an approach to interactive fiction; the concept does not exist in most design systems, or rather, it does but is submerged. Traditional design systems do, after all, have the spatial relations of being inside, on top of, and so on. It could well be said that these are the only relationships that inanimate objects ever have. A stone can be on top of a table, and if so then that expresses their entire association.
+<blockquote><font color="#000080">>photograph clark
+<br>You can hardly photograph without a camera, now can you?
+</font></blockquote><p>
 <p>
-<p>This is because the stone, and the table, have no opinions, emotions, knowledge or memory. If the stone is taken away and then put back, nothing has changed. People, on the other hand, tend to remember having met each other before; they like being in some places, but not others; their behaviour depends on who, or what, is nearby. Being conscious, they have internal states, unlike the stone. Relations are a simple but powerful way to express and talk about such connections, and although they have numerous uses in physical contexts too, they are at their most powerful when helping to make the characters of interactive fiction come alive.
+<blockquote><font color="#000080">>clark, photograph me
+<br>>
+</font></blockquote><p>
+<p>
+<p>An uncanny silence. What has happened is that the rules written so far are all implicitly restricted to the player only. This is because when we write -
+<p>
+<blockquote><font color="#000080">Check photographing: if the camera is not carried then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
+</font></blockquote><p>
+<p>
+<p>the action is &quot;photographing&quot;, not &quot;Clark trying photographing&quot;. In the next few sections we shall see how to make the rules work nicely for everybody. This is a little bit harder, so it should be noted right away that in many projects there is no need. In a game which has no other characters who succumb to persuasion, for instance, only the player will ever try the action.
 <p>
 <p><hr><p>
-<a name="e168"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc194.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>181</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc194.html#e168 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Murder on the Orient Express</font></b></a><br>A number of sleuths (the player among them) find themselves aboard the Orient Express, where a murder has taken place, and one of them is apparently the culprit. Naturally they do not agree on whom, but there is physical evidence which may change their minds...<p></td></tr></table>
+<a name="e50"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex50.html#e50 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>158</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex50.html#e50 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Man of Steel</font></b></a><br>An escaping action which means "go to any room you can reach from here", and is only useful to non-player characters.<p></td></tr></table>
+<a name="e168"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc180.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>159</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc180.html#e168 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Trying Taking Manhattan</font></b></a><br>Replacing the inventory reporting rule with another which does something slightly different.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>The following example creates two new relations, and two new verbs, in order to set up a tangled web of intrigue.
+<p>Inform has built-in commands for other people, and sometimes we may want to adjust the way these work without completely disabling and replacing the command. Suppose, for instance, that instead of
+<p>
+<blockquote><font color="#000080">Kermit the Frog looks through his possessions.
+</font></blockquote><p>
+<p>
+<p>we'd like someone taking inventory to report what he's got, thus:
+<p>
+<blockquote><font color="#000080">Kermit the Frog says, &quot;I seem to be carrying a microphone and wearing a hat and a trenchcoat.&quot;
+</font></blockquote><p>
+<p>
+<p>To do this, we could replace the built-in report rule with a different one.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode263(code) {
+function pasteCode262(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Murder on the Orient Express"\n\nThe Dining Car is a room. Lord Peter is a man in the Dining Car. Sherlock Holmes is a man in the Dining Car. Miss Marple is a woman in the Dining Car. Adam Dalgliesh is a man in the Dining Car.\n\nSuspecting relates various people to one person.\n\nThe verb to suspect (he suspects, they suspect, he suspected, it is suspected) implies the suspecting relation.\n\nDalgliesh suspects Holmes. Holmes suspects Lord Peter. Lord Peter suspects Holmes. Miss Marple suspects the player.\n\nExculpating relates one thing to various people.\n\nThe verb to exculpate (it exculpates, they exculpate, it exculpated, he is exculpated) implies the exculpating relation.\n\nThe silver bullet exculpates the player. The pipe ash exculpates Holmes. The poison pen letter exculpates Lord Peter. The poison pen letter exculpates Miss Marple. [Poor Dalgliesh. I guess he did it.]\n\nThe pipe ash, the letter and the silver bullet are carried.\n\n[Given this, we can then set up elaborate rules:]\n\nInstead of showing something to a person who suspects the player:\n\tsay "\'You would say that,\' remarks [the second noun] darkly.".\n\nInstead of showing something which exculpates the player to someone:\n\tsay "\'How striking!\' says [the second noun]. \'Almost I begin to distrust myself.\'".\n\nTest me with "show the letter to miss marple / show the silver bullet to holmes".\n\n');
+    myProject.pasteCode('"Trying Taking Manhattan"\n\nProcedural rule: substitute the loud inventory rule for the report other people taking inventory rule.\n\nThis is the loud inventory rule:\n\tif the player is the person asked, do nothing;\n\totherwise say "[The person asked] says, \'I seem to be carrying [list of things carried by the person asked][if the person asked is wearing something] and wearing [list of things worn by the person asked][end if].\'"\n\nPersuasion rule for asking someone to try doing something: persuasion succeeds.\n\nGrand Central Station is a room. "Here you are in New York, New York. Any minute now someone is going to burst into song."\n\nKermit the Frog is an man in Grand Central Station. "Kermit the Frog stands nearby, enjoying being green." Kermit is wearing a hat and a trenchcoat. He is carrying a microphone.\n\nTest me with "inventory / kermit, inventory".\n');
 }
 </script>
-<a href="javascript:pasteCode263()"><img border=0 src=../doc_images/paste.png></a> &quot;Murder on the Orient Express&quot;
+<a href="javascript:pasteCode262()"><img border=0 src=../doc_images/paste.png></a> &quot;Trying Taking Manhattan&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Dining Car is a room. Lord Peter is a man in the Dining Car. Sherlock Holmes is a man in the Dining Car. Miss Marple is a woman in the Dining Car. Adam Dalgliesh is a man in the Dining Car.
+<blockquote><font color="#000080">Procedural rule: substitute the loud inventory rule for the report other people taking inventory rule.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Suspecting relates various people to one person.
+<blockquote><font color="#000080">This is the loud inventory rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is the person asked, do nothing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The person asked] says, 'I seem to be carrying [list of things carried by the person asked][if the person asked is wearing something] and wearing [list of things worn by the person asked][end if].'&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The verb to suspect (he suspects, they suspect, he suspected, it is suspected) implies the suspecting relation.
+<blockquote><font color="#000080">Persuasion rule for asking someone to try doing something: persuasion succeeds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Dalgliesh suspects Holmes. Holmes suspects Lord Peter. Lord Peter suspects Holmes. Miss Marple suspects the player.
+<blockquote><font color="#000080">Grand Central Station is a room. &quot;Here you are in New York, New York. Any minute now someone is going to burst into song.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Exculpating relates one thing to various people.
+<blockquote><font color="#000080">Kermit the Frog is an man in Grand Central Station. &quot;Kermit the Frog stands nearby, enjoying being green.&quot; Kermit is wearing a hat and a trenchcoat. He is carrying a microphone.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The verb to exculpate (it exculpates, they exculpate, it exculpated, he is exculpated) implies the exculpating relation.
+<blockquote><font color="#000080">Test me with &quot;inventory / kermit, inventory&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The silver bullet exculpates the player. The pipe ash exculpates Holmes. The poison pen letter exculpates Lord Peter. The poison pen letter exculpates Miss Marple. [Poor Dalgliesh. I guess he did it.]
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The pipe ash, the letter and the silver bullet are carried.
-</font></blockquote><p>
-<p>
-<p>Given this, we can then set up elaborate rules:
-<p>
-<blockquote><font color="#000080">Instead of showing something to a person who suspects the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'You would say that,' remarks [the second noun] darkly.&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of showing something which exculpates the player to someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'How striking!' says [the second noun]. 'Almost I begin to distrust myself.'&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;show the letter to miss marple / show the silver bullet to holmes&quot;.
-</font></blockquote><p>
-<p>
-<p>And so on: &quot;if Dalgliesh suspects someone who is exculpated by something carried by the player...&quot;, for instance, makes a fitting final example for this chapter. The description
-<p>
-<blockquote><font color="#000080">someone who is exculpated by something carried by the player
-</font></blockquote><p>
-<p>
-<p>expresses a complicated idea in very few words, and in such a way that a passer-by looking at the source text would immediately see what was meant.
-<p>
-<p>The moral is that relations allow sophisticated patterns of behaviour to be created in a way that reads back naturally as English.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc194.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e155"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex155.html#e155 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>182</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex155.html#e155 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Mathematical view of relations</font></b></a><br>Some notes on relations from a mathematical point of view, provided only to clarify some technicalities for those who are interested.<p></td></tr></table>
-<a name="e156"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex156.html#e156 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>183</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex156.html#e156 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Graph-theory view of relations</font></b></a><br>Some notes on relations from the point of view of graph theory.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc193.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc195.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc180.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e51"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex51.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>160</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex51.html#e51 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Under Contract</font></b></a><br>Creating a person who accepts most instructions and reacts correctly when a request leads implicitly to inappropriate behavior.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc179.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc181.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

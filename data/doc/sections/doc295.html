@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.10. The Materials folder</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.12. In what order?</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,38 +8,35 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc294.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Publishing</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc296.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.10. The Materials folder</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc294.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc296.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.12. In what order?</b></font></td></tr></table>
 <p>
-<p>If a work is going to be accompanied by other files, it is a good idea to gather these together, and this becomes obligatory when using some of the more advanced &quot;Release along with...&quot; options.
+<p>Large works created by Inform are heaped high with rules, most of them instead rules, but with a leavening of befores and afters as well. What will happen if these conflict with each other? For instance:
 <p>
-<p>Inform adopts the following convention:
-<p>
-<blockquote><font color="#000080">The files to be released when the project Whatever.inform is published are all kept in a subfolder called &quot;Whatever Materials&quot; in the same folder that contains the project.
+<blockquote><font color="#000080">Instead of opening a container, say &quot;Your mother-in-law looks on with such evident disappointment that you withdraw your hand again.&quot;
 </font></blockquote><p>
 <p>
-<p>For example, if we have a project filenamed Magician.inform which lives in a folder called &quot;Works in Progress&quot;, then files might be arranged like so:
-<p>
-<blockquote><font color="#000080">Works in Progress
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Magician Materials
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Collegio.pdf
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mating Wyverns.mp3
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Magician.inform
+<blockquote><font color="#000080">Instead of opening an open container, say &quot;Your daughter tuts in theatrical exasperation at your, like, lameness.&quot;
 </font></blockquote><p>
 <p>
-<p>Of course the project's filename might not match the title given inside the work itself - it might be an abbreviation, say, or a working title. If so then the name of the Materials folder has to match the name of the .inform file, not the title.
+<p>If the player tries to open something which is closed, there is no conflict and it is clearly the mother-in-law who gets in the way. But what if the player tries to open a container which is already open? In this case both rules are applicable, but they cannot both take effect: they are instead rules and whichever happens first will stop the action.
 <p>
-<p>If the advanced &quot;Release along with...&quot; options in the next few sections are used, then Inform will create such a Materials folder if it does not already exist. Moreover, if Inform does use a Materials folder, then that is where it will always place the story file it releases - it will not need to put up a dialogue box asking us where to save the story file, because there is already a natural place to put the story file. For instance, after a successful click on Release, we might then see:
+<p>The answer is that Inform does not allow rules simply to heap up chaotically, nor simply list them in the order they are described, but sorts them according to what it believes to be a logical sequence. Given any two rules A and B, it tries to see which rule is more specific - narrower in application, that is - and applies that one first. In this case Inform finds that any open container is also a container, but not vice versa. That means that the daughter rule is more specific than the mother-in-law rule, so it is given priority. But the following rule would trump either of them:
 <p>
-<blockquote><font color="#000080">Works in Progress
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Magician Materials
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Collegio.pdf
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Magician.zblorb
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mating Wyverns.mp3
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Magician.inform
+<blockquote><font color="#000080">Instead of opening the jewelled box, say &quot;Such exquisite boxes are notorious for traps such as poisoned needles concealed around the lid.&quot;
 </font></blockquote><p>
 <p>
-<p>where &quot;Magician.zblorb&quot; is the actual story file produced by Inform.
+<p>Note that a rule applying only in certain rooms always beats a rule which is applicable everywhere. Here is a larger example:
 <p>
-<p>When everything is ready, then, the whole folder here called &quot;Magician Materials&quot; can be put online as part of a website, or can be zipped into a single &quot;.zip&quot; archive and emailed out, or uploaded to the IF Archive. (It can be renamed as anything we like: no need for it to be called &quot;Magician Materials.zip&quot;.)
+<blockquote><font color="#000080">(R1) Before taking something in the Swamp: ...
+<br>(R2) Before taking the bucket: ...
+<br>(R3) Before taking the frog: ...
+<br>(R4) Before taking an open container: ...
+<br>(R5) Before taking a container: ...
+<br>(R6) Before taking something: ...
+</font></blockquote><p>
+<p>
+<p>Rule (R1) wins because it specifies a room, whereas (R2) and (R3) do not. (R2) and (R3) then trump the others because they name specific objects, not general classes of objects. We then have (R4), (R5) and (R6) in that order since every open container is also a container, and every container is a thing.
+<p>
+<p>The full method used by Inform to sort rules is complicated, and will not always be quite right. We have now seen two different ways to change the ordering if need be. But in practice, when we need rule A to come before rule B, it will usually be a clear-cut case which comes out right. In trickier cases to judge, it mostly doesn't matter anyway.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc294.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc296.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

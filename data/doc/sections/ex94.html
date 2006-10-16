@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.7. Actions applying to kinds of value</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.5. Every turn</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,121 +8,177 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc233.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc235.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.7. Actions applying to kinds of value</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc130.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc132.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.5. Every turn</b></font></td></tr></table>
 <p>
-<p>Almost all actions apply to things: the player picks them up, pushes them, looks at them and so on. Only occasionally do we need to recognise other kinds of value: but when we do, we can, as in the example called &quot;Safety&quot;:
+<p>The passage of time in interactive fiction is broken up into a succession of turns, in each of which the player types a request and is given a response. Usually each such request triggers one action, but sometimes a whole sequence are fired off, as when the player types &quot;get all&quot; in a cluttered room.
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode59(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Safety"\n\nThe Vault is a room. "Snug yet paranoid, this represents the state of the art in cheerless security." The Safe is here. "A mammoth safe, with a dial which can spin to any number, has pride of place. It must weigh about the same as a small car, so don\'t get any ideas." In the Safe is a silver florin. The Safe is closed and fixed in place. Understand "dial" as the Safe.\n\nSpinning it to is an action applying to one thing and one number. Check spinning it to: if the noun is not the Safe then say "[The noun] does not spin." instead. Report spinning it to: say "Click! and nothing else happens."\n\nUnderstand "spin [something] to [a number]" as spinning it to.\n\nAfter spinning the closed Safe to 1384: change the Safe to open; say "Clonk! and the safe door swings slowly open, revealing [list of things in the Safe]."\n\n');
-}
-</script>
-<a href="javascript:pasteCode59()"><img border=0 src=../doc_images/paste.png></a> &quot;Safety&quot;
+<p>One of the last things to happen in each turn is that Inform will apply any rules which have been set to occur &quot;every turn&quot;, like so:
+<p>
+<blockquote><font color="#000080">Every turn, say &quot;The summer breeze shakes the apple-blossom.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Vault is a room. &quot;Snug yet paranoid, this represents the state of the art in cheerless security.&quot; The Safe is here. &quot;A mammoth safe, with a dial which can spin to any number, has pride of place. It must weigh about the same as a small car, so don't get any ideas.&quot; In the Safe is a silver florin. The Safe is closed and fixed in place. Understand &quot;dial&quot; as the Safe.
+<p>This is equivalent to writing:
+<p>
+<blockquote><font color="#000080">An every turn rule: say &quot;The summer breeze shakes the apple-blossom.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Spinning it to is an action applying to one thing and one number. Check spinning it to: if the noun is not the Safe then say &quot;[The noun] does not spin.&quot; instead. Report spinning it to: say &quot;Click! and nothing else happens.&quot;
+<p>Note that the text about blossom, which will quickly become tiresome, is said at the end of every turn, not at the beginning, and in particular not before the player's first opportunity to type a command.
+<p>
+<p>As usual when defining rules, we can add stipulations: any condition can be attached using &quot;when&quot;.
+<p>
+<blockquote><font color="#000080">Every turn when in the Orchard, say &quot;The summer breeze shakes the apple-blossom.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;spin [something] to [a number]&quot; as spinning it to.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After spinning the closed Safe to 1384: change the Safe to open; say &quot;Clonk! and the safe door swings slowly open, revealing [list of things in the Safe].&quot;
-</font></blockquote><p>
-<p>
-<p>The substitution &quot;[a number]&quot; matches any number (actually any whole number that is not too large) typed by the player. Inform checks the various kinds being used to make sure that everything matches, so, for instance, this would be disallowed:
-<p>
-<blockquote><font color="#000080">Understand &quot;spin [something] to [something]&quot; as spinning it to.
+<blockquote><font color="#000080">Every turn when the player can see the rotting fish, say &quot;Your nose twitches involuntarily.&quot;
 </font></blockquote><p>
 <p>
 <p><hr><p>
-<a name="e248"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex248.html#e248 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>221</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex248.html#e248 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Tom's Midnight Garden</font></b></a><br>A clock kind that can be set to any time using "the time understood"; may be turned on and off; and will advance itself only when running. Time on the face is also reported differently depending on whether the clock is analog or digital.<p></td></tr></table>
-<a name="e94"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc234.html#e94 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>222</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc234.html#e94 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Ibid.</font></b></a><br>A system which allows the author to assign footnotes to descriptions, and permits the player to retrieve them again by number, using "the number understood". Footnotes will automatically number themselves, according to the order in which the player discovers them.<p></td></tr></table>
+<a name="e16"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex16.html#e16 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>105</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex16.html#e16 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Witnessed 1</font></b></a><br>A kind of battery which can be put into different devices, and which will lose power after extended use.<p></td></tr></table>
+<a name="e94"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc131.html#e94 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>106</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc131.html#e94 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Text Foosball</font></b></a><br>A game of foosball which relies heavily on every-turn rules.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>&quot;Hitchhiker's Guide to the Galaxy&quot; introduced the idea of footnoted descriptions, and various IF games since have toyed with the idea. The recommended implementation in Inform 6 involved keeping an assortment of footnote objects around, but in Inform 7 the table is a much tidier way of handling the same problem.
+<p>Suppose we want a game of foosball in which our opponent acts every turn, but does different things depending on where the ball currently lies. We can put together a sequence of every-turn rules to account for this, as follows:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode188(code) {
+function pasteCode187(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Ibid."\n\nThe Ship Inn is a room. "Here you are in a lovely pub which your guidebook assures you is extremely authentic. [1 as a footnote].\n\nTo your left sits a party of Italians, with their guidebook.\n\nTo your right is a silent, but not unappealing, young man.".\n\nA party of Italians and a silent young man are people in the Ship Inn. The Italians and the young man are scenery.\n\nThe table is a supporter in the Ship Inn. On the table is a mysterious pie. The description of the pie is "Your waitress told you it was the specialty of the day, Steak and Owl Pie. [2 as a footnote]." The pie is edible.\n\nTable of Footnotes\nassignment\tnote\na number\t"Francis Drake ate here, if the sign on the door is to be believed"\n--\t"this is unlikely, considering that owls are protected animals in England these days [3 as a footnote]"\n--\t"moreover, you can\'t imagine that owl would be very tasty"\n\nFootnotes mentioned is a number that varies.\n\n[Whenever we mention a footnote for the first time, we need to assign it a number, which we will use consistently thereafter. And it\'s probably a good idea to protect ourselves against the author accidentally using a number too large for the footnote table, too. So:]\n\nTo say (footnote - a number) as a footnote:\n\tif footnote > number of filled rows in the Table of Footnotes\n\tbegin;\n\t\tsay "Programming error: footnote assignment out of range.";\n\totherwise;\n\t\tchoose row footnote in the Table of Footnotes;\n\t\tif there is an assignment entry\n\t\tbegin;\n\t\t\tsay "([assignment entry])";\n\t\totherwise;\n\t\t\tchange footnotes mentioned to footnotes mentioned + 1;\n\t\t\tchoose row footnote in the Table of Footnotes;\n\t\t\tchange assignment entry to footnotes mentioned;\n\t\t\tsay "([assignment entry])";\n\t\tend if;\n\tend if.\n\n[Now, in order to let the player view these footnotes, we\'ll need to parse numbers.]\n\nUnderstand "footnote [number]" as looking up a footnote.\n\nLooking up a footnote is an action applying to one number.\n\nCheck looking up a footnote:\n\tif the number understood > footnotes mentioned, say "You haven\'t seen any such footnote." instead;\n\tif the number understood < 1, say "Footnotes are numbered from 1."\n\nCarry out looking up a footnote:\n\tchoose row with assignment of number understood in the Table of Footnotes;\n\tsay "([assignment entry]): [note entry]."\n\nTest me with "footnote 1 / examine pie / footnote 2 / footnote 3".\n\n');
+    myProject.pasteCode('"Text Foosball"\n\nThe Lounge is a room. "The Lounge is appointed with everything necessary to rest and relaxation: a vending machine, a potted palm, a stack of Entertainment Weekly issues from 1993, and -- your pride and joy -- a foosball game."\n\nThe foosball game is scenery in the Lounge. Understand "table" or "football" or "foozball" or "fussball" or "soccer" as the foosball game. The game is a supporter. On the game is a small white ball. The ball can be still, approaching, receding, or unreachable. The description of the ball is "Currently [small white ball condition]."\n\nAfter printing the name of the small white ball, say " ([small white ball condition])".\n\nWhen play begins:\n\tchange left hand status line to "You: [score]";\n\tchange right hand status line to "Joey: [Joey\'s score]".\n\nSome tiny men on sticks are part of the game. Understand "handles" as the men. The description is "Okay, a couple of the tiny men have had their feet broken off, and the table surface itself is a bit warped, and the ball resembles a quail egg in respect of shape and color. This makes for a game of unusual randomness, but skill is overrated."\n\nInstead of attacking or pulling or pushing the game when the ball is unreachable:\n\tsay "You give the table a good shove, and the ball moves ever-so-slightly.";\n\tnow the ball is still.\n\nInstead of taking the white ball:\n\tsay "You\'d forfeit the game if you did that."\n\nInstead of turning the tiny men when the ball is unreachable:\n\tsay "The ball has somehow gotten to a mystical point on the table where it cannot be reached, no matter what. Close inspection reveals that this point has been marked in chalk with a tiny X. Not that that does any good."\n\nInstead of turning the tiny men when the ball is approaching:\n\tif a random chance of 2 in 3 succeeds\n\tbegin;\n\t\tif a random chance of 1 in 2 succeeds, now the ball is receding;\n\t\totherwise now the ball is still;\n\t\tsay "[if the ball is still]Thunk. [otherwise]Thwack! [end if]You keep the ball from reaching its goal! Now it is [small white ball condition].";\n\totherwise;\n\t\tlet Joey score;\n\tend if.\n\nTo let Joey score:\n\tnow the ball is still;\n\tchange Joey\'s score to Joey\'s score + 1;\n\tsay "The ball rolls neatly into your goal, despite your efforts. ";\n\tif Joey\'s score < score, say "You put the ball back in the center with a snap. No reason to worry yet; you\'re still ahead. Joey looks determined, though.";\n\totherwise say "After allowing a moment or two for Joey\'s gloating to pass, you replace it at the center."\n\nInstead of turning the tiny men when a random chance of 1 in 13 succeeds:\n\tif the ball is unreachable, continue the action;\n\tnow the ball is unreachable;\n\tsay "You hit the ball off-center and it rolls sluggishly into a little dip in the surface of the foosball table. ";\n\tif Joey\'s score > 7, say "\'You did that on purpose!\' Joey exclaims indignantly.";\n\totherwise say "You and Joey exchange glances. This is never good."\n\nInstead of turning the tiny men:\n\tsay "You madly rotate the tiny men on sticks! ";\n\tif a random chance of 1 in 2 succeeds\n\tbegin;\n\t\tsay "Hoorah! You hit the ball!";\n\t\tnow the ball is receding;\n\totherwise;\n\t\tsay "Somehow you fail to bring your monopodal player into contact with the ball.";\n    end if.\n\nJoey is a man in the Lounge. "Joey is hunkered over the foosball handles on his side of the table." Joey can be active or inactive.\n\nJoey\'s score is a number that varies.\n\nEvery turn: now Joey is active.\n\nEvery turn when the ball is approaching and Joey is active:\n\tlet total be Joey\'s score + score;\n\tif total > 9, make no decision;\n\tnow Joey is inactive;\n\tlet Joey score;\n\trule succeeds.\n\nEvery turn when the ball is unreachable and Joey is active:\n\tlet total be Joey\'s score + score;\n\tif total > 9, make no decision;\n\tnow Joey is inactive;\n\tsay "Joey glares angrily at the stuck ball."\n\nEvery turn when the ball is receding and Joey is active:\n\tlet total be Joey\'s score + score;\n\tif total > 9, make no decision;\n\tif the ball is unreachable, make no decision;\n\tnow Joey is inactive;\n\tif a random chance of 1 in 2 succeeds\n\tbegin;\n\t\tif a random chance of 1 in 2 succeeds, now the ball is still;\n\t\totherwise now the ball is approaching;\n\t\tsay "Joey connects with your shot. Now the ball is [small white ball condition]!";\n\totherwise;\n\t\tnow the ball is still;\n\t\tsay "Joey tries to block, but misses! Back it goes in the center, where it is [small white ball condition].";\n\t\tchange score to score + 1;\n\tend if.\n\nEvery turn when the ball is still and Joey is active:\n\tlet total be Joey\'s score + score;\n\tif total > 9, make no decision;\n\tif the ball is unreachable, make no decision;\n\tnow Joey is inactive;\n\tif a random chance of 1 in 2 succeeds\n\tbegin;\n\t\tnow the ball is approaching;\n\t\tsay "Joey hits the ball solidly down towards your goal. Now it is [small white ball condition].";\n\totherwise;\n\t\tsay "Joey fails to hit the ball in your direction. It remains [small white ball condition].";\n\tend if.\n\nEvery turn:\n\tlet total be Joey\'s score + score;\n\tif total > 9\n\tbegin;\n\t\tif Joey\'s score > score, end the game saying "Rats! Joey wins!";\n\t\tif Joey\'s score < score, end the game saying "Victory is yours!";\n\t\tif Joey\'s score is score, end the game saying "A perfect tie.";\n\tend if.\n');
 }
 </script>
-<a href="javascript:pasteCode188()"><img border=0 src=../doc_images/paste.png></a> &quot;Ibid.&quot;
+<a href="javascript:pasteCode187()"><img border=0 src=../doc_images/paste.png></a> &quot;Text Foosball&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Ship Inn is a room. &quot;Here you are in a lovely pub which your guidebook assures you is extremely authentic. [1 as a footnote].
+<blockquote><font color="#000080">The Lounge is a room. &quot;The Lounge is appointed with everything necessary to rest and relaxation: a vending machine, a potted palm, a stack of Entertainment Weekly issues from 1993, and -- your pride and joy -- a foosball game.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To your left sits a party of Italians, with their guidebook.
+<blockquote><font color="#000080">The foosball game is scenery in the Lounge. Understand &quot;table&quot; or &quot;football&quot; or &quot;foozball&quot; or &quot;fussball&quot; or &quot;soccer&quot; as the foosball game. The game is a supporter. On the game is a small white ball. The ball can be still, approaching, receding, or unreachable. The description of the ball is &quot;Currently [small white ball condition].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To your right is a silent, but not unappealing, young man.&quot;.
+<blockquote><font color="#000080">After printing the name of the small white ball, say &quot; ([small white ball condition])&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A party of Italians and a silent young man are people in the Ship Inn. The Italians and the young man are scenery.
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change left hand status line to &quot;You: [score]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change right hand status line to &quot;Joey: [Joey's score]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The table is a supporter in the Ship Inn. On the table is a mysterious pie. The description of the pie is &quot;Your waitress told you it was the specialty of the day, Steak and Owl Pie. [2 as a footnote].&quot; The pie is edible.
+<blockquote><font color="#000080">Some tiny men on sticks are part of the game. Understand &quot;handles&quot; as the men. The description is &quot;Okay, a couple of the tiny men have had their feet broken off, and the table surface itself is a bit warped, and the ball resembles a quail egg in respect of shape and color. This makes for a game of unusual randomness, but skill is overrated.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Footnotes
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">assignment</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">note</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Francis Drake ate here, if the sign on the door is to be believed&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">--</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;this is unlikely, considering that owls are protected animals in England these days [3 as a footnote]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">--</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;moreover, you can't imagine that owl would be very tasty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">Instead of attacking or pulling or pushing the game when the ball is unreachable:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You give the table a good shove, and the ball moves ever-so-slightly.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the ball is still.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Footnotes mentioned is a number that varies.
+<blockquote><font color="#000080">Instead of taking the white ball:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'd forfeit the game if you did that.&quot;
 </font></blockquote><p>
 <p>
-<p>Whenever we mention a footnote for the first time, we need to assign it a number, which we will use consistently thereafter. And it's probably a good idea to protect ourselves against the author accidentally using a number too large for the footnote table, too. So:
+<blockquote><font color="#000080">Instead of turning the tiny men when the ball is unreachable:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The ball has somehow gotten to a mystical point on the table where it cannot be reached, no matter what. Close inspection reveals that this point has been marked in chalk with a tiny X. Not that that does any good.&quot;
+</font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say (footnote - a number) as a footnote:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if footnote > number of filled rows in the Table of Footnotes
+<blockquote><font color="#000080">Instead of turning the tiny men when the ball is approaching:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 2 in 3 succeeds
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Programming error: footnote assignment out of range.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds, now the ball is receding;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the ball is still;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[if the ball is still]Thunk. [otherwise]Thwack! [end if]You keep the ball from reaching its goal! Now it is [small white ball condition].&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row footnote in the Table of Footnotes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if there is an assignment entry
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;([assignment entry])&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change footnotes mentioned to footnotes mentioned + 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row footnote in the Table of Footnotes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change assignment entry to footnotes mentioned;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;([assignment entry])&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let Joey score;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<p>Now, in order to let the player view these footnotes, we'll need to parse numbers.
-<p>
-<blockquote><font color="#000080">Understand &quot;footnote [number]&quot; as looking up a footnote.
+<blockquote><font color="#000080">To let Joey score:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the ball is still;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change Joey's score to Joey's score + 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The ball rolls neatly into your goal, despite your efforts. &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score < score, say &quot;You put the ball back in the center with a snap. No reason to worry yet; you're still ahead. Joey looks determined, though.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;After allowing a moment or two for Joey's gloating to pass, you replace it at the center.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Looking up a footnote is an action applying to one number.
+<blockquote><font color="#000080">Instead of turning the tiny men when a random chance of 1 in 13 succeeds:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the ball is unreachable, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the ball is unreachable;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You hit the ball off-center and it rolls sluggishly into a little dip in the surface of the foosball table. &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score > 7, say &quot;'You did that on purpose!' Joey exclaims indignantly.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You and Joey exchange glances. This is never good.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check looking up a footnote:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number understood > footnotes mentioned, say &quot;You haven't seen any such footnote.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number understood < 1, say &quot;Footnotes are numbered from 1.&quot;
+<blockquote><font color="#000080">Instead of turning the tiny men:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You madly rotate the tiny men on sticks! &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Hoorah! You hit the ball!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the ball is receding;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Somehow you fail to bring your monopodal player into contact with the ball.&quot;;
+<br>    end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out looking up a footnote:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row with assignment of number understood in the Table of Footnotes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;([assignment entry]): [note entry].&quot;
+<blockquote><font color="#000080">Joey is a man in the Lounge. &quot;Joey is hunkered over the foosball handles on his side of the table.&quot; Joey can be active or inactive.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;footnote 1 / examine pie / footnote 2 / footnote 3&quot;.
+<blockquote><font color="#000080">Joey's score is a number that varies.
 </font></blockquote><p>
 <p>
-<p>This method does require us to keep track of where a footnote appears in the table. If we found this inconvenient, we could add a column to the footnote table so that we could invoke it with tags like &quot;[appearance quip as a footnote]&quot;.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc234.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc233.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc235.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<blockquote><font color="#000080">Every turn: now Joey is active.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the ball is approaching and Joey is active:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9, make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Joey is inactive;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let Joey score;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the ball is unreachable and Joey is active:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9, make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Joey is inactive;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey glares angrily at the stuck ball.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the ball is receding and Joey is active:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9, make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the ball is unreachable, make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Joey is inactive;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds, now the ball is still;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the ball is approaching;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey connects with your shot. Now the ball is [small white ball condition]!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the ball is still;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey tries to block, but misses! Back it goes in the center, where it is [small white ball condition].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change score to score + 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the ball is still and Joey is active:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9, make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the ball is unreachable, make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Joey is inactive;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the ball is approaching;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey hits the ball solidly down towards your goal. Now it is [small white ball condition].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey fails to hit the ball in your direction. It remains [small white ball condition].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score > score, end the game saying &quot;Rats! Joey wins!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score < score, end the game saying &quot;Victory is yours!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score is score, end the game saying &quot;A perfect tie.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc131.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc130.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc132.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

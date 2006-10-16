@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.15. Varying which table to look at</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.6. Repeating through tables</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,55 +8,54 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc223.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Tables</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc225.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.15. Varying which table to look at</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc223.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Tables</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc225.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.6. Repeating through tables</b></font></td></tr></table>
 <p>
-<p>So far, we have always used fixed table names when referring to tables: for instance in source like &quot;sort the Table of Recent Monarchs in accession order&quot;, we refer to the &quot;Table of Recent Monarchs&quot;, a definite and explicitly named table.
-<p>
-<p>With a little care, however, we are allowed to have variables which themselves hold the names of tables. This opens up the possibility of more elaborate ways of storing and interconnecting information in table form, but is probably best avoided until it becomes necessary.
-<p>
-<p>For example, suppose we have two different tables with the same basic structure:
+<p>We very often want to run through a table doing something to, or with, each row in turn, so a special loop is provided for this. Rather than having to write all this out:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode56(code) {
+function pasteCode45(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('Table 1 - Nifty Opening Plays in US Scrabble\nword\tscore\n"muzjiks"\t128\n\nTable 2 - Nifty Opening Plays in UK Scrabble\nword\tscore\n"quartzy"\t126\n"squeezy"\t126\n\n[We could then record which one of these tables to use in a variable:]\n\nThe lexicon is a table-name that varies. The lexicon is Table 1.\n\n[Note that for this purpose, the kind of value is a special kind called "table-name", not "table". (The word "table" already has too many meanings and we must be careful to avoid ambiguities here.) We could make use of this as follows, for instance:]\n\nTo flip tables:\n\tsay "You exchange dictionaries, lexically crossing the Atlantic. ";\n\tif the lexicon is Table 1, change the lexicon to Table 2;\n\totherwise change the lexicon to Table 1;\n\tchoose a random row in the lexicon;\n\tsay "Did you know that according to [the lexicon], [word entry] scores [score entry]?"\n\n');
+    myProject.pasteCode('To list the succession:\n\tsay "The Succession List runs as follows...";\n\trepeat with N running from 1 to the number of rows in the Table of Recent Monarchs begin;\n\t\tchoose row N in the Table of Recent Monarchs;\n\t\tsay "[accession entry]: [name entry] ([family entry]).";\n\tend repeat.\n\n');
 }
 </script>
-<a href="javascript:pasteCode56()"><img border=0 src=../doc_images/paste.png></a> Table 1 - Nifty Opening Plays in US Scrabble
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">word</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">score</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">&quot;muzjiks&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">128</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<a href="javascript:pasteCode45()"><img border=0 src=../doc_images/paste.png></a> To list the succession:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The Succession List runs as follows...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with N running from 1 to the number of rows in the Table of Recent Monarchs begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row N in the Table of Recent Monarchs;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[accession entry]: [name entry] ([family entry]).&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table 2 - Nifty Opening Plays in UK Scrabble
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">word</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">score</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">&quot;quartzy&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">126</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">&quot;squeezy&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">126</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<p>We can simply write this instead:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode46(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('To list the succession:\n\tsay "The Succession List runs as follows...";\n\trepeat through the Table of Recent Monarchs begin;\n\t\tsay "[accession entry]: [name entry] ([family entry]).";\n\tend repeat.\n\n');
+}
+</script>
+<a href="javascript:pasteCode46()"><img border=0 src=../doc_images/paste.png></a> To list the succession:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The Succession List runs as follows...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Recent Monarchs begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[accession entry]: [name entry] ([family entry]).&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>We could then record which one of these tables to use in a variable:
+<p>As we might expect, this runs through the rows in order, starting at the top and choosing each in turn. (No loop variable is needed here.) We can alternatively go through in reverse order, or in order of the values in any column:
 <p>
-<blockquote><font color="#000080">The lexicon is a table-name that varies. The lexicon is Table 1.
+<blockquote><font color="#000080">repeat through the Table of Recent Monarchs in reverse order begin; ...
+<br>repeat through the Table of Recent Monarchs in name order begin; ...
+<br>repeat through the Table of Recent Monarchs in reverse accession order begin; ...
 </font></blockquote><p>
 <p>
-<p>Note that for this purpose, the kind of value is a special kind called &quot;table-name&quot;, not &quot;table&quot;. (The word &quot;table&quot; already has too many meanings and we must be careful to avoid ambiguities here.) We could make use of this as follows, for instance:
+<p>Here text is placed in alphabetical order, numbers are in numerical order, times in chronological order and so forth. (In a loop like this, the data is not searched very efficiently, which is fine for modest-sized tables like the examples in this chapter, but might be a problem for much larger tables: see the later section on sorting.)
 <p>
-<blockquote><font color="#000080">To flip tables:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You exchange dictionaries, lexically crossing the Atlantic. &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the lexicon is Table 1, change the lexicon to Table 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change the lexicon to Table 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose a random row in the lexicon;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Did you know that according to [the lexicon], [word entry] scores [score entry]?&quot;
-</font></blockquote><p>
-<p>
-<p>which produces text such as
-<p>
-<blockquote><font color="#000080">You exchange dictionaries, lexically crossing the Atlantic. Did you know that according to Table 1 - Nifty Opening Plays in US Scrabble, muzjiks scores 128?
-</font></blockquote><p>
+<p>&quot;Repeat through...&quot; does something else, too: it skips any blank rows in the table, which brings us to the business of blankness.
 <p>
 <p><hr><p>
-<a name="e57"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex57.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>206</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex57.html#e57 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Farewell</font></b></a><br>People who respond to conversational gambits, summarize what they said before if asked again, and provide recap of conversation that is past.<p></td></tr></table>
+<a name="e170"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex170.html#e170 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>200</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex170.html#e170 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Port Royal 4</font></b></a><br>A cell window through which the player can see people who were in Port Royal in the current year of game-time.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc223.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc225.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

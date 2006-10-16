@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.10. Now...</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.6. Units</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,96 +8,105 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc111.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc113.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.10. Now...</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc208.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc210.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.6. Units</b></font></td></tr></table>
 <p>
-<p>As Chapter 5 has already discussed, Inform looks at a whole range of &quot;relations&quot; between objects, many of which we can change. The general rule is as follows. Suppose S is a sentence about a relationship between things. Then there are three things we can do with S:
+<p>Some of the examples in the last few sections were slightly strained because they used numbers where an English speaker not quite do so. We tend not to say &quot;Isabella has height 68&quot;: we would more normally say &quot;Isabella is 5 foot 8.&quot; Perhaps the computer will need to store that measurement as the number 68 in some register or other, but we really don't want to know that.
 <p>
-<blockquote><font color="#000080">S. - The relation holds at the start of play.
-<br>if S, ...; - Does the relation hold right now?
-<br>now S; - Make the relation hold from now on.
+<p>Inform allows us to create new, basically numerical kinds of value, like so:
+<p>
+<blockquote><font color="#000080">A weight is a kind of value. 10kg specifies a weight.
 </font></blockquote><p>
 <p>
-<p>For instance,
+<p>By contrast, the kinds of value seen so far have been set up thus:
 <p>
-<blockquote><font color="#000080">The apple is in the basket.
-<br>if the apple is in the basket, ...;
-<br>now the apple is in the basket;
+<blockquote><font color="#000080">A colour is a kind of value. The colours are red, green and blue.
 </font></blockquote><p>
 <p>
-<p>The effect of &quot;now the apple is in the basket&quot; is identical to &quot;move the apple to the basket&quot;, so this appears to offer nothing new; and &quot;now&quot; duplicates other things already available, too, because &quot;now the oaken door is open&quot; does the same thing as &quot;change the oaken door to open&quot;. But &quot;now&quot; is more general and more flexible. For instance,
+<p>We can choose to make a new kind of value of either variety, but we can't mix the two in the same kind: it will either be numerical at heart (&quot;10kg&quot;) or verbal at heart (&quot;blue&quot;).
 <p>
-<blockquote><font color="#000080">now the top hat is worn by Mr Darcy;
+<p>The effect of &quot;10kg specifies a weight&quot; is to tell Inform that text matching this form is a constant value of kind &quot;weight&quot;. So, for instance,
+<p>
+<blockquote><font color="#000080">The maximum load is a weight that varies. The maximum load is 8000kg.
 </font></blockquote><p>
 <p>
-<p>will make the hat worn, rather than simply carried, by Darcy: this is something which could not be done with the &quot;move&quot; phrase. We can also apply &quot;now&quot; to many things at once:
-<p>
-<blockquote><font color="#000080">now all the doors are open;
-<br>now all of the things in the sack are in the box;
+<blockquote><font color="#000080">if the maximum load <= 8000kg, ...
 </font></blockquote><p>
 <p>
-<p>The second of these moves the entire contents of the sack to the box.
+<p>Weights behave just like numbers in the ways we can compare them: but Inform respects the fact that a weight is not just any number, so it would not allow us to compare (say) &quot;8000kg&quot; and &quot;5 foot 8&quot;. Weights can meaningfully be compared only with other weights.
+<p>
+<p>We can also say weights:
+<p>
+<blockquote><font color="#000080">The Weighbridge is a room. &quot;A sign declares that the maximum load is [maximum load].&quot;
+</font></blockquote><p>
+<p>
+<p>...which will produce the text &quot;A sign declares that the maximum load is 8000kg.&quot;
 <p>
 <p><hr><p>
-<a name="e19"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex19.html#e19 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>98</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex19.html#e19 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bee Chambers</font></b></a><br>A maze with directions between rooms randomized at the start of play.<p></td></tr></table>
-<a name="e203"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc112.html#e203 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>99</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc112.html#e203 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Technological Terror</font></b></a><br>A ray gun which destroys objects, leaving their component parts behind.<p></td></tr></table>
+<a name="e246"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex246.html#e246 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>188</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex246.html#e246 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> rBGH</font></b></a><br>The player character's height is selected randomly at the start of play.<p></td></tr></table>
+<a name="e203"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc209.html#e203 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>189</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc209.html#e203 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Wonderland</font></b></a><br>Hiking Mount Rainier, with attention to which locations are higher and which lower than the present location.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>Suppose we have a landscape with a great deal of up and down variation, where GO UP and GO DOWN will be significant almost everywhere, and specifying them all individually a tremendous pain:
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode299(code) {
+function pasteCode298(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Technological Terror"\n\nThe Decomposition Ray Gun is a thing carried by the player.\n\n[First we need to define our shooting action:]\n\nShooting it with is an action applying to two things.\n\nCheck shooting something with something:\n\tif the player is not carrying the Ray Gun, say "You are pathetically unarmed!" instead;\n\tif the second noun is not the Ray Gun, say "[The second noun] does not fire." instead;\n\tif the noun is the Ray Gun, say "Nice trick if you can do it!" instead;\n\tif the noun is the player, say "That would be disastrous!" instead.\n\n[Next, some grammar to allow the player to use this action:]\n\nUnderstand "shoot [gun] at [something ungunlike]" as shooting it with (with nouns reversed).\n\nDefinition: a thing is ungunlike if it is not the gun.\n\nUnderstand "shoot [something ungunlike] with [gun]" as shooting it with. Understand "shoot [something] with [something]" as shooting it with.\n\nUnderstand "shoot [something] at [something]" as shooting it with (with nouns reversed). Understand "fire [gun] at [something ungunlike]" as shooting it with (with nouns reversed). Understand "fire at [something ungunlike] with [gun]" as shooting it with. Understand "fire at [something] with [something]" as shooting it with.\n\n[Strictly speaking, we only need these last grammar lines (with "understand shoot something...") in order to define an action that the player can take. Adding more grammar lines means that Inform will try to match the most specific ones first, which is useful when the player types something ambiguous and there is one choice that obviously fits this action better than the others. See the chapter on Understanding for a further discussion.]\n\n[Here we get to use "now..." to give it its destructive effect:]\n\nCarry out shooting something with something:\n\tsay "ZAP! [The noun] twinkles out of existence! [if something is part of the noun][The list of things which are part of the noun] clatter to the ground! [end if][paragraph break]";\n\tnow every thing which is part of the noun is in the location;\n\tremove the noun from play.\n\nThe Deathbot Assembly Line is a room. "Here is the heart of the whole operation, where your opponents are assembled fresh from scrap metal and bits of old car." The dangerous robot is a thing in the Assembly Line. "One dangerous robot looks ready to take you on!" A robotic head, a drill arm, a needle arm, a crushing leg and a kicking leg are parts of the dangerous robot.\n\nInstead of examining something when something is part of the noun:\n\tsay "[The noun] consists of [list of things which are part of the noun]."\n\nTest me with "x robot / shoot robot / fire at kicking leg / shoot gun at drill arm / look".\n');
+    myProject.pasteCode('"Wonderland"\n\nAn altitude is a kind of value. 1000 feet specifies an altitude. A room has an altitude.\n\nDefinition: a room is low if its altitude is 3000 feet or less. Definition: a room is high if its altitude is 5000 feet or more.\n\nInstead of going down:\n\tif an adjacent room is lower than the location\n\tbegin;\n\t\tlet the valley be the lowest adjacent room;\n\t\tlet the way be the best route from the location to the valley;\n\t\tsay "(that is, [way])[paragraph break]";\n\t\ttry going the way;\n\totherwise;\n\t\tsay "You\'re in a local valley: there\'s no down from here.";\n\tend if.\n\nInstead of going up:\n\tif an adjacent room is higher than the location\n\tbegin;\n\t\tlet the peak be the highest adjacent room;\n\t\tlet the way be the best route from the location to the peak;\n\t\tsay "(that is, [way])[paragraph break]";\n\t\ttry going the way;\n\totherwise;\n\t\tsay "You\'re on a local peak.";\n\tend if.\n\n\nParadise is a room. Paradise has altitude 5400 feet. "A handsome parking lot, a picnic ground, and the Henry M. Jackson Memorial Visitor Center. The latter offers, for serious climbers, a hot shower; for nature enthusiasts, an interpretive museum; and for car-trippers, a gift shop selling canned slugs. All of which is a largely unsuccessful distraction from the peak of Mt. Rainier beyond."\n\nCougar Rock is southwest of Paradise. The altitude of Cougar Rock is 3180 feet. "Numerous individual campsites and (on the road inventively labeled \'F\') a handful of larger campgrounds suitable for church groups and family reunions."\n\nLongmire is southwest of Cougar Rock. It has altitude 2760 feet. "A tiny town: it has to offer a few groceries, a post office, and a lodge for people who do not care to camp, all built in a rustic Park Service way."\n\nPanorama Point is north of Paradise. It has altitude 6800 feet. Camp Muir is north of Panorama Point. It has altitude 10188 feet. Columbia Crest is northwest of Camp Muir. It has altitude 14410 feet. St Andrews Rock is west of Columbia Crest. It has altitude 10992 feet. Camp Schuman is northeast of Columbia Crest. It has altitude 9510 feet.\n\n[Since Mount Rainier National Park runs to over 235,000 acres, we will omit the rest of the locations, but it does seem fair to give a little more credit to anyone who makes the summit:]\n\nInstead of going up in the highest room:\n\tsay "You\'re standing at the summit of Mt. Rainier, the highest point in the state of Washington. There is no up."\n\nTest me with "up / up / up / down / down / up / up".\n');
 }
 </script>
-<a href="javascript:pasteCode299()"><img border=0 src=../doc_images/paste.png></a> &quot;Technological Terror&quot;
+<a href="javascript:pasteCode298()"><img border=0 src=../doc_images/paste.png></a> &quot;Wonderland&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Decomposition Ray Gun is a thing carried by the player.
+<blockquote><font color="#000080">An altitude is a kind of value. 1000 feet specifies an altitude. A room has an altitude.
 </font></blockquote><p>
 <p>
-<p>First we need to define our shooting action:
-<p>
-<blockquote><font color="#000080">Shooting it with is an action applying to two things.
+<blockquote><font color="#000080">Definition: a room is low if its altitude is 3000 feet or less. Definition: a room is high if its altitude is 5000 feet or more.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check shooting something with something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not carrying the Ray Gun, say &quot;You are pathetically unarmed!&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not the Ray Gun, say &quot;[The second noun] does not fire.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the Ray Gun, say &quot;Nice trick if you can do it!&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the player, say &quot;That would be disastrous!&quot; instead.
+<blockquote><font color="#000080">Instead of going down:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if an adjacent room is lower than the location
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the valley be the lowest adjacent room;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location to the valley;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(that is, [way])[paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try going the way;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're in a local valley: there's no down from here.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<p>Next, some grammar to allow the player to use this action:
-<p>
-<blockquote><font color="#000080">Understand &quot;shoot [gun] at [something ungunlike]&quot; as shooting it with (with nouns reversed).
+<blockquote><font color="#000080">Instead of going up:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if an adjacent room is higher than the location
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the peak be the highest adjacent room;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location to the peak;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(that is, [way])[paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try going the way;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're on a local peak.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a thing is ungunlike if it is not the gun.
+<p>
+<blockquote><font color="#000080">Paradise is a room. Paradise has altitude 5400 feet. &quot;A handsome parking lot, a picnic ground, and the Henry M. Jackson Memorial Visitor Center. The latter offers, for serious climbers, a hot shower; for nature enthusiasts, an interpretive museum; and for car-trippers, a gift shop selling canned slugs. All of which is a largely unsuccessful distraction from the peak of Mt. Rainier beyond.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;shoot [something ungunlike] with [gun]&quot; as shooting it with. Understand &quot;shoot [something] with [something]&quot; as shooting it with.
+<blockquote><font color="#000080">Cougar Rock is southwest of Paradise. The altitude of Cougar Rock is 3180 feet. &quot;Numerous individual campsites and (on the road inventively labeled 'F') a handful of larger campgrounds suitable for church groups and family reunions.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;shoot [something] at [something]&quot; as shooting it with (with nouns reversed). Understand &quot;fire [gun] at [something ungunlike]&quot; as shooting it with (with nouns reversed). Understand &quot;fire at [something ungunlike] with [gun]&quot; as shooting it with. Understand &quot;fire at [something] with [something]&quot; as shooting it with.
+<blockquote><font color="#000080">Longmire is southwest of Cougar Rock. It has altitude 2760 feet. &quot;A tiny town: it has to offer a few groceries, a post office, and a lodge for people who do not care to camp, all built in a rustic Park Service way.&quot;
 </font></blockquote><p>
 <p>
-<p>Strictly speaking, we only need these last grammar lines (with &quot;understand shoot something...&quot;) in order to define an action that the player can take. Adding more grammar lines means that Inform will try to match the most specific ones first, which is useful when the player types something ambiguous and there is one choice that obviously fits this action better than the others. See the chapter on Understanding for a further discussion.
-<p>
-<p>Here we get to use &quot;now...&quot; to give it its destructive effect:
-<p>
-<blockquote><font color="#000080">Carry out shooting something with something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;ZAP! [The noun] twinkles out of existence! [if something is part of the noun][The list of things which are part of the noun] clatter to the ground! [end if][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing which is part of the noun is in the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play.
+<blockquote><font color="#000080">Panorama Point is north of Paradise. It has altitude 6800 feet. Camp Muir is north of Panorama Point. It has altitude 10188 feet. Columbia Crest is northwest of Camp Muir. It has altitude 14410 feet. St Andrews Rock is west of Columbia Crest. It has altitude 10992 feet. Camp Schuman is northeast of Columbia Crest. It has altitude 9510 feet.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Deathbot Assembly Line is a room. &quot;Here is the heart of the whole operation, where your opponents are assembled fresh from scrap metal and bits of old car.&quot; The dangerous robot is a thing in the Assembly Line. &quot;One dangerous robot looks ready to take you on!&quot; A robotic head, a drill arm, a needle arm, a crushing leg and a kicking leg are parts of the dangerous robot.
+<p>Since Mount Rainier National Park runs to over 235,000 acres, we will omit the rest of the locations, but it does seem fair to give a little more credit to anyone who makes the summit:
+<p>
+<blockquote><font color="#000080">Instead of going up in the highest room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're standing at the summit of Mt. Rainier, the highest point in the state of Washington. There is no up.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining something when something is part of the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] consists of [list of things which are part of the noun].&quot;
+<blockquote><font color="#000080">Test me with &quot;up / up / up / down / down / up / up&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x robot / shoot robot / fire at kicking leg / shoot gun at drill arm / look&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc112.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc111.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc113.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc209.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc208.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc210.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

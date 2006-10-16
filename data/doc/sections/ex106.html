@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.16. Randomness</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.2. New commands for old grammar</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,166 +8,67 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc117.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc119.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.16. Randomness</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc237.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc239.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.2. New commands for old grammar</b></font></td></tr></table>
 <p>
-<p>Sometimes we want to introduce random behaviour into play. We usually do this by generating random values, and then acting differently depending on what they are. The following:
+<p>In the photography example, we are providing entirely new grammar for an action  not ordinarily built in to Inform. But we often want simply to provide alternative grammar for existing actions, or even to put new interpretations on commands that Inform already recognises. For instance:
 <p>
-<blockquote><font color="#000080">a random number from 2 to 5
+<blockquote><font color="#000080">Understand &quot;deposit [something] in [an open container]&quot; as inserting it into.
 </font></blockquote><p>
 <p>
-<p>produces, as it suggests, a random number drawn from the choices 2, 3, 4 or 5, each of which is equally likely to come up.
+<p>The inserting action is built in to Inform, but the command &quot;deposit&quot; is not, so this is created as new. It is occasionally useful to put a twist on this:
 <p>
-<p>We can also use random conditions:
-<p>
-<blockquote><font color="#000080">if a random chance of 2 in 3 succeeds then ...
+<blockquote><font color="#000080">Understand &quot;fill [an open container] with [something]&quot; as inserting it into (with nouns reversed).
 </font></blockquote><p>
 <p>
-<p>Here is a rule which applies only 15% of the time:
+<p>The clause &quot;(with nouns reversed)&quot; tells Inform to exchange the two nouns parsed, which is necessary because the inserting action expects the noun to be the item and the second noun to be the container, not vice versa.
 <p>
-<blockquote><font color="#000080">Instead of waiting when a random chance of 15 in 100 succeeds: ...
+<p>The following example:
+<p>
+<blockquote><font color="#000080">Understand &quot;access [something]&quot; as opening.
 </font></blockquote><p>
 <p>
-<p>If we make a new kind of value, we can also take random values from it, as in the following miniature world:
+<p>might look as if it makes &quot;access&quot; behave just like &quot;open&quot; when the player types it, but that's not so: &quot;open&quot; can also be used in constructions like &quot;open the door with the brass key&quot;, in which case it is understood as the unlocking action. We could add another line to make &quot;access&quot; behave this way too, but if what we really want is to make &quot;access&quot; behave just like &quot;open&quot;, it's easier simply to say so:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode20(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Weathering"\n\nA cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.\n\nThe Mount Pisgah Station is a room. "The rocky peak of Mt. Pisgah (altitude 872m) is graced only by an automatic weather station. The clouds, close enough almost to touch, are [a random cloud pattern]. Temperature: [a random number from 7 to 17] degrees, barometric pressure: [950 + a random number from 0 to 15] millibars."\n\n');
-}
-</script>
-<a href="javascript:pasteCode20()"><img border=0 src=../doc_images/paste.png></a> &quot;Weathering&quot;
+<blockquote><font color="#000080">Understand the command &quot;access&quot; as &quot;open&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.
+<p>This is very useful when adding a new command which needs synonyms:
+<p>
+<blockquote><font color="#000080">Understand the commands &quot;snap&quot; and &quot;picture&quot; as &quot;photograph&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Mount Pisgah Station is a room. &quot;The rocky peak of Mt. Pisgah (altitude 872m) is graced only by an automatic weather station. The clouds, close enough almost to touch, are [a random cloud pattern]. Temperature: [a random number from 7 to 17] degrees, barometric pressure: [950 + a random number from 0 to 15] millibars.&quot;
-</font></blockquote><p>
-<p>
-<p>The value &quot;a random cloud pattern&quot; produces a random choice from the seven cloud patterns, each equally likely.
-<p>
-<p>Testing IF which makes random choices can be rather frustrating, because a problem showing up on one attempt may not show up on another. To ease testing, the following sentence will &quot;fix&quot; the process of generating these random numbers so that they are not random at all - the same sequence of random numbers will be produced on each run.
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode21(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('When play begins, seed the random-number generator with 1234.\n\n');
-}
-</script>
-<a href="javascript:pasteCode21()"><img border=0 src=../doc_images/paste.png></a> When play begins, seed the random-number generator with 1234.
-</font></blockquote><p>
-<p>
-<p>The seed value &quot;1234&quot; can be anything positive; a different sequence of random numbers will be produced for each different seed value. A seed value of 0 restores the RNG to properly random behaviour again.
+<p>We can check the current stock of commands by looking at the table in the Actions index: for instance, before making &quot;snap&quot; synonymous with &quot;photograph&quot;, it might be wise to check that it is not already defined as a command for breaking something.
 <p>
 <p><hr><p>
-<a name="e106"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc118.html#e106 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>101</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc118.html#e106 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Uptown Girls</font></b></a><br>A stream of random pedestrians who go by the player.<p></td></tr></table>
+<a name="e106"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc238.html#e106 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>216</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc238.html#e106 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Anchorite</font></b></a><br>By default, Inform understands GET OFF, GET UP, or GET OUT when the player is sitting or standing on an enterable object. We might also want to add GET DOWN and DOWN as exit commands, though:<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we have an urban space we want to populate with random passers-by. These should have a range of characteristics and not always be described in the same way; and once the player has noticed one, he should be able to look at her further, until another pedestrian crosses his path.
+<p>With GET DOWN, we can replace the whole command, which will not interfere with the normal function of the TAKE verb, or allow the player to attempt to GET any other directions:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode200(code) {
+function pasteCode199(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Uptown Girls"\n\nRiverside Drive is a room. "There\'s a pleasant late-afternoon view of the Hudson, and a snap in the air, and you would rather be here than anywhere."\n\nInstead of going a direction, say "Oh, you know where you\'re going; no need to deviate from the usual path."\n\nInstead of waiting, say "You stroll along enjoying the November crispness."\n\n[It gets a little annoying to have a random event occurring every single turn of play, so let\'s introduce some randomness to determine how often the message appears:]\n\nEvery turn when a random chance of 1 in 3 succeeds:\n\treset passerby;\n\tchoose a random row in the Table of Atmospheric Events;\n\tsay "[event entry][paragraph break]"\n\nTable of Atmospheric Events\nevent\n"Slowly [a passerby] strolls by, turning to look at you as she passes."\n"Some [passerby] nearly bumps into you."\n"You dodge to avoid [a passerby]."\n"You weave around [a passerby], who has stalled to look into a window."\n"There\'s a ruckus as one of the ubiquitous taxis nearly collides with [a passerby] crossing the street."\n"[The passerby] beside you waves to a friend across the street."\n"To your left, [a passerby] drops her purse, and swears as she retrieves it."\n\nHair color is a kind of value. A person has hair color. the hair colors are red-headed, brunette, blonde.\n\nHeight is a kind of value. A person has height. The heights are tall, medium-height, short.\n\nGrooming is a kind of value. A person has grooming. The groomings are messy and tidy.\n\nTo reset passerby:\n\tchange the hair color of the passerby to a random hair color;\n\tchange the height of the passerby to a random height;\n\tchange the grooming of the passerby to a random grooming.\n\nThe passerby is a woman in Riverside Drive. The passerby is scenery. Understand "woman" or "lady" as the passerby. The printed name of the passerby is "[if a random chance of 1 in 2 succeeds]woman[otherwise]lady[end if]".\n\n[At this point we borrow some techniques from later to describe the woman with a random combination of characteristics, and to let the player refer to her by those traits:]\n\nBefore printing the name of the passerby:\n\tif a random chance of 1 in 4 succeeds, say "[height] ";\n\tif a random chance of 1 in 4 succeeds, say "[grooming] ";\n\tif a random chance of 1 in 4 succeeds, say "[hair color] ".\n\nUnderstand the hair color property as describing the passerby. Understand the height property as describing the passerby. Understand the grooming property as describing the passerby.\n\n[If we also wanted each of those combinations to mean some more specifically-described woman:]\n\nInstead of examining a passerby:\n\trepeat through Table of Passerby Descriptions\n\tbegin;\n\t\tif hair entry is the hair color of the passerby and height entry is the height of the passerby and grooming entry is the grooming of the passerby, say "[description entry][paragraph break]";\n\tend repeat.\n\nTable of Passerby Descriptions\nhair\theight\tgrooming\tdescription\nred-headed\ttall\tmessy\t"An older woman with long red hippie-hair poking out of a pony table in straggles, and bent to hide how tall she is."\nred-headed\tmedium-height\tmessy\t"A shaggy red-head with shingled hair."\nred-headed\tshort\tmessy\t"Almost an urchin, and very young, with ginger hair and a smudged nose and far too many freckles."\nred-headed\ttall\ttidy\t"A precise career woman with henna-red hair."\nred-headed\tmedium-height\ttidy\t"Her hair is red in the way that lollipops and fire trucks are red: not by nature but by art. The rest of her clothing is pretty ordinary, though."\nred-headed\tshort\ttidy\t"Thin and small in every sense, with chin-length red-hair. Even high heels do not bring her head much above your shoulder."\nbrunette\ttall\tmessy\t"A Juno-esque woman with dark hair, wearing something resembling a tent."\nbrunette\tmedium-height\tmessy\t"An unremarkable woman with dark brown hair and the aura of needing a wash."\nbrunette\tshort\tmessy\t"There are mustard stains on the t-shirt of this short brown-haired woman. Estimated age ca. 40. Possibly homeless."\nbrunette\ttall\ttidy\t"A leggy brunette in business attire."\nbrunette\tmedium-height\ttidy\t"Medium-height, brown-haired, generally nondescript."\nbrunette\tshort\ttidy \t"A neat little dark-haired girl."\nblonde\ttall\tmessy\t"A tall blonde of about thirteen who looks as though she has not yet figured out how to get her wardrobe to catch up with her rate of growth. Her t-shirt and her pants are too short."\nblonde\tmedium-height\tmessy\t"Black leather pants and the wall-o-hair look."\nblonde\tshort\tmessy\t"One of those shocking platinum blonde types, with a tiger-patterned skirt. Reeally trashy."\nblonde\ttall\ttidy\t"Elfin and severe, with perfectly straight hair falling to the middle of the back."\nblonde\tmedium-height\ttidy\t"A rounded, Marilyn-esque blonde."\nblonde\tshort\ttidy\t "Pin-precise in a blue-and-white striped suit and a boyish haircut."\n\nTest me with "z / z / x passerby / z / z / x passerby".\n');
+    myProject.pasteCode('"Anchorite"\n\nThe Solitary Place is a room. "A glittering, shimmering desert without either locusts or honey." The pillar is an enterable supporter in the Solitary Place. "The broken pillar is short enough to climb and sit on." The description of the pillar is "Once it was a monument: a long frieze of battles and lion-hunts spirals up the side, in honor of an earthly king." The player is on the pillar.\n\nUnderstand "get down" as exiting.\n\n[This doesn\'t cover the case where the player just types "DOWN", and we don\'t want to preempt the normal operation of the GO action here. So instead of writing a new understand instruction, we might catch this one at the action-processing level:]\n\nInstead of going down when the player is on a supporter:\n\ttry exiting.\n\nTest me with "down / enter pillar / get down / down / get down".\n');
 }
 </script>
-<a href="javascript:pasteCode200()"><img border=0 src=../doc_images/paste.png></a> &quot;Uptown Girls&quot;
+<a href="javascript:pasteCode199()"><img border=0 src=../doc_images/paste.png></a> &quot;Anchorite&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Riverside Drive is a room. &quot;There's a pleasant late-afternoon view of the Hudson, and a snap in the air, and you would rather be here than anywhere.&quot;
+<blockquote><font color="#000080">The Solitary Place is a room. &quot;A glittering, shimmering desert without either locusts or honey.&quot; The pillar is an enterable supporter in the Solitary Place. &quot;The broken pillar is short enough to climb and sit on.&quot; The description of the pillar is &quot;Once it was a monument: a long frieze of battles and lion-hunts spirals up the side, in honor of an earthly king.&quot; The player is on the pillar.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going a direction, say &quot;Oh, you know where you're going; no need to deviate from the usual path.&quot;
+<blockquote><font color="#000080">Understand &quot;get down&quot; as exiting.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of waiting, say &quot;You stroll along enjoying the November crispness.&quot;
+<p>This doesn't cover the case where the player just types &quot;DOWN&quot;, and we don't want to preempt the normal operation of the GO action here. So instead of writing a new understand instruction, we might catch this one at the action-processing level:
+<p>
+<blockquote><font color="#000080">Instead of going down when the player is on a supporter:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try exiting.
 </font></blockquote><p>
 <p>
-<p>It gets a little annoying to have a random event occurring every single turn of play, so let's introduce some randomness to determine how often the message appears:
-<p>
-<blockquote><font color="#000080">Every turn when a random chance of 1 in 3 succeeds:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;reset passerby;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose a random row in the Table of Atmospheric Events;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[event entry][paragraph break]&quot;
+<blockquote><font color="#000080">Test me with &quot;down / enter pillar / get down / down / get down&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Atmospheric Events
-<br>event
-<br>&quot;Slowly [a passerby] strolls by, turning to look at you as she passes.&quot;
-<br>&quot;Some [passerby] nearly bumps into you.&quot;
-<br>&quot;You dodge to avoid [a passerby].&quot;
-<br>&quot;You weave around [a passerby], who has stalled to look into a window.&quot;
-<br>&quot;There's a ruckus as one of the ubiquitous taxis nearly collides with [a passerby] crossing the street.&quot;
-<br>&quot;[The passerby] beside you waves to a friend across the street.&quot;
-<br>&quot;To your left, [a passerby] drops her purse, and swears as she retrieves it.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Hair color is a kind of value. A person has hair color. the hair colors are red-headed, brunette, blonde.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Height is a kind of value. A person has height. The heights are tall, medium-height, short.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Grooming is a kind of value. A person has grooming. The groomings are messy and tidy.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To reset passerby:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the hair color of the passerby to a random hair color;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the height of the passerby to a random height;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the grooming of the passerby to a random grooming.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The passerby is a woman in Riverside Drive. The passerby is scenery. Understand &quot;woman&quot; or &quot;lady&quot; as the passerby. The printed name of the passerby is &quot;[if a random chance of 1 in 2 succeeds]woman[otherwise]lady[end if]&quot;.
-</font></blockquote><p>
-<p>
-<p>At this point we borrow some techniques from later to describe the woman with a random combination of characteristics, and to let the player refer to her by those traits:
-<p>
-<blockquote><font color="#000080">Before printing the name of the passerby:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 4 succeeds, say &quot;[height] &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 4 succeeds, say &quot;[grooming] &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 4 succeeds, say &quot;[hair color] &quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand the hair color property as describing the passerby. Understand the height property as describing the passerby. Understand the grooming property as describing the passerby.
-</font></blockquote><p>
-<p>
-<p>If we also wanted each of those combinations to mean some more specifically-described woman:
-<p>
-<blockquote><font color="#000080">Instead of examining a passerby:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Passerby Descriptions
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if hair entry is the hair color of the passerby and height entry is the height of the passerby and grooming entry is the grooming of the passerby, say &quot;[description entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Passerby Descriptions
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">hair</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">grooming</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">description</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">red-headed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tall</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;An older woman with long red hippie-hair poking out of a pony table in straggles, and bent to hide how tall she is.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">red-headed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">medium-height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A shaggy red-head with shingled hair.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">red-headed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">short</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Almost an urchin, and very young, with ginger hair and a smudged nose and far too many freckles.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">red-headed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tall</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A precise career woman with henna-red hair.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">red-headed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">medium-height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Her hair is red in the way that lollipops and fire trucks are red: not by nature but by art. The rest of her clothing is pretty ordinary, though.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">red-headed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">short</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Thin and small in every sense, with chin-length red-hair. Even high heels do not bring her head much above your shoulder.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">brunette</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tall</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A Juno-esque woman with dark hair, wearing something resembling a tent.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">brunette</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">medium-height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;An unremarkable woman with dark brown hair and the aura of needing a wash.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">brunette</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">short</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;There are mustard stains on the t-shirt of this short brown-haired woman. Estimated age ca. 40. Possibly homeless.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">brunette</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tall</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A leggy brunette in business attire.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">brunette</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">medium-height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Medium-height, brown-haired, generally nondescript.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">brunette</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">short</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy </font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A neat little dark-haired girl.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">blonde</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tall</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A tall blonde of about thirteen who looks as though she has not yet figured out how to get her wardrobe to catch up with her rate of growth. Her t-shirt and her pants are too short.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">blonde</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">medium-height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Black leather pants and the wall-o-hair look.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">blonde</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">short</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;One of those shocking platinum blonde types, with a tiger-patterned skirt. Reeally trashy.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">blonde</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tall</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Elfin and severe, with perfectly straight hair falling to the middle of the back.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">blonde</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">medium-height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A rounded, Marilyn-esque blonde.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">blonde</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">short</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080"> &quot;Pin-precise in a blue-and-white striped suit and a boyish haircut.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;z / z / x passerby / z / z / x passerby&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc118.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc117.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc119.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc238.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e4"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex4.html#e4 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>217</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex4.html#e4 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alpaca Farm</font></b></a><br>A generic USE action which behaves sensibly with a range of different objects, expanding on the EMPLOY example above.<p></td></tr></table>
+<a name="e53"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex53.html#e53 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>218</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex53.html#e53 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloak of Darkness</font></b></a><br>Implementation of "Cloak of Darkness", a simple example game that for years has been used to demonstrate the features of IF languages.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc237.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc239.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

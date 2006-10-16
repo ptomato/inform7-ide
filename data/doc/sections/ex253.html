@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.2. Rooms and the map</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.7. Relations in groups</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,76 +8,104 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc28.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc30.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.2. Rooms and the map</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc194.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc196.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.7. Relations in groups</b></font></td></tr></table>
 <p>
-<p>Rooms are joined together at their edges by &quot;map connections&quot;, most of which are pathways in one of the eight cardinal compass directions: north, northeast (written without a hyphen), east, southeast, south, southwest, west, northwest. We also have up and down, suitable for staircases or ladders. In real life, people are seldom conscious of their compass bearing when walking around buildings, but it makes a concise and unconfusing way for the player to say where to go next, so is generally accepted as a convention of the genre.
+<p>Finally, there is a kind of relation which binds even more strongly.
 <p>
-<p>Two more directions are provided by Inform: &quot;inside&quot; and &quot;outside&quot;. These are best used when one location is, say, a meadow and the other is a woodcutter's hut in the middle of it; we might then say
-<p>
-<blockquote><font color="#000080">Inside from the Meadow is the woodcutter's hut.
+<blockquote><font color="#000080">Nationality relates people to each other in groups.
 </font></blockquote><p>
 <p>
-<p>The &quot;from&quot; is important, as it clarifies that we intend to link two different locations, not to create an item - the hut - in a single location - the meadow.
+<p>This is a kind of relation which divides people up: we might wish to have all the Icelandic people related to each other, all the Peruvians to each other, and so on. If there were a Pacific island called Informia with one inhabitant, then that person would be related only to himself. As time goes by, we could imagine people emigrating, and so on, so that these groupings would switch: perhaps everyone would leave Belgium and, for a while, there would be no Belgian nationals at all.
 <p>
-<p>A problem which sometimes arises when laying out maps is that Inform allows short forms of room names to be used as abbreviations. This is usually a good idea, but has unfortunate results if we write:
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width=&quot;100%&quot;><tr><TD width=38px valign=top><img border=&quot;0&quot; src=../doc_images/testing.png id=&quot;testoval&quot; style=&quot;height:31px; width=40px&quot;></td><td valign=top><font size=2>The testing command RELATIONS prints out the current state of all the relations created in the source code. For instance:
 <p>
-<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. The Airport is west of the Airport Road.
+<blockquote><font color="#000080">>relations
+<br>Overlooking relates various rooms to various rooms:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;The Pub  >=>  the Garden
+<br>&nbsp;&nbsp;&nbsp;&nbsp;The Garden  >=>  the Shrubbery
+<br>&nbsp;&nbsp;&nbsp;&nbsp;The Shrubbery  >=>  the Sundial Plot
+<br>Friendship relates people to each other:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;Mr Wickham  <=>  Sophie
+<br>&nbsp;&nbsp;&nbsp;&nbsp;Charlotte  <=>  Sophie
+<br>Marriage relates one person to another:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;Mr Wickham  ==  Sophie
 </font></blockquote><p>
 <p>
-<p>...because &quot;Airport&quot; is taken as a reference to &quot;Airport Road&quot;, so Inform makes only two locations, one of which supernaturally leads to itself. We can avoid this by writing:
-<p>
-<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. A room called the Airport is west of the Airport Road.
-</font></blockquote><p>
-<p>
-<p>Using &quot;called&quot; is often a good way to specify something whose name might give rise to confusion otherwise. It always makes something new, and it is also neatly concise, because we can establish something's kind and name in the same sentence. As another example, suppose we want to create a room called &quot;South of the Hut&quot;, to south of the Hut. We can't do so like this:
-<p>
-<blockquote><font color="#000080">South of the Hut is a room. South of the Hut is south of the Hut.
-</font></blockquote><p>
-<p>
-<p>...because Inform will read that first sentence as placing a (nameless) room to the south of a room called &quot;Hut&quot;. Once again &quot;called&quot; can save the day:
-<p>
-<blockquote><font color="#000080">South of the Hut is a room called South of the Hut.
-</font></blockquote><p>
-<p>
-<p>It is best to use &quot;called&quot; in the simplest way possible, and in particular, best not to use &quot;called&quot; twice in the same sentence. Consider:
-<p>
-<blockquote><font color="#000080">The kitchen cabinet contains a container called a mixing bowl and a portable supporter called a platter.
-</font></blockquote><p>
-<p>
-<p>It is unlikely that anyone would want to name something &quot;a mixing bowl and a portable supporter called a platter&quot;, but not impossible, and Inform tends not to be a good judge of what is likely.
-<p>
-<p><hr><p>
-<a name="e211"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex211.html#e211 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>5</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex211.html#e211 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Port Royal 1</font></b></a><br>A partial implementation of Port Royal, Jamaica, set before the earthquake of 1692 demolished large portions of the city.<p></td></tr></table>
-<a name="e253"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc29.html#e253 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>6</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc29.html#e253 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Up and Up</font></b></a><br>Adding a short message as the player approaches a room, before the room description itself appears.<p></td></tr></table>
+<p></font></td></tr></table><hr><p>
+<a name="e253"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc195.html#e253 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>174</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc195.html#e253 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Transmutations</font></b></a><br>A machine that turns objects into other, similar objects.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Sometimes when a player moves from one room to another, we want to imply that a considerable amount of time elapses, or that something interesting occurs on the way. In that case, we might want to print more than just the room description itself. Here is how we might define a couple of rooms that are far apart:
+<p>Suppose we want to have a machine in our game that can transmute one item into another, similar object with different properties: a bag of jelly beans into a bag of jewels, for instance. Thus each item will be associated with some number of equivalents -- the other objects it can turn into. This is a handy use for group relations:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode349(code) {
+function pasteCode348(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Up and Up"\n\nThe Plain of the Skull is below the Endless Tower. The description of the Plain of the Skull is "A vast and trackless plain, enlivened only by the bones of those who have previously tried and failed to cross. Above you is the Endless Tower, which rises half-way to the moon."\n\nThe description of the Endless Tower is "From up here the Plain of the Skull seems only a small bald patch: the world is round and most of it is covered with trees. Far off to the southwest is a shimmering surface that might be water; but there are no signs of cities or civilizations, only the lizard-skeletons."\n\n[And now we borrow from the instructions on Actions to create our actual message. "Before..." introduces a rule that occurs when the player tries to do something; in this case, we will make a Before rule for going to the tower.]\n\nBefore going to the Endless Tower:\n\tsay "You climb... and climb... and climb... The sun sets. The moon rises. The wind begins to blow. You continue to climb..."\n\nThe player carries a bit of harness. The description of the harness is "A strip of worked leather and a loop of metal, scavenged from one of the skeletons on the plain. Without it, you might think your entire quest was in vain."\n\nTest me with "look / up".\n');
+    myProject.pasteCode('"Transmutations"\n\nWorkshop is a room.\n\nTransmutation relates things to each other in groups. The verb to become (it becomes, they become, it became) implies the transmutation relation.\n\nDefinition: a thing is transmutable if it becomes more than one thing. [* It always becomes itself.]\n\nA thing can be valuable. Something valuable called a bag of jewels is carried by the player. It becomes the bag of gunpowder and the bag of jelly beans.\n\nA thing can be dangerous. The bag of gunpowder is a dangerous thing.\n\nThe bag of jelly beans is an edible thing.\n\nThe machine is fixed in place in the workshop. Procedural rule when inserting something into the machine: ignore the can\'t insert into what\'s not a container rule.\n\nCheck inserting something which is not transmutable into the machine:\n\tinstead say "You can\'t transmute that."\n\nTo decide which thing is new form of (obj - edible thing): decide on a random valuable thing which becomes obj.\n\nTo decide which thing is new form of (obj - dangerous thing): decide on a random edible thing which becomes obj.\n\nTo decide which thing is new form of (obj - valuable thing): decide on a random dangerous thing which becomes obj.\n\nCarry out inserting something into the machine:\n\tremove the noun from play;\n\tnow the player carries the new form of the noun.\n\nReport inserting something edible into the machine:\n\tsay "The machine clicks, whirrs, and spits out [a new form of the noun]. You\'re rich!";\n\trule succeeds.\n\nReport inserting something dangerous into the machine:\n\tsay "The machine clicks, whirrs, and in a shower of flavor crystals, spits out [a new form of the noun].";\n\trule succeeds.\n\nReport inserting something valuable into the machine:\n\tsay "The machine clicks, whirrs, and with a violent roar, spits out [a new form of the noun].";\n\trule succeeds.\n\n\tTest me with "i / put jewels in machine / i / put gunpowder in machine / i / put beans in machine".\n\n');
 }
 </script>
-<a href="javascript:pasteCode349()"><img border=0 src=../doc_images/paste.png></a> &quot;Up and Up&quot;
+<a href="javascript:pasteCode348()"><img border=0 src=../doc_images/paste.png></a> &quot;Transmutations&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Plain of the Skull is below the Endless Tower. The description of the Plain of the Skull is &quot;A vast and trackless plain, enlivened only by the bones of those who have previously tried and failed to cross. Above you is the Endless Tower, which rises half-way to the moon.&quot;
+<blockquote><font color="#000080">Workshop is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the Endless Tower is &quot;From up here the Plain of the Skull seems only a small bald patch: the world is round and most of it is covered with trees. Far off to the southwest is a shimmering surface that might be water; but there are no signs of cities or civilizations, only the lizard-skeletons.&quot;
+<blockquote><font color="#000080">Transmutation relates things to each other in groups. The verb to become (it becomes, they become, it became) implies the transmutation relation.
 </font></blockquote><p>
 <p>
-<p>And now we borrow from the instructions on Actions to create our actual message. &quot;Before...&quot; introduces a rule that occurs when the player tries to do something; in this case, we will make a Before rule for going to the tower.
-<p>
-<blockquote><font color="#000080">Before going to the Endless Tower:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You climb... and climb... and climb... The sun sets. The moon rises. The wind begins to blow. You continue to climb...&quot;
+<blockquote><font color="#000080">Definition: a thing is transmutable if it becomes more than one thing. [* It always becomes itself.]
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries a bit of harness. The description of the harness is &quot;A strip of worked leather and a loop of metal, scavenged from one of the skeletons on the plain. Without it, you might think your entire quest was in vain.&quot;
+<blockquote><font color="#000080">A thing can be valuable. Something valuable called a bag of jewels is carried by the player. It becomes the bag of gunpowder and the bag of jelly beans.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look / up&quot;.
+<blockquote><font color="#000080">A thing can be dangerous. The bag of gunpowder is a dangerous thing.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc29.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc28.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc30.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>
+<blockquote><font color="#000080">The bag of jelly beans is an edible thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The machine is fixed in place in the workshop. Procedural rule when inserting something into the machine: ignore the can't insert into what's not a container rule.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check inserting something which is not transmutable into the machine:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;instead say &quot;You can't transmute that.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide which thing is new form of (obj - edible thing): decide on a random valuable thing which becomes obj.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide which thing is new form of (obj - dangerous thing): decide on a random edible thing which becomes obj.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide which thing is new form of (obj - valuable thing): decide on a random dangerous thing which becomes obj.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out inserting something into the machine:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the new form of the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report inserting something edible into the machine:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The machine clicks, whirrs, and spits out [a new form of the noun]. You're rich!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report inserting something dangerous into the machine:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The machine clicks, whirrs, and in a shower of flavor crystals, spits out [a new form of the noun].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report inserting something valuable into the machine:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The machine clicks, whirrs, and with a violent roar, spits out [a new form of the noun].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">&nbsp;&nbsp;&nbsp;&nbsp;Test me with &quot;i / put jewels in machine / i / put gunpowder in machine / i / put beans in machine&quot;.
+</font></blockquote><p>
+<p>
+<p>In this example we have only defined a single set of transmutable objects, but we could easily expand to include other groups.
+<p>
+<p>(Thanks to Jesse McGrew for proposing this example.)
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc195.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e211"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex211.html#e211 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>175</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex211.html#e211 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Otranto</font></b></a><br>A kind of rope which can be tied to objects and used to anchor the player or drag items from room to room.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc194.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc196.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

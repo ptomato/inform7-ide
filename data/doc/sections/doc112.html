@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.10. Now...</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.4. Change of either/or properties</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,36 +8,22 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc111.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc113.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.10. Now...</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc111.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc113.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.4. Change of either/or properties</b></font></td></tr></table>
 <p>
-<p>As Chapter 5 has already discussed, Inform looks at a whole range of &quot;relations&quot; between objects, many of which we can change. The general rule is as follows. Suppose S is a sentence about a relationship between things. Then there are three things we can do with S:
+<p>When we have an either/or property, we can set it like so:
 <p>
-<blockquote><font color="#000080">S. - The relation holds at the start of play.
-<br>if S, ...; - Does the relation hold right now?
-<br>now S; - Make the relation hold from now on.
+<blockquote><font color="#000080">Instead of waiting when the oaken door is closed: say &quot;There is a slow, creaky click! sort of noise as the door swings open, apparently all by itself.&quot;; change the oaken door to open.
 </font></blockquote><p>
 <p>
-<p>For instance,
+<p>If it is open already, nothing changes: in any case nothing is said to the player unless we give explicit instructions to that effect, as we've done here.
 <p>
-<blockquote><font color="#000080">The apple is in the basket.
-<br>if the apple is in the basket, ...;
-<br>now the apple is in the basket;
+<p>Inform protects its model world from accidental damage in several ways, one of which is to ensure that things are not given properties which they are not allowed to have. So this, for instance, will not be accepted:
+<p>
+<blockquote><font color="#000080">change the oaken door to unvisited
 </font></blockquote><p>
 <p>
-<p>The effect of &quot;now the apple is in the basket&quot; is identical to &quot;move the apple to the basket&quot;, so this appears to offer nothing new; and &quot;now&quot; duplicates other things already available, too, because &quot;now the oaken door is open&quot; does the same thing as &quot;change the oaken door to open&quot;. But &quot;now&quot; is more general and more flexible. For instance,
-<p>
-<blockquote><font color="#000080">now the top hat is worn by Mr Darcy;
-</font></blockquote><p>
-<p>
-<p>will make the hat worn, rather than simply carried, by Darcy: this is something which could not be done with the &quot;move&quot; phrase. We can also apply &quot;now&quot; to many things at once:
-<p>
-<blockquote><font color="#000080">now all the doors are open;
-<br>now all of the things in the sack are in the box;
-</font></blockquote><p>
-<p>
-<p>The second of these moves the entire contents of the sack to the box.
+<p>More subtle problems arise if it is not possible to tell, when the game is being constructed, what the object in question will be: for instance, if we try to change a randomly chosen object to be &quot;unvisited&quot;. Inform therefore makes additional checks during play, printing up a suitable message only if the rules are violated. The net effect is that it is impossible for the oaken door ever to have the &quot;unvisited&quot; property.
 <p>
 <p><hr><p>
-<a name="e19"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex19.html#e19 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>98</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex19.html#e19 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bee Chambers</font></b></a><br>A maze with directions between rooms randomized at the start of play.<p></td></tr></table>
-<a name="e203"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex203.html#e203 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>99</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex203.html#e203 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Technological Terror</font></b></a><br>A ray gun which destroys objects, leaving their component parts behind.<p></td></tr></table>
+<a name="e76"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex76.html#e76 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>92</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex76.html#e76 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Vitrine</font></b></a><br>An electrochromic window that becomes transparent or opaque depending on whether it is currently turned on.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc111.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc113.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

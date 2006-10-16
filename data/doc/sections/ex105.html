@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.2. New commands for old grammar</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.6. To be able to see and touch</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,67 +8,95 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc228.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc230.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.2. New commands for old grammar</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc84.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc86.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.6. To be able to see and touch</b></font></td></tr></table>
 <p>
-<p>In the photography example, we are providing entirely new grammar for an action  not ordinarily built in to Inform. But we often want simply to provide alternative grammar for existing actions, or even to put new interpretations on commands that Inform already recognises. For instance:
+<p>Two of the adjectives built into Inform are:
 <p>
-<blockquote><font color="#000080">Understand &quot;deposit [something] in [an open container]&quot; as inserting it into.
+<blockquote><font color="#000080">&quot;visible&quot; - the player can see this
+<br>&quot;touchable&quot; - the player can touch this
 </font></blockquote><p>
 <p>
-<p>The inserting action is built in to Inform, but the command &quot;deposit&quot; is not, so this is created as new. It is occasionally useful to put a twist on this:
+<p>So we can write descriptions such as &quot;someone visible&quot; or &quot;a touchable container&quot;. We also have adjectives &quot;invisible&quot; and &quot;untouchable&quot;, as might be expected. The visibility adjectives are particularly useful because the following is likely to go wrong:
 <p>
-<blockquote><font color="#000080">Understand &quot;fill [an open container] with [something]&quot; as inserting it into (with nouns reversed).
+<blockquote><font color="#000080">if Helen is in a dark room, ...
 </font></blockquote><p>
 <p>
-<p>The clause &quot;(with nouns reversed)&quot; tells Inform to exchange the two nouns parsed, which is necessary because the inserting action expects the noun to be the item and the second noun to be the container, not vice versa.
+<p>This tests whether the room is dark, of itself; Helen may in fact be able to see by means of a torch, but the room is still &quot;dark&quot;.
 <p>
-<p>The following example:
+<p>We can also talk about what other people can see and touch:
 <p>
-<blockquote><font color="#000080">Understand &quot;access [something]&quot; as opening.
+<blockquote><font color="#000080">something able to be seen by Helen
+<br>something which can be seen by Helen
 </font></blockquote><p>
 <p>
-<p>might look as if it makes &quot;access&quot; behave just like &quot;open&quot; when the player types it, but that's not so: &quot;open&quot; can also be used in constructions like &quot;open the door with the brass key&quot;, in which case it is understood as the unlocking action. We could add another line to make &quot;access&quot; behave this way too, but if what we really want is to make &quot;access&quot; behave just like &quot;open&quot;, it's easier simply to say so:
+<p>are synonymous. Similarly for touch; and we can write such conditions as
 <p>
-<blockquote><font color="#000080">Understand the command &quot;access&quot; as &quot;open&quot;.
+<blockquote><font color="#000080">if Helen is unable to see Agamemnon, ...
+<br>if Cressida can see Troilus, ...
 </font></blockquote><p>
 <p>
-<p>This is very useful when adding a new command which needs synonyms:
+<p>Note that it is essential to establish who does the seeing and touching: so &quot;something which can be seen&quot; will not be allowed, whereas &quot;something which can be seen by Helen&quot; will.
 <p>
-<blockquote><font color="#000080">Understand the commands &quot;snap&quot; and &quot;picture&quot; as &quot;photograph&quot;.
+<p>In fact, inside Inform the adjective &quot;invisible&quot; (for instance) has the following straightforward definition:
+<p>
+<blockquote><font color="#000080">Definition: Something is invisible if the player cannot see it.
 </font></blockquote><p>
 <p>
-<p>We can check the current stock of commands by looking at the table in the Actions index: for instance, before making &quot;snap&quot; synonymous with &quot;photograph&quot;, it might be wise to check that it is not already defined as a command for breaking something.
+<p>The exact definitions of visibility and touchability are complicated, because there are so many ways in which vision and touch can be obstructed, but the gist is that they behave as one would expect. Note that in darkness, nothing is visible, and that nobody can see from one room to another. In general anything invisible is also untouchable, but there are a few exceptions to do with being in the dark. Lastly, the player's own body (the player-character object, which is called &quot;yourself&quot; during play) is both visible (in light) and touchable.
 <p>
-<p><hr><p>
-<a name="e105"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc229.html#e105 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>213</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc229.html#e105 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Anchorite</font></b></a><br>By default, Inform understands GET OFF, GET UP, or GET OUT when the player is sitting or standing on an enterable object. We might also want to add GET DOWN and DOWN as exit commands, though:<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width=&quot;100%&quot;><tr><TD width=38px valign=top><img border=&quot;0&quot; src=../doc_images/beta.png id=&quot;betaoval&quot; style=&quot;height:31px; width=40px&quot;></td><td valign=top><font size=2>One day &quot;something which Helen can see&quot; will be allowed, I hope, but for the moment &quot;who&quot; and &quot;which&quot; must be directly followed by the verb.
+<p>
+<p></font></td></tr></table><hr><p>
+<a name="e105"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc85.html#e105 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>58</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc85.html#e105 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Lean and Hungry</font></b></a><br>A thief who will identify and take any valuable thing lying around that he is able to touch.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>With GET DOWN, we can replace the whole command, which will not interfere with the normal function of the TAKE verb, or allow the player to attempt to GET any other directions:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode199(code) {
+function pasteCode198(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Anchorite"\n\nThe Solitary Place is a room. "A glittering, shimmering desert without either locusts or honey." The pillar is an enterable supporter in the Solitary Place. "The broken pillar is short enough to climb and sit on." The description of the pillar is "Once it was a monument: a long frieze of battles and lion-hunts spirals up the side, in honor of an earthly king." The player is on the pillar.\n\nUnderstand "get down" as exiting.\n\n[This doesn\'t cover the case where the player just types "DOWN", and we don\'t want to preempt the normal operation of the GO action here. So instead of writing a new understand instruction, we might catch this one at the action-processing level:]\n\nInstead of going down when the player is on a supporter:\n\ttry exiting.\n\nTest me with "down / enter pillar / get down / down / get down".\n');
+    myProject.pasteCode('"Lean and Hungry"\n\nSubstance is a kind of value. The substances are silver, gold, and lead. Everything has a substance. A thing is usually lead.\n\nDefinition: a thing is valuable if it is not lead.\n\nThe Limestone Cave is a room. "Not very big, and it doesn\'t go back far, but you\'d hoped to find some shelter here. Outside it is raining exceptionally hard."\n\nThe sinister gentleman is a man in the Cave. "Leaning against the wall is a sinister gentleman in a threadbare waistcoat." The description is "He looks as though he might once have been quite well off."\n\nAfter examining the gentleman:\n\tsay "[The noun] smiles back at you in an unnerving fashion."\n\n[Now we make the rule that governs the gentleman\'s behavior. Here we\'re going to invoke the rules that allow characters besides the player to do actions. More about this can be found in the Advanced Actions chapter:]\n\nEvery turn:\n\tif the sinister gentleman can touch something valuable (called the treasure) which is not carried by a person\n\tbegin;\n\t\ttry the gentleman trying taking the treasure;\n\tend if.\n\nReport the gentleman trying taking something:\n\t\tsay "[The gentleman] slyly acquires [the noun] and tucks it into his pocket." instead.\n\n[That "not carried by a person" prevents the gentleman from stealing from the player (or, less plausibly, from himself). If we did want him to pick pockets, we could just have said "which is not carried by the gentleman".]\n\nThe player is carrying a coin, a bust of Abraham Lincoln, a bottle of sherry, a small pistol, and a wad of Confederate cash. The coin is gold. The pistol is silver.\n\nA locket is in the Cave. The locket is gold. "A broken gold locket lies on the ground, a token of your late Mama."\n\nTest me with "get locket / i / drop locket / z / drop cash / z / x gentleman / drop all / z / z / look".\n');
 }
 </script>
-<a href="javascript:pasteCode199()"><img border=0 src=../doc_images/paste.png></a> &quot;Anchorite&quot;
+<a href="javascript:pasteCode198()"><img border=0 src=../doc_images/paste.png></a> &quot;Lean and Hungry&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Solitary Place is a room. &quot;A glittering, shimmering desert without either locusts or honey.&quot; The pillar is an enterable supporter in the Solitary Place. &quot;The broken pillar is short enough to climb and sit on.&quot; The description of the pillar is &quot;Once it was a monument: a long frieze of battles and lion-hunts spirals up the side, in honor of an earthly king.&quot; The player is on the pillar.
+<blockquote><font color="#000080">Substance is a kind of value. The substances are silver, gold, and lead. Everything has a substance. A thing is usually lead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;get down&quot; as exiting.
+<blockquote><font color="#000080">Definition: a thing is valuable if it is not lead.
 </font></blockquote><p>
 <p>
-<p>This doesn't cover the case where the player just types &quot;DOWN&quot;, and we don't want to preempt the normal operation of the GO action here. So instead of writing a new understand instruction, we might catch this one at the action-processing level:
-<p>
-<blockquote><font color="#000080">Instead of going down when the player is on a supporter:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try exiting.
+<blockquote><font color="#000080">The Limestone Cave is a room. &quot;Not very big, and it doesn't go back far, but you'd hoped to find some shelter here. Outside it is raining exceptionally hard.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;down / enter pillar / get down / down / get down&quot;.
+<blockquote><font color="#000080">The sinister gentleman is a man in the Cave. &quot;Leaning against the wall is a sinister gentleman in a threadbare waistcoat.&quot; The description is &quot;He looks as though he might once have been quite well off.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc229.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e4"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex4.html#e4 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>214</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex4.html#e4 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alpaca Farm</font></b></a><br>A generic USE action which behaves sensibly with a range of different objects, expanding on the EMPLOY example above.<p></td></tr></table>
-<a name="e52"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex52.html#e52 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>215</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex52.html#e52 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloak of Darkness</font></b></a><br>Implementation of "Cloak of Darkness", a simple example game that for years has been used to demonstrate the features of IF languages.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc228.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc230.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>
+<blockquote><font color="#000080">After examining the gentleman:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] smiles back at you in an unnerving fashion.&quot;
+</font></blockquote><p>
+<p>
+<p>Now we make the rule that governs the gentleman's behavior. Here we're going to invoke the rules that allow characters besides the player to do actions. More about this can be found in the Advanced Actions chapter:
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the sinister gentleman can touch something valuable (called the treasure) which is not carried by a person
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try the gentleman trying taking the treasure;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report the gentleman trying taking something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The gentleman] slyly acquires [the noun] and tucks it into his pocket.&quot; instead.
+</font></blockquote><p>
+<p>
+<p>That &quot;not carried by a person&quot; prevents the gentleman from stealing from the player (or, less plausibly, from himself). If we did want him to pick pockets, we could just have said &quot;which is not carried by the gentleman&quot;.
+<p>
+<blockquote><font color="#000080">The player is carrying a coin, a bust of Abraham Lincoln, a bottle of sherry, a small pistol, and a wad of Confederate cash. The coin is gold. The pistol is silver.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A locket is in the Cave. The locket is gold. &quot;A broken gold locket lies on the ground, a token of your late Mama.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get locket / i / drop locket / z / drop cash / z / x gentleman / drop all / z / z / look&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc85.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc84.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc86.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

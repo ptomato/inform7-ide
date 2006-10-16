@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.23. Reading a command</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.17. Printing the description of a dark room</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,162 +8,89 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc267.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc269.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.23. Reading a command</b></font></td></tr></table>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc269.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc271.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.17. Printing the description of a dark room</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> When reading a command from the keyboard.
+<p><b>1. When it happens.</b> When looking in darkness.
 <p>
-<p><b>2. The default behaviour.</b> Print the prompt text; wait for the player to type something and press return. Reject an entirely blank line, and treat a command beginning &quot;oops&quot; is considered a correction to the previous one. This is a fairly complicated business, so it is probably best not to change the &quot;for&quot; rules for this activity: &quot;before&quot;, and especially &quot;after&quot;, are another matter.
+<p><b>2. The default behaviour.</b> To print &quot;It is pitch dark, and you can't see a thing.&quot;
 <p>
-<p><b>3. Examples.</b> (a) To lead absolute beginners in gently:
+<p><b>3. Examples.</b> (a) A simple variation of wording:
 <p>
-<blockquote><font color="#000080">Before reading a command while the turn count is 1, say &quot;(This is your chance to say what the protagonist should do next. After the '>', try typing 'take inventory'.)&quot;
+<blockquote><font color="#000080">Rule for printing the description of a dark room: say &quot;Your eyes can barely make anything out.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>(b) The following responds politely but firmly if the player tries to type &quot;please look&quot;, say, instead of just &quot;look&quot;:
+<p>(b) More stylishly,
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode72(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "Please do not say please.";\n\t\treject the player\'s command;\n\tend if.\n\n');
-}
-</script>
-<a href="javascript:pasteCode72()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Please do not say please.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Rule for printing the description of a dark room: try listening instead.
 </font></blockquote><p>
 <p>
-<p>To explain. Fragments of what the player has typed are called snippets: &quot;the player's command&quot; is the entire thing. We can test if a snippet matches a given pattern like so:
+<p>which produces, for instance,
 <p>
-<blockquote><font color="#000080">if the player's command matches &quot;room [number]&quot;, ...
+<blockquote><font color="#000080">Darkness
+<br>You hear nothing unexpected.
 </font></blockquote><p>
-<p>
-<p>This requires an exact match: the weaker condition &quot;includes&quot; only means that the pattern occurs somewhere in the given snippet, so that
-<p>
-<blockquote><font color="#000080">if the player's command includes &quot;please&quot;, ...
-</font></blockquote><p>
-<p>
-<p>matches &quot;please look&quot; or &quot;look please&quot;, etc. Lastly, the phrase
-<p>
-<blockquote><font color="#000080">reject the player's command
-</font></blockquote><p>
-<p>
-<p>tells Inform not to bother analysing the text further, but to go back to the keyboard. (No time passes; no turn elapses; nothing happens in the simulated world.)
-<p>
-<p>(c) An improved version takes commands like &quot;please drop the coin&quot; and strips &quot;please&quot; from them, but then allows them to proceed normally:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode73(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "(Quelle politesse! But no need to say please.)";\n\t\tcut the matched text;\n\tend if.\n\n');
-}
-</script>
-<a href="javascript:pasteCode73()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(Quelle politesse! But no need to say please.)&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cut the matched text;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>&quot;Matched text&quot; is a snippet containing the words which matched against the pattern in the most recent &quot;includes&quot; condition, so in this case it contains just the single word &quot;please&quot;. Two phrases allow snippets to be altered:
-<p>
-<blockquote><font color="#000080">replace (... snippet ...) with (... text ...)
-<br>cut (...snippet ...)
-</font></blockquote><p>
-<p>
-<p>(d) To make the word &quot;grab&quot; an abbreviation for &quot;take all&quot;:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode74(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:\n\tif the player\'s command matches "grab", replace the player\'s command with "take all".\n\n');
-}
-</script>
-<a href="javascript:pasteCode74()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command matches &quot;grab&quot;, replace the player's command with &quot;take all&quot;.
-</font></blockquote><p>
-<p>
-<p>(&quot;Snippet&quot; is actually a kind of value, so we could say &quot;Ah, you typed '[the player's command]'!&quot; or some such if we liked. But in practice only three snippets are likely to be useful: the two mentioned above, &quot;player's command&quot; and &quot;matched text&quot;, and the &quot;topic understood&quot;, used when matching the &quot;[text]&quot; token in command grammar.)
 <p>
 <p><hr><p>
-<a name="e219"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex219.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>261</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex219.html#e219 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fore</font></b></a><br>Understand "fore", "aft", "port", and "starboard", but only when the player is on a vessel.<p></td></tr></table>
-<a name="e1"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex1.html#e1 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>262</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex1.html#e1 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloves</font></b></a><br>Accepting adverbs anywhere in a command, registering what the player typed but then cutting them out before interpreting the command.<p></td></tr></table>
-<a name="e122"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc268.html#e122 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>263</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc268.html#e122 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Fragment of a Greek Tragedy</font></b></a><br>Responding to the player's input based on keywords only, and overriding the original parser entirely.<p></td></tr></table>
+<a name="e122"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc270.html#e122 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>249</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc270.html#e122 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Hohmann Transfer</font></b></a><br>Changing the way dark rooms are described to avoid the standard Inform phrasing.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Apologies to the shade of A. E. Housman.
+<p>Inform automatically keeps track of light and darkness, handling such questions as whether a room is lit, whether the player can see any light sources, etc., and then managing the descriptions accordingly. When the room is dark and no light sources are visible, the player is said to be &quot;in darkness&quot;.
+<p>
+<p>If we don't specify otherwise, Inform will describe our surroundings in a dark room thus:
+<p>
+<blockquote><font color="#000080">Darkness
+<br>It is pitch dark, and you can't see a thing.
+</font></blockquote><p>
+<p>
+<p>This is fine in many situations, but we may sometimes want to replace this phrase with something else.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode217(code) {
+function pasteCode216(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Fragment of a Greek Tragedy"\n\nUnderstand "restart/restore/save/quit" as "[meta-command]".\n\nAfter reading a command:\n\tif the player\'s command matches "[meta-command]", make no decision;\n\tsay line break;\n\trepeat through Table of Current Topics\n\tbegin;\n\t\tif the player\'s command includes topic entry\n\t\tbegin;\n\t\t\tsay "CHORUS: [reply entry][paragraph break]";\n\t\t\tfollow the advance time rule;\n\t\t\trule succeeds;\n\t\tend if;\n\tend repeat;\n\tsay "[italic type]   Pause.[roman type][line break]";\n\tfollow the advance time rule;\n\trule succeeds.\n\nTable of Current Topics\ntopic\treply\n"journey/trip/travel/came/arrived"\t"Sailing on horseback, or with feet for oars?"\n"horseback/legs/feet/oars"\t"Beneath a shining or a rainy Zeus?"\n"shining/rainy/weather/zeus"\t"Mud\'s sister, not herself, adorns thy boots."\n\n[This would be a bit bare if we didn\'t provide the player with some sort of context at the outset, so let\'s put some remarks before the first command prompt:]\n\nBefore reading a command while the turn count is 1:\n\tsay "CHORUS: O suitably-attired-in-leather-boots\n\tHead of a traveller, wherefore seeking whom\n\tWhence by what way how purposed art thou come\n\tTo this well-nightingaled vicinity?\n\tMy object in inquiring is to know.\n\tBut if you happen to be deaf and dumb\n\tAnd do not understand a word I say,\n\tThen wave your hand, to signify as much."\n\n[This "turn count" condition is why it was useful to follow the advance time rule in "after reading a command": the game (or drama, if you like) will continue to count moves elapsed even though the rest of Inform\'s command parsing and world model is being ignored. In a longer and more ambitious implementation of this idea, we might want to keep following the turn sequence rules and allow scenes to govern the behavior and responses of the Chorus.]\n\n[And then to give the whole exchange a play\'s format:]\n\nThe Stage is a room.\n\nA procedural rule: ignore the room description heading rule.\n\nWhen play begins: change the command prompt to "YOU: "; change left hand status line to "Fragment of a Greek Tragedy"; change right hand status line to "A. E. Housman".\n\n');
+    myProject.pasteCode('"Hohmann Transfer"\n\nThe Western Hemisphere is a dark room. "The cloud mass covers much of the land on this side of the planet, and a particularly nasty storm is brewing off to the south."\n\nThe Eastern Hemisphere is west of the Western Hemisphere. The Eastern Hemisphere is east of the Western Hemisphere. The Eastern Hemisphere is north of the Western Hemisphere. The Eastern Hemisphere is south of the Western Hemisphere. "This side of the planet is more ocean than land, with only two continents worthy of the name, and a volcanic archipelago in the north seas."\n\nUse full-length room descriptions.\n\nRule for printing the description of a dark room:\n\tsay "It\'s night on this side of the planet, so you can make out only the glow of urbanized areas along the seacoasts."  instead.\n\nRule for printing the name of a dark room:\n\tsay "Dark Side" instead.\n\n[And now a few minor refinements so that we can see what happens when one room becomes dark and the other light:]\n\nCarry out going:\n\tsay "You fire the thrusters and loop around to the other side of the planet before settling into a new geosynchronous orbit. Six months and one minute later..."\n\nThe time of day is 4:55 PM.\n\nAt 5 PM:\n\tnow the Eastern Hemisphere is dark;\n\tnow the Western Hemisphere is lit.\n\nRule for printing the announcement of darkness:\n\tsay "The planet abruptly spins itself over, exposing its cool underbelly to the sun."\n\nTest me with "e / z / z / w / z / z / e".\n\n');
 }
 </script>
-<a href="javascript:pasteCode217()"><img border=0 src=../doc_images/paste.png></a> &quot;Fragment of a Greek Tragedy&quot;
+<a href="javascript:pasteCode216()"><img border=0 src=../doc_images/paste.png></a> &quot;Hohmann Transfer&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;restart/restore/save/quit&quot; as &quot;[meta-command]&quot;.
+<blockquote><font color="#000080">The Western Hemisphere is a dark room. &quot;The cloud mass covers much of the land on this side of the planet, and a particularly nasty storm is brewing off to the south.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command matches &quot;[meta-command]&quot;, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say line break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Current Topics
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes topic entry
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;CHORUS: [reply entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;follow the advance time rule;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[italic type]   Pause.[roman type][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the advance time rule;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
+<blockquote><font color="#000080">The Eastern Hemisphere is west of the Western Hemisphere. The Eastern Hemisphere is east of the Western Hemisphere. The Eastern Hemisphere is north of the Western Hemisphere. The Eastern Hemisphere is south of the Western Hemisphere. &quot;This side of the planet is more ocean than land, with only two continents worthy of the name, and a volcanic archipelago in the north seas.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Current Topics
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">&quot;journey/trip/travel/came/arrived&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Sailing on horseback, or with feet for oars?&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">&quot;horseback/legs/feet/oars&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Beneath a shining or a rainy Zeus?&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">&quot;shining/rainy/weather/zeus&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Mud's sister, not herself, adorns thy boots.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">Use full-length room descriptions.
 </font></blockquote><p>
 <p>
-<p>This would be a bit bare if we didn't provide the player with some sort of context at the outset, so let's put some remarks before the first command prompt:
-<p>
-<blockquote><font color="#000080">Before reading a command while the turn count is 1:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;CHORUS: O suitably-attired-in-leather-boots
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Head of a traveller, wherefore seeking whom
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Whence by what way how purposed art thou come
-<br>&nbsp;&nbsp;&nbsp;&nbsp;To this well-nightingaled vicinity?
-<br>&nbsp;&nbsp;&nbsp;&nbsp;My object in inquiring is to know.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;But if you happen to be deaf and dumb
-<br>&nbsp;&nbsp;&nbsp;&nbsp;And do not understand a word I say,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Then wave your hand, to signify as much.&quot;
+<blockquote><font color="#000080">Rule for printing the description of a dark room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It's night on this side of the planet, so you can make out only the glow of urbanized areas along the seacoasts.&quot;  instead.
 </font></blockquote><p>
 <p>
-<p>This &quot;turn count&quot; condition is why it was useful to follow the advance time rule in &quot;after reading a command&quot;: the game (or drama, if you like) will continue to count moves elapsed even though the rest of Inform's command parsing and world model is being ignored. In a longer and more ambitious implementation of this idea, we might want to keep following the turn sequence rules and allow scenes to govern the behavior and responses of the Chorus.
-<p>
-<p>And then to give the whole exchange a play's format:
-<p>
-<blockquote><font color="#000080">The Stage is a room.
+<blockquote><font color="#000080">Rule for printing the name of a dark room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Dark Side&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A procedural rule: ignore the room description heading rule.
+<p>And now a few minor refinements so that we can see what happens when one room becomes dark and the other light:
+<p>
+<blockquote><font color="#000080">Carry out going:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You fire the thrusters and loop around to the other side of the planet before settling into a new geosynchronous orbit. Six months and one minute later...&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins: change the command prompt to &quot;YOU: &quot;; change left hand status line to &quot;Fragment of a Greek Tragedy&quot;; change right hand status line to &quot;A. E. Housman&quot;.
+<blockquote><font color="#000080">The time of day is 4:55 PM.
 </font></blockquote><p>
 <p>
-<p>(Because this example manipulates commands outside of the normal parser, the mechanism for TEST will not work here. Try typing commands such as: TELL CHORUS ABOUT JOURNEY / TELL CHORUS ABOUT FEET / TELL CHORUS ABOUT SHROPSHIRE / TELL CHORUS ABOUT ZEUS)
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc268.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e134"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex134.html#e134 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>264</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex134.html#e134 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Complimentary Peanuts</font></b></a><br>A character who responds to keywords in the player's instructions and remarks, even if there are other words included.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc267.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc269.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<blockquote><font color="#000080">At 5 PM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the Eastern Hemisphere is dark;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the Western Hemisphere is lit.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for printing the announcement of darkness:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The planet abruptly spins itself over, exposing its cool underbelly to the sun.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;e / z / z / w / z / z / e&quot;.
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc270.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e273"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex273.html#e273 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>250</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex273.html#e273 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Four Stars</font></b></a><br>An elaboration of the idea that when light is absent, the player should be given a description of what he can smell and hear, instead.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc269.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc271.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
