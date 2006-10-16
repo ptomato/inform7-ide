@@ -1,0 +1,78 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.3. Using the Scene index</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc137.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Scenes</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc139.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.3. Using the Scene index</b></font></td></tr></table>
+<p>
+<p>But when we test the previous section's example, we find that after a brief wait, the train pulls up: but it never goes away again. We have given instructions on how the scene ends, but not when it ends, and as a result the scene goes on forever once started.
+<p>
+<p>Even with simple story-lines, and this one could hardly be simpler, it is surprisingly easy to overlook something so that the whole story-line is derailed.
+<p>
+<p>The Scene index is intended to help with this. At the top is a chart showing all the scenes and how they are to begin, along with a key to the symbols used on it. If we look at the Scene index for the previous example, we find that our Train Stop scene is marked with the red warning symbol for &quot;never ends&quot;. Let us fix this:
+<p>
+<blockquote><font color="#000080">Train Stop ends when the time since Train Stop began is 3 minutes.
+</font></blockquote><p>
+<p>
+<p>Note the useful value &quot;time since Train Stop began&quot;. (This only makes sense if the scene has begun, of course.) The actual time, in case it is needed, can be obtained with &quot;time when Train Stop began&quot;.
+<p>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width=&quot;100%&quot;><tr><TD width=38px valign=top><img border=&quot;0&quot; src=../doc_images/testing.png id=&quot;testoval&quot; style=&quot;height:31px; width=40px&quot;></td><td valign=top><font size=2>The testing command SCENES causes Inform to monitor the beginning and ending of scenes, and report on them. For instance:
+<p>
+<blockquote><font color="#000080">>ask monk about lodging
+<br>&quot;Welcome a poor traveler for the night?&quot; you ask, rubbing your fingers together to restore a little feeling.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The monk looks you up and down for a moment and you sense his reaction hanging in the balance; then he slaps you on the back, hard enough to drive the air from your lungs. &quot;In.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">[Scene 'Greeting' ends]
+<br>The monk takes your elbow and pushes you imperiously toward dinner.
+<br>[Scene 'Banquet' begins]
+</font></blockquote><p>
+<p>
+<p></font></td></tr></table><hr><p>
+<a name="e232"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc138.html#e232 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>119</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc138.html#e232 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Age of Steam</font></b></a><br>The railway-station examples so far put together into a short game called "Age of Steam".<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>The following source is very short and simple, yet it already feels surprisingly interesting in play, because something is going on which the player does not control but must observe. The single scene both starts and finishes.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode328(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Age of Steam"\n\nThe Station is a room. "Eynforme Halt is a raised platform fringed with cowslip: a whistle-stop with no more than a signal and a water-tank."\n\nThe Flying Scotsman is fixed in place. "The Flying Scotsman, fastest train in the world, is now at a dead standstill."\n\nTrain Stop is a scene. Train Stop begins when the player is in the Station for the third turn. Train Stop ends when the time since Train Stop began is 3 minutes.\n\nWhen Train Stop begins:\n\tmove the Flying Scotsman to the Station;\n\tsay "The Flying Scotsman pulls up at the platform, to a billow of steam and hammering."\n\nWhen Train Stop ends:\n\tremove the Flying Scotsman from play;\n\tsay "The Flying Scotsman inches away, with a squeal of released brakes, gathering speed invincibly until it disappears around the hill. All is abruptly still once more."\n\nInstead of entering the Flying Scotsman, say "Alas, the [time when Train Stop began] arrival is only to take on water, not to set down or pick up."\n\nTest me with "z / z / z / enter flying scotsman / z / z".\n');
+}
+</script>
+<a href="javascript:pasteCode328()"><img border=0 src=../doc_images/paste.png></a> &quot;Age of Steam&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Station is a room. &quot;Eynforme Halt is a raised platform fringed with cowslip: a whistle-stop with no more than a signal and a water-tank.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Flying Scotsman is fixed in place. &quot;The Flying Scotsman, fastest train in the world, is now at a dead standstill.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Train Stop is a scene. Train Stop begins when the player is in the Station for the third turn. Train Stop ends when the time since Train Stop began is 3 minutes.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When Train Stop begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the Flying Scotsman to the Station;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The Flying Scotsman pulls up at the platform, to a billow of steam and hammering.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When Train Stop ends:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the Flying Scotsman from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The Flying Scotsman inches away, with a squeal of released brakes, gathering speed invincibly until it disappears around the hill. All is abruptly still once more.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of entering the Flying Scotsman, say &quot;Alas, the [time when Train Stop began] arrival is only to take on water, not to set down or pick up.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;z / z / z / enter flying scotsman / z / z&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc138.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc137.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc139.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

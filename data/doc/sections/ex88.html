@@ -1,0 +1,72 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5.4. Defining new adjectives</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc75.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap5.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 5: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc77.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>5.4. Defining new adjectives</b></font></td></tr></table>
+<p>
+<p>Suppose we want to coin a word for supporters currently supporting something. We can do so with the following sentence:
+<p>
+<blockquote><font color="#000080">Definition: A supporter is occupied if something is on it.
+</font></blockquote><p>
+<p>
+<p>Note the colon, which is essential, and the usage of &quot;it&quot; in the definition part to refer to the object in question. (For this purpose we would write &quot;it&quot; even if we were defining a term about, say, a woman instead of a supporter, so that &quot;she&quot; or &quot;her&quot; might seem more appropriate.)
+<p>
+<p>This creates the adjective &quot;occupied&quot;, and gives it a definition valid for supporters. That restriction on validity means that non-supporters would always fail the description &quot;something occupied&quot;; which might be unfortunate if we wanted to walk about rooms being occupied. We could give a second definition thus:
+<p>
+<blockquote><font color="#000080">Definition: A room is occupied if a person is in it.
+</font></blockquote><p>
+<p>
+<p>These are entirely different senses of the word &quot;occupied&quot; - a mantelpiece is occupied if an invitation is on it, but for a drawing room to be occupied there must be human presence - and Inform applies whichever sense is relevant when deciding whether or not a given object is &quot;occupied&quot;.
+<p>
+<p>Newly defined adjectives cannot be used when creating things, because they are not explicit enough. Inform could not satisfy:
+<p>
+<blockquote><font color="#000080">The Ballroom is occupied. The bucket is a large container.
+</font></blockquote><p>
+<p>
+<p>because there is not enough information: by whom is the Ballroom occupied? How large, exactly? On the other hand, newly defined adjectives are very helpful in conditions and for rules, as we shall see later on.
+<p>
+<p><hr><p>
+<a name="e88"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc76.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>57</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc76.html#e88 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Finishing School</font></b></a><br>The "another" adjective for rules such as "in the presence of another person".<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>It is often useful to write action rules which apply only when the player is observed by a third party. &quot;In the presence of a person&quot;, however, will react even if only the player is in the room, because the player is, of course, a person as well.
+<p>
+<p>A convenient way around this problem is to define an &quot;other&quot; adjective:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode182(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Finishing School"\n\nThe apple is an edible thing carried by the player.\n\nThe Hall is a room. Miss Wicket is a woman in the Hall.\n\nThe Dormitory is south of the Hall.\n\nDefinition: a person is another if it is not the player.\n\nInstead of eating something in the presence of another person:\n\tsay "Your mannerly upbringing prevents you from eating without a fork or knife in front of someone."\n\nTest me with "eat apple / south / eat apple".\n\n');
+}
+</script>
+<a href="javascript:pasteCode182()"><img border=0 src=../doc_images/paste.png></a> &quot;Finishing School&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The apple is an edible thing carried by the player.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Hall is a room. Miss Wicket is a woman in the Hall.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Dormitory is south of the Hall.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a person is another if it is not the player.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of eating something in the presence of another person:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your mannerly upbringing prevents you from eating without a fork or knife in front of someone.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;eat apple / south / eat apple&quot;.
+</font></blockquote><p>
+<p>
+<p>If we did not have &quot;another&quot; here, Inform would interpret even the player as a possible schoolmarm, leading to such lines as &quot;yourself stares at you coldly...&quot;. Clearly not quite the thing.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc76.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc75.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc77.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

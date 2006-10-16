@@ -1,0 +1,96 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.6. Units</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc199.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc201.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.6. Units</b></font></td></tr></table>
+<p>
+<p>Some of the examples in the last few sections were slightly strained because they used numbers where an English speaker not quite do so. We tend not to say &quot;Isabella has height 68&quot;: we would more normally say &quot;Isabella is 5 foot 8.&quot; Perhaps the computer will need to store that measurement as the number 68 in some register or other, but we really don't want to know that.
+<p>
+<p>Inform allows us to create new, basically numerical kinds of value, like so:
+<p>
+<blockquote><font color="#000080">A weight is a kind of value. 10kg specifies a weight.
+</font></blockquote><p>
+<p>
+<p>By contrast, the kinds of value seen so far have been set up thus:
+<p>
+<blockquote><font color="#000080">A colour is a kind of value. The colours are red, green and blue.
+</font></blockquote><p>
+<p>
+<p>We can choose to make a new kind of value of either variety, but we can't mix the two in the same kind: it will either be numerical at heart (&quot;10kg&quot;) or verbal at heart (&quot;blue&quot;).
+<p>
+<p>The effect of &quot;10kg specifies a weight&quot; is to tell Inform that text matching this form is a constant value of kind &quot;weight&quot;. So, for instance,
+<p>
+<blockquote><font color="#000080">The maximum load is a weight that varies. The maximum load is 8000kg.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">if the maximum load <= 8000kg, ...
+</font></blockquote><p>
+<p>
+<p>Weights behave just like numbers in the ways we can compare them: but Inform respects the fact that a weight is not just any number, so it would not allow us to compare (say) &quot;8000kg&quot; and &quot;5 foot 8&quot;. Weights can meaningfully be compared only with other weights.
+<p>
+<p>We can also say weights:
+<p>
+<blockquote><font color="#000080">The Weighbridge is a room. &quot;A sign declares that the maximum load is [maximum load].&quot;
+</font></blockquote><p>
+<p>
+<p>...which will produce the text &quot;A sign declares that the maximum load is 8000kg.&quot;
+<p>
+<p><hr><p>
+<a name="e245"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc200.html#e245 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>185</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc200.html#e245 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> rBGH</font></b></a><br>The player character's height is selected randomly at the start of play.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>As with ordinary numbers, we can choose random units when this is useful:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode341(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"rBGH"\n\nThe Pharmaceutical Testing Facility is a room. "A [if the player is short]large [end if][if the player is tall]cramped [end if]white space with sterile counters and a[if the player is tall]n uncomfortable little[end if] stool. There is also a mirror, behind which someone must be watching you. But you can\'t see through to that."\n\nA counter, a one-way mirror, and a stool are scenery in the Facility. The stool is an enterable supporter. The counter supports a plate.\n\nHeight is a kind of value. 5 feet 11 inches specifies a height. 5\'11 specifies a height. A person has a height.\n\nDefinition: a person is tall if its height is 6 feet 0 inches or more.\n\nDefinition: a person is short if its height is 5 feet 4 inches or less.\n\nWhen play begins:\n\tchange the height of the player to a random height between 5 feet 2 inches and 6 feet 4 inches;\n\tchange the right hand status line to "[height of player]".\n\nInstead of examining the player:\n\tsay "You, Test Subject, are [height of the player] tall."\n\nThe growth pill is a kind of thing. A growth pill is always edible. The description is usually "It is leaf-green and has a reassuring logo of a curling vine on the side. Nothing to worry about, nothing at all." Two growth pills are on the plate.\n\nAfter eating the growth pill:\n\tchange the height of the player to the height of the player + 0 feet 6 inches;\n\tsay "Your spine does something frightening and painful, and you find yourself looking down on the room from a wholly new angle.";\n\ttry looking.\n\nTest me with "examine me / eat pill / examine me / eat pill / examine me".\n');
+}
+</script>
+<a href="javascript:pasteCode341()"><img border=0 src=../doc_images/paste.png></a> &quot;rBGH&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Pharmaceutical Testing Facility is a room. &quot;A [if the player is short]large [end if][if the player is tall]cramped [end if]white space with sterile counters and a[if the player is tall]n uncomfortable little[end if] stool. There is also a mirror, behind which someone must be watching you. But you can't see through to that.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A counter, a one-way mirror, and a stool are scenery in the Facility. The stool is an enterable supporter. The counter supports a plate.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Height is a kind of value. 5 feet 11 inches specifies a height. 5'11 specifies a height. A person has a height.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a person is tall if its height is 6 feet 0 inches or more.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a person is short if its height is 5 feet 4 inches or less.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the height of the player to a random height between 5 feet 2 inches and 6 feet 4 inches;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot;[height of player]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You, Test Subject, are [height of the player] tall.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The growth pill is a kind of thing. A growth pill is always edible. The description is usually &quot;It is leaf-green and has a reassuring logo of a curling vine on the side. Nothing to worry about, nothing at all.&quot; Two growth pills are on the plate.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After eating the growth pill:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the height of the player to the height of the player + 0 feet 6 inches;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your spine does something frightening and painful, and you find yourself looking down on the room from a wholly new angle.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try looking.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;examine me / eat pill / examine me / eat pill / examine me&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc200.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e202"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex202.html#e202 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>186</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex202.html#e202 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Wonderland</font></b></a><br>Hiking Mount Rainier, with attention to which locations are higher and which lower than the present location.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc199.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc201.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,0 +1,535 @@
+!----------------------------------------------------------------------------
+!
+!   NPC_ENGINE DEMO STORY
+!
+!
+!   Copyright (c) 1999 Volker Lanz.
+!
+!
+!   With material from:
+!
+!       INTRUDER
+!       Interactive Fiction: A Burglary
+!       Copyright 1998, 1999 by Volker Lanz.
+!       Release 59 Interpreter 6 Version F Serial Number 990210 
+!
+!----------------------------------------------------------------------------
+
+
+!----------------------------------------------------------------------------
+!   C O N S T A N T S
+!----------------------------------------------------------------------------
+Constant    Story       "NPC ENGINE DEMO STORY";
+Constant    Headline    "^using rooms from Intruder r59s990210
+                        ^with apologies to Graham Nelson, Marc, Mike and Dave (who?)
+                        ^Copyright (c) 1999 by Volker Lanz. May be distributed
+                        and copied freely.^";
+
+Release                 14;
+Statusline              time;
+
+
+!----------------------------------------------------------------------------
+!   I N C L U D E S
+!----------------------------------------------------------------------------
+Include     ">Parser.h";
+Include     ">VerbLib.h";
+
+Include     ">NPC_ENGINE.h";
+
+
+!----------------------------------------------------------------------------
+!   R E P L A C E S
+!----------------------------------------------------------------------------
+Replace     BeforeParsing;
+
+
+!------------------------------------------------------------------------------
+!   B E F O R E   P A R S I N G
+!------------------------------------------------------------------------------
+[ BeforeParsing    flag i p1 p2 p3;
+    for(i = 4: i <= buffer->1 + 1: i++)
+        if (buffer->i == '.')
+        {
+            p3 = buffer->(i-1);
+            p2 = buffer->(i-2);
+            
+            if (i > 4)
+                p1 = buffer->(i-3);
+            else
+                p1 = 0;
+
+            if ((p1 == 'm' && p2 == 'r' && p3 == 's')
+             || (p2 == 'm' && p3 == 'r')
+             || (p2 == 'm' && p3 == 's'))
+            {
+                buffer->i = ' ';
+                flag = 1;
+            }
+        }
+        else if (buffer->i == '!' or '?' or '"')
+        {
+            buffer->i = ' ';
+            flag = 1;
+        }
+
+    if (flag)
+        @tokenise buffer parse;
+];
+
+
+!----------------------------------------------------------------------------
+!   P L A Y E R   O B J E C T
+!----------------------------------------------------------------------------
+Object Player_obj "player"
+    with
+    short_name
+        [;
+            print "yourself";
+            rtrue;
+        ],
+    description     "You look just like you always did.",
+    after           NULL,
+    life            NULL,
+    each_turn
+        [o;
+            ! Checking if player meets any NPCs
+            o = npc_first_npc;
+            
+            while (o)
+            {
+                if (TestScope(o, self))
+                    o.npc_met = turns;
+                o = o.npc_next;
+            }
+        ],
+    time_out        NULL,
+    describe        NULL,
+    capacity        10,
+    parse_name      0,
+    orders          0,
+    before          0,
+    number          0,
+    has             concealed animate proper transparent;
+
+
+!----------------------------------------------------------------------------
+!   C L A S S E S
+!----------------------------------------------------------------------------
+Class Door_Class
+    with
+    npc_open
+        [npc;
+            if (self hasnt locked)
+            {
+                npc.npc_door_passed = self;
+                give self open;
+                StartTimer(self, 2+random(2));
+
+                rtrue;
+            }
+            
+            rfalse;
+        ],
+    time_left,
+    time_out
+        [;
+            give self ~open;
+            if (TestScope(self))
+                print_ret (The) self, " suddenly closes as if moved by an
+                    invisible hand.";
+        ],
+    has scenery door openable;
+
+
+Class NPC_Class
+    class NPC_Engine
+    with
+    describe
+        [;
+            print (The) self, " is here, ";
+            print_ret (string) random ("whistling an unmelodic tune.", "jumping on the spot.",
+                "counting his money.", "begging for money.");
+        ],
+    before
+        [;
+            Hello:
+                self.npc_stopped = 2;
+                print_ret (The) self, " is facing you.";
+        ],
+    life
+        [;
+            self.npc_stopped = 2;
+
+            Ask:
+                "~I don't know much about that.~";
+        ],
+    has proper;
+    
+
+Class Ground_Floor
+    class NPC_Room
+    has light;
+
+Class Outside
+    class NPC_Room
+    has light;
+
+
+!----------------------------------------------------------------------------
+!   R O O M S
+!----------------------------------------------------------------------------
+
+Ground_Floor Foyer "Foyer"
+    with
+    name    "corridor" "foyer" "front" "door",
+    description
+        [;
+            print "This is the foyer of the summer house. It's quite 
+                unpretentiously furnished, with only a wardrobe and a small sofa
+                next to it. The corridor continues westward, the front door, closed
+                at the moment, is to the east of you. You can see the 
+                staircase to the north and another door, which is ";
+            if (Children_Bedroom_Door has open)
+                print "open";
+            else
+                print "closed";
+            print ", leads to the children's bedroom to the south.^";
+        ],
+    before
+        [;
+            Go:
+                if (noun == e_obj)
+                    "In this demo game, there is no front door.";
+        ],
+    w_to Ground_Hallway_1,
+    s_to Children_Bedroom_Door,
+    n_to Top_Of_Stairs;
+
+Door_Class Children_Bedroom_Door "bedroom door"
+    with
+    name    "bedroom" "door",
+    door_to
+        [;
+            if (self in Foyer)
+                return Children_Bedroom;
+            return Foyer;
+        ],
+    door_dir
+        [;
+            if (self in Foyer)
+                return s_to;
+            return n_to;
+        ],
+    found_in Foyer Children_Bedroom;
+
+Ground_Floor Ground_Hallway_1 "Centre Hallway"
+    with
+    name    "centre" "hallway" "middle" "doorway" "doorways",
+    description
+        "You are the middle of the hallway running from east to west. Open 
+        doorways lead to the dining room to the north and the living room 
+        to the south of you.",
+    e_to Foyer,
+    w_to Ground_Hallway_2,
+    n_to Dining_Room,
+    s_to Living_Room;
+
+Ground_Floor Ground_Hallway_2 "Hallway"
+    with
+    name    "hallway" "open" "passage" "terrace" "door",
+    description
+        [;
+            print "At the west end of the ground floor hallway, a door leads 
+                out to the terrace. This door is closed right now. An open passage 
+                to the north leads to the kitchen and another door, currently open";
+            print ", leads to the master bedroom to the south.^";
+        ],
+    e_to Ground_Hallway_1,
+    n_to Kitchen,
+    s_to Master_Bedroom,
+    w_to Terrace;
+
+Ground_Floor Top_Of_Stairs "Top of Stairs"
+    with
+    name    "top" "of" "stair" "stairs" "wooden" "staircase",
+    description
+        "You find yourself on top of a wooden staircase which leads down to the 
+        basement of the house. Above the staircase is a small closed window in
+        the east wall. The foyer, not as spooky as the basement, is to 
+        the south.",
+    before
+        [;
+            Go:
+                if(noun == d_obj)
+                    "You can't enter the basement in this demo game.";
+        ],
+    s_to Foyer;
+
+Ground_Floor Children_Bedroom "Children's Bedroom"
+    with
+    name    "simple" "but" "tasteful" "style" "side" "bedroom" "children^s" 
+            "doorway" "typical",
+    description
+        [;
+            print "Furnished in a simple but tasteful style, this room is a 
+                typical children's bedroom. There are two beds, one on each 
+                side, a big wardrobe, shelves piled with all sorts of things 
+                and numerous toys scattered on the floor. The bedroom door to 
+                the north is ";
+            if (Children_Bedroom_Door has open)
+                print "open";
+            else
+                print "closed";
+            print ". Another doorway to the west leads to the bathroom.^";
+        ],
+    n_to Children_Bedroom_Door,
+    w_to Children_Bathroom;
+
+Ground_Floor Children_Bathroom "Children's Bathroom"
+    with
+    name    "children^s" "bathroom" "stuff" "bathrooms" "world" "door",
+    description
+        "A rather small bathroom, usually used by the Kelly children (that is, 
+        unless there aren't any strangers rummaging about in it). There is both 
+        a shower and a bath tub on the north wall. Shelves filled with the usual 
+        stuff found in all bathrooms around the world are attached to the south 
+        wall. Above the shelves a small window can be seen, which is closed. On 
+        the east wall there is a sink with a large mirror above it. You can get 
+        back to the bedroom to the east.",
+    e_to Children_Bedroom;
+
+Ground_Floor Dining_Room "Dining Room"
+    with
+    name    "dining" "room" "centre" "moonlight" "artists" "doorway" "doorways",
+    description
+        "This room is rather small, has a table seating six in the centre, and 
+        a window in the north wall lets in the faint moonlight. Some paintings 
+        on the east wall, apparently by local artists and all originals, give 
+        the room more of a cheerful atmosphere. Open doorways to the west and 
+        south lead out of here.",
+    s_to Ground_Hallway_1,
+    w_to Kitchen;
+
+Ground_Floor Living_Room "Living Room"
+    with
+    name    "living" "room" "centre" "guests" "impression" "place" "success" 
+            "manner" "feature" "garden" "doorway" "comfortable" "impressive"
+            "prominent" "feature",
+    description
+            "You have entered the living room. In its centre, a large 
+            coffee table with eight chairs around shows that guests are
+            welcome here (this, however, may not necessarily apply to 
+            you). A leather sofa with a small side table also adds to the 
+            impression of a comfortable place. Above the sofa and a wooden
+            cabinet, a collection of silver, golden and platinum records 
+            covers the wall, displaying the success of the house owner in 
+            quite an impressive manner. The most prominent feature of this 
+            room, however, resides beneath a large window in the south wall 
+            that looks onto the dark garden: An original Steinway grand 
+            piano. An open doorway to the north leads to the 
+            corridor.",
+    n_to Ground_Hallway_1;
+
+Ground_Floor Kitchen "Kitchen"
+    with
+    name    "kitchen" "tools" "appliances" "usefulness" "beauty" "corridor",
+    description
+        "The kitchen of the house has been furnished with an eye more for 
+        utility than beauty. It has all the usual tools and appliances: 
+        Refrigerator, microwave oven, shelves, cabinets with china, some
+        drawers and more. There are two open doorways here: The one in the
+        south wall leads to the corridor and the other, in the east, to the 
+        dining room. Next to the latter, a kitchen clock is affixed 
+        to the wall.",
+    e_to Dining_Room,
+    s_to Ground_Hallway_2;
+
+Ground_Floor Master_Bedroom "Master Bedroom"
+    with
+    name    "master" "bedroom" "place" "centre" "daylight" "outside" 
+            "corridor" "door",
+    description
+            "You are now in the master bedroom, a place where one can 
+            quite easily feel comfortable. It's tastefully furnished, with 
+            a large double size bed in the centre, small tables on each 
+            side. There are dressers, there is an expensively looking carpet 
+            on the floor, there is a large mirror on the east wall next to 
+            a door to the master bathroom, which is open. A window to the 
+            south would let the daylight in if it wasn't dark outside and 
+            a door, currently open, leads north to the corridor.",
+    n_to Ground_Hallway_2,
+    e_to Master_Bathroom;
+
+Ground_Floor Master_Bathroom "Master Bathroom"
+    with
+    name    "master" "bathroom" "signs" "of" "taste" "wealth" "prominent" "feature"
+            "middle" "room" "doorway",
+    description
+        "This beautifully ornated bathroom is decorated with all possible signs 
+        of taste and wealth. Its most prominent feature is probably the large 
+        bath-tub in the middle of the room. Further, there are two large sinks, 
+        a shower, various shelves and closets and a small window far above the 
+        ground in the south wall. You can get back to the bedroom through a 
+        doorway to the west.",
+    w_to Master_Bedroom;
+
+Outside South_Of_House "South of House"
+    with
+    name    "south" "side" "path" "terrace" "front",
+    description
+            "Here you are at the south side of the house. A path leads to 
+            the terrace to the west and to the south of the front door to 
+            the east. You can see a few small and one large window. They are 
+            all closed and locked from the inside.",
+    w_to South_Of_Terrace;
+
+Object -> Windows "windows"
+    with
+    name    "small" "large" "window" "windows",
+    before
+        [;
+            Search:
+                if (self in Living_Room)
+                    "You can only see the dark garden outside.";
+                    
+                NPC_LookThroughWindow(self);
+                "You can see the living room and the area beyond in the house.";
+        ],
+    door_to     Living_Room,
+    door_dir    n_to,
+    looks_to    Living_Room Ground_Hallway_1 Dining_Room,
+    found_in    South_Of_House Living_Room,
+    has         scenery;
+    
+Outside Terrace "Terrace"
+    with
+    name    "terrace" "sunlight" "sunbathing" "daytime",
+    description
+            "During daytime, this terrace between house and beach is 
+                probably used for sunbathing. At the moment, though, this
+                isn't possible due to lack of sunlight. Three steps lead 
+                up to a glass door into the house east of you. The door
+                is currently open. You can go west to the beach or walk north 
+                or south to get around the house.",
+    s_to South_Of_Terrace,
+    e_to Ground_Hallway_2;
+
+Outside South_Of_Terrace "South of Terrace"
+    with
+    name    "south" "of" "terrace" "stone" "path" "dunes" "view" "ocean",
+    description
+        "The stone path you're on bends around the house to the north and east 
+        here. The sun terrace is to the north and the south side of the house 
+        to the east. Dunes to the west block the view of the ocean.",
+    n_to Terrace,
+    e_to South_Of_House;
+
+
+!----------------------------------------------------------------------------
+!   N P C s
+!----------------------------------------------------------------------------   
+
+NPC_Class Marc "Marc" Living_Room
+    with
+    name    "marc",
+    npc_arrived
+        [r;
+            switch(r)
+            {
+                Dining_Room:
+                    NPC_Schedule(self, Children_Bedroom, 2);
+                    
+                Children_Bedroom:
+                    NPC_Schedule(self, Living_Room, 2);
+                    
+                Living_Room:
+                    NPC_Schedule(self, Dining_Room, 2);
+                    
+                default:
+                    "*** Oops: ", (name) self, " arrived somewhere he shouldn't.";
+            }
+        ];
+
+NPC_Class Dave "Dave" Top_Of_Stairs
+    with
+    name    "dave" "david",
+    npc_arrived
+        [r;
+            switch(r)
+            {
+                Dining_Room:
+                    NPC_Schedule(self, Children_Bathroom, 3+random(7));
+                    
+                Children_Bathroom:
+                    NPC_Schedule(self, Ground_Hallway_2, 3+random(7));
+                    
+                Ground_Hallway_2:
+                    NPC_Schedule(self, Top_Of_Stairs, 3+random(7));
+                    
+                Top_Of_Stairs:
+                    NPC_Schedule(self, Dining_Room, 3+random(7));
+                    
+                default:
+                    "*** Oops: ", (name) self, " arrived somewhere he shouldn't.";
+            }
+        ];
+
+NPC_Class Mike "Mike" Master_Bedroom
+    with
+    name    "mike",
+    npc_arrived
+        [r;
+            switch(r)
+            {
+                Children_Bedroom:
+                    NPC_Schedule(self, Kitchen, 5+random(5));
+                    
+                Kitchen:
+                    NPC_Schedule(self, Living_Room, 5+random(5));
+                    
+                Living_Room:
+                    NPC_Schedule(self, Master_Bedroom, 5+random(5));
+                    
+                Master_Bedroom:
+                    NPC_Schedule(self, Children_Bedroom, 5+random(5));
+
+                default:
+                    "*** Oops: ", (name) self, " arrived somewhere he shouldn't.";
+            }
+        ];
+
+
+!----------------------------------------------------------------------------   
+[ HelloSub;
+    "You can't say hello to ", (a) noun, ".";
+];
+
+!----------------------------------------------------------------------------   
+[ Initialise x;
+    player = Player_obj;
+
+    ! Calling NPC_Initialise() to set up the NPC Engine; follow type is normal
+    NPC_Initialise(0);
+
+    SetTime(60*23+15, 1);
+    location = Dining_Room;
+    
+    ! Starting the first movements
+    x = npc_first_npc;
+    while(x)
+    {
+        x.npc_arrived(ScopeCeiling(x));
+        x = x.npc_next;
+    }
+
+    "^^^^^Days of searching, days of thirsty hacking through the briars of
+    the Inform manual, but at last your patience was rewarded. A discovery -
+    living creatures!^";
+];
+
+Verb 'hello' 'hi' 'hey'
+    * noun                          -> Hello;
+    
+
+Include "Grammar";

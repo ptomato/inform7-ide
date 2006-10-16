@@ -1,0 +1,73 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.7. Properties depend on kind</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc33.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc35.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.7. Properties depend on kind</b></font></td></tr></table>
+<p>
+<p>Properties depend very much on kind. It makes no sense to ask whether a room is transparent or opaque, for instance, so Inform will not allow this either to be specified or queried.
+<p>
+<p>Another way that kind influences properties can be seen from an earlier example:
+<p>
+<blockquote><font color="#000080">The Gazebo is a room. A billiards table is in the Gazebo. On it is a trophy cup. A starting pistol is in the cup.
+</font></blockquote><p>
+<p>
+<p>The cup, the pistol and the table are all allowed to have the &quot;fixed in place&quot; property, but in fact only the table actually has it: the cup and the pistol are created as &quot;portable&quot; instead. This is because Inform knows that most things are portable, but that supporters - such as the table - are usually fixed in place. If this assumption is wrong, we need only add the line:
+<p>
+<blockquote><font color="#000080">The table is portable.
+</font></blockquote><p>
+<p>
+<p><hr><p>
+<a name="e28"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc34.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>12</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc34.html#e28 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Disappointment Bay 1</font></b></a><br>A running example in this chapter, Disappointment Bay, involves chartering a boat. This is the first step: creating the cabin.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>To begin with the title:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode120(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Disappointment Bay"\n\n[There are many Disappointment Bays across the world, named by eighteenth-century ships\' captains - one in Antarctica, another in Tasmania, for instance. The most famous is probably the one where Lewis and Clark\'s expedition broke through to the Pacific. But ours is the one in Alaska, named in 1791 by a Spanish navigator who had hoped it might lead to the fabled Northwest Passage, and all of this history is beside the point since the game is set in the present day.]\n\nThe Cabin is a room.  "The front of the small cabin is entirely occupied with navigational instruments, a radar display, and radios for calling back to shore. Along each side runs a bench with faded blue vinyl cushions, which can be lifted to reveal the storage space underneath. A glass case against the wall contains several fishing rods.\n\nScratched windows offer a view of the surrounding bay, and there is a door south to the deck. A sign taped to one wall announces the menu of tours offered by the Yakutat Charter Boat Company."\n\n[We might want to start with the glass case.]\n\nThe Cabin contains a glass case. In the glass case is a collection of fishing rods.\n\n[Now Inform will have guessed that the case is a container, but its default idea of a container is something like a bucket: permanently open and not able to be opened and shut. We can change that:]\n\nThe case is closed, transparent, and openable.\n\n[We get a similar set of guesses if we write]\n\nThe bench is in the cabin. On the bench are some blue vinyl cushions.\n\n[Using "some" rather than "a" or "the" tells Inform that the cushions are to be referred to as a plural object in the future. And because of the "on the bench..." phrase, Inform will guess that the bench is a supporter and that it is fixed in place and cannot be moved from room to room. We do have to tell it that the bench can be sat on, though:]\n\nThe bench is enterable.\n\n[And now a short script, so that if we type TEST ME, we experiment with the case and bench:]\n\nTest me with "examine case / get rods / open case / get rods / sit on bench / take cushions / get up"\n');
+}
+</script>
+<a href="javascript:pasteCode120()"><img border=0 src=../doc_images/paste.png></a> &quot;Disappointment Bay&quot;
+</font></blockquote><p>
+<p>
+<p>There are many Disappointment Bays across the world, named by eighteenth-century ships' captains - one in Antarctica, another in Tasmania, for instance. The most famous is probably the one where Lewis and Clark's expedition broke through to the Pacific. But ours is the one in Alaska, named in 1791 by a Spanish navigator who had hoped it might lead to the fabled Northwest Passage, and all of this history is beside the point since the game is set in the present day.
+<p>
+<blockquote><font color="#000080">The Cabin is a room.  &quot;The front of the small cabin is entirely occupied with navigational instruments, a radar display, and radios for calling back to shore. Along each side runs a bench with faded blue vinyl cushions, which can be lifted to reveal the storage space underneath. A glass case against the wall contains several fishing rods.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Scratched windows offer a view of the surrounding bay, and there is a door south to the deck. A sign taped to one wall announces the menu of tours offered by the Yakutat Charter Boat Company.&quot;
+</font></blockquote><p>
+<p>
+<p>We might want to start with the glass case.
+<p>
+<blockquote><font color="#000080">The Cabin contains a glass case. In the glass case is a collection of fishing rods.
+</font></blockquote><p>
+<p>
+<p>Now Inform will have guessed that the case is a container, but its default idea of a container is something like a bucket: permanently open and not able to be opened and shut. We can change that:
+<p>
+<blockquote><font color="#000080">The case is closed, transparent, and openable.
+</font></blockquote><p>
+<p>
+<p>We get a similar set of guesses if we write
+<p>
+<blockquote><font color="#000080">The bench is in the cabin. On the bench are some blue vinyl cushions.
+</font></blockquote><p>
+<p>
+<p>Using &quot;some&quot; rather than &quot;a&quot; or &quot;the&quot; tells Inform that the cushions are to be referred to as a plural object in the future. And because of the &quot;on the bench...&quot; phrase, Inform will guess that the bench is a supporter and that it is fixed in place and cannot be moved from room to room. We do have to tell it that the bench can be sat on, though:
+<p>
+<blockquote><font color="#000080">The bench is enterable.
+</font></blockquote><p>
+<p>
+<p>And now a short script, so that if we type TEST ME, we experiment with the case and bench:
+<p>
+<blockquote><font color="#000080">Test me with &quot;examine case / get rods / open case / get rods / sit on bench / take cushions / get up&quot;
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc34.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc33.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc35.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

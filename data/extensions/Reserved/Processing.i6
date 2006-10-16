@@ -1,0 +1,1960 @@
+!! Processing.i6: code for processing rules and rulebooks
+
+Constant RTP_BACKDROP 1;
+Constant RTP_EXITDOOR 2;
+Constant RTP_NOEXIT 3;
+Constant RTP_CANTCHANGE 4;
+Constant RTP_IMPREL 5;
+Constant RTP_RULESTACK 6;
+Constant RTP_TOOMANYRULEBOOKS 7;
+Constant RTP_TOOMANYEVENTS 8;
+Constant RTP_BADPROPERTY 9;
+Constant RTP_UNPROVIDED 10;
+Constant RTP_UNSET 11;
+Constant RTP_TOOMANYACTS 12;
+Constant RTP_CANTABANDON 13;
+Constant RTP_CANTEND 14;
+Constant RTP_CANTMOVENOTHING 15;
+Constant RTP_CANTREMOVENOTHING 16;
+Constant RTP_DIVZERO 17;
+Constant RTP_BADVALUEPROPERTY 18;
+Constant RTP_NOTBACKDROP 19;
+Constant RTP_TABLE_NOCOL 20;
+Constant RTP_TABLE_NOCORR 21;
+Constant RTP_TABLE_NOROW 22;
+Constant RTP_TABLE_NOENTRY 23;
+Constant RTP_TABLE_NOTABLE 24;
+Constant RTP_TABLE_NOMOREBLANKS 25;
+Constant RTP_TABLE_NOROWS 26;
+Constant RTP_TABLE_CANTSORT 27;
+Constant RTP_NOTINAROOM 28;
+
+! The rule change stack contains 3-word (6 byte) records,
+! defined thus:
+! Constant RS_CAPACITY = 999;
+! Global   rulechange_sp = 0;
+! Array    rulechange_stack --> RS_CAPACITY;
+
+[ PushRuleChange usage rule1 rule2;
+  if (rulechange_sp >= RS_CAPACITY) {
+      return RunTimeProblem(RTP_RULESTACK);
+  }
+  rulechange_stack-->rulechange_sp++ = usage;
+  rulechange_stack-->rulechange_sp++ = rule1;
+  rulechange_stack-->rulechange_sp++ = rule2;
+];
+
+! The first word of each record indicates a type, of which
+! one value is special and indicates the start of a "follow"
+! frame:
+
+Constant RS_FRAME = -1;
+
+! We also need to know the internal number of the procedural
+! rulebook (which must correspond to that in the I7 source):
+
+Constant APROC_RB = 0;
+Constant AFTER_RB = 3;
+Constant PROC_RB = 4;
+Constant ACCESS_RB = 5;
+Constant REACHIN_RB = 10;
+Constant REACHOUT_RB = 11;
+Constant TURNEND_RB = 9;
+Constant GAME_BEGINS_RB = 22;
+Constant GAME_ENDS_RB = 23;
+Constant GENERIC_CARRYOUT_RB = 7;
+Constant GENERIC_CHECK_RB = 25;
+Constant GENERIC_REPORT_RB = 26;
+Constant PERSUADE_RB = 27;
+Constant UNABLE_RB = 28;
+Constant VISIBLE_RB = 29;
+
+! To "follow" a rulebook, we start a new frame, process the
+! procedural rules, then process the rulebook, then clear
+! the frame back off the stack:
+
+Global rule_frames = 0;
+[ BeginFollowRulebook;
+  PushRuleChange(RS_FRAME, RS_FRAME, RS_FRAME);
+  rule_frames++;
+!print "+<", rule_frames, "/", rulechange_sp, ">";
+  if (rule_frames == 20) {
+      RunTimeProblem(RTP_TOOMANYRULEBOOKS);
+      rule_frames = -1;
+      return;
+  }
+  ProcessRulebook(PROC_RB, 0, 1);
+];
+[ EndFollowRulebook r x y;
+ if (rulechange_stack-->rulechange_sp == RS_SUCCEEDS) r = 1;
+ else if (rulechange_stack-->rulechange_sp == RS_FAILS) r = 0;
+ else r = -1;
+ if (r ~= -1) {
+   x = rulechange_stack-->(rulechange_sp+1);
+   y = rulechange_stack-->(rulechange_sp+2);
+ }
+ rule_frames--;
+ while (rulechange_sp > 0) {
+     rulechange_sp = rulechange_sp - 3;
+     if (rulechange_stack-->rulechange_sp == RS_FRAME) break;
+ }
+ if (rulechange_sp == 0) rule_frames = 0;
+ if (r == 1) rulechange_stack-->rulechange_sp = RS_SUCCEEDS;
+ else if (r == 0) rulechange_stack-->rulechange_sp = RS_FAILS;
+ if (r ~= -1) {
+   rulechange_stack-->(rulechange_sp+1) = x;
+   rulechange_stack-->(rulechange_sp+2) = y;
+ }
+!print "-<", rule_frames, "/", rulechange_sp, ">";
+];
+
+[ FollowRulebook rulebook par activity_flag rv;
+!print "^{", rulebook, "}";
+  if (rulebook ~= PROC_RB) BeginFollowRulebook();
+  rv = ProcessRulebook(rulebook, par, activity_flag);
+  if (rulebook ~= PROC_RB) EndFollowRulebook();
+!print "{/", rulebook, "}";
+  if (rv) rtrue; rfalse;
+];
+
+! The rule changes pushed on to the stack have the following
+! type numbers:
+
+Constant RS_DONOTRUN   = 1;
+Constant RS_RUN        = 2;
+Constant RS_MOVEBEFORE = 3;
+Constant RS_MOVEAFTER  = 4;
+Constant RS_DONOTUSE   = 5;
+Constant RS_USE        = 6;
+Constant RS_SUBSTITUTE = 7;
+Constant RS_SUCCEEDS   = 8;
+Constant RS_FAILS      = 9;
+
+
+! A variable logging the depth of recursion of rulebook
+! processing, which at present is used only to print neatly
+! formatted debugging:
+
+Global process_rulebook_count;
+
+! The main rulebook processing routine is
+!   ProcessRulebook(rulebook/rule)
+! which returns true if the rulebook or rule chose to
+! "succeed" or "fail", and false if it made no choice.
+! In the event that a choice was made, the result is left
+! as a record above the top of the stack, and should be
+! collected immediately.
+
+! The following bitmap is used in a simple state machine:
+
+Constant RS_ACTIVE_BIT = 1;
+Constant RS_MOVED_BIT = 2;
+Constant RS_USERESULT_BIT = 4;
+Constant RS_ACTIVITY = 8;
+Constant RS_NOSKIPS = 16;
+
+Constant NO_DEBUGGABLES = 4;
+Array debuggable_rulebooks --> APROC_RB PROC_RB ACCESS_RB TURNEND_RB;
+Array debuggable_states --> 0 0 0 0;
+[ DebugRbSub i;
+  if ((noun >= 0) && (noun < NO_DEBUGGABLES)) {
+      debuggable_states-->noun = 1;
+      for (i=0:i<NO_DEBUGGABLES:i++) print debuggable_states-->i;
+      " - OK";
+  }
+  "0 = actions, 1 = procedural, 2 = accessibility, 3 = turn sequence";
+];
+[ DebugRbOffSub i;
+  if ((noun >= 0) && (noun < NO_DEBUGGABLES)) {
+      debuggable_states-->noun = 0;
+      for (i=0:i<NO_DEBUGGABLES:i++) print debuggable_states-->i;
+      " - OK";
+  }
+  "0 = actions, 1 = procedural, 2 = accessibility, 3 = turn sequence";
+];
+Global debugging_rules = 0;
+[ AdjustDbr s i;
+  for (i=0:i<NO_DEBUGGABLES:i++) {
+      if (s == debuggable_rulebooks-->i) {
+          debugging_rules = debuggable_states-->i;
+      }
+  }
+];
+[ RulesOnSub;
+  debug_rules = 1;
+  "Rules tracing is now switched on. Type ~rules off~ to switch it off again,
+   or ~rules all~ to include even rules which do not apply.";
+];
+[ RulesAllSub;
+  debug_rules = 2;
+  "Rules tracing is now switched to ~all~. Type ~rules off~ to switch it off again.";
+];
+[ RulesOffSub;
+  debug_rules = 0;
+  "Rules tracing is now switched off. Type ~rules~ to switch it on again.";
+];
+[ ScenesOnSub;
+  debug_scenes = 1;
+  "Scene monitoring is now switched on. Type ~scenes off~ to switch it off again.";
+];
+[ ScenesOffSub;
+  debug_scenes = 0;
+  "Scene monitoring is now switched off. Type ~scenes~ to switch it on again.";
+];
+[ DB_Rule l f;
+  if (l==0) return;
+  print "@31[Rule ~", (I7_PrintRuleName) l, "~ ";
+  if (f==0) "applies.]";
+  "does not apply.]";
+];
+
+#ifdef DEBUG;
+!Verb meta "dbr"
+!	* number -> DebugRb
+!	* number "off" -> DebugRbOff;
+Verb meta "rules"
+	* -> RulesOn
+	* "all" -> RulesAll
+	* "off" -> RulesOff;
+Verb meta "scenes"
+	* -> ScenesOn
+	* "off" -> ScenesOff;
+#endif;
+
+[ ProcessRulebook rulebook par bits rv
+  x frame_base substituted_rule usage original_deadflag;
+  if (bits) bits = RS_ACTIVITY + RS_NOSKIPS;
+  if (rule_frames<0) rfalse;
+  original_deadflag = deadflag;
+  if (par) parameter_object = par;
+  for (x = rulechange_sp-3: x>=0: x = x - 3) {
+      usage = rulechange_stack-->x;
+      if (usage == RS_FRAME) { x=x+3; break; }
+      if (rulechange_stack-->(x+1) == rulebook) {
+	      if (usage == RS_MOVEBEFORE) bits = bits | (RS_MOVED_BIT);
+	      if (usage == RS_MOVEAFTER) bits = bits | (RS_MOVED_BIT);
+	  }
+  } if (x<0) x=0; frame_base = x;
+  if ((bits & RS_MOVED_BIT) && (rv == false)) { rfalse; }
+  ! rv was a call parameter: it's no longer needed and is now reused
+  bits = bits | RS_ACTIVE_BIT;
+  bits = bits | RS_USERESULT_BIT;
+  substituted_rule = rulebook; rv = 0;
+  for (: x<rulechange_sp: x = x + 3) {
+      usage = rulechange_stack-->x;
+      if (rulechange_stack-->(x+1) == rulebook) {
+          if (usage == RS_DONOTRUN) bits = bits & (~RS_ACTIVE_BIT);
+          if (usage == RS_RUN) bits = bits | (RS_ACTIVE_BIT);
+          if (usage == RS_DONOTUSE) bits = bits & (~RS_USERESULT_BIT);
+          if (usage == RS_USE) bits = bits | (RS_USERESULT_BIT);
+          if (usage == RS_SUBSTITUTE) substituted_rule = rulechange_stack-->(x+2);
+      }
+      if ((usage == RS_MOVEBEFORE) && (rulechange_stack-->(x+2) == rulebook)) {
+          rv = ProcessRulebook(rulechange_stack-->(x+1), par, (bits & RS_ACTIVITY ~= 0), true);
+          if (rv) { return rv; }
+      }
+  }
+  if ((bits & RS_ACTIVE_BIT) == 0) { rfalse; }
+  ! We now reuse usage to keep the stack frame slimmer
+  usage = debugging_rules;
+  AdjustDbr(substituted_rule);
+  #ifndef I7_ECONOMY;
+  if (debugging_rules) DebugRulebooks(substituted_rule, par);
+  #endif;
+  ! (A routine defined in the I7 code generator)
+  process_rulebook_count = process_rulebook_count + debugging_rules;
+  if ((substituted_rule >= 0) && (substituted_rule < HIGHEST_RULEBOOK_NO)) {
+      substituted_rule = rulebooks_array-->substituted_rule;
+      for (x=0, rv=0: (substituted_rule-->x~=I6_NULL) && (original_deadflag == deadflag): x++) {
+          if ((rv = (ProcessRulebook(substituted_rule-->x, par, (bits & RS_ACTIVITY ~= 0))))
+              && (bits & RS_USERESULT_BIT)) break;
+          rv = 0;
+      }
+  } else {
+      if ((say__p) && (bits & RS_NOSKIPS == 0)) I7_DivideParagraph();
+      rv = indirect(substituted_rule);
+      if (rv) rv = substituted_rule;
+  }
+  if (rv && (bits & RS_USERESULT_BIT)) {
+      AdjustDbr(substituted_rule);
+  	  process_rulebook_count = process_rulebook_count - debugging_rules;
+  	  if (process_rulebook_count < 0) process_rulebook_count = 0;
+      #ifndef I7_ECONOMY;
+  	  if (debugging_rules) {
+	      spaces(2*process_rulebook_count);
+    	  if (rulechange_stack-->rulechange_sp == RS_SUCCEEDS)
+    	      print "[stopped: success]^";
+    	  if (rulechange_stack-->rulechange_sp == RS_FAILS)
+    	      print "[stopped: fail]^";
+      }
+      #endif;
+      debugging_rules = usage;
+      return rv;
+  }
+  for (x=rulechange_sp-3: x>=frame_base: x = x-3) {
+      if ((rulechange_stack-->x == RS_MOVEAFTER) &&
+          (rulechange_stack-->(x+2) == rulebook)) {
+          rv = ProcessRulebook(rulechange_stack-->(x+1), par, (bits & RS_ACTIVITY ~= 0), true);
+          if (rv) { process_rulebook_count--;
+              debugging_rules = usage;
+      	      return rv;
+      	  }
+      }
+  }
+  process_rulebook_count = process_rulebook_count - debugging_rules;
+  rulechange_stack-->rulechange_sp = 0;
+  debugging_rules = usage;
+  rfalse;
+];
+
+[ _I6_ActionPrimitive;
+  #ifdef TARGET_ZCODE;
+  indirect(#actions_table-->action);
+  #ifnot;
+  indirect(#actions_table-->(action+1));
+  #endif;
+];
+
+! The following routines provide a sort of rule-changing API:
+
+[ ResultOfRule a;
+  a = rulechange_stack-->rulechange_sp;
+  if ((a == RS_FAILS) || (a == RS_SUCCEEDS)) {
+      a = rulechange_stack-->(rulechange_sp + 1);
+      if (a) return rulechange_stack-->(rulechange_sp + 2);
+  }
+  rfalse;
+];
+
+[ ActRulebookSucceeds rule_id;
+  if (rule_id) I7_action_deciding_rule = rule_id;
+  RulebookSucceeds();
+];
+[ ActRulebookFails rule_id;
+  if (rule_id) I7_action_deciding_rule = rule_id;
+  RulebookFails();
+];
+[ RulebookSucceeds valueflag value;
+  PushRuleChange(RS_SUCCEEDS, valueflag, value);
+  rulechange_sp = rulechange_sp - 3;
+];
+[ RulebookFails valueflag value;
+  PushRuleChange(RS_FAILS, valueflag, value);
+  rulechange_sp = rulechange_sp - 3;
+];
+
+[ RulebookSucceeded;
+  if (rulechange_stack-->rulechange_sp == RS_SUCCEEDS) rtrue;
+  rfalse;
+];
+
+[ SuppressRule rule;
+  PushRuleChange(RS_DONOTRUN, rule, 0);
+];
+[ ReinstateRule rule;
+  PushRuleChange(RS_RUN, rule, 0);
+];
+[ DonotuseRule rule;
+  PushRuleChange(RS_DONOTUSE, rule, 0);
+];
+[ UseRule rule;
+  PushRuleChange(RS_USE, rule, 0);
+];
+[ SubstituteRule rule1 rule2;
+  PushRuleChange(RS_SUBSTITUTE, rule2, rule1);
+];
+[ MoveRuleBefore rule1 rule2;
+  PushRuleChange(RS_MOVEBEFORE, rule1, rule2);
+];
+[ MoveRuleAfter rule1 rule2;
+  PushRuleChange(RS_MOVEAFTER, rule1, rule2);
+];
+
+! Hooks to the I6 library:
+
+[ BeginActionProcessing;
+  BeginFollowRulebook();
+];
+[ EndActionProcessing;
+  EndFollowRulebook();
+];
+
+! Replaced from the I6 library:
+
+Global untouchable_object;
+Global untouchable_silence;
+Global touch_persona;
+[ ObjectIsUntouchable item silent_flag flag2 p save_sp;
+  untouchable_object = item; untouchable_silence = silent_flag;
+  touch_persona = p; if (p == actor) touch_persona = 0;
+  if ((actor ~= player) &&
+      ((item ofclass K4_door) || (item ofclass K7_backdrop))) rfalse;
+  save_sp = say__p; say__p = 0;
+  if (ProcessRulebook(ACCESS_RB, 0, 1)) {
+      if (say__p) save_sp = true; else say__p = save_sp;
+      if (rulechange_stack-->rulechange_sp == RS_SUCCEEDS) {
+          untouchable_silence = 0;
+ 		 rfalse; ! No barrier
+      } else {
+          untouchable_silence = 0;
+ 		 rtrue; ! Barrier
+      }
+  }
+  if (say__p) save_sp = true; else say__p = save_sp;
+  ! No decision is interpreted as no barrier to access:
+  untouchable_silence = 0;
+  rfalse;
+];
+
+[ OIU_Scoped i o;
+!  i = ObjectScopedBySomething(untouchable_object);
+!  if (i ~= 0) {
+!      o = parameter_object;
+!      if (ObjectIsUntouchable(i, 0, 0, touch_persona)) rtrue;
+!      parameter_object = i;
+!      return OIUB_CP();
+!  }
+  rfalse;
+];
+
+[ OIU_Core o;
+  while (o && (o provides component_parent) && (o.component_parent))
+      o = o.component_parent;
+  return o;
+];
+
+[ OIU_Parent o;
+  return OIU_Core(parent(OIU_Core(o)));
+];
+
+[ OIU_CommonAncestor o1 o2 i j;
+  !  Find the nearest object indirectly containing o1 and o2,
+  !  or return 0 if there is no common ancestor.
+
+  o1 = OIU_Core(o1);
+  o2 = OIU_Core(o2);
+  i = o1;
+  while (i ~= 0) {
+      j = o2;
+      while (j ~= 0) {
+          if (j == i) return i;
+          j = OIU_Parent(j);
+      }
+	  i = OIU_Parent(i);
+  }
+  return 0;
+];
+
+[ OIU_Barrier ancestor i j external p;
+  p = touch_persona; if (p == 0) p = actor;
+
+  ancestor = OIU_CommonAncestor(p, untouchable_object);
+!  if (ancestor == 0) {
+!      RulebookFails(); ! Wholly different locations
+!      rtrue;
+!  }
+!  print "Doing OIU barriers for ", (the) p, " and ", (the) untouchable_object,
+!      ": common ancestor is ", (the) ancestor, ".^";
+
+  ! First, a barrier between the player and the ancestor.
+
+  if (OIU_Core(p) ~= ancestor) {
+      i = parent(OIU_Core(p)); j = OIU_Core(i); external = false;
+      if (j ~= i) { i = j; external = true; }
+      while (i~=ancestor && i) {
+          if ((external == false) && (ProcessRulebook(REACHOUT_RB, i))
+			  && (rulechange_stack-->rulechange_sp == RS_FAILS)) rtrue; ! Barrier
+          i = parent(OIU_Core(i)); j = OIU_Core(i); external = false;
+          if (j ~= i) { i = j; external = true; }
+      }
+  }
+
+  ! Second, a barrier between the item and the ancestor.
+
+  if (OIU_Core(untouchable_object) ~= ancestor) {
+      i = parent(OIU_Core(untouchable_object)); j = OIU_Core(i); external = false;
+      if (j ~= i) { i = j; external = true; }
+      while (i~=ancestor && i) {
+          if ((external == false) && (ProcessRulebook(REACHIN_RB, i))
+			  && (rulechange_stack-->rulechange_sp == RS_FAILS)) rtrue; ! Barrier
+          i = parent(OIU_Core(i)); j = OIU_Core(i); external = false;
+          if (j ~= i) { i = j; external = true; }
+      }
+  }
+
+  RulebookSucceeds(); ! No barrier
+  rtrue;
+];
+
+[ OIUB_CCI;
+  if (parameter_object has container && parameter_object hasnt open) {
+      if (touch_persona == 0) GL__M(##Take,9,parameter_object);
+      RulebookFails();
+      rtrue;
+  }
+  rfalse;
+];
+
+[ OIUB_CCO;
+  if (parameter_object has container && parameter_object hasnt open) {
+      if (touch_persona == 0) GL__M(##Take,9,parameter_object);
+      RulebookFails();
+      rtrue;
+  }
+  rfalse;
+];
+
+[ OIUB_RI;
+! print parameter_object, "=", (the) parameter_object, "^";
+  if (parameter_object && parameter_object ofclass K1_room) {
+      if (touch_persona == 0) GL__M(##Take,14,parameter_object);
+      RulebookFails();
+      rtrue;
+  }
+  rfalse;
+];
+
+[ OIUB_CP;
+  if ((noun provides component_parent) && (noun.component_parent)) {
+!	  if (noun.component_parent has transparent)
+	      return GL__M(##Take,7,noun.component_parent);
+	  return GL__M(##Take,8,noun.component_parent);
+  }
+  rfalse;
+];
+
+[ TS1_R; AdvanceWorldClock(); rfalse; ];
+[ TS2_R; RunTimersAndDaemons(); rfalse; ];
+[ TS3_R; RunEachTurnProperties(); rfalse; ];
+[ TS4_R; TimePasses(); rfalse; ];
+[ TS5_R; AdjustLight(); rfalse; ];
+[ TS6_R obj; NoteObjectAcquisitions();
+  objectloop (obj in player)
+      if (obj ofclass RUCKSACK_CLASS)
+          SACK_OBJECT = obj;
+  rfalse; ];
+
+[ TestActionBitmap obj act i j k;
+  if (obj == nothing) return ((ActionHappened->act) ~= 0);
+  if (~~(obj provides action_bitmap)) rfalse;
+  ! for (i=0; i<10; i++) print (obj.&action_bitmap)->i, " ";
+  for (i=0, k=1; i<ActionCount; i++) {
+      if (act == ActionCoding-->i) {
+          return ((((obj.&action_bitmap)->j) & k) ~= 0);
+      }
+      k = k*2; if (k == 256) { k = 1; j++; }
+  }
+  rfalse;
+];
+[ SetActionBitmap obj act i j k;
+  for (i=0, k=1; i<ActionCount; i++) {
+      if (act == ActionCoding-->i) {
+          if ((obj) && (obj provides action_bitmap)) {
+      		  (obj.&action_bitmap)->0 =
+                   ((obj.&action_bitmap)->0) | 1;
+      		  (obj.&action_bitmap)->j =
+                   ((obj.&action_bitmap)->j) | k;
+              return;
+          }
+          ActionHappened->0 = (ActionHappened->0) | 1;
+          ActionHappened->j = (ActionHappened->j) | k;
+      }
+      k = k*2; if (k == 256) { k = 1; j++; }
+  }
+];
+Global debug_rule_nesting;
+[ SetString31 d;
+  switch(d) {
+      0: string 31 "";
+      1: string 31 "    ";
+      2: string 31 "        ";
+      3: string 31 "            ";
+      4: string 31 "                ";
+      default:
+         string 31 "                    ";
+  }
+];
+Global trace_actions = 0;
+[ ActionsOnSub; trace_actions = 1; "Actions listing on."; ];
+[ ActionsOffSub; trace_actions = 0; "Actions listing off."; ];
+[ ActionPrimitive sa sn mf mt mb mth rv p1 p2 p3 p4 p5;
+  sa = action; sn = noun; mf = move_from; mt = move_to;
+  mb = move_by; mth = move_through;
+  self = noun;
+  if ((keep_silent == false) && (multiflag == false)) I7_DivideParagraph();
+  I7_action_deciding_rule = 0;
+
+  if (action == ##Consult or ##Ask or ##Tell or ##NotUnderstood or ##Answer) {
+      inp2 = 1; second = consult_from + 256*consult_words;
+      parsed_number = 100*consult_from + consult_words;
+  }
+!  DB_Action(actor, false, action, noun, second);
+!  print "Actor = ", (the) actor, "^";
+!  print noun, "/", second, ";", inp1, "/", inp2, "^";
+  if (I7_VerifyNouns()) return;
+!  print noun, "/", second, ";", inp1, "/", inp2, "^";
+  if ((action == ##Go) && (noun)) {
+      move_from = Room_Of(actor); move_to = nothing;
+      move_by = nothing; move_through = nothing;
+      if ((parent(actor) has container) && (parent(actor) has enterable))
+          move_by = parent(actor);
+      if ((parent(actor) has supporter) && (parent(actor) has enterable))
+          move_by = parent(actor);
+      if (noun in compass) {
+          move_to = move_from.(noun.door_dir);
+      } else {
+          if (noun has door) move_to = noun;
+      }
+      if ((move_to ~= nothing) && (move_to has door)) {
+          move_through = move_to;
+          p1 = location; location = Room_Of(actor);
+          move_to = move_to.door_to();
+          location = p1;
+      }
+      #IFDEF DEBUG;
+      if ((debug_flag & 2 ~= 0)) {
+          print "[Go with move_from = ";
+          if (move_from) print (the) move_from; else print "nowhere";
+          print ", move_to = ";
+          if (move_to) print (the) move_to; else print "nowhere";
+          print ", move_by = ";
+          if (move_by) print (the) move_by; else print "nothing";
+          print ", move_through = ";
+          if (move_through) print (the) move_through; else print "nothing";
+          print ", move_pushing = ";
+          if (move_pushing) print (the) move_pushing; else print "nothing";
+          print "]^";
+      }
+      #ENDIF;
+  }
+
+  #IFDEF DEBUG;
+  if ((trace_actions) && (FindAction())) {
+      print "["; p1=actor; p2=act_requester; p3=action; p4=noun; p5=second;
+      DB_Action(p1,p2,p3,p4,p5);
+      print "]^";
+  }
+  SetString31(++debug_rule_nesting);
+  #ENDIF;
+  TrackActions();
+  BeginActionProcessing();
+  if (meta) { _I6_ActionPrimitive(); say__p = 1; }
+  else ProcessRulebook(APROC_RB);
+  rv = rulechange_stack-->rulechange_sp;
+  #IFDEF DEBUG;
+  SetString31(--debug_rule_nesting);
+  if ((trace_actions) && (FindAction())) {
+      print "["; DB_Action(p1,p2,p3,p4,p5); print " - ";
+      switch (rv) {
+          RS_SUCCEEDS: print "succeeded";
+          RS_FAILS: print "failed";
+			  #IFNDEF I7_ECONOMY;
+              if (I7_action_deciding_rule) {
+                  for (p1=0:RuleNames-->p1:p1=p1+3)
+						if (RuleNames-->p1 == I7_action_deciding_rule) {
+							print " the ", (I7_PrintRuleName) (RuleNames-->(p1+2));
+							break;
+						}
+              }
+              #ENDIF;
+          default: print "ended without result";
+      }
+      print "]^";
+  }
+  #ENDIF;
+  if (rv == RS_SUCCEEDS) {
+      SetActionBitmap(noun, action);
+      if (action == ##Go) SetActionBitmap(location, ##Enter);
+  }
+  EndActionProcessing();
+  move_from = mf; move_to = mt; action = sa; noun = sn;
+  move_by = mb; move_through = mth;
+  TrackActions(1);
+  if ((keep_silent == false) && (multiflag == false)) I7_DivideParagraph();
+  if (rv == RS_SUCCEEDS) rtrue;
+  rfalse;
+];
+
+[ I7_RulePrintingRule R p1;
+  #ifndef I7_ECONOMY;
+  for (p1=0:RuleNames-->p1:p1=p1+3)
+	  if (RuleNames-->p1 == R) {
+          print (I7_PrintRuleName) (RuleNames-->(p1+2));
+		  return;
+	  }
+  print "(nameless rule)";
+  #ifnot;
+  print "(rule ", R, ")";
+  #endif;
+];
+
+Global GVS_converted = -1;
+[ GVS_Convert ac n s;
+  GVS_converted = InformLibrary.begin_action(ac, n, s);
+  rtrue;
+];
+[ GenericVerbSub ch co re any vis rv;
+  @push GVS_converted;
+  GVS_converted = -1;
+  if (actor ~= player) {
+	  if (act_requester) {
+	      act_requester = nothing;
+	      if (ActionPrimitive() == false) {
+			  if (ProcessRulebook(UNABLE_RB) == false) {
+				  print (The) actor, " ", (IsOrAre) actor, " unable to do that.^^";
+			  }
+		  }
+	      jump HappyEnding;
+	  }
+	  vis = I7_CanSee(player, actor);
+      if ((noun ofclass K2_thing) && (~~(noun ofclass K7_backdrop)))
+          vis = vis || (I7_CanSee(player, noun));
+      if ((second ofclass K2_thing) && (~~(second ofclass K7_backdrop)))
+          vis = vis || (I7_CanSee(player, second));
+	  if (rv=ProcessRulebook(GENERIC_CHECK_RB)) jump FailsUnlessConverted;
+	  if (any && (rv=ProcessRulebook(ch))) jump FailsUnlessConverted;
+	  if (ProcessRulebook(GENERIC_CARRYOUT_RB) == 0)
+	      if (any) ProcessRulebook(co);
+	  if (rv=ProcessRulebook(AFTER_RB)) jump HappyEnding;
+      vis = vis || (I7_CanSee(player, actor));
+      if ((noun ofclass K2_thing) && (~~(noun ofclass K7_backdrop)))
+          vis = vis || (I7_CanSee(player, noun));
+      if ((second ofclass K2_thing) && (~~(second ofclass K7_backdrop)))
+          vis = vis || (I7_CanSee(player, second));
+	  if (keep_silent || (vis==false)) jump HappyEnding;
+	  if (rv=ProcessRulebook(GENERIC_REPORT_RB)) jump HappyEnding;
+	  if (any) rv=ProcessRulebook(re);
+	  jump HappyEnding;
+  }
+  if ((rv=ProcessRulebook(GENERIC_CHECK_RB)) || (rv=ProcessRulebook(ch)))
+      jump FailsUnlessConverted;
+  if (ProcessRulebook(GENERIC_CARRYOUT_RB) == 0) ProcessRulebook(co);
+  if (meta) say__p = 0;
+  if (rv=ProcessRulebook(AFTER_RB)) jump HappyEnding;
+  if (keep_silent) jump HappyEnding;
+  if (rv=ProcessRulebook(GENERIC_REPORT_RB)) jump HappyEnding;
+  rv=ProcessRulebook(re);
+  .HappyEnding;
+  ActRulebookSucceeds(rv);
+  @pull GVS_converted;
+  rtrue;
+  .FailsUnlessConverted;
+  if (GVS_converted == 1) jump HappyEnding;
+  ActRulebookFails(rv);
+  @pull GVS_converted;
+  rtrue;
+];
+[ AllowPushDir i oldrm newrm;
+  if ((noun ofclass K2_thing) && (noun hasnt pushable))
+      return L__M(##PushDir,1,noun);
+  if (parent(second)~=compass) return L__M(##PushDir,2,noun);
+  if (second==u_obj or d_obj)  return L__M(##PushDir,3,noun);
+  AfterRoutines(); i=noun; move i to actor; move_pushing = i;
+  oldrm = Room_Of(noun);
+  <Go second>;
+  newrm = Room_Of(actor);
+  move_pushing = nothing; move i to newrm;
+  if (IndirectHolder(i, player)) I7_TryAction(0, player, ##Look, 0, 0);
+  if (newrm ~= oldrm) RulebookSucceeds(); else RulebookFails();
+];
+[ SetI7Timer R t f i b;
+  for (i=1: i<=(I7TimerTable-->0): i++) {
+      if (R == I7TimerTable-->i) { b=i; jump SlotFound; }
+      if ((b==0) && (I7TimerTable-->i == 0)) b=i;
+  }
+  if (b==0) return RunTimeProblem(RTP_TOOMANYEVENTS);
+  .SlotFound;
+  I7TimerTable-->b = R;
+  if (f == 0) I7TimerTableTimes-->b = -t;
+  else I7TimerTableTimes-->b = t;
+];
+[ ProcessI7Timers i t f r;
+  for (i=1: i<=(I7TimerTable-->0): i++)
+      if ((r=I7TimerTable-->i) ~= 0) {
+          t = I7TimerTableTimes-->i; f = 0;
+          if (t<0) {
+              (I7TimerTableTimes-->i)++;
+              if (I7TimerTableTimes-->i == 0) f=1;
+          } else {
+              if ((the_time >= t) && (the_time < t+30)) f=1;
+          }
+          if (f) {
+              I7TimerTable-->i = 0;
+              ProcessRulebook(r);
+          }
+      }
+  rfalse;
+];
+
+[ DA_Name n; print (name) n; ];
+[ DA_Topic ignore a b c d i;
+  print "~";
+  for (a=consult_from:d<consult_words:d++,a++) {
+      wn = a; b = WordAddress(a); c = WordLength(a);
+      for (i=b:i<b+c:i++) {
+          print (char) 0->i;
+      }
+      if (d<consult_words-1) print " ";
+  }
+  print "~";
+];
+[ DA_Number n; print n; ];
+[ FindAction fa t;
+  if (fa == 0) fa = action;
+  t = 1;
+  while (t <= ActionData-->0) {
+      if (fa == ActionData-->t) return t;
+      t = t+9;
+  }
+  rfalse;
+];
+[ DB_Action ac acr act n s t l j v c;
+  if (debug_rule_nesting > 0) print "(", debug_rule_nesting, ") ";
+  if (ac ~= player) {
+      if (acr) print "asking ", (the) ac, " to try ";
+      else print (the) ac, " trying ";
+  }
+  t = 1;
+  while (t <= ActionData-->0) {
+      if (act == ActionData-->t) {
+          l = t+9; t = t+4;
+          while ((v = ActionData-->t) ~= I6_NULL) {
+              if (v ofclass Routine) {
+                  if (c==0) { (v)(n); }
+                  else { (v)(s); }
+                  c++;
+              } else print (string) v;
+              t++;
+              if (t == l) break;
+              if (ActionData-->t ~= I6_NULL) print " ";
+          }
+          if (keep_silent) print " - silently";
+          return;
+      }
+      t = t+9;
+  }
+];
+[ I7_TryAction req by ac n s;
+  @push actor; @push act_requester; @push inp1; @push inp2;
+  actor = by; if (req) act_requester = player; else act_requester = 0;
+!  print inp1, inp2, "^";
+  by = FindAction(ac);
+  if (by) {
+      if (ActionData-->(by+2) == I7_OBJECT_TY) inp1 = n; else inp1 = 1;
+      if (ActionData-->(by+3) == I7_OBJECT_TY) inp2 = s; else inp2 = 1;
+  }
+!  print "Made by ITA: ", inp1, inp2, "^";
+  InformLibrary.begin_action(ac, n, s);
+!  <(ac) n s>;
+!  print inp1, inp2, "^";
+  @pull inp2; @pull inp1; @pull act_requester; @pull actor;
+  TrackActions(1);
+];
+
+[ RoundOffTime t1 t2; return ((t1+t2/2)/t2)*t2; ];
+[ PrintTimeOfDay t h aop;
+  if (t<0) { print "<no time>"; return; }
+  if (t >= 60*12) { aop = "pm"; t=t-60*12; } else aop = "am";
+  h = t/60; if (h==0) h=12;
+  print h, ":";
+  if (t%60<10) print "0"; print t%60, " ", (string) aop;
+];
+[ PrintTimeOfDayEnglish t h m dir aop;
+  h = (t/60) % 12; m = t%60; if (h==0) h=12;
+  if (m==0) { print (number) h, " o'clock"; return; }
+  dir = "past";
+  if (m > 30) { m = 60-m; h = (h+1)%12; if (h==0) h=12; dir = "to"; }
+  switch(m) {
+  	15: print "quarter"; 30: print "half";
+  	default: print (number) m;
+  	    if (m%5 ~= 0) {
+  	        if (m == 1) print " minute"; else print " minutes";
+  	    }
+  }
+  print " ", (string) dir, " ", (number) h;
+];
+[ PermitAttributeR obj off i;
+  ! print "Asking permission of ", (the) obj, "^";
+  i=off; while (property_metadata-->i >= 0) {
+  if (obj == property_metadata-->i) rtrue; i++; }
+  rfalse; ];
+[ PermitAttribute f obj att off textual i a l; if (att<0) att = ~att;
+  if (metaclass(obj) ~= Object) rfalse;
+  if (f) off = attribute_offsets-->att; else off = property_offsets-->att;
+! print "Off is ", off, "^";
+! for (i=0: i<116: i++) print attribute_offsets-->i, ", ";
+! print "^^Props: ";
+! for (i=0: i<166: i++) print property_offsets-->i, ", ";
+! print "^";
+  if (off<0) return RunTimeProblem(RTP_BADPROPERTY, obj);
+  textual = property_metadata-->off; off++;
+  if (PermitAttributeR(obj, off)) jump Okay;
+  if (obj provides i7_kind) { l = (obj.#i7_kind)/2; a = obj.&i7_kind;
+  for (i=0: i<l: i++) if (PermitAttributeR(a-->i, off)) jump Okay; }
+  RunTimeProblem(RTP_UNPROVIDED, obj, textual);
+  rfalse;
+  .Okay; if (f) rtrue;
+  if (obj provides att) rtrue;
+  RunTimeProblem(RTP_UNSET, obj, textual);
+  rfalse; ];
+[ AccessProp obj pr;
+  if (Value_Property_Holder provides pr) {
+      if ((obj<=0) || (obj > (Value_Property_Holder.pr)-->0)) {
+          RunTimeProblem(RTP_BADVALUEPROPERTY);
+          rfalse;
+      }
+      return (Value_Property_Holder.pr)-->(obj+1);
+  }
+  if ((pr == door_to) && (obj provides pr)) return obj.pr();
+  if (PermitAttribute(false, obj, pr)) return obj.pr;
+  rfalse; ];
+[ WriteAccessProp obj pr val;
+  if (Value_Property_Holder provides pr) {
+      if ((obj<=0) || (obj > (Value_Property_Holder.pr)-->0))
+          return RunTimeProblem(RTP_BADVALUEPROPERTY);
+      (Value_Property_Holder.pr)-->(obj+1) = val;
+      return;
+  }
+  if (PermitAttribute(false, obj, pr)) obj.pr = val; ];
+
+[ I7_DivideParagraph; !print "[DP", say__p, say__pc, "]";
+  if (say__p) {
+      new_line; say__p = 0; say__pc = say__pc | PARA_COMPLETED;
+      if (say__pc & PARA_LINEBREAK) say__pc = say__pc - PARA_LINEBREAK;
+      if (say__pc & PARA_FORCELINEBREAK)
+          say__pc = say__pc - PARA_FORCELINEBREAK;
+  }
+  !print "[TO", say__p, say__pc, "]";
+];
+
+[ I7_RunOnParagraph said;
+  say__p = 0; say__pc = say__pc | PARA_LINEBREAK;
+  if (said) say__pc = say__pc | PARA_FORCELINEBREAK;
+];
+
+Global I7_enable_rte = true;
+[ I7_Prompt i;
+  ! print "^";
+  style roman;
+  if ((say__p) ||
+      ((say__pc & PARA_LINEBREAK) && ((say__pc & PARA_FORCELINEBREAK)==0))) {
+      new_line; say__p=0; say__pc = 0;
+  }
+  switch(metaclass(I7_prompt_text)) {
+      String: print (string) I7_prompt_text;
+      Routine: I7_prompt_text();
+  }
+  say__p = 0; say__pc = 0;
+  if (I7_box) {
+      for (i=0: I7_boxes_appeared-->i: i++)
+          if (I7_boxes_appeared-->i == I7_box) {
+              I7_box = 0;
+              return;
+          }
+      I7_boxes_appeared-->i = I7_box;
+      I7_box();
+      I7_box = 0;
+      say__p = 0; say__pc = 0;
+  }
+  I7_enable_rte = true;
+];
+[ SL_Score_Moves;
+  #ifdef I7_NOSCORE; print sline2; #ifnot; print sline1, "/", sline2; #endif;
+];
+[ SL_Location;
+   if (location == thedark) print (name) location;
+   else
+   {   FindVisibilityLevels();
+       if (visibility_ceiling == location)
+           print (name) location;
+       else print (The) visibility_ceiling;
+   }
+];
+[ DrawStatusLine width posb s spc;
+   s = say__p; spc = say__pc;
+   BeginActivity(3);
+   StatusLineHeight(1); MoveCursor(1, 1); 
+   width = ScreenWidth(); posb = width-15;
+   spaces width;
+   say__p = 0; say__pc = 0;
+   if (ForActivity(3) == false) {
+   MoveCursor(1, 2);
+   switch(metaclass(I7_left_sl)) {
+       String: print (string) I7_left_sl;
+       Routine: I7_left_sl();
+   }
+   MoveCursor(1, posb);
+   switch(metaclass(I7_right_sl)) {
+       String: print (string) I7_right_sl;
+       Routine: I7_right_sl();
+   }
+   }
+   MoveCursor(1, 1); MainWindow();
+   say__p = 0; say__pc = 0;
+   EndActivity(3);
+   say__p = s; say__pc = spc;
+];
+[ I7_parent o; if (o==0) return 0; return parent(o); ];
+
+Global activities_sp = 0;
+Array activities_stack --> 25;
+Array activities_ostack --> 25;
+Global inhibit_flag = 0;
+Global inhibit_dr = 0;
+[ FixInhibitFlag n i_f;
+  for (n=0:n<activities_sp:n++)
+      if (activities_stack-->n <= 4) i_f = true;
+  if ((inhibit_flag == false) && (i_f)) {
+      inhibit_dr = debug_rules;
+      debug_rules = 0;
+  }
+  if ((inhibit_flag) && (i_f == false)) {
+      debug_rules = inhibit_dr;
+  }
+  inhibit_flag = i_f;
+];
+[ FollowRulebookSelfed R o ss rv;
+  ss = self; if (o) self = o;
+  rv = FollowRulebook(R, o, true);
+  self = ss; return rv;
+];
+[ BeginActivity A o x;
+  if (activities_sp == 25) return RunTimeProblem(RTP_TOOMANYACTS);
+  activities_ostack-->activities_sp = o;
+  activities_stack-->(activities_sp++) = A;
+  FixInhibitFlag();
+  if (Activity_atb_rulebooks->A) { x = action; action = action_to_be; }
+  o = FollowRulebookSelfed(Activity_before_rulebooks-->A, o);
+  if (Activity_atb_rulebooks->A) action = x;
+  return o;
+];
+[ ForActivity A o x;
+  if (Activity_atb_rulebooks->A) { x = action; action = action_to_be; }
+  o = FollowRulebookSelfed(Activity_when_rulebooks-->A, o);
+  if (Activity_atb_rulebooks->A) action = x;
+  return o;
+];
+[ EndActivity A o rv x;
+  if (activities_sp == 0) jump BadEnd;
+  if (activities_stack-->(activities_sp-1) == A) {
+      if (Activity_atb_rulebooks->A) { x = action; action = action_to_be; }
+      rv = FollowRulebookSelfed(Activity_after_rulebooks-->A, o);
+      if (Activity_atb_rulebooks->A) action = x;
+      activities_sp--; FixInhibitFlag(); return rv; }
+  .BadEnd; return RunTimeProblem(RTP_CANTABANDON);
+];
+[ AbandonActivity A o;
+  if (activities_sp == 0) jump BadEnd;
+  if (activities_stack-->(activities_sp-1) == A) {
+      activities_sp--; FixInhibitFlag(); return; }
+  .BadEnd; return RunTimeProblem(RTP_CANTEND);
+];
+[ CarryOutActivity A o rv;
+  BeginActivity(A,o); rv = ForActivity(A,o); EndActivity(A,o); return rv; ];
+[ TestActivity A Pattern i;
+  for (i=0:i<activities_sp:i++)
+      if (activities_stack-->i == A) {
+          if (Pattern == false) rtrue;
+          if ((Pattern)(activities_ostack-->i)) rtrue;
+      }
+  rfalse;
+];
+[ I7_WhetherIn obj;
+    if (obj ofclass K9_region) return I7_In(real_location, obj);
+    if (obj ofclass K1_room) {
+        if (obj == real_location) rtrue;
+        rfalse;
+    }
+    RunTimeProblem(RTP_NOTINAROOM, obj);
+    rfalse;
+];
+[ I7_Move F T opt ln;
+  if (F == false) return RunTimeProblem(RTP_CANTMOVENOTHING);
+  if (F ofclass K7_backdrop) {
+      if (T ofclass K9_region) {
+          give F ~absent; F.found_in = T.regional_found_in;
+          if (I7_In(Room_Of(player), T)) move F to Room_Of(player); else remove F;
+          return; }
+      return RunTimeProblem(RTP_BACKDROP, F, T, ln);
+  }
+  if (T ofclass K9_region) {
+      return RunTimeProblem(RTP_NOTBACKDROP, F, T, ln);
+  }
+  give F ~worn; I7_DetachPart(F, nothing);
+  if (F == player) PlayerTo(T, opt); else move F to T;
+];
+[ I7_Remove F;
+  if (F == false) return RunTimeProblem(RTP_CANTREMOVENOTHING);
+  give F ~worn; I7_DetachPart(F, nothing);
+  if (F ofclass K7_backdrop) give F absent;
+  remove F;
+];
+[ I7_Wear F T opt;
+  if (F == false) rfalse;
+  I7_Move(F, T, opt);
+  give F worn;
+];
+[ I7_DetachPart P From Daddy O;
+	Daddy = P.component_parent; P.component_parent = nothing;
+	if (Daddy == nothing) { P.component_sibling = nothing; return; }
+	if (Daddy.component_child == P) {
+		Daddy.component_child = P.component_sibling;
+  		P.component_sibling = nothing; return;
+  	}
+  	for (O = Daddy.component_child: O: O = O.component_sibling)
+  		if (O.component_sibling == P) {
+  			O.component_sibling = P.component_sibling;
+  			P.component_sibling = nothing; return;
+  		}
+];
+[ I7_MakePart P Of First;
+  if (parent(P)) remove P; give P ~worn;
+  if (Of == nothing) { I7_DetachPart(P, nothing); return; }
+  if (P.component_parent) I7_DetachPart(P);
+  P.component_parent = Of;
+  First = Of.component_child;
+  Of.component_child = P; P.component_sibling = First;
+];
+[ I7_OnStage O x;
+  if (O ofclass K1_room) rfalse;
+  while (O) {
+      if (O ofclass K1_room) rtrue;
+	  if (metaclass(O) ~= Object) rfalse;
+      if (O ofclass K9_region) rfalse;
+	  if (O ofclass K4_door) rtrue;
+	  if (O ofclass K7_backdrop) { if (O has absent) rfalse; rtrue; }
+	  x = O.component_parent;
+	  if (x) { O = x; continue; }
+	  x = parent(O);
+	  if (x) { O = x; continue; }
+	  rfalse;
+  }
+  rfalse;
+];
+[ I7_NPCA s;
+  if ((actor == player) || (act_requester == nothing)) rfalse;
+  s = say__p; say__p = FALSE; ProcessRulebook(PERSUADE_RB);
+  if (rulechange_stack-->rulechange_sp ~= RS_SUCCEEDS) {
+	  if (say__p == FALSE) L__M(##Order, 1, actor);
+	  RulebookFails(); rtrue;
+  }
+  say__p = s; rfalse;
+];
+[ I7_PlaceInScope O opts;
+  if (opts) return PlaceInScope(O);
+  if (O ofclass K2_thing) PlaceInScope(O);
+  ScopeWithin(O);
+];
+[ I7_Match test snippet w1 wlen i j;
+  w1 = snippet/100; wlen = snippet%100;
+  for (i=w1, j=wlen: j>0: i++, j--) {
+      if (((test)(i, 0)) ~= GPR_FAIL) return i*100+wn-i;
+  }
+  rfalse;
+];
+[ I7_ParseToken x y; if (wn>WordCount()) return GPR_FAIL;
+  return ParseToken(x,y); ];
+[ I7_say_s; if (say__n ~= 1) print "s"; ];
+[ I7_Amusing_Provided x;
+  x = Activity_when_rulebooks-->AMUSING_ACT;
+  if (((rulebooks_array-->x)-->0) == I6_NULL)
+      rfalse;
+  rtrue;
+];
+[ I7_InWhat obj p; p = parent(obj);
+  if (p == nothing) return nothing;
+  if (p ofclass K5_container) return p;
+  if (p ofclass K1_room) return p;
+  if (p ofclass K9_region) return p;
+  return nothing;
+];
+[ I7_OnWhat obj p; p = parent(obj);
+  if (p == nothing) return nothing;
+  if (p ofclass K6_supporter) return p;
+  return nothing;
+];
+[ I7_CarriedBy obj p; p = parent(obj);
+  if (p && (p ofclass K8_person) && (obj hasnt worn)) return p;
+  return nothing;
+];
+[ I7_HeldBy obj p; p = parent(obj);
+  if (p) return p;
+  p = obj.component_parent;
+  if (p) return p;
+  return nothing;
+];
+[ I7_WornBy obj p; p = parent(obj);
+  if (p && (p ofclass K8_person) && (obj has worn)) return p;
+  return nothing;
+];
+[ I7_HadBy obj p; p = parent(obj);
+  if (p && (p ofclass K8_person)) return p;
+  return nothing;
+];
+[ I7_Adjacent R1 R2 d pr;
+  objectloop (d in compass) {
+      pr = d.door_dir;
+      if ((R1 provides pr) && (R2 == R1.pr)) rtrue;
+  }
+  rfalse;
+];
+[ I7_string s; if (s ofclass String) { print (string) s; return; }
+  indirect(s);
+];
+[ I7_In rm region o;
+  if ((rm == nothing) || (region == nothing)) rfalse;
+  o = rm.I7_Map_Region;
+  while (o) {
+	  if (o == region) rtrue;
+	  o = parent(o);
+  }
+  rfalse;
+];
+[ I7SwapWF obj lst;
+  objectloop (obj ofclass Object) {
+      lst = false;
+      if (obj has i7listflag) lst = true;
+      give obj ~i7listflag;
+      if (obj has workflag) give obj i7listflag;
+      give obj ~workflag;
+      if (lst) give obj workflag;
+  }
+];
+[ I7List supp obj par flag mixed ct defart;
+  objectloop (obj ofclass Object && obj has i7listflag) {
+      ct++;
+      if (flag == false) {
+          flag = true; par = parent(obj);
+      } else {
+          if (parent(obj) ~= par) mixed = true;
+      }
+  }
+  if (ct == 0) { print "nothing"; return; }
+  if (supp < 0) { supp = -supp; mixed = true; defart = true; }
+  if (supp & ISARE_BIT) {
+      if (ct > 1) print "are "; else print "is ";
+      supp = supp - ISARE_BIT;
+  }
+  if ((mixed == false) && (par)) {
+      ct = c_style;
+      I7SwapWF();
+      ! print "<";
+      WriteListFrom(child(par), ENGLISH_BIT+WORKFLAG_BIT+supp);
+      I7SwapWF();
+      ! print ">";
+      c_style = ct;
+      return;
+  }
+
+  objectloop (obj ofclass Object && obj has i7listflag) {
+      give obj ~i7listflag;
+      if (supp & DEFART_BIT) {
+          if (defart) print (The) obj; else print (the) obj;
+          defart = false;
+      } else print (a) obj;
+      ct--;
+#ifdef US_DIALECT;
+      if (ct == 1) print ", and ";
+#ifnot;
+      if (ct == 1) print " and ";
+#endif;
+      if (ct > 1) print ", ";
+ }
+! print ">";
+];
+[ I7WriteListFrom A opt;
+  if (opt & EXTRAINDENT_BIT) {
+      opt = opt - EXTRAINDENT_BIT;
+      if (opt & WORKFLAG_BIT) opt = opt - WORKFLAG_BIT + EXTRA_WORKFLAG_BIT;
+      WriteListFrom(A, opt, 1);
+  }
+  else WriteListFrom(A, opt);
+];
+[ I7_CanSee A B;
+  if (location == thedark) rfalse;
+  return TestScope(B, A);
+];
+[ I7_CanTouch A B;
+  if (TestScope(B,A) == false) rfalse;
+  if (ObjectIsUntouchable(B, 1, 0, A)) rfalse;
+  rtrue;
+];
+[ I7_Conceals A B;
+  if (A ofclass K2_thing && B ofclass K2_thing) {
+	  I7_concealed_item = B;
+	  if (CarryOutActivity(CONCEALMENT_ACT, A)) rtrue;
+  }
+  rfalse;
+];
+[ I7_Now1to1 obj1 rel obj2 ol;
+  if (obj2) objectloop (ol provides rel)
+      if (ol.rel == obj2) ol.rel = nothing;
+  if (obj1) obj1.rel = obj2;
+];
+[ I7_NowN1toV obj1 rel obj2;
+  if (obj1.rel == obj2) obj1.rel = nothing;
+];
+[ I7_NowS1to1 obj1 rel obj2 ol;
+	if (obj1 ofclass Object && obj2 ofclass Object &&
+		obj1 provides rel && obj2 provides rel) {
+		if (obj1.rel) { (obj1.rel).rel = 0; }
+		if (obj2.rel) { (obj2.rel).rel = 0; }
+		obj1.rel = obj2; obj2.rel = obj1;
+	}
+];
+[ I7_NowSN1to1 obj1 rel obj2 ol;
+	if (obj1 ofclass Object && obj2 ofclass Object &&
+		obj1 provides rel && obj2 provides rel) {
+		if (obj1.rel == obj2) { obj1.rel = 0; obj2.rel = 0; }
+	}
+];
+[ I7_NowVtoV obj1 bp_id obj2 sym pr pr2 i1 i2;
+!  I7_ShowVtoV(bp_id);
+  if (sym && (obj2 ~= obj1)) { I7_NowVtoV(obj2, bp_id, obj1, false); }
+  pr = bp_id-->0;
+  pr2 = bp_id-->1;
+  if (pr) {
+	  if ((obj1 ofclass Object) && pr && (obj1 provides pr)) i1 = obj1.pr;
+	  else return RunTimeProblem(RTP_IMPREL, obj1, bp_id, 0);
+  } else i1 = obj1-1;
+  if (pr2) {
+ 	 if ((obj2 ofclass Object) && pr2 && (obj2 provides pr2)) i2 = obj2.pr2;
+  	else return RunTimeProblem(RTP_IMPREL, obj2, bp_id, 0);
+  } else i2 = obj2-1;
+!  print "Setting relation", "(", i1, ",", i2, ")^";
+  pr = i1*(bp_id-->3) + i2; i1 = 1; i2 = pr%16; while (i2) { i2--; i1=i1*2; }
+  pr = pr/16 + 6;
+  bp_id-->pr = (bp_id-->pr) | i1;
+];
+[ I7_NowNVtoV obj1 bp_id obj2 sym pr pr2 i1 i2;
+!  I7_ShowVtoV(bp_id);
+!  if (sym && (obj2 > obj1)) { sym = obj1; obj1 = obj2; obj2 = sym; }
+  if (sym && (obj2 ~= obj1)) { I7_NowNVtoV(obj2, bp_id, obj1, false); }
+  pr = bp_id-->0;
+  pr2 = bp_id-->1;
+  if (pr) {
+	  if ((obj1 ofclass Object) && pr && (obj1 provides pr)) i1 = obj1.pr;
+	  else return RunTimeProblem(RTP_IMPREL, obj1, bp_id, 0);
+  } else i1 = obj1-1;
+  if (pr2) {
+ 	 if ((obj2 ofclass Object) && pr2 && (obj2 provides pr2)) i2 = obj2.pr2;
+  	else return RunTimeProblem(RTP_IMPREL, obj2, bp_id, 0);
+  } else i2 = obj2-1;
+!  print "Clearing relation", "(", i1, ",", i2, ")^";
+  pr = i1*(bp_id-->3) + i2; i1 = 1; i2 = pr%16; while (i2) { i2--; i1=i1*2; }
+  pr = pr/16 + 6;
+  if ((bp_id-->pr) & i1) bp_id-->pr = bp_id-->pr - i1;
+];
+[ I7_NowEquiv obj1 prop obj2 big little;
+	big = obj1.prop; little = obj2.prop;
+	if (big == little) return;
+	if (big < little) { little = obj1.prop; big = obj2.prop; }
+	objectloop (obj1 provides prop)
+		if (obj1.prop == big) obj1.prop = little;
+];
+[ I7_NowNEquiv obj1 prop obj2 old new;
+	old = obj1.prop; new = obj2.prop;
+	if (old ~= new) return;
+	new = 0;
+	objectloop (obj2 provides prop)
+		if (obj2.prop > new) new = obj2.prop;
+	new++;
+	obj1.prop = new;
+];
+[ I7_TestVtoV obj1 bp_id obj2 sym pr pr2 i1 i2;
+  pr = bp_id-->0;
+  pr2 = bp_id-->1;
+  if (sym && (obj2 > obj1)) { sym = obj1; obj1 = obj2; obj2 = sym; }
+  if (pr) {
+	  if ((obj1 ofclass Object) && pr && (obj1 provides pr)) i1 = obj1.pr;
+	  else { RunTimeProblem(RTP_IMPREL, obj1, bp_id, 0); rfalse; }
+  } else i1 = obj1-1;
+  if (pr2) {
+ 	 if ((obj2 ofclass Object) && pr2 && (obj2 provides pr2)) i2 = obj2.pr2;
+  	else { RunTimeProblem(RTP_IMPREL, obj2, bp_id, 0); rfalse; }
+  } else i2 = obj2-1;
+  pr = i1*(bp_id-->3) + i2; i1 = 1; i2 = pr%16; while (i2) { i2--; i1=i1*2; }
+  pr = pr/16 + 6;
+  if ((bp_id-->pr) & i1) rtrue; rfalse;
+];
+[ I7_DefaultPrinter x;
+  print x;
+];
+[ I7_ShowVtoV bp_id sym x obj1 obj2 pr pr2 proutine1 proutine2;
+  pr = bp_id-->0;
+  pr2 = bp_id-->1;
+  proutine1 = bp_id-->4;
+  proutine2 = bp_id-->5;
+ 
+  if (pr && pr2) {
+	  objectloop (obj1 provides pr)
+		  objectloop (obj2 provides pr2) {
+			  if (sym && obj2 > obj1) continue;
+			  if (I7_TestVtoV(obj1, bp_id, obj2)) {
+				  if (x) { I7_ShowRHeader(x); x=0; }
+				  print "  ", (The) obj1;
+				  if (sym) print "  <=>  "; else print "  >=>  ";
+				  print (the) obj2, "^";
+			  }
+		  }
+	  return;
+  }
+  if (pr && (pr2==0)) {
+	  objectloop (obj1 provides pr)
+		  for (obj2=0:obj2<bp_id-->3:obj2++) {
+			  if (I7_TestVtoV(obj1, bp_id, obj2)) {
+				  if (x) { I7_ShowRHeader(x); x=0; }
+				  print "  ", (The) obj1, "  >=>  ";
+				  (proutine2).call(obj2);
+				  print "^";
+			  }
+		  }
+	  return;
+  }
+  if ((pr==0) && (pr2)) {
+	  for (obj1=0:obj1<bp_id-->2:obj1++)
+		  objectloop (obj2 provides pr2) {
+			  if (I7_TestVtoV(obj1, bp_id, obj2)) {
+				  if (x) { I7_ShowRHeader(x); x=0; }
+				  print "  ";
+				  (proutine1).call(obj1);
+				  print "  >=>  ", (the) obj2, "^";
+			  }
+		  }
+	  return;
+  }
+  for (obj1=1:obj1<=bp_id-->2:obj1++)
+  	  for (obj2=1:obj2<=bp_id-->3:obj2++)
+          if (I7_TestVtoV(obj1, bp_id, obj2)) {
+		      if (x) { I7_ShowRHeader(x); x=0; }
+		      print "  ";
+		      (proutine1).call(obj1);
+		      print "  >=>  ";
+		      (proutine2).call(obj2);
+		      print "^";
+		  }
+];
+[ I7_ShowOtoO pr sym x obj1 obj2;
+	objectloop (obj1 provides pr) {
+    	obj2 = obj1.pr;
+    	if (sym && obj2 < obj1) continue;
+    	if (obj2 == 0) continue;
+		if (x) { I7_ShowRHeader(x); x=0; }
+		print "  ", (The) obj1;
+		if (sym) print "  ==  "; else print "  >=>  ";
+		print (the) obj2, "^";
+	}
+];
+[ I7_RShowOtoO pr sym x obj1 obj2;
+	objectloop (obj1) {
+		objectloop (obj2 provides pr) {
+			if (obj2.pr ~= obj1) continue;
+			if (x) { I7_ShowRHeader(x); x=0; }
+			print "  ", (The) obj1;
+			print "  >=>  ";
+			print (the) obj2, "^";
+		}
+	}
+];
+[ I7_ShowEquiv pr obj1 obj2 v c somegroups;
+!	objectloop (obj1 provides pr) print (name) obj1, " ", obj1.pr, "^";
+	objectloop (obj1 provides pr) obj1.pr = -(obj1.pr);
+	objectloop (obj1 provides pr) {
+		if (obj1.pr < 0) {
+			v = obj1.pr; c = 0;
+			objectloop (obj2 has i7listflag) give obj2 ~i7listflag;
+			objectloop (obj2 provides pr) {
+				if (obj2.pr == v) {
+					give obj2 i7listflag;
+					obj2.pr = -v;
+					c++;
+				}
+			}
+			if (c>1) {
+				somegroups = true;
+				print "  { ";
+				I7List(0);
+				print " }^";
+			} else obj1.pr = v;
+		}
+	}
+	objectloop (obj2 has i7listflag) give obj2 ~i7listflag;
+	c = 0; objectloop (obj1 provides pr) if (obj1.pr < 0) { c++; give obj1 i7listflag; }
+	if (c == 0) return;
+	if (somegroups) print "  and "; else print "  ";
+	if (c < 4) { I7List(0); print " in"; }
+	else print c;
+	if (c == 1) print " a";
+	print " single-member group";
+	if (c > 1) print "s";
+	print "^";
+	objectloop (obj1 provides pr) if (obj1.pr < 0) obj1.pr = -(obj1.pr);
+];
+
+[ I7_ShowRHeader x rel_type;
+	rel_type = RelationList-->(x+1);
+	print (string) RelationList-->(x+2);
+	if (rel_type == Relation_ByRoutine) ".";
+	print ":^";
+];
+
+[ I7_ShowR rel_num rel_type x;
+	x = rel_num*3;
+	rel_type = RelationList-->(x+1);
+	if (rel_type == Relation_Implicit) return;
+	if (rel_type == Relation_ByRoutine) { I7_ShowRHeader(x); return; }
+	switch(rel_type) {
+		Relation_OtoO: I7_RShowOtoO(RelationList-->x, false, x); break;
+		Relation_OtoV: I7_RShowOtoO(RelationList-->x, false, x); break;
+		Relation_VtoO: I7_ShowOtoO(RelationList-->x, false, x); break;
+		Relation_VtoV: I7_ShowVtoV(RelationList-->x, false, x); break;
+		Relation_Sym_OtoO: I7_ShowOtoO(RelationList-->x, true, x); break;
+		Relation_Sym_VtoV: I7_ShowVtoV(RelationList-->x, true, x); break;
+		Relation_Equiv: I7_ShowRHeader(x); I7_ShowEquiv(RelationList-->x); break;
+		Relation_ByRoutine: break;
+	}
+];
+[ I7_RoomFrom obj dir use_doors in_direction sl through_door;
+	use_doors = 2;
+	if ((obj ofclass K1_room) && (dir in compass)) {
+		if (obj provides (dir.door_dir)) {
+			in_direction = obj.(dir.door_dir);
+			if (in_direction ofclass K1_room) return in_direction;
+			if (use_doors && (in_direction ofclass K4_door) &&
+				((use_doors & 2) ||
+				 (in_direction has open) ||
+				 ((in_direction has openable) && (in_direction hasnt locked)))) {
+				sl = location; location = obj;
+				through_door = in_direction.door_to();
+				location = sl;
+				if (through_door ofclass K1_room) return through_door;
+			}
+		}	
+	}
+	return nothing;
+];
+[ I7_ChangeExit r1 dir r2 pr;
+  pr = dir.door_dir;
+  if (r1 provides pr) {
+      if ((r1.pr == 0) || (r1.pr ofclass K1_room)) {
+      	  r1.pr = r2;
+      	  return;
+      }
+      if (r1.pr ofclass K4_door) {
+          RunTimeProblem(RTP_EXITDOOR, r1, dir);
+          return;
+	  }
+  }
+  RunTimeProblem(RTP_NOEXIT, r1, dir);
+];
+[ I7_ChangeNExit r1 dir r2 pr;
+  pr = dir.door_dir;
+  if (r1 ofclass K4_door) {
+  	RunTimeProblem(RTP_EXITDOOR, r1, dir);
+  	return;
+  }
+  if ((r1 provides pr) && (r1.pr == r2)) r1.pr = 0;
+  return;
+];
+#ifdef TARGET_ZCODE;
+Constant I7_ROUTE_HIGH_BIT = $8000;
+#ifnot;
+! This will fail if any object numbers (addresses) are past the 2 GB boundary.
+Constant I7_ROUTE_HIGH_BIT = $80000000;
+#endif;
+[ I7_RouteTo from to filter use_doors obj dir in_direction progressed sl through_door;
+	if (from == to) return nothing;
+	objectloop (obj ofclass K1_room) obj.vector = 0;
+	to.vector = 1;
+	!print "Routing from ", (the) from, " to ", (the) to, "^";
+	while (true) {
+		progressed = false;
+		!print "Pass begins^";
+		objectloop (obj && (obj ofclass K1_room) && ((filter == 0) || (filter(obj))))
+			if (obj.vector == 0)
+				objectloop (dir in compass)
+					if (obj provides (dir.door_dir)) {
+						in_direction = obj.(dir.door_dir);
+						if (in_direction == nothing) continue;
+						!print (the) obj, " > ", (the) dir, " > ", (the) in_direction, "^";
+						if ((in_direction ofclass K1_room)
+							&& (in_direction.vector > 0)
+							&& ((filter == 0) || (filter(in_direction)))) {
+							obj.vector = dir | I7_ROUTE_HIGH_BIT;
+							!print "* ", (the) obj, " vector is ", (the) dir, "^";
+							progressed = true;
+							continue;
+						}
+						if (use_doors && (in_direction ofclass K4_door) &&
+							((use_doors & 2) ||
+							 (in_direction has open) ||
+							 ((in_direction has openable) && (in_direction hasnt locked)))) {
+							sl = location; location = obj;
+							through_door = in_direction.door_to();
+							location = sl;
+							!print "Through door is ", (the) through_door, "^";
+							if ((through_door ofclass K1_room) && (through_door.vector > 0)
+								&& ((filter == 0) || (filter(through_door)))) {
+								obj.vector = dir | I7_ROUTE_HIGH_BIT;
+								!print "* ", (the) obj, " vector is ", (the) dir, "^";
+								progressed = true;
+								continue;
+							}
+						}
+					}
+		objectloop (obj ofclass K1_room)
+			obj.vector = obj.vector &~ I7_ROUTE_HIGH_BIT;
+		if (progressed == false) return from.vector;
+	}
+];
+[ I7_CountRouteTo from to filter use_doors obj i;
+	if (from == to) return 0;
+	if (from ofclass K1_room && to ofclass K1_room) {
+		obj = I7_RouteTo(from,to,filter,use_doors);
+		if (obj == nothing) return -1;
+		i = 0; obj = from;
+		while ((obj ~= to) && (i<1000)) { i++; obj = I7_RoomFrom(obj,obj.vector); }
+		return i;
+	}
+	return -1;
+];
+[ I7_RelRouteTo relprop from to obj obj2 in_direction relkind progressed pr pr2;
+	if (from == to) return nothing;
+	if (relprop == 0) return nothing;
+	relkind = RelationList-->(3*relprop+1);
+	if (relkind == Relation_ByRoutine) return nothing;
+	relprop = RelationList-->(3*relprop);
+	if (relprop == 0) return nothing;
+! print "Rel kind is ", relkind, "^";
+	if (relkind == Relation_VtoO) {
+		objectloop (obj ofclass Object && obj provides relprop) obj.vector = 0;
+		to.vector = 1;
+		while (true) {
+			progressed = false;
+			objectloop (obj ofclass Object && obj provides relprop)
+				if (obj.vector == 0) {
+					in_direction = obj.relprop;
+					if ((in_direction ofclass Object && in_direction provides relprop)
+						&& (in_direction.vector > 0)) {
+						obj.vector = in_direction | I7_ROUTE_HIGH_BIT;
+						progressed = true;
+						continue;
+					}
+				}
+			objectloop (obj ofclass Object && obj provides relprop)
+				obj.vector = obj.vector &~ I7_ROUTE_HIGH_BIT;
+			if (progressed == false) return from.vector;
+		}
+	}
+	if (relkind == Relation_OtoV) {
+		while (to->relprop) {
+			if (to->relprop == from) return to;
+			to = to->relprop;
+		}
+		return nothing;
+	}
+	pr = relprop-->0;
+	pr2 = relprop-->1;
+	objectloop (obj ofclass Object && obj provides vector) obj.vector = 0;
+	to.vector = 1;
+	while (true) {
+		progressed = false;
+		objectloop (obj ofclass Object && obj provides pr)
+			if (obj.vector == 0) {
+				objectloop (obj2 ofclass Object && obj2 provides pr2 && obj2.vector > 0) {
+					if (I7_TestVtoV(obj, relprop, obj2)) {
+						obj.vector = obj2 | I7_ROUTE_HIGH_BIT;
+						progressed = true;
+						continue;
+					}
+				}
+			}
+		objectloop (obj ofclass Object && obj provides vector)
+			obj.vector = obj.vector &~ I7_ROUTE_HIGH_BIT;
+		if (progressed == false) return from.vector;
+	}
+];
+[ I7_CountRelRouteTo relprop from to obj i;
+	if (from == to) return 0;
+	i = 0; obj = from;
+	if (I7_RelRouteTo(relprop,from,to) == nothing) return -1;
+	while ((obj ~= to) && (i<1000)) { i++; obj = obj.vector; }
+	return i;
+];
+[ I7_Locale L T1 T2;
+	objectloop (L ofclass Object) give L ~I7_mentioned;
+];
+[ IndirectHolder A B;
+    while (B) {
+        if (B==A) rtrue;
+        B = I7_Holder(B);
+    }
+    rfalse;
+];
+[ I7_Holder X;
+	if (parent(X)) return parent(X);
+	if (X.component_parent) return X.component_parent;
+	rfalse;
+];
+[ I7_ScopeParts from obj saw;
+	saw = advance_warning; advance_warning = -1;
+	if (from == 0) from = self;
+	for (obj = from.component_child: obj: obj = obj.component_sibling)
+		if ((from == actor) || (I7_Conceals(from, obj) == false))
+			ScopeWithin_O(obj,0,scope_reason);
+	advance_warning = saw;
+];
+Constant I7_TWELVE_HOURS = 720;
+[ I7_HoursMinsWordToTime hour minute word x;
+	if (hour >= 24) return -1;
+	if (minute >= 60) return -1;
+	x = hour*60 + minute; if (hour >= 13) return x;
+	x = x%I7_TWELVE_HOURS; if (word == 'pm') x = x + I7_TWELVE_HOURS;
+	if (word ~= 'am' or 'pm' && hour == 12) x = x + I7_TWELVE_HOURS;
+	return x;
+];
+[ I7_ExtendedTryNumber wordnum i j;
+	i = wn; wn = wordnum; j = NextWordStopped(); wn = i;
+	switch (j) {
+		'twenty-one': return 21;
+		'twenty-two': return 22;
+		'twenty-three': return 23;
+		'twenty-four': return 24;
+		'twenty-five': return 25;
+		'twenty-six': return 26;
+		'twenty-seven': return 27;
+		'twenty-eight': return 28;
+		'twenty-nine': return 29;
+		'thirty': return 30;
+		default: return TryNumber(wordnum);
+	}
+];
+[ I7_TIME_TOKEN first_word second_word at length flag illegal_char offhour hr mn i;
+	first_word = NextWordStopped();
+	switch (first_word) {
+		'midnight': parsed_number = 0; return GPR_NUMBER;
+		'midday', 'noon': parsed_number = I7_TWELVE_HOURS;
+		return GPR_NUMBER;
+	}
+	! Next try the format 12:02
+	at = WordAddress(wn-1); length = WordLength(wn-1);
+	for (i=0: i<length: i++) {
+		switch (at->i) {
+			':': if (flag == false && i>0 && i<length-1) flag = true;
+			else illegal_char = true;
+			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9': ;
+			default: illegal_char = true;
+		}
+	}
+	if (length < 3 || length > 5 || illegal_char) flag = false;
+	if (flag) {
+		for (i=0: at->i~=':': i++, hr=hr*10) hr = hr + at->i - '0';
+		hr = hr/10;
+		for (i++: i<length: i++, mn=mn*10) mn = mn + at->i - '0';
+		mn = mn/10;
+		second_word = NextWordStopped();
+		parsed_number = I7_HoursMinsWordToTime(hr, mn, second_word);
+		if (parsed_number == -1) return GPR_FAIL;
+		if (second_word ~= 'pm' or 'am') wn--;
+		return GPR_NUMBER;
+	}
+	! Lastly the wordy format
+	offhour = -1;
+	if (first_word == 'half') offhour = 30;
+	if (first_word == 'quarter') offhour = 15;
+	if (offhour < 0) offhour = I7_ExtendedTryNumber(wn-1);
+	if (offhour < 0 || offhour >= 60) return GPR_FAIL;
+	second_word = NextWordStopped();
+	switch (second_word) {
+		! "six o'clock", "six"
+		'o^clock', 'am', 'pm', -1:
+			hr = offhour; if (hr > 12) return GPR_FAIL;
+		! "quarter to six", "twenty past midnight"
+		'to', 'past':
+			mn = offhour; hr = I7_ExtendedTryNumber(wn);
+			if (hr <= 0) {
+				switch (NextWordStopped()) {
+					'noon', 'midday': hr = 12;
+					'midnight': hr = 0;
+					default: return GPR_FAIL;
+				}
+			}
+			if (hr >= 13) return GPR_FAIL;
+			if (second_word == 'to') {
+				mn = 60-mn; hr--; if (hr<0) hr=23;
+			}
+			wn++; second_word = NextWordStopped();
+		! "six thirty"
+		default:
+			hr = offhour; mn = I7_ExtendedTryNumber(--wn);
+			if (mn < 0 || mn >= 60) return GPR_FAIL;
+			wn++; second_word = NextWordStopped();
+	}
+	parsed_number = I7_HoursMinsWordToTime(hr, mn, second_word);
+	if (parsed_number < 0) return GPR_FAIL;
+	if (second_word ~= 'pm' or 'am' or 'o^clock') wn--;
+	return GPR_NUMBER;
+];
+
+[ I7_ChangePlayer O;
+  if (O ofclass K27_player_character) return ChangePlayer(O);
+  RunTimeProblem(RTP_CANTCHANGE);
+];
+
+[ I7_Divide A B;
+  if (B == 0) { RunTimeProblem(RTP_DIVZERO); rfalse; }
+  return A/B;
+];
+[ I7_Rem A B;
+  if (B == 0) { RunTimeProblem(RTP_DIVZERO); rfalse; }
+  return A%B;
+];
+
+[ RunTimeProblem n obj obj2 ln obj3 i c;
+!	if (I7_enable_rte == false) return;
+	I7_enable_rte = false;
+	print "^*** Run-time problem P", n;
+!	if (ln == 0) ln=1;
+	if (ln) print " (at paragraph ", ln, " in the source text)";
+	print ": ";
+	switch(n) {
+		RTP_BACKDROP:
+			print "Tried to move ", (the) obj, " (a backdrop) to ", (the) obj2,
+				", which is not a region.^";
+		RTP_CANTCHANGE:
+			print "Tried to change player to ", (the) obj,
+				", which is not a player-character.^";
+		RTP_NOEXIT:
+		    print "Tried to change ", (the) obj2, " exit of ", (the) obj,
+		    	", but it didn't seem to have such an exit to change.^";
+		RTP_EXITDOOR:
+		    print "Tried to change ", (the) obj2, " exit of ", (the) obj,
+		    	", but it led to a door, not a room.^";
+		RTP_IMPREL:
+			print "Tried to access an inappropriate relation for ", (the) obj,
+				", violating '";
+			for (i=0: RelationList-->i ~= I6_NULL: i=i+3) {
+				c = RelationList-->(i+1);
+				if (((c == Relation_VtoV) || (c == Relation_Sym_VtoV))
+					&& (obj2 == RelationList-->i)) {
+					print (string) RelationList-->(i+2), "'.^";
+				}
+			}
+		RTP_RULESTACK:
+			print "Too many procedural rules acting all at once.^";
+		RTP_TOOMANYRULEBOOKS:
+			print "Too many rulebooks in simultaneous use.^";
+		RTP_TOOMANYEVENTS:
+			print "Too many timed events are going on at once.^";
+		RTP_BADPROPERTY:
+			print "Tried to access non-existent property for ", (the) obj, ".^";
+		RTP_UNPROVIDED:
+			print "Since ", (the) obj, " is not allowed the property ~",
+    			(string) obj2, "~, it is against the rules to try to use it.^";
+		RTP_UNSET:
+			print "Although ", (the) obj, " is allowed to have the property ~",
+				(string) obj2, "~, no value was ever given, so it can't now be used.^";
+		RTP_TOOMANYACTS:
+			print "Too many activities are going on at once.^";
+		RTP_CANTABANDON:
+			print "Tried to abandon an activity which wasn't going on.^";
+		RTP_CANTEND:
+			print "Tried to end an activity which wasn't going on.^";
+		RTP_CANTMOVENOTHING:
+			print "You can't move nothing.^";
+		RTP_CANTREMOVENOTHING:
+			print "You can't remove nothing from play.^";
+		RTP_DIVZERO:
+			print "You can't divide by zero.^";
+		RTP_BADVALUEPROPERTY:
+			print "Tried to access property for a value which didn't fit: ",
+				"if this were a number it would be ", obj, ".^";
+		RTP_NOTBACKDROP:
+			print "Tried to move ", (the) obj, " (not a backdrop) to ", (the) obj2,
+				", which is a region.^";
+		RTP_TABLE_NOCOL:
+			print "Attempt to look up a non-existent column in the table '",
+				(PrintTableName) obj, "'.^";
+		RTP_TABLE_NOCORR:
+			print "Attempt to look up a non-existent correspondence in the table '",
+				(PrintTableName) obj, "'.^";
+		RTP_TABLE_NOROW:
+			print "Attempt to look up a non-existent row in the table '",
+				(PrintTableName) obj, "'.^";
+		RTP_TABLE_NOENTRY:
+			print "Attempt to look up a non-existent entry at column ", obj2,
+				", row ", obj3, " of the table '", (PrintTableName) obj, "'.^";
+		RTP_TABLE_NOTABLE:
+			print "Attempt to blank out a row from a non-existent table (value ",
+				obj, ").^";
+		RTP_TABLE_NOMOREBLANKS:
+			print "Attempt to choose a blank row in a table with none left: table '",
+				(PrintTableName) obj, "'.^";
+		RTP_TABLE_NOROWS:
+			print "Attempt to choose a random row in an entirely blank table: table '",
+				(PrintTableName) obj, "'.^";
+		RTP_TABLE_CANTSORT:
+			print "Attempt to sort a table whose ordering must remain fixed: table '",
+				(PrintTableName) obj, "'.^";
+		RTP_NOTINAROOM:
+			print "Attempt to test if the current location is '",
+				(the) obj, "', which is not a room or region.^";
+    }
+	print "^";
+];
+
+[ I7_char_to_digit c n; n = c-'0'; if ((n<0) || (n>9)) return -1; return n; ];
+
+[ I7_FrontSide D; if (~~(D ofclass K4_door)) rfalse;
+  if (D provides found_in) return (D.&found_in)-->0;
+  return parent(D);
+];
+[ I7_BackSide D; if (~~(D ofclass K4_door)) rfalse;
+  if (D provides found_in) return (D.&found_in)-->1;
+  rfalse;
+];
+[ I7_Location O;
+  if (~~(O ofclass K2_thing)) rfalse;
+  if (O ofclass K4_door) return I7_FrontSide(O);
+  if (O ofclass K7_backdrop) rfalse;
+  while (O && (~~(O ofclass K1_room))) {
+      if (parent(O)) O = parent(O);
+      else O = O.component_parent;
+  }
+  return O;
+];
+[ I7_IndirectlyContains o1 o2;
+  !  Does o1 enclose o2?
+  if ((o1==o2) || (o1 == 0) || (o2 == 0)) rfalse;
+  if (o2 ofclass K4_door) {
+      if (o1 == I7_FrontSide(o2)) rtrue;
+      if (o1 == I7_BackSide(o2)) rtrue;
+      rfalse;
+  }
+  if (o2 ofclass K7_backdrop) rfalse;
+  while (o2) {
+      if (o1==o2) rtrue;
+      if (parent(o2)) o2 = parent(o2);
+      else o2 = o2.component_parent;
+  }
+  rfalse;
+];
+[ I7_TestActionMask match mask at; 
+    at = FindAction(); 
+    if (at == 0) rfalse; 
+    mask = ActionData-->(at+1); 
+    if (mask & match) rtrue; 
+    rfalse; 
+];
+
+[ I7_NeedToTouchNoun; return I7_TestActionMask($$00001); ];
+[ I7_NeedToTouchSecondNoun; return I7_TestActionMask($$00010); ];
+[ I7_NeedLightForAction; return I7_TestActionMask($$00100); ];
+[ I7_SeedRNG n;
+  #ifdef TARGET_ZCODE;
+  if (n > 0) n = -n;
+  @random n -> n;
+  #ifnot; ! TARGET_GLULX
+  @setrandom n;
+  #endif; ! TARGET_
+];

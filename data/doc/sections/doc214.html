@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.5. Choosing rows</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc213.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Tables</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc215.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.5. Choosing rows</b></font></td></tr></table>
+<p>
+<p>The following would be one way to print out a list of recent Kings and Queens:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode44(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('To list the succession:\nsay "The Succession List runs as follows...";\nrepeat with N running from 1 to the number of rows in the Table of Recent Monarchs begin;\n\tsay "[accession in row N of the Table of Recent Monarchs]: [name in row N of the Table of Recent Monarchs] ([family in row N of the Table of Recent Monarchs]).";\nend repeat.\n\n');
+}
+</script>
+<a href="javascript:pasteCode44()"><img border=0 src=../doc_images/paste.png></a> To list the succession:
+<br>say &quot;The Succession List runs as follows...&quot;;
+<br>repeat with N running from 1 to the number of rows in the Table of Recent Monarchs begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[accession in row N of the Table of Recent Monarchs]: [name in row N of the Table of Recent Monarchs] ([family in row N of the Table of Recent Monarchs]).&quot;;
+<br>end repeat.
+</font></blockquote><p>
+<p>
+<p>This works, but is repetitive. We often want to work on a single row for a while, either to change things or think about the contents, and it is tiresome to keep specifying the row over and over again. The following shorthand provides some relief:
+<p>
+<blockquote><font color="#000080">choose row N in the Table of Recent Monarchs;
+<br>say &quot;[accession entry]: [name entry] ([family entry]).&quot;;
+</font></blockquote><p>
+<p>
+<p>That is, if &quot;accession&quot; is a column name then &quot;accession entry&quot; will mean the entry in that column of the currently chosen row. This notation can only be used if a &quot;choose&quot; has certainly already happened, and it is a good idea to make that choice somewhere close by in the source code (and certainly in the same rule or phrase definition) for the sake of avoiding errors. We can also choose rows by specifying something about them, like so:
+<p>
+<blockquote><font color="#000080">choose row with a name of &quot;Victoria&quot; in the Table of Recent Monarchs;
+<br>change name entry to &quot;Clytemnestra Honeytongue III&quot;;
+</font></blockquote><p>
+<p>
+<p>This will choose the first row with the given entry: an error will result if there are no rows which qualify. We can also choose a row quite at random:
+<p>
+<blockquote><font color="#000080">choose a random row in the Table of Recent Monarchs;
+<br>say &quot;Your eye falls upon the reign of [name entry].&quot;
+</font></blockquote><p>
+<p>
+<p>Sometimes it will happen that a column's name clashes with the name of something else: for instance, if we call a column &quot;apples&quot; but we also have a kind called &quot;apple&quot;, so that the word &quot;apples&quot; could mean either some fruit or the column. Inform will generally prefer the former meaning as more likely. In case of such trouble, we can simply refer to &quot;the apples column&quot; rather than just &quot;the apples&quot;: for instance, &quot;choose row with an apples column of...&quot; rather than &quot;choose row with an apples of...&quot;
+<p>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc213.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc215.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

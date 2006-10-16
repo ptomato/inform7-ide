@@ -1,0 +1,132 @@
+
+!  This is just a demo script for text_functions.h, compile it for examples on
+!  using text_functions.h.
+
+Include "text_functions.h";
+
+Constant def_fg white;
+Constant def_bg blue;
+
+[ main i;
+   .loop;
+   TextColour(def_fg,def_bg);
+   @erase_window 0;
+   new_line;
+   print (TextStyle) bold, "TEXT FUNCTIONS", (TextStyle) roman;
+   new_line;
+   print "A collection of functions for dealing with text in Inform.^";
+   print "Copyright (c) 1998, Patrick Kellum <pkellum@@64pagans.org>^^";
+   print "Choose your path...^";
+   print "   1. TextStyle Examples^";
+   print "   2. TextColour, FGColour, and BGColour Examples^";
+   print "   3. List styles^";
+   print "   4. List colours^";
+   print "   Q. Quit^";
+   print "^> ";
+   @read_char 1 ->i;
+   switch(i) {
+      '1': test_textstyle();
+      '2': test_textcolour();
+      '3': list_styles();
+      '4': list_colours();
+      'q',
+      'Q': quit;
+      default: jump loop;
+   }
+   jump loop;
+];
+
+[ test_textstyle i;
+   @erase_window 0;
+   new_line;
+   print "   The following line of code...^^";
+   print (TextStyle) fixed, "print ~This text will be in ~, (TextStyle) reverse, ~reversed~, (TextStyle) roman, ~ text.@@94~;", (TextStyle) roman, "^^";
+   print "   Will produce the following output...^^";
+   print "This text will be in ", (TextStyle) reverse, "reversed", (TextStyle) roman, " text.^^^";
+   print "   The following line of code...^^";
+   print (TextStyle) fixed, "print ~This text will be in ~, (TextStyle) bold, ~bold~, (TextStyle) roman, ~ text.@@94~;", (TextStyle) roman, "^^";
+   print "   Will produce the following output...^^";
+   print "This text will be in ", (TextStyle) bold, "bold", (TextStyle) roman, " text.^^^";
+   print "   The following line of code...^^";
+   print (TextStyle) fixed, "print ~This text will be in ~, (TextStyle) italic, ~italic~, (TextStyle) roman, ~ text.@@94~;", (TextStyle) roman, "^^";
+   print "   Will produce the following output...^^";
+   print "This text will be in ", (TextStyle) italic, "italic", (TextStyle) roman, " text.^^^";
+   print "   The following line of code...^^";
+   print (TextStyle) fixed, "print ~This text will be in ~, (TextStyle) fixed, ~fixed-width~, (TextStyle) roman, ~ text.@@94~;", (TextStyle) roman, "^^";
+   print "   Will produce the following output...^^";
+   print "This text will be in ", (TextStyle) fixed, "fixed-width", (TextStyle) roman, " text.^^^";
+   print "[Hit any key to go back to the menu]";
+   @read_char 1 ->i;
+];
+
+[ test_textcolour i;
+   @erase_window 0;
+   new_line;
+   print "   The following line of code...^^";
+   print (TextStyle) fixed, "print ~This text will be in ~, (FGColour) red, ~red~, (FGColour) default_colour, ~ and this will be in ~, (FGColour) magenta, ~magenta~, (FGColour) default_colour, ~.@@94~;", (TextStyle) roman, "^^";
+   print "   Will produce the following output...^^";
+   print "This text will be in ", (FGColour) red, "red", (FGColour) def_fg, " and this will be in ", (FGColour) magenta, "magenta", (FGColour) def_fg, ".^^^";
+   print "   The following line of code...^^";
+   print (TextStyle) fixed, "print ~The background of this text will be in ~, (BGColour) red, ~red~, (BGColour) default_colour, ~ and this will be in ~, (BGColour) magenta, ~magenta~, (BGColour) default_colour, ~.@@94~;", (TextStyle) roman, "^^";
+   print "   Will produce the following output...^^";
+   print "The background of this text will be in ", (BGColour) red, "red", (BGColour) def_bg, " and this will be in ", (BGColour) magenta, "magenta", (BGColour) def_bg, ".^^^";
+   print "   The following line of code...^^";
+   print (TextStyle) fixed, "print ~This text will be ~, (FGColour) green, ~green~, (FGColour) default_colour, ~ on a ~, (FGColour) black, (BGColour) white, ~white~, (FGColour) default_colour, (BGColour) default_colour, ~ background.  ~, (FGColour) green, (BGColour) white, ~See, I told you so :-)~, (FGColour) default_colour, (BGColour) default_colour, ~@@94~;", (TextStyle) roman, "^^";
+   print "   Will produce the following output...^^";
+   print "This text will be ", (FGColour) green, "green", (FGColour) def_fg, " on a ", (FGColour) black, (BGColour) white, "white", (FGColour) def_fg, (BGColour) def_bg, " background.  ", (FGColour) green, (BGColour) white, "See, I told you so :-)", (FGColour) def_fg, (BGColour) def_bg, "^^^";
+   print "   The following line of code...^^";
+   print (TextStyle) fixed, "TextColour(red,white); print ~This should be red text on a white background~; TextColour(default_colour,default_colour); print ~.@@94~;", (TextStyle) roman, "^^";
+   print "   Will produce the following output...^^";
+   TextColour(red,white); print "This should be red text on a white background"; TextColour(def_fg,def_bg); print ".^^^";
+   print "[Hit any key to go back to the menu]";
+   @read_char 1 ->i;
+];
+
+[ list_styles i;
+   @erase_window 0;
+   new_line;
+   print "Style Values Available In The Z-Machine^^";
+   TextStyle(fixed);
+   print (TextStyle) reverse, "number    value           description", (TextStyle) roman, (TextStyle) fixed, "^";
+   print "   0      roman           The default style.^";
+   print "   1      reverse         Reversed text.^";
+   print "   2      bold            Bold text.^";
+   print "   4      italic          Italics, underlined, emphasied.^";
+   print "   8      fixed           Fixed-width text.^";
+   TextStyle(roman);
+   new_line;
+   print (TextStyle) bold, "Examples:", (TextStyle) roman, ".^";
+   print "This should appear in ", (TextStyle) reverse, "reversed", (TextStyle) roman, " text.^";
+   print "This should appear in ", (TextStyle) bold, "bold", (TextStyle) roman, " text.^";
+   print "This should appear in ", (TextStyle) italic, "emphasied ", (TextStyle) roman, " text.^";
+   print "This should appear in ", (TextStyle) fixed, "fixed_width", (TextStyle) roman, " text.^";
+   new_line;
+   print "[Hit any key to go back to the menu]";
+   @read_char 1 ->i;
+];
+
+[ list_colours i;
+   @erase_window 0;
+   new_line;
+   print "Colour Values Available In The Z-Machine^^";
+   TextStyle(fixed);
+   print (TextStyle) reverse, "number    value           colour  description", (TextStyle) roman, (TextStyle) fixed, "^";
+   print "   0      current_colour          The current setting of this colour.^";
+   print "   1      default_colour          The default setting of this colour^";
+   print "   2      black           ", (FGColour) black, (BGColour) black,             "      ", (FGColour) white, (BGColour) blue, "^";
+   print "   3      red             ", (FGColour) red, (BGColour) red,                 "      ", (FGColour) def_fg, (BGColour) def_bg, "^";
+   print "   4      green           ", (FGColour) green, (BGColour) green,             "      ", (FGColour) def_fg, (BGColour) def_bg, "^";
+   print "   5      yellow          ", (FGColour) yellow, (BGColour) yellow,           "      ", (FGColour) def_fg, (BGColour) def_bg, "^";
+   print "   6      blue            ", (FGColour) blue, (BGColour) blue,               "      ", (FGColour) def_fg, (BGColour) def_bg, "^";
+   print "   7      magenta         ", (FGColour) magenta, (BGColour) magenta,         "      ", (FGColour) def_fg, (BGColour) def_bg, "^";
+   print "   8      cyan            ", (FGColour) cyan, (BGColour) cyan,               "      ", (FGColour) def_fg, (BGColour) def_bg, "^";
+   print "   9      white           ", (FGColour) white, (BGColour) white,             "      ", (FGColour) def_fg, (BGColour) def_bg, "^";
+   print "  10      light_grey      ", (FGColour) light_grey, (BGColour) light_grey,   "      ", (FGColour) def_fg, (BGColour) def_bg, "  Version 6, Amiga and PC interpreters only.^";
+   print "  11      medium_grey     ", (FGColour) medium_grey, (BGColour) medium_grey, "      ", (FGColour) def_fg, (BGColour) def_bg, "  Version 6, Amiga interpreters only.^";
+   print "  12      dark_grey       ", (FGColour) dark_grey, (BGColour) dark_grey,     "      ", (FGColour) def_fg, (BGColour) def_bg, "  Version 6, Amiga interpreters only.^";
+   TextStyle(roman);
+   new_line;
+   print "[Hit any key to go back to the menu]";
+   @read_char 1 ->i;
+];
+

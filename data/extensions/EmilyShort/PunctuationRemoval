@@ -1,0 +1,112 @@
+Punctuation Removal by Emily Short begins here.
+
+
+To remove stray punctuation:
+	(- PunctuationStripping(); -)
+	
+Include (-
+
+[ PunctuationStripping i;
+	for (i = 2 : i <= (buffer->1) + 1 : i++)
+	{ 
+		if ((buffer->i) == '"' or '?' or '!') 
+		{	buffer->i = ' ';  
+		}
+	}
+	Tokenise__(buffer, parse);
+];
+
+-)
+
+
+To remove quotes:
+	(- Quotestripping(); -)
+
+Include (-
+
+[ QuoteStripping i;
+	for (i = 2 : i <= (buffer->1) + 1 : i++)
+	{ 
+		if ((buffer->i) == '"') 
+		{	buffer->i = ' ';  
+		}
+	}
+	Tokenise__(buffer, parse);
+];
+
+-)
+	
+To remove question marks:
+	(- Questionstripping(); -)
+
+Include (-
+
+[ Questionstripping i;
+	for (i = 2 : i <= (buffer->1) + 1 : i++)
+	{ 
+		if ((buffer->i) == '?') 
+		{	buffer->i = ' ';  
+		}
+	}
+	Tokenise__(buffer, parse);
+];
+
+-)
+	
+To remove exclamation points:
+	(- ExclamationStripping(); -)
+
+Include (-
+
+[ ExclamationStripping i;
+	for (i = 2 : i <= (buffer->1) + 1 : i++)
+	{ 
+		if ((buffer->i) == '!') 
+		{	buffer->i = ' ';  
+		}
+	}
+	Tokenise__(buffer, parse);
+];
+
+-)
+
+Punctuation Removal ends here.
+
+---- DOCUMENTATION ----
+
+Punctuation Removal provides phrases for removing unwanted punctuation marks from the player's command before attempting to interpret it. These are
+
+	remove exclamation points
+	remove question marks
+	remove quotes
+
+and, to do all three of these things at once,
+
+	remove stray punctuation.
+
+These phrases should be used during the After reading a command activity, so for instance in a game designed to be very patient with the player's quirks:
+
+	After reading a command:
+		remove stray punctuation.
+		
+Example: * Patience - In which question and exclamation marks are pulled from the player's input.
+
+	"Patience"
+	
+	Include Punctuation Removal by Emily Short.
+	
+	The Overpunctuation Arena is a room. "It's madness in here!! Fortunately, you have a lot of patience, right???"
+	
+	Understand "who is/are [text]" as inquiring about. Inquiring about is an action applying to one topic. Carry out inquiring about a topic listed in the Table of Answers: say "[reply entry][paragraph break]". Understand the command "what" as "who".
+	
+	Table of Answers
+	topic	reply
+	"patience"	"A virtue."
+	"virtue" or "a virtue"	"A grace."
+	"Grace" or "a grace"	"A little girl who doesn't wash her face."
+	
+	After reading a command:
+		remove stray punctuation;
+		if the player's command includes "&", replace the matched text with "and".
+	
+	Test me with "what is patience? / what is a virtue?! / what is grace???"

@@ -1,0 +1,59 @@
+!! Tests.i6: code for the test verb, when needed
+
+Array test_stack --> 15;
+Global test_sp = 0;
+[ TestStart T R k;
+  if (test_sp == 15) ">--> Testing too many levels deep";
+  test_stack-->test_sp = T;
+  test_stack-->(test_sp+1) = 1;
+  test_sp = test_sp + 3;
+  if ((R-->0) && (R-->0 ~= real_location)) {
+       print "(first moving to ", (name) R-->0, ")^";
+       PlayerTo(R-->0, 1);
+  }
+  k=1;
+  while (R-->k) {
+      if (R-->k notin player) {
+          print "(first acquiring ", (the) R-->k, ")^";
+          move R-->k to player;
+      }
+      k++;
+  }
+  print "(Testing.)^";
+];
+[ KeyboardPrimitive a_buffer a_table p i j l spaced;
+  if (test_sp == 0) {
+      test_stack-->2 = 1;
+      return KeyboardPrimitive__(a_buffer, a_table);
+  }
+  else {
+      p = test_stack-->(test_sp-3);
+      i = test_stack-->(test_sp-2);
+      print "[";
+      print test_stack-->2;
+      print "] ";
+      test_stack-->2 = 
+          test_stack-->2+1;
+      style bold;
+      while ((i <= p->0) && (p->i ~= '/')) {
+          if (spaced || (p->i ~= ' ')) {
+              a_buffer->(j+WORDSIZE) = p->i;
+              print (char) p->i;
+              i++; j++;
+              spaced = true;
+          } else i++;
+      }
+      style roman;
+      print "^";
+      #ifdef TARGET_ZCODE;
+      a_buffer->1 = j;
+      #ifnot; ! TARGET_GLULX
+      a_buffer-->0 = j;
+      #endif;
+      Tokenise__(a_buffer, a_table);
+      if (p->i == '/') i++;
+      if (i > p->0) {
+          test_sp = test_sp - 3;
+      } else test_stack-->(test_sp-2) = i;
+  }
+];

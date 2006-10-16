@@ -1,0 +1,91 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.18. Longer extracts of Inform 6 code</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc325.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc327.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.18. Longer extracts of Inform 6 code</b></font></td></tr></table>
+<p>
+<p>Whole routines, object and class definitions (or any other directives) can be pasted in wholesale using sentences like so:
+<p>
+<blockquote><font color="#000080">Include (-
+<br>[ MyInform6Routine a b; return a*b; ];
+<br>-).
+</font></blockquote><p>
+<p>
+<p>Such inclusions should not be too long (Inform has a maximum length of literal verbatim text of about 2K), but of course any number of inclusions like this can be made. They are pasted into the final compiled code at the end of the file, after the I6 grammar has been declared.
+<p>
+<p>In such extracts, we sometimes need to refer to objects, variables or values which can't be described using I6: or rather, which can be described, but we don't know how. To this end, any text in an inclusion written in &quot;(+&quot; and &quot;+)&quot; parentheses is treated as an I7 value, and compiled accordingly, with all type-checking waived for the occasion. For instance:
+<p>
+<blockquote><font color="#000080">Include (-
+<br>Global my_global = (+ the tartan rucksack +);
+<br>-).
+</font></blockquote><p>
+<p>
+<p>Here &quot;the tartan rucksack&quot; is translated into &quot;O18_tartan_rucksack&quot;, or something similar: the I6 object created to represent the rucksack. Thus the aactual line of code produced is
+<p>
+<blockquote><font color="#000080">Global my_global = O18_tartan_rucksack;
+</font></blockquote><p>
+<p>
+<p>(Note that the brace notation seen before for Inform 6-defined inline phrases is not allowed here. But this is better anyway.)
+<p>
+<p><hr><p>
+<a name="e255"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc326.html#e255 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>289</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc326.html#e255 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Status line with centered text, the hard way</font></b></a><br>A status line which has only the name of the location, centered.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>Making major changes to display features, such as the construction of the status line, sometimes requires that we rely on Inform 6 in bulk; here is how we might produce the Trinity-style status line, with the location centered at the top center of the screen.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode351(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Corner of No and Where"\n\nNo is a room. Where is west of No.\n\nRule for constructing the status line:\n\tprint the location in the center of the status line;\n\trule succeeds.\n\nTo print the location in the center of the status line:\n\t(- PrintCenteredStatus(); -);\n\nInclude (-\n\nArray printed_text --> 64;\n\n[ PrintCenteredStatus i j;\n\t@set_cursor 1 0;\n\ti = 0->33;\n\tspaces(i);\n\t@output_stream 3 printed_text;\n\tprint (name) location;\n\t@output_stream -3;\n\tj = (i - (printed_text-->0))/2;\n\t@set_cursor 1 j;\n\tprint (name) location;\n\tspaces j-1;\n];\n\n-)\n\nTest me with "w / e".\n\n');
+}
+</script>
+<a href="javascript:pasteCode351()"><img border=0 src=../doc_images/paste.png></a> &quot;Corner of No and Where&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">No is a room. Where is west of No.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for constructing the status line:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;print the location in the center of the status line;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To print the location in the center of the status line:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- PrintCenteredStatus(); -);
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Include (-
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Array printed_text --> 64;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">[ PrintCenteredStatus i j;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;@set_cursor 1 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;i = 0->33;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;spaces(i);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;@output_stream 3 printed_text;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;print (name) location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;@output_stream -3;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;j = (i - (printed_text-->0))/2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;@set_cursor 1 j;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;print (name) location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;spaces j-1;
+<br>];
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">-)
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;w / e&quot;.
+</font></blockquote><p>
+<p>
+<p>In fact, as we've already seen, many extra modifications to the display behavior are possible using Basic Screen Effects.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc326.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc325.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc327.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,0 +1,177 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.11. Sorting</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc219.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Tables</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc221.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.11. Sorting</b></font></td></tr></table>
+<p>
+<p>We are allowed to sort a table in two ways: first, at random.
+<p>
+<blockquote><font color="#000080">sort the Table of Recent Monarchs in random order;
+</font></blockquote><p>
+<p>
+<p>Secondly, in order of the values in any column, either forwards or backwards. Blank values will be placed last, and entirely blank rows last of all. The method of sorting is &quot;stable&quot;, that is, if two rows have the same value then they will stay the same way round in the sorted table, rather than being swapped over.
+<p>
+<blockquote><font color="#000080">sort the Table of Recent Monarchs in accession order;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">sort the Table of Recent Monarchs in reverse name order;
+</font></blockquote><p>
+<p>
+<p><hr><p>
+<a name="e132"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc220.html#e132 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>200</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc220.html#e132 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Jokers Wild</font></b></a><br>A deck of cards which can be shuffled and dealt from.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>Suppose we want a deck of cards which the player can shuffle and draw from. Our first (rather tedious) task is merely to set up the deck as a table:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode227(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Jokers Wild"\n\nSuit is a kind of value. The suits are hearts, clubs, diamonds, and spades.\n\nTable of Cards\nsuit\tvalue\ndiamonds\t1\ndiamonds\t2\ndiamonds\t3\ndiamonds\t4\ndiamonds\t5\ndiamonds\t6\ndiamonds\t7\ndiamonds\t8\ndiamonds\t9\ndiamonds\t10\ndiamonds\t11\ndiamonds\t12\ndiamonds\t13\nspades\t1\nspades\t2\nspades\t3\nspades\t4\nspades\t5\nspades\t6\nspades\t7\nspades\t8\nspades\t9\nspades\t10\nspades\t11\nspades\t12\nspades\t13\nhearts\t1\nhearts\t2\nhearts\t3\nhearts\t4\nhearts\t5\nhearts\t6\nhearts\t7\nhearts\t8\nhearts\t9\nhearts\t10\nhearts\t11\nhearts\t12\nhearts\t13\nclubs\t1\nclubs\t2\nclubs\t3\nclubs\t4\nclubs\t5\nclubs\t6\nclubs\t7\nclubs\t8\nclubs\t9\nclubs\t10\nclubs\t11\nclubs\t12\nclubs\t13\n\n[We\'re going to describe the higher numbers as face cards, so it helps to write a new "to say" phrase.]\n\nTo say (count - a number) as a card value:\n\tchoose row with a value of count in the Table of Value Names;\n\tsay "[term entry]".\n\nTable of Value Names\nvalue\tterm\n1\t"ace"\n2\t"deuce"\n3\t"three"\n4\t"four"\n5\t"five"\n6\t"six"\n7\t"seven"\n8\t"eight"\n9\t"nine"\n10\t"ten"\n11\t"jack"\n12\t"queen"\n13\t"king"\n\n[Now we get the shuffling of the deck from "sort in random order", so:]\n\nUnderstand "shuffle" as shuffling. Shuffling is an action applying to nothing.\n\nCarry out shuffling:\n\tsort the Table of Cards in random order;\n\tsay "You expertly rearrange the cards.".\n\nWhen play begins:\n\tsort the Table of Cards in random order.\n\n[This will continue to work properly even as the deck is partially depleted. Speaking of which, suppose we want the player to be able to toss the cards one-by-one into a hat. They are going to need to be removed from the deck, so:]\n\nUnderstand "toss" or "toss a card" or "toss card" as tossing.\n\nTossing is an action applying to nothing.\n\nCheck tossing:\n\tif the number of filled rows in the Table of Cards is 0, say "The deck is empty." instead.\n\nCarry out tossing:\n\trepeat through the Table of Cards\n\tbegin;\n\t\tlet new value be value entry;\n\t\tlet new suit be suit entry;\n\t\tsay "You throw the [value entry as a card value] of [suit entry] at the top hat, and [if a random chance of 1 in 3 succeeds]hit[otherwise]miss[end if].";\n\t\tblank out the whole row;\n\t\trule succeeds;\n\tend repeat.\n\n[If we wanted to simulate a slightly more stimulating game, we could instead have a second table to represent the player\'s hand of cards and record each card drawn. That would get long for the purposes of example, however, so instead we will just admit that the player\'s life is an empty husk of existence:]\n\nThe Empty Room is a room. "It has come to this: sitting on the bare floor of Lulu\'s apartment with nothing to amuse you but a deck of cards and the top hat from last year\'s act. You reckon [the number of filled rows in the Table of Cards in words] cardtosses are all that stand between you and the utter pointlessness of existence.\n\nOnce again you curse Lulu for running off with that joker."\n\nThe player is carrying the deck of cards. The top hat is an open container in the Empty Room. It is scenery.\n\nTest me with "toss / again / again / again / again / again / again / again".\n');
+}
+</script>
+<a href="javascript:pasteCode227()"><img border=0 src=../doc_images/paste.png></a> &quot;Jokers Wild&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Suit is a kind of value. The suits are hearts, clubs, diamonds, and spades.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Cards
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">suit</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">value</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<p>We're going to describe the higher numbers as face cards, so it helps to write a new &quot;to say&quot; phrase.
+<p>
+<blockquote><font color="#000080">To say (count - a number) as a card value:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row with a value of count in the Table of Value Names;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[term entry]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Value Names
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">value</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">term</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;ace&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;deuce&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;three&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;four&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;five&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;six&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;seven&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;eight&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;nine&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;ten&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;jack&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;queen&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;king&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<p>Now we get the shuffling of the deck from &quot;sort in random order&quot;, so:
+<p>
+<blockquote><font color="#000080">Understand &quot;shuffle&quot; as shuffling. Shuffling is an action applying to nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out shuffling:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Cards in random order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You expertly rearrange the cards.&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Cards in random order.
+</font></blockquote><p>
+<p>
+<p>This will continue to work properly even as the deck is partially depleted. Speaking of which, suppose we want the player to be able to toss the cards one-by-one into a hat. They are going to need to be removed from the deck, so:
+<p>
+<blockquote><font color="#000080">Understand &quot;toss&quot; or &quot;toss a card&quot; or &quot;toss card&quot; as tossing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Tossing is an action applying to nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check tossing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of filled rows in the Table of Cards is 0, say &quot;The deck is empty.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out tossing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Cards
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let new value be value entry;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let new suit be suit entry;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You throw the [value entry as a card value] of [suit entry] at the top hat, and [if a random chance of 1 in 3 succeeds]hit[otherwise]miss[end if].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<p>If we wanted to simulate a slightly more stimulating game, we could instead have a second table to represent the player's hand of cards and record each card drawn. That would get long for the purposes of example, however, so instead we will just admit that the player's life is an empty husk of existence:
+<p>
+<blockquote><font color="#000080">The Empty Room is a room. &quot;It has come to this: sitting on the bare floor of Lulu's apartment with nothing to amuse you but a deck of cards and the top hat from last year's act. You reckon [the number of filled rows in the Table of Cards in words] cardtosses are all that stand between you and the utter pointlessness of existence.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Once again you curse Lulu for running off with that joker.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player is carrying the deck of cards. The top hat is an open container in the Empty Room. It is scenery.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;toss / again / again / again / again / again / again / again&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc220.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc219.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc221.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

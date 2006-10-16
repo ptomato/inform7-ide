@@ -1,0 +1,79 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.13. Actions as conditions</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc131.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc133.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.13. Actions as conditions</b></font></td></tr></table>
+<p>
+<p>There are two ways that descriptions of actions can be used as conditions. First, we can simply describe an action, and then the condition will be true if that is what the player is trying to do, and not otherwise:
+<p>
+<blockquote><font color="#000080">... if taking a container then ...
+</font></blockquote><p>
+<p>
+<p>This is actually an abbreviation for the longer, some would say preferable form:
+<p>
+<blockquote><font color="#000080">... if we are taking a container then ...
+</font></blockquote><p>
+<p>
+<p>Secondly, we can talk about the past as well as the present, which is very useful since interactive fiction often contains situations which are changed by earlier events.
+<p>
+<blockquote><font color="#000080">Instead of waiting when we have taken the lantern, say &quot;No, your acquisitive nature is roused now, and simply waiting will no longer do.&quot;
+</font></blockquote><p>
+<p>
+<p>More on the past tense later, too: note that &quot;we are taking&quot; has become &quot;we have taken&quot;. For the rule to apply, it is not enough that the action &quot;taking the lantern&quot; has been tried: it must have succeeded.
+<p>
+<p><hr><p>
+<a name="e171"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc132.html#e171 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>111</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc132.html#e171 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Night Sky</font></b></a><br>A room which changes its description depending on whether an object has been examined.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>Sometimes a nice effect is to change the way things are described depending on the information the player has gained in the course of play. We could for instance write this:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode266(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Night Sky"\n\nThe Planetarium is a room. "[if we have examined the sinister message]A dark room where it seems something is about to jump out at you![otherwise]A tranquil dark room with a ceilingful of stars.[end if]"\n\nThe sinister message is a thing in the Planetarium. "A message is taped to the wall." The description is "\'BEWARE.\'"\n\nTest me with "look / x message / look".\n\n');
+}
+</script>
+<a href="javascript:pasteCode266()"><img border=0 src=../doc_images/paste.png></a> &quot;Night Sky&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Planetarium is a room. &quot;[if we have examined the sinister message]A dark room where it seems something is about to jump out at you![otherwise]A tranquil dark room with a ceilingful of stars.[end if]&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The sinister message is a thing in the Planetarium. &quot;A message is taped to the wall.&quot; The description is &quot;'BEWARE.'&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;look / x message / look&quot;.
+</font></blockquote><p>
+<p>
+<p>On the other hand, beware that this would not work as desired:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode267(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Night Sky"\n\nThe Planetarium is a room. "[if we have listened to the sinister message]A dark room where it seems something is about to jump out at you![otherwise]A tranquil dark room with a ceilingful of stars.[end if]"\n\nThe sinister message is a thing in the Planetarium. "A message plays very softly, so that you would have to listen to hear it." Instead of doing anything other than listening to the message: say "It\'s only a sound, after all.". Instead of listening to the sinister message: say "A voice whispers, \'BEWARE\'."\n\nTest me with "listen to message / look".\n\n');
+}
+</script>
+<a href="javascript:pasteCode267()"><img border=0 src=../doc_images/paste.png></a> &quot;Night Sky&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Planetarium is a room. &quot;[if we have listened to the sinister message]A dark room where it seems something is about to jump out at you![otherwise]A tranquil dark room with a ceilingful of stars.[end if]&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The sinister message is a thing in the Planetarium. &quot;A message plays very softly, so that you would have to listen to hear it.&quot; Instead of doing anything other than listening to the message: say &quot;It's only a sound, after all.&quot;. Instead of listening to the sinister message: say &quot;A voice whispers, 'BEWARE'.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;listen to message / look&quot;.
+</font></blockquote><p>
+<p>
+<p>The reason is that our Instead rule has pre-empted normal listening, so Inform considers that we have never successfully heard the message. The moral here is that &quot;if we have...&quot; is useful for tracking events that otherwise proceeded completely normally (picking up ordinary objects, examining things); if we have used instead to make some change, we will have to use a different approach to record that the event did occur as scheduled.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc132.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e165"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex165.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>112</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex165.html#e165 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Zero</font></b></a><br>A box which called "horribly heavy box" after the player has tried to take it the first time.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc131.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc133.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

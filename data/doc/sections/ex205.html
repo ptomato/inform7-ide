@@ -1,0 +1,130 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.13. Multiplication of units</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc206.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc208.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.13. Multiplication of units</b></font></td></tr></table>
+<p>
+<p>Similarly, it is forbidden to multiply 122kg and 10kg, not because it could never make sense (a physicist will occasionally multiply two weights) but because the result is - what? Not a number, and not a weight any more. But we are allowed to tell Inform what the result ought to be, and once we have done so, the multiplication will be allowed:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode38(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('A length is a kind of value. 10m specifies a length. An area is a kind of value. 10 sq m specifies an area.\n\nA length times a length specifies an area.\n\nThe balance platform is in the Weighbridge. "The balance platform is 10m by 8m, giving it an area of [10m multiplied by 8m]."\n\n');
+}
+</script>
+<a href="javascript:pasteCode38()"><img border=0 src=../doc_images/paste.png></a> A length is a kind of value. 10m specifies a length. An area is a kind of value. 10 sq m specifies an area.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A length times a length specifies an area.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The balance platform is in the Weighbridge. &quot;The balance platform is 10m by 8m, giving it an area of [10m multiplied by 8m].&quot;
+</font></blockquote><p>
+<p>
+<p>which will turn up as:
+<p>
+<blockquote><font color="#000080">The balance platform is 10m by 8m, giving it an area of 80 sq m.
+</font></blockquote><p>
+<p>
+<p>And having told Inform that lengths multiply to area, we could also divide an area by a length to get a length: no further instructions would be needed.
+<p>
+<p>Note that we are only allowed to make such a rule about multiplication, and only between units, and the result has to be a unit. So this system cannot be used to make Inform multiply, say, a time by a piece of text, nor to contradict any of the standard &quot;dimensional rules&quot; outlined above.
+<p>
+<p><hr><p>
+<a name="e205"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc207.html#e205 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>192</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc207.html#e205 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Depth</font></b></a><br>Receptacles that calculate internal volume and the amount of room available, and  cannot be overfilled.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>Now we are free to design a system that is much more rigorous about a system of capacity:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode301(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Depth"\n\nA length is a kind of value. 10 cm specifies a length. An area is a kind of value. 10 sq cm specifies an area. A length times a length specifies an area. A volume is a kind of value. 10 cu cm specifies a volume. A length times an area specifies a volume.\n\nA thing has a length called height. A thing has a length called width. A thing has a length called depth. The height of a thing is usually 10 cm. The width of a thing is usually 10 cm. The depth of a thing is usually 10 cm.\n\nA measured container is a kind of container. A measured container has a length called interior height. A measured container has a length called interior width. A measured container has a length called interior depth.\n\nTo decide what volume is the interior volume of (item - a measured container):\n\tlet base area be the interior height of the item multiplied by the interior width of the item;\n\tlet base volume be the base area multiplied by the interior depth of the item;\n\tdecide on the base volume.\n\nTo decide what volume is the exterior volume of (item - a thing):\n\tlet base area be the height of the item multiplied by the width of the item;\n\tlet base volume be the base area multiplied by the depth of the item;\n\tdecide on the base volume.\n\n[We\'re going to assume that everything is effectively cubical, in order to avoid packing problems. In practice, this is probably close enough to be adequate for the purposes of interactive fiction.]\n\nTo decide what volume is the available volume of (item - a measured container):\n\tlet starting size be the interior volume of the item;\n\trepeat with second item running through things in the item\n\tbegin;\n\t\tdecrease starting size by the exterior volume of the second item;\n\t\tif starting size is less than 0 cu cm, change starting size to 0 cu cm;\n\tend repeat;\n\tdecide on starting size.\n\nTo decide what length is the largest dimension of (item - a thing):\n\tlet long side be the height of item;\n\tif the width of the item is greater than the long side, change the long side to the width of the item;\n\tif the depth of the item is greater than the long side,\n\t\tchange the long side to the depth of the item;\n\tdecide on the long side.\n\nCheck inserting something into a measured container:\n\tif the exterior volume of the noun is greater than the interior volume of the second noun, say "[The noun] will never fit inside [the second noun]." instead;\n\tif the exterior volume of the noun is greater than the available volume of the second noun, say "[The noun] will not fit into [the second noun] with [the list of things in the second noun]." instead;\n\tif the height of the noun is greater than the largest dimension of the second noun, say "[The noun] is the wrong shape to fit into [the second noun]." instead;\n\tif the width of the noun is greater than the largest dimension of the second noun, say "[The noun] is the wrong shape to fit into [the second noun]." instead;\n\tif the depth of the noun is greater than the largest dimension of the second noun, say "[The noun] is the wrong shape to fit into [the second noun]." instead.\n\nThe player carries a measured container called a can. The interior height of the can is 10 cm. The interior depth of the can is 5 cm. The interior width of the can is 5 cm.\n\nA pebble is a kind of thing. The height of a pebble is usually 2 cm. The depth of a pebble is usually 2 cm. The width of a pebble is usually 2 cm.\n\nThe player carries 25 pebbles. The player carries a red rubber ball. The depth of the ball is 5 cm. The width of the ball is 5 cm. The height of the ball is 5 cm.\n\nThe player carries an arrow. The height of the arrow is 40 cm. The width of the arrow is 1 cm. The depth of the arrow is 1 cm.\n\nThe player carries a baguette. The height of the baguette is 80 cm. The depth of the baguette is 5 cm. The width of the baguette is 4 cm.\n\nThe Lab is a room.\n\nTest me with "put ball in can / put baguette in can / put arrow in can / put pebbles in can".\n\n');
+}
+</script>
+<a href="javascript:pasteCode301()"><img border=0 src=../doc_images/paste.png></a> &quot;Depth&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A length is a kind of value. 10 cm specifies a length. An area is a kind of value. 10 sq cm specifies an area. A length times a length specifies an area. A volume is a kind of value. 10 cu cm specifies a volume. A length times an area specifies a volume.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A thing has a length called height. A thing has a length called width. A thing has a length called depth. The height of a thing is usually 10 cm. The width of a thing is usually 10 cm. The depth of a thing is usually 10 cm.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A measured container is a kind of container. A measured container has a length called interior height. A measured container has a length called interior width. A measured container has a length called interior depth.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what volume is the interior volume of (item - a measured container):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let base area be the interior height of the item multiplied by the interior width of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let base volume be the base area multiplied by the interior depth of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the base volume.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what volume is the exterior volume of (item - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let base area be the height of the item multiplied by the width of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let base volume be the base area multiplied by the depth of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the base volume.
+</font></blockquote><p>
+<p>
+<p>We're going to assume that everything is effectively cubical, in order to avoid packing problems. In practice, this is probably close enough to be adequate for the purposes of interactive fiction.
+<p>
+<blockquote><font color="#000080">To decide what volume is the available volume of (item - a measured container):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let starting size be the interior volume of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with second item running through things in the item
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decrease starting size by the exterior volume of the second item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if starting size is less than 0 cu cm, change starting size to 0 cu cm;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on starting size.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what length is the largest dimension of (item - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let long side be the height of item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the width of the item is greater than the long side, change the long side to the width of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the depth of the item is greater than the long side,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the long side to the depth of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the long side.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check inserting something into a measured container:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the exterior volume of the noun is greater than the interior volume of the second noun, say &quot;[The noun] will never fit inside [the second noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the exterior volume of the noun is greater than the available volume of the second noun, say &quot;[The noun] will not fit into [the second noun] with [the list of things in the second noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the height of the noun is greater than the largest dimension of the second noun, say &quot;[The noun] is the wrong shape to fit into [the second noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the width of the noun is greater than the largest dimension of the second noun, say &quot;[The noun] is the wrong shape to fit into [the second noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the depth of the noun is greater than the largest dimension of the second noun, say &quot;[The noun] is the wrong shape to fit into [the second noun].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries a measured container called a can. The interior height of the can is 10 cm. The interior depth of the can is 5 cm. The interior width of the can is 5 cm.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A pebble is a kind of thing. The height of a pebble is usually 2 cm. The depth of a pebble is usually 2 cm. The width of a pebble is usually 2 cm.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries 25 pebbles. The player carries a red rubber ball. The depth of the ball is 5 cm. The width of the ball is 5 cm. The height of the ball is 5 cm.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries an arrow. The height of the arrow is 40 cm. The width of the arrow is 1 cm. The depth of the arrow is 1 cm.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries a baguette. The height of the baguette is 80 cm. The depth of the baguette is 5 cm. The width of the baguette is 4 cm.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Lab is a room.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;put ball in can / put baguette in can / put arrow in can / put pebbles in can&quot;.
+</font></blockquote><p>
+<p>
+<p>Several warnings about this. One is that the numbers can't go very high: while the volume can in theory go to 32,767, in practice this equates to an object 32 cm on a side, which is not very large. It will therefore be a good idea to choose dimensions that fit the needs of the game: in some circumstances a decimeter might be a better basic unit of measurement, for instance.
+<p>
+<p>The other is that the system will require a height, width, and depth for every portable object in the game, which is a large commitment of data entry; it may be kind of tiresome. So it is probably not worth bothering with this kind of simulation unless it is going to be genuinely significant.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc207.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc206.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc208.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

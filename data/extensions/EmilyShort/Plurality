@@ -1,0 +1,168 @@
+Plurality by Emily Short begins here.
+
+"Adds tokens to help with sentences about nouns with plural names; provides handling for pronouns of objects like 'a pair of shoes'."
+
+The prior named noun is a thing that varies. The prior named noun is yourself.
+
+After printing the name of something (called the target): 
+    change the prior named noun to the target.
+    
+To decide whether (item - an object) acts plural: 
+    (- ({item} has pluralname) -);
+
+To say is/are: 
+    if the prior named noun acts plural, say "are"; 
+    otherwise say "is".
+
+To say that/those: 
+    if the prior named noun acts plural
+    begin;
+    	say "those"; 
+    otherwise;
+    	if the prior named noun is a man, say "him";
+    	if the prior named noun is a woman, say "her";
+    	if the prior named noun is not a man and the prior named noun is not a woman, say "that";
+    end if.
+
+To say Cap that/those: 
+    if the prior named noun acts plural
+    begin;
+    	say "Those"; 
+    otherwise;
+    	if the prior named noun is a man, say "He";
+    	if the prior named noun is a woman, say "She";
+    	if the prior named noun is not a man and the prior named noun is not a woman, say "That";
+    end if.
+    
+To say that/those (item - a thing): 
+    change the prior named noun to the item;
+    if the item acts plural
+    begin;
+    	say "those"; 
+    otherwise;
+    	if the item is a man, say "him";
+    	if the item is a woman, say "her";
+    	if the item is not a man and the prior named noun is not a woman, say "that";
+    end if.
+
+To say Cap that/those (item - a thing): 
+    change the prior named noun to the item;
+    if the item acts plural
+    begin;
+    	say "Those"; 
+    otherwise;
+    	if the item is a man, say "He";
+    	if the item is a woman, say "She";
+    	if the item is not a man and the prior named noun is not a woman, say "That";
+    end if.
+
+To say Cap it/they:  
+    if the prior named noun acts plural
+    begin;
+    	say "They"; 
+    otherwise;
+    	if the prior named noun is a man, say "He";
+    	if the prior named noun is a woman, say "She";
+    	if the prior named noun is not a man and the prior named noun is not a woman, say "It";
+    end if.
+    
+To say it/they:  
+    if the prior named noun acts plural
+    begin;
+    	say "they"; 
+    otherwise;
+    	if the prior named noun is a man, say "he";
+    	if the prior named noun is a woman, say "she";
+    	if the prior named noun is not a man and the prior named noun is not a woman, say "it";
+    end if.
+
+To say it/them: 
+    if the prior named noun acts plural
+    begin;
+    	say "them"; 
+    otherwise;
+    	if the prior named noun is a man, say "him";
+    	if the prior named noun is a woman, say "her";
+    	if the prior named noun is not a man and the prior named noun is not a woman, say "it";
+    end if.
+
+To say it/they of (item - a thing):  
+    change the prior named noun to the item;
+    if the item acts plural
+    begin;
+    	say "they"; 
+    otherwise;
+    	if the item is a man, say "he";
+    	if the item is a woman, say "she";
+    	if the item is not a man and the item is not a woman, say "it";
+    end if.
+
+To say Cap it/they of (item - a thing):  
+    change the prior named noun to the item;
+    if the item acts plural
+    begin;
+    	say "They"; 
+    otherwise;
+    	if the item is a man, say "He";
+    	if the item is a woman, say "She";
+    	if the item is not a man and the item is not a woman, say "It";
+    end if.
+
+To say it/them of (item - a thing):   
+    change the prior named noun to the item;
+    if the item acts plural
+    begin;
+    	say "them"; 
+    otherwise;
+    	if the item is a man, say "him";
+    	if the item is a woman, say "her";
+    	if the item is not a man and the item is not a woman, say "it";
+    end if.
+    	
+    
+A thing can be ambiguously plural or ordinarily enumerated. A thing is usually ordinarily enumerated.
+
+Every turn: if the noun is a thing and the noun is ambiguously plural, notice the plurality of the noun; if the second noun is a thing and the second noun is ambiguously plural, notice the plurality of the second noun.
+
+After printing the name of an ambiguously plural thing (called the suspect):
+	notice the plurality of the suspect.
+	
+To notice the plurality of (suspect - a thing):
+	(- PlugPlural({suspect}); -)
+	
+Include (-
+
+[ PlugPlural obj;
+	SetPronoun('them', obj);
+	SetPronoun('it', obj);
+];
+
+-) 
+
+Plurality ends here.
+
+---- DOCUMENTATION ----
+
+This extension adds to say phrases for is/are, that/those, Cap that/those, it/they, Cap it/they, and it/them, which refer to the last noun whose name has been printed. Cap that/those item, that/those item, it/they of item, Cap it/they of item, and it/them of item accept an object and also reset the prior named thing appropriately. item is/are prints is or are appropriately for the bracketed item, though this will likely not be necessary very often, given that is/are already picks up whatever thing was last named by the game.
+
+We also create the term "ambiguously plural" to refer to items such as "pair of socks", "set of chessmen", "crew of pirates", etc., which the player might reasonably refer to as either "it" or "them". These items will then respond equally well to "it" or "them" in input.
+
+Example: * Floral Greetings - An example bouquet of flowers.
+
+	"Floral Greetings"
+	
+	Include Plurality by Emily Short.
+	
+	The Doghouse is a room. "Not so much a place as a state of being."
+	
+	The player carries a ticket to the opera, some papers, and a bouquet of flowers. The bouquet is ambiguously plural.
+	
+	Instead of eating something inedible, say "[The noun] [is/are] not going to agree with you at all. You'd be wiser to leave [it/them] alone."
+	
+	Instead of touching something: say "[Cap that/those noun] [is/are] all prickly."
+	
+	Instead of smelling something: say "Your nose is too weak to get much smell from [that/those noun]."
+	
+	Instead of smelling the bouquet: say "[Cap it/they of the noun] [is/are] lovely."
+	
+	Test me with "x ticket / eat it / eat them / touch it / touch them / smell it / smell them / x papers / eat it / eat them / x bouquet / eat it / eat them".

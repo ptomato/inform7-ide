@@ -1,0 +1,62 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.4. Instead rules</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc85.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc87.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.4. Instead rules</b></font></td></tr></table>
+<p>
+<p>An action is ordinarily handled by running it through Inform's extensive rulebooks of what might be called normal behaviour. An action such as &quot;taking the napkin&quot;, for instance, will be run through numerous checks to see if it is physically reasonable, and then provided all is well, the napkin will be moved into the possession of the player.
+<p>
+<p>Instead, though, we can bypass that whole process and do something else:
+<p>
+<blockquote><font color="#000080">Instead of eating the napkin: say &quot;Why not wait for the actual dinner to arrive?&quot;
+</font></blockquote><p>
+<p>
+<p>This is an example of a &quot;rule&quot;: a set of circumstances followed by a list of instructions. When those circumstances apply, the instructions are carried out. In the case of an &quot;instead&quot; rule, after this is done the action is immediately ended (and counts as a failure, since the original intention has been thwarted).
+<p>
+<p>A friendly alternative can be used when there is only a single instruction, as here: in such rules the colon can be replaced with a comma. Thus:
+<p>
+<blockquote><font color="#000080">Instead of eating the napkin, say &quot;Why not wait for the actual dinner to arrive?&quot;
+</font></blockquote><p>
+<p>
+<p><hr><p>
+<a name="e113"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc86.html#e113 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>65</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc86.html#e113 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Grilling</font></b></a><br>A grill, from which the player is not allowed to take anything lest he burn himself.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>Descriptions of objects can be used in &quot;Instead&quot; rules: we can not only say &quot;Instead of taking the steak&quot;, but also &quot;Instead of taking something&quot; or &quot;Instead of taking something which is on the grill&quot;.
+<p>
+<p>That last rule is useful if, for example, we want to prevent the player from interacting with anything on a specific supporter:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode208(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Grilling"\n\nThe Patio is a room. The Patio contains a grill and an ice chest. The ice chest contains a cold beer. On the grill are a steak and a hot dog.\n\nMom is a woman in the Patio.\n\nInstead of taking something which is on the grill:\n\tsay "\'Hey, you\'ll burn yourself,\' says Mom."\n\nTest me with "get steak / get all from grill / get all".\n\n');
+}
+</script>
+<a href="javascript:pasteCode208()"><img border=0 src=../doc_images/paste.png></a> &quot;Grilling&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Patio is a room. The Patio contains a grill and an ice chest. The ice chest contains a cold beer. On the grill are a steak and a hot dog.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Mom is a woman in the Patio.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of taking something which is on the grill:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Hey, you'll burn yourself,' says Mom.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get steak / get all from grill / get all&quot;.
+</font></blockquote><p>
+<p>
+<p>We could just as easily adapt this rule to affect a container: &quot;Instead of taking something which is in the ice chest,&quot; for example.
+<p>
+<p>Note also that in older versions of Inform, the pattern &quot;get all from...&quot; was treated differently from &quot;get steak&quot;, and had to be accounted for separately. This is no longer the case; this instead of taking... rule will handle all the phrasings which the player might use to try to acquire this object.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc86.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e190"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex190.html#e190 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>66</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex190.html#e190 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bad Hair Day</font></b></a><br>Change the player's appearance in response to EXAMINE ME.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc85.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc87.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

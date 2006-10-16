@@ -1,0 +1,129 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.3. One-way connections</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc29.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc31.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.3. One-way connections</b></font></td></tr></table>
+<p>
+<p>Connections are ordinarily two-way, but do not have to be. One of the map connections in the Mammoth Cave simulation was made by the sentence:
+<p>
+<blockquote><font color="#000080">The Debris Room is west of the Crawl.
+</font></blockquote><p>
+<p>
+<p>Besides reading this sentence at face value, Inform also deduced that the Crawl was probably meant to be east of the Debris Room: in other words, that the path between them is a two-way one. When Inform makes guesses like this, it treats them as being less certain than anything explicitly stated in the source. Inform will quietly overturn its assumption if information comes to hand which shows that it was wrong. That might happen in this case if another sentence read:
+<p>
+<blockquote><font color="#000080">The Hidden Alcove is east of the Debris Room.
+</font></blockquote><p>
+<p>
+<p>These two sentences are not contradictory: Inform allows them both, simply accepting that the world is more complicated than it first assumed. There are relatively few situations where Inform has to make educated guesses, but when it does, it tries always to follow Occam's Razor by constructing the simplest model world consistent with the information in the Source text.
+<p>
+<p>We can even explicitly make a route which turns around as it leads between two rooms:
+<p>
+<blockquote><font color="#000080">West of the Garden is south of the Meadow.
+</font></blockquote><p>
+<p>
+<p>Finally, if we want to establish a route which cannot be retraced at all, we can specify that a particular direction leads nowhere:
+<p>
+<blockquote><font color="#000080">East of the Debris Room is nowhere.
+</font></blockquote><p>
+<p>
+<p><hr><p>
+<a name="e212"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc30.html#e212 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>7</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc30.html#e212 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Port Royal 2</font></b></a><br>Further implementation of Port Royal, with a few more unusual map connections.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode308(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"1691"\n\nFort James is a room. "The enclosure of Fort James is a large, roughly hexagonal court walled with heavy stone.  The walls face the entrance to Port Royal Harbour, and the battery of guns is prepared to destroy any enemy ship arriving."\n\nThames Street End is south of Fort James. "The ill-named Thames Street runs from here -- at the point of the peninsula -- all the way east among houses and shops, through the Fish Market, edging by the round front of Fort Carlisle, to the point where the town stops and there is only sandy spit beyond.  Most of that stretch is full of people at all hours.  Imported goods are moved off of ships and taken to distributors; exported goods are brought to be loaded; and there is one public house and brothel for every ten inhabitants.\n\nLime Street, wider and healthier but not as rich, runs directly south, and to the north the road opens up into the courtyard of Fort James."\n\nLime Street is south of Thames Street End.\n\n[If we check out a map of historic Port Royal, we find that Thames Street End bends around the northwest tip of the peninsula and becomes the (very) roughly north/south Fisher\'s Row. We can\'t put Fisher\'s Row south of Thames Street End, though, because Lime Street is already going that way. So instead, let\'s have a map connection that bends around from west to north:]\n\nWest of Thames Street End is north of Fisher\'s Row.\n\n[Now continuing west along Thames Street, or north along Fisher\'s Row, will bring us around the corner in question. Asymmetric map connections should be used carefully. They\'re good for representing the layout of the real world, which tends not to be laid out on a convenient square matrix, but if exits are not described clearly they can be disorienting for the player. So let\'s be sure to make things clear:]\n\nThe description of Fisher\'s Row is "A waterfront street that runs south towards Chocolata Hole, where the small craft are harboured. It also continues north around the tip of the peninsula from here, turning into the east-west Thames Street."\n\n[Meanwhile, suppose Fort James is in a prominent position, raised a bit from its surroundings; maybe the player should be able to go down from there, as well as south, to get to Thames Street End.]\n\nThames Street End is down from Fort James.\n\n[But we don\'t want the reverse to be true:]\n\nUp from Thames Street End is nowhere.\n\nWater Lane is east of Thames Street End. "Here Thames Street -- never very straight -- goes steeply southeast for a portion before continuing more directly to the east.\n\nWater Lane runs south toward Queen Street, and facing onto it is the New Prison -- which, in the way of these things, is neither.  It did serve in that capacity for a time, and in a measure of the villainy which has been usual in Port Royal from its earliest days, it is nearly the largest building in the town."\n\n\nEast of Water Lane is a room called Thames Street at the Wherry Bridge.  Thames Street at the Wherry Bridge has the description "To the southwest is the fishmarket; directly across the street is the entrance to a private alley through a brick archway."\n\nThe Fishmarket is southwest of Thames Street at the Wherry Bridge.\n\nThe Private Alley is south of Thames Street at the Wherry Bridge. "You\'re just outside the tavern the Feathers. To the north, under a pretty little archway, is the active mayhem of Thames Street, but the alley narrows down to a dead end a little distance to the south."\n\nThe Feathers is inside from the Private Alley.  "Newly built with brick, replacing the older Feathers tavern that used to stand here. It sells wines in quantity, as well as serving them directly, and the goods are always of the best quality. There\'s a room upstairs for those wanting to stay the night." The Feathers Bedroom is above the Feathers.\n\nThames Street by the King\'s House is east of Thames Street at the Wherry Bridge.  "The King\'s House is reserved for the use of the Governor, but he does not live in it, and it is frequently being rented out to some merchant so that the government will at least derive some value from it. It is nearly the least interesting establishment on Thames Street, and the crowd -- which, to the west, is extremely dense -- here thins out a bit."\n\nThames Street before Fort Carlisle is east of Thames Street by the King\'s House. "Here Thames Street, formerly a respectable width, narrows to a footpath in order to edge around the front of Fort Carlisle, underneath the mouths of the cannon.\n\nThere are no buildings on the harbour side of Thames Street at this point, which means that you have an unusually good view of the ships at dock, water beyond, and the Blue Mountains rising on the other side of the harbour."\n\n\nSouth of Thames Street before Fort Carlisle is a room called Fort Carlisle. The description of Fort Carlisle is "Handsomely arrayed with cannons which you could fire at any moment -- though of course there are ships at dock which might be in the way."\n\nQueen Street End is south of Lime Street.\n\nQueen Street Middle is east of Queen Street End.\n\n\nQueen Street East is east of Queen Street Middle and south of Private Alley.\n\nQueen Street at the Prison is east of Queen Street East.\n\nTest me with "d / u / w / e / n / s".\n\n');
+}
+</script>
+<a href="javascript:pasteCode308()"><img border=0 src=../doc_images/paste.png></a> &quot;1691&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Fort James is a room. &quot;The enclosure of Fort James is a large, roughly hexagonal court walled with heavy stone.  The walls face the entrance to Port Royal Harbour, and the battery of guns is prepared to destroy any enemy ship arriving.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Thames Street End is south of Fort James. &quot;The ill-named Thames Street runs from here -- at the point of the peninsula -- all the way east among houses and shops, through the Fish Market, edging by the round front of Fort Carlisle, to the point where the town stops and there is only sandy spit beyond.  Most of that stretch is full of people at all hours.  Imported goods are moved off of ships and taken to distributors; exported goods are brought to be loaded; and there is one public house and brothel for every ten inhabitants.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Lime Street, wider and healthier but not as rich, runs directly south, and to the north the road opens up into the courtyard of Fort James.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Lime Street is south of Thames Street End.
+</font></blockquote><p>
+<p>
+<p>If we check out a map of historic Port Royal, we find that Thames Street End bends around the northwest tip of the peninsula and becomes the (very) roughly north/south Fisher's Row. We can't put Fisher's Row south of Thames Street End, though, because Lime Street is already going that way. So instead, let's have a map connection that bends around from west to north:
+<p>
+<blockquote><font color="#000080">West of Thames Street End is north of Fisher's Row.
+</font></blockquote><p>
+<p>
+<p>Now continuing west along Thames Street, or north along Fisher's Row, will bring us around the corner in question. Asymmetric map connections should be used carefully. They're good for representing the layout of the real world, which tends not to be laid out on a convenient square matrix, but if exits are not described clearly they can be disorienting for the player. So let's be sure to make things clear:
+<p>
+<blockquote><font color="#000080">The description of Fisher's Row is &quot;A waterfront street that runs south towards Chocolata Hole, where the small craft are harboured. It also continues north around the tip of the peninsula from here, turning into the east-west Thames Street.&quot;
+</font></blockquote><p>
+<p>
+<p>Meanwhile, suppose Fort James is in a prominent position, raised a bit from its surroundings; maybe the player should be able to go down from there, as well as south, to get to Thames Street End.
+<p>
+<blockquote><font color="#000080">Thames Street End is down from Fort James.
+</font></blockquote><p>
+<p>
+<p>But we don't want the reverse to be true:
+<p>
+<blockquote><font color="#000080">Up from Thames Street End is nowhere.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Water Lane is east of Thames Street End. &quot;Here Thames Street -- never very straight -- goes steeply southeast for a portion before continuing more directly to the east.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Water Lane runs south toward Queen Street, and facing onto it is the New Prison -- which, in the way of these things, is neither.  It did serve in that capacity for a time, and in a measure of the villainy which has been usual in Port Royal from its earliest days, it is nearly the largest building in the town.&quot;
+</font></blockquote><p>
+<p>
+<p>
+<blockquote><font color="#000080">East of Water Lane is a room called Thames Street at the Wherry Bridge.  Thames Street at the Wherry Bridge has the description &quot;To the southwest is the fishmarket; directly across the street is the entrance to a private alley through a brick archway.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Fishmarket is southwest of Thames Street at the Wherry Bridge.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Private Alley is south of Thames Street at the Wherry Bridge. &quot;You're just outside the tavern the Feathers. To the north, under a pretty little archway, is the active mayhem of Thames Street, but the alley narrows down to a dead end a little distance to the south.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Feathers is inside from the Private Alley.  &quot;Newly built with brick, replacing the older Feathers tavern that used to stand here. It sells wines in quantity, as well as serving them directly, and the goods are always of the best quality. There's a room upstairs for those wanting to stay the night.&quot; The Feathers Bedroom is above the Feathers.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Thames Street by the King's House is east of Thames Street at the Wherry Bridge.  &quot;The King's House is reserved for the use of the Governor, but he does not live in it, and it is frequently being rented out to some merchant so that the government will at least derive some value from it. It is nearly the least interesting establishment on Thames Street, and the crowd -- which, to the west, is extremely dense -- here thins out a bit.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Thames Street before Fort Carlisle is east of Thames Street by the King's House. &quot;Here Thames Street, formerly a respectable width, narrows to a footpath in order to edge around the front of Fort Carlisle, underneath the mouths of the cannon.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">There are no buildings on the harbour side of Thames Street at this point, which means that you have an unusually good view of the ships at dock, water beyond, and the Blue Mountains rising on the other side of the harbour.&quot;
+</font></blockquote><p>
+<p>
+<p>
+<blockquote><font color="#000080">South of Thames Street before Fort Carlisle is a room called Fort Carlisle. The description of Fort Carlisle is &quot;Handsomely arrayed with cannons which you could fire at any moment -- though of course there are ships at dock which might be in the way.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Queen Street End is south of Lime Street.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Queen Street Middle is east of Queen Street End.
+</font></blockquote><p>
+<p>
+<p>
+<blockquote><font color="#000080">Queen Street East is east of Queen Street Middle and south of Private Alley.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Queen Street at the Prison is east of Queen Street East.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;d / u / w / e / n / s&quot;.
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc30.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc29.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc31.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

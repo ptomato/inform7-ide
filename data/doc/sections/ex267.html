@@ -1,0 +1,86 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.2. Named rules and rulebooks</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc274.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc276.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.2. Named rules and rulebooks</b></font></td></tr></table>
+<p>
+<p>Most of the rules built into Inform are malleable, and so that they can be referred to, they have names. For instance, a rule called &quot;the advance time rule&quot; is the one which increments the number of turns - usually visible on the &quot;status line&quot; displayed above the window of a game in progress - and advances the clock, which is usually not visible, but ticking away behind the scenes.
+<p>
+<p>A rulebook is a list of rules to be followed in sequence. It is a rulebook called &quot;the turn sequence&quot; that contains all of the end-of-turn operations, each in its own named rule. The advance time rule is one of these; another tells Inform to run through the every turn rules. For convenience, the following names are synonymous:
+<p>
+<blockquote><font color="#000080">advance time = the advance time rule
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">the turn sequence rules = turn sequence rulebook = turn sequence = the turn sequence
+</font></blockquote><p>
+<p>
+<p>Whereas &quot;the turn sequence rule&quot; (singular) is not allowed, as it would suggest that the rulebook is constrained to have room for only one rule, which is not true.
+<p>
+<p>The names of built-in rules have been chosen as descriptively as possible: the &quot;can't go through closed doors rule&quot;, for instance. We have already seen some of these names used in the Advanced Actions chapter, and will later use them like so:
+<p>
+<blockquote><font color="#000080">ignore the can't go through closed doors rule;
+</font></blockquote><p>
+<p>
+<p>Names for rules tend to be verbose, but this is a situation where clarity is very much better than brevity.
+<p>
+<p><hr><p>
+<a name="e267"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc275.html#e267 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>267</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc275.html#e267 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Nine AM Appointment</font></b></a><br>A WAIT [number] MINUTES command which advances through an arbitrary number of turns.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<p>If there's some reason the player needs to be at a specific place and time, we might want to allow him to wait a number of minutes at once.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode362(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Nine AM Appointment"\n\nWaiting more is an action applying to one number.\n\nUnderstand "wait [number] minutes/turns" or "wait [number]" as waiting more.\n\nCarry out waiting more:\n\tlet duration be the number understood - 1;\n\trepeat with X running from 1 to duration\n\tbegin;\n\t\tfollow the turn sequence rules;\n\tend repeat.\n\n[The one nuance here is that after our wait command occurs, the turn sequence rules will occur one more time. So we need to subtract one from the parsed number to make it to the right number of minutes.]\n\nReport waiting more:\n\tsay "It is now [time of day + 1 minute]."\n\n[And if we want to ensure that the player doesn\'t (accidentally or intentionally) put the interpreter through a really long loop, we could put an upper limit on his patience:]\n\nCheck waiting more:\n\tif the number understood > 59, say "You really haven\'t got that kind of patience." instead.\n\nThe Specialist\'s Office is a room. The secretary is a woman in the Office. Instead of asking the secretary about "[appointment]", say "\'Hang on just five more minutes,\' she says, in a distracted manner."\n\nUnderstand "appointment" or "specialist" or "doctor" as "[appointment]".\n\nAt 9:45 AM: say "The secretary glances at you and gives a reassuring smile."\n\nTest me with "ask secretary about appointment / wait five minutes / g / g / wait 60 minutes / wait 30 minutes".\n');
+}
+</script>
+<a href="javascript:pasteCode362()"><img border=0 src=../doc_images/paste.png></a> &quot;Nine AM Appointment&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Waiting more is an action applying to one number.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;wait [number] minutes/turns&quot; or &quot;wait [number]&quot; as waiting more.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out waiting more:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let duration be the number understood - 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with X running from 1 to duration
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;follow the turn sequence rules;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<p>The one nuance here is that after our wait command occurs, the turn sequence rules will occur one more time. So we need to subtract one from the parsed number to make it to the right number of minutes.
+<p>
+<blockquote><font color="#000080">Report waiting more:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is now [time of day + 1 minute].&quot;
+</font></blockquote><p>
+<p>
+<p>And if we want to ensure that the player doesn't (accidentally or intentionally) put the interpreter through a really long loop, we could put an upper limit on his patience:
+<p>
+<blockquote><font color="#000080">Check waiting more:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number understood > 59, say &quot;You really haven't got that kind of patience.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Specialist's Office is a room. The secretary is a woman in the Office. Instead of asking the secretary about &quot;[appointment]&quot;, say &quot;'Hang on just five more minutes,' she says, in a distracted manner.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;appointment&quot; or &quot;specialist&quot; or &quot;doctor&quot; as &quot;[appointment]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">At 9:45 AM: say &quot;The secretary glances at you and gives a reassuring smile.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;ask secretary about appointment / wait five minutes / g / g / wait 60 minutes / wait 30 minutes&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc275.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e268"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex268.html#e268 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>268</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex268.html#e268 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Delayed Gratification</font></b></a><br>A WAIT UNTIL [time] command which advances until the game clock reaches the correct hour.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc274.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc276.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
