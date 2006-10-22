@@ -49,6 +49,14 @@ static GnomeUIInfo filemenu_menu_uiinfo[] =
   GNOMEUIINFO_MENU_CLOSE_ITEM (on_close_activate, NULL),
   GNOMEUIINFO_MENU_SAVE_ITEM (on_save_activate, NULL),
   GNOMEUIINFO_MENU_SAVE_AS_ITEM (on_save_as_activate, NULL),
+  {
+    GNOME_APP_UI_ITEM, N_("_Revert"),
+    NULL,
+    (gpointer) on_revert_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
+  },
+  GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_EXIT_ITEM (on_quit_activate, NULL),
   GNOMEUIINFO_END
 };
@@ -72,6 +80,14 @@ static GnomeUIInfo edit_menu_uiinfo[] =
 
 static GnomeUIInfo game_menu_uiinfo[] =
 {
+  {
+    GNOME_APP_UI_ITEM, N_("Refresh _Index"),
+    NULL,
+    (gpointer) on_refresh_index_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_I, (GdkModifierType) GDK_CONTROL_MASK, NULL
+  },
+  GNOMEUIINFO_SEPARATOR,
   {
     GNOME_APP_UI_ITEM, N_("_Compile"),
     N_("Compile the project"),
@@ -377,7 +393,7 @@ create_app_window (void)
 
   gnome_app_create_menus (GNOME_APP (app_window), menubar1_uiinfo);
 
-  gtk_widget_set_sensitive (game_menu_uiinfo[5].widget, FALSE);
+  gtk_widget_set_sensitive (game_menu_uiinfo[7].widget, FALSE);
 
   toolbar1 = gtk_toolbar_new ();
   gtk_widget_show (toolbar1);
@@ -1223,7 +1239,9 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[6].widget, "close");
   GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[7].widget, "save");
   GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[8].widget, "save_as");
-  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[9].widget, "quit");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[9].widget, "revert");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[10].widget, "separator26");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[11].widget, "quit");
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[1].widget, "edit");
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[0].widget, "undo");
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[1].widget, "redo");
@@ -1238,14 +1256,16 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[10].widget, "separator23");
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[11].widget, "preferences");
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[2].widget, "game");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[0].widget, "compile");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[1].widget, "go");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[2].widget, "replay");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[3].widget, "separator11");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[4].widget, "play");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[5].widget, "stop");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[6].widget, "separator12");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[7].widget, "release");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[0].widget, "refresh_index");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[1].widget, "separator25");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[2].widget, "compile");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[3].widget, "go");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[4].widget, "replay");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[5].widget, "separator11");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[6].widget, "play");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[7].widget, "stop");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[8].widget, "separator12");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[9].widget, "release");
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[3].widget, "windows");
   GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[0].widget, "switch_sides");
   GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[1].widget, "next_panel");
@@ -2060,6 +2080,9 @@ create_new_dialog (void)
   GtkWidget *entry5;
   GtkWidget *scrolledwindow36;
   GtkWidget *textview2;
+  GtkTooltips *tooltips;
+
+  tooltips = gtk_tooltips_new ();
 
   new_dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (new_dialog), _("New Project"));
@@ -2099,6 +2122,7 @@ create_new_dialog (void)
   gtk_widget_show (project_type_select);
   gtk_box_pack_start (GTK_BOX (vbox16), project_type_select, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (project_type_select), 1);
+  gtk_tooltips_set_tip (tooltips, project_type_select, _("Choose the type of project you want to create here."), NULL);
   gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (project_type_select), FALSE);
   gtk_tree_view_set_enable_search (GTK_TREE_VIEW (project_type_select), FALSE);
   gtk_tree_view_set_fixed_height_mode (GTK_TREE_VIEW (project_type_select), TRUE);
@@ -2145,6 +2169,7 @@ create_new_dialog (void)
   new_name = gtk_entry_new ();
   gtk_widget_show (new_name);
   gtk_box_pack_start (GTK_BOX (vbox13), new_name, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, new_name, _("Enter a name for the project here."), NULL);
   gtk_entry_set_invisible_char (GTK_ENTRY (new_name), 8226);
   gtk_entry_set_activates_default (GTK_ENTRY (new_name), TRUE);
   gtk_entry_set_width_chars (GTK_ENTRY (new_name), 14);
@@ -2157,6 +2182,7 @@ create_new_dialog (void)
   new_author = gtk_entry_new ();
   gtk_widget_show (new_author);
   gtk_box_pack_start (GTK_BOX (vbox13), new_author, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, new_author, _("You can change the name of the story's author here."), NULL);
   gtk_entry_set_invisible_char (GTK_ENTRY (new_author), 8226);
   gtk_entry_set_activates_default (GTK_ENTRY (new_author), TRUE);
   gtk_entry_set_width_chars (GTK_ENTRY (new_author), 20);
@@ -2193,6 +2219,7 @@ create_new_dialog (void)
   new_ext_name = gtk_entry_new ();
   gtk_widget_show (new_ext_name);
   gtk_box_pack_start (GTK_BOX (vbox17), new_ext_name, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, new_ext_name, _("You can change the name of the author of the extension here."), NULL);
   gtk_entry_set_invisible_char (GTK_ENTRY (new_ext_name), 8226);
   gtk_entry_set_activates_default (GTK_ENTRY (new_ext_name), TRUE);
   gtk_entry_set_width_chars (GTK_ENTRY (new_ext_name), 14);
@@ -2205,6 +2232,7 @@ create_new_dialog (void)
   new_ext_author = gtk_entry_new ();
   gtk_widget_show (new_ext_author);
   gtk_box_pack_start (GTK_BOX (vbox17), new_ext_author, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, new_ext_author, _("Enter a name for the new extension here."), NULL);
   gtk_entry_set_invisible_char (GTK_ENTRY (new_ext_author), 8226);
   gtk_entry_set_activates_default (GTK_ENTRY (new_ext_author), TRUE);
   gtk_entry_set_width_chars (GTK_ENTRY (new_ext_author), 20);
@@ -2393,6 +2421,7 @@ create_new_dialog (void)
   GLADE_HOOKUP_OBJECT (new_dialog, entry5, "entry5");
   GLADE_HOOKUP_OBJECT (new_dialog, scrolledwindow36, "scrolledwindow36");
   GLADE_HOOKUP_OBJECT (new_dialog, textview2, "textview2");
+  GLADE_HOOKUP_OBJECT_NO_REF (new_dialog, tooltips, "tooltips");
 
   gtk_widget_grab_focus (new_name);
   return new_dialog;
@@ -2432,19 +2461,34 @@ create_prefs_dialog (void)
   GtkWidget *label65b;
   GtkWidget *prefs_color_set;
   GtkWidget *label63;
+  GtkWidget *frame12;
+  GtkWidget *alignment20;
+  GtkWidget *vbox33;
+  GtkWidget *tab_ruler;
+  GtkWidget *scrolledwindow41;
+  GtkWidget *tab_example;
+  GtkWidget *label79;
   GtkWidget *hseparator2;
   GtkWidget *source_example;
   GtkWidget *label65;
   GtkWidget *frame5;
   GtkWidget *alignment10;
   GtkWidget *vbox22;
-  GtkWidget *prefs_project_files_toggle;
+  GtkWidget *frame10;
+  GtkWidget *alignment18;
+  GtkWidget *vbox31;
   GtkWidget *prefs_notes_toggle;
-  GtkWidget *prefs_index_toggle;
+  GtkWidget *prefs_headings_toggle;
   GtkWidget *prefs_skein_toggle;
+  GtkWidget *prefs_search_toggle;
+  GtkWidget *label77;
+  GtkWidget *frame11;
+  GtkWidget *alignment19;
+  GtkWidget *vbox32;
+  GtkWidget *prefs_project_files_toggle;
   GtkWidget *prefs_watchpoints_toggle;
   GtkWidget *prefs_breakpoints_toggle;
-  GtkWidget *prefs_search_toggle;
+  GtkWidget *label78;
   GtkWidget *label70;
   GtkWidget *label66;
   GtkWidget *vbox23;
@@ -2499,6 +2543,9 @@ create_prefs_dialog (void)
   GtkWidget *label69;
   GtkWidget *dialog_action_area4;
   GtkWidget *prefs_close;
+  GtkTooltips *tooltips;
+
+  tooltips = gtk_tooltips_new ();
 
   prefs_dialog = gtk_dialog_new ();
   gtk_window_set_title (GTK_WINDOW (prefs_dialog), _("Preferences"));
@@ -2652,16 +2699,56 @@ create_prefs_dialog (void)
   gtk_frame_set_label_widget (GTK_FRAME (frame4), label63);
   gtk_label_set_use_markup (GTK_LABEL (label63), TRUE);
 
+  frame12 = gtk_frame_new (NULL);
+  gtk_widget_show (frame12);
+  gtk_box_pack_start (GTK_BOX (vbox19), frame12, TRUE, TRUE, 5);
+
+  alignment20 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_show (alignment20);
+  gtk_container_add (GTK_CONTAINER (frame12), alignment20);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment20), 0, 0, 12, 0);
+
+  vbox33 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox33);
+  gtk_container_add (GTK_CONTAINER (alignment20), vbox33);
+
+  tab_ruler = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 100, 1, 0, 0)));
+  gtk_widget_show (tab_ruler);
+  gtk_box_pack_start (GTK_BOX (vbox33), tab_ruler, FALSE, FALSE, 0);
+  gtk_widget_set_sensitive (tab_ruler, FALSE);
+  gtk_scale_set_digits (GTK_SCALE (tab_ruler), 0);
+  gtk_range_set_update_policy (GTK_RANGE (tab_ruler), GTK_UPDATE_DISCONTINUOUS);
+
+  scrolledwindow41 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow41);
+  gtk_box_pack_start (GTK_BOX (vbox33), scrolledwindow41, TRUE, TRUE, 0);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow41), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow41), GTK_SHADOW_IN);
+
+  tab_example = gtk_text_view_new ();
+  gtk_widget_show (tab_example);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow41), tab_example);
+  gtk_widget_set_size_request (tab_example, -1, 18);
+  gtk_text_view_set_editable (GTK_TEXT_VIEW (tab_example), FALSE);
+  gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (tab_example), FALSE);
+  gtk_text_buffer_set_text (gtk_text_view_get_buffer (GTK_TEXT_VIEW (tab_example)), _("\tTab\tTab\tTab\tTab\tTab\tTab\tTab\tTab"), -1);
+
+  label79 = gtk_label_new (_("<b>Tab width</b>"));
+  gtk_widget_show (label79);
+  gtk_frame_set_label_widget (GTK_FRAME (frame12), label79);
+  gtk_label_set_use_markup (GTK_LABEL (label79), TRUE);
+
   hseparator2 = gtk_hseparator_new ();
   gtk_widget_show (hseparator2);
-  gtk_box_pack_start (GTK_BOX (vbox19), hseparator2, TRUE, TRUE, 5);
+  gtk_box_pack_start (GTK_BOX (vbox19), hseparator2, FALSE, FALSE, 0);
 
   source_example = source_example_create ("source_example", "", "", 0, 0);
   gtk_widget_show (source_example);
-  gtk_box_pack_start (GTK_BOX (vbox19), source_example, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox19), source_example, TRUE, TRUE, 0);
   gtk_widget_set_size_request (source_example, 400, 100);
   GTK_WIDGET_UNSET_FLAGS (source_example, GTK_CAN_FOCUS);
   GTK_WIDGET_UNSET_FLAGS (source_example, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, source_example, _("This displays a sample of source code in your selected styles."), NULL);
 
   label65 = gtk_label_new (_("Styles"));
   gtk_widget_show (label65);
@@ -2681,40 +2768,79 @@ create_prefs_dialog (void)
   gtk_widget_show (vbox22);
   gtk_container_add (GTK_CONTAINER (alignment10), vbox22);
 
-  prefs_project_files_toggle = gtk_check_button_new_with_mnemonic (_("Project files"));
-  gtk_widget_show (prefs_project_files_toggle);
-  gtk_box_pack_start (GTK_BOX (vbox22), prefs_project_files_toggle, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (prefs_project_files_toggle, FALSE);
+  frame10 = gtk_frame_new (NULL);
+  gtk_widget_show (frame10);
+  gtk_box_pack_start (GTK_BOX (vbox22), frame10, FALSE, TRUE, 0);
+
+  alignment18 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_show (alignment18);
+  gtk_container_add (GTK_CONTAINER (frame10), alignment18);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment18), 0, 0, 12, 0);
+
+  vbox31 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox31);
+  gtk_container_add (GTK_CONTAINER (alignment18), vbox31);
 
   prefs_notes_toggle = gtk_check_button_new_with_mnemonic (_("Notes"));
   gtk_widget_show (prefs_notes_toggle);
-  gtk_box_pack_start (GTK_BOX (vbox22), prefs_notes_toggle, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox31), prefs_notes_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_notes_toggle, FALSE);
+  gtk_tooltips_set_tip (tooltips, prefs_notes_toggle, _("The notes inspector provides a text editor that you can use to store notes about the game you are writing"), NULL);
 
-  prefs_index_toggle = gtk_check_button_new_with_mnemonic (_("Index"));
-  gtk_widget_show (prefs_index_toggle);
-  gtk_box_pack_start (GTK_BOX (vbox22), prefs_index_toggle, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (prefs_index_toggle, FALSE);
+  prefs_headings_toggle = gtk_check_button_new_with_mnemonic (_("Headings"));
+  gtk_widget_show (prefs_headings_toggle);
+  gtk_box_pack_start (GTK_BOX (vbox31), prefs_headings_toggle, FALSE, FALSE, 0);
+  gtk_widget_set_sensitive (prefs_headings_toggle, FALSE);
 
   prefs_skein_toggle = gtk_check_button_new_with_mnemonic (_("Skein"));
   gtk_widget_show (prefs_skein_toggle);
-  gtk_box_pack_start (GTK_BOX (vbox22), prefs_skein_toggle, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox31), prefs_skein_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_skein_toggle, FALSE);
+  gtk_tooltips_set_tip (tooltips, prefs_skein_toggle, _("The skein inspector displays the story's current skein"), NULL);
+
+  prefs_search_toggle = gtk_check_button_new_with_mnemonic (_("Search"));
+  gtk_widget_show (prefs_search_toggle);
+  gtk_box_pack_start (GTK_BOX (vbox31), prefs_search_toggle, FALSE, FALSE, 0);
+  gtk_widget_set_sensitive (prefs_search_toggle, FALSE);
+
+  label77 = gtk_label_new (_("<b>General</b>"));
+  gtk_widget_show (label77);
+  gtk_frame_set_label_widget (GTK_FRAME (frame10), label77);
+  gtk_label_set_use_markup (GTK_LABEL (label77), TRUE);
+
+  frame11 = gtk_frame_new (NULL);
+  gtk_widget_show (frame11);
+  gtk_box_pack_start (GTK_BOX (vbox22), frame11, FALSE, TRUE, 0);
+
+  alignment19 = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_show (alignment19);
+  gtk_container_add (GTK_CONTAINER (frame11), alignment19);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment19), 0, 0, 12, 0);
+
+  vbox32 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox32);
+  gtk_container_add (GTK_CONTAINER (alignment19), vbox32);
+
+  prefs_project_files_toggle = gtk_check_button_new_with_mnemonic (_("Project files"));
+  gtk_widget_show (prefs_project_files_toggle);
+  gtk_box_pack_start (GTK_BOX (vbox32), prefs_project_files_toggle, FALSE, FALSE, 0);
+  gtk_widget_set_sensitive (prefs_project_files_toggle, FALSE);
+  gtk_tooltips_set_tip (tooltips, prefs_project_files_toggle, _("The project files inspector shows a list of the available files in the current project, and allows you to switch between them"), NULL);
 
   prefs_watchpoints_toggle = gtk_check_button_new_with_mnemonic (_("Watchpoints"));
   gtk_widget_show (prefs_watchpoints_toggle);
-  gtk_box_pack_start (GTK_BOX (vbox22), prefs_watchpoints_toggle, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox32), prefs_watchpoints_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_watchpoints_toggle, FALSE);
 
   prefs_breakpoints_toggle = gtk_check_button_new_with_mnemonic (_("Breakpoints"));
   gtk_widget_show (prefs_breakpoints_toggle);
-  gtk_box_pack_start (GTK_BOX (vbox22), prefs_breakpoints_toggle, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox32), prefs_breakpoints_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_breakpoints_toggle, FALSE);
 
-  prefs_search_toggle = gtk_check_button_new_with_mnemonic (_("Search"));
-  gtk_widget_show (prefs_search_toggle);
-  gtk_box_pack_start (GTK_BOX (vbox22), prefs_search_toggle, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (prefs_search_toggle, FALSE);
+  label78 = gtk_label_new (_("<b>Inform 6</b>"));
+  gtk_widget_show (label78);
+  gtk_frame_set_label_widget (GTK_FRAME (frame11), label78);
+  gtk_label_set_use_markup (GTK_LABEL (label78), TRUE);
 
   label70 = gtk_label_new (_("<b>Active Inspectors</b>"));
   gtk_widget_show (label70);
@@ -2752,6 +2878,7 @@ create_prefs_dialog (void)
   prefs_i7_extensions_view = gtk_tree_view_new ();
   gtk_widget_show (prefs_i7_extensions_view);
   gtk_container_add (GTK_CONTAINER (scrolledwindow37), prefs_i7_extensions_view);
+  gtk_tooltips_set_tip (tooltips, prefs_i7_extensions_view, _("This shows the list of installed Natural Inform extensions. Natural Inform extension directories are named after their author; you can drag such directories here to install new extensions. You may also drag individual extension files to an author's directory to add them as an extension by that author."), NULL);
   gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (prefs_i7_extensions_view), FALSE);
   gtk_tree_view_set_enable_search (GTK_TREE_VIEW (prefs_i7_extensions_view), FALSE);
   gtk_tree_view_set_fixed_height_mode (GTK_TREE_VIEW (prefs_i7_extensions_view), TRUE);
@@ -2765,12 +2892,14 @@ create_prefs_dialog (void)
   gtk_widget_show (prefs_i7_extension_add);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), prefs_i7_extension_add);
   GTK_WIDGET_SET_FLAGS (prefs_i7_extension_add, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, prefs_i7_extension_add, _("Adds a new Natural Inform extension using a file chooser."), NULL);
 
   prefs_i7_extension_remove = gtk_button_new_from_stock ("gtk-remove");
   gtk_widget_show (prefs_i7_extension_remove);
   gtk_container_add (GTK_CONTAINER (hbuttonbox1), prefs_i7_extension_remove);
   gtk_widget_set_sensitive (prefs_i7_extension_remove, FALSE);
   GTK_WIDGET_SET_FLAGS (prefs_i7_extension_remove, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, prefs_i7_extension_remove, _("Deletes the currently selected Natural Inform extension."), NULL);
 
   label71 = gtk_label_new (_("<b>Natural Inform Extensions</b>"));
   gtk_widget_show (label71);
@@ -2799,6 +2928,7 @@ create_prefs_dialog (void)
   prefs_i6_extensions_view = gtk_tree_view_new ();
   gtk_widget_show (prefs_i6_extensions_view);
   gtk_container_add (GTK_CONTAINER (scrolledwindow38), prefs_i6_extensions_view);
+  gtk_tooltips_set_tip (tooltips, prefs_i6_extensions_view, _("This shows the list of installed Inform 6 extensions. Drag files or directories here to install new extensions."), NULL);
   gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (prefs_i6_extensions_view), FALSE);
   gtk_tree_view_set_enable_search (GTK_TREE_VIEW (prefs_i6_extensions_view), FALSE);
   gtk_tree_view_set_fixed_height_mode (GTK_TREE_VIEW (prefs_i6_extensions_view), TRUE);
@@ -2813,12 +2943,14 @@ create_prefs_dialog (void)
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), prefs_i6_extension_add);
   gtk_widget_set_sensitive (prefs_i6_extension_add, FALSE);
   GTK_WIDGET_SET_FLAGS (prefs_i6_extension_add, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, prefs_i6_extension_add, _("Adds a new Inform 6 extension using a file chooser."), NULL);
 
   prefs_i6_extension_remove = gtk_button_new_from_stock ("gtk-remove");
   gtk_widget_show (prefs_i6_extension_remove);
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), prefs_i6_extension_remove);
   gtk_widget_set_sensitive (prefs_i6_extension_remove, FALSE);
   GTK_WIDGET_SET_FLAGS (prefs_i6_extension_remove, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, prefs_i6_extension_remove, _("Deletes the currently selected Inform 6 extension."), NULL);
 
   label72 = gtk_label_new (_("<b>Inform 6 Extensions</b>"));
   gtk_widget_show (label72);
@@ -2836,6 +2968,7 @@ create_prefs_dialog (void)
   prefs_enable_highlighting_toggle = gtk_check_button_new_with_mnemonic (_("Enable syntax highlighting"));
   gtk_widget_show (prefs_enable_highlighting_toggle);
   gtk_box_pack_start (GTK_BOX (vbox26), prefs_enable_highlighting_toggle, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, prefs_enable_highlighting_toggle, _("Syntax highlighting will automatically color and style your source code to indicate what different parts do. If you have a slow computer, you may see a performance benefit by turning this off."), NULL);
 
   alignment13 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment13);
@@ -2846,11 +2979,13 @@ create_prefs_dialog (void)
   gtk_widget_show (prefs_indent_toggle);
   gtk_container_add (GTK_CONTAINER (alignment13), prefs_indent_toggle);
   gtk_widget_set_sensitive (prefs_indent_toggle, FALSE);
+  gtk_tooltips_set_tip (tooltips, prefs_indent_toggle, _("If this option is checked, Inform will indent wrapped lines by half a tab-stop. This makes it easier to see where a line-break happened because of a long line."), NULL);
 
   prefs_follow_symbols_toggle = gtk_check_button_new_with_mnemonic (_("'Intelligently' follow symbols in source file"));
   gtk_widget_show (prefs_follow_symbols_toggle);
   gtk_box_pack_start (GTK_BOX (vbox26), prefs_follow_symbols_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_follow_symbols_toggle, FALSE);
+  gtk_tooltips_set_tip (tooltips, prefs_follow_symbols_toggle, _("Inform can keep track of important items in your source files as you type. Enabling this option will allow it to automatically track sections in Natural Inform files."), NULL);
 
   alignment14 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment14);
@@ -2865,16 +3000,19 @@ create_prefs_dialog (void)
   gtk_widget_show (prefs_intelligent_inspector_toggle);
   gtk_box_pack_start (GTK_BOX (vbox27), prefs_intelligent_inspector_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_intelligent_inspector_toggle, FALSE);
+  gtk_tooltips_set_tip (tooltips, prefs_intelligent_inspector_toggle, _("If this option is checked, the index inspector will show a real-time display of the sections in your source file. If it is unchecked, it will display the last index calculated by the Natural Inform compiler, i.e. the state of the index at the last time you compiled or ran the story."), NULL);
 
   prefs_auto_indent_toggle = gtk_check_button_new_with_mnemonic (_("Auto-indent after newline"));
   gtk_widget_show (prefs_auto_indent_toggle);
   gtk_box_pack_start (GTK_BOX (vbox27), prefs_auto_indent_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_auto_indent_toggle, FALSE);
+  gtk_tooltips_set_tip (tooltips, prefs_auto_indent_toggle, _("If this option is selected, Inform will track the number of tabs at the beginning of the last line and automatically indent the next line accordingly when you insert a new line by pressing return."), NULL);
 
   prefs_auto_number_toggle = gtk_check_button_new_with_mnemonic (_("Auto-number sections"));
   gtk_widget_show (prefs_auto_number_toggle);
   gtk_box_pack_start (GTK_BOX (vbox27), prefs_auto_number_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_auto_number_toggle, FALSE);
+  gtk_tooltips_set_tip (tooltips, prefs_auto_number_toggle, _("If you check this option, Inform will automatically renumber sections when you insert a new one. It will also automatically insert a section number as you type: if you type \"Part \", Inform will insert \"2 - \" and renumber the previous Part 2 to Part 3 and so on."), NULL);
 
   hseparator3 = gtk_hseparator_new ();
   gtk_widget_show (hseparator3);
@@ -2888,6 +3026,7 @@ create_prefs_dialog (void)
   prefs_author = gtk_entry_new ();
   gtk_widget_show (prefs_author);
   gtk_box_pack_start (GTK_BOX (vbox26), prefs_author, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, prefs_author, _("Fill in the name you prefer to use for your new Inform 7 projects here. If this field is left blank, then your long username is used instead. Note that you can always change the name you are writing under after you have created the project."), NULL);
   gtk_entry_set_invisible_char (GTK_ENTRY (prefs_author), 8226);
 
   label68 = gtk_label_new (_("Intelligence"));
@@ -2915,6 +3054,7 @@ create_prefs_dialog (void)
   prefs_clean_build_toggle = gtk_check_button_new_with_mnemonic (_("Clean build files from projects before closing"));
   gtk_widget_show (prefs_clean_build_toggle);
   gtk_box_pack_start (GTK_BOX (vbox29), prefs_clean_build_toggle, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, prefs_clean_build_toggle, _("Build files are files that are generated while turning your story into a game file. Selecting this option will ensure that they are deleted when you close or save a project. These files can grow quite large (many times the size of your source code), so deleting them is a good idea if you are planning to send a project to someone else. Note that with this option ticked, build files may not be deleted if you close a project and discard your modifications."), NULL);
 
   alignment16 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment16);
@@ -2924,6 +3064,7 @@ create_prefs_dialog (void)
   prefs_clean_index_toggle = gtk_check_button_new_with_mnemonic (_("Also clean out index files"));
   gtk_widget_show (prefs_clean_index_toggle);
   gtk_container_add (GTK_CONTAINER (alignment16), prefs_clean_index_toggle);
+  gtk_tooltips_set_tip (tooltips, prefs_clean_index_toggle, _("Selecting this option will cause Inform to additionally clean out the project's various index files. These are generated by the Inform 7 compiler and can be safely deleted, though they may be useful the next time you open the project."), NULL);
 
   label74 = gtk_label_new (_("<b>Cleaning</b>"));
   gtk_widget_show (label74);
@@ -3000,26 +3141,32 @@ create_prefs_dialog (void)
   g_signal_connect ((gpointer) prefs_color_set, "changed",
                     G_CALLBACK (on_prefs_color_set_changed),
                     NULL);
-  g_signal_connect ((gpointer) prefs_project_files_toggle, "toggled",
-                    G_CALLBACK (on_prefs_project_files_toggle_toggled),
+  g_signal_connect ((gpointer) tab_ruler, "value_changed",
+                    G_CALLBACK (on_tab_ruler_value_changed),
+                    NULL);
+  g_signal_connect ((gpointer) tab_ruler, "format_value",
+                    G_CALLBACK (on_tab_ruler_format_value),
                     NULL);
   g_signal_connect ((gpointer) prefs_notes_toggle, "toggled",
                     G_CALLBACK (on_prefs_notes_toggle_toggled),
                     NULL);
-  g_signal_connect ((gpointer) prefs_index_toggle, "toggled",
-                    G_CALLBACK (on_prefs_index_toggle_toggled),
+  g_signal_connect ((gpointer) prefs_headings_toggle, "toggled",
+                    G_CALLBACK (on_prefs_headings_toggle_toggled),
                     NULL);
   g_signal_connect ((gpointer) prefs_skein_toggle, "toggled",
                     G_CALLBACK (on_prefs_skein_toggle_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) prefs_search_toggle, "toggled",
+                    G_CALLBACK (on_prefs_search_toggle_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) prefs_project_files_toggle, "toggled",
+                    G_CALLBACK (on_prefs_project_files_toggle_toggled),
                     NULL);
   g_signal_connect ((gpointer) prefs_watchpoints_toggle, "toggled",
                     G_CALLBACK (on_prefs_watchpoints_toggle_toggled),
                     NULL);
   g_signal_connect ((gpointer) prefs_breakpoints_toggle, "toggled",
                     G_CALLBACK (on_prefs_breakpoints_toggle_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) prefs_search_toggle, "toggled",
-                    G_CALLBACK (on_prefs_search_toggle_toggled),
                     NULL);
   g_signal_connect ((gpointer) prefs_i7_extension_add, "clicked",
                     G_CALLBACK (on_prefs_i7_extension_add_clicked),
@@ -3101,19 +3248,34 @@ create_prefs_dialog (void)
   GLADE_HOOKUP_OBJECT (prefs_dialog, label65b, "label65b");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_color_set, "prefs_color_set");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label63, "label63");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, frame12, "frame12");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, alignment20, "alignment20");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, vbox33, "vbox33");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, tab_ruler, "tab_ruler");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, scrolledwindow41, "scrolledwindow41");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, tab_example, "tab_example");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, label79, "label79");
   GLADE_HOOKUP_OBJECT (prefs_dialog, hseparator2, "hseparator2");
   GLADE_HOOKUP_OBJECT (prefs_dialog, source_example, "source_example");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label65, "label65");
   GLADE_HOOKUP_OBJECT (prefs_dialog, frame5, "frame5");
   GLADE_HOOKUP_OBJECT (prefs_dialog, alignment10, "alignment10");
   GLADE_HOOKUP_OBJECT (prefs_dialog, vbox22, "vbox22");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_project_files_toggle, "prefs_project_files_toggle");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, frame10, "frame10");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, alignment18, "alignment18");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, vbox31, "vbox31");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_notes_toggle, "prefs_notes_toggle");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_index_toggle, "prefs_index_toggle");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_headings_toggle, "prefs_headings_toggle");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_skein_toggle, "prefs_skein_toggle");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_search_toggle, "prefs_search_toggle");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, label77, "label77");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, frame11, "frame11");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, alignment19, "alignment19");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, vbox32, "vbox32");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_project_files_toggle, "prefs_project_files_toggle");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_watchpoints_toggle, "prefs_watchpoints_toggle");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_breakpoints_toggle, "prefs_breakpoints_toggle");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_search_toggle, "prefs_search_toggle");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, label78, "label78");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label70, "label70");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label66, "label66");
   GLADE_HOOKUP_OBJECT (prefs_dialog, vbox23, "vbox23");
@@ -3168,6 +3330,7 @@ create_prefs_dialog (void)
   GLADE_HOOKUP_OBJECT (prefs_dialog, label69, "label69");
   GLADE_HOOKUP_OBJECT_NO_REF (prefs_dialog, dialog_action_area4, "dialog_action_area4");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_close, "prefs_close");
+  GLADE_HOOKUP_OBJECT_NO_REF (prefs_dialog, tooltips, "tooltips");
 
   return prefs_dialog;
 }

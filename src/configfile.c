@@ -62,10 +62,13 @@ void check_config_file() {
         config_file_set_int("Colors", "ChangeColors", CHANGE_COLORS_OFTEN);
         config_file_set_int("Colors", "ColorSet", COLOR_SET_STANDARD);
     }
+    if(!gconf_client_dir_exists(client, GCONF_BASE_PATH "/Tabs", &err)) {
+        config_file_set_int("Tabs", "TabWidth", 0);
+    }
     if(!gconf_client_dir_exists(client, GCONF_BASE_PATH "/Inspectors", &err)) {
         config_file_set_bool("Inspectors", "ProjectFiles", TRUE);
         config_file_set_bool("Inspectors", "Notes", TRUE);
-        config_file_set_bool("Inspectors", "Index", TRUE);
+        config_file_set_bool("Inspectors", "Headings", TRUE);
         config_file_set_bool("Inspectors", "Skein", TRUE);
         config_file_set_bool("Inspectors", "Watchpoints", TRUE);
         config_file_set_bool("Inspectors", "Breakpoints", TRUE);

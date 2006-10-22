@@ -17,6 +17,15 @@
  */
  
 /* To do
+- Revert and Rebuild Index commands
+- Make the keyboard accelerators more like the OS X version
+- Clear errors tab when opening a project, display index tab if it exists
+- Watch the source file for external changes
+- Find out how to highlight markup brackets in strings
+- Make extensions windows in preferences work with drag'n'drop
+- Make default author's name, if preference is blank, use system long user name
+- If "delete build files", delete them when closing AND saving.
+- Make a new, streamlined "Find" dialog like in the OS X version.
 
 FOLLOWING RELEASES
 - Skein, Transcript
@@ -24,14 +33,11 @@ FOLLOWING RELEASES
 - Search documentation
 - I6 projects
 
-- Clear errors tab when opening a project, display index tab if it exists
-- Watch the source file for external changes
-- Find out how to highlight markup brackets in strings
-
 BUGS
 - use libxml2 as it ought to be used
 - get glulx compiling to work (new version of Inform 6??)
 - If files are missing when loading, create default ones
+- why doesn't Pango implement tab stops?!
 */
 
 #ifdef HAVE_CONFIG_H

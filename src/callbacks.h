@@ -32,3 +32,24 @@
 #include "tabgame.h"
 
 /* This is where Glade puts newly-created callback function prototypes. */
+
+void
+on_revert_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_refresh_index_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_prefs_headings_toggle_toggled       (GtkToggleButton *togglebutton,
+                                        gpointer         user_data);
+
+void
+on_tab_ruler_value_changed             (GtkRange        *range,
+                                        gpointer         user_data);
+
+gchar*
+on_tab_ruler_format_value              (GtkScale        *scale,
+                                        gdouble          value,
+                                        gpointer         user_data);

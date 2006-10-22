@@ -81,6 +81,9 @@ on_prefs_dialog_realize                (GtkWidget       *widget,
     trash = lookup_widget(widget, "prefs_change_colors");
     gtk_combo_box_set_active(GTK_COMBO_BOX(trash),
       config_file_get_int("Colors", "ChangeColors"));
+    trash = lookup_widget(widget, "tab_ruler");
+    gtk_range_set_value(GTK_RANGE(trash),
+      (gdouble)config_file_get_int("Tabs", "TabWidth"));
       
     trash = lookup_widget(widget, "prefs_project_files_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
@@ -88,9 +91,9 @@ on_prefs_dialog_realize                (GtkWidget       *widget,
     trash = lookup_widget(widget, "prefs_notes_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Inspectors", "Notes"));
-    trash = lookup_widget(widget, "prefs_index_toggle");
+    trash = lookup_widget(widget, "prefs_headings_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
-      config_file_get_bool("Inspectors", "Index"));
+      config_file_get_bool("Inspectors", "Headings"));
     trash = lookup_widget(widget, "prefs_skein_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Inspectors", "Skein"));
@@ -257,6 +260,43 @@ source_example_create (gchar *widget_name, gchar *string1, gchar *string2,
 
 
 void
+on_tab_ruler_value_changed             (GtkRange        *range,
+                                        gpointer         user_data)
+/* 100 tab stops should be enough for anybody's purposes. It's silly to have a
+limit on it, but Pango doesn't support setting one value for all tab stops. */
+#define NUM_TAB_STOPS 100
+{
+    gint spaces = (gint)gtk_range_get_value(range);
+    PangoTabArray *tabstops = pango_tab_array_new(NUM_TAB_STOPS, FALSE);
+    int count;
+    
+    for(count = 0; count < NUM_TAB_STOPS; count++)
+        pango_tab_array_set_tab(tabstops, count, PANGO_TAB_LEFT,
+          spaces * (count + 1));
+    gtk_text_view_set_tabs(
+      GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(range), "tab_example")), tabstops);
+    pango_tab_array_free(tabstops);
+    
+    config_file_set_int("Tabs", "TabWidth", spaces);
+    /* We won't bother to change the tab stops in the rest of the application,
+    because tab stops are not implemented in Pango?! */
+}
+
+
+gchar*
+on_tab_ruler_format_value              (GtkScale        *scale,
+                                        gdouble          value,
+                                        gpointer         user_data)
+{
+    if(value)
+        return g_strdup_printf("%.*f spaces", gtk_scale_get_digits(scale),
+          value);
+    return g_strdup("default");
+}
+
+
+
+void
 on_prefs_project_files_toggle_toggled  (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
@@ -275,10 +315,10 @@ on_prefs_notes_toggle_toggled          (GtkToggleButton *togglebutton,
 
 
 void
-on_prefs_index_toggle_toggled          (GtkToggleButton *togglebutton,
+on_prefs_headings_toggle_toggled       (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-    config_file_set_bool("Inspectors", "Index",
+    config_file_set_bool("Inspectors", "Headings",
       gtk_toggle_button_get_active(togglebutton));
 }
 
