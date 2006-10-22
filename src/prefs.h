@@ -113,6 +113,15 @@ source_example_create (gchar *widget_name, gchar *string1, gchar *string2,
                 gint int1, gint int2);
 
 void
+on_tab_ruler_value_changed             (GtkRange        *range,
+                                        gpointer         user_data);
+
+gchar*
+on_tab_ruler_format_value              (GtkScale        *scale,
+                                        gdouble          value,
+                                        gpointer         user_data);
+                                        
+void
 on_prefs_project_files_toggle_toggled  (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
@@ -121,7 +130,7 @@ on_prefs_notes_toggle_toggled          (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_prefs_index_toggle_toggled          (GtkToggleButton *togglebutton,
+on_prefs_headings_toggle_toggled       (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
