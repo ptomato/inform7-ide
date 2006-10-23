@@ -111,6 +111,10 @@ on_prefs_color_set_changed             (GtkComboBox     *combobox,
 GtkWidget*
 source_example_create (gchar *widget_name, gchar *string1, gchar *string2,
                 gint int1, gint int2);
+                
+GtkWidget*
+tab_example_create (gchar *widget_name, gchar *string1, gchar *string2,
+                gint int1, gint int2);
 
 void
 on_tab_ruler_value_changed             (GtkRange        *range,
@@ -223,6 +227,7 @@ on_prefs_dialog_delete_event           (GtkWidget       *widget,
 void update_style(GtkSourceView *thiswidget);
 void update_font(GtkWidget *thiswidget);
 void update_font_size(GtkWidget *thiswidget);
+void update_tabs(GtkSourceView *thiswidget);
 void populate_extension_lists(GtkWidget *thiswidget);
 
 void update_app_window_fonts(GtkWidget *window);

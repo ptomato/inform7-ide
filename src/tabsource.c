@@ -38,6 +38,7 @@ source_create (gchar *widget_name, gchar *string1, gchar *string2,
     gtk_widget_set_name(source, widget_name);
     gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(source), GTK_WRAP_WORD);
     update_font(source);
+    update_tabs(GTK_SOURCE_VIEW(source));
     return source;
 }
 

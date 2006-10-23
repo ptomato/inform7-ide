@@ -37,7 +37,6 @@ BUGS
 - use libxml2 as it ought to be used
 - get glulx compiling to work (new version of Inform 6??)
 - If files are missing when loading, create default ones
-- why doesn't Pango implement tab stops?!
 */
 
 #ifdef HAVE_CONFIG_H

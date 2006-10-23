@@ -23,6 +23,7 @@
 #include <gtksourceview/gtksourcebuffer.h>
 #include <gtksourceview/gtksourcelanguage.h>
 #include <gtksourceview/gtksourcelanguagesmanager.h>
+#include <pango/pango-font.h>
 
 #include "prefs.h"
 #include "tabsource.h"
@@ -168,6 +169,7 @@ on_prefs_font_set_changed              (GtkComboBox     *combobox,
     config_file_set_int("Fonts", "FontSet", setting);
     
     update_font(lookup_widget(GTK_WIDGET(combobox), "source_example"));
+    update_font(lookup_widget(GTK_WIDGET(combobox), "tab_example"));
 }
 
 
@@ -194,6 +196,7 @@ on_prefs_custom_font_font_set          (GtkFontButton   *fontbutton,
     
     config_file_set_string("Fonts", "CustomFont", ptr);
     update_font(lookup_widget(GTK_WIDGET(fontbutton), "source_example"));
+    update_font(lookup_widget(GTK_WIDGET(fontbutton), "tab_example"));
     g_free(fontname);
 }
 
@@ -216,6 +219,7 @@ on_prefs_font_size_changed             (GtkComboBox     *combobox,
     config_file_set_int("Fonts", "FontSize",
       gtk_combo_box_get_active(combobox));
     update_font(lookup_widget(GTK_WIDGET(combobox), "source_example"));
+    update_font(lookup_widget(GTK_WIDGET(combobox), "tab_example"));
 }
 
 
@@ -240,7 +244,7 @@ on_prefs_color_set_changed             (GtkComboBox     *combobox,
       "source_example")));
 }
 
-/* Create a GtkSourceBuffer and fill it with the example text */
+/* Create a GtkSourceView and -Buffer and fill it with the example text */
 GtkWidget*
 source_example_create (gchar *widget_name, gchar *string1, gchar *string2,
                 gint int1, gint int2)
@@ -258,28 +262,30 @@ source_example_create (gchar *widget_name, gchar *string1, gchar *string2,
     return source;
 }
 
+/* Create another GtkSourceView with examples of tab stops */
+GtkWidget*
+tab_example_create (gchar *widget_name, gchar *string1, gchar *string2,
+                gint int1, gint int2)
+{
+    GtkWidget *source = gtk_source_view_new();
+    gtk_widget_set_name(source, widget_name);
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(source));
+    gtk_text_buffer_set_text(buffer, "\tTab\tTab\tTab\tTab\tTab\tTab\tTab", -1);
+    update_font(source);
+    update_tabs(GTK_SOURCE_VIEW(source));
+    return source;
+}
 
 void
 on_tab_ruler_value_changed             (GtkRange        *range,
                                         gpointer         user_data)
-/* 100 tab stops should be enough for anybody's purposes. It's silly to have a
-limit on it, but Pango doesn't support setting one value for all tab stops. */
-#define NUM_TAB_STOPS 100
 {
     gint spaces = (gint)gtk_range_get_value(range);
-    PangoTabArray *tabstops = pango_tab_array_new(NUM_TAB_STOPS, FALSE);
-    int count;
-    
-    for(count = 0; count < NUM_TAB_STOPS; count++)
-        pango_tab_array_set_tab(tabstops, count, PANGO_TAB_LEFT,
-          spaces * (count + 1));
-    gtk_text_view_set_tabs(
-      GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(range), "tab_example")), tabstops);
-    pango_tab_array_free(tabstops);
-    
     config_file_set_int("Tabs", "TabWidth", spaces);
-    /* We won't bother to change the tab stops in the rest of the application,
-    because tab stops are not implemented in Pango?! */
+    update_tabs(
+      GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(range), "tab_example")));
+    update_tabs(
+      GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(range), "source_example")));
 }
 
 
@@ -719,6 +725,14 @@ void update_font_size(GtkWidget *thiswidget) {
     pango_font_description_free(font);
 }
 
+/* Update the tab stops for a GtkSourceView */
+void update_tabs(GtkSourceView *thiswidget) {
+    gint spaces = config_file_get_int("Tabs", "TabWidth");
+    if(spaces == 0)
+        spaces = 8; /* default is 8 */
+    gtk_source_view_set_tabs_width(thiswidget, spaces);
+}
+
 /* Look in the user's extensions directory and list all the extensions there in
 the treeview widget */
 void populate_extension_lists(GtkWidget *thiswidget) {
@@ -773,6 +787,7 @@ void populate_extension_lists(GtkWidget *thiswidget) {
 void update_ext_window_fonts(GtkWidget *window) {
     GtkWidget *widget = lookup_widget(window, "ext_code");
     update_font(widget);
+    update_tabs(GTK_SOURCE_VIEW(widget));
     update_style(GTK_SOURCE_VIEW(widget));
 }
 
@@ -782,9 +797,11 @@ void update_app_window_fonts(GtkWidget *window) {
 
     widget = lookup_widget(window, "source_l");
     update_font(widget);
+    update_tabs(GTK_SOURCE_VIEW(widget));
     update_style(GTK_SOURCE_VIEW(widget));
     widget = lookup_widget(window, "source_r");
     update_font(widget);
+    update_tabs(GTK_SOURCE_VIEW(widget));
     update_style(GTK_SOURCE_VIEW(widget));
     
     widget = lookup_widget(window, "problems_l");

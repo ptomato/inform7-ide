@@ -2466,6 +2466,7 @@ create_prefs_dialog (void)
   GtkWidget *vbox33;
   GtkWidget *tab_ruler;
   GtkWidget *scrolledwindow41;
+  GtkWidget *viewport3;
   GtkWidget *tab_example;
   GtkWidget *label79;
   GtkWidget *hseparator2;
@@ -2712,10 +2713,9 @@ create_prefs_dialog (void)
   gtk_widget_show (vbox33);
   gtk_container_add (GTK_CONTAINER (alignment20), vbox33);
 
-  tab_ruler = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 100, 1, 0, 0)));
+  tab_ruler = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 32, 1, 0, 0)));
   gtk_widget_show (tab_ruler);
   gtk_box_pack_start (GTK_BOX (vbox33), tab_ruler, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (tab_ruler, FALSE);
   gtk_scale_set_digits (GTK_SCALE (tab_ruler), 0);
   gtk_range_set_update_policy (GTK_RANGE (tab_ruler), GTK_UPDATE_DISCONTINUOUS);
 
@@ -2725,13 +2725,16 @@ create_prefs_dialog (void)
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow41), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow41), GTK_SHADOW_IN);
 
-  tab_example = gtk_text_view_new ();
+  viewport3 = gtk_viewport_new (NULL, NULL);
+  gtk_widget_show (viewport3);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow41), viewport3);
+
+  tab_example = tab_example_create ("tab_example", "", "", 0, 0);
   gtk_widget_show (tab_example);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow41), tab_example);
-  gtk_widget_set_size_request (tab_example, -1, 18);
-  gtk_text_view_set_editable (GTK_TEXT_VIEW (tab_example), FALSE);
-  gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (tab_example), FALSE);
-  gtk_text_buffer_set_text (gtk_text_view_get_buffer (GTK_TEXT_VIEW (tab_example)), _("\tTab\tTab\tTab\tTab\tTab\tTab\tTab\tTab"), -1);
+  gtk_container_add (GTK_CONTAINER (viewport3), tab_example);
+  gtk_widget_set_size_request (tab_example, -1, 25);
+  GTK_WIDGET_UNSET_FLAGS (tab_example, GTK_CAN_FOCUS);
+  GTK_WIDGET_UNSET_FLAGS (tab_example, GTK_CAN_DEFAULT);
 
   label79 = gtk_label_new (_("<b>Tab width</b>"));
   gtk_widget_show (label79);
@@ -3253,6 +3256,7 @@ create_prefs_dialog (void)
   GLADE_HOOKUP_OBJECT (prefs_dialog, vbox33, "vbox33");
   GLADE_HOOKUP_OBJECT (prefs_dialog, tab_ruler, "tab_ruler");
   GLADE_HOOKUP_OBJECT (prefs_dialog, scrolledwindow41, "scrolledwindow41");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, viewport3, "viewport3");
   GLADE_HOOKUP_OBJECT (prefs_dialog, tab_example, "tab_example");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label79, "label79");
   GLADE_HOOKUP_OBJECT (prefs_dialog, hseparator2, "hseparator2");
