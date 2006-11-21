@@ -10,7 +10,7 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
-pkg_modules="libgnomeui-2.0 libgtkhtml-3.8 gtksourceview-1.0 libxml-2.0 uuid vte" 
+pkg_modules="libgnomeui-2.0 libgtkhtml-3.8 gtksourceview-1.0 libxml-2.0 ossp-uuid vte" 
 PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)
@@ -18,9 +18,7 @@ AC_SUBST(PACKAGE_LIBS)
 dnl Add user c-flags
 CFLAGS=$CFLAGS
 
-dnl Check for the correct UUID library and its location
-AC_CHECK_LIB(uuid, uuid_create, [], AC_MSG_ERROR([You need the OSSP UUID library to
-	compile GNOME Inform 7.]))
+dnl Check for the correct UUID library header location
 AC_CHECK_HEADER(ossp/uuid.h,
 	AC_DEFINE([OSSP_UUID], [], [Define if the OSSP UUID header is <ossp/uuid.h>
 	instead of <uuid.h>]), [])
@@ -57,5 +55,3 @@ data/extensions/Reserved/Templates/Makefile
 data/lib/Makefile
 data/lib/Natural/Makefile
 ])
-
-

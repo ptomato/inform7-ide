@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
-## SUBDIRS = src po data
-SUBDIRS = src po
+SUBDIRS = src po data
+## SUBDIRS = src po
 
 EXTRA_DIST = \
 	autogen.sh \
@@ -36,4 +36,3 @@ dist-hook:
 	    fi \
 	  done \
 	fi
-	
