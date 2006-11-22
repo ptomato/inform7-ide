@@ -143,7 +143,7 @@ on_preferences_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_compile_activate                    (GtkMenuItem     *menuitem,
+on_refresh_index_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
@@ -155,10 +155,6 @@ on_replay_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_play_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
 on_stop_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
@@ -167,11 +163,39 @@ on_release_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_switch_sides_activate               (GtkMenuItem     *menuitem,
+on_show_source_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_next_panel_activate                 (GtkMenuItem     *menuitem,
+on_show_errors_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_index_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_skein_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_transcript_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_game_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_documentation_activate         (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_settings_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_switch_sides_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void

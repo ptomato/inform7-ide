@@ -31,5 +31,4 @@ game_create (gchar *widget_name, gchar *string1, gchar *string2,
 
 void run_project(struct story *thestory);
 void stop_project(struct story *thestory);
-void run_game_file(struct story *thestory, gchar *filename);
 #endif

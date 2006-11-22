@@ -476,7 +476,7 @@ on_preferences_activate                (GtkMenuItem     *menuitem,
 
 
 void
-on_compile_activate                    (GtkMenuItem     *menuitem,
+on_refresh_index_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     struct story *thestory = get_story(GTK_WIDGET(menuitem));
@@ -484,7 +484,7 @@ on_compile_activate                    (GtkMenuItem     *menuitem,
     stop_project(thestory);
     /* Save the project */
     on_save_activate(menuitem, user_data);
-    /* Compile, not for release, do not run it */
+    /* Compile, not for release, show the index instead of running */
     thestory->release = FALSE;
     thestory->run = FALSE;
     compile_project(thestory);
@@ -527,41 +527,6 @@ on_replay_activate                     (GtkMenuItem     *menuitem,
 
 
 void
-on_play_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    struct story *thestory = get_story(GTK_WIDGET(menuitem));
-    
-    /* Create a file chooser for Z-code and Glulx games */
-    GtkWidget *dialog = gtk_file_chooser_dialog_new("Select a game to play",
-      GTK_WINDOW(thestory->window), GTK_FILE_CHOOSER_ACTION_OPEN,
-      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
-      NULL);
-    GtkFileFilter *filter = gtk_file_filter_new();
-    gtk_file_filter_set_name(filter, "Z-code games (.z?,.zblorb)");
-    gtk_file_filter_add_pattern(filter, "*.z?");
-    gtk_file_filter_add_pattern(filter, "*.zblorb");
-    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
-    filter = gtk_file_filter_new();
-    gtk_file_filter_set_name(filter, "Glulx games (.ulx,.gblorb)");
-    gtk_file_filter_add_pattern(filter, "*.ulx");
-    gtk_file_filter_add_pattern(filter, "*.gblorb");
-    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
-    
-    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-        gchar *filename = gtk_file_chooser_get_filename(
-          GTK_FILE_CHOOSER(dialog));
-        gtk_widget_destroy(dialog);
-        run_game_file(thestory, filename);
-        g_free(filename);
-        return;
-    }
-    gtk_widget_destroy(dialog);
-}
-
-
-void
 on_stop_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -584,6 +549,87 @@ on_release_activate                    (GtkMenuItem     *menuitem,
     thestory->run = FALSE;
     compile_project(thestory);
 }
+
+
+void
+on_show_source_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    GtkNotebook *notebook = get_notebook(GTK_WIDGET(menuitem),
+      get_current_notebook(GTK_WIDGET(menuitem)));
+    gtk_notebook_set_current_page(notebook, TAB_SOURCE);
+}
+
+
+void
+on_show_errors_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    GtkNotebook *notebook = get_notebook(GTK_WIDGET(menuitem),
+      get_current_notebook(GTK_WIDGET(menuitem)));
+    gtk_notebook_set_current_page(notebook, TAB_ERRORS);
+}
+
+
+void
+on_show_index_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    GtkNotebook *notebook = get_notebook(GTK_WIDGET(menuitem),
+      get_current_notebook(GTK_WIDGET(menuitem)));
+    gtk_notebook_set_current_page(notebook, TAB_INDEX);
+}
+
+
+void
+on_show_skein_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    GtkNotebook *notebook = get_notebook(GTK_WIDGET(menuitem),
+      get_current_notebook(GTK_WIDGET(menuitem)));
+    gtk_notebook_set_current_page(notebook, TAB_SKEIN);
+}
+
+
+void
+on_show_transcript_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    GtkNotebook *notebook = get_notebook(GTK_WIDGET(menuitem),
+      get_current_notebook(GTK_WIDGET(menuitem)));
+    gtk_notebook_set_current_page(notebook, TAB_TRANSCRIPT);
+}
+
+
+void
+on_show_game_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    GtkNotebook *notebook = get_notebook(GTK_WIDGET(menuitem),
+      get_current_notebook(GTK_WIDGET(menuitem)));
+    gtk_notebook_set_current_page(notebook, TAB_GAME);
+}
+
+
+void
+on_show_documentation_activate         (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    GtkNotebook *notebook = get_notebook(GTK_WIDGET(menuitem),
+      get_current_notebook(GTK_WIDGET(menuitem)));
+    gtk_notebook_set_current_page(notebook, TAB_DOCUMENTATION);
+}
+
+
+void
+on_show_settings_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    GtkNotebook *notebook = get_notebook(GTK_WIDGET(menuitem),
+      get_current_notebook(GTK_WIDGET(menuitem)));
+    gtk_notebook_set_current_page(notebook, TAB_SETTINGS);
+}
+
 
 
 void
@@ -623,19 +669,6 @@ on_switch_sides_activate               (GtkMenuItem     *menuitem,
     
     g_free(targetpage);
     g_free(targetwidgetname);
-}
-
-
-void
-on_next_panel_activate                 (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    GtkNotebook *notebook = get_notebook(GTK_WIDGET(menuitem),
-      get_current_notebook(GTK_WIDGET(menuitem)));
-    if(gtk_notebook_get_current_page(notebook) == TAB_LAST)
-        gtk_notebook_set_current_page(notebook, TAB_FIRST);
-    else
-        gtk_notebook_next_page(notebook);
 }
 
 

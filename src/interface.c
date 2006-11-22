@@ -72,7 +72,6 @@ static GnomeUIInfo edit_menu_uiinfo[] =
   GNOMEUIINFO_MENU_SELECT_ALL_ITEM (on_select_all_activate, NULL),
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_FIND_ITEM (on_find_activate, NULL),
-  GNOMEUIINFO_MENU_REPLACE_ITEM (on_replace_activate, NULL),
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_PREFERENCES_ITEM (on_preferences_activate, NULL),
   GNOMEUIINFO_END
@@ -84,45 +83,30 @@ static GnomeUIInfo game_menu_uiinfo[] =
     GNOME_APP_UI_ITEM, N_("Refresh _Index"),
     NULL,
     (gpointer) on_refresh_index_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
+    GNOME_APP_PIXMAP_STOCK, "gtk-convert",
     GDK_I, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   {
-    GNOME_APP_UI_ITEM, N_("_Compile"),
-    N_("Compile the project"),
-    (gpointer) on_compile_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_STOCK, "gtk-convert",
-    GDK_F7, (GdkModifierType) 0, NULL
-  },
-  {
-    GNOME_APP_UI_ITEM, N_("Compile and Run (_Go!)"),
+    GNOME_APP_UI_ITEM, N_("_Go"),
     N_("Compile the project and then run it"),
     (gpointer) on_go_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-go-forward",
-    GDK_F5, (GdkModifierType) 0, NULL
+    GDK_R, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
-    GNOME_APP_UI_ITEM, N_("Compile and _Replay"),
+    GNOME_APP_UI_ITEM, N_("_Replay"),
     N_("Compile the project and then replay commands"),
     (gpointer) on_replay_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-refresh",
-    GDK_F9, (GdkModifierType) 0, NULL
-  },
-  GNOMEUIINFO_SEPARATOR,
-  {
-    GNOME_APP_UI_ITEM, N_("_Play..."),
-    N_("Open and play a game"),
-    (gpointer) on_play_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_STOCK, "gtk-media-play",
-    0, (GdkModifierType) 0, NULL
+    GDK_R, (GdkModifierType) GDK_CONTROL_MASK | GDK_MOD1_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Stop"),
     N_("Stop the currently running game"),
     (gpointer) on_stop_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-stop",
-    GDK_F5, (GdkModifierType) GDK_SHIFT_MASK, NULL
+    GDK_Q, (GdkModifierType) GDK_CONTROL_MASK | GDK_SHIFT_MASK, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   {
@@ -130,7 +114,83 @@ static GnomeUIInfo game_menu_uiinfo[] =
     N_("Compile the project for release"),
     (gpointer) on_release_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-cdrom",
-    0, (GdkModifierType) 0, NULL
+    GDK_R, (GdkModifierType) GDK_CONTROL_MASK | GDK_SHIFT_MASK, NULL
+  },
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo show_tabs_menu_uiinfo[] =
+{
+  {
+    GNOME_APP_UI_ITEM, N_("_Source"),
+    NULL,
+    (gpointer) on_show_source_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_F1, (GdkModifierType) GDK_SHIFT_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("_Errors"),
+    NULL,
+    (gpointer) on_show_errors_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_F2, (GdkModifierType) GDK_SHIFT_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("_Index"),
+    NULL,
+    (gpointer) on_show_index_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_F3, (GdkModifierType) GDK_SHIFT_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("S_kein"),
+    NULL,
+    (gpointer) on_show_skein_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_F4, (GdkModifierType) GDK_SHIFT_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("_Transcript"),
+    NULL,
+    (gpointer) on_show_transcript_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_F5, (GdkModifierType) GDK_SHIFT_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("_Game"),
+    NULL,
+    (gpointer) on_show_game_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_F6, (GdkModifierType) GDK_SHIFT_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("_Documentation"),
+    NULL,
+    (gpointer) on_show_documentation_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_F7, (GdkModifierType) GDK_SHIFT_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Setti_ngs"),
+    NULL,
+    (gpointer) on_show_settings_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_F8, (GdkModifierType) GDK_SHIFT_MASK, NULL
+  },
+  GNOMEUIINFO_SEPARATOR,
+  {
+    GNOME_APP_UI_ITEM, N_("_Switch Panes"),
+    N_("Switch the input cursor to the panel on the other side"),
+    (gpointer) on_switch_sides_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_F6, (GdkModifierType) 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("_Next Sub Panel"),
+    NULL,
+    (gpointer) on_next_sub_panel_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_F6, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   GNOMEUIINFO_END
 };
@@ -138,25 +198,18 @@ static GnomeUIInfo game_menu_uiinfo[] =
 static GnomeUIInfo windows_menu_uiinfo[] =
 {
   {
-    GNOME_APP_UI_ITEM, N_("_Switch Sides"),
-    N_("Switch the input cursor to the panel on the other side"),
-    (gpointer) on_switch_sides_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    GDK_F6, (GdkModifierType) 0, NULL
+    GNOME_APP_UI_ITEM, N_("Show _Inspectors"),
+    NULL,
+    (gpointer) on_show_inspectors_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, "gtk-zoom-in",
+    GDK_I, (GdkModifierType) GDK_CONTROL_MASK | GDK_MOD1_MASK, NULL
   },
   {
-    GNOME_APP_UI_ITEM, N_("_Next Panel"),
-    N_("Move to the next panel"),
-    (gpointer) on_next_panel_activate, NULL, NULL,
+    GNOME_APP_UI_SUBTREE, N_("Show _Tabs"),
+    NULL,
+    show_tabs_menu_uiinfo, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    GDK_F6, (GdkModifierType) GDK_SHIFT_MASK, NULL
-  },
-  {
-    GNOME_APP_UI_ITEM, N_("Next S_ub Panel"),
-    N_("Move to the next sub panel"),
-    (gpointer) on_next_sub_panel_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    GDK_F6, (GdkModifierType) GDK_CONTROL_MASK, NULL
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_END
@@ -191,14 +244,14 @@ static GnomeUIInfo help_menu_uiinfo[] =
     N_("Show the page listing installed extensions"),
     (gpointer) on_help_extensions_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_F1, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Recipe Book"),
     N_("Show the recipe book listing all the examples"),
     (gpointer) on_recipe_book_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
+    GDK_F1, (GdkModifierType) GDK_MOD1_MASK, NULL
   },
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_ABOUT_ITEM (on_about_activate, NULL),
@@ -393,7 +446,7 @@ create_app_window (void)
 
   gnome_app_create_menus (GNOME_APP (app_window), menubar1_uiinfo);
 
-  gtk_widget_set_sensitive (game_menu_uiinfo[7].widget, FALSE);
+  gtk_widget_set_sensitive (game_menu_uiinfo[4].widget, FALSE);
 
   toolbar1 = gtk_toolbar_new ();
   gtk_widget_show (toolbar1);
@@ -1252,25 +1305,31 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[6].widget, "select_all");
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[7].widget, "separator4");
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[8].widget, "find");
-  GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[9].widget, "replace");
-  GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[10].widget, "separator23");
-  GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[11].widget, "preferences");
+  GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[9].widget, "separator23");
+  GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[10].widget, "preferences");
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[2].widget, "game");
   GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[0].widget, "refresh_index");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[1].widget, "separator25");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[2].widget, "compile");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[3].widget, "go");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[4].widget, "replay");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[5].widget, "separator11");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[6].widget, "play");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[7].widget, "stop");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[8].widget, "separator12");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[9].widget, "release");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[1].widget, "separator27");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[2].widget, "go");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[3].widget, "replay");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[4].widget, "stop");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[5].widget, "separator12");
+  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[6].widget, "release");
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[3].widget, "windows");
-  GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[0].widget, "switch_sides");
-  GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[1].widget, "next_panel");
-  GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[2].widget, "next_sub_panel");
-  GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[3].widget, "separator13");
+  GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[0].widget, "show_inspectors");
+  GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[1].widget, "show_tabs");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[0].widget, "show_source");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[1].widget, "show_errors");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[2].widget, "show_index");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[3].widget, "show_skein");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[4].widget, "show_transcript");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[5].widget, "show_game");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[6].widget, "show_documentation");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[7].widget, "show_settings");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[8].widget, "separator28");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[9].widget, "switch_sides");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[10].widget, "next_sub_panel");
+  GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[2].widget, "separator13");
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[4].widget, "help");
   GLADE_HOOKUP_OBJECT (app_window, help_menu_uiinfo[0].widget, "inform_help");
   GLADE_HOOKUP_OBJECT (app_window, help_menu_uiinfo[1].widget, "gnome_notes");

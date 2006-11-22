@@ -38,5 +38,5 @@ on_revert_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_refresh_index_activate              (GtkMenuItem     *menuitem,
+on_show_inspectors_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data);

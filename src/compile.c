@@ -392,6 +392,12 @@ void compile_stage3(GPid pid, gint status, gpointer thestory) {
     if(((struct story *)thestory)->run) {
         /* Run the project if we need to */
         run_project((struct story *)thestory);
+    } else {
+        /* Display the index */
+        gtk_notebook_set_current_page(
+          get_notebook(((struct story *)thestory)->window,
+          choose_notebook(((struct story *)thestory)->window, TAB_INDEX)),
+          TAB_INDEX);
     }
 }
 
