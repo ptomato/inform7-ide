@@ -49,13 +49,7 @@ static GnomeUIInfo filemenu_menu_uiinfo[] =
   GNOMEUIINFO_MENU_CLOSE_ITEM (on_close_activate, NULL),
   GNOMEUIINFO_MENU_SAVE_ITEM (on_save_activate, NULL),
   GNOMEUIINFO_MENU_SAVE_AS_ITEM (on_save_as_activate, NULL),
-  {
-    GNOME_APP_UI_ITEM, N_("_Revert"),
-    NULL,
-    (gpointer) on_revert_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    0, (GdkModifierType) 0, NULL
-  },
+  GNOMEUIINFO_MENU_REVERT_ITEM (on_revert_activate, NULL),
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_EXIT_ITEM (on_quit_activate, NULL),
   GNOMEUIINFO_END
@@ -3116,7 +3110,7 @@ create_prefs_dialog (void)
   prefs_clean_build_toggle = gtk_check_button_new_with_mnemonic (_("Clean build files from projects before closing"));
   gtk_widget_show (prefs_clean_build_toggle);
   gtk_box_pack_start (GTK_BOX (vbox29), prefs_clean_build_toggle, FALSE, FALSE, 0);
-  gtk_tooltips_set_tip (tooltips, prefs_clean_build_toggle, _("Build files are files that are generated while turning your story into a game file. Selecting this option will ensure that they are deleted when you close or save a project. These files can grow quite large (many times the size of your source code), so deleting them is a good idea if you are planning to send a project to someone else. Note that with this option ticked, build files may not be deleted if you close a project and discard your modifications."), NULL);
+  gtk_tooltips_set_tip (tooltips, prefs_clean_build_toggle, _("Build files are files that are generated while turning your story into a game file. Selecting this option will ensure that they are deleted when you close or save a project. These files can grow quite large (many times the size of your source code), so deleting them is a good idea if you are planning to send a project to someone else."), NULL);
 
   alignment16 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment16);

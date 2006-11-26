@@ -103,6 +103,10 @@ on_save_as_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
+on_revert_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
 on_quit_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 

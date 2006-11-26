@@ -60,6 +60,8 @@ on_prefs_dialog_realize                (GtkWidget       *widget,
     gchar *scratch;
     
     /* Set all the controls to their current values according to GConf */
+    
+    /* Prepare controls in "Styles" pane */
     trash = lookup_widget(widget, "prefs_font_set");
     gtk_combo_box_set_active(GTK_COMBO_BOX(trash),
       config_file_get_int("Fonts", "FontSet"));
@@ -86,6 +88,7 @@ on_prefs_dialog_realize                (GtkWidget       *widget,
     gtk_range_set_value(GTK_RANGE(trash),
       (gdouble)config_file_get_int("Tabs", "TabWidth"));
       
+    /* Prepare controls in "Inspectors" pane */
     trash = lookup_widget(widget, "prefs_project_files_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Inspectors", "ProjectFiles"));
@@ -108,6 +111,7 @@ on_prefs_dialog_realize                (GtkWidget       *widget,
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Inspectors", "Search"));
     
+    /* Prepare controls in "Intelligence" pane */
     trash = lookup_widget(widget, "prefs_enable_highlighting_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Syntax", "Highlighting"));
@@ -131,12 +135,15 @@ on_prefs_dialog_realize                (GtkWidget       *widget,
     gtk_entry_set_text(GTK_ENTRY(trash), scratch);
     g_free(scratch);
     
+    /* Prepare controls in "Advanced" pane */
     trash = lookup_widget(widget, "prefs_clean_build_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Cleaning", "BuildFiles"));
     trash = lookup_widget(widget, "prefs_clean_index_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Cleaning", "IndexFiles"));
+    if(!config_file_get_bool("Cleaning", "BuildFiles"))
+        gtk_widget_set_sensitive(trash, FALSE);
     trash = lookup_widget(widget, "prefs_show_log_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Debugging", "ShowLog"));

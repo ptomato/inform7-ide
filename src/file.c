@@ -20,6 +20,7 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <glib/gprintf.h>
+#include <glib/gstdio.h>
 #include <gtksourceview/gtksourcebuffer.h>
 
 #include "story.h"
@@ -31,6 +32,7 @@
 #include "configfile.h"
 #include "error.h"
 #include "compile.h"
+#include "file.h"
 
 /* If the document is not saved, ask the user whether he/she wants to save it.
 Returns TRUE if we can proceed, FALSE if the user cancelled. */
@@ -165,8 +167,10 @@ struct story *open_project(gchar *directory) {
         thestory->story_format = atoi((char *)content);
         xmlFree(content);
     } /* else default setting */
-
     xmlFreeDoc(doc);
+
+    /* Load index tabs if they exist and update settings */
+    reload_index_tabs(thestory->window);
     update_settings(thestory);
 
     GtkTextIter start;
@@ -267,6 +271,9 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     g_free(filename);
     g_free(text);
 
+    /* Delete the build files from the project directory */
+    delete_build_files(thestory);
+    
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(thestory->buffer), FALSE);
     config_file_set_string("Settings", "LastProject", directory);
 }
@@ -559,4 +566,39 @@ void finish_release(struct story *thestory, gboolean everything_ok) {
         g_free(text);
     }
     gtk_widget_destroy(dialog);
+}
+
+/* Helper function to delete a file relative to the project path */
+static void delete_from_project_dir(struct story *thestory, gchar *filename) {
+    gchar *pathname = g_strconcat(thestory->filename, filename, NULL);
+    g_remove(pathname);
+    g_free(pathname);
+}
+
+/* If the "delete build files" option is checked, delete all the build files
+from the project directory */
+void delete_build_files(struct story *thestory) {
+    if(config_file_get_bool("Cleaning", "BuildFiles")) {
+        delete_from_project_dir(thestory, "/Metadata.iFiction");
+        delete_from_project_dir(thestory, "/Release.blurb");
+        delete_from_project_dir(thestory, "/Build/auto.inf");
+        delete_from_project_dir(thestory, "/Build/Debug log.txt");
+        delete_from_project_dir(thestory, "/Build/Map.eps");
+        delete_from_project_dir(thestory, "/Build/output.z5");
+        delete_from_project_dir(thestory, "/Build/output.z8");
+        delete_from_project_dir(thestory, "/Build/output.ulx");
+        delete_from_project_dir(thestory, "/Build/Problems.html");
+        delete_from_project_dir(thestory, "/Build/temporary file.inf");
+        
+        if(config_file_get_bool("Cleaning", "IndexFiles")) {
+            delete_from_project_dir(thestory, "/Index/Actions.html");
+            delete_from_project_dir(thestory, "/Index/Contents.html");
+            delete_from_project_dir(thestory, "/Index/Headings.xml");
+            delete_from_project_dir(thestory, "/Index/Kinds.html");
+            delete_from_project_dir(thestory, "/Index/Phrasebook.html");
+            delete_from_project_dir(thestory, "/Index/Rules.html");
+            delete_from_project_dir(thestory, "/Index/Scenes.html");
+            delete_from_project_dir(thestory, "/Index/World.html");
+        }
+    }
 }

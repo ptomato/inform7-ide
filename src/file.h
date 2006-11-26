@@ -32,5 +32,6 @@ struct extension *open_extension(gchar *filename);
 void save_extension(GtkWidget *thiswidget);
 void install_extension(const gchar *filename);
 void finish_release(struct story *thestory, gboolean everything_ok);
+void delete_build_files(struct story *thestory);
     
 #endif

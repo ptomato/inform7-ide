@@ -357,6 +357,43 @@ on_save_as_activate                    (GtkMenuItem     *menuitem,
 
 
 void
+on_revert_activate                     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    struct story *thestory = get_story(GTK_WIDGET(menuitem));
+    
+    /* Ask if the user is sure */
+    if(gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(thestory->buffer))) {
+        GtkWidget *revert_dialog = gtk_message_dialog_new_with_markup(
+          GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
+          GTK_DIALOG_DESTROY_WITH_PARENT,
+          GTK_MESSAGE_WARNING,
+          GTK_BUTTONS_NONE,
+          "Are you sure you want to revert to the last saved version?");
+        gtk_message_dialog_format_secondary_text(
+          GTK_MESSAGE_DIALOG(revert_dialog),
+          "All unsaved changes will be lost.");
+        gtk_dialog_add_buttons(GTK_DIALOG(revert_dialog),
+          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+          GTK_STOCK_REVERT_TO_SAVED, GTK_RESPONSE_OK,
+          NULL);
+        gint result = gtk_dialog_run(GTK_DIALOG(revert_dialog));
+        gtk_widget_destroy(revert_dialog);
+        if(result != GTK_RESPONSE_OK)
+            return; /* Only go on if the user clicked revert */
+    } else
+        return; /* The project was not modified, so no need to do anything */
+    
+    /* Save the filename, close the window and reopen it */
+    gchar *filename = g_strdup(thestory->filename);
+    delete_story(thestory);
+    thestory = open_project(filename);
+    g_free(filename);
+    gtk_widget_show(thestory->window);
+}
+
+
+void
 on_quit_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {

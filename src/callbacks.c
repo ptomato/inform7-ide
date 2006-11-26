@@ -29,14 +29,6 @@
 /* This is where Glade puts newly-created callback functions. */
 
 void
-on_revert_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-
-}
-
-
-void
 on_show_inspectors_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {

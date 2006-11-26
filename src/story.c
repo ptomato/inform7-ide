@@ -18,7 +18,6 @@
  
 #include <gnome.h>
 #include <string.h>
-#include <glib/gstdio.h>
 #include <gtksourceview/gtksourcebuffer.h>
 
 #include "story.h"
@@ -30,6 +29,7 @@
 #include "configfile.h"
 #include "skein.h"
 #include "tabgame.h"
+#include "file.h"
 
 /* This is the list of all story structures that are currently allocated */
 static GSList *storylist = NULL;
@@ -71,13 +71,6 @@ struct story *new_story() {
     return newstory;
 }
 
-/* Helper function to delete a file relative to the project path */
-static void delete_from_project_dir(struct story *thestory, gchar *filename) {
-    gchar *pathname = g_strconcat(thestory->filename, filename, NULL);
-    g_remove(pathname);
-    g_free(pathname);
-}
-
 /* Free all the resources from the story */
 void delete_story(struct story *oldstory) {
     storylist = g_slist_remove(storylist, (gconstpointer)oldstory);
@@ -85,29 +78,7 @@ void delete_story(struct story *oldstory) {
     stop_project(oldstory);
     
     if(oldstory->filename != NULL) {
-        if(config_file_get_bool("Cleaning", "BuildFiles")) {
-            delete_from_project_dir(oldstory, "/Metadata.iFiction");
-            delete_from_project_dir(oldstory, "/Release.blurb");
-            delete_from_project_dir(oldstory, "/Build/auto.inf");
-            delete_from_project_dir(oldstory, "/Build/Debug log.txt");
-            delete_from_project_dir(oldstory, "/Build/Map.eps");
-            delete_from_project_dir(oldstory, "/Build/output.z5");
-            delete_from_project_dir(oldstory, "/Build/output.z8");
-            delete_from_project_dir(oldstory, "/Build/output.ulx");
-            delete_from_project_dir(oldstory, "/Build/Problems.html");
-            delete_from_project_dir(oldstory, "/Build/temporary file.inf");
-            
-            if(config_file_get_bool("Cleaning", "IndexFiles")) {
-                delete_from_project_dir(oldstory, "/Index/Actions.html");
-                delete_from_project_dir(oldstory, "/Index/Contents.html");
-                delete_from_project_dir(oldstory, "/Index/Headings.xml");
-                delete_from_project_dir(oldstory, "/Index/Kinds.html");
-                delete_from_project_dir(oldstory, "/Index/Phrasebook.html");
-                delete_from_project_dir(oldstory, "/Index/Rules.html");
-                delete_from_project_dir(oldstory, "/Index/Scenes.html");
-                delete_from_project_dir(oldstory, "/Index/World.html");
-            }
-        }
+        delete_build_files(oldstory);
         free(oldstory->filename);
     }
     gtk_widget_destroy(oldstory->window);
