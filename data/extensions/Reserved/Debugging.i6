@@ -1,0 +1,142 @@
+! Debugging.i6 segment
+! Should only be included if DEBUG is defined.
+
+! Not all of these commands are documented; this is intentional. They may
+! be changed in name or function. But this is all of the grammar defined
+! in the segments except for the TEST command, which is in Tests.i6.
+
+Constant NO_DEBUGGABLES = 30;
+Array debuggable_states -> NO_DEBUGGABLES;
+[ DebugRbOffSub state i c;
+	if ((noun >= 0) && (noun < NO_DEBUGGABLES)) {
+		debuggable_states->noun = state;
+		print "Now tracing rulebooks: ";
+		for (i=0:i<NO_DEBUGGABLES:i++)
+			if (debuggable_states->i) { c++; print i, " "; }
+		if (c==0) "none";
+		new_line; return;
+	}
+	"Rulebook number out of range.";
+];
+[ DebugRbSub; DebugRbOffSub(true); ];
+[ AdjustDbr s;
+	if ((s>=0) && (s<NO_DEBUGGABLES)) debugging_rules = debuggable_states->s;
+];
+
+[ RulesOnSub;
+	debug_rules = 1;
+	"Rules tracing now switched on. Type ~rules off~ to switch it off again,
+	 or ~rules all~ to include even rules which do not apply.";
+];
+[ RulesAllSub;
+	debug_rules = 2;
+	"Rules tracing now switched to ~all~. Type ~rules off~ to switch it off again.";
+];
+[ RulesOffSub;
+	debug_rules = 0;
+	"Rules tracing now switched off. Type ~rules~ to switch it on again.";
+];
+
+[ ScenesOnSub;
+	debug_scenes = 1;
+	I7_SceneStatus();
+	"(Scene monitoring now switched on. Type ~scenes off~ to switch it off again.)";
+];
+[ ScenesOffSub;
+	debug_scenes = 0;
+	"(Scene monitoring now switched off. Type ~scenes~ to switch it on again.)";
+];
+
+[ ShowRLocation obj top;
+	if (obj ofclass K1_room) return;
+	print " ";
+	if (parent(obj)) {
+		if (obj has worn) print "worn by ";
+		else {
+			if (parent(obj) has animate) print "carried by ";
+			if (parent(obj) has container) print "in ";
+			if (parent(obj) ofclass K1_room) print "in ";
+			if (parent(obj) has supporter) print "on ";
+		}
+		print (the) parent(obj);
+		ShowRLocation(parent(obj));
+	} else {
+		if (obj.component_parent) {
+			if (top == false) print ", which is ";
+			print "part of ", (the) obj.component_parent;
+			ShowRLocation(obj.component_parent);
+		}
+		else print "out of play";
+	}
+];
+[ ShowMeSub;
+ 	if (noun == nothing) noun = real_location;
+ 	if (ShowMeRecursively(noun, 0, (noun == real_location))) {
+ 		if (noun == real_location)
+			print "* denotes things which are not in scope^";
+	}
+ 	if (noun ofclass K2_thing) {
+ 		print "location:";
+ 		ShowRLocation(noun, true);
+		print "^";
+ 	}
+];
+[ ShowMeRecursively obj depth f c i k;
+	spaces(2*depth);
+	if (f && (depth > 0) && (TestScope(obj, player) == false)) { print "*"; c = true; }
+	print (name) obj;
+	if (depth > 0) {
+		if (obj.component_parent) print " (part of ", (name) obj.component_parent, ")";
+		if (obj has worn) print " (worn)";
+	}
+	if (obj provides i7_kind) {
+		k = obj.&i7_kind-->0;
+		if ((k ~= K2_thing) || (depth==0)) {
+			print " - ";
+			if (k == K4_door or K5_container) {
+				if (obj has transparent) print "transparent ";
+				if (obj has locked) print "locked ";
+				else if (obj has open) print "open ";
+				else print "closed ";
+			}
+			print (I7_Kind_Name) k;
+		}
+	}
+	print "^";
+	if (obj.component_child) c = c | ShowMeRecursively(obj.component_child, depth+2, f);
+	if ((depth>0) && (obj.component_sibling))
+		c = c | ShowMeRecursively(obj.component_sibling, depth, f);
+	if (child(obj)) c = c | ShowMeRecursively(child(obj), depth+2, f);
+	if ((depth>0) && (sibling(obj))) c = c | ShowMeRecursively(sibling(obj), depth, f);
+	return c;
+];
+
+{-call:see_if_relations_created}
+#IFDEF RELATIONS_CREATED;
+[ ShowRelationsSub rc;
+	for (rc=0:rc<{-value:NUMBER_CREATED(binary_predicate)}:rc++)
+		I7_ShowR(rc);
+];
+#IFNOT; ! RELATIONS_CREATED
+[ ShowRelationsSub;
+	"No new relations have been created.";
+];
+#ENDIF; ! RELATIONS_CREATED
+
+Verb meta "dbrb"
+	* number -> DebugRb
+	* number "off" -> DebugRbOff;
+Verb meta "rules"
+	* -> RulesOn
+	* "all" -> RulesAll
+	* "off" -> RulesOff;
+Verb meta "scenes"
+	* -> ScenesOn
+	* "off" -> ScenesOff;
+Verb meta "showme"
+	* -> ShowMe
+	* multi -> ShowMe;
+Verb meta "relations"
+	* -> ShowRelations;
+
+! End of Debugging.i6

@@ -6,7 +6,6 @@ GtkWidget* create_app_window (void);
 GtkWidget* create_about_window (void);
 GtkWidget* create_welcome_dialog (void);
 GtkWidget* create_find_dialog (void);
-GtkWidget* create_replace_dialog (void);
 GtkWidget* create_ext_window (void);
 GtkWidget* create_new_dialog (void);
 GtkWidget* create_prefs_dialog (void);

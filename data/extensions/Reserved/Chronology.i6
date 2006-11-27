@@ -1,0 +1,56 @@
+! Chronology.i6 segment
+
+[ TrackActions adjust;
+{-call:past_actions_i6_escape}
+];
+
+[ ChronologyTurnEnd pt; ! Called from TimePasses()
+	for (pt=0:pt<NO_PAST_TENSES:pt++) ChronologyRecord(0, pt, true);
+	ChronologyPoint();
+];
+
+[ ChronologyPoint pt;
+	for (pt=0:pt<NO_PAST_TENSES:pt++) past_tense-->pt = present_tense-->pt;
+];
+
+[ ChronologyRecord tense pt turn_end wanted old new trips consecutives;
+	if (tense == 1) {
+		new = (past_tense-->pt) & 1;
+		trips = ((past_tense-->pt) & $$11111110)/2;
+		consecutives = ((past_tense-->pt) & $$111111100000000)/256;
+	} else {
+		! print "PT-->pt = ", (present_tense-->pt), "^";
+		old = (present_tense-->pt) & 1;
+		trips = ((present_tense-->pt) & $$11111110)/2;
+		consecutives = ((present_tense-->pt) & $$111111100000000)/256;
+		switch(pt) {
+{-call:past_tenses_i6_escape}
+		}
+		! print pt,":o=",old," n=",new," t=",trips," c=",consecutives,"^";
+		if ((old == 0) && (new == 1)) {
+			trips++;
+			if (trips > 127) trips = 127;
+		}
+		if (new == 0) consecutives=0;
+		if ((new == 1) && (turn_end)) {
+			consecutives++;
+			if (consecutives > 127) consecutives = 127;
+		}
+		present_tense-->pt = new + 2*trips + 256*consecutives;
+	}
+	if ((wanted < 8) && (new == 0)) return 0;
+	switch(wanted%8) { 0: return new;
+		1: return trips;
+		2: return consecutives;
+	}
+];
+
+{-call:chronology_extents_i6_escape}
+
+Array TimesActionHasHappened-->(NO_PAST_ACTIONS+1);
+Array TurnsActionHasBeenHappening-->(NO_PAST_ACTIONS+1);
+
+Array past_tense-->(NO_PAST_TENSES+1);
+Array present_tense-->(NO_PAST_TENSES+1);
+
+! End of Chronology.i6 segment

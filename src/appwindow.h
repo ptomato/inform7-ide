@@ -139,10 +139,6 @@ on_find_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_replace_activate                    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
 on_preferences_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
@@ -164,6 +160,10 @@ on_stop_activate                       (GtkMenuItem     *menuitem,
 
 void
 on_release_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_inspectors_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void

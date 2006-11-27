@@ -17,13 +17,14 @@
  */
  
 /* To do
-- Make a new, streamlined "Find" dialog like in the OS X version.
 - Inspector window
 - Search documentation
-- Watch the source file for external changes
 - Make extensions windows in preferences work with drag'n'drop
 - Make default author's name, if preference is blank, use system long user name
+- Watch the source file for external changes
+Low priority
 - Find out how to highlight markup brackets in strings
+- Search text at word boundaries
 
 FOLLOWING RELEASES
 - Embedded interpreters

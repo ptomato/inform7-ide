@@ -26,61 +26,62 @@
 void scroll_text_view_to_cursor(GtkTextView *view);
 
 void
+after_find_dialog_realize              (GtkWidget       *widget,
+                                        gpointer         user_data);
+
+void
 on_find_text_changed                   (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
-on_find_close_clicked                  (GtkButton       *button,
+on_find_next_clicked                   (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_find_find_clicked                   (GtkButton       *button,
+on_xfind_next_clicked                  (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_xfind_find_clicked                   (GtkButton       *button,
+on_find_previous_clicked               (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_xfind_previous_clicked              (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_find_replace_find_clicked           (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_xfind_replace_find_clicked          (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_find_replace_clicked                (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
+on_xfind_replace_clicked               (GtkButton       *button,
                                         gpointer         user_data);
                                         
 void
-on_replace_find_text_changed           (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_replace_close_clicked              (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_replace_replace_all_clicked        (GtkButton       *button,
+on_find_replace_all_clicked            (GtkButton       *button,
                                         gpointer         user_data);
                                         
 void
-on_xreplace_replace_all_clicked        (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_replace_replace_clicked            (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_xreplace_replace_clicked            (GtkButton       *button,
+on_xfind_replace_all_clicked           (GtkButton       *button,
                                         gpointer         user_data);
                                         
-void
-on_replace_find_clicked               (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_xreplace_find_clicked               (GtkButton       *button,
-                                        gpointer         user_data);
-                                        
-void find(GtkTextBuffer *buffer, const gchar *text, gboolean match_case,
-  gboolean reverse);
+void find(GtkTextBuffer *buffer, const gchar *text, gboolean ignore_case,
+  gboolean wrap, gboolean reverse);
 gboolean find_next(const gchar *search_text, GtkTextIter *search_from,
-  GtkTextIter *match_start, GtkTextIter *match_end, gboolean match_case,
+  GtkTextIter *match_start, GtkTextIter *match_end, gboolean ignore_case,
   gboolean reverse);
 int replace_all(GtkTextBuffer *buffer, const gchar *search_text,
-  const gchar *replace_text, gboolean match_case);
+  const gchar *replace_text, gboolean ignore_case);
 void replace(GtkTextBuffer *buffer, const gchar *search_text,
-  const gchar *replace_text, gboolean match_case, gboolean reverse);
+  const gchar *replace_text, gboolean ignore_case, gboolean wrap,
+  gboolean reverse, gboolean find_next);
   
 #endif

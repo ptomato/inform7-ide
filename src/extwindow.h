@@ -48,6 +48,10 @@ on_xsave_as_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
+on_xrevert_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
 on_xquit_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
@@ -80,13 +84,13 @@ on_xfind_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_xreplace_activate                   (GtkMenuItem     *menuitem,
+on_xpreferences_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
-on_xpreferences_activate               (GtkMenuItem     *menuitem,
+on_xshow_inspectors_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
-                                        
+
 GtkWidget*
 ext_code_create (gchar *widget_name, gchar *string1, gchar *string2,
                 gint int1, gint int2);

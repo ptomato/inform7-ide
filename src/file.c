@@ -429,7 +429,6 @@ void save_extension(GtkWidget *thiswidget) {
     g_free(text);
 
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ext->buffer), FALSE);
-    config_file_set_string("Settings", "LastProject", ext->filename);
 }
 
 /* Install the extension at filename into the user's extensions dir */

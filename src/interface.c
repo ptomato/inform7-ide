@@ -1701,16 +1701,39 @@ create_find_dialog (void)
 {
   GtkWidget *find_dialog;
   GdkPixbuf *find_dialog_icon_pixbuf;
-  GtkWidget *dialog_vbox2;
-  GtkWidget *vbox11;
-  GtkWidget *hbox7;
-  GtkWidget *label44;
+  GtkWidget *dialog_vbox3;
+  GtkWidget *vbox12;
+  GtkWidget *hbox8;
+  GtkWidget *label45;
   GtkWidget *find_text;
-  GtkWidget *find_match_case;
-  GtkWidget *find_reverse;
-  GtkWidget *dialog_action_area2;
-  GtkWidget *find_close;
-  GtkWidget *find_find;
+  GtkWidget *hbox9;
+  GtkWidget *label46;
+  GtkWidget *find_replace_text;
+  GtkWidget *hbox25;
+  GtkWidget *find_ignore_case;
+  GtkWidget *find_wrap;
+  GtkWidget *find_algorithm;
+  GtkWidget *dialog_action_area3;
+  GtkWidget *find_replace_all;
+  GtkWidget *find_replace;
+  GtkWidget *find_replace_find;
+  GtkWidget *alignment23;
+  GtkWidget *hbox26;
+  GtkWidget *image109;
+  GtkWidget *label82;
+  GtkWidget *find_previous;
+  GtkWidget *alignment21;
+  GtkWidget *hbox22;
+  GtkWidget *image100;
+  GtkWidget *label80;
+  GtkWidget *find_next;
+  GtkWidget *alignment22;
+  GtkWidget *hbox23;
+  GtkWidget *image101;
+  GtkWidget *label81;
+  GtkTooltips *tooltips;
+
+  tooltips = gtk_tooltips_new ();
 
   find_dialog = gtk_dialog_new ();
   gtk_window_set_title (GTK_WINDOW (find_dialog), _("Find"));
@@ -1723,111 +1746,7 @@ create_find_dialog (void)
     }
   gtk_window_set_type_hint (GTK_WINDOW (find_dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 
-  dialog_vbox2 = GTK_DIALOG (find_dialog)->vbox;
-  gtk_widget_show (dialog_vbox2);
-
-  vbox11 = gtk_vbox_new (TRUE, 0);
-  gtk_widget_show (vbox11);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox2), vbox11, TRUE, TRUE, 0);
-
-  hbox7 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (hbox7);
-  gtk_box_pack_start (GTK_BOX (vbox11), hbox7, FALSE, FALSE, 0);
-
-  label44 = gtk_label_new (_("Search for: "));
-  gtk_widget_show (label44);
-  gtk_box_pack_start (GTK_BOX (hbox7), label44, FALSE, FALSE, 0);
-
-  find_text = gtk_entry_new ();
-  gtk_widget_show (find_text);
-  gtk_box_pack_start (GTK_BOX (hbox7), find_text, TRUE, TRUE, 0);
-  gtk_entry_set_invisible_char (GTK_ENTRY (find_text), 8226);
-  gtk_entry_set_activates_default (GTK_ENTRY (find_text), TRUE);
-
-  find_match_case = gtk_check_button_new_with_mnemonic (_("Match case"));
-  gtk_widget_show (find_match_case);
-  gtk_box_pack_start (GTK_BOX (vbox11), find_match_case, FALSE, FALSE, 0);
-
-  find_reverse = gtk_check_button_new_with_mnemonic (_("Search backwards"));
-  gtk_widget_show (find_reverse);
-  gtk_box_pack_start (GTK_BOX (vbox11), find_reverse, FALSE, FALSE, 0);
-
-  dialog_action_area2 = GTK_DIALOG (find_dialog)->action_area;
-  gtk_widget_show (dialog_action_area2);
-  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area2), GTK_BUTTONBOX_END);
-
-  find_close = gtk_button_new_from_stock ("gtk-close");
-  gtk_widget_show (find_close);
-  gtk_dialog_add_action_widget (GTK_DIALOG (find_dialog), find_close, GTK_RESPONSE_CLOSE);
-  GTK_WIDGET_SET_FLAGS (find_close, GTK_CAN_DEFAULT);
-
-  find_find = gtk_button_new_from_stock ("gtk-find");
-  gtk_widget_show (find_find);
-  gtk_dialog_add_action_widget (GTK_DIALOG (find_dialog), find_find, 0);
-  gtk_widget_set_sensitive (find_find, FALSE);
-  GTK_WIDGET_SET_FLAGS (find_find, GTK_CAN_DEFAULT);
-
-  g_signal_connect ((gpointer) find_text, "changed",
-                    G_CALLBACK (on_find_text_changed),
-                    NULL);
-  g_signal_connect ((gpointer) find_close, "clicked",
-                    G_CALLBACK (on_find_close_clicked),
-                    NULL);
-
-  /* Store pointers to all widgets, for use by lookup_widget(). */
-  GLADE_HOOKUP_OBJECT_NO_REF (find_dialog, find_dialog, "find_dialog");
-  GLADE_HOOKUP_OBJECT_NO_REF (find_dialog, dialog_vbox2, "dialog_vbox2");
-  GLADE_HOOKUP_OBJECT (find_dialog, vbox11, "vbox11");
-  GLADE_HOOKUP_OBJECT (find_dialog, hbox7, "hbox7");
-  GLADE_HOOKUP_OBJECT (find_dialog, label44, "label44");
-  GLADE_HOOKUP_OBJECT (find_dialog, find_text, "find_text");
-  GLADE_HOOKUP_OBJECT (find_dialog, find_match_case, "find_match_case");
-  GLADE_HOOKUP_OBJECT (find_dialog, find_reverse, "find_reverse");
-  GLADE_HOOKUP_OBJECT_NO_REF (find_dialog, dialog_action_area2, "dialog_action_area2");
-  GLADE_HOOKUP_OBJECT (find_dialog, find_close, "find_close");
-  GLADE_HOOKUP_OBJECT (find_dialog, find_find, "find_find");
-
-  gtk_widget_grab_default (find_find);
-  return find_dialog;
-}
-
-GtkWidget*
-create_replace_dialog (void)
-{
-  GtkWidget *replace_dialog;
-  GdkPixbuf *replace_dialog_icon_pixbuf;
-  GtkWidget *dialog_vbox3;
-  GtkWidget *vbox12;
-  GtkWidget *hbox8;
-  GtkWidget *label45;
-  GtkWidget *replace_find_text;
-  GtkWidget *hbox9;
-  GtkWidget *label46;
-  GtkWidget *replace_replace_text;
-  GtkWidget *replace_match_case;
-  GtkWidget *replace_reverse;
-  GtkWidget *dialog_action_area3;
-  GtkWidget *replace_close;
-  GtkWidget *replace_replace_all;
-  GtkWidget *replace_replace;
-  GtkWidget *alignment6;
-  GtkWidget *hbox10;
-  GtkWidget *image14;
-  GtkWidget *label47;
-  GtkWidget *replace_find;
-
-  replace_dialog = gtk_dialog_new ();
-  gtk_window_set_title (GTK_WINDOW (replace_dialog), _("Replace"));
-  gtk_window_set_destroy_with_parent (GTK_WINDOW (replace_dialog), TRUE);
-  replace_dialog_icon_pixbuf = create_pixbuf ("gnome-inform7/Inform.png");
-  if (replace_dialog_icon_pixbuf)
-    {
-      gtk_window_set_icon (GTK_WINDOW (replace_dialog), replace_dialog_icon_pixbuf);
-      gdk_pixbuf_unref (replace_dialog_icon_pixbuf);
-    }
-  gtk_window_set_type_hint (GTK_WINDOW (replace_dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
-
-  dialog_vbox3 = GTK_DIALOG (replace_dialog)->vbox;
+  dialog_vbox3 = GTK_DIALOG (find_dialog)->vbox;
   gtk_widget_show (dialog_vbox3);
 
   vbox12 = gtk_vbox_new (TRUE, 0);
@@ -1842,10 +1761,11 @@ create_replace_dialog (void)
   gtk_widget_show (label45);
   gtk_box_pack_start (GTK_BOX (hbox8), label45, FALSE, FALSE, 0);
 
-  replace_find_text = gtk_entry_new ();
-  gtk_widget_show (replace_find_text);
-  gtk_box_pack_start (GTK_BOX (hbox8), replace_find_text, TRUE, TRUE, 0);
-  gtk_entry_set_invisible_char (GTK_ENTRY (replace_find_text), 8226);
+  find_text = gtk_entry_new ();
+  gtk_widget_show (find_text);
+  gtk_box_pack_start (GTK_BOX (hbox8), find_text, TRUE, TRUE, 0);
+  gtk_entry_set_invisible_char (GTK_ENTRY (find_text), 8226);
+  gtk_entry_set_activates_default (GTK_ENTRY (find_text), TRUE);
 
   hbox9 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox9);
@@ -1855,92 +1775,161 @@ create_replace_dialog (void)
   gtk_widget_show (label46);
   gtk_box_pack_start (GTK_BOX (hbox9), label46, FALSE, FALSE, 0);
 
-  replace_replace_text = gtk_entry_new ();
-  gtk_widget_show (replace_replace_text);
-  gtk_box_pack_start (GTK_BOX (hbox9), replace_replace_text, TRUE, TRUE, 0);
-  gtk_entry_set_invisible_char (GTK_ENTRY (replace_replace_text), 8226);
+  find_replace_text = gtk_entry_new ();
+  gtk_widget_show (find_replace_text);
+  gtk_box_pack_start (GTK_BOX (hbox9), find_replace_text, TRUE, TRUE, 0);
+  gtk_entry_set_invisible_char (GTK_ENTRY (find_replace_text), 8226);
 
-  replace_match_case = gtk_check_button_new_with_mnemonic (_("Match case"));
-  gtk_widget_show (replace_match_case);
-  gtk_box_pack_start (GTK_BOX (vbox12), replace_match_case, FALSE, FALSE, 0);
+  hbox25 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox25);
+  gtk_box_pack_start (GTK_BOX (vbox12), hbox25, FALSE, FALSE, 0);
 
-  replace_reverse = gtk_check_button_new_with_mnemonic (_("Search backwards"));
-  gtk_widget_show (replace_reverse);
-  gtk_box_pack_start (GTK_BOX (vbox12), replace_reverse, FALSE, FALSE, 0);
+  find_ignore_case = gtk_check_button_new_with_mnemonic (_("Ignore case"));
+  gtk_widget_show (find_ignore_case);
+  gtk_box_pack_start (GTK_BOX (hbox25), find_ignore_case, TRUE, TRUE, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (find_ignore_case), TRUE);
 
-  dialog_action_area3 = GTK_DIALOG (replace_dialog)->action_area;
+  find_wrap = gtk_check_button_new_with_mnemonic (_("Wrap around"));
+  gtk_widget_show (find_wrap);
+  gtk_box_pack_start (GTK_BOX (hbox25), find_wrap, TRUE, TRUE, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (find_wrap), TRUE);
+
+  find_algorithm = gtk_combo_box_new_text ();
+  gtk_widget_show (find_algorithm);
+  gtk_box_pack_start (GTK_BOX (hbox25), find_algorithm, TRUE, TRUE, 0);
+  gtk_combo_box_append_text (GTK_COMBO_BOX (find_algorithm), _("Contains"));
+
+  dialog_action_area3 = GTK_DIALOG (find_dialog)->action_area;
   gtk_widget_show (dialog_action_area3);
   gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area3), GTK_BUTTONBOX_END);
 
-  replace_close = gtk_button_new_from_stock ("gtk-close");
-  gtk_widget_show (replace_close);
-  gtk_dialog_add_action_widget (GTK_DIALOG (replace_dialog), replace_close, GTK_RESPONSE_CLOSE);
-  GTK_WIDGET_SET_FLAGS (replace_close, GTK_CAN_DEFAULT);
+  find_replace_all = gtk_button_new_with_mnemonic (_("Replace all"));
+  gtk_widget_show (find_replace_all);
+  gtk_dialog_add_action_widget (GTK_DIALOG (find_dialog), find_replace_all, 0);
+  gtk_widget_set_sensitive (find_replace_all, FALSE);
+  GTK_WIDGET_SET_FLAGS (find_replace_all, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, find_replace_all, _("Replace all occurrences of the find text"), NULL);
 
-  replace_replace_all = gtk_button_new_with_mnemonic (_("Replace all"));
-  gtk_widget_show (replace_replace_all);
-  gtk_dialog_add_action_widget (GTK_DIALOG (replace_dialog), replace_replace_all, 0);
-  gtk_widget_set_sensitive (replace_replace_all, FALSE);
-  GTK_WIDGET_SET_FLAGS (replace_replace_all, GTK_CAN_DEFAULT);
+  find_replace = gtk_button_new_with_mnemonic (_("Replace only"));
+  gtk_widget_show (find_replace);
+  gtk_dialog_add_action_widget (GTK_DIALOG (find_dialog), find_replace, 0);
+  gtk_widget_set_sensitive (find_replace, FALSE);
+  GTK_WIDGET_SET_FLAGS (find_replace, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, find_replace, _("Replace selected text with the replacement text"), NULL);
 
-  replace_replace = gtk_button_new ();
-  gtk_widget_show (replace_replace);
-  gtk_dialog_add_action_widget (GTK_DIALOG (replace_dialog), replace_replace, 0);
-  gtk_widget_set_sensitive (replace_replace, FALSE);
-  GTK_WIDGET_SET_FLAGS (replace_replace, GTK_CAN_DEFAULT);
+  find_replace_find = gtk_button_new ();
+  gtk_widget_show (find_replace_find);
+  gtk_dialog_add_action_widget (GTK_DIALOG (find_dialog), find_replace_find, 0);
+  gtk_widget_set_sensitive (find_replace_find, FALSE);
+  GTK_WIDGET_SET_FLAGS (find_replace_find, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, find_replace_find, _("Replace selected text and find next occurrence of the find text"), NULL);
 
-  alignment6 = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_widget_show (alignment6);
-  gtk_container_add (GTK_CONTAINER (replace_replace), alignment6);
+  alignment23 = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_widget_show (alignment23);
+  gtk_container_add (GTK_CONTAINER (find_replace_find), alignment23);
 
-  hbox10 = gtk_hbox_new (FALSE, 2);
-  gtk_widget_show (hbox10);
-  gtk_container_add (GTK_CONTAINER (alignment6), hbox10);
+  hbox26 = gtk_hbox_new (FALSE, 2);
+  gtk_widget_show (hbox26);
+  gtk_container_add (GTK_CONTAINER (alignment23), hbox26);
 
-  image14 = gtk_image_new_from_stock ("gtk-find-and-replace", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image14);
-  gtk_box_pack_start (GTK_BOX (hbox10), image14, FALSE, FALSE, 0);
+  image109 = gtk_image_new_from_stock ("gtk-find-and-replace", GTK_ICON_SIZE_BUTTON);
+  gtk_widget_show (image109);
+  gtk_box_pack_start (GTK_BOX (hbox26), image109, FALSE, FALSE, 0);
 
-  label47 = gtk_label_new_with_mnemonic (_("Replace"));
-  gtk_widget_show (label47);
-  gtk_box_pack_start (GTK_BOX (hbox10), label47, FALSE, FALSE, 0);
+  label82 = gtk_label_new_with_mnemonic (_("Replace"));
+  gtk_widget_show (label82);
+  gtk_box_pack_start (GTK_BOX (hbox26), label82, FALSE, FALSE, 0);
 
-  replace_find = gtk_button_new_from_stock ("gtk-find");
-  gtk_widget_show (replace_find);
-  gtk_dialog_add_action_widget (GTK_DIALOG (replace_dialog), replace_find, 0);
-  gtk_widget_set_sensitive (replace_find, FALSE);
-  GTK_WIDGET_SET_FLAGS (replace_find, GTK_CAN_DEFAULT);
+  find_previous = gtk_button_new ();
+  gtk_widget_show (find_previous);
+  gtk_dialog_add_action_widget (GTK_DIALOG (find_dialog), find_previous, 0);
+  gtk_widget_set_sensitive (find_previous, FALSE);
+  GTK_WIDGET_SET_FLAGS (find_previous, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, find_previous, _("Find previous occurrence of the find text"), NULL);
 
-  g_signal_connect ((gpointer) replace_find_text, "changed",
-                    G_CALLBACK (on_replace_find_text_changed),
-                    NULL);
-  g_signal_connect ((gpointer) replace_close, "clicked",
-                    G_CALLBACK (on_replace_close_clicked),
+  alignment21 = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_widget_show (alignment21);
+  gtk_container_add (GTK_CONTAINER (find_previous), alignment21);
+
+  hbox22 = gtk_hbox_new (FALSE, 2);
+  gtk_widget_show (hbox22);
+  gtk_container_add (GTK_CONTAINER (alignment21), hbox22);
+
+  image100 = gtk_image_new_from_stock ("gtk-go-back", GTK_ICON_SIZE_BUTTON);
+  gtk_widget_show (image100);
+  gtk_box_pack_start (GTK_BOX (hbox22), image100, FALSE, FALSE, 0);
+
+  label80 = gtk_label_new_with_mnemonic (_("Previous"));
+  gtk_widget_show (label80);
+  gtk_box_pack_start (GTK_BOX (hbox22), label80, FALSE, FALSE, 0);
+
+  find_next = gtk_button_new ();
+  gtk_widget_show (find_next);
+  gtk_dialog_add_action_widget (GTK_DIALOG (find_dialog), find_next, 0);
+  gtk_widget_set_sensitive (find_next, FALSE);
+  GTK_WIDGET_SET_FLAGS (find_next, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, find_next, _("Find next occurrence of the find text"), NULL);
+
+  alignment22 = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_widget_show (alignment22);
+  gtk_container_add (GTK_CONTAINER (find_next), alignment22);
+
+  hbox23 = gtk_hbox_new (FALSE, 2);
+  gtk_widget_show (hbox23);
+  gtk_container_add (GTK_CONTAINER (alignment22), hbox23);
+
+  image101 = gtk_image_new_from_stock ("gtk-go-forward", GTK_ICON_SIZE_BUTTON);
+  gtk_widget_show (image101);
+  gtk_box_pack_start (GTK_BOX (hbox23), image101, FALSE, FALSE, 0);
+
+  label81 = gtk_label_new_with_mnemonic (_("Next"));
+  gtk_widget_show (label81);
+  gtk_box_pack_start (GTK_BOX (hbox23), label81, FALSE, FALSE, 0);
+
+  g_signal_connect_after ((gpointer) find_dialog, "realize",
+                          G_CALLBACK (after_find_dialog_realize),
+                          NULL);
+  g_signal_connect ((gpointer) find_text, "changed",
+                    G_CALLBACK (on_find_text_changed),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
-  GLADE_HOOKUP_OBJECT_NO_REF (replace_dialog, replace_dialog, "replace_dialog");
-  GLADE_HOOKUP_OBJECT_NO_REF (replace_dialog, dialog_vbox3, "dialog_vbox3");
-  GLADE_HOOKUP_OBJECT (replace_dialog, vbox12, "vbox12");
-  GLADE_HOOKUP_OBJECT (replace_dialog, hbox8, "hbox8");
-  GLADE_HOOKUP_OBJECT (replace_dialog, label45, "label45");
-  GLADE_HOOKUP_OBJECT (replace_dialog, replace_find_text, "replace_find_text");
-  GLADE_HOOKUP_OBJECT (replace_dialog, hbox9, "hbox9");
-  GLADE_HOOKUP_OBJECT (replace_dialog, label46, "label46");
-  GLADE_HOOKUP_OBJECT (replace_dialog, replace_replace_text, "replace_replace_text");
-  GLADE_HOOKUP_OBJECT (replace_dialog, replace_match_case, "replace_match_case");
-  GLADE_HOOKUP_OBJECT (replace_dialog, replace_reverse, "replace_reverse");
-  GLADE_HOOKUP_OBJECT_NO_REF (replace_dialog, dialog_action_area3, "dialog_action_area3");
-  GLADE_HOOKUP_OBJECT (replace_dialog, replace_close, "replace_close");
-  GLADE_HOOKUP_OBJECT (replace_dialog, replace_replace_all, "replace_replace_all");
-  GLADE_HOOKUP_OBJECT (replace_dialog, replace_replace, "replace_replace");
-  GLADE_HOOKUP_OBJECT (replace_dialog, alignment6, "alignment6");
-  GLADE_HOOKUP_OBJECT (replace_dialog, hbox10, "hbox10");
-  GLADE_HOOKUP_OBJECT (replace_dialog, image14, "image14");
-  GLADE_HOOKUP_OBJECT (replace_dialog, label47, "label47");
-  GLADE_HOOKUP_OBJECT (replace_dialog, replace_find, "replace_find");
+  GLADE_HOOKUP_OBJECT_NO_REF (find_dialog, find_dialog, "find_dialog");
+  GLADE_HOOKUP_OBJECT_NO_REF (find_dialog, dialog_vbox3, "dialog_vbox3");
+  GLADE_HOOKUP_OBJECT (find_dialog, vbox12, "vbox12");
+  GLADE_HOOKUP_OBJECT (find_dialog, hbox8, "hbox8");
+  GLADE_HOOKUP_OBJECT (find_dialog, label45, "label45");
+  GLADE_HOOKUP_OBJECT (find_dialog, find_text, "find_text");
+  GLADE_HOOKUP_OBJECT (find_dialog, hbox9, "hbox9");
+  GLADE_HOOKUP_OBJECT (find_dialog, label46, "label46");
+  GLADE_HOOKUP_OBJECT (find_dialog, find_replace_text, "find_replace_text");
+  GLADE_HOOKUP_OBJECT (find_dialog, hbox25, "hbox25");
+  GLADE_HOOKUP_OBJECT (find_dialog, find_ignore_case, "find_ignore_case");
+  GLADE_HOOKUP_OBJECT (find_dialog, find_wrap, "find_wrap");
+  GLADE_HOOKUP_OBJECT (find_dialog, find_algorithm, "find_algorithm");
+  GLADE_HOOKUP_OBJECT_NO_REF (find_dialog, dialog_action_area3, "dialog_action_area3");
+  GLADE_HOOKUP_OBJECT (find_dialog, find_replace_all, "find_replace_all");
+  GLADE_HOOKUP_OBJECT (find_dialog, find_replace, "find_replace");
+  GLADE_HOOKUP_OBJECT (find_dialog, find_replace_find, "find_replace_find");
+  GLADE_HOOKUP_OBJECT (find_dialog, alignment23, "alignment23");
+  GLADE_HOOKUP_OBJECT (find_dialog, hbox26, "hbox26");
+  GLADE_HOOKUP_OBJECT (find_dialog, image109, "image109");
+  GLADE_HOOKUP_OBJECT (find_dialog, label82, "label82");
+  GLADE_HOOKUP_OBJECT (find_dialog, find_previous, "find_previous");
+  GLADE_HOOKUP_OBJECT (find_dialog, alignment21, "alignment21");
+  GLADE_HOOKUP_OBJECT (find_dialog, hbox22, "hbox22");
+  GLADE_HOOKUP_OBJECT (find_dialog, image100, "image100");
+  GLADE_HOOKUP_OBJECT (find_dialog, label80, "label80");
+  GLADE_HOOKUP_OBJECT (find_dialog, find_next, "find_next");
+  GLADE_HOOKUP_OBJECT (find_dialog, alignment22, "alignment22");
+  GLADE_HOOKUP_OBJECT (find_dialog, hbox23, "hbox23");
+  GLADE_HOOKUP_OBJECT (find_dialog, image101, "image101");
+  GLADE_HOOKUP_OBJECT (find_dialog, label81, "label81");
+  GLADE_HOOKUP_OBJECT_NO_REF (find_dialog, tooltips, "tooltips");
 
-  return replace_dialog;
+  gtk_widget_grab_focus (find_text);
+  gtk_widget_grab_default (find_next);
+  return find_dialog;
 }
 
 static GnomeUIInfo xfile_menu_uiinfo[] =
@@ -1966,6 +1955,8 @@ static GnomeUIInfo xfile_menu_uiinfo[] =
   GNOMEUIINFO_MENU_CLOSE_ITEM (on_xclose_activate, NULL),
   GNOMEUIINFO_MENU_SAVE_ITEM (on_xsave_activate, NULL),
   GNOMEUIINFO_MENU_SAVE_AS_ITEM (on_xsave_as_activate, NULL),
+  GNOMEUIINFO_MENU_REVERT_ITEM (on_xrevert_activate, NULL),
+  GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_EXIT_ITEM (on_xquit_activate, NULL),
   GNOMEUIINFO_END
 };
@@ -1981,7 +1972,6 @@ static GnomeUIInfo xedit_menu_uiinfo[] =
   GNOMEUIINFO_MENU_SELECT_ALL_ITEM (on_xselect_all_activate, NULL),
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_FIND_ITEM (on_xfind_activate, NULL),
-  GNOMEUIINFO_MENU_REPLACE_ITEM (on_xreplace_activate, NULL),
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_PREFERENCES_ITEM (on_xpreferences_activate, NULL),
   GNOMEUIINFO_END
@@ -1989,6 +1979,13 @@ static GnomeUIInfo xedit_menu_uiinfo[] =
 
 static GnomeUIInfo xwindows_menu_uiinfo[] =
 {
+  {
+    GNOME_APP_UI_ITEM, N_("Show _Inspectors"),
+    NULL,
+    (gpointer) on_xshow_inspectors_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, "gtk-zoom-in",
+    GDK_I, (GdkModifierType) GDK_CONTROL_MASK | GDK_MOD1_MASK, NULL
+  },
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_END
 };
@@ -2061,7 +2058,9 @@ create_ext_window (void)
   GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[6].widget, "xclose");
   GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[7].widget, "xsave");
   GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[8].widget, "xsave_as");
-  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[9].widget, "xquit");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[9].widget, "xrevert");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[10].widget, "separator30");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[11].widget, "xquit");
   GLADE_HOOKUP_OBJECT (ext_window, menubar2_uiinfo[1].widget, "xedit");
   GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[0].widget, "xundo");
   GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[1].widget, "xredo");
@@ -2072,11 +2071,11 @@ create_ext_window (void)
   GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[6].widget, "xselect_all");
   GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[7].widget, "separator17");
   GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[8].widget, "xfind");
-  GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[9].widget, "xreplace");
-  GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[10].widget, "separator24");
-  GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[11].widget, "xpreferences");
+  GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[9].widget, "separator24");
+  GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[10].widget, "xpreferences");
   GLADE_HOOKUP_OBJECT (ext_window, menubar2_uiinfo[2].widget, "xwindows");
-  GLADE_HOOKUP_OBJECT (ext_window, xwindows_menu_uiinfo[0].widget, "separator22");
+  GLADE_HOOKUP_OBJECT (ext_window, xwindows_menu_uiinfo[0].widget, "xshow_inspectors");
+  GLADE_HOOKUP_OBJECT (ext_window, xwindows_menu_uiinfo[1].widget, "separator22");
   GLADE_HOOKUP_OBJECT (ext_window, scrolledwindow34, "scrolledwindow34");
   GLADE_HOOKUP_OBJECT (ext_window, ext_code, "ext_code");
   GLADE_HOOKUP_OBJECT (ext_window, extension_appbar, "extension_appbar");

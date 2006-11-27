@@ -1,0 +1,167 @@
+! Time.i6 segment
+
+[ RoundOffTime t1 t2; return ((t1+t2/2)/t2)*t2; ];
+
+[ PrintTimeOfDay t h aop;
+	if (t<0) { print "<no time>"; return; }
+	if (t >= 60*12) { aop = "pm"; t=t-60*12; } else aop = "am";
+	h = t/60; if (h==0) h=12;
+	print h, ":";
+	if (t%60<10) print "0"; print t%60, " ", (string) aop;
+];
+
+[ PrintTimeOfDayEnglish t h m dir aop;
+	h = (t/60) % 12; m = t%60; if (h==0) h=12;
+	if (m==0) { print (number) h, " o'clock"; return; }
+	dir = "past";
+	if (m > 30) { m = 60-m; h = (h+1)%12; if (h==0) h=12; dir = "to"; }
+	switch(m) {
+		15: print "quarter"; 30: print "half";
+		default: print (number) m;
+		    if (m%5 ~= 0) {
+					if (m == 1) print " minute"; else print " minutes";
+		    }
+	}
+	print " ", (string) dir, " ", (number) h;
+];
+
+Constant I7_TWELVE_HOURS = 720;
+
+[ I7_HoursMinsWordToTime hour minute word x;
+	if (hour >= 24) return -1;
+	if (minute >= 60) return -1;
+	x = hour*60 + minute; if (hour >= 13) return x;
+	x = x%I7_TWELVE_HOURS; if (word == 'pm') x = x + I7_TWELVE_HOURS;
+	if (word ~= 'am' or 'pm' && hour == 12) x = x + I7_TWELVE_HOURS;
+	return x;
+];
+
+[ I7_ExtendedTryNumber wordnum i j;
+	i = wn; wn = wordnum; j = NextWordStopped(); wn = i;
+	switch (j) {
+		'twenty-one': return 21;
+		'twenty-two': return 22;
+		'twenty-three': return 23;
+		'twenty-four': return 24;
+		'twenty-five': return 25;
+		'twenty-six': return 26;
+		'twenty-seven': return 27;
+		'twenty-eight': return 28;
+		'twenty-nine': return 29;
+		'thirty': return 30;
+		default: return TryNumber(wordnum);
+	}
+];
+
+[ I7_TIME_TOKEN first_word second_word at length flag illegal_char offhour hr mn i;
+	first_word = NextWordStopped();
+	switch (first_word) {
+		'midnight': parsed_number = 0; return GPR_NUMBER;
+		'midday', 'noon': parsed_number = I7_TWELVE_HOURS;
+		return GPR_NUMBER;
+	}
+	! Next try the format 12:02
+	at = WordAddress(wn-1); length = WordLength(wn-1);
+	for (i=0: i<length: i++) {
+		switch (at->i) {
+			':': if (flag == false && i>0 && i<length-1) flag = true;
+			else illegal_char = true;
+			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9': ;
+			default: illegal_char = true;
+		}
+	}
+	if (length < 3 || length > 5 || illegal_char) flag = false;
+	if (flag) {
+		for (i=0: at->i~=':': i++, hr=hr*10) hr = hr + at->i - '0';
+		hr = hr/10;
+		for (i++: i<length: i++, mn=mn*10) mn = mn + at->i - '0';
+		mn = mn/10;
+		second_word = NextWordStopped();
+		parsed_number = I7_HoursMinsWordToTime(hr, mn, second_word);
+		if (parsed_number == -1) return GPR_FAIL;
+		if (second_word ~= 'pm' or 'am') wn--;
+		return GPR_NUMBER;
+	}
+	! Lastly the wordy format
+	offhour = -1;
+	if (first_word == 'half') offhour = 30;
+	if (first_word == 'quarter') offhour = 15;
+	if (offhour < 0) offhour = I7_ExtendedTryNumber(wn-1);
+	if (offhour < 0 || offhour >= 60) return GPR_FAIL;
+	second_word = NextWordStopped();
+	switch (second_word) {
+		! "six o'clock", "six"
+		'o^clock', 'am', 'pm', -1:
+			hr = offhour; if (hr > 12) return GPR_FAIL;
+		! "quarter to six", "twenty past midnight"
+		'to', 'past':
+			mn = offhour; hr = I7_ExtendedTryNumber(wn);
+			if (hr <= 0) {
+				switch (NextWordStopped()) {
+					'noon', 'midday': hr = 12;
+					'midnight': hr = 0;
+					default: return GPR_FAIL;
+				}
+			}
+			if (hr >= 13) return GPR_FAIL;
+			if (second_word == 'to') {
+				mn = 60-mn; hr--; if (hr<0) hr=23;
+			}
+			wn++; second_word = NextWordStopped();
+		! "six thirty"
+		default:
+			hr = offhour; mn = I7_ExtendedTryNumber(--wn);
+			if (mn < 0 || mn >= 60) return GPR_FAIL;
+			wn++; second_word = NextWordStopped();
+	}
+	parsed_number = I7_HoursMinsWordToTime(hr, mn, second_word);
+	if (parsed_number < 0) return GPR_FAIL;
+	if (second_word ~= 'pm' or 'am' or 'o^clock') wn--;
+	return GPR_NUMBER;
+];
+
+[ SetI7Timer R t f i b;
+	for (i=1: i<=(I7TimerTable-->0): i++) {
+		if (R == I7TimerTable-->i) { b=i; jump SlotFound; }
+		if ((b==0) && (I7TimerTable-->i == 0)) b=i;
+	}
+	if (b==0) return RunTimeProblem(RTP_TOOMANYEVENTS);
+	.SlotFound;
+	I7TimerTable-->b = R;
+	if (f == 0) I7TimerTableTimes-->b = -t;
+	else I7TimerTableTimes-->b = t;
+];
+
+[ ProcessI7Timers i t f r;
+	for (i=1: i<=(I7TimerTable-->0): i++)
+		if ((r=I7TimerTable-->i) ~= 0) {
+			t = I7TimerTableTimes-->i; f = 0;
+			if (t<0) {
+					(I7TimerTableTimes-->i)++;
+					if (I7TimerTableTimes-->i == 0) f=1;
+			} else {
+					if ((the_time >= t) && (the_time < t+30)) f=1;
+			}
+			if (f) {
+					I7TimerTable-->i = 0;
+					ProcessRulebook(r);
+			}
+		}
+	rfalse;
+];
+
+! --- Turn sequence rules ---
+[ TS1_R; AdvanceWorldClock(); rfalse; ];
+[ TS2_R; RunTimersAndDaemons(); rfalse; ];
+[ TS3_R; RunEachTurnProperties(); rfalse; ];
+[ TS4_R; TimePasses(); rfalse; ];
+[ TS5_R; AdjustLight(); rfalse; ];
+[ TS6_R obj;
+	NoteObjectAcquisitions();
+	objectloop (obj in player)
+		if (obj ofclass RUCKSACK_CLASS)
+			SACK_OBJECT = obj;
+	rfalse;
+];
+
+! End of Time.i6 segment

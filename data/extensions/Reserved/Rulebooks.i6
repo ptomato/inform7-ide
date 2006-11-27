@@ -1,0 +1,338 @@
+! Rulebooks.i6 segment
+
+! (i) Rulebooks are numbered, and we need I6 constants for the numbers of
+! some commonly used ones. (These numbers must correspond to those in the
+! source of NI, and to the creation sequence in the Standard Rules.)
+
+Constant APROC_RB				= 0;
+Constant AFTER_RB				= 3;
+Constant PROC_RB				= 4;
+Constant ACCESS_RB				= 5;
+Constant GENERIC_CARRYOUT_RB	= 7;
+Constant REPLY_RB				= 8;
+Constant TURNEND_RB				= 9;
+Constant REACHIN_RB				= 10;
+Constant REACHOUT_RB			= 11;
+Constant GAME_BEGINS_RB			= 22;
+Constant GAME_ENDS_RB			= 23;
+Constant GENERIC_CHECK_RB		= 25;
+Constant GENERIC_REPORT_RB		= 26;
+Constant PERSUADE_RB			= 27;
+Constant UNABLE_RB				= 28;
+Constant VISIBLE_RB				= 29;
+
+! (ii) We maintain a "rule change stack" to keep track of any temporary
+! abolition or modification of rules otherwise used in the rulebooks.
+! The rule change stack contains 3-word (6 byte) records, and is defined
+! in Main.i6. 
+
+[ PushRuleChange usage rule1 rule2;
+	if (rulechange_sp >= RS_CAPACITY) {
+		return RunTimeProblem(RTP_RULESTACK);
+	}
+	rulechange_stack-->rulechange_sp++ = usage;
+	rulechange_stack-->rulechange_sp++ = rule1;
+	rulechange_stack-->rulechange_sp++ = rule2;
+];
+
+! The first word of each record indicates a usage type, of which one value
+! is special and indicates the start of a frame. A new frame is opened on
+! the stack each time a new "follow" occurs; recall that this processes a
+! rulebook after consulting procedural rules, which may in turn modify
+! the behaviour of other rules. These frame divisions, therefore, mark
+! local scopes for modifications: anything from the top of the stack down
+! to the topmost frame marker is currently in force.
+
+Global rule_frames = 0;
+
+Constant RS_FRAME = -1;
+
+! The other possible values of usage are as follows:
+
+Constant RS_DONOTRUN	= 1;
+Constant RS_RUN			= 2;
+Constant RS_MOVEBEFORE	= 3;
+Constant RS_MOVEAFTER	= 4;
+Constant RS_DONOTUSE	= 5;
+Constant RS_USE			= 6;
+Constant RS_SUBSTITUTE	= 7;
+Constant RS_SUCCEEDS	= 8;
+Constant RS_FAILS		= 9;
+
+! (iii) To "follow" a rulebook, we start a new frame, process the
+! procedural rules, then process the rulebook, then clear the frame back off
+! the stack:
+
+[ BeginFollowRulebook;
+	PushRuleChange(RS_FRAME, RS_FRAME, RS_FRAME);
+	rule_frames++;
+	! print "+<", rule_frames, "/", rulechange_sp, ">";
+	if (rule_frames == 20) {
+		RunTimeProblem(RTP_TOOMANYRULEBOOKS);
+		rule_frames = -1;
+		return;
+	}
+	ProcessRulebook(PROC_RB, 0, 1);
+];
+[ EndFollowRulebook r x y;
+	if (rulechange_stack-->rulechange_sp == RS_SUCCEEDS) r = 1;
+	else if (rulechange_stack-->rulechange_sp == RS_FAILS) r = 0;
+	else r = -1;
+	if (r ~= -1) {
+		x = rulechange_stack-->(rulechange_sp+1);
+		y = rulechange_stack-->(rulechange_sp+2);
+	}
+	rule_frames--;
+	while (rulechange_sp > 0) {
+		rulechange_sp = rulechange_sp - 3;
+		if (rulechange_stack-->rulechange_sp == RS_FRAME) break;
+	}
+	if (rulechange_sp == 0) rule_frames = 0;
+	if (r == 1) rulechange_stack-->rulechange_sp = RS_SUCCEEDS;
+	else if (r == 0) rulechange_stack-->rulechange_sp = RS_FAILS;
+	if (r ~= -1) {
+		rulechange_stack-->(rulechange_sp+1) = x;
+		rulechange_stack-->(rulechange_sp+2) = y;
+	}
+	! print "-<", rule_frames, "/", rulechange_sp, ">";
+];
+
+[ FollowRulebook rulebook par activity_flag rv;
+	! print "^{", rulebook, "}";
+	if (rulebook ~= PROC_RB) BeginFollowRulebook();
+	rv = ProcessRulebook(rulebook, par, activity_flag);
+	if (rulebook ~= PROC_RB) EndFollowRulebook();
+	! print "{/", rulebook, "}";
+	if (rv) rtrue; rfalse;
+];
+
+[ FollowRulebookSelfed R o ss rv;
+	ss = self; if (o) self = o;
+	rv = FollowRulebook(R, o, true);
+	self = ss; return rv;
+];
+
+! (iv) The main rulebook processing routine is
+!   ProcessRulebook(rulebook/rule)
+! which returns true if the rulebook or rule chose to "succeed" or "fail",
+! and false if it made no choice. In the event that a choice was made, the
+! result is left as a record above the top of the stack, and should be
+! collected immediately.
+! First a variable logging the depth of recursion of rulebook processing,
+! which at present is used only to print neatly formatted debugging:
+
+Global process_rulebook_count;
+
+! The following bitmap is used in a simple state machine while working
+! through a given routine:
+
+Constant RS_ACTIVE_BIT		= 1;
+Constant RS_MOVED_BIT		= 2;
+Constant RS_USERESULT_BIT	= 4;
+Constant RS_ACTIVITY		= 8;
+Constant RS_NOSKIPS			= 16;
+
+! The following flag records whether we are tracing rule invocations:
+Global debugging_rules = false;
+
+[ ProcessRulebook rulebook par bits rv
+	x frame_base substituted_rule usage original_deadflag;
+! if ((rulebook >= 0) && (rulebook < HIGHEST_RULEBOOK_NO)) {
+!	print "Rulebook ", rulebook, "^";
+! }
+	if ((Protect_I7_Arrays-->0 ~= 16339) ||
+		(Protect_I7_Arrays-->1 ~= 12345)) {
+		print "^^*** Fatal programming error: I7 arrays corrupted ***^^";
+		@quit;
+	}
+	if (bits) bits = RS_ACTIVITY + RS_NOSKIPS;
+	if (rule_frames<0) rfalse;
+	original_deadflag = deadflag;
+	if (par) parameter_object = par;
+	for (x = rulechange_sp-3: x>=0: x = x - 3) {
+		usage = rulechange_stack-->x;
+		if (usage == RS_FRAME) { x=x+3; break; }
+		if (rulechange_stack-->(x+1) == rulebook) {
+			if (usage == RS_MOVEBEFORE) bits = bits | (RS_MOVED_BIT);
+			if (usage == RS_MOVEAFTER) bits = bits | (RS_MOVED_BIT);
+		}
+	} if (x<0) x=0; frame_base = x;
+	if ((bits & RS_MOVED_BIT) && (rv == false)) { rfalse; }
+	! rv was a call parameter: it's no longer needed and is now reused
+	bits = bits | RS_ACTIVE_BIT;
+	bits = bits | RS_USERESULT_BIT;
+	substituted_rule = rulebook; rv = 0;
+	for (: x<rulechange_sp: x = x + 3) {
+		usage = rulechange_stack-->x;
+		if (rulechange_stack-->(x+1) == rulebook) {
+			if (usage == RS_DONOTRUN) bits = bits & (~RS_ACTIVE_BIT);
+			if (usage == RS_RUN) bits = bits | (RS_ACTIVE_BIT);
+			if (usage == RS_DONOTUSE) bits = bits & (~RS_USERESULT_BIT);
+			if (usage == RS_USE) bits = bits | (RS_USERESULT_BIT);
+			if (usage == RS_SUBSTITUTE)
+				substituted_rule = rulechange_stack-->(x+2);
+		}
+		if ((usage == RS_MOVEBEFORE) && (rulechange_stack-->(x+2) == rulebook)) {
+			rv = ProcessRulebook(rulechange_stack-->(x+1),
+				par, (bits & RS_ACTIVITY ~= 0), true);
+			if (rv) return rv;
+		}
+	}
+	if ((bits & RS_ACTIVE_BIT) == 0) rfalse;
+	! We now reuse usage to keep the stack frame slimmer
+	usage = debugging_rules;
+	#ifdef DEBUG;
+	AdjustDbr(substituted_rule);
+	#endif;
+	#ifndef I7_ECONOMY;
+	if (debugging_rules) DebugRulebooks(substituted_rule, par);
+	#endif;
+	! (A routine defined in the I7 code generator)
+	process_rulebook_count = process_rulebook_count + debugging_rules;
+	if ((substituted_rule >= 0) && (substituted_rule < HIGHEST_RULEBOOK_NO)) {
+		substituted_rule = rulebooks_array-->substituted_rule;
+		for (x=0, rv=0:
+			(substituted_rule-->x~=I6_NULL) && (original_deadflag == deadflag):
+			x++) {
+			if ((rv = (ProcessRulebook(substituted_rule-->x,
+				par, (bits & RS_ACTIVITY ~= 0))))
+			    && (bits & RS_USERESULT_BIT)) break;
+			rv = 0;
+		}
+	} else {
+		if ((say__p) && (bits & RS_NOSKIPS == 0)) I7_DivideParagraph();
+		rv = indirect(substituted_rule);
+		if (rv) rv = substituted_rule;
+	}
+	if (rv && (bits & RS_USERESULT_BIT)) {
+		#ifdef DEBUG;
+		AdjustDbr(substituted_rule);
+		#endif;
+		  process_rulebook_count = process_rulebook_count - debugging_rules;
+		  if (process_rulebook_count < 0) process_rulebook_count = 0;
+		#ifndef I7_ECONOMY;
+		  if (debugging_rules) {
+			spaces(2*process_rulebook_count);
+	  	  if (rulechange_stack-->rulechange_sp == RS_SUCCEEDS)
+	  			print "[stopped: success]^";
+	  	  if (rulechange_stack-->rulechange_sp == RS_FAILS)
+	  			print "[stopped: fail]^";
+		}
+		#endif;
+		debugging_rules = usage;
+		return rv;
+	}
+	for (x=rulechange_sp-3: x>=frame_base: x = x-3) {
+		if ((rulechange_stack-->x == RS_MOVEAFTER) &&
+			(rulechange_stack-->(x+2) == rulebook)) {
+			rv = ProcessRulebook(rulechange_stack-->(x+1),
+				par, (bits & RS_ACTIVITY ~= 0), true);
+			if (rv) {
+				process_rulebook_count--;
+			    debugging_rules = usage;
+				return rv;
+			}
+		}
+	}
+	process_rulebook_count = process_rulebook_count - debugging_rules;
+	rulechange_stack-->rulechange_sp = 0;
+	debugging_rules = usage;
+	rfalse;
+];
+
+! (v) The following routines provide a sort of rule-changing API:
+
+[ ResultOfRule a;
+	a = rulechange_stack-->rulechange_sp;
+	if ((a == RS_FAILS) || (a == RS_SUCCEEDS)) {
+		a = rulechange_stack-->(rulechange_sp + 1);
+		if (a) return rulechange_stack-->(rulechange_sp + 2);
+	}
+	rfalse;
+];
+
+[ ActRulebookSucceeds rule_id;
+	if (rule_id) I7_action_deciding_rule = rule_id;
+	RulebookSucceeds();
+];
+[ ActRulebookFails rule_id;
+	if (rule_id) I7_action_deciding_rule = rule_id;
+	RulebookFails();
+];
+[ RulebookSucceeds valueflag value;
+	PushRuleChange(RS_SUCCEEDS, valueflag, value);
+	rulechange_sp = rulechange_sp - 3;
+];
+[ RulebookFails valueflag value;
+	PushRuleChange(RS_FAILS, valueflag, value);
+	rulechange_sp = rulechange_sp - 3;
+];
+[ RulebookSucceeded;
+	if (rulechange_stack-->rulechange_sp == RS_SUCCEEDS) rtrue;
+	rfalse;
+];
+
+[ SuppressRule rule;
+	PushRuleChange(RS_DONOTRUN, rule, 0);
+];
+[ ReinstateRule rule;
+	PushRuleChange(RS_RUN, rule, 0);
+];
+[ DonotuseRule rule;
+	PushRuleChange(RS_DONOTUSE, rule, 0);
+];
+[ UseRule rule;
+	PushRuleChange(RS_USE, rule, 0);
+];
+[ SubstituteRule rule1 rule2;
+	PushRuleChange(RS_SUBSTITUTE, rule2, rule1);
+];
+[ MoveRuleBefore rule1 rule2;
+	PushRuleChange(RS_MOVEBEFORE, rule1, rule2);
+];
+[ MoveRuleAfter rule1 rule2;
+	PushRuleChange(RS_MOVEAFTER, rule1, rule2);
+];
+
+! (vi) This is the I6 printing rule used for a value of kind "rule", which
+! is the I6 packed address of the rule's routine:
+
+#IFNDEF I7_ECONOMY;
+{-array:RulebookNames}
+#ENDIF; ! I7_ECONOMY
+
+[ I7_RulePrintingRule R p1;
+#ifndef I7_ECONOMY;
+	if ((R>=0) && (R<{-value:NUMBER_CREATED(rulebook)})) {
+		print (string) (RulebookNames-->R);
+	} else {
+{-call:compile_rule_printing_switch}
+		print "(nameless rule at address ", R, ")";
+	}
+#ifnot;
+	if ((R>=0) && (R<{-value:NUMBER_CREATED(rulebook)})) {
+		print "(rulebook ", R, ")";
+	} else {
+		print "(rule at address ", R, ")";
+	}
+#endif;
+];
+
+[ DebugRulebooks subs par i;
+	spaces(2*process_rulebook_count);
+	print "[", (I7_RulePrintingRule) subs;
+	if (par) print " / on O", par;
+	print "]^";
+];
+
+! (vii) Used from calls compiled in to NI-generated rules, printing a trace
+! of which rules are executed:
+
+[ DB_Rule R blocked;
+	if (R==0) return;
+	print "@31[Rule ~", (I7_RulePrintingRule) R, "~ ";
+	if (blocked == false) "applies.]";
+	"does not apply.]";
+];
+
+! End of Rulebooks.i6

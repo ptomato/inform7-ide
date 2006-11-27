@@ -137,6 +137,41 @@ on_xsave_as_activate                   (GtkMenuItem     *menuitem,
 
 
 void
+on_xrevert_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    struct extension *ext = get_ext(GTK_WIDGET(menuitem));
+    
+    if(ext->filename == NULL)
+        return; /* No saved version to revert to */        
+    if(!gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(ext->buffer)))
+        return; /* Text has not changed since last save */
+    
+    /* Ask if the user is sure */
+    GtkWidget *revert_dialog = gtk_message_dialog_new_with_markup(
+      GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
+      GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
+      "Are you sure you want to revert to the last saved version?");
+    gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(revert_dialog),
+      "All unsaved changes will be lost.");
+    gtk_dialog_add_buttons(GTK_DIALOG(revert_dialog),
+      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+      GTK_STOCK_REVERT_TO_SAVED, GTK_RESPONSE_OK,
+      NULL);
+    gint result = gtk_dialog_run(GTK_DIALOG(revert_dialog));
+    gtk_widget_destroy(revert_dialog);
+    if(result != GTK_RESPONSE_OK)
+        return; /* Only go on if the user clicked revert */
+
+    /* Store the filename, close the window and reopen it */
+    gchar *filename = g_strdup(ext->filename);
+    delete_ext(ext);
+    ext = open_extension(filename);
+    g_free(filename);
+    gtk_widget_show(ext->window);
+}
+
+void
 on_xquit_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -218,31 +253,23 @@ void
 on_xfind_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    GtkWidget *dialog = create_find_dialog();
-    g_signal_connect((gpointer)lookup_widget(dialog, "find_find"), "clicked",
-      G_CALLBACK(on_xfind_find_clicked),
-      (gpointer)get_ext(GTK_WIDGET(menuitem)));
-    /* Do the same thing as in the main window, but with a different callback
-    that expects an extension struct instead of a story */
-    gtk_widget_show(dialog);
-}
-
-
-void
-on_xreplace_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
     gpointer ext = (gpointer)get_ext(GTK_WIDGET(menuitem));
-    GtkWidget *dialog = create_replace_dialog();
-    g_signal_connect((gpointer)lookup_widget(dialog, "replace_find"), "clicked",
-      G_CALLBACK(on_xreplace_find_clicked), ext);
-    g_signal_connect((gpointer)lookup_widget(dialog, "replace_replace"),
-      "clicked", G_CALLBACK(on_xreplace_replace_clicked), ext);
-    g_signal_connect((gpointer)lookup_widget(dialog, "replace_replace_all"),
-      "clicked", G_CALLBACK(on_xreplace_replace_all_clicked), ext);
-    /* Connect the callbacks specifically for the extension window */
+    GtkWidget *dialog = create_find_dialog();
+    /* Do the same thing as in the main window, but with different callbacks
+    that expect an extension struct instead of a story */
+    g_signal_connect((gpointer)lookup_widget(dialog, "find_next"),
+      "clicked", G_CALLBACK(on_xfind_next_clicked), ext);
+    g_signal_connect((gpointer)lookup_widget(dialog, "find_previous"),
+      "clicked", G_CALLBACK(on_xfind_previous_clicked), ext);
+    g_signal_connect((gpointer)lookup_widget(dialog, "find_replace_find"),
+      "clicked", G_CALLBACK(on_xfind_replace_find_clicked), ext);
+    g_signal_connect((gpointer)lookup_widget(dialog, "find_replace"),
+      "clicked", G_CALLBACK(on_xfind_replace_clicked), ext);
+    g_signal_connect((gpointer)lookup_widget(dialog, "find_replace_all"),
+      "clicked", G_CALLBACK(on_xfind_replace_all_clicked), ext);
     gtk_widget_show(dialog);
 }
+
 
 void
 on_xpreferences_activate               (GtkMenuItem     *menuitem,
@@ -250,6 +277,15 @@ on_xpreferences_activate               (GtkMenuItem     *menuitem,
 {
     on_preferences_activate(menuitem, user_data);
 }
+
+
+void
+on_xshow_inspectors_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    on_show_inspectors_activate(menuitem, user_data);
+}
+
 
 /* Create the GtkSourceView that displays the code */
 GtkWidget*

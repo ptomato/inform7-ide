@@ -362,29 +362,28 @@ on_revert_activate                     (GtkMenuItem     *menuitem,
 {
     struct story *thestory = get_story(GTK_WIDGET(menuitem));
     
-    /* Ask if the user is sure */
-    if(gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(thestory->buffer))) {
-        GtkWidget *revert_dialog = gtk_message_dialog_new_with_markup(
-          GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
-          GTK_DIALOG_DESTROY_WITH_PARENT,
-          GTK_MESSAGE_WARNING,
-          GTK_BUTTONS_NONE,
-          "Are you sure you want to revert to the last saved version?");
-        gtk_message_dialog_format_secondary_text(
-          GTK_MESSAGE_DIALOG(revert_dialog),
-          "All unsaved changes will be lost.");
-        gtk_dialog_add_buttons(GTK_DIALOG(revert_dialog),
-          GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-          GTK_STOCK_REVERT_TO_SAVED, GTK_RESPONSE_OK,
-          NULL);
-        gint result = gtk_dialog_run(GTK_DIALOG(revert_dialog));
-        gtk_widget_destroy(revert_dialog);
-        if(result != GTK_RESPONSE_OK)
-            return; /* Only go on if the user clicked revert */
-    } else
-        return; /* The project was not modified, so no need to do anything */
+    if(thestory->filename == NULL)
+        return; /* No saved version to revert to */        
+    if(!gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(thestory->buffer)))
+        return; /* Text has not changed since last save */
     
-    /* Save the filename, close the window and reopen it */
+    /* Ask if the user is sure */
+    GtkWidget *revert_dialog = gtk_message_dialog_new_with_markup(
+      GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
+      GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
+      "Are you sure you want to revert to the last saved version?");
+    gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(revert_dialog),
+      "All unsaved changes will be lost.");
+    gtk_dialog_add_buttons(GTK_DIALOG(revert_dialog),
+      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+      GTK_STOCK_REVERT_TO_SAVED, GTK_RESPONSE_OK,
+      NULL);
+    gint result = gtk_dialog_run(GTK_DIALOG(revert_dialog));
+    gtk_widget_destroy(revert_dialog);
+    if(result != GTK_RESPONSE_OK)
+        return; /* Only go on if the user clicked revert */
+    
+    /* Store the filename, close the window and reopen it */
     gchar *filename = g_strdup(thestory->filename);
     delete_story(thestory);
     thestory = open_project(filename);
@@ -476,32 +475,21 @@ on_find_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     GtkWidget *dialog = create_find_dialog();
-    /* Connect the find button clicked signal and send our current story as
-    user_data, so we can access it from within the find window. */
-    g_signal_connect((gpointer)lookup_widget(dialog, "find_find"), "clicked",
-      G_CALLBACK(on_find_find_clicked),
-      (gpointer)get_story(GTK_WIDGET(menuitem)));
-    gtk_widget_show(dialog);
-}
-
-
-void
-on_replace_activate                    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    gpointer thestory = (gpointer)get_story(GTK_WIDGET(menuitem));
-    GtkWidget *dialog = create_replace_dialog();
-    g_signal_connect((gpointer)lookup_widget(dialog, "replace_find"), "clicked",
-      G_CALLBACK(on_replace_find_clicked), thestory);
-    g_signal_connect((gpointer)lookup_widget(dialog, "replace_replace"),
-      "clicked", G_CALLBACK(on_replace_replace_clicked), thestory);
-    g_signal_connect((gpointer)lookup_widget(dialog, "replace_replace_all"),
-      "clicked", G_CALLBACK(on_replace_replace_all_clicked), thestory);
     /* Connect the button clicked signals and send our current story as
-    user_data, so we can access it from within the replace window. */
+    user_data, so we can access it from within the find window. */
+    gpointer thestory = (gpointer)get_story(GTK_WIDGET(menuitem));
+    g_signal_connect((gpointer)lookup_widget(dialog, "find_next"),
+      "clicked", G_CALLBACK(on_find_next_clicked), thestory);
+    g_signal_connect((gpointer)lookup_widget(dialog, "find_previous"),
+      "clicked", G_CALLBACK(on_find_previous_clicked), thestory);
+    g_signal_connect((gpointer)lookup_widget(dialog, "find_replace_find"),
+      "clicked", G_CALLBACK(on_find_replace_find_clicked), thestory);
+    g_signal_connect((gpointer)lookup_widget(dialog, "find_replace"),
+      "clicked", G_CALLBACK(on_find_replace_clicked), thestory);
+    g_signal_connect((gpointer)lookup_widget(dialog, "find_replace_all"),
+      "clicked", G_CALLBACK(on_find_replace_all_clicked), thestory);
     gtk_widget_show(dialog);
 }
-
 
 void
 on_preferences_activate                (GtkMenuItem     *menuitem,
@@ -585,6 +573,14 @@ on_release_activate                    (GtkMenuItem     *menuitem,
     thestory->release = TRUE;
     thestory->run = FALSE;
     compile_project(thestory);
+}
+
+
+void
+on_show_inspectors_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+
 }
 
 
@@ -876,8 +872,8 @@ on_source_search_activate              (GtkEntry        *entry,
                                         gpointer         user_data)
 {
     struct story *thestory = get_story(GTK_WIDGET(entry));
-    find(GTK_TEXT_BUFFER(thestory->buffer), gtk_entry_get_text(entry), FALSE,
-      FALSE);
+    find(GTK_TEXT_BUFFER(thestory->buffer), gtk_entry_get_text(entry), TRUE,
+      TRUE, FALSE);
     /* Do not free or modify the strings from gtk_entry_get_text */
     scroll_text_view_to_cursor(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "source_l")));

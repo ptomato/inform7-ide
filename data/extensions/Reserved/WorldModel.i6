@@ -1,0 +1,398 @@
+! WorldModel.i6 segment
+
+
+! Replaced from the I6 library:
+
+Global untouchable_object;
+Global untouchable_silence;
+Global touch_persona;
+[ ObjectIsUntouchable item silent_flag flag2 p save_sp;
+	untouchable_object = item; untouchable_silence = silent_flag;
+	touch_persona = p; if (p == actor) touch_persona = 0;
+	if ((actor ~= player) &&
+		((item ofclass K4_door) || (item ofclass K7_backdrop))) rfalse;
+	save_sp = say__p; say__p = 0;
+	if (ProcessRulebook(ACCESS_RB, 0, 1)) {
+		if (say__p) save_sp = true; else say__p = save_sp;
+		if (rulechange_stack-->rulechange_sp == RS_SUCCEEDS) {
+			untouchable_silence = 0;
+ 		 rfalse; ! No barrier
+		} else {
+			untouchable_silence = 0;
+ 		 rtrue; ! Barrier
+		}
+	}
+	if (say__p) save_sp = true; else say__p = save_sp;
+	! No decision is interpreted as no barrier to access:
+	untouchable_silence = 0;
+	rfalse;
+];
+
+[ OIU_Scoped i o;
+!  i = ObjectScopedBySomething(untouchable_object);
+!  if (i ~= 0) {
+!		o = parameter_object;
+!		if (ObjectIsUntouchable(i, 0, 0, touch_persona)) rtrue;
+!		parameter_object = i;
+!		return OIUB_CP();
+!  }
+	rfalse;
+];
+
+[ OIU_Core o;
+	while (o && (o provides component_parent) && (o.component_parent))
+		o = o.component_parent;
+	return o;
+];
+
+[ OIU_Parent o;
+	return OIU_Core(parent(OIU_Core(o)));
+];
+
+[ OIU_CommonAncestor o1 o2 i j;
+	!  Find the nearest object indirectly containing o1 and o2,
+	!  or return 0 if there is no common ancestor.
+
+	o1 = OIU_Core(o1);
+	o2 = OIU_Core(o2);
+	i = o1;
+	while (i ~= 0) {
+		j = o2;
+		while (j ~= 0) {
+			if (j == i) return i;
+			j = OIU_Parent(j);
+		}
+	  i = OIU_Parent(i);
+	}
+	return 0;
+];
+
+[ OIU_Barrier ancestor i j external p;
+	p = touch_persona; if (p == 0) p = actor;
+
+	ancestor = OIU_CommonAncestor(p, untouchable_object);
+!  if (ancestor == 0) {
+!		RulebookFails(); ! Wholly different locations
+!		rtrue;
+!  }
+!  print "Doing OIU barriers for ", (the) p, " and ", (the) untouchable_object,
+!		": common ancestor is ", (the) ancestor, ".^";
+
+	! First, a barrier between the player and the ancestor.
+
+	if (OIU_Core(p) ~= ancestor) {
+		i = parent(OIU_Core(p)); j = OIU_Core(i); external = false;
+		if (j ~= i) { i = j; external = true; }
+		while (i~=ancestor && i) {
+			if ((external == false) && (ProcessRulebook(REACHOUT_RB, i))
+			  && (rulechange_stack-->rulechange_sp == RS_FAILS)) rtrue; ! Barrier
+			i = parent(OIU_Core(i)); j = OIU_Core(i); external = false;
+			if (j ~= i) { i = j; external = true; }
+		}
+	}
+
+	! Second, a barrier between the item and the ancestor.
+
+	if (OIU_Core(untouchable_object) ~= ancestor) {
+		i = parent(OIU_Core(untouchable_object)); j = OIU_Core(i); external = false;
+		if (j ~= i) { i = j; external = true; }
+		while (i~=ancestor && i) {
+			if ((external == false) && (ProcessRulebook(REACHIN_RB, i))
+			  && (rulechange_stack-->rulechange_sp == RS_FAILS)) rtrue; ! Barrier
+			i = parent(OIU_Core(i)); j = OIU_Core(i); external = false;
+			if (j ~= i) { i = j; external = true; }
+		}
+	}
+
+	RulebookSucceeds(); ! No barrier
+	rtrue;
+];
+
+[ OIUB_CCI;
+	if (parameter_object has container && parameter_object hasnt open) {
+		if (touch_persona == 0) GL__M(##Take,9,parameter_object);
+		RulebookFails();
+		rtrue;
+	}
+	rfalse;
+];
+
+[ OIUB_CCO;
+	if (parameter_object has container && parameter_object hasnt open) {
+		if (touch_persona == 0) GL__M(##Take,9,parameter_object);
+		RulebookFails();
+		rtrue;
+	}
+	rfalse;
+];
+
+[ OIUB_RI;
+! print parameter_object, "=", (the) parameter_object, "^";
+	if (parameter_object && parameter_object ofclass K1_room) {
+		if (touch_persona == 0) GL__M(##Take,14,parameter_object);
+		RulebookFails();
+		rtrue;
+	}
+	rfalse;
+];
+
+[ OIUB_CP;
+	if ((noun provides component_parent) && (noun.component_parent)) {
+!	  if (noun.component_parent has transparent)
+			return GL__M(##Take,7,noun.component_parent);
+	  return GL__M(##Take,8,noun.component_parent);
+	}
+	rfalse;
+];
+
+
+
+[ I7_parent o; if (o==0) return 0; return parent(o); ];
+
+[ I7_WhetherIn obj;
+		if (obj ofclass K9_region) return I7_In(real_location, obj);
+		if (obj ofclass K1_room) {
+		  if (obj == real_location) rtrue;
+		  rfalse;
+		}
+		RunTimeProblem(RTP_NOTINAROOM, obj);
+		rfalse;
+];
+[ I7_Move F T opt ln;
+	if (F == false) return RunTimeProblem(RTP_CANTMOVENOTHING);
+	if (F ofclass K7_backdrop) {
+		if (T ofclass K9_region) {
+			give F ~absent; F.found_in = T.regional_found_in;
+			if (I7_In(Room_Of(player), T)) move F to Room_Of(player); else remove F;
+			return; }
+		return RunTimeProblem(RTP_BACKDROP, F, T, ln);
+	}
+	if (T ofclass K9_region) {
+		return RunTimeProblem(RTP_NOTBACKDROP, F, T, ln);
+	}
+	give F ~worn; I7_DetachPart(F, nothing);
+	if (F == player) PlayerTo(T, opt); else move F to T;
+];
+[ I7_Remove F;
+	if (F == false) return RunTimeProblem(RTP_CANTREMOVENOTHING);
+	give F ~worn; I7_DetachPart(F, nothing);
+	if (F ofclass K7_backdrop) give F absent;
+	remove F;
+];
+[ I7_Wear F T opt;
+	if (F == false) rfalse;
+	I7_Move(F, T, opt);
+	give F worn;
+];
+[ I7_DetachPart P From Daddy O;
+	Daddy = P.component_parent; P.component_parent = nothing;
+	if (Daddy == nothing) { P.component_sibling = nothing; return; }
+	if (Daddy.component_child == P) {
+		Daddy.component_child = P.component_sibling;
+			P.component_sibling = nothing; return;
+		}
+		for (O = Daddy.component_child: O: O = O.component_sibling)
+			if (O.component_sibling == P) {
+				O.component_sibling = P.component_sibling;
+				P.component_sibling = nothing; return;
+			}
+];
+[ I7_MakePart P Of First;
+	if (parent(P)) remove P; give P ~worn;
+	if (Of == nothing) { I7_DetachPart(P, nothing); return; }
+	if (P.component_parent) I7_DetachPart(P);
+	P.component_parent = Of;
+	First = Of.component_child;
+	Of.component_child = P; P.component_sibling = First;
+];
+[ I7_OnStage O x;
+	if (O ofclass K1_room) rfalse;
+	while (O) {
+		if (O ofclass K1_room) rtrue;
+		if (metaclass(O) ~= Object) rfalse;
+		if (O ofclass K9_region) rfalse;
+		if (O ofclass K4_door) rtrue;
+		if (O ofclass K7_backdrop) { if (O has absent) rfalse; rtrue; }
+		x = O.component_parent;
+		if (x) { O = x; continue; }
+		x = parent(O);
+		if (x) { O = x; continue; }
+		rfalse;
+	}
+	rfalse;
+];
+[ I7_InWhat obj p; p = parent(obj);
+	if (p == nothing) return nothing;
+	if (p ofclass K5_container) return p;
+	if (p ofclass K1_room) return p;
+	if (p ofclass K9_region) return p;
+	return nothing;
+];
+[ I7_OnWhat obj p; p = parent(obj);
+	if (p == nothing) return nothing;
+	if (p ofclass K6_supporter) return p;
+	return nothing;
+];
+[ I7_CarriedBy obj p; p = parent(obj);
+	if (p && (p ofclass K8_person) && (obj hasnt worn)) return p;
+	return nothing;
+];
+[ I7_HeldBy obj p; p = parent(obj);
+	if (p) return p;
+	p = obj.component_parent;
+	if (p) return p;
+	return nothing;
+];
+[ I7_WornBy obj p; p = parent(obj);
+	if (p && (p ofclass K8_person) && (obj has worn)) return p;
+	return nothing;
+];
+[ I7_HadBy obj p; p = parent(obj);
+	if (p && (p ofclass K8_person)) return p;
+	return nothing;
+];
+[ I7_Adjacent R1 R2 d pr;
+	objectloop (d in compass) {
+		pr = d.door_dir;
+		if ((R1 provides pr) && (R2 == R1.pr)) rtrue;
+	}
+	rfalse;
+];
+[ I7_In obj region o;
+	if ((obj == nothing) || (region == nothing)) rfalse;
+	if (~~(obj ofclass K1_room))
+		obj = I7_Location(obj);
+	if (obj == nothing) rfalse;
+	o = obj.I7_Map_Region;
+	while (o) {
+		if (o == region) rtrue;
+		o = parent(o);
+	}
+	rfalse;
+];
+[ I7_CanSee A B;
+	if (location == thedark) rfalse;
+	return TestScope(B, A);
+];
+[ I7_CanTouch A B;
+	if (TestScope(B,A) == false) rfalse;
+	if (ObjectIsUntouchable(B, 1, 0, A)) rfalse;
+	rtrue;
+];
+[ I7_Conceals A B;
+	if (A ofclass K2_thing && B ofclass K2_thing) {
+		I7_concealed_item = B;
+		if (CarryOutActivity(CONCEALMENT_ACT, A)) rtrue;
+	}
+	rfalse;
+];
+[ I7_RoomFrom obj dir use_doors in_direction sl through_door;
+	use_doors = 2;
+	if ((obj ofclass K1_room) && (dir in compass)) {
+		if (obj provides (dir.door_dir)) {
+			in_direction = obj.(dir.door_dir);
+			if (in_direction ofclass K1_room) return in_direction;
+			if (use_doors && (in_direction ofclass K4_door) &&
+				((use_doors & 2) ||
+				 (in_direction has open) ||
+				 ((in_direction has openable) && (in_direction hasnt locked)))) {
+				sl = location; location = obj;
+				through_door = in_direction.door_to();
+				location = sl;
+				if (through_door ofclass K1_room) return through_door;
+			}
+		}	
+	}
+	return nothing;
+];
+[ I7_ChangeExit r1 dir r2 pr;
+	pr = dir.door_dir;
+	if (r1 provides pr) {
+		if ((r1.pr == 0) || (r1.pr ofclass K1_room)) {
+				r1.pr = r2;
+				return;
+		}
+		if (r1.pr ofclass K4_door) {
+			RunTimeProblem(RTP_EXITDOOR, r1, dir);
+			return;
+		}
+	}
+	RunTimeProblem(RTP_NOEXIT, r1, dir);
+];
+[ I7_ChangeNExit r1 dir r2 pr;
+	pr = dir.door_dir;
+	if (r1 ofclass K4_door) {
+		RunTimeProblem(RTP_EXITDOOR, r1, dir);
+		return;
+	}
+	if ((r1 provides pr) && (r1.pr == r2)) r1.pr = 0;
+	return;
+];
+[ IndirectHolder A B;
+		while (B) {
+		  if (B==A) rtrue;
+		  B = I7_Holder(B);
+		}
+		rfalse;
+];
+[ I7_Holder X;
+	if (parent(X)) return parent(X);
+	if (X.component_parent) return X.component_parent;
+	rfalse;
+];
+[ I7_ChangePlayer O;
+	if (O ofclass K27_player_character) return ChangePlayer(O);
+	RunTimeProblem(RTP_CANTCHANGE);
+];
+[ I7_FrontSide D; if (~~(D ofclass K4_door)) rfalse;
+	if (D provides found_in) return (D.&found_in)-->0;
+	return parent(D);
+];
+[ I7_BackSide D; if (~~(D ofclass K4_door)) rfalse;
+	if (D provides found_in) return (D.&found_in)-->1;
+	rfalse;
+];
+[ I7_Location O;
+	if (~~(O ofclass K2_thing)) rfalse;
+	if (O ofclass K4_door) return I7_FrontSide(O);
+	if (O ofclass K7_backdrop) rfalse;
+	while (O && (~~(O ofclass K1_room))) {
+		if (parent(O)) O = parent(O);
+		else O = O.component_parent;
+	}
+	return O;
+];
+[ I7_IndirectlyContains o1 o2;
+	!  Does o1 enclose o2?
+	if ((o1==o2) || (o1 == 0) || (o2 == 0)) rfalse;
+	if (o2 ofclass K4_door) {
+		if (o1 == I7_FrontSide(o2)) rtrue;
+		if (o1 == I7_BackSide(o2)) rtrue;
+		rfalse;
+	}
+	if (o2 ofclass K7_backdrop) rfalse;
+	while (o2) {
+		if (o1==o2) rtrue;
+		if (parent(o2)) o2 = parent(o2);
+		else o2 = o2.component_parent;
+	}
+	rfalse;
+];
+
+[ I7_PlaceInScope O opts;
+	if (opts) return PlaceInScope(O);
+	if (O ofclass K2_thing) PlaceInScope(O);
+	ScopeWithin(O);
+];
+[ I7_ScopeParts from obj saw;
+!	print "I7_ScopeParts ", from, "^";
+	saw = advance_warning; advance_warning = -1;
+	if (from == 0) from = self;
+	for (obj = from.component_child: obj: obj = obj.component_sibling)
+		if ((from == actor) || (I7_Conceals(from, obj) == false)) {
+			ScopeWithin_O(obj,0,scope_reason);
+		}
+	advance_warning = saw;
+];
+
+! End of WorldModel.i6
