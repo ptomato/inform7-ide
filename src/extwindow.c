@@ -283,7 +283,8 @@ void
 on_xshow_inspectors_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    on_show_inspectors_activate(menuitem, user_data);
+    struct extension *ext = get_ext(GTK_WIDGET(menuitem));
+    gtk_widget_show(ext->inspector);
 }
 
 

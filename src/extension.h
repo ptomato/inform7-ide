@@ -29,6 +29,8 @@ struct extension {
     gchar *filename;
     /* The program code */
     GtkSourceBuffer *buffer;
+    /* This extension's inspector window */
+    GtkWidget *inspector;
 };
 
 struct extension *new_ext();
@@ -37,5 +39,6 @@ struct extension *get_ext(GtkWidget *widget);
 void set_ext_filename(struct extension *ext, gchar *filename);
 void for_each_extension_window(void (*func)(GtkWidget *));
 void for_each_extension_buffer(void (*func)(GtkSourceBuffer *));
+void for_each_extension_inspector(void (*func)(GtkWidget *));
 
 #endif

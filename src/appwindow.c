@@ -580,7 +580,8 @@ void
 on_show_inspectors_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+    struct story *thestory = get_story(GTK_WIDGET(menuitem));
+    gtk_widget_show(thestory->inspector);
 }
 
 

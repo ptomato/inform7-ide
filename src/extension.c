@@ -35,6 +35,7 @@ struct extension *new_ext() {
     newext->filename = NULL;
     newext->window = create_ext_window();
     newext->buffer = create_natural_inform_source_buffer();
+    newext->inspector = create_inspector_window();
 
     /* Connect the source buffer to our sourceview */
     gtk_text_view_set_buffer(
@@ -95,4 +96,11 @@ void for_each_extension_buffer(void (*func)(GtkSourceBuffer *)) {
     GSList *iter;
     for(iter = extlist; iter != NULL; iter = g_slist_next(iter))
         func(((struct extension *)(iter->data))->buffer);
+}
+
+/* Carry out func on each inspector window */
+void for_each_extension_inspector(void (*func)(GtkWidget *)) {
+    GSList *iter;
+    for(iter = extlist; iter != NULL; iter = g_slist_next(iter))
+        func(((struct extension *)(iter->data))->inspector);
 }

@@ -42,6 +42,7 @@ struct story *new_story() {
     newstory->filename = NULL;
     newstory->window = create_app_window();
     newstory->buffer = create_natural_inform_source_buffer();
+    newstory->inspector = create_inspector_window();
 
     /* Connect the source buffer to both of our sourceviews */
     gtk_text_view_set_buffer(
@@ -126,6 +127,13 @@ void for_each_story_buffer(void (*func)(GtkSourceBuffer *)) {
     GSList *iter;
     for(iter = storylist; iter != NULL; iter = g_slist_next(iter))
         func(((struct story *)(iter->data))->buffer);
+}
+
+/* Carry out func for each story inspector */
+void for_each_story_inspector(void (*func)(GtkWidget *)) {
+    GSList *iter;
+    for(iter = storylist; iter != NULL; iter = g_slist_next(iter))
+        func(((struct story *)(iter->data))->inspector);
 }
 
 /* Return the extension of the output file of this story */

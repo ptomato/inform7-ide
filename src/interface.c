@@ -173,14 +173,14 @@ static GnomeUIInfo show_tabs_menu_uiinfo[] =
   },
   GNOMEUIINFO_SEPARATOR,
   {
-    GNOME_APP_UI_ITEM, N_("_Switch Panes"),
+    GNOME_APP_UI_ITEM, N_("Switch _Panes"),
     N_("Switch the input cursor to the panel on the other side"),
     (gpointer) on_switch_sides_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_F6, (GdkModifierType) 0, NULL
   },
   {
-    GNOME_APP_UI_ITEM, N_("_Next Sub Panel"),
+    GNOME_APP_UI_ITEM, N_("Ne_xt Sub Panel"),
     NULL,
     (gpointer) on_next_sub_panel_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
@@ -2839,24 +2839,24 @@ create_prefs_dialog (void)
   prefs_notes_toggle = gtk_check_button_new_with_mnemonic (_("Notes"));
   gtk_widget_show (prefs_notes_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_notes_toggle, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (prefs_notes_toggle, FALSE);
   gtk_tooltips_set_tip (tooltips, prefs_notes_toggle, _("The notes inspector provides a text editor that you can use to store notes about the game you are writing"), NULL);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_notes_toggle), TRUE);
 
   prefs_headings_toggle = gtk_check_button_new_with_mnemonic (_("Headings"));
   gtk_widget_show (prefs_headings_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_headings_toggle, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (prefs_headings_toggle, FALSE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_headings_toggle), TRUE);
 
   prefs_skein_toggle = gtk_check_button_new_with_mnemonic (_("Skein"));
   gtk_widget_show (prefs_skein_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_skein_toggle, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (prefs_skein_toggle, FALSE);
   gtk_tooltips_set_tip (tooltips, prefs_skein_toggle, _("The skein inspector displays the story's current skein"), NULL);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_skein_toggle), TRUE);
 
   prefs_search_toggle = gtk_check_button_new_with_mnemonic (_("Search"));
   gtk_widget_show (prefs_search_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_search_toggle, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (prefs_search_toggle, FALSE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_search_toggle), TRUE);
 
   label77 = gtk_label_new (_("<b>General</b>"));
   gtk_widget_show (label77);
@@ -3389,5 +3389,212 @@ create_prefs_dialog (void)
   GLADE_HOOKUP_OBJECT_NO_REF (prefs_dialog, tooltips, "tooltips");
 
   return prefs_dialog;
+}
+
+GtkWidget*
+create_inspector_window (void)
+{
+  GtkWidget *inspector_window;
+  GdkPixbuf *inspector_window_icon_pixbuf;
+  GtkWidget *vbox34;
+  GtkWidget *notes_inspector;
+  GtkWidget *scrolledwindow42;
+  GtkWidget *notes;
+  GtkWidget *label83;
+  GtkWidget *headings_inspector;
+  GtkWidget *scrolledwindow43;
+  GtkWidget *headings;
+  GtkWidget *label84;
+  GtkWidget *skein_inspector;
+  GtkWidget *scrolledwindow44;
+  GtkWidget *canvas5;
+  GtkWidget *label85;
+  GtkWidget *search_inspector;
+  GtkWidget *vbox35;
+  GtkWidget *hbox27;
+  GtkWidget *label87;
+  GtkWidget *search_inspector_text;
+  GtkWidget *search_inspector_case_sensitive;
+  GtkWidget *hbox28;
+  GtkWidget *search_inspector_algorithm;
+  GtkWidget *search_inspector_search;
+  GtkWidget *hseparator4;
+  GtkWidget *search_inspector_search_project;
+  GtkWidget *search_inspector_search_extensions;
+  GtkWidget *search_inspector_search_documentation;
+  GtkWidget *label86;
+
+  inspector_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_widget_set_size_request (inspector_window, 250, -1);
+  gtk_window_set_title (GTK_WINDOW (inspector_window), _("Inspectors"));
+  gtk_window_set_resizable (GTK_WINDOW (inspector_window), FALSE);
+  inspector_window_icon_pixbuf = create_pixbuf ("gnome-inform7/Inform.png");
+  if (inspector_window_icon_pixbuf)
+    {
+      gtk_window_set_icon (GTK_WINDOW (inspector_window), inspector_window_icon_pixbuf);
+      gdk_pixbuf_unref (inspector_window_icon_pixbuf);
+    }
+  gtk_window_set_skip_taskbar_hint (GTK_WINDOW (inspector_window), TRUE);
+  gtk_window_set_type_hint (GTK_WINDOW (inspector_window), GDK_WINDOW_TYPE_HINT_UTILITY);
+
+  vbox34 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox34);
+  gtk_container_add (GTK_CONTAINER (inspector_window), vbox34);
+
+  notes_inspector = gtk_expander_new (NULL);
+  gtk_widget_show (notes_inspector);
+  gtk_box_pack_start (GTK_BOX (vbox34), notes_inspector, TRUE, TRUE, 0);
+
+  scrolledwindow42 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow42);
+  gtk_container_add (GTK_CONTAINER (notes_inspector), scrolledwindow42);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow42), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow42), GTK_SHADOW_IN);
+
+  notes = gtk_text_view_new ();
+  gtk_widget_show (notes);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow42), notes);
+  gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (notes), GTK_WRAP_WORD);
+
+  label83 = gtk_label_new (_("Notes"));
+  gtk_widget_show (label83);
+  gtk_expander_set_label_widget (GTK_EXPANDER (notes_inspector), label83);
+
+  headings_inspector = gtk_expander_new (NULL);
+  gtk_widget_show (headings_inspector);
+  gtk_box_pack_start (GTK_BOX (vbox34), headings_inspector, TRUE, TRUE, 0);
+
+  scrolledwindow43 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow43);
+  gtk_container_add (GTK_CONTAINER (headings_inspector), scrolledwindow43);
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow43), GTK_SHADOW_IN);
+
+  headings = gtk_tree_view_new ();
+  gtk_widget_show (headings);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow43), headings);
+  gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (headings), FALSE);
+  gtk_tree_view_set_fixed_height_mode (GTK_TREE_VIEW (headings), TRUE);
+
+  label84 = gtk_label_new (_("Headings"));
+  gtk_widget_show (label84);
+  gtk_expander_set_label_widget (GTK_EXPANDER (headings_inspector), label84);
+
+  skein_inspector = gtk_expander_new (NULL);
+  gtk_widget_show (skein_inspector);
+  gtk_box_pack_start (GTK_BOX (vbox34), skein_inspector, TRUE, TRUE, 0);
+
+  scrolledwindow44 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow44);
+  gtk_container_add (GTK_CONTAINER (skein_inspector), scrolledwindow44);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow44), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow44), GTK_SHADOW_IN);
+
+  canvas5 = gnome_canvas_new ();
+  gtk_widget_show (canvas5);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow44), canvas5);
+  gnome_canvas_set_scroll_region (GNOME_CANVAS (canvas5), 0, 0, 100, 100);
+
+  label85 = gtk_label_new (_("Skein"));
+  gtk_widget_show (label85);
+  gtk_expander_set_label_widget (GTK_EXPANDER (skein_inspector), label85);
+
+  search_inspector = gtk_expander_new (NULL);
+  gtk_widget_show (search_inspector);
+  gtk_box_pack_start (GTK_BOX (vbox34), search_inspector, TRUE, TRUE, 0);
+  gtk_widget_set_size_request (search_inspector, 250, -1);
+
+  vbox35 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox35);
+  gtk_container_add (GTK_CONTAINER (search_inspector), vbox35);
+
+  hbox27 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox27);
+  gtk_box_pack_start (GTK_BOX (vbox35), hbox27, TRUE, TRUE, 0);
+
+  label87 = gtk_label_new (_("Search for: "));
+  gtk_widget_show (label87);
+  gtk_box_pack_start (GTK_BOX (hbox27), label87, FALSE, FALSE, 0);
+
+  search_inspector_text = gtk_entry_new ();
+  gtk_widget_show (search_inspector_text);
+  gtk_box_pack_start (GTK_BOX (hbox27), search_inspector_text, TRUE, TRUE, 0);
+  gtk_entry_set_invisible_char (GTK_ENTRY (search_inspector_text), 8226);
+
+  search_inspector_case_sensitive = gtk_check_button_new_with_mnemonic (_("Case sensitive"));
+  gtk_widget_show (search_inspector_case_sensitive);
+  gtk_box_pack_start (GTK_BOX (vbox35), search_inspector_case_sensitive, FALSE, FALSE, 0);
+
+  hbox28 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox28);
+  gtk_box_pack_start (GTK_BOX (vbox35), hbox28, TRUE, TRUE, 0);
+
+  search_inspector_algorithm = gtk_combo_box_new_text ();
+  gtk_widget_show (search_inspector_algorithm);
+  gtk_box_pack_start (GTK_BOX (hbox28), search_inspector_algorithm, TRUE, TRUE, 0);
+  gtk_combo_box_append_text (GTK_COMBO_BOX (search_inspector_algorithm), _("Contains"));
+
+  search_inspector_search = gtk_button_new_from_stock ("gtk-find");
+  gtk_widget_show (search_inspector_search);
+  gtk_box_pack_start (GTK_BOX (hbox28), search_inspector_search, FALSE, FALSE, 0);
+
+  hseparator4 = gtk_hseparator_new ();
+  gtk_widget_show (hseparator4);
+  gtk_box_pack_start (GTK_BOX (vbox35), hseparator4, TRUE, TRUE, 0);
+
+  search_inspector_search_project = gtk_check_button_new_with_mnemonic (_("Project files"));
+  gtk_widget_show (search_inspector_search_project);
+  gtk_box_pack_start (GTK_BOX (vbox35), search_inspector_search_project, FALSE, FALSE, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (search_inspector_search_project), TRUE);
+
+  search_inspector_search_extensions = gtk_check_button_new_with_mnemonic (_("Extensions"));
+  gtk_widget_show (search_inspector_search_extensions);
+  gtk_box_pack_start (GTK_BOX (vbox35), search_inspector_search_extensions, FALSE, FALSE, 0);
+
+  search_inspector_search_documentation = gtk_check_button_new_with_mnemonic (_("Documentation"));
+  gtk_widget_show (search_inspector_search_documentation);
+  gtk_box_pack_start (GTK_BOX (vbox35), search_inspector_search_documentation, FALSE, FALSE, 0);
+
+  label86 = gtk_label_new (_("Search Files"));
+  gtk_widget_show (label86);
+  gtk_expander_set_label_widget (GTK_EXPANDER (search_inspector), label86);
+
+  g_signal_connect_after ((gpointer) inspector_window, "realize",
+                          G_CALLBACK (after_inspector_window_realize),
+                          NULL);
+  g_signal_connect ((gpointer) inspector_window, "delete_event",
+                    G_CALLBACK (gtk_widget_hide_on_delete),
+                    NULL);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (inspector_window, inspector_window, "inspector_window");
+  GLADE_HOOKUP_OBJECT (inspector_window, vbox34, "vbox34");
+  GLADE_HOOKUP_OBJECT (inspector_window, notes_inspector, "notes_inspector");
+  GLADE_HOOKUP_OBJECT (inspector_window, scrolledwindow42, "scrolledwindow42");
+  GLADE_HOOKUP_OBJECT (inspector_window, notes, "notes");
+  GLADE_HOOKUP_OBJECT (inspector_window, label83, "label83");
+  GLADE_HOOKUP_OBJECT (inspector_window, headings_inspector, "headings_inspector");
+  GLADE_HOOKUP_OBJECT (inspector_window, scrolledwindow43, "scrolledwindow43");
+  GLADE_HOOKUP_OBJECT (inspector_window, headings, "headings");
+  GLADE_HOOKUP_OBJECT (inspector_window, label84, "label84");
+  GLADE_HOOKUP_OBJECT (inspector_window, skein_inspector, "skein_inspector");
+  GLADE_HOOKUP_OBJECT (inspector_window, scrolledwindow44, "scrolledwindow44");
+  GLADE_HOOKUP_OBJECT (inspector_window, canvas5, "canvas5");
+  GLADE_HOOKUP_OBJECT (inspector_window, label85, "label85");
+  GLADE_HOOKUP_OBJECT (inspector_window, search_inspector, "search_inspector");
+  GLADE_HOOKUP_OBJECT (inspector_window, vbox35, "vbox35");
+  GLADE_HOOKUP_OBJECT (inspector_window, hbox27, "hbox27");
+  GLADE_HOOKUP_OBJECT (inspector_window, label87, "label87");
+  GLADE_HOOKUP_OBJECT (inspector_window, search_inspector_text, "search_inspector_text");
+  GLADE_HOOKUP_OBJECT (inspector_window, search_inspector_case_sensitive, "search_inspector_case_sensitive");
+  GLADE_HOOKUP_OBJECT (inspector_window, hbox28, "hbox28");
+  GLADE_HOOKUP_OBJECT (inspector_window, search_inspector_algorithm, "search_inspector_algorithm");
+  GLADE_HOOKUP_OBJECT (inspector_window, search_inspector_search, "search_inspector_search");
+  GLADE_HOOKUP_OBJECT (inspector_window, hseparator4, "hseparator4");
+  GLADE_HOOKUP_OBJECT (inspector_window, search_inspector_search_project, "search_inspector_search_project");
+  GLADE_HOOKUP_OBJECT (inspector_window, search_inspector_search_extensions, "search_inspector_search_extensions");
+  GLADE_HOOKUP_OBJECT (inspector_window, search_inspector_search_documentation, "search_inspector_search_documentation");
+  GLADE_HOOKUP_OBJECT (inspector_window, label86, "label86");
+
+  return inspector_window;
 }
 

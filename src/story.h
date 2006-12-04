@@ -37,6 +37,8 @@ struct story {
     gchar *filename;
     /* The program code */
     GtkSourceBuffer *buffer;
+    /* The inspector window for this story */
+    GtkWidget *inspector;
     /* Various settings */
     int story_format;
     gboolean make_blorb;
@@ -62,6 +64,7 @@ struct story *get_story(GtkWidget *widget);
 void set_story_filename(struct story *thestory, gchar *filename);
 void for_each_story_window(void (*func)(GtkWidget *));
 void for_each_story_buffer(void (*func)(GtkSourceBuffer *));
+void for_each_story_inspector(void (*func)(GtkWidget *));
 gchar *get_story_extension(struct story *thestory);
 
 #endif

@@ -9,3 +9,4 @@ GtkWidget* create_find_dialog (void);
 GtkWidget* create_ext_window (void);
 GtkWidget* create_new_dialog (void);
 GtkWidget* create_prefs_dialog (void);
+GtkWidget* create_inspector_window (void);

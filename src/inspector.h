@@ -1,6 +1,6 @@
 /*  Copyright 2006 P.F. Chimento
  *  This file is part of GNOME Inform 7.
- * 
+ *
  *  GNOME Inform 7 is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -16,20 +16,25 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
  
+#ifndef INSPECTOR_H
+#define INSPECTOR_H
+
 #include <gnome.h>
 
-/* Include all callback functions in other files, for interface.c */
-#include "newdialog.h"
-#include "tabindex.h"
-#include "tabsettings.h"
-#include "tabsource.h"
-#include "findreplace.h"
-#include "appwindow.h"
-#include "welcomedialog.h"
-#include "html.h"
-#include "extwindow.h"
-#include "prefs.h"
-#include "tabgame.h"
-#include "inspector.h"
+/* The names of the inspectors */
+enum {
+    INSPECTOR_FIRST = 0,
+    INSPECTOR_NOTES = INSPECTOR_FIRST,
+    INSPECTOR_HEADINGS,
+    INSPECTOR_SKEIN,
+    INSPECTOR_SEARCH_FILES,
+    INSPECTOR_LAST = INSPECTOR_SEARCH_FILES
+};    
 
-/* This is where Glade puts newly-created callback function prototypes. */
+void
+after_inspector_window_realize         (GtkWidget       *widget,
+                                        gpointer         user_data);
+
+void show_inspector(GtkWidget *thiswidget, int which, gboolean show);
+
+#endif /* INSPECTOR_H */

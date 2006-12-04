@@ -17,7 +17,6 @@
  */
  
 /* To do
-- Inspector window
 - Search documentation
 - Make extensions windows in preferences work with drag'n'drop
 - Make default author's name, if preference is blank, use system long user name

@@ -1,7 +1,7 @@
 #
 # Spec file for GNOME Inform 7
 #
-%define  ver     0.1
+%define  ver     0.2
 %define  rel     1
 %define  prefix  /usr
 
