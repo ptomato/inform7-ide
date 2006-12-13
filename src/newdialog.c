@@ -229,8 +229,9 @@ void
 on_new_author_realize                  (GtkWidget       *widget,
                                         gpointer         user_data)
 {
-    gchar *author = config_file_get_string("User", "Name");
-    gtk_entry_set_text(GTK_ENTRY(widget), (author == NULL)? "" : author);
+    gchar *author = g_strstrip(config_file_get_string("User", "Name"));
+    gtk_entry_set_text(GTK_ENTRY(widget),
+      (author == NULL || strlen(author) == 0)? g_get_real_name() : author);
     g_free(author);
 }
 

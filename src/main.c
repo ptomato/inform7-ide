@@ -19,7 +19,6 @@
 /* To do
 - Search documentation
 - Make extensions windows in preferences work with drag'n'drop
-- Make default author's name, if preference is blank, use system long user name
 - Watch the source file for external changes
 Low priority
 - Find out how to highlight markup brackets in strings
