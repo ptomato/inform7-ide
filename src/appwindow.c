@@ -34,6 +34,7 @@
 #include "windowlist.h"
 #include "compile.h"
 #include "tabgame.h"
+#include "inspector.h"
 
 /* Gets a pointer to either the left or the right notebook in this window */
 GtkNotebook *get_notebook(GtkWidget *thiswidget, int right) {
@@ -177,6 +178,16 @@ after_app_window_realize               (GtkWidget       *widget,
       TAB_DOCUMENTATION);
 }
 
+/* Whenever a main window receives the focus, make the inspector display that
+   story's data */
+gboolean
+on_app_window_focus_in_event           (GtkWidget       *widget,
+                                        GdkEventFocus   *event,
+                                        gpointer         user_data)
+{
+    refresh_inspector(get_story(widget));
+    return FALSE;
+}
 
 void
 on_new_activate                        (GtkMenuItem     *menuitem,
@@ -580,8 +591,8 @@ void
 on_show_inspectors_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    struct story *thestory = get_story(GTK_WIDGET(menuitem));
-    gtk_widget_show(thestory->inspector);
+    extern GtkWidget *inspector_window;
+    gtk_widget_show(inspector_window);
 }
 
 

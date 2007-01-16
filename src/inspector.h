@@ -21,6 +21,8 @@
 
 #include <gnome.h>
 
+#include "story.h"
+
 /* The names of the inspectors */
 enum {
     INSPECTOR_FIRST = 0,
@@ -35,6 +37,8 @@ void
 after_inspector_window_realize         (GtkWidget       *widget,
                                         gpointer         user_data);
 
-void show_inspector(GtkWidget *thiswidget, int which, gboolean show);
+void update_inspectors();
+void show_inspector(int which, gboolean show);
+void refresh_inspector(struct story *thestory);
 
 #endif /* INSPECTOR_H */

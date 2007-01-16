@@ -17,12 +17,16 @@
  */
  
 /* To do
+- Use mark to save where the search was (see example code)
 - Search documentation
+- Syntax analysis
+- Migrate from GnomeDruid to GtkAssistant
 - Make extensions windows in preferences work with drag'n'drop
 - Watch the source file for external changes
 Low priority
 - Find out how to highlight markup brackets in strings
 - Search text at word boundaries
+- A real RTF parser / text converter
 
 FOLLOWING RELEASES
 - Embedded interpreters
@@ -42,7 +46,11 @@ BUGS
 #include <gnome.h>
 
 #if !GLIB_CHECK_VERSION(2,4,0)
-# error You need at least Gtk/GLib 2.4.0 to run this code.
+# error You need at least GLib 2.4.0 to run this code.
+#endif
+
+#if !GTK_CHECK_VERSION(2,4,0)
+# error You need at least GLib 2.4.0 to run this code.
 #endif
 
 #include "callbacks.h"
@@ -56,6 +64,7 @@ int
 main (int argc, char *argv[])
 {
     GtkWidget *welcome_dialog;
+    extern GtkWidget *inspector_window;
 
 #ifdef ENABLE_NLS
     bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -83,6 +92,9 @@ main (int argc, char *argv[])
     
     /* Index the extensions in the background */
     run_census(FALSE);
+    
+    /* Create the global inspector window, but keep it hidden */
+    inspector_window = create_inspector_window();
     
     /* Create the splash window */
     welcome_dialog = create_welcome_dialog();

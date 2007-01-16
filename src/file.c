@@ -33,6 +33,7 @@
 #include "error.h"
 #include "compile.h"
 #include "file.h"
+#include "rtf.h"
 
 /* If the document is not saved, ask the user whether he/she wants to save it.
 Returns TRUE if we can proceed, FALSE if the user cancelled. */
@@ -139,6 +140,20 @@ struct story *open_project(gchar *directory) {
     
     /* Read the skein: TODO */
 
+    /* Read the notes */
+    filename = g_strconcat(directory, "/notes.rtf", NULL);
+    if(!g_file_get_contents(filename, &text, NULL, &err)) {
+        /* Don't fail if the file is unreadable; instead, just make some blank notes */
+        text = g_strdup(
+          "{\\rtf1\\mac\\ansicpg10000\\cocoartf824\\cocoasubrtf410\n"
+          "{\\fonttbl}\n"
+          "{\\colortbl;\\red255\\green255\\blue255;}\n"
+          "}");
+    }
+    g_free(filename);
+    gtk_text_buffer_set_rtf_text(GTK_TEXT_BUFFER(thestory->notes), text);
+    g_free(text);
+    
     /* Read the settings */
     filename = g_strconcat(directory, "/Settings.plist", NULL);
 
@@ -232,6 +247,21 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     /* Save the skein */
     /* TODO */
 
+    /* Save the notes */
+    gtk_text_buffer_get_start_iter(thestory->notes, &start);
+    gtk_text_buffer_get_end_iter(thestory->notes, &end);
+    text = gtk_text_buffer_get_rtf_text(thestory->notes, &start, &end);
+    filename = g_strconcat(directory, "/notes.rtf", NULL);
+    if(!g_file_set_contents(filename, text, -1, &err)) {
+        error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(thiswidget)), err,
+          "Error saving file '%s': ", filename);
+        g_free(filename);
+        g_free(text);
+        return;
+    }
+    g_free(filename);
+    g_free(text);
+    
     /* Save the project settings */
     filename = g_strconcat(directory, "/Settings.plist", NULL);
     gchar format_string[3];

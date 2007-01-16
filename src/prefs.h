@@ -235,6 +235,5 @@ void update_ext_window_fonts(GtkWidget *window);
 void update_source_highlight(GtkSourceBuffer *buffer);
 void add_debug_tabs(GtkWidget *window);
 void remove_debug_tabs(GtkWidget *window);
-void update_inspectors(GtkWidget *window);
 
 #endif

@@ -36,7 +36,8 @@ gnome_inform7_SOURCES = \
     tabgame.c tabgame.h \
     skein.c skein.h \
     error.c error.h \
-	inspector.c inspector.h
+	inspector.c inspector.h \
+    rtf.c rtf.h
 
 gnome_inform7_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
 

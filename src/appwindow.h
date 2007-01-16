@@ -74,6 +74,11 @@ void
 after_app_window_realize               (GtkWidget       *widget,
                                         gpointer         user_data);
 
+gboolean
+on_app_window_focus_in_event           (GtkWidget       *widget,
+                                        GdkEventFocus   *event,
+                                        gpointer         user_data);
+
 void
 on_new_activate                        (GtkMenuItem     *menuitem,
                                         gpointer         user_data);

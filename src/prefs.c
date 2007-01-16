@@ -316,7 +316,7 @@ on_prefs_project_files_toggle_toggled  (GtkToggleButton *togglebutton,
 {
     config_file_set_bool("Inspectors", "ProjectFiles",
       gtk_toggle_button_get_active(togglebutton));
-    for_each_story_inspector(&update_inspectors);
+    update_inspectors();
 }
 
 
@@ -326,7 +326,7 @@ on_prefs_notes_toggle_toggled          (GtkToggleButton *togglebutton,
 {
     config_file_set_bool("Inspectors", "Notes",
       gtk_toggle_button_get_active(togglebutton));
-    for_each_story_inspector(&update_inspectors);
+    update_inspectors();
 }
 
 
@@ -336,7 +336,7 @@ on_prefs_headings_toggle_toggled       (GtkToggleButton *togglebutton,
 {
     config_file_set_bool("Inspectors", "Headings",
       gtk_toggle_button_get_active(togglebutton));
-    for_each_story_inspector(&update_inspectors);
+    update_inspectors();
 }
 
 
@@ -346,7 +346,7 @@ on_prefs_skein_toggle_toggled          (GtkToggleButton *togglebutton,
 {
     config_file_set_bool("Inspectors", "Skein",
       gtk_toggle_button_get_active(togglebutton));
-    for_each_story_inspector(&update_inspectors);
+    update_inspectors();
 }
 
 
@@ -356,7 +356,7 @@ on_prefs_watchpoints_toggle_toggled    (GtkToggleButton *togglebutton,
 {
     config_file_set_bool("Inspectors", "Watchpoints",
       gtk_toggle_button_get_active(togglebutton));
-    for_each_story_inspector(&update_inspectors);
+    update_inspectors();
 }
 
 
@@ -366,7 +366,7 @@ on_prefs_breakpoints_toggle_toggled    (GtkToggleButton *togglebutton,
 {
     config_file_set_bool("Inspectors", "Breakpoints",
       gtk_toggle_button_get_active(togglebutton));
-    for_each_story_inspector(&update_inspectors);
+    update_inspectors();
 }
 
 
@@ -376,7 +376,7 @@ on_prefs_search_toggle_toggled         (GtkToggleButton *togglebutton,
 {
     config_file_set_bool("Inspectors", "Search",
       gtk_toggle_button_get_active(togglebutton));
-    for_each_story_inspector(&update_inspectors);
+    update_inspectors();
 }
 
 
@@ -992,15 +992,4 @@ void remove_debug_tabs(GtkWidget *window) {
         return;
     gtk_notebook_remove_page(GTK_NOTEBOOK(notebook), -1);
     gtk_notebook_remove_page(GTK_NOTEBOOK(notebook), -1);
-}
-
-void update_inspectors(GtkWidget *window) {
-    show_inspector(window, INSPECTOR_NOTES,
-      config_file_get_bool("Inspectors", "Notes"));
-    show_inspector(window, INSPECTOR_HEADINGS,
-      config_file_get_bool("Inspectors", "Headings"));
-    show_inspector(window, INSPECTOR_SKEIN,
-      config_file_get_bool("Inspectors", "Skein"));
-    show_inspector(window, INSPECTOR_SEARCH_FILES,
-      config_file_get_bool("Inspectors", "Search"));
 }

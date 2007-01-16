@@ -1220,6 +1220,9 @@ create_app_window (void)
   g_signal_connect ((gpointer) app_window, "destroy",
                     G_CALLBACK (on_app_window_destroy),
                     NULL);
+  g_signal_connect ((gpointer) app_window, "focus_in_event",
+                    G_CALLBACK (on_app_window_focus_in_event),
+                    NULL);
   gnome_app_install_menu_hints (GNOME_APP (app_window), menubar1_uiinfo);
   g_signal_connect ((gpointer) go_toolbutton, "clicked",
                     G_CALLBACK (on_go_toolbutton_clicked),
