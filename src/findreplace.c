@@ -59,9 +59,16 @@ on_find_text_changed                   (GtkEditable     *editable,
     gtk_widget_set_sensitive(
       lookup_widget(GTK_WIDGET(editable), "find_replace_find"), text_not_empty);
     gtk_widget_set_sensitive(
-      lookup_widget(GTK_WIDGET(editable), "find_replace"), text_not_empty);
-    gtk_widget_set_sensitive(
       lookup_widget(GTK_WIDGET(editable), "find_replace_all"), text_not_empty);
+}
+
+
+void
+on_find_close_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+    /* Close the dialog */
+    gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 }
 
 
@@ -152,7 +159,7 @@ on_xfind_previous_clicked              (GtkButton       *button,
       "ext_code")));
 }
 
-/* Callback for when "Replace & Find" is clicked from a Find dialog that was
+/* Callback for when "Replace" is clicked from a Find dialog that was
   started from an I7 project */
 void
 on_find_replace_find_clicked           (GtkButton       *button,
@@ -177,7 +184,7 @@ on_find_replace_find_clicked           (GtkButton       *button,
       "source_r")));
 }
 
-/* Callback for when "Replace & Find" is clicked from a Find dialog that was
+/* Callback for when "Replace" is clicked from a Find dialog that was
   started from an extension */
 void
 on_xfind_replace_find_clicked          (GtkButton       *button,
@@ -194,53 +201,6 @@ on_xfind_replace_find_clicked          (GtkButton       *button,
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
       "find_wrap"))),
       FALSE /* not reverse */, TRUE /* go to next occurrence */);
-    scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(((struct extension *)user_data)->window,
-      "ext_code")));
-}
-
-/* Callback for when "Replace" is clicked from a Find dialog that was started
-from an I7 project */
-void
-on_find_replace_clicked                (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    GtkWidget *thiswidget = GTK_WIDGET(button);
-    replace(GTK_TEXT_BUFFER(((struct story *)user_data)->buffer),
-      gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
-      "find_text"))),
-      gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
-      "find_replace_text"))),
-      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
-      "find_ignore_case"))),
-      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
-      "find_wrap"))),
-      FALSE /* not reverse */, FALSE /* do not go to next occurrence */);
-    scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(((struct story *)user_data)->window,
-      "source_l")));
-    scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(((struct story *)user_data)->window,
-      "source_r")));
-}
-
-/* Callback for when "Replace" is clicked from a Find dialog that was started
-from an extension */
-void
-on_xfind_replace_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    GtkWidget *thiswidget = GTK_WIDGET(button);
-    replace(GTK_TEXT_BUFFER(((struct extension *)user_data)->buffer),
-      gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
-      "find_text"))),
-      gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
-      "find_replace_text"))),
-      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
-      "find_ignore_case"))),
-      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
-      "find_wrap"))),
-      FALSE /* not reverse */, FALSE /* do not go to next occurrence */);
     scroll_text_view_to_cursor(
       GTK_TEXT_VIEW(lookup_widget(((struct extension *)user_data)->window,
       "ext_code")));

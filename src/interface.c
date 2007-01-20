@@ -30,6 +30,13 @@ static GnomeUIInfo filemenu_menu_uiinfo[] =
 {
   GNOMEUIINFO_MENU_NEW_ITEM (N_("_New..."), NULL, on_new_activate, NULL),
   GNOMEUIINFO_MENU_OPEN_ITEM (on_open_activate, NULL),
+  {
+    GNOME_APP_UI_ITEM, N_("Open Recent"),
+    NULL,
+    (gpointer) NULL, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
+  },
   GNOMEUIINFO_SEPARATOR,
   {
     GNOME_APP_UI_ITEM, N_("_Install Extension..."),
@@ -1282,16 +1289,17 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[0].widget, "filemenu");
   GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[0].widget, "new");
   GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[1].widget, "open");
-  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[2].widget, "separator8");
-  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[3].widget, "install_extension");
-  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[4].widget, "open_extension");
-  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[5].widget, "separator9");
-  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[6].widget, "close");
-  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[7].widget, "save");
-  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[8].widget, "save_as");
-  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[9].widget, "revert");
-  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[10].widget, "separator26");
-  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[11].widget, "quit");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[2].widget, "open_recent");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[3].widget, "separator8");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[4].widget, "install_extension");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[5].widget, "open_extension");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[6].widget, "separator9");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[7].widget, "close");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[8].widget, "save");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[9].widget, "save_as");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[10].widget, "revert");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[11].widget, "separator26");
+  GLADE_HOOKUP_OBJECT (app_window, filemenu_menu_uiinfo[12].widget, "quit");
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[1].widget, "edit");
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[0].widget, "undo");
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[1].widget, "redo");
@@ -1621,6 +1629,7 @@ create_welcome_dialog (void)
   welcome_reopen_button = gtk_button_new ();
   gtk_widget_show (welcome_reopen_button);
   gtk_container_add (GTK_CONTAINER (vbuttonbox1), welcome_reopen_button);
+  gtk_widget_set_sensitive (welcome_reopen_button, FALSE);
   GTK_WIDGET_SET_FLAGS (welcome_reopen_button, GTK_CAN_DEFAULT);
 
   alignment2 = gtk_alignment_new (0.5, 0.5, 0, 0);
@@ -1706,19 +1715,17 @@ create_find_dialog (void)
   GdkPixbuf *find_dialog_icon_pixbuf;
   GtkWidget *dialog_vbox3;
   GtkWidget *vbox12;
-  GtkWidget *hbox8;
-  GtkWidget *label45;
+  GtkWidget *table1;
   GtkWidget *find_text;
-  GtkWidget *hbox9;
   GtkWidget *label46;
   GtkWidget *find_replace_text;
+  GtkWidget *label45;
   GtkWidget *hbox25;
   GtkWidget *find_ignore_case;
   GtkWidget *find_wrap;
   GtkWidget *find_algorithm;
   GtkWidget *dialog_action_area3;
   GtkWidget *find_replace_all;
-  GtkWidget *find_replace;
   GtkWidget *find_replace_find;
   GtkWidget *alignment23;
   GtkWidget *hbox26;
@@ -1734,6 +1741,7 @@ create_find_dialog (void)
   GtkWidget *hbox23;
   GtkWidget *image101;
   GtkWidget *label81;
+  GtkWidget *find_close;
   GtkTooltips *tooltips;
 
   tooltips = gtk_tooltips_new ();
@@ -1756,32 +1764,36 @@ create_find_dialog (void)
   gtk_widget_show (vbox12);
   gtk_box_pack_start (GTK_BOX (dialog_vbox3), vbox12, TRUE, TRUE, 0);
 
-  hbox8 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (hbox8);
-  gtk_box_pack_start (GTK_BOX (vbox12), hbox8, TRUE, TRUE, 0);
-
-  label45 = gtk_label_new (_("Search for: "));
-  gtk_widget_show (label45);
-  gtk_box_pack_start (GTK_BOX (hbox8), label45, FALSE, FALSE, 0);
+  table1 = gtk_table_new (2, 2, FALSE);
+  gtk_widget_show (table1);
+  gtk_box_pack_start (GTK_BOX (vbox12), table1, TRUE, TRUE, 0);
 
   find_text = gtk_entry_new ();
   gtk_widget_show (find_text);
-  gtk_box_pack_start (GTK_BOX (hbox8), find_text, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table1), find_text, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
   gtk_entry_set_invisible_char (GTK_ENTRY (find_text), 8226);
   gtk_entry_set_activates_default (GTK_ENTRY (find_text), TRUE);
 
-  hbox9 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (hbox9);
-  gtk_box_pack_start (GTK_BOX (vbox12), hbox9, TRUE, TRUE, 0);
-
   label46 = gtk_label_new (_("Replace with: "));
   gtk_widget_show (label46);
-  gtk_box_pack_start (GTK_BOX (hbox9), label46, FALSE, FALSE, 0);
+  gtk_table_attach (GTK_TABLE (table1), label46, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   find_replace_text = gtk_entry_new ();
   gtk_widget_show (find_replace_text);
-  gtk_box_pack_start (GTK_BOX (hbox9), find_replace_text, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table1), find_replace_text, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
   gtk_entry_set_invisible_char (GTK_ENTRY (find_replace_text), 8226);
+
+  label45 = gtk_label_new (_("Search for: "));
+  gtk_widget_show (label45);
+  gtk_table_attach (GTK_TABLE (table1), label45, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   hbox25 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox25);
@@ -1812,13 +1824,6 @@ create_find_dialog (void)
   gtk_widget_set_sensitive (find_replace_all, FALSE);
   GTK_WIDGET_SET_FLAGS (find_replace_all, GTK_CAN_DEFAULT);
   gtk_tooltips_set_tip (tooltips, find_replace_all, _("Replace all occurrences of the find text"), NULL);
-
-  find_replace = gtk_button_new_with_mnemonic (_("Replace only"));
-  gtk_widget_show (find_replace);
-  gtk_dialog_add_action_widget (GTK_DIALOG (find_dialog), find_replace, 0);
-  gtk_widget_set_sensitive (find_replace, FALSE);
-  GTK_WIDGET_SET_FLAGS (find_replace, GTK_CAN_DEFAULT);
-  gtk_tooltips_set_tip (tooltips, find_replace, _("Replace selected text with the replacement text"), NULL);
 
   find_replace_find = gtk_button_new ();
   gtk_widget_show (find_replace_find);
@@ -1889,30 +1894,36 @@ create_find_dialog (void)
   gtk_widget_show (label81);
   gtk_box_pack_start (GTK_BOX (hbox23), label81, FALSE, FALSE, 0);
 
+  find_close = gtk_button_new_from_stock ("gtk-close");
+  gtk_widget_show (find_close);
+  gtk_dialog_add_action_widget (GTK_DIALOG (find_dialog), find_close, GTK_RESPONSE_CLOSE);
+  GTK_WIDGET_SET_FLAGS (find_close, GTK_CAN_DEFAULT);
+
   g_signal_connect_after ((gpointer) find_dialog, "realize",
                           G_CALLBACK (after_find_dialog_realize),
                           NULL);
   g_signal_connect ((gpointer) find_text, "changed",
                     G_CALLBACK (on_find_text_changed),
                     NULL);
+  g_signal_connect ((gpointer) find_close, "clicked",
+                    G_CALLBACK (on_find_close_clicked),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (find_dialog, find_dialog, "find_dialog");
   GLADE_HOOKUP_OBJECT_NO_REF (find_dialog, dialog_vbox3, "dialog_vbox3");
   GLADE_HOOKUP_OBJECT (find_dialog, vbox12, "vbox12");
-  GLADE_HOOKUP_OBJECT (find_dialog, hbox8, "hbox8");
-  GLADE_HOOKUP_OBJECT (find_dialog, label45, "label45");
+  GLADE_HOOKUP_OBJECT (find_dialog, table1, "table1");
   GLADE_HOOKUP_OBJECT (find_dialog, find_text, "find_text");
-  GLADE_HOOKUP_OBJECT (find_dialog, hbox9, "hbox9");
   GLADE_HOOKUP_OBJECT (find_dialog, label46, "label46");
   GLADE_HOOKUP_OBJECT (find_dialog, find_replace_text, "find_replace_text");
+  GLADE_HOOKUP_OBJECT (find_dialog, label45, "label45");
   GLADE_HOOKUP_OBJECT (find_dialog, hbox25, "hbox25");
   GLADE_HOOKUP_OBJECT (find_dialog, find_ignore_case, "find_ignore_case");
   GLADE_HOOKUP_OBJECT (find_dialog, find_wrap, "find_wrap");
   GLADE_HOOKUP_OBJECT (find_dialog, find_algorithm, "find_algorithm");
   GLADE_HOOKUP_OBJECT_NO_REF (find_dialog, dialog_action_area3, "dialog_action_area3");
   GLADE_HOOKUP_OBJECT (find_dialog, find_replace_all, "find_replace_all");
-  GLADE_HOOKUP_OBJECT (find_dialog, find_replace, "find_replace");
   GLADE_HOOKUP_OBJECT (find_dialog, find_replace_find, "find_replace_find");
   GLADE_HOOKUP_OBJECT (find_dialog, alignment23, "alignment23");
   GLADE_HOOKUP_OBJECT (find_dialog, hbox26, "hbox26");
@@ -1928,6 +1939,7 @@ create_find_dialog (void)
   GLADE_HOOKUP_OBJECT (find_dialog, hbox23, "hbox23");
   GLADE_HOOKUP_OBJECT (find_dialog, image101, "image101");
   GLADE_HOOKUP_OBJECT (find_dialog, label81, "label81");
+  GLADE_HOOKUP_OBJECT (find_dialog, find_close, "find_close");
   GLADE_HOOKUP_OBJECT_NO_REF (find_dialog, tooltips, "tooltips");
 
   gtk_widget_grab_focus (find_text);
@@ -1937,20 +1949,27 @@ create_find_dialog (void)
 
 static GnomeUIInfo xfile_menu_uiinfo[] =
 {
-  GNOMEUIINFO_MENU_NEW_ITEM (N_("_New"), NULL, on_xnew_activate, NULL),
-  GNOMEUIINFO_MENU_OPEN_ITEM (on_xopen_activate, NULL),
+  GNOMEUIINFO_MENU_NEW_ITEM (N_("_New"), NULL, on_new_activate, NULL),
+  GNOMEUIINFO_MENU_OPEN_ITEM (on_open_activate, NULL),
+  {
+    GNOME_APP_UI_ITEM, N_("Open Recent"),
+    NULL,
+    (gpointer) NULL, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
+  },
   GNOMEUIINFO_SEPARATOR,
   {
     GNOME_APP_UI_ITEM, N_("_Install Extension..."),
     N_("Install an extension for use in Inform projects"),
-    (gpointer) on_xinstall_extension_activate, NULL, NULL,
+    (gpointer) on_install_extension_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Open _Extension..."),
     N_("Open an existing extension"),
-    (gpointer) on_xopen_extension_activate, NULL, NULL,
+    (gpointer) on_open_extension_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     0, (GdkModifierType) 0, NULL
   },
@@ -1960,7 +1979,7 @@ static GnomeUIInfo xfile_menu_uiinfo[] =
   GNOMEUIINFO_MENU_SAVE_AS_ITEM (on_xsave_as_activate, NULL),
   GNOMEUIINFO_MENU_REVERT_ITEM (on_xrevert_activate, NULL),
   GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_MENU_EXIT_ITEM (on_xquit_activate, NULL),
+  GNOMEUIINFO_MENU_EXIT_ITEM (on_quit_activate, NULL),
   GNOMEUIINFO_END
 };
 
@@ -1976,7 +1995,7 @@ static GnomeUIInfo xedit_menu_uiinfo[] =
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_FIND_ITEM (on_xfind_activate, NULL),
   GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_MENU_PREFERENCES_ITEM (on_xpreferences_activate, NULL),
+  GNOMEUIINFO_MENU_PREFERENCES_ITEM (on_preferences_activate, NULL),
   GNOMEUIINFO_END
 };
 
@@ -1985,7 +2004,7 @@ static GnomeUIInfo xwindows_menu_uiinfo[] =
   {
     GNOME_APP_UI_ITEM, N_("Show _Inspectors"),
     NULL,
-    (gpointer) on_xshow_inspectors_activate, NULL, NULL,
+    (gpointer) on_show_inspectors_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-zoom-in",
     GDK_I, (GdkModifierType) GDK_CONTROL_MASK | GDK_MOD1_MASK, NULL
   },
@@ -2046,6 +2065,9 @@ create_ext_window (void)
   g_signal_connect ((gpointer) ext_window, "destroy",
                     G_CALLBACK (on_ext_window_destroy),
                     NULL);
+  g_signal_connect_after ((gpointer) ext_window, "realize",
+                          G_CALLBACK (after_ext_window_realize),
+                          NULL);
   gnome_app_install_menu_hints (GNOME_APP (ext_window), menubar2_uiinfo);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -2054,16 +2076,17 @@ create_ext_window (void)
   GLADE_HOOKUP_OBJECT (ext_window, menubar2_uiinfo[0].widget, "xfile");
   GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[0].widget, "xnew");
   GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[1].widget, "xopen");
-  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[2].widget, "separator20");
-  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[3].widget, "xinstall_extension");
-  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[4].widget, "xopen_extension");
-  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[5].widget, "separator21");
-  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[6].widget, "xclose");
-  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[7].widget, "xsave");
-  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[8].widget, "xsave_as");
-  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[9].widget, "xrevert");
-  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[10].widget, "separator30");
-  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[11].widget, "xquit");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[2].widget, "xopen_recent");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[3].widget, "separator20");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[4].widget, "xinstall_extension");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[5].widget, "xopen_extension");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[6].widget, "separator21");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[7].widget, "xclose");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[8].widget, "xsave");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[9].widget, "xsave_as");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[10].widget, "xrevert");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[11].widget, "separator30");
+  GLADE_HOOKUP_OBJECT (ext_window, xfile_menu_uiinfo[12].widget, "xquit");
   GLADE_HOOKUP_OBJECT (ext_window, menubar2_uiinfo[1].widget, "xedit");
   GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[0].widget, "xundo");
   GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[1].widget, "xredo");
@@ -2493,28 +2516,24 @@ create_prefs_dialog (void)
   GtkWidget *frame3;
   GtkWidget *alignment8;
   GtkWidget *vbox20;
-  GtkWidget *hbox16;
+  GtkWidget *table2;
+  GtkWidget *label61;
+  GtkWidget *label62;
   GtkWidget *label59;
   GtkWidget *prefs_font_set;
-  GtkWidget *hbox17;
-  GtkWidget *label60;
-  GtkWidget *prefs_custom_font;
-  GtkWidget *hbox18;
-  GtkWidget *label61;
-  GtkWidget *prefs_font_styling;
-  GtkWidget *hbox19;
-  GtkWidget *label62;
   GtkWidget *prefs_font_size;
+  GtkWidget *prefs_font_styling;
+  GtkWidget *prefs_custom_font;
+  GtkWidget *label60;
   GtkWidget *label58;
   GtkWidget *frame4;
   GtkWidget *alignment9;
   GtkWidget *vbox21;
-  GtkWidget *hbox20;
-  GtkWidget *label64;
-  GtkWidget *prefs_change_colors;
-  GtkWidget *hbox21;
+  GtkWidget *table3;
   GtkWidget *label65b;
   GtkWidget *prefs_color_set;
+  GtkWidget *label64;
+  GtkWidget *prefs_change_colors;
   GtkWidget *label63;
   GtkWidget *frame12;
   GtkWidget *alignment20;
@@ -2640,66 +2659,70 @@ create_prefs_dialog (void)
   gtk_widget_show (vbox20);
   gtk_container_add (GTK_CONTAINER (alignment8), vbox20);
 
-  hbox16 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (hbox16);
-  gtk_box_pack_start (GTK_BOX (vbox20), hbox16, FALSE, TRUE, 0);
+  table2 = gtk_table_new (4, 2, FALSE);
+  gtk_widget_show (table2);
+  gtk_box_pack_start (GTK_BOX (vbox20), table2, FALSE, TRUE, 0);
+
+  label61 = gtk_label_new (_("Font styling: "));
+  gtk_widget_show (label61);
+  gtk_table_attach (GTK_TABLE (table2), label61, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  label62 = gtk_label_new (_("Font size: "));
+  gtk_widget_show (label62);
+  gtk_table_attach (GTK_TABLE (table2), label62, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   label59 = gtk_label_new (_("Font set: "));
   gtk_widget_show (label59);
-  gtk_box_pack_start (GTK_BOX (hbox16), label59, FALSE, FALSE, 0);
+  gtk_table_attach (GTK_TABLE (table2), label59, 0, 1, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   prefs_font_set = gtk_combo_box_new_text ();
   gtk_widget_show (prefs_font_set);
-  gtk_box_pack_start (GTK_BOX (hbox16), prefs_font_set, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table2), prefs_font_set, 1, 2, 3, 4,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_set), _("Standard"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_set), _("Programmer"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_set), _("Use custom font"));
 
-  hbox17 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (hbox17);
-  gtk_box_pack_start (GTK_BOX (vbox20), hbox17, FALSE, TRUE, 0);
-
-  label60 = gtk_label_new (_("Custom font: "));
-  gtk_widget_show (label60);
-  gtk_box_pack_start (GTK_BOX (hbox17), label60, FALSE, FALSE, 0);
-
-  prefs_custom_font = gtk_font_button_new ();
-  gtk_widget_show (prefs_custom_font);
-  gtk_box_pack_start (GTK_BOX (hbox17), prefs_custom_font, TRUE, TRUE, 0);
-  gtk_font_button_set_show_style (GTK_FONT_BUTTON (prefs_custom_font), FALSE);
-  gtk_font_button_set_show_size (GTK_FONT_BUTTON (prefs_custom_font), FALSE);
-  gtk_font_button_set_use_font (GTK_FONT_BUTTON (prefs_custom_font), TRUE);
-
-  hbox18 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (hbox18);
-  gtk_box_pack_start (GTK_BOX (vbox20), hbox18, FALSE, TRUE, 0);
-
-  label61 = gtk_label_new (_("Font styling: "));
-  gtk_widget_show (label61);
-  gtk_box_pack_start (GTK_BOX (hbox18), label61, FALSE, FALSE, 0);
-
-  prefs_font_styling = gtk_combo_box_new_text ();
-  gtk_widget_show (prefs_font_styling);
-  gtk_box_pack_start (GTK_BOX (hbox18), prefs_font_styling, TRUE, TRUE, 0);
-  gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_styling), _("None"));
-  gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_styling), _("Subtle"));
-  gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_styling), _("Often"));
-
-  hbox19 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (hbox19);
-  gtk_box_pack_start (GTK_BOX (vbox20), hbox19, FALSE, TRUE, 0);
-
-  label62 = gtk_label_new (_("Font size: "));
-  gtk_widget_show (label62);
-  gtk_box_pack_start (GTK_BOX (hbox19), label62, FALSE, FALSE, 0);
-
   prefs_font_size = gtk_combo_box_new_text ();
   gtk_widget_show (prefs_font_size);
-  gtk_box_pack_start (GTK_BOX (hbox19), prefs_font_size, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table2), prefs_font_size, 1, 2, 2, 3,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_size), _("Standard"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_size), _("Medium"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_size), _("Large"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_size), _("Huge"));
+
+  prefs_font_styling = gtk_combo_box_new_text ();
+  gtk_widget_show (prefs_font_styling);
+  gtk_table_attach (GTK_TABLE (table2), prefs_font_styling, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_styling), _("None"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_styling), _("Subtle"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_font_styling), _("Often"));
+
+  prefs_custom_font = gtk_font_button_new ();
+  gtk_widget_show (prefs_custom_font);
+  gtk_table_attach (GTK_TABLE (table2), prefs_custom_font, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_font_button_set_show_style (GTK_FONT_BUTTON (prefs_custom_font), FALSE);
+  gtk_font_button_set_show_size (GTK_FONT_BUTTON (prefs_custom_font), FALSE);
+  gtk_font_button_set_use_font (GTK_FONT_BUTTON (prefs_custom_font), TRUE);
+
+  label60 = gtk_label_new (_("Custom font: "));
+  gtk_widget_show (label60);
+  gtk_table_attach (GTK_TABLE (table2), label60, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   label58 = gtk_label_new (_("<b>Fonts</b>"));
   gtk_widget_show (label58);
@@ -2720,35 +2743,39 @@ create_prefs_dialog (void)
   gtk_widget_show (vbox21);
   gtk_container_add (GTK_CONTAINER (alignment9), vbox21);
 
-  hbox20 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (hbox20);
-  gtk_box_pack_start (GTK_BOX (vbox21), hbox20, FALSE, TRUE, 0);
-
-  label64 = gtk_label_new (_("Change colors: "));
-  gtk_widget_show (label64);
-  gtk_box_pack_start (GTK_BOX (hbox20), label64, FALSE, FALSE, 0);
-
-  prefs_change_colors = gtk_combo_box_new_text ();
-  gtk_widget_show (prefs_change_colors);
-  gtk_box_pack_start (GTK_BOX (hbox20), prefs_change_colors, TRUE, TRUE, 0);
-  gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_change_colors), _("Never"));
-  gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_change_colors), _("Occasionally"));
-  gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_change_colors), _("Often"));
-
-  hbox21 = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (hbox21);
-  gtk_box_pack_start (GTK_BOX (vbox21), hbox21, FALSE, TRUE, 0);
+  table3 = gtk_table_new (2, 2, FALSE);
+  gtk_widget_show (table3);
+  gtk_box_pack_start (GTK_BOX (vbox21), table3, FALSE, TRUE, 0);
 
   label65b = gtk_label_new (_("Color set: "));
   gtk_widget_show (label65b);
-  gtk_box_pack_start (GTK_BOX (hbox21), label65b, FALSE, FALSE, 0);
+  gtk_table_attach (GTK_TABLE (table3), label65b, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
 
   prefs_color_set = gtk_combo_box_new_text ();
   gtk_widget_show (prefs_color_set);
-  gtk_box_pack_start (GTK_BOX (hbox21), prefs_color_set, TRUE, TRUE, 0);
+  gtk_table_attach (GTK_TABLE (table3), prefs_color_set, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
   gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_color_set), _("Subdued"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_color_set), _("Standard"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_color_set), _("Psychedelic"));
+
+  label64 = gtk_label_new (_("Change colors: "));
+  gtk_widget_show (label64);
+  gtk_table_attach (GTK_TABLE (table3), label64, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  prefs_change_colors = gtk_combo_box_new_text ();
+  gtk_widget_show (prefs_change_colors);
+  gtk_table_attach (GTK_TABLE (table3), prefs_change_colors, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+  gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_change_colors), _("Never"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_change_colors), _("Occasionally"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_change_colors), _("Often"));
 
   label63 = gtk_label_new (_("<b>Colors</b>"));
   gtk_widget_show (label63);
@@ -3184,20 +3211,20 @@ create_prefs_dialog (void)
   g_signal_connect ((gpointer) prefs_font_set, "changed",
                     G_CALLBACK (on_prefs_font_set_changed),
                     NULL);
-  g_signal_connect ((gpointer) prefs_custom_font, "font_set",
-                    G_CALLBACK (on_prefs_custom_font_font_set),
+  g_signal_connect ((gpointer) prefs_font_size, "changed",
+                    G_CALLBACK (on_prefs_font_size_changed),
                     NULL);
   g_signal_connect ((gpointer) prefs_font_styling, "changed",
                     G_CALLBACK (on_prefs_font_styling_changed),
                     NULL);
-  g_signal_connect ((gpointer) prefs_font_size, "changed",
-                    G_CALLBACK (on_prefs_font_size_changed),
-                    NULL);
-  g_signal_connect ((gpointer) prefs_change_colors, "changed",
-                    G_CALLBACK (on_prefs_change_colors_changed),
+  g_signal_connect ((gpointer) prefs_custom_font, "font_set",
+                    G_CALLBACK (on_prefs_custom_font_font_set),
                     NULL);
   g_signal_connect ((gpointer) prefs_color_set, "changed",
                     G_CALLBACK (on_prefs_color_set_changed),
+                    NULL);
+  g_signal_connect ((gpointer) prefs_change_colors, "changed",
+                    G_CALLBACK (on_prefs_change_colors_changed),
                     NULL);
   g_signal_connect ((gpointer) tab_ruler, "value_changed",
                     G_CALLBACK (on_tab_ruler_value_changed),
@@ -3283,28 +3310,24 @@ create_prefs_dialog (void)
   GLADE_HOOKUP_OBJECT (prefs_dialog, frame3, "frame3");
   GLADE_HOOKUP_OBJECT (prefs_dialog, alignment8, "alignment8");
   GLADE_HOOKUP_OBJECT (prefs_dialog, vbox20, "vbox20");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, hbox16, "hbox16");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, table2, "table2");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, label61, "label61");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, label62, "label62");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label59, "label59");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_font_set, "prefs_font_set");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, hbox17, "hbox17");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, label60, "label60");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_custom_font, "prefs_custom_font");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, hbox18, "hbox18");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, label61, "label61");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_font_styling, "prefs_font_styling");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, hbox19, "hbox19");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, label62, "label62");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_font_size, "prefs_font_size");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_font_styling, "prefs_font_styling");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_custom_font, "prefs_custom_font");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, label60, "label60");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label58, "label58");
   GLADE_HOOKUP_OBJECT (prefs_dialog, frame4, "frame4");
   GLADE_HOOKUP_OBJECT (prefs_dialog, alignment9, "alignment9");
   GLADE_HOOKUP_OBJECT (prefs_dialog, vbox21, "vbox21");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, hbox20, "hbox20");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, label64, "label64");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_change_colors, "prefs_change_colors");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, hbox21, "hbox21");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, table3, "table3");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label65b, "label65b");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_color_set, "prefs_color_set");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, label64, "label64");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_change_colors, "prefs_change_colors");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label63, "label63");
   GLADE_HOOKUP_OBJECT (prefs_dialog, frame12, "frame12");
   GLADE_HOOKUP_OBJECT (prefs_dialog, alignment20, "alignment20");

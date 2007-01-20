@@ -66,7 +66,7 @@ void update_window_list() {
             windowlist = g_slist_prepend(windowlist, tl_iter->data);
         
     int num_items = g_slist_length(windowlist);
-    GnomeUIInfo *newitems = g_malloc(sizeof(GnomeUIInfo) * (num_items + 1));
+    GnomeUIInfo *newitems = g_new(GnomeUIInfo, num_items + 1);
     
     int count = 0;
     for(iter = windowlist; iter != NULL; count++, iter = g_slist_next(iter)) {

@@ -34,6 +34,10 @@ on_find_text_changed                   (GtkEditable     *editable,
                                         gpointer         user_data);
 
 void
+on_find_close_clicked                  (GtkButton       *button,
+                                        gpointer         user_data);
+
+void
 on_find_next_clicked                   (GtkButton       *button,
                                         gpointer         user_data);
 

@@ -28,6 +28,7 @@
   <signal name="delete_event" handler="on_app_window_delete_event" last_modification_time="Mon, 21 Aug 2006 23:37:47 GMT"/>
   <signal name="realize" handler="after_app_window_realize" after="yes" last_modification_time="Thu, 31 Aug 2006 18:56:39 GMT"/>
   <signal name="destroy" handler="on_app_window_destroy" last_modification_time="Tue, 05 Sep 2006 14:49:33 GMT"/>
+  <signal name="focus_in_event" handler="on_app_window_focus_in_event" last_modification_time="Tue, 16 Jan 2007 11:16:57 GMT"/>
 
   <child internal-child="dock">
     <widget class="BonoboDock" id="bonobodock1">
@@ -68,6 +69,14 @@
 			  <property name="visible">True</property>
 			  <property name="stock_item">GNOMEUIINFO_MENU_OPEN_ITEM</property>
 			  <signal name="activate" handler="on_open_activate" last_modification_time="Mon, 21 Aug 2006 00:51:26 GMT"/>
+			</widget>
+		      </child>
+
+		      <child>
+			<widget class="GtkMenuItem" id="open_recent">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes">Open Recent</property>
+			  <property name="use_underline">True</property>
 			</widget>
 		      </child>
 
@@ -264,7 +273,7 @@
 			  <accelerator key="I" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image111">
+			    <widget class="GtkImage" id="image117">
 			      <property name="visible">True</property>
 			      <property name="stock">gtk-convert</property>
 			      <property name="icon_size">1</property>
@@ -293,7 +302,7 @@
 			  <accelerator key="R" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image112">
+			    <widget class="GtkImage" id="image118">
 			      <property name="visible">True</property>
 			      <property name="stock">gtk-go-forward</property>
 			      <property name="icon_size">1</property>
@@ -316,7 +325,7 @@
 			  <accelerator key="R" modifiers="GDK_CONTROL_MASK | GDK_MOD1_MASK" signal="activate"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image113">
+			    <widget class="GtkImage" id="image119">
 			      <property name="visible">True</property>
 			      <property name="stock">gtk-refresh</property>
 			      <property name="icon_size">1</property>
@@ -340,7 +349,7 @@
 			  <accelerator key="Q" modifiers="GDK_CONTROL_MASK | GDK_SHIFT_MASK" signal="activate"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image114">
+			    <widget class="GtkImage" id="image120">
 			      <property name="visible">True</property>
 			      <property name="stock">gtk-stop</property>
 			      <property name="icon_size">1</property>
@@ -369,7 +378,7 @@
 			  <accelerator key="R" modifiers="GDK_CONTROL_MASK | GDK_SHIFT_MASK" signal="activate"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image115">
+			    <widget class="GtkImage" id="image121">
 			      <property name="visible">True</property>
 			      <property name="stock">gtk-cdrom</property>
 			      <property name="icon_size">1</property>
@@ -403,7 +412,7 @@
 			  <accelerator key="I" modifiers="GDK_CONTROL_MASK | GDK_MOD1_MASK" signal="activate"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image116">
+			    <widget class="GtkImage" id="image122">
 			      <property name="visible">True</property>
 			      <property name="stock">gtk-zoom-in</property>
 			      <property name="icon_size">1</property>
@@ -564,7 +573,7 @@
 			  <accelerator key="F1" modifiers="0" signal="activate"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image117">
+			    <widget class="GtkImage" id="image123">
 			      <property name="visible">True</property>
 			      <property name="stock">gtk-help</property>
 			      <property name="icon_size">1</property>
@@ -3271,6 +3280,7 @@ written by P.F. Chimento.</property>
 	      <child>
 		<widget class="GtkButton" id="welcome_reopen_button">
 		  <property name="visible">True</property>
+		  <property name="sensitive">False</property>
 		  <property name="can_default">True</property>
 		  <property name="can_focus">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
@@ -3469,21 +3479,6 @@ written by P.F. Chimento.</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
 	      <property name="label" translatable="yes">Replace all</property>
-	      <property name="use_underline">True</property>
-	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="focus_on_click">True</property>
-	      <property name="response_id">0</property>
-	    </widget>
-	  </child>
-
-	  <child>
-	    <widget class="GtkButton" id="find_replace">
-	      <property name="visible">True</property>
-	      <property name="sensitive">False</property>
-	      <property name="tooltip" translatable="yes">Replace selected text with the replacement text</property>
-	      <property name="can_default">True</property>
-	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Replace only</property>
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
@@ -3722,6 +3717,20 @@ written by P.F. Chimento.</property>
 	      </child>
 	    </widget>
 	  </child>
+
+	  <child>
+	    <widget class="GtkButton" id="find_close">
+	      <property name="visible">True</property>
+	      <property name="can_default">True</property>
+	      <property name="can_focus">True</property>
+	      <property name="label">gtk-close</property>
+	      <property name="use_stock">True</property>
+	      <property name="relief">GTK_RELIEF_NORMAL</property>
+	      <property name="focus_on_click">True</property>
+	      <property name="response_id">-7</property>
+	      <signal name="clicked" handler="on_find_close_clicked" last_modification_time="Sat, 20 Jan 2007 07:42:54 GMT"/>
+	    </widget>
+	  </child>
 	</widget>
 	<packing>
 	  <property name="padding">0</property>
@@ -3738,35 +3747,13 @@ written by P.F. Chimento.</property>
 	  <property name="spacing">0</property>
 
 	  <child>
-	    <widget class="GtkHBox" id="hbox8">
+	    <widget class="GtkTable" id="table1">
 	      <property name="visible">True</property>
+	      <property name="n_rows">2</property>
+	      <property name="n_columns">2</property>
 	      <property name="homogeneous">False</property>
-	      <property name="spacing">0</property>
-
-	      <child>
-		<widget class="GtkLabel" id="label45">
-		  <property name="visible">True</property>
-		  <property name="label" translatable="yes">Search for: </property>
-		  <property name="use_underline">False</property>
-		  <property name="use_markup">False</property>
-		  <property name="justify">GTK_JUSTIFY_LEFT</property>
-		  <property name="wrap">False</property>
-		  <property name="selectable">False</property>
-		  <property name="xalign">0.5</property>
-		  <property name="yalign">0.5</property>
-		  <property name="xpad">0</property>
-		  <property name="ypad">0</property>
-		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-		  <property name="width_chars">-1</property>
-		  <property name="single_line_mode">False</property>
-		  <property name="angle">0</property>
-		</widget>
-		<packing>
-		  <property name="padding">0</property>
-		  <property name="expand">False</property>
-		  <property name="fill">False</property>
-		</packing>
-	      </child>
+	      <property name="row_spacing">0</property>
+	      <property name="column_spacing">0</property>
 
 	      <child>
 		<widget class="GtkEntry" id="find_text">
@@ -3783,24 +3770,13 @@ written by P.F. Chimento.</property>
 		  <signal name="changed" handler="on_find_text_changed" last_modification_time="Mon, 27 Nov 2006 00:00:46 GMT"/>
 		</widget>
 		<packing>
-		  <property name="padding">0</property>
-		  <property name="expand">True</property>
-		  <property name="fill">True</property>
+		  <property name="left_attach">1</property>
+		  <property name="right_attach">2</property>
+		  <property name="top_attach">0</property>
+		  <property name="bottom_attach">1</property>
+		  <property name="y_options"></property>
 		</packing>
 	      </child>
-	    </widget>
-	    <packing>
-	      <property name="padding">0</property>
-	      <property name="expand">True</property>
-	      <property name="fill">True</property>
-	    </packing>
-	  </child>
-
-	  <child>
-	    <widget class="GtkHBox" id="hbox9">
-	      <property name="visible">True</property>
-	      <property name="homogeneous">False</property>
-	      <property name="spacing">0</property>
 
 	      <child>
 		<widget class="GtkLabel" id="label46">
@@ -3821,9 +3797,12 @@ written by P.F. Chimento.</property>
 		  <property name="angle">0</property>
 		</widget>
 		<packing>
-		  <property name="padding">0</property>
-		  <property name="expand">False</property>
-		  <property name="fill">False</property>
+		  <property name="left_attach">0</property>
+		  <property name="right_attach">1</property>
+		  <property name="top_attach">1</property>
+		  <property name="bottom_attach">2</property>
+		  <property name="x_options">fill</property>
+		  <property name="y_options"></property>
 		</packing>
 	      </child>
 
@@ -3840,9 +3819,39 @@ written by P.F. Chimento.</property>
 		  <property name="activates_default">False</property>
 		</widget>
 		<packing>
-		  <property name="padding">0</property>
-		  <property name="expand">True</property>
-		  <property name="fill">True</property>
+		  <property name="left_attach">1</property>
+		  <property name="right_attach">2</property>
+		  <property name="top_attach">1</property>
+		  <property name="bottom_attach">2</property>
+		  <property name="y_options"></property>
+		</packing>
+	      </child>
+
+	      <child>
+		<widget class="GtkLabel" id="label45">
+		  <property name="visible">True</property>
+		  <property name="label" translatable="yes">Search for: </property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">False</property>
+		  <property name="justify">GTK_JUSTIFY_LEFT</property>
+		  <property name="wrap">False</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0.5</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xpad">0</property>
+		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
+		</widget>
+		<packing>
+		  <property name="left_attach">0</property>
+		  <property name="right_attach">1</property>
+		  <property name="top_attach">0</property>
+		  <property name="bottom_attach">1</property>
+		  <property name="x_options">fill</property>
+		  <property name="y_options"></property>
 		</packing>
 	      </child>
 	    </widget>
@@ -3949,6 +3958,7 @@ written by P.F. Chimento.</property>
   <property name="enable_layout_config">True</property>
   <signal name="delete_event" handler="on_ext_window_delete_event" last_modification_time="Tue, 05 Sep 2006 14:43:24 GMT"/>
   <signal name="destroy" handler="on_ext_window_destroy" last_modification_time="Tue, 05 Sep 2006 14:49:18 GMT"/>
+  <signal name="realize" handler="after_ext_window_realize" after="yes" last_modification_time="Sat, 20 Jan 2007 11:13:54 GMT"/>
 
   <child internal-child="dock">
     <widget class="BonoboDock" id="bonobodock2">
@@ -3980,7 +3990,7 @@ written by P.F. Chimento.</property>
 			  <property name="stock_item">GNOMEUIINFO_MENU_NEW_ITEM</property>
 			  <property name="label" translatable="yes">_New</property>
 			  <property name="use_underline">True</property>
-			  <signal name="activate" handler="on_xnew_activate" last_modification_time="Tue, 05 Sep 2006 13:56:25 GMT"/>
+			  <signal name="activate" handler="on_new_activate" last_modification_time="Sat, 20 Jan 2007 13:30:27 GMT"/>
 			</widget>
 		      </child>
 
@@ -3988,7 +3998,15 @@ written by P.F. Chimento.</property>
 			<widget class="GtkImageMenuItem" id="xopen">
 			  <property name="visible">True</property>
 			  <property name="stock_item">GNOMEUIINFO_MENU_OPEN_ITEM</property>
-			  <signal name="activate" handler="on_xopen_activate" last_modification_time="Tue, 05 Sep 2006 13:56:25 GMT"/>
+			  <signal name="activate" handler="on_open_activate" last_modification_time="Sat, 20 Jan 2007 13:30:27 GMT"/>
+			</widget>
+		      </child>
+
+		      <child>
+			<widget class="GtkMenuItem" id="xopen_recent">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes">Open Recent</property>
+			  <property name="use_underline">True</property>
 			</widget>
 		      </child>
 
@@ -4004,7 +4022,7 @@ written by P.F. Chimento.</property>
 			  <property name="tooltip" translatable="yes">Install an extension for use in Inform projects</property>
 			  <property name="label" translatable="yes">_Install Extension...</property>
 			  <property name="use_underline">True</property>
-			  <signal name="activate" handler="on_xinstall_extension_activate" last_modification_time="Tue, 05 Sep 2006 13:56:25 GMT"/>
+			  <signal name="activate" handler="on_install_extension_activate" last_modification_time="Sat, 20 Jan 2007 13:30:27 GMT"/>
 			</widget>
 		      </child>
 
@@ -4014,7 +4032,7 @@ written by P.F. Chimento.</property>
 			  <property name="tooltip" translatable="yes">Open an existing extension</property>
 			  <property name="label" translatable="yes">Open _Extension...</property>
 			  <property name="use_underline">True</property>
-			  <signal name="activate" handler="on_xopen_extension_activate" last_modification_time="Tue, 05 Sep 2006 13:56:25 GMT"/>
+			  <signal name="activate" handler="on_open_extension_activate" last_modification_time="Sat, 20 Jan 2007 13:30:27 GMT"/>
 			</widget>
 		      </child>
 
@@ -4066,7 +4084,7 @@ written by P.F. Chimento.</property>
 			<widget class="GtkImageMenuItem" id="xquit">
 			  <property name="visible">True</property>
 			  <property name="stock_item">GNOMEUIINFO_MENU_EXIT_ITEM</property>
-			  <signal name="activate" handler="on_xquit_activate" last_modification_time="Sun, 03 Sep 2006 22:14:51 GMT"/>
+			  <signal name="activate" handler="on_quit_activate" last_modification_time="Sat, 20 Jan 2007 13:31:27 GMT"/>
 			</widget>
 		      </child>
 		    </widget>
@@ -4160,7 +4178,7 @@ written by P.F. Chimento.</property>
 			<widget class="GtkImageMenuItem" id="xpreferences">
 			  <property name="visible">True</property>
 			  <property name="stock_item">GNOMEUIINFO_MENU_PREFERENCES_ITEM</property>
-			  <signal name="activate" handler="on_xpreferences_activate" last_modification_time="Wed, 06 Sep 2006 12:38:00 GMT"/>
+			  <signal name="activate" handler="on_preferences_activate" last_modification_time="Sat, 20 Jan 2007 13:32:16 GMT"/>
 			</widget>
 		      </child>
 		    </widget>
@@ -4181,11 +4199,11 @@ written by P.F. Chimento.</property>
 			  <property name="visible">True</property>
 			  <property name="label" translatable="yes">Show _Inspectors</property>
 			  <property name="use_underline">True</property>
-			  <signal name="activate" handler="on_xshow_inspectors_activate" last_modification_time="Mon, 27 Nov 2006 01:33:35 GMT"/>
+			  <signal name="activate" handler="on_show_inspectors_activate" last_modification_time="Sat, 20 Jan 2007 13:24:35 GMT"/>
 			  <accelerator key="I" modifiers="GDK_CONTROL_MASK | GDK_MOD1_MASK" signal="activate"/>
 
 			  <child internal-child="image">
-			    <widget class="GtkImage" id="image110">
+			    <widget class="GtkImage" id="image124">
 			      <property name="visible">True</property>
 			      <property name="stock">gtk-zoom-in</property>
 			      <property name="icon_size">1</property>
@@ -5130,121 +5148,13 @@ written by P.F. Chimento.</property>
 			  <property name="spacing">0</property>
 
 			  <child>
-			    <widget class="GtkHBox" id="hbox16">
+			    <widget class="GtkTable" id="table2">
 			      <property name="visible">True</property>
+			      <property name="n_rows">4</property>
+			      <property name="n_columns">2</property>
 			      <property name="homogeneous">False</property>
-			      <property name="spacing">0</property>
-
-			      <child>
-				<widget class="GtkLabel" id="label59">
-				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Font set: </property>
-				  <property name="use_underline">False</property>
-				  <property name="use_markup">False</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
-				  <property name="wrap">False</property>
-				  <property name="selectable">False</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-				  <property name="width_chars">-1</property>
-				  <property name="single_line_mode">False</property>
-				  <property name="angle">0</property>
-				</widget>
-				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">False</property>
-				  <property name="fill">False</property>
-				</packing>
-			      </child>
-
-			      <child>
-				<widget class="GtkComboBox" id="prefs_font_set">
-				  <property name="visible">True</property>
-				  <property name="items" translatable="yes">Standard
-Programmer
-Use custom font</property>
-				  <property name="add_tearoffs">False</property>
-				  <property name="focus_on_click">True</property>
-				  <signal name="changed" handler="on_prefs_font_set_changed" last_modification_time="Wed, 06 Sep 2006 11:20:18 GMT"/>
-				</widget>
-				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">True</property>
-				  <property name="fill">True</property>
-				</packing>
-			      </child>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">False</property>
-			      <property name="fill">True</property>
-			    </packing>
-			  </child>
-
-			  <child>
-			    <widget class="GtkHBox" id="hbox17">
-			      <property name="visible">True</property>
-			      <property name="homogeneous">False</property>
-			      <property name="spacing">0</property>
-
-			      <child>
-				<widget class="GtkLabel" id="label60">
-				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Custom font: </property>
-				  <property name="use_underline">False</property>
-				  <property name="use_markup">False</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
-				  <property name="wrap">False</property>
-				  <property name="selectable">False</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-				  <property name="width_chars">-1</property>
-				  <property name="single_line_mode">False</property>
-				  <property name="angle">0</property>
-				</widget>
-				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">False</property>
-				  <property name="fill">False</property>
-				</packing>
-			      </child>
-
-			      <child>
-				<widget class="GtkFontButton" id="prefs_custom_font">
-				  <property name="visible">True</property>
-				  <property name="can_focus">True</property>
-				  <property name="show_style">False</property>
-				  <property name="show_size">False</property>
-				  <property name="use_font">True</property>
-				  <property name="use_size">False</property>
-				  <property name="focus_on_click">True</property>
-				  <signal name="font_set" handler="on_prefs_custom_font_font_set" last_modification_time="Wed, 06 Sep 2006 11:21:15 GMT"/>
-				</widget>
-				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">True</property>
-				  <property name="fill">True</property>
-				</packing>
-			      </child>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">False</property>
-			      <property name="fill">True</property>
-			    </packing>
-			  </child>
-
-			  <child>
-			    <widget class="GtkHBox" id="hbox18">
-			      <property name="visible">True</property>
-			      <property name="homogeneous">False</property>
-			      <property name="spacing">0</property>
+			      <property name="row_spacing">0</property>
+			      <property name="column_spacing">0</property>
 
 			      <child>
 				<widget class="GtkLabel" id="label61">
@@ -5265,41 +5175,14 @@ Use custom font</property>
 				  <property name="angle">0</property>
 				</widget>
 				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">False</property>
-				  <property name="fill">False</property>
+				  <property name="left_attach">0</property>
+				  <property name="right_attach">1</property>
+				  <property name="top_attach">1</property>
+				  <property name="bottom_attach">2</property>
+				  <property name="x_options">fill</property>
+				  <property name="y_options"></property>
 				</packing>
 			      </child>
-
-			      <child>
-				<widget class="GtkComboBox" id="prefs_font_styling">
-				  <property name="visible">True</property>
-				  <property name="items" translatable="yes">None
-Subtle
-Often</property>
-				  <property name="add_tearoffs">False</property>
-				  <property name="focus_on_click">True</property>
-				  <signal name="changed" handler="on_prefs_font_styling_changed" last_modification_time="Wed, 06 Sep 2006 11:22:01 GMT"/>
-				</widget>
-				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">True</property>
-				  <property name="fill">True</property>
-				</packing>
-			      </child>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">False</property>
-			      <property name="fill">True</property>
-			    </packing>
-			  </child>
-
-			  <child>
-			    <widget class="GtkHBox" id="hbox19">
-			      <property name="visible">True</property>
-			      <property name="homogeneous">False</property>
-			      <property name="spacing">0</property>
 
 			      <child>
 				<widget class="GtkLabel" id="label62">
@@ -5320,9 +5203,59 @@ Often</property>
 				  <property name="angle">0</property>
 				</widget>
 				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">False</property>
-				  <property name="fill">False</property>
+				  <property name="left_attach">0</property>
+				  <property name="right_attach">1</property>
+				  <property name="top_attach">2</property>
+				  <property name="bottom_attach">3</property>
+				  <property name="x_options">fill</property>
+				  <property name="y_options"></property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkLabel" id="label59">
+				  <property name="visible">True</property>
+				  <property name="label" translatable="yes">Font set: </property>
+				  <property name="use_underline">False</property>
+				  <property name="use_markup">False</property>
+				  <property name="justify">GTK_JUSTIFY_LEFT</property>
+				  <property name="wrap">False</property>
+				  <property name="selectable">False</property>
+				  <property name="xalign">0.5</property>
+				  <property name="yalign">0.5</property>
+				  <property name="xpad">0</property>
+				  <property name="ypad">0</property>
+				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+				  <property name="width_chars">-1</property>
+				  <property name="single_line_mode">False</property>
+				  <property name="angle">0</property>
+				</widget>
+				<packing>
+				  <property name="left_attach">0</property>
+				  <property name="right_attach">1</property>
+				  <property name="top_attach">3</property>
+				  <property name="bottom_attach">4</property>
+				  <property name="x_options">fill</property>
+				  <property name="y_options"></property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkComboBox" id="prefs_font_set">
+				  <property name="visible">True</property>
+				  <property name="items" translatable="yes">Standard
+Programmer
+Use custom font</property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
+				  <signal name="changed" handler="on_prefs_font_set_changed" last_modification_time="Wed, 06 Sep 2006 11:20:18 GMT"/>
+				</widget>
+				<packing>
+				  <property name="left_attach">1</property>
+				  <property name="right_attach">2</property>
+				  <property name="top_attach">3</property>
+				  <property name="bottom_attach">4</property>
+				  <property name="y_options">fill</property>
 				</packing>
 			      </child>
 
@@ -5338,9 +5271,78 @@ Huge</property>
 				  <signal name="changed" handler="on_prefs_font_size_changed" last_modification_time="Wed, 06 Sep 2006 11:22:38 GMT"/>
 				</widget>
 				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">True</property>
-				  <property name="fill">True</property>
+				  <property name="left_attach">1</property>
+				  <property name="right_attach">2</property>
+				  <property name="top_attach">2</property>
+				  <property name="bottom_attach">3</property>
+				  <property name="y_options">fill</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkComboBox" id="prefs_font_styling">
+				  <property name="visible">True</property>
+				  <property name="items" translatable="yes">None
+Subtle
+Often</property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
+				  <signal name="changed" handler="on_prefs_font_styling_changed" last_modification_time="Wed, 06 Sep 2006 11:22:01 GMT"/>
+				</widget>
+				<packing>
+				  <property name="left_attach">1</property>
+				  <property name="right_attach">2</property>
+				  <property name="top_attach">1</property>
+				  <property name="bottom_attach">2</property>
+				  <property name="y_options">fill</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkFontButton" id="prefs_custom_font">
+				  <property name="visible">True</property>
+				  <property name="can_focus">True</property>
+				  <property name="show_style">False</property>
+				  <property name="show_size">False</property>
+				  <property name="use_font">True</property>
+				  <property name="use_size">False</property>
+				  <property name="focus_on_click">True</property>
+				  <signal name="font_set" handler="on_prefs_custom_font_font_set" last_modification_time="Wed, 06 Sep 2006 11:21:15 GMT"/>
+				</widget>
+				<packing>
+				  <property name="left_attach">1</property>
+				  <property name="right_attach">2</property>
+				  <property name="top_attach">0</property>
+				  <property name="bottom_attach">1</property>
+				  <property name="y_options"></property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkLabel" id="label60">
+				  <property name="visible">True</property>
+				  <property name="label" translatable="yes">Custom font: </property>
+				  <property name="use_underline">False</property>
+				  <property name="use_markup">False</property>
+				  <property name="justify">GTK_JUSTIFY_LEFT</property>
+				  <property name="wrap">False</property>
+				  <property name="selectable">False</property>
+				  <property name="xalign">0.5</property>
+				  <property name="yalign">0.5</property>
+				  <property name="xpad">0</property>
+				  <property name="ypad">0</property>
+				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+				  <property name="width_chars">-1</property>
+				  <property name="single_line_mode">False</property>
+				  <property name="angle">0</property>
+				</widget>
+				<packing>
+				  <property name="left_attach">0</property>
+				  <property name="right_attach">1</property>
+				  <property name="top_attach">0</property>
+				  <property name="bottom_attach">1</property>
+				  <property name="x_options">fill</property>
+				  <property name="y_options"></property>
 				</packing>
 			      </child>
 			    </widget>
@@ -5412,65 +5414,13 @@ Huge</property>
 			  <property name="spacing">0</property>
 
 			  <child>
-			    <widget class="GtkHBox" id="hbox20">
+			    <widget class="GtkTable" id="table3">
 			      <property name="visible">True</property>
+			      <property name="n_rows">2</property>
+			      <property name="n_columns">2</property>
 			      <property name="homogeneous">False</property>
-			      <property name="spacing">0</property>
-
-			      <child>
-				<widget class="GtkLabel" id="label64">
-				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Change colors: </property>
-				  <property name="use_underline">False</property>
-				  <property name="use_markup">False</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
-				  <property name="wrap">False</property>
-				  <property name="selectable">False</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-				  <property name="width_chars">-1</property>
-				  <property name="single_line_mode">False</property>
-				  <property name="angle">0</property>
-				</widget>
-				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">False</property>
-				  <property name="fill">False</property>
-				</packing>
-			      </child>
-
-			      <child>
-				<widget class="GtkComboBox" id="prefs_change_colors">
-				  <property name="visible">True</property>
-				  <property name="items" translatable="yes">Never
-Occasionally
-Often</property>
-				  <property name="add_tearoffs">False</property>
-				  <property name="focus_on_click">True</property>
-				  <signal name="changed" handler="on_prefs_change_colors_changed" last_modification_time="Wed, 06 Sep 2006 11:24:34 GMT"/>
-				</widget>
-				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">True</property>
-				  <property name="fill">True</property>
-				</packing>
-			      </child>
-			    </widget>
-			    <packing>
-			      <property name="padding">0</property>
-			      <property name="expand">False</property>
-			      <property name="fill">True</property>
-			    </packing>
-			  </child>
-
-			  <child>
-			    <widget class="GtkHBox" id="hbox21">
-			      <property name="visible">True</property>
-			      <property name="homogeneous">False</property>
-			      <property name="spacing">0</property>
+			      <property name="row_spacing">0</property>
+			      <property name="column_spacing">0</property>
 
 			      <child>
 				<widget class="GtkLabel" id="label65b">
@@ -5491,9 +5441,12 @@ Often</property>
 				  <property name="angle">0</property>
 				</widget>
 				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">False</property>
-				  <property name="fill">False</property>
+				  <property name="left_attach">0</property>
+				  <property name="right_attach">1</property>
+				  <property name="top_attach">0</property>
+				  <property name="bottom_attach">1</property>
+				  <property name="x_options">fill</property>
+				  <property name="y_options"></property>
 				</packing>
 			      </child>
 
@@ -5508,9 +5461,59 @@ Psychedelic</property>
 				  <signal name="changed" handler="on_prefs_color_set_changed" last_modification_time="Wed, 06 Sep 2006 11:25:35 GMT"/>
 				</widget>
 				<packing>
-				  <property name="padding">0</property>
-				  <property name="expand">True</property>
-				  <property name="fill">True</property>
+				  <property name="left_attach">1</property>
+				  <property name="right_attach">2</property>
+				  <property name="top_attach">0</property>
+				  <property name="bottom_attach">1</property>
+				  <property name="y_options">fill</property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkLabel" id="label64">
+				  <property name="visible">True</property>
+				  <property name="label" translatable="yes">Change colors: </property>
+				  <property name="use_underline">False</property>
+				  <property name="use_markup">False</property>
+				  <property name="justify">GTK_JUSTIFY_LEFT</property>
+				  <property name="wrap">False</property>
+				  <property name="selectable">False</property>
+				  <property name="xalign">0.5</property>
+				  <property name="yalign">0.5</property>
+				  <property name="xpad">0</property>
+				  <property name="ypad">0</property>
+				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+				  <property name="width_chars">-1</property>
+				  <property name="single_line_mode">False</property>
+				  <property name="angle">0</property>
+				</widget>
+				<packing>
+				  <property name="left_attach">0</property>
+				  <property name="right_attach">1</property>
+				  <property name="top_attach">1</property>
+				  <property name="bottom_attach">2</property>
+				  <property name="x_options">fill</property>
+				  <property name="y_options"></property>
+				</packing>
+			      </child>
+
+			      <child>
+				<widget class="GtkComboBox" id="prefs_change_colors">
+				  <property name="visible">True</property>
+				  <property name="items" translatable="yes">Never
+Occasionally
+Often</property>
+				  <property name="add_tearoffs">False</property>
+				  <property name="focus_on_click">True</property>
+				  <signal name="changed" handler="on_prefs_change_colors_changed" last_modification_time="Wed, 06 Sep 2006 11:24:34 GMT"/>
+				</widget>
+				<packing>
+				  <property name="left_attach">1</property>
+				  <property name="right_attach">2</property>
+				  <property name="top_attach">1</property>
+				  <property name="bottom_attach">2</property>
+				  <property name="x_options">fill</property>
+				  <property name="y_options">fill</property>
 				</packing>
 			      </child>
 			    </widget>
@@ -6932,7 +6935,6 @@ to especially advanced extension authors.</property>
 
 <widget class="GtkWindow" id="inspector_window">
   <property name="width_request">250</property>
-  <property name="visible">True</property>
   <property name="title" translatable="yes">Inspectors</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>

@@ -136,6 +136,18 @@ void
 after_app_window_realize               (GtkWidget       *widget,
                                         gpointer         user_data)
 {
+    /* Create the Open Recent submenu */
+    GtkRecentManager *manager = gtk_recent_manager_get_default();
+    GtkWidget *recent_menu = gtk_recent_chooser_menu_new_for_manager(manager);
+    GtkRecentFilter *filter = gtk_recent_filter_new();
+    gtk_recent_filter_add_application(filter, "GNOME Inform 7");
+    gtk_recent_chooser_set_show_icons(GTK_RECENT_CHOOSER(recent_menu), FALSE);
+    g_signal_connect(recent_menu, "item-activated",
+      G_CALLBACK(on_open_recent_activate), NULL);
+    gtk_menu_item_set_submenu(
+      GTK_MENU_ITEM(lookup_widget(widget, "open_recent")),
+      recent_menu);
+    
     /* Create a text buffer for the Errors/Progress text view */
     GtkTextBuffer *buffer = gtk_text_buffer_new(NULL);
     gtk_text_view_set_buffer(GTK_TEXT_VIEW(lookup_widget(widget,
@@ -216,8 +228,8 @@ on_open_activate                       (GtkMenuItem     *menuitem,
     gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), filter);
 
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-        char *filename = gtk_file_chooser_get_filename(
-          GTK_FILE_CHOOSER (dialog));
+        gchar *filename = gtk_file_chooser_get_filename(
+          GTK_FILE_CHOOSER(dialog));
         thestory = open_project(filename);
         g_free(filename);
         gtk_widget_show(thestory->window);
@@ -225,6 +237,30 @@ on_open_activate                       (GtkMenuItem     *menuitem,
     gtk_widget_destroy(dialog);
 }
 
+void
+on_open_recent_activate                (GtkRecentChooser *chooser,
+                                        gpointer         user_data)
+{
+    GError *err;
+    GtkRecentInfo *item = gtk_recent_chooser_get_current_item(chooser);
+    g_return_if_fail(gtk_recent_info_has_application(item, "GNOME Inform 7"));
+    gchar *filename;
+    if((filename = g_filename_from_uri(
+      gtk_recent_info_get_uri(item), NULL, &err)) == NULL) {
+        g_warning("Cannot get filename from URI: %s", err->message);
+        g_error_free(err);
+    }
+    if(gtk_recent_info_has_group(item, "inform7_project")) {
+        struct story *thestory = open_project(filename);
+        gtk_widget_show(thestory->window);
+    } else if(gtk_recent_info_has_group(item, "inform7_extension")) {
+        struct extension *ext = open_extension(filename);
+        gtk_widget_show(ext->window);
+    } else
+        g_warning("Recent manager file does not have tag");
+    g_free(filename);    
+    gtk_recent_info_unref(item);
+}
 
 void
 on_install_extension_activate          (GtkMenuItem     *menuitem,
@@ -495,8 +531,6 @@ on_find_activate                       (GtkMenuItem     *menuitem,
       "clicked", G_CALLBACK(on_find_previous_clicked), thestory);
     g_signal_connect((gpointer)lookup_widget(dialog, "find_replace_find"),
       "clicked", G_CALLBACK(on_find_replace_find_clicked), thestory);
-    g_signal_connect((gpointer)lookup_widget(dialog, "find_replace"),
-      "clicked", G_CALLBACK(on_find_replace_clicked), thestory);
     g_signal_connect((gpointer)lookup_widget(dialog, "find_replace_all"),
       "clicked", G_CALLBACK(on_find_replace_all_clicked), thestory);
     gtk_widget_show(dialog);

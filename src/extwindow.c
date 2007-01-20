@@ -34,35 +34,22 @@
 callbacks for the main window */
 
 void
-on_xnew_activate                       (GtkMenuItem     *menuitem,
+after_ext_window_realize               (GtkWidget       *widget,
                                         gpointer         user_data)
 {
-    on_new_activate(menuitem, user_data);
+    /* Create the Open Recent submenu */
+    GtkRecentManager *manager = gtk_recent_manager_get_default();
+    GtkWidget *recent_menu = gtk_recent_chooser_menu_new_for_manager(manager);
+    GtkRecentFilter *filter = gtk_recent_filter_new();
+    gtk_recent_filter_add_application(filter, "GNOME Inform 7");
+    gtk_recent_chooser_set_filter(GTK_RECENT_CHOOSER(recent_menu), filter);
+    g_signal_connect(recent_menu, "item-activated",
+      G_CALLBACK(on_open_recent_activate), NULL);
+    gtk_menu_item_set_submenu(
+      GTK_MENU_ITEM(lookup_widget(widget, "xopen_recent")),
+      recent_menu);
 }
 
-
-void
-on_xopen_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    on_open_activate(menuitem, user_data);
-}
-
-
-void
-on_xinstall_extension_activate         (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    on_install_extension_activate(menuitem, user_data);
-}
-
-
-void
-on_xopen_extension_activate            (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    on_open_extension_activate(menuitem, user_data);
-}
 
 void
 on_xclose_activate                     (GtkMenuItem     *menuitem,
@@ -171,21 +158,6 @@ on_xrevert_activate                    (GtkMenuItem     *menuitem,
     gtk_widget_show(ext->window);
 }
 
-void
-on_xquit_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    GtkWidget *dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_QUESTION,
-      GTK_BUTTONS_YES_NO, "Quit GNOME Inform 7?");
-    gint result = gtk_dialog_run(GTK_DIALOG(dialog));
-    gtk_widget_destroy(dialog);
-    if(result != GTK_RESPONSE_YES)
-        return;
-
-    close_all_windows();
-    gtk_main_quit();
-}
-
 
 void
 on_xundo_activate                      (GtkMenuItem     *menuitem,
@@ -263,28 +235,9 @@ on_xfind_activate                      (GtkMenuItem     *menuitem,
       "clicked", G_CALLBACK(on_xfind_previous_clicked), ext);
     g_signal_connect((gpointer)lookup_widget(dialog, "find_replace_find"),
       "clicked", G_CALLBACK(on_xfind_replace_find_clicked), ext);
-    g_signal_connect((gpointer)lookup_widget(dialog, "find_replace"),
-      "clicked", G_CALLBACK(on_xfind_replace_clicked), ext);
     g_signal_connect((gpointer)lookup_widget(dialog, "find_replace_all"),
       "clicked", G_CALLBACK(on_xfind_replace_all_clicked), ext);
     gtk_widget_show(dialog);
-}
-
-
-void
-on_xpreferences_activate               (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    on_preferences_activate(menuitem, user_data);
-}
-
-
-void
-on_xshow_inspectors_activate           (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-    extern GtkWidget *inspector_window;
-    gtk_widget_show(inspector_window);
 }
 
 

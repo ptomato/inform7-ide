@@ -38,12 +38,24 @@ after_welcome_dialog_realize           (GtkWidget       *widget,
     gtk_widget_modify_style(widget, newstyle);
     
     /* If there is no "last project", make the reopen button inactive */
-    gchar *trash = config_file_get_string( "Settings", "LastProject");
-    if(!trash)
-        gtk_widget_set_sensitive(lookup_widget(widget, "welcome_reopen_button"),
-          FALSE);
-    else
-        g_free(trash);
+    GtkRecentManager *manager = gtk_recent_manager_get_default();
+    GList *recent = gtk_recent_manager_get_items(manager);
+    GList *iter;
+    for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
+        if(gtk_recent_info_has_application((GtkRecentInfo *)(iter->data),
+          "GNOME Inform 7") 
+          && gtk_recent_info_has_group((GtkRecentInfo *)(iter->data),
+          "inform7_project")) {
+            gtk_widget_set_sensitive(
+              lookup_widget(widget, "welcome_reopen_button"), TRUE);
+            break;
+        }
+    }
+    /* free the list */
+    for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
+        gtk_recent_info_unref((GtkRecentInfo *)(iter->data));
+    }
+    g_list_free(recent);
 }
 
 void
@@ -53,7 +65,6 @@ on_welcome_new_button_clicked          (GtkButton       *button,
     GtkWidget *new_dialog = create_new_dialog();
     gtk_widget_show(new_dialog);
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
-
 }
 
 void
@@ -95,10 +106,46 @@ void
 on_welcome_reopen_button_clicked       (GtkButton       *button,
                                         gpointer         user_data)
 {
-    gchar *projectname = config_file_get_string("Settings", "LastProject");
+    GtkRecentManager *manager = gtk_recent_manager_get_default();
+    GList *recent = gtk_recent_manager_get_items(manager);
+    GList *iter;
+    time_t timestamp, latest = 0;
+    gchar *projectname = NULL;
+    GError *err;
+    
+    for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
+        GtkRecentInfo *info = gtk_recent_info_ref(
+          (GtkRecentInfo *)(iter->data));
+        if(gtk_recent_info_has_application(info, "GNOME Inform 7")
+          && gtk_recent_info_get_application_info(info, "GNOME Inform 7", NULL,
+          NULL, &timestamp)) {
+            if(gtk_recent_info_has_group(info, "inform7_project")) {
+                if(latest == 0 || difftime(timestamp, latest) > 0) {
+                    latest = timestamp;
+                    if(projectname)
+                        g_free(projectname);
+                    if((projectname = g_filename_from_uri(
+                      gtk_recent_info_get_uri(info), NULL, &err)) == NULL) {
+                        g_warning("Cannot get filename from URI: %s",
+                          err->message);
+                        g_error_free(err);
+                    }
+                }
+            }
+        }
+        gtk_recent_info_unref(info);
+    }
+    g_return_if_fail(projectname); /* Button not sensitive if no last project */
+    /* free the list */
+    for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
+        gtk_recent_info_unref((GtkRecentInfo *)(iter->data));
+    }
+    g_list_free(recent);
+    
     struct story *thestory;
     thestory = open_project(projectname);
     gtk_widget_show(thestory->window);
     g_free(projectname);
+    /* Do not free the string from gtk_recent_info_get_uri */
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 }

@@ -88,6 +88,10 @@ on_open_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
+on_open_recent_activate                (GtkRecentChooser *chooser,
+                                        gpointer         user_data);
+
+void
 on_install_extension_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 

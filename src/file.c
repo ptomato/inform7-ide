@@ -193,7 +193,28 @@ struct story *open_project(gchar *directory) {
     gtk_text_buffer_place_cursor(GTK_TEXT_BUFFER(thestory->buffer), &start);
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(thestory->buffer), FALSE);
 
-    config_file_set_string("Settings", "LastProject", directory);
+    /* Update the list of recently used files */
+    GtkRecentManager *manager = gtk_recent_manager_get_default();
+    gchar *file_uri;
+    if((file_uri = g_filename_to_uri(directory, NULL, &err)) == NULL) {
+        /* fail discreetly */
+        g_warning("Cannot convert project filename to URI: %s", err->message);
+        g_error_free(err);
+    } else {
+        GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
+        recent_data->mime_type = g_strdup("text/x-natural-inform");
+        recent_data->app_name = g_strdup("GNOME Inform 7");
+        recent_data->app_exec = g_strdup("gnome-inform7");
+        /* We use the groups "inform7_project" and "inform7_extension" to
+        determine how to open a file from the recent manager */
+        recent_data->groups = g_new(gchar *, 2);
+        recent_data->groups[0] = g_strdup("inform7_project");
+        recent_data->groups[1] = NULL;
+        recent_data->is_private = FALSE;
+        gtk_recent_manager_add_full(manager, file_uri, recent_data);
+        g_strfreev(recent_data->groups);
+        g_free(recent_data);
+    }
     
     return thestory;
 }
@@ -248,8 +269,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     /* TODO */
 
     /* Save the notes */
-    gtk_text_buffer_get_start_iter(thestory->notes, &start);
-    gtk_text_buffer_get_end_iter(thestory->notes, &end);
+    gtk_text_buffer_get_bounds(thestory->notes, &start, &end);
     text = gtk_text_buffer_get_rtf_text(thestory->notes, &start, &end);
     filename = g_strconcat(directory, "/notes.rtf", NULL);
     if(!g_file_set_contents(filename, text, -1, &err)) {
@@ -431,6 +451,29 @@ struct extension *open_extension(gchar *filename) {
     gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(ext->buffer), &start);
     gtk_text_buffer_place_cursor(GTK_TEXT_BUFFER(ext->buffer), &start);
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ext->buffer), FALSE);
+    
+    /* Update the list of recently used files */
+    GtkRecentManager *manager = gtk_recent_manager_get_default();
+    gchar *file_uri;
+    if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
+        /* fail discreetly */
+        g_warning("Cannot convert extension filename to URI: %s", err->message);
+        g_error_free(err);
+    } else {
+        GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
+        recent_data->mime_type = g_strdup("text/x-natural-inform");
+        recent_data->app_name = g_strdup("GNOME Inform 7");
+        recent_data->app_exec = g_strdup("gnome-inform7");
+        /* We use the groups "inform7_project" and "inform7_extension" to
+        determine how to open a file from the recent manager */
+        recent_data->groups = g_new(gchar *, 2);
+        recent_data->groups[0] = g_strdup("inform7_extension");
+        recent_data->groups[1] = NULL;
+        recent_data->is_private = FALSE;
+        gtk_recent_manager_add_full(manager, file_uri, recent_data);
+        g_strfreev(recent_data->groups);
+        g_free(recent_data);
+    }
     
     return ext;
 }

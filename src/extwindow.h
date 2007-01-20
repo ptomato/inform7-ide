@@ -20,19 +20,7 @@
 #define EXT_WINDOW_H
 
 void
-on_xnew_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_xopen_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_xinstall_extension_activate         (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_xopen_extension_activate            (GtkMenuItem     *menuitem,
+after_ext_window_realize               (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
@@ -49,10 +37,6 @@ on_xsave_as_activate                   (GtkMenuItem     *menuitem,
 
 void
 on_xrevert_activate                    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_xquit_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
@@ -81,14 +65,6 @@ on_xselect_all_activate                (GtkMenuItem     *menuitem,
 
 void
 on_xfind_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_xpreferences_activate               (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_xshow_inspectors_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 GtkWidget*

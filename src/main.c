@@ -17,26 +17,29 @@
  */
  
 /* To do
-- Use mark to save where the search was (see example code)
 - Search documentation
-- Syntax analysis
-- Migrate from GnomeDruid to GtkAssistant
+- Syntax analysis in background
 - Make extensions windows in preferences work with drag'n'drop
 - Watch the source file for external changes
+- Add command line options to start up with a certain file
+- Do the Glade3, libglade, GtkAssistant, and libsexy
 Low priority
+- A real RTF parser / text converter
+When GtkSourceView is updated
 - Find out how to highlight markup brackets in strings
 - Search text at word boundaries
-- A real RTF parser / text converter
+- Printing
 
 FOLLOWING RELEASES
-- Embedded interpreters
 - Skein, Transcript
+- Embedded interpreters
 - I6 projects
 
 BUGS
 - use libxml2 as it ought to be used
 - get glulx compiling to work (new version of Inform 6??)
-- If files are missing when loading, create default ones
+- If files (as in, part of the .inform package spec) are missing when loading,
+create default ones
 */
 
 #ifdef HAVE_CONFIG_H
@@ -49,8 +52,8 @@ BUGS
 # error You need at least GLib 2.4.0 to run this code.
 #endif
 
-#if !GTK_CHECK_VERSION(2,4,0)
-# error You need at least GLib 2.4.0 to run this code.
+#if !GTK_CHECK_VERSION(2,10,0)
+# error You need at least GTK+ 2.10.0 to run this code.
 #endif
 
 #include "callbacks.h"
