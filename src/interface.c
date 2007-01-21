@@ -3253,6 +3253,12 @@ create_prefs_dialog (void)
   g_signal_connect ((gpointer) prefs_breakpoints_toggle, "toggled",
                     G_CALLBACK (on_prefs_breakpoints_toggle_toggled),
                     NULL);
+  g_signal_connect ((gpointer) prefs_i7_extensions_view, "drag_drop",
+                    G_CALLBACK (on_prefs_i7_extensions_view_drag_drop),
+                    NULL);
+  g_signal_connect ((gpointer) prefs_i7_extensions_view, "drag_data_received",
+                    G_CALLBACK (on_prefs_i7_extensions_view_drag_data_received),
+                    NULL);
   g_signal_connect ((gpointer) prefs_i7_extension_add, "clicked",
                     G_CALLBACK (on_prefs_i7_extension_add_clicked),
                     NULL);

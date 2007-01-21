@@ -64,6 +64,25 @@ void
 on_prefs_dialog_realize                (GtkWidget       *widget,
                                         gpointer         user_data);
 
+gboolean
+on_prefs_i7_extensions_view_drag_drop  (GtkWidget       *widget,
+                                        GdkDragContext  *drag_context,
+                                        gint             x,
+                                        gint             y,
+                                        guint            time,
+                                        gpointer         user_data);
+
+void
+on_prefs_i7_extensions_view_drag_data_received
+                                        (GtkWidget       *widget,
+                                        GdkDragContext  *drag_context,
+                                        gint             x,
+                                        gint             y,
+                                        GtkSelectionData *data,
+                                        guint            info,
+                                        guint            time,
+                                        gpointer         user_data);
+
 void
 on_prefs_font_set_realize              (GtkWidget       *widget,
                                         gpointer         user_data);

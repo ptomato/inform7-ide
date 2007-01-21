@@ -143,7 +143,11 @@ on_welcome_reopen_button_clicked       (GtkButton       *button,
     g_list_free(recent);
     
     struct story *thestory;
-    thestory = open_project(projectname);
+    gchar *trash = g_path_get_dirname(projectname); /* Remove "story.ni" */
+    gchar *projectdir = g_path_get_dirname(trash); /* Remove "Source" */
+    thestory = open_project(projectdir);
+    g_free(projectdir);
+    g_free(trash);
     gtk_widget_show(thestory->window);
     g_free(projectname);
     /* Do not free the string from gtk_recent_info_get_uri */

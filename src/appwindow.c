@@ -141,7 +141,7 @@ after_app_window_realize               (GtkWidget       *widget,
     GtkWidget *recent_menu = gtk_recent_chooser_menu_new_for_manager(manager);
     GtkRecentFilter *filter = gtk_recent_filter_new();
     gtk_recent_filter_add_application(filter, "GNOME Inform 7");
-    gtk_recent_chooser_set_show_icons(GTK_RECENT_CHOOSER(recent_menu), FALSE);
+    gtk_recent_chooser_set_filter(GTK_RECENT_CHOOSER(recent_menu), filter);
     g_signal_connect(recent_menu, "item-activated",
       G_CALLBACK(on_open_recent_activate), NULL);
     gtk_menu_item_set_submenu(
@@ -250,9 +250,14 @@ on_open_recent_activate                (GtkRecentChooser *chooser,
         g_warning("Cannot get filename from URI: %s", err->message);
         g_error_free(err);
     }
+    
     if(gtk_recent_info_has_group(item, "inform7_project")) {
-        struct story *thestory = open_project(filename);
+        gchar *trash = g_path_get_dirname(filename); /* Remove "story.ni" */
+        gchar *projectdir = g_path_get_dirname(trash); /* Remove "Source" */
+        struct story *thestory = open_project(projectdir);
         gtk_widget_show(thestory->window);
+        g_free(trash);
+        g_free(projectdir);
     } else if(gtk_recent_info_has_group(item, "inform7_extension")) {
         struct extension *ext = open_extension(filename);
         gtk_widget_show(ext->window);

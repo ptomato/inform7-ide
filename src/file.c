@@ -22,6 +22,7 @@
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>
 #include <gtksourceview/gtksourcebuffer.h>
+#include <ctype.h>
 
 #include "story.h"
 #include "support.h"
@@ -195,13 +196,17 @@ struct story *open_project(gchar *directory) {
 
     /* Update the list of recently used files */
     GtkRecentManager *manager = gtk_recent_manager_get_default();
+    /* Add story.ni as the actual file to open, in case any other application
+    wants to open it, and set the display name to the project directory */
+    filename = g_strconcat(source_dir, "/story.ni", NULL);
     gchar *file_uri;
-    if((file_uri = g_filename_to_uri(directory, NULL, &err)) == NULL) {
+    if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
         /* fail discreetly */
         g_warning("Cannot convert project filename to URI: %s", err->message);
         g_error_free(err);
     } else {
         GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
+        recent_data->display_name = g_filename_display_basename(directory);
         recent_data->mime_type = g_strdup("text/x-natural-inform");
         recent_data->app_name = g_strdup("GNOME Inform 7");
         recent_data->app_exec = g_strdup("gnome-inform7");
@@ -215,6 +220,7 @@ struct story *open_project(gchar *directory) {
         g_strfreev(recent_data->groups);
         g_free(recent_data);
     }
+    g_free(filename);
     
     return thestory;
 }
@@ -375,7 +381,16 @@ gchar *author, guint maxsize) {
     g_return_val_if_fail(author != NULL, FALSE);
     
     gchar *firstline = g_strdup(text);
-    *(strchr(firstline, '\n')) = '\0';
+    gchar *pntr = strchr(firstline, '\n');
+    if(pntr) /*is NULL if \n does not occur*/
+        *pntr = '\0';
+    
+    for(pntr = firstline; *pntr != '\0'; pntr++)
+        if(!isprint(*pntr)) {
+            g_free(firstline);
+            return FALSE; /* file is binary */
+        }
+    
     if(maxsize < strlen(firstline)) {
         g_free(firstline);
         error_dialog(NULL, NULL, "There was a programming error in 'file.c' at "

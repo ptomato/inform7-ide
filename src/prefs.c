@@ -50,7 +50,10 @@ gpointer data) {
           (gtk_tree_path_get_depth(path) == 2));
           /* Only enable the "Remove" button if the selection is 2 deep */
         gtk_tree_path_free(path);
-    }
+    } else
+        gtk_widget_set_sensitive(
+          lookup_widget((GtkWidget *)data, "prefs_i7_extension_remove"), FALSE);
+          /* if there is no selection */
 }
 
 void
@@ -151,21 +154,139 @@ on_prefs_dialog_realize                (GtkWidget       *widget,
     trash = lookup_widget(widget, "prefs_rebuild_compiler_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Debugging", "RebuildCompiler"));
-      
+    
+    /* List all the installed extensions in the extension widgets */
     populate_extension_lists(widget);
+    GtkWidget *view = lookup_widget(widget, "prefs_i7_extensions_view");
     GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
     GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(
       "", renderer, "text", 0, NULL); /* No title, text
       renderer, get the property "text" from column 0 */
     gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
-    gtk_tree_view_append_column(GTK_TREE_VIEW(lookup_widget(widget,
-      "prefs_i7_extensions_view")), column);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(view), column);
     
-    GtkTreeSelection *select = gtk_tree_view_get_selection(
-      GTK_TREE_VIEW(lookup_widget(widget, "prefs_i7_extensions_view")));
-    gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE);
+    GtkTreeSelection *select = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+    gtk_tree_selection_set_mode(select, GTK_SELECTION_SINGLE); /* Only select
+    one at a time */
     g_signal_connect(G_OBJECT(select), "changed",
       G_CALLBACK(extension_browser_selection_changed), (gpointer)widget);
+      
+    /* Connect the drag'n'drop stuff */
+    gtk_drag_dest_set(view,
+      GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT,
+      NULL, 0, GDK_ACTION_COPY);
+    /* For some reason GTK_DEST_DEFAULT_DROP causes two copies of every file to
+    be sent to the widget when dropped, so we omit that. Also,
+    GTK_DEST_DEFAULT_HIGHLIGHT seems to be broken. Including it anyway. */
+    gtk_drag_dest_add_uri_targets(view);
+}
+
+
+gboolean
+on_prefs_i7_extensions_view_drag_drop  (GtkWidget       *widget,
+                                        GdkDragContext  *drag_context,
+                                        gint             x,
+                                        gint             y,
+                                        guint            time,
+                                        gpointer         user_data)
+{
+    /* Iterate through the list of target types provided by the source */
+    GdkAtom target_type = NULL;
+    GList *iter;
+    for(iter = drag_context->targets; iter != NULL; iter = g_list_next(iter)) {
+        gchar *type_name = gdk_atom_name(GDK_POINTER_TO_ATOM(iter->data));
+        /* Select 'text/uri-list' from the list of available targets */
+        if(!strcmp(type_name, "text/uri-list")) {
+            g_free(type_name);
+            target_type = GDK_POINTER_TO_ATOM(iter->data);
+            break;
+        }
+        g_free(type_name);
+    }
+    /* If URI list not supported, then cancel */
+    if(!target_type)
+        return FALSE;
+                
+    /* Request the data from the source. */
+    gtk_drag_get_data(
+      widget,         /* this widget, which will get 'drag-data-received' */
+      drag_context,   /* represents the current state of the DnD */
+      target_type,    /* the target type we want */
+      time);            /* time stamp */
+    return TRUE;
+}
+
+
+void
+on_prefs_i7_extensions_view_drag_data_received
+                                        (GtkWidget       *widget,
+                                        GdkDragContext  *drag_context,
+                                        gint             x,
+                                        gint             y,
+                                        GtkSelectionData *data,
+                                        guint            info,
+                                        guint            time,
+                                        gpointer         user_data)
+{
+    gboolean dnd_success = TRUE;
+    gchar *type_name = NULL;
+    
+    /* Check that we got data from source */
+    if((data == NULL) || (data->length < 0))
+        dnd_success = FALSE;
+    
+    /* Check that we got the format we can use */
+    else if(strcmp((type_name = gdk_atom_name(data->type)), "text/uri-list"))
+        dnd_success = FALSE;
+    
+    else {  
+        /* Do stuff with the data */
+        gchar **extension_files = g_uri_list_extract_uris((gchar *)data->data);
+        int foo;
+        /* Get a list of URIs to the dropped files */
+        for(foo = 0; extension_files[foo] != NULL; foo++) {
+            GError *err = NULL;
+            gchar *filename = g_filename_from_uri(
+              extension_files[foo], NULL, &err);
+            if(!filename) {
+                g_warning("Invalid URI: %s", err->message);
+                g_error_free(err);
+                continue;
+            }
+            
+            /* Check whether a directory was dropped. if so, install contents */
+            /* NOTE: not recursive (that would be kind of silly anyway */
+            if(g_file_test(filename, G_FILE_TEST_IS_DIR)) {
+                GDir *dir = g_dir_open(filename, 0, &err);
+                if(err) {
+                    error_dialog(NULL, err, "Error opening directory %s: ",
+                      filename);
+                    g_free(filename);
+                    return;
+                }
+                const gchar *dir_entry;
+                while((dir_entry = g_dir_read_name(dir)) != NULL)
+                    if(!g_file_test(dir_entry, G_FILE_TEST_IS_DIR)) {
+                        gchar *entry_with_path = g_build_filename(
+                          filename, dir_entry, NULL);
+                        install_extension(entry_with_path);
+                        g_free(entry_with_path);
+                    }
+                g_dir_close(dir);
+        
+            } else
+                /* just install it */
+                install_extension(filename);
+            
+            g_free(filename);
+        }
+        g_strfreev(extension_files);
+        populate_extension_lists(widget);
+    }
+    
+    if(type_name)
+        g_free(type_name);
+    gtk_drag_finish(drag_context, dnd_success, FALSE, time);
 }
 
 

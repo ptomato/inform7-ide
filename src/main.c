@@ -19,9 +19,10 @@
 /* To do
 - Search documentation
 - Syntax analysis in background
-- Make extensions windows in preferences work with drag'n'drop
-- Watch the source file for external changes
-- Add command line options to start up with a certain file
+- Watch the source file for external changes (use gnome-vfs)
+- Add command line options to start up with a certain file (and to automatically
+load Recent Manager entries)
+- Session saving
 - Do the Glade3, libglade, GtkAssistant, and libsexy
 Low priority
 - A real RTF parser / text converter
@@ -40,6 +41,7 @@ BUGS
 - get glulx compiling to work (new version of Inform 6??)
 - If files (as in, part of the .inform package spec) are missing when loading,
 create default ones
+- is_valid_extension does crappy things with strings
 */
 
 #ifdef HAVE_CONFIG_H
