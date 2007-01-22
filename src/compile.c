@@ -39,13 +39,14 @@
 
 #define BUFSIZE 1024
 #define INFORM_VERSION "6.31" /* see check_external_binaries in configfile.c */
-#define PROBLEMS_FILE "/Build/Problems.html"
+#define PROBLEMS_FILE "Build", "Problems.html"
 
 /* Start the compiler running the census of extensions. If wait is TRUE, it will
 not do it in the background. */
 void run_census(gboolean wait) {
     /* Build the command line */
-    gchar *working_dir = g_strconcat(g_get_home_dir(), "/.wine/drive_c", NULL);
+    gchar *working_dir = g_build_filename(g_get_home_dir(), ".wine", "drive_c",
+      NULL);
     gchar **commandline; 
 
     commandline = g_new(gchar *, 6);
@@ -89,7 +90,7 @@ void compile_project(struct story *thestory) {
     html_load_blank(GTK_HTML(lookup_widget(thestory->window, "problems_r")));
     
     /* Create the UUID file if needed */
-    gchar *uuid_file = g_strconcat(thestory->filename, "/uuid.txt", NULL);
+    gchar *uuid_file = g_build_filename(thestory->filename, "uuid.txt", NULL);
     if(!g_file_test(uuid_file, G_FILE_TEST_EXISTS)) {
         gchar *uuid_string = NULL; /* a new buffer is allocated if NULL */
         uuid_t *uuid;
@@ -117,7 +118,8 @@ void compile_project(struct story *thestory) {
     g_free(uuid_file);
  
     /* Build the command line */
-    gchar *working_dir = g_strconcat(g_get_home_dir(), "/.wine/drive_c", NULL);
+    gchar *working_dir = g_build_filename(g_get_home_dir(), ".wine", "drive_c",
+      NULL);
     gchar **commandline; 
     if(((struct story *)thestory)->release) {
         commandline = g_new(gchar *, 9);
@@ -159,25 +161,32 @@ void compile_stage2(GPid pid, gint status, gpointer thestory) {
       
     /* Make the necessary changes to all the tabs */
     gchar *loadfile;
+    gchar *trash = NULL;
     switch(exit_code) {
         case 0:
         case 1:
-            loadfile = g_strconcat(((struct story *)thestory)->filename,
+            loadfile = g_build_filename(((struct story *)thestory)->filename,
               PROBLEMS_FILE, NULL);
             break;
         case 2:
-            loadfile = get_datafile_path("doc/sections/Error2.html");
+            trash = g_build_filename("doc", "sections", "Error2.html", NULL);
+            loadfile = get_datafile_path(trash);
             break;
         case 10:
-            loadfile = get_datafile_path("doc/sections/Error10.html");
+            trash = g_build_filename("doc", "sections", "Error10.html", NULL);
+            loadfile = get_datafile_path(trash);
             break;
         case 11:
-            loadfile = get_datafile_path("doc/sections/Error11.html");
+            trash = g_build_filename("doc", "sections", "Error11.html", NULL);
+            loadfile = get_datafile_path(trash);
             break;
         default:
-            loadfile = get_datafile_path("doc/sections/Error0.html");
+            trash = g_build_filename("doc", "sections", "Error0.html", NULL);
+            loadfile = get_datafile_path(trash);
             break;
     }
+    g_free(trash);
+    
     html_load_file(GTK_HTML(lookup_widget(
       ((struct story *)thestory)->window, "problems_l")),
       loadfile);
@@ -189,8 +198,8 @@ void compile_stage2(GPid pid, gint status, gpointer thestory) {
     /* Show the debug log and Inform 6 code if necessary */
     if(config_file_get_bool("Debugging", "ShowLog")) {
         gchar *buffer;
-        gchar *filename = g_strconcat(((struct story *)thestory)->filename,
-          "/Build/Debug log.txt", NULL);
+        gchar *filename = g_build_filename(((struct story *)thestory)->filename,
+          "Build", "Debug log.txt", NULL);
         /* Ignore errors, just don't show it if it's not there */
         if(g_file_get_contents(filename, &buffer, NULL, NULL))
             gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
@@ -200,8 +209,8 @@ void compile_stage2(GPid pid, gint status, gpointer thestory) {
         g_free(buffer);
         g_free(filename);
         
-        filename = g_strconcat(((struct story *)thestory)->filename,
-          "/Build/auto.inf", NULL);
+        filename = g_build_filename(((struct story *)thestory)->filename,
+          "Build", "auto.inf", NULL);
         if(g_file_get_contents(filename, &buffer, NULL, NULL))
             gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
               gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(GTK_NOTEBOOK(
@@ -228,8 +237,8 @@ void compile_stage2(GPid pid, gint status, gpointer thestory) {
     
         /* Now, start Inform6 */
         /* Build the command line */
-        gchar *working_dir = g_strconcat(((struct story *)thestory)->filename,
-          "/Build", NULL);
+        gchar *working_dir = g_build_filename(
+          ((struct story *)thestory)->filename, "Build", NULL);
         gchar **commandline = g_new(gchar *, 6);
         gchar *libdir = get_datafile_path("lib/Natural");
         commandline[0] = g_strdup("inform-" INFORM_VERSION "-inform7");
@@ -287,21 +296,34 @@ void compile_stage3(GPid pid, gint status, gpointer thestory) {
         if((pos = strstr(msg, "rror:"))) { /* "Error:", "Fatal error:" */
             pos += 5; /* skip those five chars */
             g_strchug(pos); /* remove leading whitespace */
+            
             char scratch[256];
+            gchar *trash;
+            
             if(sscanf(pos, "The memory setting %[^)] has been exceeded.",
-              scratch) == 1)
-                loadfile = 
-                  get_datafile_path("doc/sections/ErrorI6MemorySetting.html");
-            else if(sscanf(pos, "This program has overflowed the maximum "
-              "readable-memory size of the %s format.", scratch) == 1)
-                loadfile = 
-                  get_datafile_path("doc/sections/ErrorI6Readable.html");
-            else if(sscanf(pos, "The story file exceeds %s limit",
-              scratch) == 1)
-                loadfile = get_datafile_path("doc/sections/ErrorI6TooBig.html");
-            else
-                loadfile = get_datafile_path("doc/sections/ErrorI6.html");
+              scratch) == 1) {
+                trash = g_build_filename("doc", "sections", 
+                  "ErrorI6MemorySetting.html", NULL);
+                loadfile = get_datafile_path(trash);
+            } else if(sscanf(pos, "This program has overflowed the maximum "
+              "readable-memory size of the %s format.", scratch) == 1) {
+                trash = g_build_filename("doc", "sections",
+                "ErrorI6Readable.html", NULL);
+                loadfile = get_datafile_path(trash);
+            } else if(sscanf(pos, "The story file exceeds %s limit",
+              scratch) == 1) {
+                trash = g_build_filename("doc", "sections",
+                  "ErrorI6TooBig.html", NULL);
+                loadfile = get_datafile_path(trash);
+            } else {
+                trash = g_build_filename("doc", "sections", "ErrorI6.html",
+                  NULL);
+                loadfile = get_datafile_path(trash);
+            }
+            
             g_free(msg);
+            g_free(trash);
+            
             break;
         }
         g_free(msg);
@@ -343,8 +365,8 @@ void compile_stage3(GPid pid, gint status, gpointer thestory) {
         /* first we need to edit the blurb file, because there are backward
         slashes in the directory names. This can be removed when we have a
         native version of the compiler. */
-        gchar *blurbfile = g_strconcat(((struct story *)thestory)->filename,
-          "/Release.blurb", NULL);
+        gchar *blurbfile = g_build_filename(
+          ((struct story *)thestory)->filename, "Release.blurb", NULL);
         GError *err = NULL;
         gchar *blurbtext;
         if(!g_file_get_contents(blurbfile, &blurbtext, NULL, &err)) {
@@ -374,7 +396,7 @@ void compile_stage3(GPid pid, gint status, gpointer thestory) {
         gchar **commandline = g_new(gchar *, 4);
         commandline[0] = g_strdup("cblorb");
         commandline[1] = g_strdup("Release.blurb");
-        commandline[2] = g_strdup("Build/output.zblorb");
+        commandline[2] = g_build_filename("Build", "output.zblorb", NULL);
         commandline[3] = NULL;
         
         display_status_message(((struct story *)thestory)->window,
@@ -404,15 +426,14 @@ void compile_stage3(GPid pid, gint status, gpointer thestory) {
 /* Display any errors from cBlorb and then pass it along to finish_release */
 void compile_stage4(GPid pid, gint status, gpointer thestory) {
     int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
-   
+    
+    gchar *trash;
+    trash = get_datafile_path(g_build_filename("doc", "sections",
+      (exit_code == 0)? "GoodCblorb.html" : "ErrorCblorb.html", NULL));
     html_load_file(GTK_HTML(lookup_widget(
-      ((struct story *)thestory)->window, "problems_l")),
-      get_datafile_path((exit_code == 0)? "doc/sections/GoodCblorb.html" : 
-      "doc/sections/ErrorCblorb.html"));
+      ((struct story *)thestory)->window, "problems_l")), trash);
     html_load_file(GTK_HTML(lookup_widget(
-      ((struct story *)thestory)->window, "problems_r")),
-      get_datafile_path((exit_code == 0)? "doc/sections/GoodCblorb.html" : 
-      "doc/sections/ErrorCblorb.html"));
+      ((struct story *)thestory)->window, "problems_r")), trash);
       
     /* Show the problems tab */
     int right = choose_notebook(((struct story *)thestory)->window,

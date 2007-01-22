@@ -168,17 +168,17 @@ gpointer data) {
         if(check_datafile(url + 8))
             real_file = get_datafile_path(url + 8);
         
-        gchar *checkfile = g_strconcat("doc/", url + 8, NULL);
+        gchar *checkfile = g_build_filename("doc", url + 8, NULL);
         if(check_datafile(checkfile))
             real_file = get_datafile_path(checkfile);
         g_free(checkfile);
         
-        checkfile = g_strconcat("doc/doc_images/", url + 8, NULL);
+        checkfile = g_build_filename("doc", "doc_images", url + 8, NULL);
         if(check_datafile(checkfile))
             real_file = get_datafile_path(checkfile);
         g_free(checkfile);
         
-        checkfile = g_strconcat("doc/sections/", url + 8, NULL);
+        checkfile = g_build_filename("doc", "sections", url + 8, NULL);
         if(check_datafile(checkfile))
             real_file = get_datafile_path(checkfile);
         g_free(checkfile);
@@ -240,29 +240,29 @@ void on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data) {
         real_url = g_strdup(url + 5); /* Shove the pointer past the prefix */
     /* inform: protocol can mean one of several locations */
     } else if(g_str_has_prefix(url, "inform://Extensions")) {
-        real_url = g_strconcat(g_get_home_dir(),
-          "/.wine/drive_c/Inform/Documentation/", url + 19, NULL);
+        real_url = g_build_filename(g_get_home_dir(), ".wine", "drive_c",
+          "Inform", "Documentation", url + 19, NULL);
     } else if(g_str_has_prefix(url, "inform:/")) {
         if(check_datafile(url + 8))
             real_url = get_datafile_path(url + 8);
         
-        gchar *checkfile = g_strconcat("doc/", url + 8, NULL);
+        gchar *checkfile = g_build_filename("doc", url + 8, NULL);
         if(check_datafile(checkfile))
             real_url = get_datafile_path(checkfile);
         g_free(checkfile);
         
-        checkfile = g_strconcat("doc/doc_images/", url + 8, NULL);
+        checkfile = g_build_filename("doc", "doc_images", url + 8, NULL);
         if(check_datafile(checkfile))
             real_url = get_datafile_path(checkfile);
         g_free(checkfile);
         
-        checkfile = g_strconcat("doc/sections/", url + 8, NULL);
+        checkfile = g_build_filename("doc", "sections", url + 8, NULL);
         if(check_datafile(checkfile))
             real_url = get_datafile_path(checkfile);
         g_free(checkfile);
         
-        checkfile = g_strconcat(g_get_home_dir(),
-          "/.wine/drive_c/Inform/Documentation", url + 8, NULL);
+        checkfile = g_build_filename(g_get_home_dir(), ".wine", "drive_c", "Inform",
+          "Documentation", url + 8, NULL);
         if(g_file_test(checkfile, G_FILE_TEST_EXISTS))
             real_url = g_strdup(checkfile);
         g_free(checkfile);
@@ -368,7 +368,7 @@ gchar *get_base_name(const gchar *url) {
     /* here we realize a minuscule improvement in performance by removing
     redundant directory changes in the base URL; oh, and also we remove the
     filename from the end */
-    gchar **parts = g_strsplit(url, "/", 0);
+    gchar **parts = g_strsplit(url, G_DIR_SEPARATOR_S, 0);
     gchar **ptr;
     for(ptr = parts ; *(ptr + 1) ; ptr++) { /*do not copy the last element*/
         if(strcmp(*ptr, "..")
@@ -378,7 +378,7 @@ gchar *get_base_name(const gchar *url) {
             ptr++; /* skip them */
         else {
             g_strlcat(newbase, *ptr, strlen(url));
-            g_strlcat(newbase, "/", strlen(url));
+            g_strlcat(newbase, G_DIR_SEPARATOR_S, strlen(url));
         }
     }
     g_strfreev(parts);

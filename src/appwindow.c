@@ -76,7 +76,7 @@ int choose_notebook(GtkWidget *thiswidget, int newtab) {
 
 /* Returns the path to filename in the application data directory. */
 gchar *get_datafile_path(const gchar *filename) {
-    gchar *real_filename = g_strconcat("gnome-inform7/", filename, NULL);
+    gchar *real_filename = g_build_filename("gnome-inform7", filename, NULL);
     gchar *path = gnome_program_locate_file(gnome_program_get(), 
       GNOME_FILE_DOMAIN_APP_DATADIR, real_filename, TRUE, NULL);
     g_free(real_filename);
@@ -90,7 +90,7 @@ gchar *get_datafile_path(const gchar *filename) {
 /* Returns TRUE if filename exists in the data directory, otherwise FALSE.
 Used when we do not necessarily want to return an error if it does not. */
 gboolean check_datafile(const gchar *filename) {
-    gchar *real_filename = g_strconcat("gnome-inform7/", filename, NULL);
+    gchar *real_filename = g_build_filename("gnome-inform7", filename, NULL);
     gchar *path = gnome_program_locate_file(gnome_program_get(), 
       GNOME_FILE_DOMAIN_APP_DATADIR, real_filename, TRUE, NULL);
     g_free(real_filename);
@@ -846,8 +846,8 @@ on_help_extensions_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     int panel = choose_notebook(GTK_WIDGET(menuitem), TAB_DOCUMENTATION);
-    gchar *file = g_strconcat(g_get_home_dir(),
-      "/.wine/drive_c/Inform/Documentation/Extensions.html", NULL);
+    gchar *file = g_build_filename(g_get_home_dir(), ".wine", "drive_c",
+      "Inform", "Documentation", "Extensions.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(menuitem),
       (panel == LEFT)? "docs_l" : "docs_r")), file);
     g_free(file);

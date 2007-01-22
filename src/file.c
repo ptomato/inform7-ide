@@ -114,7 +114,7 @@ xmlNode *find_node(xmlDoc *doc, xmlChar *nodename) {
 /* Read a project directory, loading all the appropriate files into a new
 story struct and returning that */
 struct story *open_project(gchar *directory) {
-    gchar *source_dir = g_strconcat(directory, "/Source", NULL);    
+    gchar *source_dir = g_build_filename(directory, "Source", NULL);    
     GError *err = NULL;
     gchar *filename, *text;
 
@@ -122,7 +122,7 @@ struct story *open_project(gchar *directory) {
     set_story_filename(thestory, directory);
 
     /* Read the source */
-    filename = g_strconcat(source_dir, "/story.ni", NULL);
+    filename = g_build_filename(source_dir, "story.ni", NULL);
     if(!g_file_get_contents(filename, &text, NULL, &err)) {
         error_dialog(NULL, err, "Could not open the project's source file, "
           "'%s'.\n\nMake sure that this file has not been deleted or renamed. ",
@@ -130,6 +130,32 @@ struct story *open_project(gchar *directory) {
         g_free(filename);
         delete_story(thestory);
         return NULL;
+    }
+    
+    /* Update the list of recently used files */
+    GtkRecentManager *manager = gtk_recent_manager_get_default();
+    /* Add story.ni as the actual file to open, in case any other application
+    wants to open it, and set the display name to the project directory */
+    gchar *file_uri;
+    if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
+        /* fail discreetly */
+        g_warning("Cannot convert project filename to URI: %s", err->message);
+        g_error_free(err);
+    } else {
+        GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
+        recent_data->display_name = g_filename_display_basename(directory);
+        recent_data->mime_type = g_strdup("text/x-natural-inform");
+        recent_data->app_name = g_strdup("GNOME Inform 7");
+        recent_data->app_exec = g_strdup("gnome-inform7");
+        /* We use the groups "inform7_project" and "inform7_extension" to
+        determine how to open a file from the recent manager */
+        recent_data->groups = g_new(gchar *, 2);
+        recent_data->groups[0] = g_strdup("inform7_project");
+        recent_data->groups[1] = NULL;
+        recent_data->is_private = FALSE;
+        gtk_recent_manager_add_full(manager, file_uri, recent_data);
+        g_strfreev(recent_data->groups);
+        g_free(recent_data);
     }
     g_free(filename);
     
@@ -142,7 +168,7 @@ struct story *open_project(gchar *directory) {
     /* Read the skein: TODO */
 
     /* Read the notes */
-    filename = g_strconcat(directory, "/notes.rtf", NULL);
+    filename = g_build_filename(directory, "notes.rtf", NULL);
     if(!g_file_get_contents(filename, &text, NULL, &err)) {
         /* Don't fail if the file is unreadable; instead, just make some blank notes */
         text = g_strdup(
@@ -156,7 +182,7 @@ struct story *open_project(gchar *directory) {
     g_free(text);
     
     /* Read the settings */
-    filename = g_strconcat(directory, "/Settings.plist", NULL);
+    filename = g_build_filename(directory, "Settings.plist", NULL);
 
     xmlDoc *doc = xmlReadFile(filename, NULL, 0);
     if (doc == NULL) {
@@ -193,43 +219,15 @@ struct story *open_project(gchar *directory) {
     gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(thestory->buffer), &start);
     gtk_text_buffer_place_cursor(GTK_TEXT_BUFFER(thestory->buffer), &start);
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(thestory->buffer), FALSE);
-
-    /* Update the list of recently used files */
-    GtkRecentManager *manager = gtk_recent_manager_get_default();
-    /* Add story.ni as the actual file to open, in case any other application
-    wants to open it, and set the display name to the project directory */
-    filename = g_strconcat(source_dir, "/story.ni", NULL);
-    gchar *file_uri;
-    if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
-        /* fail discreetly */
-        g_warning("Cannot convert project filename to URI: %s", err->message);
-        g_error_free(err);
-    } else {
-        GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
-        recent_data->display_name = g_filename_display_basename(directory);
-        recent_data->mime_type = g_strdup("text/x-natural-inform");
-        recent_data->app_name = g_strdup("GNOME Inform 7");
-        recent_data->app_exec = g_strdup("gnome-inform7");
-        /* We use the groups "inform7_project" and "inform7_extension" to
-        determine how to open a file from the recent manager */
-        recent_data->groups = g_new(gchar *, 2);
-        recent_data->groups[0] = g_strdup("inform7_project");
-        recent_data->groups[1] = NULL;
-        recent_data->is_private = FALSE;
-        gtk_recent_manager_add_full(manager, file_uri, recent_data);
-        g_strfreev(recent_data->groups);
-        g_free(recent_data);
-    }
-    g_free(filename);
     
     return thestory;
 }
 
 /* Save the project being edited in the topwindow of thiswidget */
 void save_project(GtkWidget *thiswidget, gchar *directory) {
-    gchar *build_dir = g_strconcat(directory, "/Build", NULL);
-    gchar *index_dir = g_strconcat(directory, "/Index", NULL);
-    gchar *source_dir = g_strconcat(directory, "/Source", NULL);
+    gchar *build_dir = g_build_filename(directory, "Build", NULL);
+    gchar *index_dir = g_build_filename(directory, "Index", NULL);
+    gchar *source_dir = g_build_filename(directory, "Source", NULL);
     GError *err = NULL;
     gchar *filename, *text;
     struct story *thestory = get_story(thiswidget);
@@ -258,7 +256,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
       &end, FALSE);
     
     /* Write text to file */
-    filename = g_strconcat(source_dir, "/story.ni", NULL);
+    filename = g_build_filename(source_dir, "story.ni", NULL);
     if(!g_file_set_contents(filename, text, -1, &err)) {
         error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(thiswidget)), err,
           "Error saving file '%s': ", filename);
@@ -277,7 +275,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     /* Save the notes */
     gtk_text_buffer_get_bounds(thestory->notes, &start, &end);
     text = gtk_text_buffer_get_rtf_text(thestory->notes, &start, &end);
-    filename = g_strconcat(directory, "/notes.rtf", NULL);
+    filename = g_build_filename(directory, "notes.rtf", NULL);
     if(!g_file_set_contents(filename, text, -1, &err)) {
         error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(thiswidget)), err,
           "Error saving file '%s': ", filename);
@@ -289,7 +287,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     g_free(text);
     
     /* Save the project settings */
-    filename = g_strconcat(directory, "/Settings.plist", NULL);
+    filename = g_build_filename(directory, "Settings.plist", NULL);
     gchar format_string[3];
     g_sprintf(format_string, "%d", thestory->story_format);
     text = g_strconcat(
@@ -557,7 +555,7 @@ void install_extension(const gchar *filename) {
         g_free(text);
         return;
     }
-    gchar *targetfile = g_strconcat(dir, "/", name, NULL);
+    gchar *targetfile = g_build_filename(dir, name, NULL);
     g_free(dir);
 
     /* Check if the extension is already installed */
@@ -634,30 +632,44 @@ void finish_release(struct story *thestory, gboolean everything_ok) {
     /* Copy the finished file to the release location */
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-        gchar *oldfile = g_strconcat(thestory->filename, "/Build/output.",
+        gchar *oldfile_base = g_strconcat("output.",
           get_story_extension(thestory), NULL);
+        gchar *oldfile = g_build_filename(thestory->filename, "Build",
+          oldfile_base, NULL);
         gsize bytes_read;
         gchar *text;
         
         if(!g_file_get_contents(oldfile, &text, &bytes_read, &err)) {
             error_dialog(NULL, err, "Error reading file '%s': ", oldfile);
+            g_free(filename);
+            g_free(oldfile);
+            g_free(oldfile_base);
+            gtk_widget_destroy(dialog);
             return;
         }
         if(!g_file_set_contents(filename, text, bytes_read, &err)) {
             error_dialog(NULL, err, "Error reading file '%s': ", filename);
-            g_free(text);
-            return;
+            /* here we are at the end of the function, free data below */
         }
         g_free(filename);
         g_free(oldfile);
+        g_free(oldfile_base);
         g_free(text);
     }
     gtk_widget_destroy(dialog);
 }
 
-/* Helper function to delete a file relative to the project path */
-static void delete_from_project_dir(struct story *thestory, gchar *filename) {
-    gchar *pathname = g_strconcat(thestory->filename, filename, NULL);
+/* Helper function to delete a file relative to the project path; does nothing
+if file does not exist */
+static void delete_from_project_dir(struct story *thestory, gchar *subdir,
+gchar *filename) {
+    gchar *pathname;
+    
+    if(subdir)
+        pathname = g_build_filename(thestory->filename, subdir, filename, NULL);
+    else
+        pathname = g_build_filename(thestory->filename, filename, NULL);
+    
     g_remove(pathname);
     g_free(pathname);
 }
@@ -666,26 +678,26 @@ static void delete_from_project_dir(struct story *thestory, gchar *filename) {
 from the project directory */
 void delete_build_files(struct story *thestory) {
     if(config_file_get_bool("Cleaning", "BuildFiles")) {
-        delete_from_project_dir(thestory, "/Metadata.iFiction");
-        delete_from_project_dir(thestory, "/Release.blurb");
-        delete_from_project_dir(thestory, "/Build/auto.inf");
-        delete_from_project_dir(thestory, "/Build/Debug log.txt");
-        delete_from_project_dir(thestory, "/Build/Map.eps");
-        delete_from_project_dir(thestory, "/Build/output.z5");
-        delete_from_project_dir(thestory, "/Build/output.z8");
-        delete_from_project_dir(thestory, "/Build/output.ulx");
-        delete_from_project_dir(thestory, "/Build/Problems.html");
-        delete_from_project_dir(thestory, "/Build/temporary file.inf");
+        delete_from_project_dir(thestory, NULL, "Metadata.iFiction");
+        delete_from_project_dir(thestory, NULL, "Release.blurb");
+        delete_from_project_dir(thestory, "Build", "auto.inf");
+        delete_from_project_dir(thestory, "Build", "Debug log.txt");
+        delete_from_project_dir(thestory, "Build", "Map.eps");
+        delete_from_project_dir(thestory, "Build", "output.z5");
+        delete_from_project_dir(thestory, "Build", "output.z8");
+        delete_from_project_dir(thestory, "Build", "output.ulx");
+        delete_from_project_dir(thestory, "Build", "Problems.html");
+        delete_from_project_dir(thestory, "Build", "temporary file.inf");
         
         if(config_file_get_bool("Cleaning", "IndexFiles")) {
-            delete_from_project_dir(thestory, "/Index/Actions.html");
-            delete_from_project_dir(thestory, "/Index/Contents.html");
-            delete_from_project_dir(thestory, "/Index/Headings.xml");
-            delete_from_project_dir(thestory, "/Index/Kinds.html");
-            delete_from_project_dir(thestory, "/Index/Phrasebook.html");
-            delete_from_project_dir(thestory, "/Index/Rules.html");
-            delete_from_project_dir(thestory, "/Index/Scenes.html");
-            delete_from_project_dir(thestory, "/Index/World.html");
+            delete_from_project_dir(thestory, "Index", "Actions.html");
+            delete_from_project_dir(thestory, "Index", "Contents.html");
+            delete_from_project_dir(thestory, "Index", "Headings.xml");
+            delete_from_project_dir(thestory, "Index", "Kinds.html");
+            delete_from_project_dir(thestory, "Index", "Phrasebook.html");
+            delete_from_project_dir(thestory, "Index", "Rules.html");
+            delete_from_project_dir(thestory, "Index", "Scenes.html");
+            delete_from_project_dir(thestory, "Index", "World.html");
         }
     }
 }

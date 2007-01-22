@@ -257,9 +257,11 @@ static gchar *new_dialog_get_directory(GtkWidget *thiswidget) {
     gchar *path = gtk_file_chooser_get_filename(
       GTK_FILE_CHOOSER(lookup_widget(thiswidget, "new_directory")));
     gchar *name = new_dialog_get_name(thiswidget);
-    gchar *directory = g_strconcat(path, "/", name, ".inform", NULL);
+    gchar *file = g_strconcat(name, ".inform", NULL);
+    gchar *directory = g_build_filename(path, file, NULL);
     g_free(path);
     g_free(name);
+    g_free(file);
     return directory;
 }
 
@@ -338,7 +340,7 @@ static gchar *new_ext_get_directory(GtkWidget *thiswidget) {
     gchar *path = gtk_file_chooser_get_filename(
       GTK_FILE_CHOOSER(lookup_widget(thiswidget, "new_ext_directory")));
     gchar *name = new_ext_get_name(thiswidget);
-    gchar *directory = g_strconcat(path, "/", name, NULL);
+    gchar *directory = g_build_filename(path, name, NULL);
     g_free(path);
     g_free(name);
     return directory;

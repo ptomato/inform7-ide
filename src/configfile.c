@@ -24,18 +24,19 @@
 #include "error.h"
 
 #define GCONF_BASE_PATH "/apps/gnome-inform7"
-#define EXTENSIONS_BASE_PATH "/.wine/drive_c/Inform/Extensions"
+/* The above are not directory separators, so they should be slashes! */
+#define EXTENSIONS_BASE_PATH ".wine", "drive_c", "Inform", "Extensions"
 
 /* Returns the directory for installed extensions, with the author and name path
 components tacked on if they are not NULL. Returns an allocated string which
 must be freed. */
 gchar *get_extension_path(const gchar *author, const gchar *extname) {
     if(!author)
-        return g_strconcat(g_get_home_dir(), EXTENSIONS_BASE_PATH, NULL);
+        return g_build_filename(g_get_home_dir(), EXTENSIONS_BASE_PATH, NULL);
     if(!extname)
-        return g_strconcat(g_get_home_dir(), EXTENSIONS_BASE_PATH, "/", author,
+        return g_build_filename(g_get_home_dir(), EXTENSIONS_BASE_PATH, author,
           NULL);
-    return g_strconcat(g_get_home_dir(), EXTENSIONS_BASE_PATH, "/", author, "/",
+    return g_build_filename(g_get_home_dir(), EXTENSIONS_BASE_PATH, author,
       extname, NULL);
 }
 
@@ -111,9 +112,9 @@ gboolean check_external_binaries() {
             return FALSE;
         }
 
-    gchar *wine_home = g_strconcat(g_get_home_dir(), "/.wine/drive_c/windows",
-      NULL);
-
+    gchar *wine_home = g_build_filename(g_get_home_dir(), ".wine", "drive_c", 
+      "windows", NULL);
+        
     if(!g_file_test(wine_home, G_FILE_TEST_EXISTS)) {
         error_dialog(NULL, NULL, "You did not configure Wine the way I "
           "expected. Please link your virtual C: drive to '~/.wine/drive_c'. "
@@ -137,6 +138,7 @@ void config_file_set_string(gchar *path, gchar *key, const gchar *value) {
     GConfClient *client = gconf_client_get_default();
     
     gchar *keyname = g_strconcat(GCONF_BASE_PATH "/", path, "/", key, NULL);
+    /* These are not directory separators and should be slashes! */
     
     if(!gconf_client_set_string(client, keyname, value, &err))
         error_dialog(NULL, err, "Could not set GConf key '%s' to '%s': ",

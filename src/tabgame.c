@@ -129,7 +129,7 @@ void run_project(struct story *thestory) {
         args[3] = g_strconcat("output.", get_story_extension(thestory), NULL);
         args[4] = NULL;
     }
-    gchar *dir = g_strconcat(thestory->filename, "/Build", NULL);
+    gchar *dir = g_build_filename(thestory->filename, "Build", NULL);
 
     /* Save the PID so we can kill it later, and save the signal handlers so we
     can disconnect them */

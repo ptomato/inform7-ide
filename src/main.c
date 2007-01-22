@@ -26,7 +26,7 @@ load Recent Manager entries)
 - Do the Glade3, libglade, GtkAssistant, and libsexy
 Low priority
 - A real RTF parser / text converter
-When GtkSourceView is updated
+When GtkSourceView is updated:
 - Find out how to highlight markup brackets in strings
 - Search text at word boundaries
 - Printing
@@ -42,6 +42,8 @@ BUGS
 - If files (as in, part of the .inform package spec) are missing when loading,
 create default ones
 - is_valid_extension does crappy things with strings
+- cblorb does not work with files with backslashes in their names
+(compile.c:376)
 */
 
 #ifdef HAVE_CONFIG_H
@@ -50,8 +52,8 @@ create default ones
 
 #include <gnome.h>
 
-#if !GLIB_CHECK_VERSION(2,4,0)
-# error You need at least GLib 2.4.0 to run this code.
+#if !GLIB_CHECK_VERSION(2,8,0)
+# error You need at least GLib 2.8.0 to run this code.
 #endif
 
 #if !GTK_CHECK_VERSION(2,10,0)
