@@ -229,7 +229,8 @@ void compile_stage2(GPid pid, gint status, gpointer thestory) {
       right? "errors_notebook_r" : "errors_notebook_l")), TAB_ERRORS_PROBLEMS);
     
     if(exit_code == 0) {
-        reload_index_tabs(((struct story *)thestory)->window);
+        /* Refresh the index and documentation tabs */
+        reload_index_tabs((struct story *)thestory);
         html_refresh(GTK_HTML(lookup_widget(((struct story *)thestory)->window,
           "docs_l")));
         html_refresh(GTK_HTML(lookup_widget(((struct story *)thestory)->window,

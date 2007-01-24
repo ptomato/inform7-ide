@@ -212,7 +212,7 @@ struct story *open_project(gchar *directory) {
     xmlFreeDoc(doc);
 
     /* Load index tabs if they exist and update settings */
-    reload_index_tabs(thestory->window);
+    reload_index_tabs(thestory);
     update_settings(thestory);
 
     GtkTextIter start;

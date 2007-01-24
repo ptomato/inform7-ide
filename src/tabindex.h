@@ -20,8 +20,10 @@
 #define TAB_INDEX_H
 
 #include <gnome.h>
+#include "story.h"
 
 void blank_index_tabs(GtkWidget *thiswidget);
-void reload_index_tabs(GtkWidget *thiswidget);
+gboolean check_and_load_idle(gpointer thestory);
+void reload_index_tabs(struct story *thestory);
 
 #endif

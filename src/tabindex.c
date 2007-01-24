@@ -19,6 +19,7 @@
 #include <gnome.h>
 
 #include "html.h"
+#include "appwindow.h"
 #include "story.h"
 #include "support.h"
 
@@ -40,37 +41,116 @@ void blank_index_tabs(GtkWidget *thiswidget) {
     html_load_blank(GTK_HTML(lookup_widget(thiswidget, "world_r")));
 }
 
-/* Helper function to check whether an index file exists and to load it, or a
-blank page if it doesn't exist. basename MUST end in 'l'. Not for use outside
-the function 'reload_index_tabs'. */
-static void check_and_load(GtkWidget *thiswidget, struct story *thestory,
-const gchar *basename, const gchar *file) {
-    gchar *filename = g_build_filename(thestory->filename, "Index", file, NULL);
-    gchar *wname = g_strdup(basename);
+/* Idle function to check whether an index file exists and to load it, or a
+blank page if it doesn't exist. */
+gboolean check_and_load_idle(gpointer thestory) {
+    static int counter = TAB_INDEX_FIRST;
+    GtkWidget *widget = ((struct story *)thestory)->window;
+    gchar *filename = NULL;
     
-    if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
-        html_load_file(GTK_HTML(lookup_widget(thiswidget, wname)), filename);
-        *(strrchr(wname, 'l')) = 'r';
-        html_load_file(GTK_HTML(lookup_widget(thiswidget, wname)), filename);
-    } else {
-        html_load_blank(GTK_HTML(lookup_widget(thiswidget, wname)));
-        *(strrchr(wname, 'l')) = 'r';
-        html_load_blank(GTK_HTML(lookup_widget(thiswidget, wname)));
+    switch(counter) {
+    case TAB_INDEX_ACTIONS:
+        filename = g_build_filename(((struct story *)thestory)->filename,
+          "Index", "Actions.html", NULL);
+        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
+            html_load_file(GTK_HTML(lookup_widget(widget, "actions_l")),
+              filename);
+            html_load_file(GTK_HTML(lookup_widget(widget, "actions_r")),
+              filename);
+        } else {
+            html_load_blank(GTK_HTML(lookup_widget(widget, "actions_l")));
+            html_load_blank(GTK_HTML(lookup_widget(widget, "actions_r")));
+        }
+        break;
+    case TAB_INDEX_CONTENTS:
+        filename = g_build_filename(((struct story *)thestory)->filename,
+          "Index", "Contents.html", NULL);
+        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
+            html_load_file(GTK_HTML(lookup_widget(widget, "contents_l")),
+              filename);
+            html_load_file(GTK_HTML(lookup_widget(widget, "contents_r")),
+              filename);
+        } else {
+            html_load_blank(GTK_HTML(lookup_widget(widget, "contents_l")));
+            html_load_blank(GTK_HTML(lookup_widget(widget, "contents_r")));
+        }
+        break;
+    case TAB_INDEX_KINDS:
+        filename = g_build_filename(((struct story *)thestory)->filename,
+          "Index", "Kinds.html", NULL);
+        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
+            html_load_file(GTK_HTML(lookup_widget(widget, "kinds_l")),
+              filename);
+            html_load_file(GTK_HTML(lookup_widget(widget, "kinds_r")),
+              filename);
+        } else {
+            html_load_blank(GTK_HTML(lookup_widget(widget, "kinds_l")));
+            html_load_blank(GTK_HTML(lookup_widget(widget, "kinds_r")));
+        }
+        break;
+    case TAB_INDEX_PHRASEBOOK:
+        filename = g_build_filename(((struct story *)thestory)->filename,
+          "Index", "Phrasebook.html", NULL);
+        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
+            html_load_file(GTK_HTML(lookup_widget(widget, "phrasebook_l")),
+              filename);
+            html_load_file(GTK_HTML(lookup_widget(widget, "phrasebook_r")),
+              filename);
+        } else {
+            html_load_blank(GTK_HTML(lookup_widget(widget, "phrasebook_l")));
+            html_load_blank(GTK_HTML(lookup_widget(widget, "phrasebook_r")));
+        }
+        break;
+    case TAB_INDEX_RULES:
+        filename = g_build_filename(((struct story *)thestory)->filename,
+          "Index", "Rules.html", NULL);
+        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
+            html_load_file(GTK_HTML(lookup_widget(widget, "rules_l")),
+              filename);
+            html_load_file(GTK_HTML(lookup_widget(widget, "rules_r")),
+              filename);
+        } else {
+            html_load_blank(GTK_HTML(lookup_widget(widget, "rules_l")));
+            html_load_blank(GTK_HTML(lookup_widget(widget, "rules_r")));
+        }
+        break;
+    case TAB_INDEX_SCENES:
+        filename = g_build_filename(((struct story *)thestory)->filename,
+          "Index", "Scenes.html", NULL);
+        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
+            html_load_file(GTK_HTML(lookup_widget(widget, "scenes_l")),
+              filename);
+            html_load_file(GTK_HTML(lookup_widget(widget, "scenes_r")),
+              filename);
+        } else {
+            html_load_blank(GTK_HTML(lookup_widget(widget, "scenes_l")));
+            html_load_blank(GTK_HTML(lookup_widget(widget, "scenes_r")));
+        }
+        break;
+    case TAB_INDEX_WORLD:
+    default:
+        filename = g_build_filename(((struct story *)thestory)->filename,
+          "Index", "World.html", NULL);
+        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
+            html_load_file(GTK_HTML(lookup_widget(widget, "world_l")),
+              filename);
+            html_load_file(GTK_HTML(lookup_widget(widget, "world_r")),
+              filename);
+        } else {
+            html_load_blank(GTK_HTML(lookup_widget(widget, "world_l")));
+            html_load_blank(GTK_HTML(lookup_widget(widget, "world_r")));
+        }
+        g_free(filename);
+        counter = TAB_INDEX_FIRST; /* next time, load the first tab */
+        return FALSE; /* quit the cycle */
     }
     
-    g_free(wname);
     g_free(filename);
+    counter++; /* next time, load the next tab */        
+    return TRUE; /* make sure there is a next time */
 }
 
 /* Load all the correct files in the index tabs, if they exist */
-void reload_index_tabs(GtkWidget *thiswidget) {
-    struct story *thestory = get_story(thiswidget);
-    
-    check_and_load(thiswidget, thestory, "actions_l", "Actions.html");
-    check_and_load(thiswidget, thestory, "contents_l", "Contents.html");
-    check_and_load(thiswidget, thestory, "kinds_l", "Kinds.html");
-    check_and_load(thiswidget, thestory, "phrasebook_l", "Phrasebook.html");
-    check_and_load(thiswidget, thestory, "rules_l", "Rules.html");
-    check_and_load(thiswidget, thestory, "scenes_l", "Scenes.html");
-    check_and_load(thiswidget, thestory, "world_l", "World.html");
+void reload_index_tabs(struct story *thestory) {
+    g_idle_add((GSourceFunc)check_and_load_idle, (gpointer)thestory);
 }
