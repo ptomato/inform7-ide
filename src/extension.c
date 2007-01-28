@@ -18,6 +18,7 @@
  
 #include <gnome.h>
 #include <string.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 #include "extension.h"
 #include "interface.h"
@@ -33,6 +34,7 @@ struct extension *new_ext() {
     struct extension *newext = g_malloc(sizeof(struct extension));
 
     newext->filename = NULL;
+    newext->monitor = NULL;
     newext->window = create_ext_window();
     newext->buffer = create_natural_inform_source_buffer();
 
@@ -53,6 +55,7 @@ void delete_ext(struct extension *oldext) {
 
     if(oldext->filename != NULL)
         free(oldext->filename);
+    gnome_vfs_monitor_cancel(oldext->monitor);
     gtk_widget_destroy(oldext->window);
     g_free(oldext);
     

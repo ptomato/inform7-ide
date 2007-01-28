@@ -317,7 +317,7 @@ on_open_extension_activate             (GtkMenuItem     *menuitem,
         return;
     }
     
-    gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER (dialog));
+    gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
     ext = open_extension(filename);
     g_free(filename);
     gtk_widget_show(ext->window);

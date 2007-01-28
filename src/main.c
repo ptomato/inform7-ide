@@ -17,9 +17,9 @@
  */
  
 /* To do
+- "No inspectors enabled" inspector
 - Search documentation
 - Syntax analysis in background
-- Watch the source file for external changes (use gnome-vfs)
 - Add command line options to start up with a certain file (and to automatically
 load Recent Manager entries)
 - Session saving
@@ -32,8 +32,8 @@ When GtkSourceView is updated:
 - Printing
 
 FOLLOWING RELEASES
-- Skein, Transcript
 - Embedded interpreters
+- Skein, Transcript
 - I6 projects
 
 BUGS

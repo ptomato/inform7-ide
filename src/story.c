@@ -19,6 +19,7 @@
 #include <gnome.h>
 #include <string.h>
 #include <gtksourceview/gtksourcebuffer.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 #include "story.h"
 #include "interface.h"
@@ -40,6 +41,7 @@ struct story *new_story() {
     struct story *newstory = g_malloc(sizeof(struct story));
 
     newstory->filename = NULL;
+    newstory->monitor = NULL;
     newstory->window = create_app_window();
     newstory->buffer = create_natural_inform_source_buffer();
     newstory->notes = gtk_text_buffer_new(NULL);
@@ -84,6 +86,7 @@ void delete_story(struct story *oldstory) {
     }
     gtk_widget_destroy(oldstory->window);
     destroy_skein(oldstory->theskein);
+    gnome_vfs_monitor_cancel(oldstory->monitor);
     g_free(oldstory);
     
     update_window_list();

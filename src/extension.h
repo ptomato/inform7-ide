@@ -21,12 +21,15 @@
 
 #include <gnome.h>
 #include <gtksourceview/gtksourcebuffer.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 struct extension {
     /* The toplevel window in which this extension is being edited */
     GtkWidget *window;
     /* This extension's filename */
     gchar *filename;
+    /* File monitor */
+    GnomeVFSMonitorHandle *monitor;
     /* The program code */
     GtkSourceBuffer *buffer;
 };

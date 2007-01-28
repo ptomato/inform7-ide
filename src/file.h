@@ -33,5 +33,11 @@ void save_extension(GtkWidget *thiswidget);
 void install_extension(const gchar *filename);
 void finish_release(struct story *thestory, gboolean everything_ok);
 void delete_build_files(struct story *thestory);
+GnomeVFSMonitorHandle *monitor_file(const gchar *file_uri,
+  GnomeVFSMonitorCallback callback, gpointer data);
+void project_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
+  const gchar *info_uri, GnomeVFSMonitorEventType event_type, gpointer data);
+void extension_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
+  const gchar *info_uri, GnomeVFSMonitorEventType event_type, gpointer data);
     
 #endif

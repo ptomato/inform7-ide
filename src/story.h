@@ -21,6 +21,7 @@
 
 #include <glib.h>
 #include <gtksourceview/gtksourcebuffer.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 #include "skein.h"
 
@@ -35,6 +36,8 @@ struct story {
     GtkWidget *window;
     /* This story's filename */
     gchar *filename;
+    /* File monitor */
+    GnomeVFSMonitorHandle *monitor;
     /* The program code */
     GtkSourceBuffer *buffer;
     /* The user's notes */

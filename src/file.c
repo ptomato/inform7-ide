@@ -23,6 +23,7 @@
 #include <glib/gstdio.h>
 #include <gtksourceview/gtksourcebuffer.h>
 #include <ctype.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 #include "story.h"
 #include "support.h"
@@ -157,6 +158,11 @@ struct story *open_project(gchar *directory) {
         g_strfreev(recent_data->groups);
         g_free(recent_data);
     }
+    g_free(file_uri);
+    
+    /* Watch for changes to the source file */
+    thestory->monitor = monitor_file(filename, project_changed,
+      (gpointer)thestory);
     g_free(filename);
     
     /* Write the source to the source buffer, clearing the undo history */
@@ -210,7 +216,7 @@ struct story *open_project(gchar *directory) {
         xmlFree(content);
     } /* else default setting */
     xmlFreeDoc(doc);
-
+    
     /* Load index tabs if they exist and update settings */
     reload_index_tabs(thestory);
     update_settings(thestory);
@@ -232,6 +238,8 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     gchar *filename, *text;
     struct story *thestory = get_story(thiswidget);
 
+    gnome_vfs_monitor_cancel(thestory->monitor);
+    
     /* Create the project directory if it does not already exist */
     if(g_mkdir_with_parents(directory, 0777) 
       || g_mkdir_with_parents(build_dir, 0777)
@@ -266,9 +274,13 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
         return;
     }
     g_free(source_dir);
-    g_free(filename);
     g_free(text);
 
+    /* Start file monitoring again */
+    thestory->monitor = monitor_file(filename, project_changed,
+      (gpointer)thestory);
+    g_free(filename);
+    
     /* Save the skein */
     /* TODO */
 
@@ -383,18 +395,14 @@ gchar *author, guint maxsize) {
     if(pntr) /*is NULL if \n does not occur*/
         *pntr = '\0';
     
+    /* Make sure the file is not binary; there has GOT to be a better way! */
     for(pntr = firstline; *pntr != '\0'; pntr++)
         if(!isprint(*pntr)) {
             g_free(firstline);
             return FALSE; /* file is binary */
         }
     
-    if(maxsize < strlen(firstline)) {
-        g_free(firstline);
-        error_dialog(NULL, NULL, "There was a programming error in 'file.c' at "
-        "line 299. Please notify the author of GNOME Inform 7.");
-        return FALSE;
-    }
+    g_assert(maxsize >= strlen(firstline));
     
     gchar **tokens = g_strsplit_set(g_strstrip(firstline), " \t", 0);
     g_free(firstline);
@@ -404,7 +412,7 @@ gchar *author, guint maxsize) {
         return FALSE;
     /* Skip "Version XXXX of" */
     if(!strcmp(ptr[0], "Version")) {
-        if(ptr[1] == NULL || ptr[2] == NULL || !strcmp(ptr[2], "of")) {
+        if(ptr[1] == NULL || ptr[2] == NULL || strcmp(ptr[2], "of")) {
             g_strfreev(tokens);
             return FALSE;
         }
@@ -486,7 +494,10 @@ struct extension *open_extension(gchar *filename) {
         gtk_recent_manager_add_full(manager, file_uri, recent_data);
         g_strfreev(recent_data->groups);
         g_free(recent_data);
+        g_free(file_uri);
     }
+    
+    ext->monitor = monitor_file(filename, extension_changed, (gpointer)ext);
     
     return ext;
 }
@@ -497,6 +508,9 @@ void save_extension(GtkWidget *thiswidget) {
     gchar *text;
     struct extension *ext = get_ext(thiswidget);
 
+    /* Stop file monitoring */
+    gnome_vfs_monitor_cancel(ext->monitor);
+    
     /* Save the text */
     GtkTextIter start, end;
     gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(ext->buffer), &start);
@@ -514,6 +528,9 @@ void save_extension(GtkWidget *thiswidget) {
     }
     g_free(text);
 
+    ext->monitor = monitor_file(ext->filename, extension_changed,
+      (gpointer)ext);
+    
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ext->buffer), FALSE);
 }
 
@@ -699,5 +716,119 @@ void delete_build_files(struct story *thestory) {
             delete_from_project_dir(thestory, "Index", "Scenes.html");
             delete_from_project_dir(thestory, "Index", "World.html");
         }
+    }
+}
+
+GnomeVFSMonitorHandle *monitor_file(const gchar *filename,
+  GnomeVFSMonitorCallback callback, gpointer data) {
+    GnomeVFSMonitorHandle *retval;
+    GError *err;
+    gchar *file_uri;
+
+    if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
+        /* fail discreetly */
+        g_warning("Cannot convert project filename to URI: %s", err->message);
+        g_error_free(err);
+        return NULL;
+    }
+    if(gnome_vfs_monitor_add(&retval, file_uri, GNOME_VFS_MONITOR_FILE,
+      callback, data) != GNOME_VFS_OK) {
+        g_warning("Could not start file monitor for %s", file_uri);
+        g_free(file_uri);
+        return NULL;
+    }
+    g_free(file_uri);
+    return retval;
+}
+
+void project_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
+  const gchar *info_uri, GnomeVFSMonitorEventType event_type, gpointer data) {
+    struct story *thestory = (struct story *)data;
+    
+    if(event_type == GNOME_VFS_MONITOR_EVENT_CHANGED
+      || event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
+        /* g_file_set_contents works by deleting and creating */
+        GtkWidget *dialog = gtk_message_dialog_new(
+        (GtkWindow *)thestory->window, GTK_DIALOG_DESTROY_WITH_PARENT,
+        GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
+        "The game's source code has been modified from outside Inform.\n"
+        "Do you want to reload it?");
+        if(gtk_dialog_run((GtkDialog *)dialog) == GTK_RESPONSE_YES) {
+            GError *err = NULL;
+            gchar *filename, *text;
+            
+            /* Read the source */
+            if((filename = g_filename_from_uri(info_uri, NULL, &err)) == NULL) {
+                g_warning("Cannot get filename from URI: %s", err->message);
+                g_error_free(err);
+                gtk_widget_destroy(dialog);
+                return;
+            }
+            if(!g_file_get_contents(filename, &text, NULL, &err)) {
+                error_dialog((GtkWindow *)thestory->window, err,
+                "Could not open the project's source file, '%s'.\n\n"
+                "Make sure that this file has not been deleted or renamed. ",
+                filename);
+                g_error_free(err);
+                gtk_widget_destroy(dialog);
+                g_free(filename);
+                return;
+            }
+    
+            /* Write the source to the source buffer, clearing the undo history */
+            gtk_source_buffer_begin_not_undoable_action(thestory->buffer);
+            gtk_text_buffer_set_text(
+              GTK_TEXT_BUFFER(thestory->buffer), text, -1);
+            gtk_source_buffer_end_not_undoable_action(thestory->buffer);
+            gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(thestory->buffer),
+              FALSE);
+            
+            g_free(filename);
+            g_free(text);
+        }
+        gtk_widget_destroy(dialog);
+    }
+}
+
+void extension_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
+  const gchar *info_uri, GnomeVFSMonitorEventType event_type, gpointer data) {
+    struct extension *ext = (struct extension *)data;
+      
+    if(event_type == GNOME_VFS_MONITOR_EVENT_CHANGED
+      || event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
+        GtkWidget *dialog = gtk_message_dialog_new((GtkWindow *)ext->window,
+        GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
+        "The extension's source code has been modified from outside Inform.\n"
+        "Do you want to reload it?");
+        if(gtk_dialog_run((GtkDialog *)dialog) == GTK_RESPONSE_YES) {
+            GError *err = NULL;
+            gchar *filename, *text;
+            
+            /* Read the source */
+            if((filename = g_filename_from_uri(info_uri, NULL, &err)) == NULL) {
+                g_warning("Cannot get filename from URI: %s", err->message);
+                g_error_free(err);
+                gtk_widget_destroy(dialog);
+                return;
+            }
+            if(!g_file_get_contents(filename, &text, NULL, &err)) {
+                error_dialog((GtkWindow *)ext->window, err,
+                "Could not open the extension '%s': ", filename);
+                g_error_free(err);
+                gtk_widget_destroy(dialog);
+                g_free(filename);
+                return;
+            }
+        
+            /* Put the text in the source buffer, clearing the undo history */
+            gtk_source_buffer_begin_not_undoable_action(ext->buffer);
+            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(ext->buffer), text, -1);
+            gtk_source_buffer_end_not_undoable_action(ext->buffer);
+            gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ext->buffer), FALSE);
+            
+            g_free(filename);
+            g_free(text);
+        }
+        gtk_widget_destroy(dialog);
     }
 }
