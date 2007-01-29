@@ -1,0 +1,65 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.17. Catalogue of named Inform 7 types</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body>
+<!-- SEARCH TITLE "Catalogue of named Inform 7 types" -->
+<!-- SEARCH SECTION "21.17" -->
+<!-- SEARCH SORT "021-017-000" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc351.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc353.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.17. Catalogue of named Inform 7 types</b></font></td></tr></table>
+<p>
+<p>The four most basic types are <b>number</b>, <b>time</b>, <b>text</b>, and <b>object</b>. Numbers translate into I6 as integer constants. Times are stored according to I6 convention, and objects as I6 object names, in the natural way.
+<p>
+<p>Text is stored as either a string constant (if the text is fixed) or as an I6 routine to print it (if it is variable, by containing substitutions). Thus a substitution for &quot;text&quot; might turn out to be an I6 value of metaclass String, or of metaclass Routine. An I6 phrase definition needing to distinguish the possibilities can either use the I6 function &quot;metaclass&quot;, or else two different definitions can be given, one using the type &quot;string-of-text&quot; and the other &quot;text-routine&quot; (see below).
+<p>
+<p>There follows a selection of the exotic types currently present in I7 which extensions might conceivably need to use in phrase definitions, but which in general are not values. Even some of those which are values cannot be stored in variables.
+<p>
+<p><b>action</b> (not a value). Matches an explicit I7 action, e.g. &quot;taking the wooden box&quot; (but not an imprecise description of an action such as &quot;taking something portable&quot;). Translates into I6 as code in void context which causes this action.
+<p>
+<p><b>boxed-quotation</b> (not a value). Matches text used for a boxed quotation. Translates into the necessary I6 arguments for the &quot;box&quot; statement.
+<p>
+<p><b>condition</b> (not a value). Matches any I7 condition, e.g. &quot;the wooden box is open&quot;. Translates into an I6 value which is non-zero if and only if the condition holds.
+<p>
+<p><b>description</b> (a value, but with some limitations on use). Matches any I7 description, e.g. &quot;open containers which are in dark rooms&quot;. Translates into the address of an I6 routine which determines whether an object does or does not match the description.
+<p>
+<p><b>miscellaneous-value</b> (a value). Many values in I6 - most of the library properties, for instance - are known to be an object, a class, a routine or a string, but might be any of the four. I7 uses the umbrella type &quot;miscellaneous-value&quot; for exactly this ambiguity. Translates into the relevant I6 value, which I6 code can then disambiguate using the &quot;metaclass&quot; function.
+<p>
+<p><b>object-based-rulebook</b> (not a value). Never matches in phrase definitions. It exists solely for sentences creating rulebooks: &quot;The judgement rules are an object-based-rulebook&quot; differs from &quot;The judgement rules are a rulebook&quot; in that the rulebook created is applied to a specific object whenever it is run, rather than being applied to a specific action (or to nothing). Once created, the type of the name of the rulebook in question is simply &quot;rulebook&quot;.
+<p>
+<p><b>property</b> (not a value). Matches the name of an I7 property, either an either/or property such as &quot;open&quot; or a value property such as &quot;capacity&quot;. Translates into I6 as the corresponding I6 property name (for value properties); or as the name of the corresponding I6 attribute (for either/or properties), prefaced by &quot;~&quot; if the attribute is referred to in the negation of its normal state; except that, in order to escape the Z-machine's limit on the number of attributes, I7 stores some either/or properties as I6 properties whose values are always &quot;true&quot; or &quot;false&quot;, and these properties are translated to I6 as the relevant property names. (These less efficiently stored either/or properties are distinguished by having property numbers equal to, or greater than, the I6 constant I7_FBNA.)
+<p>
+<p><b>rule</b> (a value). Matches the literal name of a rule. Translates into I6 as the name of the I6 routine which carries out this rule.
+<p>
+<p><b>snippet</b> (a value). There is no literal way to write a constant snippet, but several snippet variables exist inside I7, such as &quot;topic understood&quot;, and as this indicates they can be stored in global variables (though not local &quot;let&quot; variables). Snippets describe a range of words in the player's most recent command. As a result, any surviving snippet values become meaningless when a new command is typed in, or when a replacement or cut is made to the standing command. Input words are numbered from 1, as in standard I6 practice; the snippet between word number N to word number M inclusive is represented as the integer 100*N + (M-N+1), so for instance the snippet of 7 words starting at word 3 is represented as 307. Snippets translate into I6 as this integer value.
+<p>
+<p><b>string-of-text</b> (a value). A type used to require text which contains no substitutions. Translates into I6 as the name of the I6 routine which prints this text (and therefore a value of I6 metaclass Routine).
+<p>
+<p><b>text-routine</b> (a value). A type used to require text which contains at least one square-bracketed substitution. Translates into I6 as the I6 string (and therefore a value of I6 metaclass String).
+<p>
+<p><b>unicode-character</b> (translates to a value). Matches a literal unicode character, e.g. &quot;unicode 78&quot; or, if names for Unicode characters have been defined, &quot;unicode Greek letter kappa&quot;. Translates into I6 as the character number, e.g. 78 or 922.
+<p>
+<p>The following are likely not useful, since they translate into identification numbers which are not predictable and not easy to correlate with anything outside of some internal data structures: however -
+<p>
+<p><b>abstract-relation</b> (translates to a value). Matches the literal name of a relation, e.g. &quot;adjacency relation&quot;. Translates into I6 as a number uniquely identifying this relation.
+<p>
+<p><b>activity</b> (translates to a value). Matches the literal name of a activity. Translates into I6 as a number uniquely identifying this activity.
+<p>
+<p><b>rulebook</b> (translates to a value). Matches the literal name of a rulebook. Translates into I6 as a number uniquely identifying this rulebook.
+<p>
+<p><b>scene</b> (translates to a value). Matches the literal name of a scene, e.g. &quot;Brief Encounter&quot;. Translates into I6 as a number uniquely identifying this scene.
+<p>
+<p><b>table-column</b> (translates to a value). Matches the literal name of a table column. Translates into I6 as a number uniquely identifying this column name. (The same column name in two different tables comes out with the same table-column value.)
+<p>
+<p><b>table-name</b> (a value). Matches the literal name of a table, and can also be stored in global variables and properties. Translates into I6 as an address uniquely associated with the table (in a way which should not be relied upon).
+<p>
+<p><b>use-option</b> (translates to a value). Matches the literal name of a use option, e.g. &quot;American dialect&quot;. Translates into I6 as a number uniquely identifying this option. The value is independent of whether the option is currently being used or not.
+<p>
+<p>And the following exotic types should never be used outside of the Standard Rules: <b>outcome</b>, <b>phrase</b>, <b>returned</b>, <b>table-reference</b>, <b>topic</b>, <b>variable</b>, <b>void</b>. Finally, note that <b>kind</b> is not a type at all, and cannot be used in phrase definitions.
+<p>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc351.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc353.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

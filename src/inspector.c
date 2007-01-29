@@ -35,6 +35,9 @@ after_inspector_window_realize         (GtkWidget       *widget,
 
 /* Show or hide the inspectors according to the user's preferences */
 void update_inspectors() {
+    /* Show the message that no inspectors are showing; then, if one is showing,
+    hide it again */
+    gtk_widget_show(lookup_widget(inspector_window, "no_inspector"));
     show_inspector(INSPECTOR_NOTES,
       config_file_get_bool("Inspectors", "Notes"));
     show_inspector(INSPECTOR_HEADINGS,
@@ -64,9 +67,10 @@ void show_inspector(int which, gboolean show) {
       default:
         return;
     }
-    if(show)
+    if(show) {
         gtk_widget_show(inspector);
-    else
+        gtk_widget_hide(lookup_widget(inspector_window, "no_inspector"));
+    } else
         gtk_widget_hide(inspector);
 }
 

@@ -1,37 +1,40 @@
-Version 2 of Basic Screen Effects by Emily Short begins here.
+Version 3 of Basic Screen Effects by Emily Short begins here.
 
-"Waiting for a keypress; clearing the screen; changing the foreground and
-background colors of text."
+"Waiting for a keypress; clearing the screen. Also provides facilities for 
+changing the foreground and background colors of text, when using the z-machine.
+These abilities will not function under Glulx."
+
+Section 1 - Spacing and Pausing
 
 Include (-
 
 [ KeyPause i; 
-	@read_char 1 i; 
+	i = KeyCharPrimitive(); 
 	rfalse;
 ];
 
 [ SPACEPause i;
 	while (i ~= 13 or 31 or 32)
 	{
-		@read_char 1 i;	
+		i = KeyCharPrimitive();	
 	}
 ];
 
 [ GetKey i;
-	@read_char 1 i; 
+	i = KeyCharPrimitive(); 
 	return i;
 ];
 
 -)
 
 To clear the screen:
-	(- @erase_window -1; -)
+	(- ClearScreen(0); -)
 
 To clear only the main screen:
-	(- @erase_window 0; -)
+	(- ClearScreen(2); -)
 
 To clear only the status line:
-	(- @erase_window 1; -).
+	(- ClearScreen(1); -).
 
 To wait for any key:
 	(- KeyPause(); -)
@@ -46,7 +49,7 @@ To pause the game:
 	say "[paragraph break]Please press SPACE to continue.";
 	wait for the SPACE key;
 	clear the screen.
- 
+
 To center (quote - text-routine):
 	(- CenterPrintComplex({quote}); -);
 
@@ -70,13 +73,11 @@ Array printed_text --> 64;
 
 [ CenterPrint str depth i j;
 	font off;
-	i = 0->33;
-	@output_stream 3 printed_text;
-	print (I7_string) str;
-	@output_stream -3;
+	i = ScreenWidth();
+            PrintToBuffer(printed_text, 63, str);
 	j = (i-(printed_text-->0))/2; 
 	j = j-1;
-	@set_cursor depth j;
+	MoveCursor(depth, j);
 	print (I7_string) str; 
 	font on;
 ];
@@ -84,10 +85,8 @@ Array printed_text --> 64;
 [ CenterPrintComplex str i j;
 	font off;
 	print "^"; 
-	i = 0->33;
-	@output_stream 3 printed_text;
-	print (I7_string) str;
-	@output_stream -3;
+	i = ScreenWidth();
+            PrintToBuffer(printed_text, 63, str);
 	j = (i-(printed_text-->0))/2; 
 	spaces j-1;
 	print (I7_string) str; 
@@ -95,6 +94,98 @@ Array printed_text --> 64;
 ];
 
 -)
+
+To decide what number is screen width:
+	(- ScreenWidth-);
+
+To decide what number is screen height:
+	(- I7ScreenHeight() -);
+
+Include (-
+
+[ I7ScreenHeight i screen_height;
+	i = 0->32;
+          if (screen_height == 0 or 255) screen_height = 18;
+          screen_height = screen_height - 7;
+	return screen_height;
+];
+
+[ ClearBoxedText i;
+  if (I7_box) {
+      for (i=0: I7_boxes_appeared-->i: i++)
+          if (I7_boxes_appeared-->i == I7_box) {
+              I7_box = 0;
+              return;
+          }
+      I7_boxes_appeared-->i = I7_box;
+      I7_box();
+      I7_box = 0;
+  }
+];
+
+-)
+
+To deepen status line to (depth - a number) rows:
+	(- DeepStatus({depth}); -);
+
+To move cursor to (depth - a number):
+	(- I7MoveCursor({depth}); -)
+
+To right align cursor to (depth - a number):
+	(- RightAlign({depth}); -)
+
+Include (- 
+
+[ DeepStatus depth i screen_width;
+	StatusLineHeight(depth);
+	screen_width = ScreenWidth(); style reverse;
+            #ifdef TARGET_GLULX;
+              ClearScreen(1);
+            #ifnot;
+	  for (i=1:i<depth+1:i++)
+              {
+	 	@set_cursor i 1;
+	 	spaces(screen_width);
+	  } 
+           #endif;
+];
+
+[ I7MoveCursor depth;
+	MoveCursor(depth, 1);
+];
+
+[ RightAlign depth screen_width o n;
+	screen_width = ScreenWidth(); 
+	n = (+ right alignment depth +);
+	o = screen_width - n;
+	MoveCursor(depth, o);
+];
+
+-)
+
+Table of Ordinary Status
+left	central	right
+"[location]"	""	"[score]/[turn count]" 
+
+Status bar table is a table-name that varies. Status bar table is the Table of Ordinary Status.
+
+To fill status bar with (selected table - a table-name):
+	let __n be the number of rows in the selected table;
+	deepen status line to __n rows;
+	let __index be 1;
+	repeat through selected table
+	begin;
+		move cursor to __index; 
+		say "[left entry]";
+		center central entry at row __index;
+		right align cursor to __index;
+		say "[right entry]";
+		change __index to __index + 1;
+	end repeat.
+
+Right alignment depth is a number that varies. Right alignment depth is 14.
+
+Section 2 - Colors (for Z-machine only)
 
 To say default letters:
 	(- @set_colour 1 1; -)
@@ -150,98 +241,16 @@ To turn the background white:
 To show the current quotation:
 	(- ClearBoxedText(); -);
 
-To decide what number is screen width:
-	(- 0->33 -);
-
-To decide what number is screen height:
-	(- I7ScreenHeight() -);
-
-Include (-
-
-[ I7ScreenHeight i screen_height;
-	i = 0->32;
-          if (screen_height == 0 or 255) screen_height = 18;
-          screen_height = screen_height - 7;
-	return screen_height;
-];
-
-[ ClearBoxedText i;
-  if (I7_box) {
-      for (i=0: I7_boxes_appeared-->i: i++)
-          if (I7_boxes_appeared-->i == I7_box) {
-              I7_box = 0;
-              return;
-          }
-      I7_boxes_appeared-->i = I7_box;
-      I7_box();
-      I7_box = 0;
-  }
-];
-
--)
-
-To deepen status line to (depth - a number) rows:
-	(- DeepStatus({depth}); -);
-
-To move cursor to (depth - a number):
-	(- I7MoveCursor({depth}); -)
-
-To right align cursor to (depth - a number):
-	(- RightAlign({depth}); -)
-
-Include (- 
-
-[ DeepStatus depth i screen_width;
-	 @split_window depth; @set_window 1; 
-	screen_width = 0->33; style reverse;
-	for (i=1:i<depth+1:i++)
-	{
-		@set_cursor i 1;
-		spaces(screen_width);
-	} 
-];
-
-[ I7MoveCursor depth;
-	@set_cursor depth 1;
-];
-
-[ RightAlign depth screen_width o n;
-	screen_width = 0->33; 
-	n = (+ right alignment depth +);
-	o = screen_width - n;
-	@set_cursor depth o;
-];
-
--)
-
-Table of Ordinary Status
-left	central	right
-"[location]"	""	"[score]/[turn count]" 
-
-Status bar table is a table-name that varies. Status bar table is the Table of Ordinary Status.
-
-To fill status bar with (selected table - a table-name):
-	let __n be the number of rows in the selected table;
-	deepen status line to __n rows;
-	let __index be 1;
-	repeat through selected table
-	begin;
-		move cursor to __index; 
-		say "[left entry]";
-		center central entry at row __index;
-		right align cursor to __index;
-		say "[right entry]";
-		change __index to __index + 1;
-	end repeat.
-
-Right alignment depth is a number that varies. Right alignment depth is 14.
-
 
 Basic Screen Effects ends here.
 
 ---- DOCUMENTATION ----
 
-Basic Screen Effects implements the following effects: pauses to wait for a keypress from the player; clearing the screen; changing the color of the foreground font; and changing the color of the background. The following phrases are defined:
+Basic Screen Effects implements the following effects: pauses to wait for a keypress from the player; clearing the screen; changing the color of the foreground font; and changing the color of the background. Color changes function only on the Z-machine.
+
+(1) Pauses and spacing
+
+The following phrases are defined:
 
 To clear the entire screen of everything it contains, including the status line,
 
@@ -311,6 +320,8 @@ A status bar table must always have left, central, and right columns, and we mus
 
 for the purpose of moving what is printed on the right side inward. Note that right alignment depth will only affect the behavior of status bar tables of the kind described here; it will have no effect on Inform's default handling of the right hand status line variable.
 
+(2) Color effects (available on the Z-machine only). 
+
 To turn the background black (or red, green, yellow, blue, white, magenta, or cyan):
 
 	turn the background black. 
@@ -327,7 +338,11 @@ Finally, font colors can be changed with say (color) letters, where the same ran
 
 We should be careful with color effects. Some older interpreters do not deal well with color, and part of the audience plays interactive fiction on black and white devices or via a screenreader. The phrase "say default letters" restores whatever background and foreground are normal on this system. It is not safe to assume that the player is necessarily using one particular color scheme; black-on-white, white-on-black, and white-on-blue are all relatively common.
 
+Thanks to Eric Eve for the biplatform patches to this extension.
+
 Example: ** Pillaged Village - A status bar showing unvisited rooms in a colored compass rose.
+
+Note that attempting to compile this example for Glulx will fail, because it uses color effects available only on the Z-machine.
 
 	"Pillaged Village" by Lars Thurgoodson.
 	

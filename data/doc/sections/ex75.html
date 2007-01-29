@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.9. Check, carry out, report</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.6. New either/or properties</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,78 +8,93 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc178.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc180.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.9. Check, carry out, report</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Change of Basis" -->
+<!-- SEARCH SECTION "Ex 42" -->
+<!-- SEARCH SORT "Ex 004-006-042" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc59.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc61.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.6. New either/or properties</b></font></td></tr></table>
 <p>
-<p>The normal behaviour of an action is specified by its three associated rulebooks - check, carry out and report. In the case of our &quot;photographing&quot; example, these rulebooks will be:
+<p>Properties can only be given to something if its kind will permit that: we cannot make a chair &quot;dark&quot; or a room &quot;portable&quot;, for instance. When creating kinds, then, we need a way to specify the properties which that kind of thing will allow, and this will need to include new properties of our own devising.
 <p>
-<blockquote><font color="#000080"><b>Check photographing</b>. Here, for instance, we need to verify that the player has the camera. If any of our checks fail, we should say why and stop the action. If they succeed, we say nothing.
+<blockquote><font color="#000080">A dead end is either secret or ordinary.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080"><b>Carry out photographing</b>. At this stage no further checking is needed (or allowed): the action now definitively takes place. At this point we might, for instance, deduct one from the number of exposures left on the film in the camera, or award the player points for capturing something interesting for posterity. But we should say nothing.
+<p>This creates just one new property, not two, as the names are taken as the two states of a single either/or property: secret means not ordinary, ordinary means not secret. Alternatively, we could just say:
+<p>
+<blockquote><font color="#000080">A dead end can be secret.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080"><b>Report photographing</b>. At this stage no further activity is needed (or allowed): whatever effect the action had, it has happened and is now over. All we can do is to say what has taken place.
+<p>in which case the opposite of &quot;secret&quot; would be &quot;not secret&quot;.
+<p>
+<p>Note that we are free to add to the definitions of kinds which already exist, not just those we have created ourselves: for instance,
+<p>
+<blockquote><font color="#000080">A room is either indoors or outdoors.
 </font></blockquote><p>
 <p>
-<p>So far we have not really gone into the business of what rulebooks are, and we don't do so here either - suffice to say that we can now create whatever rules we need:
+<p>creates a new property which all rooms either possess or don't. And so on. If we make the above definitions then by default, any dead ends created will be &quot;ordinary&quot; and any rooms created will be &quot;outdoors&quot;: that is, in the absence of other information it is assumed that a new either/or property will not be held. We could reverse this behaviour by adding:
 <p>
-<blockquote><font color="#000080">A check photographing rule: if the camera is not carried then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
+<blockquote><font color="#000080">A dead end is usually secret. A room is usually indoors.
 </font></blockquote><p>
 <p>
-<p>In fact, writing &quot;a check photographing rule&quot; is over-formal. We can more simply label our rules like so:
+<p>(It is not quite true that a property can only be held be something if the kind permits it, because in exceptional cases we can give special permission. For instance, the &quot;openable&quot; property is normally only applicable to doors and containers. Here we give special leave for it to apply to a specific thing:
 <p>
-<blockquote><font color="#000080">Check photographing: if we have photographed the noun then say &quot;You've already snapped [the noun].&quot; instead.
+<blockquote><font color="#000080">The umbrella is carried by the player. The umbrella can be openable. The umbrella is openable.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report photographing: say &quot;Click!&quot;
-</font></blockquote><p>
-<p>
-<p>For the sake of brevity, photography has no interesting consequence (no points to be won, no film to use up), so there are no carry out rules here. Note the way we used the word &quot;instead&quot; once again to stop actions in their tracks.
-<p>
-<p>We can continue to add rules at any point, and a classic thing that happens when testing a new work is that the designer realises there is a case which has not been thought of:
-<p>
-<blockquote><font color="#000080">Check photographing: if the noun is the camera then say &quot;That would require some sort of contraption with mirrors.&quot; instead.
-</font></blockquote><p>
+<p>In practice, this possibility is only occasionally needed.)
 <p>
 <p><hr><p>
-<a name="e56"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex56.html#e56 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>154</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex56.html#e56 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Waxwork</font></b></a><br>Containers and supporters that report their contents when you EXAMINE them.<p></td></tr></table>
-<a name="e75"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc179.html#e75 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>155</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc179.html#e75 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Dark Ages Revisited</font></b></a><br>An electric light kind of device which becomes lit when switched on and dark when switched off.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>This will be explored more in subsequent examples, but one of the things we can do with carry out rules is extend the function of existing commands so that they do more, or have special effects in specific situations. For instance, suppose we want to have a class of electric light:
+<!-- EXAMPLE START -->
+<a name="e75"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc60.html#e75 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>42</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc60.html#e75 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Change of Basis</font></b></a><br>Implementing sleeping and wakeful states.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>Suppose we want to allow the player to go to sleep some of the time:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode167(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"The Dark Ages Revisited"\n\nAn electric light is a kind of device. Carry out switching on an electric light: now the noun is lit. Carry out switching off an electric light: now the noun is unlit.\n\n[This will not affect the behavior of any other devices when switched; it will also not change the way in which switching lights on and off is reported. The player will still see "You switch the sodium lamp on." or the like. In this case that is probably what we want. If we wanted a special way of describing turning on electric lights as opposed to all other devices, we could also add an after rule for the electric light class. Adding this rule to the carry out train does guarantee, though, that in no case will we manage to make the lamp lit without actually making it switched on (or vice versa).]\n\nThe Stooped Corridor is a room. "A low, square-cut corridor, running north to south, stooping you over."\n\nThe sodium lamp is an electric light in the Stooped Corridor. "[if switched on]The sodium lamp squats on the ground, burning away.[otherwise]The sodium lamp squats heavily on the ground.[end if]". The description is "It is a heavy-duty archaeologist\'s lamp, [if switched off]currently off.[otherwise]blazing with brilliant yellow light.[end if]"\n\nInstead of burning the sodium lamp, try switching on the lamp.\n\n[So far so easy. Since we\'ve built the description of its light or darkness into the lamp\'s description, though, we may want to get rid of the "...is switched on" line that automatically follows when we look at something. For this we do need to borrow from a later chapter:]\n\nProcedural rule: ignore the examine described devices rule.\n\nTest me with "x lamp / switch lamp on / look / x lamp".\n\n');
+    myProject.pasteCode('"Change of Basis"\n\nA person is either awake or asleep. A person is usually awake.\n\n[The important thing to note here is that it does not work to say "the player is either asleep or awake". This is because the player is not necessarily one specific person or thing during the game: the identity of the player can be changed, as we will see later.]\n\n[So if we want to make rules about the properties of the player, we should attach these rules to the "person" kind (or, if they really need to belong only to the player, to the "player-character" kind). A player-character is a kind of person.]\n\nLinear Algebra Class is a room. "The blackboard is covered with square arrangements of numbers. These are supposed to convey something to you, but mostly you\'re finding them soporific."\n\n[Now a few rules about changing from one state to the other:]\n\nInstead of sleeping: now the player is asleep; say "You drop off."\n\nInstead of doing something other than waking up, waiting or sleeping when the player is asleep:\n\tsay "Ssh! You\'re sleeping!"\n\nInstead of sleeping when the player is asleep:\n\tsay "Zzzz."\n\nInstead of waking up when the player is asleep:\n\tnow the player is awake;\n\tsay "You come to suddenly, wiping drool from your lips."\n\nInstead of doing something other than looking or sleeping when the player is awake:\n\tsay "You\'d really rather just sleep through this."\n\nTest me with "wake up / sleep / look / z / sleep / wake up / look".\n');
 }
 </script>
-<a href="javascript:pasteCode167()"><img border=0 src=../doc_images/paste.png></a> &quot;The Dark Ages Revisited&quot;
+<a href="javascript:pasteCode167()"><img border=0 src=../doc_images/paste.png></a> &quot;Change of Basis&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">An electric light is a kind of device. Carry out switching on an electric light: now the noun is lit. Carry out switching off an electric light: now the noun is unlit.
+<blockquote><font color="#000080">A person is either awake or asleep. A person is usually awake.
 </font></blockquote><p>
 <p>
-<p>This will not affect the behavior of any other devices when switched; it will also not change the way in which switching lights on and off is reported. The player will still see &quot;You switch the sodium lamp on.&quot; or the like. In this case that is probably what we want. If we wanted a special way of describing turning on electric lights as opposed to all other devices, we could also add an after rule for the electric light class. Adding this rule to the carry out train does guarantee, though, that in no case will we manage to make the lamp lit without actually making it switched on (or vice versa).
+<p>The important thing to note here is that it does not work to say &quot;the player is either asleep or awake&quot;. This is because the player is not necessarily one specific person or thing during the game: the identity of the player can be changed, as we will see later.
 <p>
-<blockquote><font color="#000080">The Stooped Corridor is a room. &quot;A low, square-cut corridor, running north to south, stooping you over.&quot;
+<p>So if we want to make rules about the properties of the player, we should attach these rules to the &quot;person&quot; kind (or, if they really need to belong only to the player, to the &quot;player-character&quot; kind). A player-character is a kind of person.
+<p>
+<blockquote><font color="#000080">Linear Algebra Class is a room. &quot;The blackboard is covered with square arrangements of numbers. These are supposed to convey something to you, but mostly you're finding them soporific.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The sodium lamp is an electric light in the Stooped Corridor. &quot;[if switched on]The sodium lamp squats on the ground, burning away.[otherwise]The sodium lamp squats heavily on the ground.[end if]&quot;. The description is &quot;It is a heavy-duty archaeologist's lamp, [if switched off]currently off.[otherwise]blazing with brilliant yellow light.[end if]&quot;
+<p>Now a few rules about changing from one state to the other:
+<p>
+<blockquote><font color="#000080">Instead of sleeping: now the player is asleep; say &quot;You drop off.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of burning the sodium lamp, try switching on the lamp.
+<blockquote><font color="#000080">Instead of doing something other than waking up, waiting or sleeping when the player is asleep:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ssh! You're sleeping!&quot;
 </font></blockquote><p>
 <p>
-<p>So far so easy. Since we've built the description of its light or darkness into the lamp's description, though, we may want to get rid of the &quot;...is switched on&quot; line that automatically follows when we look at something. For this we do need to borrow from a later chapter:
-<p>
-<blockquote><font color="#000080">Procedural rule: ignore the examine described devices rule.
+<blockquote><font color="#000080">Instead of sleeping when the player is asleep:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Zzzz.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;x lamp / switch lamp on / look / x lamp&quot;.
+<blockquote><font color="#000080">Instead of waking up when the player is asleep:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is awake;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You come to suddenly, wiping drool from your lips.&quot;
 </font></blockquote><p>
 <p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc179.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e87"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex87.html#e87 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>156</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex87.html#e87 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Removal</font></b></a><br>TAKE expanded to give responses such as "You take the book from the shelf." or "You pick up the toy from the ground."<p></td></tr></table>
-<a name="e63"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex63.html#e63 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>157</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex63.html#e63 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Paddington</font></b></a><br>A CUT [something] WITH [something] command which acts differently on different types of objects.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc178.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc180.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<blockquote><font color="#000080">Instead of doing something other than looking or sleeping when the player is awake:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'd really rather just sleep through this.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;wake up / sleep / look / z / sleep / wake up / look&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc60.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc61.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

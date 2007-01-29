@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.11. Sorting</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.5. Unsuccessful attempts</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,170 +8,149 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc228.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Tables</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc230.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.11. Sorting</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Generation X" -->
+<!-- SEARCH SECTION "Ex 151" -->
+<!-- SEARCH SORT "Ex 012-005-151" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc175.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc177.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.5. Unsuccessful attempts</b></font></td></tr></table>
 <p>
-<p>We are allowed to sort a table in two ways: first, at random.
+<p>Suppose, finally, that Will not only consents to try the action, but it also survives its passage through Before and Instead rules. What happens then? In principle, what happens to Will is exactly what would have happened to the player in his place. For instance:
 <p>
-<blockquote><font color="#000080">sort the Table of Recent Monarchs in random order;
+<blockquote><font color="#000080">> will, go east
+<br>Will leaves to the east.
 </font></blockquote><p>
 <p>
-<p>Secondly, in order of the values in any column, either forwards or backwards. Blank values will be placed last, and entirely blank rows last of all. The method of sorting is &quot;stable&quot;, that is, if two rows have the same value then they will stay the same way round in the sorted table, rather than being swapped over.
+<p>If on the other hand Will's attempt is frustrated because one of the checking rules stops him, then Will's action fails. For instance, if Will tries going northeast but there is no room to northeast, one of the rules checking the &quot;going&quot; action will stop him. We will then see this:
 <p>
-<blockquote><font color="#000080">sort the Table of Recent Monarchs in accession order;
+<blockquote><font color="#000080">> will, go northeast
+<br>Will is unable to do that.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">sort the Table of Recent Monarchs in reverse name order;
+<p>This is rather a generic message, and we may want something more interesting. We can provide that using yet another special kind of rule:
+<p>
+<blockquote><font color="#000080">Unsuccessful attempt by Will trying going: say &quot;Will blunders around going nowhere, as usual.&quot;
 </font></blockquote><p>
+<p>
+<p>Even that is still a little generic, though, because it treats all of the various ways that &quot;going&quot; can fail as the same. If we have ACTIONS switched on, we can see what goes on behind the scenes when we ask Will to walk into a door:
+<p>
+<blockquote><font color="#000080">>will, go west
+<br>[asking Will to try going west]
+<br>[(1) Will trying going west]
+<br>[(1) Will trying going west - failed the can't go through closed doors rule]
+<br>Will blunders around going nowhere, as usual.
+<br>[asking Will to try going west - succeeded]
+</font></blockquote><p>
+<p>
+<p>(The &quot;(1)&quot; lets us know that a new action is starting during the old one, and before the old one finishes: sometimes we go up to three or four deep, though seldom more in practical cases.) We can now rewrite the &quot;unsuccessful attempt&quot; rule like so:
+<p>
+<blockquote><font color="#000080">Unsuccessful attempt by Will trying going:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the can't go through closed doors rule, say &quot;Will looks doubtful and mumbles about doors.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Will blunders around going nowhere, as usual.&quot;
+</font></blockquote><p>
+<p>
+<p>The value &quot;reason the action failed&quot; is set to whichever checking rule threw out the action which Will tried. The names of these rules try to be self-explanatory - at any rate, those with gnomic names are not useful for this sort of thing, and can be ignored - and can be found out either using ACTIONS or by consulting the Actions index.
+<p>
+<p>Finally, note that &quot;unsuccessful attempt&quot; rules apply only when the person in question is being asked to perform the action by somebody else - as in the examples above.
 <p>
 <p><hr><p>
-<a name="e133"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc229.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>203</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc229.html#e133 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Jokers Wild</font></b></a><br>A deck of cards which can be shuffled and dealt from.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we want a deck of cards which the player can shuffle and draw from. Our first (rather tedious) task is merely to set up the deck as a table:
+<!-- EXAMPLE START -->
+<a name="e133"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc176.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>151</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc176.html#e133 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Generation X</font></b></a><br>A person who goes along with the player's instructions, but reluctantly, and will get annoyed after too many repetitions of the same kind of unsuccessful command.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode227(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Jokers Wild"\n\nSuit is a kind of value. The suits are hearts, clubs, diamonds, and spades.\n\nTable of Cards\nsuit\tvalue\ndiamonds\t1\ndiamonds\t2\ndiamonds\t3\ndiamonds\t4\ndiamonds\t5\ndiamonds\t6\ndiamonds\t7\ndiamonds\t8\ndiamonds\t9\ndiamonds\t10\ndiamonds\t11\ndiamonds\t12\ndiamonds\t13\nspades\t1\nspades\t2\nspades\t3\nspades\t4\nspades\t5\nspades\t6\nspades\t7\nspades\t8\nspades\t9\nspades\t10\nspades\t11\nspades\t12\nspades\t13\nhearts\t1\nhearts\t2\nhearts\t3\nhearts\t4\nhearts\t5\nhearts\t6\nhearts\t7\nhearts\t8\nhearts\t9\nhearts\t10\nhearts\t11\nhearts\t12\nhearts\t13\nclubs\t1\nclubs\t2\nclubs\t3\nclubs\t4\nclubs\t5\nclubs\t6\nclubs\t7\nclubs\t8\nclubs\t9\nclubs\t10\nclubs\t11\nclubs\t12\nclubs\t13\n\n[We\'re going to describe the higher numbers as face cards, so it helps to write a new "to say" phrase.]\n\nTo say (count - a number) as a card value:\n\tchoose row with a value of count in the Table of Value Names;\n\tsay "[term entry]".\n\nTable of Value Names\nvalue\tterm\n1\t"ace"\n2\t"deuce"\n3\t"three"\n4\t"four"\n5\t"five"\n6\t"six"\n7\t"seven"\n8\t"eight"\n9\t"nine"\n10\t"ten"\n11\t"jack"\n12\t"queen"\n13\t"king"\n\n[Now we get the shuffling of the deck from "sort in random order", so:]\n\nUnderstand "shuffle" as shuffling. Shuffling is an action applying to nothing.\n\nCarry out shuffling:\n\tsort the Table of Cards in random order;\n\tsay "You expertly rearrange the cards.".\n\nWhen play begins:\n\tsort the Table of Cards in random order.\n\n[This will continue to work properly even as the deck is partially depleted. Speaking of which, suppose we want the player to be able to toss the cards one-by-one into a hat. They are going to need to be removed from the deck, so:]\n\nUnderstand "toss" or "toss a card" or "toss card" as tossing.\n\nTossing is an action applying to nothing.\n\nCheck tossing:\n\tif the number of filled rows in the Table of Cards is 0, say "The deck is empty." instead.\n\nCarry out tossing:\n\trepeat through the Table of Cards\n\tbegin;\n\t\tlet new value be value entry;\n\t\tlet new suit be suit entry;\n\t\tsay "You throw the [value entry as a card value] of [suit entry] at the top hat, and [if a random chance of 1 in 3 succeeds]hit[otherwise]miss[end if].";\n\t\tblank out the whole row;\n\t\trule succeeds;\n\tend repeat.\n\n[If we wanted to simulate a slightly more stimulating game, we could instead have a second table to represent the player\'s hand of cards and record each card drawn. That would get long for the purposes of example, however, so instead we will just admit that the player\'s life is an empty husk of existence:]\n\nThe Empty Room is a room. "It has come to this: sitting on the bare floor of Lulu\'s apartment with nothing to amuse you but a deck of cards and the top hat from last year\'s act. You reckon [the number of filled rows in the Table of Cards in words] cardtosses are all that stand between you and the utter pointlessness of existence.\n\nOnce again you curse Lulu for running off with that joker."\n\nThe player is carrying the deck of cards. The top hat is an open container in the Empty Room. It is scenery.\n\nTest me with "toss / again / again / again / again / again / again / again".\n');
+    myProject.pasteCode('"Generation X"\n\nThe Volunteer Center is a room. "A fairly spartan office, though there are a few attractive posters from advertising campaigns of the past, and an ominous map charting the deforestation of Brazil."\n\nThe desk is scenery in the Volunteer Center. "Your standard metal desk, with a drawer for postal supplies and the like." On the desk is a pile of leaflets and a pile of business cards. The power stapler is a device on the desk. A drawer is part of the desk. It is openable and closed. In the drawer are a sponge and a roll of bulk-mail stamps.\n\nInstead of doing something:\n\tif examining, continue the action;\n\tif searching, continue the action;\n\tif looking, continue the action;\n\tif asking Jenna to try doing something, continue the action;\n\tsay "The whole point of this exercise is to train Jenna. Once you have her on the envelope-stuffing, you can go make some calls."\n\nInstead of answering Jenna that something:\n\tsay "You\'re going to have to break the instructions down to the simplest ones possible, given that she\'s in the mood to misunderstand on purpose."\n\nA cardboard box is in the Center. In the cardboard box is a pile of empty envelopes. The box is openable and closed. The description is "A recycling symbol is prominent on the side, which makes you feel a little bit better about using a mailing campaign for this cause."\n\nJenna is a woman in the Volunteer Center. "Your daughter Jenna is here, barely visible through the cloud of resentment." The description is "Jenna [if jenna carries something]has [the list of things carried by Jenna][otherwise]returns your stare, with added hostility[end if]."\n\nA persuasion rule for asking Jenna to try doing something: persuasion succeeds.\n\nUnsuccessful attempt by Jenna trying doing something:\n\trepeat through Table of Retorts\n\tbegin;\n\t\tif the reason the action failed is the cause entry\n\t\tbegin;\n\t\t\tsay "[response entry][paragraph break]";\n\t\t\trule succeeds;\n\t\tend if;\n\tend repeat;\n\tsay "\'I don\'t see how I\'m supposed to do that, Mom,\' Jenna says."\n\nTable of Retorts\ncause\tresponse\ncan\'t take yourself rule\t"\'Is that like \'get a grip on yourself\' or something?\' Jenna asks, momentarily diverted."\ncan\'t take what\'s fixed in place rule\t"[physical impossibility]"\ncan\'t take scenery rule\t"[physical impossibility]"\ncan\'t take what\'s already taken rule\t"[already done]"\ncan\'t drop what\'s already dropped rule\t"[already done]"\ncan\'t wear what\'s already worn rule\t"[already done]"\ncan\'t take off what\'s not worn rule\t"[already done]"\ncan\'t close what\'s already closed rule\t"[already done]"\ncan\'t open what\'s already open rule\t"[already done]"\ncan\'t switch off what\'s already off rule\t"[already done]"\ncan\'t switch on what\'s already on rule\t"[already done]"\ncan\'t unlock what\'s already unlocked rule\t"[already done]"\ncan\'t lock what\'s already locked rule\t"[already done]"\n\nTo say physical impossibility:\n\tsay "\'Maybe you should\'ve brought someone a little stronger,\' Jenna says. \'Like the Incredible Hulk.\' "\n\nTo say already done:\n\trepeat through Table of Bored Remarks\n\tbegin;\n\t\tsay "[response entry]";\n\t\tblank out the whole row;\n\t\trule succeeds;\n\tend repeat;\n\tsay "\'Okay, I\'m going to be, like, in the car,\' says Jenna. \'Outside.\' ";\n\tend the game saying "Jenna has gotten fed up".\n\nTable of Bored Remarks\nresponse\n"\'Did that,\' says Jenna."\n"\'Check,\' says Jenna."\n"\'Yeah, Mom, I already did that, okay?\'"\n"\'Look, if I have to be here doing dumb stuff, could you at least tell me to do stuff that isn\'t already done?\' Jenna asks wearily."\n"Jenna gives a great upward sigh, riffling her bangs. \'Once again... there is totally no point.\'"\n\nTest me with "e / x jenna / jenna, get stapler / jenna, get stapler / x jenna / jenna, drop stapler / jenna, drop stapler / jenna, open box / jenna, open box / jenna, switch stapler on / jenna, switch stapler on / jenna, take desk / jenna, open box / jenna, open box".\n');
 }
 </script>
-<a href="javascript:pasteCode227()"><img border=0 src=../doc_images/paste.png></a> &quot;Jokers Wild&quot;
+<a href="javascript:pasteCode227()"><img border=0 src=../doc_images/paste.png></a> &quot;Generation X&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Suit is a kind of value. The suits are hearts, clubs, diamonds, and spades.
+<blockquote><font color="#000080">The Volunteer Center is a room. &quot;A fairly spartan office, though there are a few attractive posters from advertising campaigns of the past, and an ominous map charting the deforestation of Brazil.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Cards
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">suit</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">value</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">diamonds</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">spades</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">hearts</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">clubs</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">The desk is scenery in the Volunteer Center. &quot;Your standard metal desk, with a drawer for postal supplies and the like.&quot; On the desk is a pile of leaflets and a pile of business cards. The power stapler is a device on the desk. A drawer is part of the desk. It is openable and closed. In the drawer are a sponge and a roll of bulk-mail stamps.
 </font></blockquote><p>
 <p>
-<p>We're going to describe the higher numbers as face cards, so it helps to write a new &quot;to say&quot; phrase.
-<p>
-<blockquote><font color="#000080">To say (count - a number) as a card value:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row with a value of count in the Table of Value Names;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[term entry]&quot;.
+<blockquote><font color="#000080">Instead of doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if examining, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if searching, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if looking, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if asking Jenna to try doing something, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The whole point of this exercise is to train Jenna. Once you have her on the envelope-stuffing, you can go make some calls.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Value Names
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">value</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">term</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;ace&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;deuce&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;three&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;four&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;five&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;six&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">7</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;seven&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">8</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;eight&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">9</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;nine&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;ten&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;jack&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;queen&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;king&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">Instead of answering Jenna that something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're going to have to break the instructions down to the simplest ones possible, given that she's in the mood to misunderstand on purpose.&quot;
 </font></blockquote><p>
 <p>
-<p>Now we get the shuffling of the deck from &quot;sort in random order&quot;, so:
-<p>
-<blockquote><font color="#000080">Understand &quot;shuffle&quot; as shuffling. Shuffling is an action applying to nothing.
+<blockquote><font color="#000080">A cardboard box is in the Center. In the cardboard box is a pile of empty envelopes. The box is openable and closed. The description is &quot;A recycling symbol is prominent on the side, which makes you feel a little bit better about using a mailing campaign for this cause.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out shuffling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Cards in random order;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You expertly rearrange the cards.&quot;.
+<blockquote><font color="#000080">Jenna is a woman in the Volunteer Center. &quot;Your daughter Jenna is here, barely visible through the cloud of resentment.&quot; The description is &quot;Jenna [if jenna carries something]has [the list of things carried by Jenna][otherwise]returns your stare, with added hostility[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Cards in random order.
+<blockquote><font color="#000080">A persuasion rule for asking Jenna to try doing something: persuasion succeeds.
 </font></blockquote><p>
 <p>
-<p>This will continue to work properly even as the deck is partially depleted. Speaking of which, suppose we want the player to be able to toss the cards one-by-one into a hat. They are going to need to be removed from the deck, so:
-<p>
-<blockquote><font color="#000080">Understand &quot;toss&quot; or &quot;toss a card&quot; or &quot;toss card&quot; as tossing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Tossing is an action applying to nothing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check tossing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of filled rows in the Table of Cards is 0, say &quot;The deck is empty.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out tossing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Cards
+<blockquote><font color="#000080">Unsuccessful attempt by Jenna trying doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Retorts
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let new value be value entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let new suit be suit entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You throw the [value entry as a card value] of [suit entry] at the top hat, and [if a random chance of 1 in 3 succeeds]hit[otherwise]miss[end if].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the cause entry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[response entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'I don't see how I'm supposed to do that, Mom,' Jenna says.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Retorts
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">cause</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">response</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't take yourself rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;'Is that like 'get a grip on yourself' or something?' Jenna asks, momentarily diverted.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't take what's fixed in place rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[physical impossibility]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't take scenery rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[physical impossibility]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't take what's already taken rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't drop what's already dropped rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't wear what's already worn rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't take off what's not worn rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't close what's already closed rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't open what's already open rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't switch off what's already off rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't switch on what's already on rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't unlock what's already unlocked rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">can't lock what's already locked rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say physical impossibility:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Maybe you should've brought someone a little stronger,' Jenna says. 'Like the Incredible Hulk.' &quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say already done:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Bored Remarks
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[response entry]&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Okay, I'm going to be, like, in the car,' says Jenna. 'Outside.' &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Jenna has gotten fed up&quot;.
 </font></blockquote><p>
 <p>
-<p>If we wanted to simulate a slightly more stimulating game, we could instead have a second table to represent the player's hand of cards and record each card drawn. That would get long for the purposes of example, however, so instead we will just admit that the player's life is an empty husk of existence:
-<p>
-<blockquote><font color="#000080">The Empty Room is a room. &quot;It has come to this: sitting on the bare floor of Lulu's apartment with nothing to amuse you but a deck of cards and the top hat from last year's act. You reckon [the number of filled rows in the Table of Cards in words] cardtosses are all that stand between you and the utter pointlessness of existence.
+<blockquote><font color="#000080">Table of Bored Remarks
+<br>response
+<br>&quot;'Did that,' says Jenna.&quot;
+<br>&quot;'Check,' says Jenna.&quot;
+<br>&quot;'Yeah, Mom, I already did that, okay?'&quot;
+<br>&quot;'Look, if I have to be here doing dumb stuff, could you at least tell me to do stuff that isn't already done?' Jenna asks wearily.&quot;
+<br>&quot;Jenna gives a great upward sigh, riffling her bangs. 'Once again... there is totally no point.'&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Once again you curse Lulu for running off with that joker.&quot;
+<blockquote><font color="#000080">Test me with &quot;e / x jenna / jenna, get stapler / jenna, get stapler / x jenna / jenna, drop stapler / jenna, drop stapler / jenna, open box / jenna, open box / jenna, switch stapler on / jenna, switch stapler on / jenna, take desk / jenna, open box / jenna, open box&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player is carrying the deck of cards. The top hat is an open container in the Empty Room. It is scenery.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;toss / again / again / again / again / again / again / again&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc229.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc228.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc230.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc176.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc175.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc177.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

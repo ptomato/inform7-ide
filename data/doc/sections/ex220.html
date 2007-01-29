@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.23. Reading a command</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.5. Assemblies and body parts</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,145 +8,110 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc275.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc277.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.23. Reading a command</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "The Night Before" -->
+<!-- SEARCH SECTION "Ex 40" -->
+<!-- SEARCH SORT "Ex 004-005-040" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc58.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc60.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.5. Assemblies and body parts</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> When reading a command from the keyboard.
+<p>In the previous chapter, we saw that it was possible to make sub-parts of things. For instance,
 <p>
-<p><b>2. The default behaviour.</b> Print the prompt text; wait for the player to type something and press return. Reject an entirely blank line, and treat a command beginning &quot;oops&quot; is considered a correction to the previous one. This is a fairly complicated business, so it is probably best not to change the &quot;for&quot; rules for this activity: &quot;before&quot;, and especially &quot;after&quot;, are another matter.
-<p>
-<p><b>3. Examples.</b> (a) To lead absolute beginners in gently:
-<p>
-<blockquote><font color="#000080">Before reading a command while the turn count is 1, say &quot;(This is your chance to say what the protagonist should do next. After the '>', try typing 'take inventory'.)&quot;
+<blockquote><font color="#000080">The white door is in the Drawing Room. The handle is part of the white door.
 </font></blockquote><p>
 <p>
-<p>(b) The following responds politely but firmly if the player tries to type &quot;please look&quot;, say, instead of just &quot;look&quot;:
+<p>creates a door with an attached handle. But what if we want to say that not just this door, but every door, should have a handle? To do this we first need to create a kind called &quot;handle&quot;, since there will clearly need to be many handles. The solution is:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode72(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "Please do not say please.";\n\t\treject the player\'s command;\n\tend if.\n\n');
-}
-</script>
-<a href="javascript:pasteCode72()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Please do not say please.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">A handle is a kind of thing. A handle is part of every door.
 </font></blockquote><p>
 <p>
-<p>To explain. Fragments of what the player has typed are called snippets: &quot;the player's command&quot; is the entire thing. We can test if a snippet matches a given pattern like so:
+<p>&quot;Every&quot; is a loaded word and best used sparingly. A sentence like &quot;A handle is part of every handle&quot; would, if taken literally, mean that a handle takes forever to make and is never finished. Inform will reject this, but the moral is clear: we should think about what we are doing with &quot;every&quot;. Another restriction is it is not safe to meddle with the three fundamental kinds &quot;room&quot;, &quot;container&quot; or &quot;supporter&quot;, but in fact this one can be got around quite easily, like so -
 <p>
-<blockquote><font color="#000080">if the player's command matches &quot;room [number]&quot;, ...
+<blockquote><font color="#000080">A silver coin is a kind of thing. A banking room is a kind of room. Five silver coins are in every banking room.
 </font></blockquote><p>
 <p>
-<p>This requires an exact match: the weaker condition &quot;includes&quot; only means that the pattern occurs somewhere in the given snippet, so that
+<p>The effect of sentences like these is to make what we might call &quot;assemblies&quot; instead of single things. When a banking room is created, so are five more silver coins; when a door is created, so is another handle. Such sentences act not only on items created later on in the source text, but also on all those created so far.
 <p>
-<blockquote><font color="#000080">if the player's command includes &quot;please&quot;, ...
+<p>This is especially useful for body parts. If we would like to explore Voltaire's suggestion that history would have been very different if only Cleopatra's nose had been shorter, we will need noses:
+<p>
+<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person.
 </font></blockquote><p>
 <p>
-<p>matches &quot;please look&quot; or &quot;look please&quot;, etc. Lastly, the phrase
+<p>Something to bear in mind, though, is that in play the following may well happen:
 <p>
-<blockquote><font color="#000080">reject the player's command
+<blockquote><font color="#000080">>examine nose
+<br>Which do you mean, your nose, Antony's nose or Cleopatra's nose?
 </font></blockquote><p>
 <p>
-<p>tells Inform not to bother analysing the text further, but to go back to the keyboard. (No time passes; no turn elapses; nothing happens in the simulated world.)
+<p>...because the player, being also a &quot;person&quot;, is as susceptible to the invention of noses as anyone else.
 <p>
-<p>(c) An improved version takes commands like &quot;please drop the coin&quot; and strips &quot;please&quot; from them, but then allows them to proceed normally:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode73(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "(Quelle politesse! But no need to say please.)";\n\t\tcut the matched text;\n\tend if.\n\n');
-}
-</script>
-<a href="javascript:pasteCode73()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(Quelle politesse! But no need to say please.)&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cut the matched text;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>&quot;Matched text&quot; is a snippet containing the words which matched against the pattern in the most recent &quot;includes&quot; condition, so in this case it contains just the single word &quot;please&quot;. Two phrases allow snippets to be altered:
-<p>
-<blockquote><font color="#000080">replace (... snippet ...) with (... text ...)
-<br>cut (...snippet ...)
-</font></blockquote><p>
-<p>
-<p>(d) To make the word &quot;grab&quot; an abbreviation for &quot;take all&quot;:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode74(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:\n\tif the player\'s command matches "grab", replace the player\'s command with "take all".\n\n');
-}
-</script>
-<a href="javascript:pasteCode74()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command matches &quot;grab&quot;, replace the player's command with &quot;take all&quot;.
-</font></blockquote><p>
-<p>
-<p>(&quot;Snippet&quot; is actually a kind of value, so we could say &quot;Ah, you typed '[the player's command]'!&quot; or some such if we liked. But in practice only three snippets are likely to be useful: the two mentioned above, &quot;player's command&quot; and &quot;matched text&quot;, and the &quot;topic understood&quot;, used when matching the &quot;[text]&quot; token in command grammar.)
+<p>Note that Inform names the otherwise nameless noses after their owners. It will always do this unless there are multiple indistinguishable things being created, as in the &quot;five silver coins are in every banking room&quot; example: those will all just be called &quot;silver coin&quot;.
 <p>
 <p><hr><p>
-<a name="e220"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc276.html#e220 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>262</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc276.html#e220 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Fore</font></b></a><br>Understand "fore", "aft", "port", and "starboard", but only when the player is on a vessel.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we want to understand shipboard directions, but only when the player is aboard a vessel. It might be tempting to do only:
+<a name="e198"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex198.html#e198 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>38</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex198.html#e198 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Being Prepared</font></b></a><br>A kind for jackets, which always includes a container called a pocket.<p></td></tr></table>
+<a name="e58"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex58.html#e58 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>39</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex58.html#e58 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Model Shop</font></b></a><br>An "on/off button" which controls whatever device it is part of.<p></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e220"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc59.html#e220 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>40</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc59.html#e220 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Night Before</font></b></a><br>Instructing Inform to prefer different interpretations of EXAMINE NOSE, depending on whether the player is alone, in company, or with Rudolph the Red-nosed Reindeer.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>Suppose that we're going to give every person in the game a nose, but we want references to a nose always to mean the nose of someone *else*, if the player is with one other person. Moreover, on some occasions we're going to be in sight of Rudolph, so actions directed at an unspecified nose should always prefer his.
+<p>
+<p>This relies on a somewhat advanced technique from the Understanding chapter, but since it may become useful with assemblies and body parts, it is worth mentioning here.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode314(code) {
+function pasteCode315(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Fore"\n\nUnderstand "fore" or "f" as north when the location is in the Ship. Understand "aft" or "a" as south when the location is in the Ship. Understand "port" or "p" as west when the location is in the Ship. Understand "starboard" or "sb" as east when the location is in the Ship.\n\n[but then we get "that\'s not a verb I understand" when the player tries ship directions on land, and that\'s obviously wrong.]\n\n[Similarly, we don\'t want to use "understand... as a mistake" with this set of things because we are correcting the name of a noun, not the phrasing of a verb.]\n\n[So we might choose to catch and correct mistakes at the reading a command stage:]\n\nUnderstand "fore" or "f" or "aft" or "port" or "p" or "starboard" or "sb" as "[shipboard direction]". Understand "a" or "go a" as "[going aft]".\n\nAfter reading a command:\n\tif the location is not in the Ship and the player\'s command includes "[shipboard direction]"\n\tbegin;\n\t\tsay "You\'re not at sea now, sailor.";\n\t\treject the player\'s command;\n\tend if;\n\tif the location is not in the Ship and the player\'s command matches "[going aft]"\n\tbegin;\n\t\tsay "You\'re not at sea now, sailor.";\n\t\treject the player\'s command;\n\tend if.\n\nBow is a room. South of Bow is By Foremast. South of By Foremast is By Mainmast. South of By Mainmast is By Mizzenmast. South of By Mizzenmast is By Jiggermast. South of By Jiggermast is Stern.\n\nThe Ship is a region. Bow, By Foremast, By Mainmast, By Mizzenmast, By Jiggermast, and Stern are in Ship.\n\nThe Dock is west of By Mainmast.\n\nTest me with "aft / port / a / p / starboard".\n\n');
+    myProject.pasteCode('"The Night Before"\n\nThe North Pole is a room. "Here it is: the famous Pole. From here you can go south (or south-south, or south-south-by-south); or, alternatively, take refuge inside a red-and-white-striped cabin." The cabin is scenery in the North Pole. Instead of entering the cabin, try going inside.\n\nSanta is a man in the North Pole. "Santa is pacing around in the snow and trying to psych himself up for the big night."\n\nInside from North Pole is the Candy Cane Cabin. The description of the Cabin is "Striped red and white, but nothing can make this place seem warm and inviting since Mrs. Santa ran off with the Tooth Fairy."\n\nThe Ice Shelf is south of North Pole. "The ice here has been smoothed into a kind of runway for easy take-off, and ends in a cliff and cold arctic sea." Donner, Vixen, Blixen, and Rudolph are animals in the Ice Shelf.\n\nA nose is a kind of thing. A nose is part of every person. The description of Santa\'s nose is "It\'s a bit ruddy. You don\'t like to mention it, but Santa\'s been dipping heavily into the Grey Goose since Mrs. Santa left town." The description of a nose is usually "Not terribly exciting."  The description of Rudolph\'s nose is "See how it glows!"\n\n[Next, we\'ll teach Inform some vocabulary to distinguish between the player and everyone else:]\n\nDefinition: a person is other if it is not the player.\n\nDefinition: a thing is selfish if it is part of the player and the player can see an other person.\n\nInstead of examining a selfish nose:\n\tsay "You cross your eyes, but can\'t get a good look."\n\n[Here is the part that actually determines the preferences. "Does the player mean..." can result in five outcomes: "it is very unlikely", "it is unlikely", "it is possible" (the neutral default), "it is likely", and "it is very likely". This is discussed in greater detail in the Understanding chapter. Here, we want to discourage references to the player\'s own nose and encourage references to the nose of Rudolph, so:]\n\nDoes the player mean doing something when the noun is a selfish nose or the second noun is a selfish nose: it is very unlikely.\n\nDoes the player mean doing something to Rudolph\'s nose: it is very likely.\n\n[And this part is just for decoration:]\n\nRule for writing a paragraph about Rudolph:\n\tsay "The reindeer are already harnessed and waiting impatiently. The brilliance of [Rudolph]\'s nose casts an eerie red glow over [the list of unmentioned animals in the location]."\n\nTest me with "x nose / x my nose / x santa\'s nose / in / x nose / out / s / x my nose / x nose / x rudolph\'s nose / x donner\'s nose".\n');
 }
 </script>
-<a href="javascript:pasteCode314()"><img border=0 src=../doc_images/paste.png></a> &quot;Fore&quot;
+<a href="javascript:pasteCode315()"><img border=0 src=../doc_images/paste.png></a> &quot;The Night Before&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;fore&quot; or &quot;f&quot; as north when the location is in the Ship. Understand &quot;aft&quot; or &quot;a&quot; as south when the location is in the Ship. Understand &quot;port&quot; or &quot;p&quot; as west when the location is in the Ship. Understand &quot;starboard&quot; or &quot;sb&quot; as east when the location is in the Ship.
+<blockquote><font color="#000080">The North Pole is a room. &quot;Here it is: the famous Pole. From here you can go south (or south-south, or south-south-by-south); or, alternatively, take refuge inside a red-and-white-striped cabin.&quot; The cabin is scenery in the North Pole. Instead of entering the cabin, try going inside.
 </font></blockquote><p>
 <p>
-<p>but then we get &quot;that's not a verb I understand&quot; when the player tries ship directions on land, and that's obviously wrong.
-<p>
-<p>Similarly, we don't want to use &quot;understand... as a mistake&quot; with this set of things because we are correcting the name of a noun, not the phrasing of a verb.
-<p>
-<p>So we might choose to catch and correct mistakes at the reading a command stage:
-<p>
-<blockquote><font color="#000080">Understand &quot;fore&quot; or &quot;f&quot; or &quot;aft&quot; or &quot;port&quot; or &quot;p&quot; or &quot;starboard&quot; or &quot;sb&quot; as &quot;[shipboard direction]&quot;. Understand &quot;a&quot; or &quot;go a&quot; as &quot;[going aft]&quot;.
+<blockquote><font color="#000080">Santa is a man in the North Pole. &quot;Santa is pacing around in the snow and trying to psych himself up for the big night.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is not in the Ship and the player's command includes &quot;[shipboard direction]&quot;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're not at sea now, sailor.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is not in the Ship and the player's command matches &quot;[going aft]&quot;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're not at sea now, sailor.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Inside from North Pole is the Candy Cane Cabin. The description of the Cabin is &quot;Striped red and white, but nothing can make this place seem warm and inviting since Mrs. Santa ran off with the Tooth Fairy.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Bow is a room. South of Bow is By Foremast. South of By Foremast is By Mainmast. South of By Mainmast is By Mizzenmast. South of By Mizzenmast is By Jiggermast. South of By Jiggermast is Stern.
+<blockquote><font color="#000080">The Ice Shelf is south of North Pole. &quot;The ice here has been smoothed into a kind of runway for easy take-off, and ends in a cliff and cold arctic sea.&quot; Donner, Vixen, Blixen, and Rudolph are animals in the Ice Shelf.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Ship is a region. Bow, By Foremast, By Mainmast, By Mizzenmast, By Jiggermast, and Stern are in Ship.
+<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person. The description of Santa's nose is &quot;It's a bit ruddy. You don't like to mention it, but Santa's been dipping heavily into the Grey Goose since Mrs. Santa left town.&quot; The description of a nose is usually &quot;Not terribly exciting.&quot;  The description of Rudolph's nose is &quot;See how it glows!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Dock is west of By Mainmast.
+<p>Next, we'll teach Inform some vocabulary to distinguish between the player and everyone else:
+<p>
+<blockquote><font color="#000080">Definition: a person is other if it is not the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;aft / port / a / p / starboard&quot;.
+<blockquote><font color="#000080">Definition: a thing is selfish if it is part of the player and the player can see an other person.
 </font></blockquote><p>
 <p>
-<p>If desired, we could insert an equivalent set of refusals if the player tried to use north, south, etc., aboard ship.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc276.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e1"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex1.html#e1 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>263</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex1.html#e1 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloves</font></b></a><br>Accepting adverbs anywhere in a command, registering what the player typed but then cutting them out before interpreting the command.<p></td></tr></table>
-<a name="e123"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex123.html#e123 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>264</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex123.html#e123 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fragment of a Greek Tragedy</font></b></a><br>Responding to the player's input based on keywords only, and overriding the original parser entirely.<p></td></tr></table>
-<a name="e135"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex135.html#e135 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>265</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex135.html#e135 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Complimentary Peanuts</font></b></a><br>A character who responds to keywords in the player's instructions and remarks, even if there are other words included.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc275.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc277.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<blockquote><font color="#000080">Instead of examining a selfish nose:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You cross your eyes, but can't get a good look.&quot;
+</font></blockquote><p>
+<p>
+<p>Here is the part that actually determines the preferences. &quot;Does the player mean...&quot; can result in five outcomes: &quot;it is very unlikely&quot;, &quot;it is unlikely&quot;, &quot;it is possible&quot; (the neutral default), &quot;it is likely&quot;, and &quot;it is very likely&quot;. This is discussed in greater detail in the Understanding chapter. Here, we want to discourage references to the player's own nose and encourage references to the nose of Rudolph, so:
+<p>
+<blockquote><font color="#000080">Does the player mean doing something when the noun is a selfish nose or the second noun is a selfish nose: it is very unlikely.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Does the player mean doing something to Rudolph's nose: it is very likely.
+</font></blockquote><p>
+<p>
+<p>And this part is just for decoration:
+<p>
+<blockquote><font color="#000080">Rule for writing a paragraph about Rudolph:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The reindeer are already harnessed and waiting impatiently. The brilliance of [Rudolph]'s nose casts an eerie red glow over [the list of unmentioned animals in the location].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x nose / x my nose / x santa's nose / in / x nose / out / s / x my nose / x nose / x rudolph's nose / x donner's nose&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc59.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e46"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex46.html#e46 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>41</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex46.html#e46 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> U-Stor-It</font></b></a><br>A "chest" kind which consists of a container which has a lid as a supporter.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc58.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc60.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

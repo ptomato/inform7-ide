@@ -865,7 +865,11 @@ Array I7_FigureFlags->({-value:NUMBER_CREATED(blorb_figure)}+4);
 		if (I7_FigureFlags->resource_ID) return;
 	}
 	I7_FigureFlags->resource_ID = true;
-	glk_image_draw(gg_mainwin, resource_ID, imagealign_InlineCenter, 0);
+	if (glk_gestalt(gestalt_Graphics, 0)) {
+		glk_image_draw(gg_mainwin, resource_ID, imagealign_InlineCenter, 0);
+	} else {
+		print "[Picture number ", resource_ID, " here.]^";
+	}
 #ENDIF; ! TARGET_
 ];
 

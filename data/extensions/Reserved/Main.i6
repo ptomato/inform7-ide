@@ -64,7 +64,11 @@
 {-log-phase:Phrases and rules}
 {-callv:traverse_for_phrases}
 {-callv:register_phrase_meanings}
+{-callv:parse_rule_parameters}
 {-callv:add_rules_to_rulebooks}
+{-callv:warn_about_ineffectual_PushDir_rules}
+{-callv:parse_rule_placements}
+
 {-callv:empty_all_headings}
 {-callv:prepare_use_options}
 
@@ -111,7 +115,7 @@ Global I7_TSign;
 
 Global say__n;
 Array I7_CS --> 16;
-Array I7_boxes_appeared --> {-value:extent_of_runtime_quotations_array};
+Array I7_boxes_appeared --> I7_BOXES;
 
 Constant WITHOUT_DIRECTIONS;
 {-call:compile_max_score}
@@ -198,9 +202,14 @@ Constant Relation_ByRoutine	8;
 
 {-array:RelationList}
 
+! --- Variable used by choose objects mechanism ---
+Global cobj_flag = 0;
+[ I7ResetChooseObjects; cobj_flag = 0; rfalse; ];
+
 ! --- Printing routines ---
 {-call:compile_printing_routines}
 {-routine:I7_Kind_Name}
+{-routine:I7_RulebookOutcomePrintingRule}
 
 {-log:Compiling the object tree}
 
@@ -318,7 +327,7 @@ Array EMPTY_RULEBOOK -> $ff $ff $ff $ff; ! 4 bytes needed in case of Glulx
 {-call:compile_named_action_patterns}
 
 {-log:Compiling the action routines}
-Constant ActionCount = {-value:no_action_names};
+Constant ActionCount = {-value:NUMBER_CREATED(action_name)};
 {-array:ActionData}
 {-array:ActionCoding}
 {-array:ActionHappened}
@@ -358,6 +367,8 @@ Constant ActionCount = {-value:no_action_names};
 	rfalse;
 ];
 
+{-segment:ChooseObjects.i6}
+
 {-routine:I7ReadUseOption}
 
 {-log:Compiling chronology}
@@ -385,12 +396,44 @@ Include "Grammar";
 {-call:compile_grammar_conditions}
 
 {-log:Compiling type gprs}
-[ I7_NUMBER_TOKEN wnc wna r;
+[ I7_NUMBER_TOKEN wnc wna r n wa wl sign base digit digit_count;
 	wnc = wn;
 {-call:compile_number_grammar}
 	wn = wnc;
 	r = I7_ParseToken(ELEMENTARY_TT, NUMBER_TOKEN);
-	if (r == 0) return GPR_FAIL; return GPR_NUMBER;
+	if ((r == GPR_NUMBER) && (parsed_number ~= 10000)) return r;
+	wn = wnc;
+	wa = WordAddress(wn);
+	wl = WordLength(wn);
+	sign = 1; base = 10; digit_count = 0;
+	if (wa->0 ~= '-' or '$' or '0' or '1' or '2' or '3' or '4'
+		or '5' or '6' or '7' or '8' or '9')
+		return GPR_FAIL;
+	if (wa->0 == '-') { sign = -1; wl--; wa++; }
+	if (wl == 0) return GPR_FAIL;
+	n = 0;
+	while (wl > 0) {
+		if (wa->0 >= 'a') digit = wa->0 - 'a' + 10;
+		else digit = wa->0 - '0';
+		digit_count++;
+		switch (base) {
+			2:  if (digit_count == 17) return GPR_FAIL;
+			10: if (digit_count == 6) return GPR_FAIL;
+				if (digit_count == 5) {
+					if (n > 3276) return GPR_FAIL;
+					if (n == 3276) {
+						if (sign == 1 && digit > 7) return GPR_FAIL;
+						if (sign == -1 && digit > 8) return GPR_FAIL;
+					}
+				}
+			16: if (digit_count == 5) return GPR_FAIL;
+		}
+		if (digit >= 0 && digit < base) n = base*n + digit;
+		else return GPR_FAIL;
+		wl--; wa++;
+	}
+	parsed_number = n*sign; wn++;
+	return GPR_NUMBER;
 ];
 
 {-call:compile_type_gprs}
@@ -423,6 +466,8 @@ Include "Grammar";
 #IFNDEF I7_cap_short_name;
 Constant I7_cap_short_name = short_name;
 #ENDIF;
+
+Constant I7_BOXES = {-value:extent_of_runtime_quotations_array};
 
 {-log-phase:Compilation now complete}
 

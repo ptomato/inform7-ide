@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.13. Locks and keys</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.11. Phrases which use descriptions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,102 +8,81 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc38.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc40.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.13. Locks and keys</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Inventory Despair" -->
+<!-- SEARCH SECTION "Ex 138" -->
+<!-- SEARCH SORT "Ex 011-011-138" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc162.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc164.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.11. Phrases which use descriptions</b></font></td></tr></table>
 <p>
-<p>It seems unwise for a door in Notting Hill to be unlocked, so:
+<p>In the chapter on Descriptions, we saw that a description can be any source text which describes one or more objects: it might be as simple as &quot;the Corn Market&quot;, or as complicated as &quot;open containers which are in dark rooms&quot;. (More or less the only restriction is that it must be unambiguous as to what counts and what does not: &quot;three containers&quot; is ambiguous as a description because it does not say which three.)
 <p>
-<blockquote><font color="#000080">The blue door is lockable and locked. The matching key of the blue door is the brass Yale key.
+<p>In the last section, we saw that it is possible to repeat phrases with a temporary name running through all the things matching a description. Other tricks with descriptions have also turned up: in fact, if D is a description, then
+<p>
+<blockquote><font color="#000080">say &quot;You gaze mournfully at [the list of D].&quot;;
+<br>let the tally be the number of D;
+<br>let the surprise prize be a random D;
+<br>repeat with item running through D begin; ...; end repeat;
 </font></blockquote><p>
 <p>
-<p>Since the second sentence here is a little clumsy, we can equivalently say
+<p>are all standard things to do. These examples make it look as if it must be possible to define phrases which act on descriptions, and in fact it is. For instance:
 <p>
-<blockquote><font color="#000080">The brass Yale key unlocks the blue door.
+<blockquote><font color="#000080">To enumerate (collection - a description):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with the item running through the collection
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;-- [The item].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>Yet a third way to say this is:
+<p>This makes &quot;enumerate lighted rooms&quot; run off a list of lighted rooms in a textual format different from the standard one produced by &quot;say the list of lighted rooms&quot;. Inside the definition, &quot;collection&quot; can be used wherever a description might be used: here, for instance, we use it as the range for the repeat loop.
 <p>
-<blockquote><font color="#000080">The blue door has matching key the brass Yale key.
-</font></blockquote><p>
-<p>
-<p>This introduces three new properties: a door can be locked or unlocked; lockable or not lockable; and it can have a matching key, which must be another thing. The same thing can be the matching key of many different locks: and note that a door can be locked and even lockable without having a matching key at all, in which case the player trying to open it will be permanently out of luck. Doors are ordinarily unlocked, not lockable, and without a matching key.
-<p>
-<p>Containers can also have locks, in exactly the same way, and are allowed to have the same properties. On the other hand supporters never have locks: it makes no sense to be able to lock a tabletop, for instance, and Inform will not allow any discussion of the matching key of a supporter, or of a supporter being locked or unlocked.
+<p>Purely as a convenience, we can also write &quot;member of&quot; or &quot;members of&quot; in this context. For instance, in the enumerate definition, it would have been just as good to write &quot;...running through the members of the collection...&quot; in the repeat. (Similarly, we could write &quot;number of members of the collection&quot; or &quot;a random member of the collection&quot;, which looks grammatically tidier than writing &quot;number of the collection&quot; or &quot;random of the collection&quot; - though in fact both of these do work.)
 <p>
 <p><hr><p>
-<a name="e36"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex36.html#e36 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>20</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex36.html#e36 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Disappointment Bay 6</font></b></a><br>Disappointment Bay: locking up the charter boat's fishing rods.<p></td></tr></table>
-<a name="e65"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc39.html#e65 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>21</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc39.html#e65 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Neighborhood Watch</font></b></a><br>A locked door that can be locked or unlocked without a key from one side, but not from the other.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we want a locked door that can be opened with a key, but is also openable by hand without a key from one side only. We start by defining an ordinary lockable door and the key that controls it:
+<!-- EXAMPLE START -->
+<a name="e65"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc163.html#e65 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>138</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc163.html#e65 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Inventory Despair</font></b></a><br>A phrase that chooses and names the least-recently selected item from the collection given, allowing the text to cycle semi-randomly through a group of objects.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode158(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Neighborhood Watch"\n\nThe shabby door is a door. It is outside from the Studio Apartment and inside from the Rickety Stairwell. The shabby door is locked.\n\nThe brass key is carried by the player. It unlocks the shabby door.\n\n[The next part is going to require that we modify the normal operation of the "lock" command. "Lock" ordinarily requires that the player supply two objects: a thing he wants to unlock, and the key he wants to use on it. The full command is LOCK DOOR WITH THE KEY, and Inform will not accept simply LOCK DOOR as locking.]\n\n[Therefore, we\'re going to need to create our own new variant on the lock verb (and the unlock verb, while we\'re at it). The full procedure for this is laid out in the chapters on Action and Understanding, but here is an example:]\n\nUnderstand "lock [something]" as locking keylessly. Locking keylessly is an action applying to one thing.\n\n[Here we\'ve created a new action -- locking something without a key -- and we\'ve told Inform to understand LOCK DOOR as this action, rather than an incomplete command to LOCK DOOR WITH SOMETHING.]\n\n[Now we add some instructions so that the game will not let us use this keyless unlocking command unless we\'re in the right place or are properly equipped:]\n\nCheck locking keylessly:\n\tif the player carries the brass key and the player is in the Stairwell, try locking the noun with the brass key instead;\n\tif the player is in the Stairwell, say "You can\'t lock the door from this side without the key." instead.\n\n[This check rule is performed before the keyless locking action succeeds. The first thing we do is try to use the key if the player is outside and has the key: this way, LOCK DOOR will turn automatically into LOCK DOOR WITH THE KEY, under circumstances where that is both possible and necessary.]\n\n[The second thing is to check whether the player is outside but keyless, and, if so stop the action from being performed successfully. Here we print a failure message followed by the word "instead", which tells Inform that we\'ve substituted some other outcome for the usual performance of the action.]\n\n[Now we\'re reasonably sure that the player is only locking keylessly in the case that he is inside the Studio. (We might have to do a more thorough check for this if there were more than two rooms, but as it is, the player can only be in the Stairwell or in the Studio, so if we have ruled out the Stairwell, we are safe.) So now we want to add what happens when locking-without-a-key command succeeds:]\n\nCarry out locking keylessly:\n\tnow the noun is locked.\n\n[That\'s it. We\'ve just told Inform to make the door be locked. "Now..." syntax will be explained more thoroughly in the chapter on change. But we still haven\'t described to the player what just happened, so let\'s provide a description of that, too:]\n\nReport locking keylessly:\n\tsay "You flip over the deadbolt to lock [the noun]."\n\n[And now we have to do a similar set of things for unlocking:]\n\nUnderstand "unlock [something]" as unlocking keylessly. Unlocking keylessly is an action applying to one thing.\n\nCheck unlocking keylessly:\n\tif the player carries the brass key and the player is in the Stairwell, try unlocking the noun with the brass key instead;\n\tif the player is in the Stairwell, say "You can\'t unlock the door from this side without the key." instead.\n\nCarry out unlocking keylessly:\n\tnow the noun is unlocked.\n\nReport unlocking keylessly:\n\tsay "You flip over the deadbolt to unlock [the noun]."\n\nTest me with "unlock door / drop key / open door / out / close door / lock door / open door / in / get key / out / close door / lock door / unlock door".\n\n');
+    myProject.pasteCode('"Curare"\n\nA thing has a number called the last use. The last use of a thing is usually 0.\n\nDefinition: a thing is old if its last use is 12 or less.\n\n[The actual number chosen in this definition is pretty much irrelevant: the main thing is that we want to establish relative values. The lower the "last use" number of an item, the older that item should be understood to be, as we see here:]\n\nTo decide which thing is cyclically random (collection - a description):\n\tlet choice be the oldest member of the collection;\n\tchange the last use of the choice to the turn count;\n\tdecide on choice.\n\n[This phrase will select, from the collection of objects passed to it, the one that has been mentioned least recently. This means that if we consult it repeatedly about the same collection, it will begin to cycle predictably; but if new items are added to the collection, it will mention these first before returning to the previous cycle. Now we can use this:]\n\nAfter taking inventory:\n\tsay "You stare morosely at [the cyclically random thing carried by the player], wondering what you\'re ever going to find to do with it."\n\n[We could have said "You stare morosely at [the oldest thing carried by the player]" here, but doing so would not have set the "last use" property correctly, so we would not get the cycling behavior that we\'re looking for.]\n\nThe Evidence Room is a room. Some shelves are scenery supporters in the Evidence Room. A box is a kind of container which is open and not openable. On the shelves is a box.  It contains a deformed bullet and a driver\'s license.\n\nThe player carries a steel fish hook, a Chinese passport, a tube of synthetic curare, and an envelope full of Euros.\n\nTest me with "i / i / i / i / i / i / get all from box / i / i / i".\n');
 }
 </script>
-<a href="javascript:pasteCode158()"><img border=0 src=../doc_images/paste.png></a> &quot;Neighborhood Watch&quot;
+<a href="javascript:pasteCode158()"><img border=0 src=../doc_images/paste.png></a> &quot;Curare&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The shabby door is a door. It is outside from the Studio Apartment and inside from the Rickety Stairwell. The shabby door is locked.
+<blockquote><font color="#000080">A thing has a number called the last use. The last use of a thing is usually 0.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The brass key is carried by the player. It unlocks the shabby door.
+<blockquote><font color="#000080">Definition: a thing is old if its last use is 12 or less.
 </font></blockquote><p>
 <p>
-<p>The next part is going to require that we modify the normal operation of the &quot;lock&quot; command. &quot;Lock&quot; ordinarily requires that the player supply two objects: a thing he wants to unlock, and the key he wants to use on it. The full command is LOCK DOOR WITH THE KEY, and Inform will not accept simply LOCK DOOR as locking.
+<p>The actual number chosen in this definition is pretty much irrelevant: the main thing is that we want to establish relative values. The lower the &quot;last use&quot; number of an item, the older that item should be understood to be, as we see here:
 <p>
-<p>Therefore, we're going to need to create our own new variant on the lock verb (and the unlock verb, while we're at it). The full procedure for this is laid out in the chapters on Action and Understanding, but here is an example:
-<p>
-<blockquote><font color="#000080">Understand &quot;lock [something]&quot; as locking keylessly. Locking keylessly is an action applying to one thing.
+<blockquote><font color="#000080">To decide which thing is cyclically random (collection - a description):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let choice be the oldest member of the collection;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last use of the choice to the turn count;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on choice.
 </font></blockquote><p>
 <p>
-<p>Here we've created a new action -- locking something without a key -- and we've told Inform to understand LOCK DOOR as this action, rather than an incomplete command to LOCK DOOR WITH SOMETHING.
+<p>This phrase will select, from the collection of objects passed to it, the one that has been mentioned least recently. This means that if we consult it repeatedly about the same collection, it will begin to cycle predictably; but if new items are added to the collection, it will mention these first before returning to the previous cycle. Now we can use this:
 <p>
-<p>Now we add some instructions so that the game will not let us use this keyless unlocking command unless we're in the right place or are properly equipped:
-<p>
-<blockquote><font color="#000080">Check locking keylessly:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries the brass key and the player is in the Stairwell, try locking the noun with the brass key instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Stairwell, say &quot;You can't lock the door from this side without the key.&quot; instead.
+<blockquote><font color="#000080">After taking inventory:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You stare morosely at [the cyclically random thing carried by the player], wondering what you're ever going to find to do with it.&quot;
 </font></blockquote><p>
 <p>
-<p>This check rule is performed before the keyless locking action succeeds. The first thing we do is try to use the key if the player is outside and has the key: this way, LOCK DOOR will turn automatically into LOCK DOOR WITH THE KEY, under circumstances where that is both possible and necessary.
+<p>We could have said &quot;You stare morosely at [the oldest thing carried by the player]&quot; here, but doing so would not have set the &quot;last use&quot; property correctly, so we would not get the cycling behavior that we're looking for.
 <p>
-<p>The second thing is to check whether the player is outside but keyless, and, if so stop the action from being performed successfully. Here we print a failure message followed by the word &quot;instead&quot;, which tells Inform that we've substituted some other outcome for the usual performance of the action.
-<p>
-<p>Now we're reasonably sure that the player is only locking keylessly in the case that he is inside the Studio. (We might have to do a more thorough check for this if there were more than two rooms, but as it is, the player can only be in the Stairwell or in the Studio, so if we have ruled out the Stairwell, we are safe.) So now we want to add what happens when locking-without-a-key command succeeds:
-<p>
-<blockquote><font color="#000080">Carry out locking keylessly:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is locked.
+<blockquote><font color="#000080">The Evidence Room is a room. Some shelves are scenery supporters in the Evidence Room. A box is a kind of container which is open and not openable. On the shelves is a box.  It contains a deformed bullet and a driver's license.
 </font></blockquote><p>
 <p>
-<p>That's it. We've just told Inform to make the door be locked. &quot;Now...&quot; syntax will be explained more thoroughly in the chapter on change. But we still haven't described to the player what just happened, so let's provide a description of that, too:
-<p>
-<blockquote><font color="#000080">Report locking keylessly:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You flip over the deadbolt to lock [the noun].&quot;
+<blockquote><font color="#000080">The player carries a steel fish hook, a Chinese passport, a tube of synthetic curare, and an envelope full of Euros.
 </font></blockquote><p>
 <p>
-<p>And now we have to do a similar set of things for unlocking:
-<p>
-<blockquote><font color="#000080">Understand &quot;unlock [something]&quot; as unlocking keylessly. Unlocking keylessly is an action applying to one thing.
+<blockquote><font color="#000080">Test me with &quot;i / i / i / i / i / i / get all from box / i / i / i&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check unlocking keylessly:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries the brass key and the player is in the Stairwell, try unlocking the noun with the brass key instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Stairwell, say &quot;You can't unlock the door from this side without the key.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out unlocking keylessly:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is unlocked.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report unlocking keylessly:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You flip over the deadbolt to unlock [the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;unlock door / drop key / open door / out / close door / lock door / open door / in / get key / out / close door / lock door / unlock door&quot;.
-</font></blockquote><p>
-<p>
-<p>Some (but not all) of this work is done for you if you like by the Locksmith extension. If you prefer, you can include that extension, then follow the documentation in order to implement the remainder of the scenario. Locksmith takes care of implementing the additional locking and unlocking actions, and provides some other conveniences.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc39.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc38.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc40.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc163.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc162.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc164.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

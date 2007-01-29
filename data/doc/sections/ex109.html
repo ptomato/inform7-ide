@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.7. New actions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.16. Randomness</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,217 +8,174 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc176.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc178.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.7. New actions</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Uptown Girls" -->
+<!-- SEARCH SECTION "Ex 103" -->
+<!-- SEARCH SORT "Ex 008-016-103" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc124.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc126.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.16. Randomness</b></font></td></tr></table>
 <p>
-<p>It is not often that we need to create new actions, but a large work of interactive fiction with no novelty actions is a flavourless dish. Here we shall create an action for photographing things.
+<p>Sometimes we want to introduce random behaviour into play. We usually do this by generating random values, and then acting differently depending on what they are. The following:
 <p>
-<blockquote><font color="#000080">The Ruins is a room. &quot;You find this clearing in the rainforest oddly familiar.&quot; The camera is in the Ruins. &quot;Your elephantine camera hangs from a convenient branch.&quot;
+<blockquote><font color="#000080">a random number from 2 to 5
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
+<p>produces, as it suggests, a random number drawn from the choices 2, 3, 4 or 5, each of which is equally likely to come up.
+<p>
+<p>We can also use random conditions:
+<p>
+<blockquote><font color="#000080">if a random chance of 2 in 3 succeeds then ...
 </font></blockquote><p>
 <p>
-<p>In theory that text is already sufficient to make the new action, but what we have so far is rudimentary to say the least. The two qualifications give Inform the useful information that we cannot photograph in the dark, and that we need to be photographing something - not, as in the case of waiting or taking inventory, acting without reference to any particular thing external to ourselves.
+<p>Here is a rule which applies only 15% of the time:
 <p>
-<p>The word &quot;visible&quot; here tells Inform that we do not need to be able to touch the thing in question: a line of sight is good enough. These two stipulations were necessary because the default arrangement is that any object must be in touching range, and that most actions can be performed in darkness. (Also, note that if you invent an action which needs to apply to directions like &quot;north&quot; or &quot;south&quot;, you need to make this apply to visible things, because the object used inside Inform to represent the idea of &quot;north&quot; can be seen but not touched.) Occasionally, when writing general rules about actions, it can be useful to find out what the current action's requirements are: the following conditions do what they suggest.
-<p>
-<blockquote><font color="#000080">if the action requires a touchable noun...
-<br>if the action requires a touchable second noun...
-<br>if the action requires light...
+<blockquote><font color="#000080">Instead of waiting when a random chance of 15 in 100 succeeds: ...
 </font></blockquote><p>
 <p>
-<p>For instance, if we are currently examining something, then the first condition will be untrue, because that requires only a visible noun.
+<p>If we make a new kind of value, we can also take random values from it, as in the following miniature world:
 <p>
-<p>As further examples, here we create &quot;blinking&quot; and &quot;scraping X with Y&quot;. Note the use of &quot;it&quot; to indicate that the name of an object should go here.
-<p>
-<blockquote><font color="#000080">Blinking is an action applying to nothing. Scraping it with is an action applying to two things.
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode21(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Weathering"\n\nA cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.\n\nThe Mount Pisgah Station is a room. "The rocky peak of Mt. Pisgah (altitude 872m) is graced only by an automatic weather station. The clouds, close enough almost to touch, are [a random cloud pattern]. Temperature: [a random number from 7 to 17] degrees, barometric pressure: [950 + a random number from 0 to 15] millibars."\n\n');
+}
+</script>
+<a href="javascript:pasteCode21()"><img border=0 src=../doc_images/paste.png></a> &quot;Weathering&quot;
 </font></blockquote><p>
 <p>
-<p>The photographing action now exists, but with two provisos: (a) it never happens, because Inform does not know what commands by the player should cause it, and (b) even if it were to happen, nothing would follow, because Inform does not know what to do. (There are no check, carry out or report rules yet.)
-<p>
-<p>The first problem is easily overcome:
-<p>
-<blockquote><font color="#000080">Understand &quot;photograph [something]&quot; as photographing.
+<blockquote><font color="#000080">A cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.
 </font></blockquote><p>
 <p>
-<p>We will return to the whole subject of parsing, as this process of understanding the player's commands is called, later. But this gives the gist of it.
+<blockquote><font color="#000080">The Mount Pisgah Station is a room. &quot;The rocky peak of Mt. Pisgah (altitude 872m) is graced only by an automatic weather station. The clouds, close enough almost to touch, are [a random cloud pattern]. Temperature: [a random number from 7 to 17] degrees, barometric pressure: [950 + a random number from 0 to 15] millibars.&quot;
+</font></blockquote><p>
+<p>
+<p>The value &quot;a random cloud pattern&quot; produces a random choice from the seven cloud patterns, each equally likely.
+<p>
+<p>Testing IF which makes random choices can be rather frustrating, because a problem showing up on one attempt may not show up on another. To ease testing, the following sentence will &quot;fix&quot; the process of generating these random numbers so that they are not random at all - the same sequence of random numbers will be produced on each run.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode22(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('When play begins, seed the random-number generator with 1234.\n\n');
+}
+</script>
+<a href="javascript:pasteCode22()"><img border=0 src=../doc_images/paste.png></a> When play begins, seed the random-number generator with 1234.
+</font></blockquote><p>
+<p>
+<p>The seed value &quot;1234&quot; can be anything positive; a different sequence of random numbers will be produced for each different seed value. A seed value of 0 restores the RNG to properly random behaviour again.
 <p>
 <p><hr><p>
-<a name="e66"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex66.html#e66 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>151</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex66.html#e66 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">DIAGNOSE command</font></b></a><br>A DIAGNOSE command which allows the player to check on the health of someone.<p></td></tr></table>
-<a name="e109"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc177.html#e109 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>152</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc177.html#e109 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Frizz</font></b></a><br>Liquid flows within containers and soaks objects that are not waterproof; any contact with a wet object can dampen our gloves.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we have some items that get wet in contact with other damp things; in particular, if we touch anything wet while wearing a pair of gloves, the gloves too get damp. This requires that we be systematic about detecting all cases where contact occurs. So:
+<!-- EXAMPLE START -->
+<a name="e109"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc125.html#e109 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>103</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc125.html#e109 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Uptown Girls</font></b></a><br>A stream of random pedestrians who go by the player.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>Suppose we have an urban space we want to populate with random passers-by. These should have a range of characteristics and not always be described in the same way; and once the player has noticed one, he should be able to look at her further, until another pedestrian crosses his path.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode202(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Frizz"\n\nA thing can be waterproof or porous. A container is usually waterproof. An animal is usually waterproof.\n\nA thing can be sodden or dry.\n\nA container can be waterfilled or empty.\n\nBefore printing the name of a sodden thing: say "sodden ". Understand the sodden property as describing a thing.\n\nThe player wears a pair of woolly gloves. Instead of wearing a sodden thing: say "You dubiously contemplate [the noun], and decide it\'s best to wear dry clothing."\n\nEvery turn:\n\tfollow the liquid distribution rules.\n\nThe liquid distribution rules is a rulebook.\n\nA liquid distribution rule:\n\trepeat with item running through containers\n\tbegin;\n\t\tif the item is open and the item is empty and the item is in a waterfilled container\n\t\tbegin;\n\t\t\tnow the item is waterfilled;\n\t\t\tif the player can see the item, say "[The item] fills up with water, of course.";\n\t\tend if;\n\tend repeat.\n\nA liquid distribution rule:\n\trepeat with item running through things in a waterfilled container\n\tbegin;\n\t\tif the item is porous and the item is dry\n\t\tbegin;\n\t\t\tif the player can see the item, say "[The item] soaks through.";\n\t\t\tnow the item is sodden;\n\t\tend if;\n\tend repeat.\n\nA liquid distribution rule:\n\trepeat with item running through sodden things in the airing cupboard\n\tbegin;\n\t\tif the item is not The Last Man, now the item is dry;\n\tend repeat.\n\nThe last liquid distribution rule:\n\tif the player carries a dry copy of The Last Man, end the game in victory.\n\nInstead of examining a waterfilled container:\n\tsay "[The noun] is full of water[if the noun contains something visible]; it also contains [the list of things in the noun][end if]."\n\nInstead of examining a container:\n\tsay "Dry inside[if the noun contains something visible], and containing [a list of things in the noun]."\n\nA book is a kind of thing. Instead of examining a sodden book, say "[The noun] is too soaked to read, thanks to someone\'s carelessness." Understand "book" as a book.\n\nThe copy of The Last Man is a book. The description of The Last Man is "Mary Shelley\'s very own original copy, loaned to you under the strictest of agreements[if the pond encloses the copy]. How it came to be in its present position is a long story, and not important at the moment: the critical thing is not to blame oneself - who could have anticipated the cricket bat, anyway? - but to fix it immediately, before anything worse occurs[end if]." The The Last Man is in the ziploc bag. The ziploc bag is waterproof and empty. It is openable, transparent, and closed.\n\nThe Back Garden is a room. The Back Garden contains a pond. The pond is a waterfilled container. In the pond is the ziploc bag. A carp is in the pond. The carp is an animal. Instead of taking the carp, say "You\'re not fast enough."\n\nRule for writing a paragraph about the pond:\n\tif the pond encloses the Last Man\n\tbegin;\n\t\tsay "It is a beautiful day just at the end of spring and beginning of summer. The sun shines, the trees blossom, the world conspires in Edenic cheerfulness. You can take in none of it. Your eye is on [the Last Man].";\n\totherwise;\n\t\tsay "The pond[if something is in the pond] (containing [the list of things in the pond])[end if] remains a figure of menace in an otherwise lushly verdant landscape.";\n\tend if.\n\nBefore printing the name of the Last Man when the Last Man is enclosed by the Pond: if the Last Man is dry, say "delicate, valuable ".\n\nAfter printing the name of something (called the target) while writing a paragraph about something:\n\tif the Last Man is enclosed by the Pond\n\tbegin;\n\t\tif the target is in something (called the parent), say " - which is in [the parent]";\n\tend if.\n\nThe Kitchen is west of the Back Garden. "Not in any sense your province: Mrs Peaswell gets agitated if anyone besides herself so much as boils a kettle. In general it is best to sneak through, disturbing as little as possible and preserving the cosy domestic fiction that academics cannot cook.\n\nThe nearby stairwell leads up to the second floor."\n\nThe Stairwell is above the Kitchen. "Halfway up and halfway down." The airing cupboard is a container in the Stairwell. "An airing cupboard here contains the heating system, and is the ideal place for restoring wet items to a dry state." The airing cupboard is fixed in place.\n\nCarry out doing something when the player wears the dry gloves:\n\tif we get wet\n\tbegin;\n\t\t\tif the player wears the gloves and the gloves are dry\n\t\tbegin;\n\t\t\tnow the gloves are sodden;\n\t\t\tsay "(soaking your gloves in the process)";\n\t\tend if;\n\tend if.\n\nCarry out doing something when the player wears the sodden gloves:\n\tif the The Last Man must be touched and the Last Man is not sodden\n\tbegin;\n\t\tsay "(soaking the parched pages of The Last Man with the rude touch of your sodden gloves)";\n\t\tnow the The Last Man is sodden;\n\tend if.\n\nCheck doing something when the player does not wear the gloves:\n\tif The Last Man must be touched\n\tbegin;\n\t\tif The Last Man is dry, say "[The The Last Man] is too precious to endanger when you are not wearing gloves." instead;\n\t\totherwise say "You hesitate instinctively, then recollect that you can hardly harm [The The Last Man] any more than it has already been harmed...";\n\tend if.\n\nTo decide whether we get wet:\n\tif the noun is not a thing, no;\n\tif the noun dampens us, yes;\n\tif the second noun is not a thing, no;\n\tif the second noun dampens us, yes;\n\tno.\n\nTo decide whether (item - a thing) dampens us:\n\tif the item is not liquiferous, no;\n\tif item must be touched, yes;\n\tno.\n\nTo decide whether (item - a thing) must be touched:\n\tif the item is the noun and the action requires a touchable noun, yes;\n\tif the item is the second noun and the action requires a touchable second noun, yes;\n\tno.\n\nDefinition: a thing is liquiferous:\n\tif it is sodden, yes;\n\tif it is in a waterfilled container, yes;\n\tno.\n\nTest me with "x book / x bag / get bag / take off gloves / w / u / put gloves in cupboard / z / open bag / touch book / push book / turn book / get gloves / wear gloves / get book".\n\nTest disaster with "open bag".\n\nTest mishandling with "get bag / open bag / get book".\n');
+    myProject.pasteCode('"Uptown Girls"\n\nRiverside Drive is a room. "There\'s a pleasant late-afternoon view of the Hudson, and a snap in the air, and you would rather be here than anywhere."\n\nInstead of going a direction, say "Oh, you know where you\'re going; no need to deviate from the usual path."\n\nInstead of waiting, say "You stroll along enjoying the November crispness."\n\n[It gets a little annoying to have a random event occurring every single turn of play, so let\'s introduce some randomness to determine how often the message appears:]\n\nEvery turn when a random chance of 1 in 3 succeeds:\n\treset passerby;\n\tchoose a random row in the Table of Atmospheric Events;\n\tsay "[event entry][paragraph break]"\n\nTable of Atmospheric Events\nevent\n"Slowly [a passerby] strolls by, turning to look at you as she passes."\n"Some [passerby] nearly bumps into you."\n"You dodge to avoid [a passerby]."\n"You weave around [a passerby], who has stalled to look into a window."\n"There\'s a ruckus as one of the ubiquitous taxis nearly collides with [a passerby] crossing the street."\n"[The passerby] beside you waves to a friend across the street."\n"To your left, [a passerby] drops her purse, and swears as she retrieves it."\n\nHair color is a kind of value. A person has hair color. the hair colors are red-headed, brunette, blonde.\n\nHeight is a kind of value. A person has height. The heights are tall, medium-height, short.\n\nGrooming is a kind of value. A person has grooming. The groomings are messy and tidy.\n\nTo reset passerby:\n\tchange the hair color of the passerby to a random hair color;\n\tchange the height of the passerby to a random height;\n\tchange the grooming of the passerby to a random grooming.\n\nThe passerby is a woman in Riverside Drive. The passerby is scenery. Understand "woman" or "lady" as the passerby. The printed name of the passerby is "[if a random chance of 1 in 2 succeeds]woman[otherwise]lady[end if]".\n\n[At this point we borrow some techniques from later to describe the woman with a random combination of characteristics, and to let the player refer to her by those traits:]\n\nBefore printing the name of the passerby:\n\tif a random chance of 1 in 4 succeeds, say "[height] ";\n\tif a random chance of 1 in 4 succeeds, say "[grooming] ";\n\tif a random chance of 1 in 4 succeeds, say "[hair color] ".\n\nUnderstand the hair color property as describing the passerby. Understand the height property as describing the passerby. Understand the grooming property as describing the passerby.\n\n[If we also wanted each of those combinations to mean some more specifically-described woman:]\n\nInstead of examining a passerby:\n\trepeat through Table of Passerby Descriptions\n\tbegin;\n\t\tif hair entry is the hair color of the passerby and height entry is the height of the passerby and grooming entry is the grooming of the passerby, say "[description entry][paragraph break]";\n\tend repeat.\n\nTable of Passerby Descriptions\nhair\theight\tgrooming\tdescription\nred-headed\ttall\tmessy\t"An older woman with long red hippie-hair poking out of a ponytail in straggles, and bent to hide how tall she is."\nred-headed\tmedium-height\tmessy\t"A shaggy red-head with shingled hair."\nred-headed\tshort\tmessy\t"Almost an urchin, and very young, with ginger hair and a smudged nose and far too many freckles."\nred-headed\ttall\ttidy\t"A precise career woman with henna-red hair."\nred-headed\tmedium-height\ttidy\t"Her hair is red in the way that lollipops and fire trucks are red: not by nature but by art. The rest of her clothing is pretty ordinary, though."\nred-headed\tshort\ttidy\t"Thin and small in every sense, with chin-length red-hair. Even high heels do not bring her head much above your shoulder."\nbrunette\ttall\tmessy\t"A Juno-esque woman with dark hair, wearing something resembling a tent."\nbrunette\tmedium-height\tmessy\t"An unremarkable woman with dark brown hair and the aura of needing a wash."\nbrunette\tshort\tmessy\t"There are mustard stains on the t-shirt of this short brown-haired woman. Estimated age ca. 40. Possibly homeless."\nbrunette\ttall\ttidy\t"A leggy brunette in business attire."\nbrunette\tmedium-height\ttidy\t"Medium-height, brown-haired, generally nondescript."\nbrunette\tshort\ttidy \t"A neat little dark-haired girl."\nblonde\ttall\tmessy\t"A tall blonde of about thirteen who looks as though she has not yet figured out how to get her wardrobe to catch up with her rate of growth. Her t-shirt and her pants are too short."\nblonde\tmedium-height\tmessy\t"Black leather pants and the wall-o-hair look."\nblonde\tshort\tmessy\t"One of those shocking platinum blonde types, with a tiger-patterned skirt. Reeally trashy."\nblonde\ttall\ttidy\t"Elfin and severe, with perfectly straight hair falling to the middle of the back."\nblonde\tmedium-height\ttidy\t"A rounded, Marilyn-esque blonde."\nblonde\tshort\ttidy\t "Pin-precise in a blue-and-white striped suit and a boyish haircut."\n\nTest me with "z / z / x passerby / z / z / x passerby".\n');
 }
 </script>
-<a href="javascript:pasteCode202()"><img border=0 src=../doc_images/paste.png></a> &quot;Frizz&quot;
+<a href="javascript:pasteCode202()"><img border=0 src=../doc_images/paste.png></a> &quot;Uptown Girls&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be waterproof or porous. A container is usually waterproof. An animal is usually waterproof.
+<blockquote><font color="#000080">Riverside Drive is a room. &quot;There's a pleasant late-afternoon view of the Hudson, and a snap in the air, and you would rather be here than anywhere.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be sodden or dry.
+<blockquote><font color="#000080">Instead of going a direction, say &quot;Oh, you know where you're going; no need to deviate from the usual path.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A container can be waterfilled or empty.
+<blockquote><font color="#000080">Instead of waiting, say &quot;You stroll along enjoying the November crispness.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before printing the name of a sodden thing: say &quot;sodden &quot;. Understand the sodden property as describing a thing.
+<p>It gets a little annoying to have a random event occurring every single turn of play, so let's introduce some randomness to determine how often the message appears:
+<p>
+<blockquote><font color="#000080">Every turn when a random chance of 1 in 3 succeeds:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;reset passerby;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;choose a random row in the Table of Atmospheric Events;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[event entry][paragraph break]&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player wears a pair of woolly gloves. Instead of wearing a sodden thing: say &quot;You dubiously contemplate [the noun], and decide it's best to wear dry clothing.&quot;
+<blockquote><font color="#000080">Table of Atmospheric Events
+<br>event
+<br>&quot;Slowly [a passerby] strolls by, turning to look at you as she passes.&quot;
+<br>&quot;Some [passerby] nearly bumps into you.&quot;
+<br>&quot;You dodge to avoid [a passerby].&quot;
+<br>&quot;You weave around [a passerby], who has stalled to look into a window.&quot;
+<br>&quot;There's a ruckus as one of the ubiquitous taxis nearly collides with [a passerby] crossing the street.&quot;
+<br>&quot;[The passerby] beside you waves to a friend across the street.&quot;
+<br>&quot;To your left, [a passerby] drops her purse, and swears as she retrieves it.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the liquid distribution rules.
+<blockquote><font color="#000080">Hair color is a kind of value. A person has hair color. the hair colors are red-headed, brunette, blonde.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The liquid distribution rules is a rulebook.
+<blockquote><font color="#000080">Height is a kind of value. A person has height. The heights are tall, medium-height, short.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A liquid distribution rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through containers
+<blockquote><font color="#000080">Grooming is a kind of value. A person has grooming. The groomings are messy and tidy.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To reset passerby:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the hair color of the passerby to a random hair color;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the height of the passerby to a random height;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the grooming of the passerby to a random grooming.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The passerby is a woman in Riverside Drive. The passerby is scenery. Understand &quot;woman&quot; or &quot;lady&quot; as the passerby. The printed name of the passerby is &quot;[if a random chance of 1 in 2 succeeds]woman[otherwise]lady[end if]&quot;.
+</font></blockquote><p>
+<p>
+<p>At this point we borrow some techniques from later to describe the woman with a random combination of characteristics, and to let the player refer to her by those traits:
+<p>
+<blockquote><font color="#000080">Before printing the name of the passerby:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 4 succeeds, say &quot;[height] &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 4 succeeds, say &quot;[grooming] &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 4 succeeds, say &quot;[hair color] &quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand the hair color property as describing the passerby. Understand the height property as describing the passerby. Understand the grooming property as describing the passerby.
+</font></blockquote><p>
+<p>
+<p>If we also wanted each of those combinations to mean some more specifically-described woman:
+<p>
+<blockquote><font color="#000080">Instead of examining a passerby:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Passerby Descriptions
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is open and the item is empty and the item is in a waterfilled container
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the item is waterfilled;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player can see the item, say &quot;[The item] fills up with water, of course.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if hair entry is the hair color of the passerby and height entry is the height of the passerby and grooming entry is the grooming of the passerby, say &quot;[description entry][paragraph break]&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A liquid distribution rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things in a waterfilled container
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is porous and the item is dry
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player can see the item, say &quot;[The item] soaks through.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the item is sodden;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">Table of Passerby Descriptions
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">hair</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">grooming</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">description</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">red-headed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tall</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;An older woman with long red hippie-hair poking out of a ponytail in straggles, and bent to hide how tall she is.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">red-headed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">medium-height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A shaggy red-head with shingled hair.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">red-headed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">short</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Almost an urchin, and very young, with ginger hair and a smudged nose and far too many freckles.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">red-headed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tall</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A precise career woman with henna-red hair.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">red-headed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">medium-height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Her hair is red in the way that lollipops and fire trucks are red: not by nature but by art. The rest of her clothing is pretty ordinary, though.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">red-headed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">short</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Thin and small in every sense, with chin-length red-hair. Even high heels do not bring her head much above your shoulder.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">brunette</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tall</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A Juno-esque woman with dark hair, wearing something resembling a tent.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">brunette</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">medium-height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;An unremarkable woman with dark brown hair and the aura of needing a wash.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">brunette</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">short</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;There are mustard stains on the t-shirt of this short brown-haired woman. Estimated age ca. 40. Possibly homeless.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">brunette</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tall</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A leggy brunette in business attire.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">brunette</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">medium-height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Medium-height, brown-haired, generally nondescript.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">brunette</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">short</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy </font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A neat little dark-haired girl.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">blonde</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tall</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A tall blonde of about thirteen who looks as though she has not yet figured out how to get her wardrobe to catch up with her rate of growth. Her t-shirt and her pants are too short.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">blonde</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">medium-height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Black leather pants and the wall-o-hair look.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">blonde</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">short</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">messy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;One of those shocking platinum blonde types, with a tiger-patterned skirt. Reeally trashy.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">blonde</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tall</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Elfin and severe, with perfectly straight hair falling to the middle of the back.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">blonde</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">medium-height</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;A rounded, Marilyn-esque blonde.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font size=2 color="#000080">blonde</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">short</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">tidy</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080"> &quot;Pin-precise in a blue-and-white striped suit and a boyish haircut.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A liquid distribution rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through sodden things in the airing cupboard
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is not The Last Man, now the item is dry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">Test me with &quot;z / z / x passerby / z / z / x passerby&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The last liquid distribution rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries a dry copy of The Last Man, end the game in victory.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining a waterfilled container:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is full of water[if the noun contains something visible]; it also contains [the list of things in the noun][end if].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining a container:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Dry inside[if the noun contains something visible], and containing [a list of things in the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A book is a kind of thing. Instead of examining a sodden book, say &quot;[The noun] is too soaked to read, thanks to someone's carelessness.&quot; Understand &quot;book&quot; as a book.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The copy of The Last Man is a book. The description of The Last Man is &quot;Mary Shelley's very own original copy, loaned to you under the strictest of agreements[if the pond encloses the copy]. How it came to be in its present position is a long story, and not important at the moment: the critical thing is not to blame oneself - who could have anticipated the cricket bat, anyway? - but to fix it immediately, before anything worse occurs[end if].&quot; The The Last Man is in the ziploc bag. The ziploc bag is waterproof and empty. It is openable, transparent, and closed.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Back Garden is a room. The Back Garden contains a pond. The pond is a waterfilled container. In the pond is the ziploc bag. A carp is in the pond. The carp is an animal. Instead of taking the carp, say &quot;You're not fast enough.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about the pond:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the pond encloses the Last Man
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is a beautiful day just at the end of spring and beginning of summer. The sun shines, the trees blossom, the world conspires in Edenic cheerfulness. You can take in none of it. Your eye is on [the Last Man].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The pond[if something is in the pond] (containing [the list of things in the pond])[end if] remains a figure of menace in an otherwise lushly verdant landscape.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before printing the name of the Last Man when the Last Man is enclosed by the Pond: if the Last Man is dry, say &quot;delicate, valuable &quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After printing the name of something (called the target) while writing a paragraph about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the Last Man is enclosed by the Pond
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the target is in something (called the parent), say &quot; - which is in [the parent]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Kitchen is west of the Back Garden. &quot;Not in any sense your province: Mrs Peaswell gets agitated if anyone besides herself so much as boils a kettle. In general it is best to sneak through, disturbing as little as possible and preserving the cosy domestic fiction that academics cannot cook.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The nearby stairwell leads up to the second floor.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Stairwell is above the Kitchen. &quot;Halfway up and halfway down.&quot; The airing cupboard is a container in the Stairwell. &quot;An airing cupboard here contains the heating system, and is the ideal place for restoring wet items to a dry state.&quot; The airing cupboard is fixed in place.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out doing something when the player wears the dry gloves:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if we get wet
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player wears the gloves and the gloves are dry
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the gloves are sodden;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(soaking your gloves in the process)&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out doing something when the player wears the sodden gloves:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the The Last Man must be touched and the Last Man is not sodden
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(soaking the parched pages of The Last Man with the rude touch of your sodden gloves)&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the The Last Man is sodden;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check doing something when the player does not wear the gloves:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if The Last Man must be touched
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if The Last Man is dry, say &quot;[The The Last Man] is too precious to endanger when you are not wearing gloves.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You hesitate instinctively, then recollect that you can hardly harm [The The Last Man] any more than it has already been harmed...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide whether we get wet:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a thing, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun dampens us, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not a thing, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun dampens us, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide whether (item - a thing) dampens us:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is not liquiferous, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if item must be touched, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide whether (item - a thing) must be touched:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is the noun and the action requires a touchable noun, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is the second noun and the action requires a touchable second noun, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a thing is liquiferous:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is sodden, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is in a waterfilled container, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x book / x bag / get bag / take off gloves / w / u / put gloves in cupboard / z / open bag / touch book / push book / turn book / get gloves / wear gloves / get book&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test disaster with &quot;open bag&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test mishandling with &quot;get bag / open bag / get book&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc177.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc176.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc178.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc125.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc124.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc126.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.4. During scenes</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.18. Precedence</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,165 +8,161 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc145.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap10.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 10: Scenes</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc147.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.4. During scenes</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Some Assembly Required" -->
+<!-- SEARCH SECTION "Ex 241" -->
+<!-- SEARCH SORT "Ex 016-018-241" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc254.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc256.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.18. Precedence</b></font></td></tr></table>
 <p>
-<p>Scenes are not only useful for changing the setting, by moving items or people around and providing a little narration. We can also make the rules different in one scene from another. For instance, at a sleepy country halt there is no reason why one should not walk across the tracks: but if there is a train in the way, that would be impossible.
+<p>When several different lines of grammar are supplied to meet the same circumstances, it makes a big difference what order they are tried in. For instance, suppose we have:
 <p>
-<blockquote><font color="#000080">Before going north during the Train Stop, say &quot;The train blocks your way.&quot; instead.
+<blockquote><font color="#000080">Understand &quot;photograph [a door]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>Any rule can have the clause &quot;during ...&quot; attached, provided that clause goes at the end and explicitly names a scene. This is especially useful with &quot;every turn&quot;:
-<p>
-<blockquote><font color="#000080">Every turn during the Train Stop, say &quot;Water is sluiced out of the tank and into the engine.&quot;
+<blockquote><font color="#000080">Understand &quot;photograph [an open door]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>We can test whether a scene is happening with the condition:
+<p>The second line is more specific than the first, so Inform takes these grammar lines the other way around: it checks for &quot;open door&quot; before it checks for &quot;door&quot;. That didn't matter here, since both lines came out with the same result (the action of photographing), but it matters very much in the next example:
 <p>
-<blockquote><font color="#000080">Train Stop is happening ...
+<blockquote><font color="#000080">Understand &quot;employ [a door]&quot; as opening.
 </font></blockquote><p>
 <p>
-<p>and there are similar conditions &quot;Train Stop has happened&quot; and &quot;Train Stop has ended&quot;. We need to be a bit careful about which we mean: it's possible to set things up so that the Train Stop scene will play out more than once, so &quot;Train Stop is happening&quot; and &quot;Train Stop has happened&quot; might both be true at once.
+<blockquote><font color="#000080">Understand &quot;employ [an open door]&quot; as entering.
+</font></blockquote><p>
+<p>
+<p>More subtle is a line already seen:
+<p>
+<blockquote><font color="#000080">Understand &quot;on/in/inside&quot; or &quot;on top of&quot; as &quot;[within]&quot;.
+</font></blockquote><p>
+<p>
+<p>Here Inform puts &quot;on top of&quot; before &quot;on/in/inside&quot;, since otherwise only the &quot;on&quot; of &quot;on top of&quot; will be recognised.
+<p>
+<p>Mistakes always take precedence over non-mistakes: this is intended to make sure that
+<p>
+<blockquote><font color="#000080">Understand &quot;take umbrage&quot; as a mistake (&quot;Nobody takes umbrage in this game, mister.&quot;).
+</font></blockquote><p>
+<p>
+<p>will take precedence over
+<p>
+<blockquote><font color="#000080">Understand &quot;take [something]&quot; as taking.
+</font></blockquote><p>
+<p>
+<p>even if there is, in fact, a character called Mr Nimbus Umbrage so that the command could conceivably make sense.
 <p>
 <p><hr><p>
-<a name="e283"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex283.html#e283 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>120</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex283.html#e283 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Full Moon</font></b></a><br>Random atmospheric events which last the duration of a scene.<p></td></tr></table>
-<a name="e227"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc146.html#e227 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>121</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc146.html#e227 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Space Patrol - Stranded on Jupiter!</font></b></a><br>We'll be back in just a moment, with more exciting adventures of the... Space Patrol!<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>American radio adventure series of the 1950s were unobtrusively sponsored by breakfast cereals, as the following modest example demonstrates. Note that the scene-changing for the commercial break needs to know nothing about the actual programme it breaks into: if Part I were replaced with a different Space Patrol episode, Part II need not be changed at all.
+<!-- EXAMPLE START -->
+<a name="e227"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc255.html#e227 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>241</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc255.html#e227 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Some Assembly Required</font></b></a><br>Building different styles of shirt from component sleeves and collars.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>We now have the mechanisms in place to do some fairly sophisticated renaming of objects. For instance:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode321(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Space Patrol #57 - 1953-10-31 - Stranded on Jupiter!"\n\nPart I - Serial\n\nRed Spot is a room. "You are in the middle of a vast red oval plain. Overhead, the thick Jovian clouds swirl menacingly, and a fine acrid dust falls instead of rain." Some acrid dust is scenery in the Red Spot. The description of the dust is "The rust-colored dust coats every surface. You\'ve no idea how deep it goes."\n\nInstead of going in Red Spot, say "As you once told Cadet Lucky, Jupiter\'s a mighty big planet, maybe bigger than Iowa. Why, the Red Spot alone stretches out almost to the horizon."\n\nThe player wears a silver uniform and rubber boots. The player carries a shovel and an Analscope. The description of the Analscope is "As you recall from Space Patrol #9 - 1952-11-29 - The Electronic Burglar, the Analscope is a device for locating buried metals. That\'s what guided you all the way from the orbit of Uranus. (Oh, all right, Neptune.) If only you hadn\'t crashed!"\n\nThe metal plate is a fixed in place container. It is openable and closed. In the metal plate is some water. The description of the metal plate is "Stamped with the distinctive logo of the previous mission."\n\nInstead of examining the player, say "Your hair clumps together stickily, thanks to the dustfall."\n\nDigging is an action applying to one thing. Understand "dig [something]" or "dig in [something]" as digging.\n\nInstead of digging the dust, try looking under the dust. Instead of looking under the dust when the metal plate is not visible: move the metal plate to the location; say "You brush aside the dust underfoot and -- what were the odds? -- it turns out that you landed just where the previous landing party did, thirteen ill-fated years ago. Here is the metal plate that covers their original well.\n\nBut wait! Called by the clanging of your shovel on the plate, a band of Jovian pterodactyls swoop down to attack! You\'re totally defenceless! You don\'t have a hope! You\'re absolutely finished!"; award 10 points; move K-Klak to Red Spot.\n\nK-Klak the Pterodactyl is an animal. "K-Klak, leader of the Jupiter Pterodactyls, menaces you. A terrifying creature of scaly wings, with a dragon\'s tail, K-Klak stands... about 1/8th of an inch tall." Instead of doing something to K-Klak, say "K-Klak makes a frankly panicky noise and leaps backwards, out of your way."\n\nAfter opening the metal plate: award 10 points; say "You have found water! You\'re saved! K-Klak makes a (very cautiously) pleased noise. Now to find the stolen Brainograph, and track down the crook with the thick Jewish accent and his henchmen with their thick Polish accents..."; end the game in victory.\n\nThe maximum score is 20.\n\nPart II - Cereal\n\nWhen play begins, say "Instant Ralstons and Regular Ralstons, the hot whole-wheat cereals in the red and white checkerboard packages present... SPACE PATROL... High adventure in the wild vast reaches of space... Missions of daring in the name of interplanetary justice... Travel into the future as Buzz Corey, Commander-in-Chief of the..."\n\nLast score is a number that varies. Every turn: change the last score to the score.\n\nRalstons Ad is a scene. Ralstons Ad begins when score is not the last score and Ralstons Ad has not happened. Ralstons Ad ends when the Ricechex is consumed.\n\nInclude Basic Screen Effects by Emily Short.\n\nWhen Ralstons Ad begins:\n\tcenter "*** We\'ll be back in just a moment! ***";\n\tpause the game;\n\tstrip the player;\n\tmove the player to the Kitchen.\n\nWhen Ralstons Ad ends:\n\tcenter "*** And now, back to today\'s exciting adventure ***";\n\tpause the game;\n\trestore the player.\n\nSaved location is a room that varies. Locker is a container. Wardrobe is a container.\n\nTo strip the player:\n\tnow every thing carried by the player is in the locker;\n\tnow every thing worn by the player is in the wardrobe;\n\tchange saved location to location.\n\nTo restore the player:\n\tnow every thing carried by the player is in the Kitchen;\n\tnow every thing in the locker is carried by the player;\n\tnow every thing in the wardrobe is worn by the player;\n\tmove the player to saved location.\n\nThe Space Patrol Kitchen is a room. "The nerve center of the Space Patrol! This is where cadets fill up with their SUPER-FUEL. North leads to the astro control room, while back south is the cargo hold." A breakfast bowl is in the Kitchen. In the bowl is Ricechex. Ricechex is edible. The Ricechex can be consumed or uneaten. The Ricechex is uneaten.\n\nInstead of going north in Kitchen: say "[refusal to leave]". Instead of going south in Kitchen: say "[refusal to leave]".\n\nInstead of examining the player when Ralstons Ad is happening: say "You are currently being played by a generically attractive person of about 30, with very good teeth and well-kept nails."\n\nAfter eating the Ricechex: say "That\'s right folks, always start your day the SPACE PATROL way with a tasty bowl of Ricechex, Wheatchex or good hot Ralstons. Mmmm Mmmm. You just can\'t get enough of the sugary goodness in Ricechex, Wheatchex and good hot Ralstons."; now the ricechex is consumed.\n\nInstead of tasting the Ricechex:\n\tsay "Wow! *wolf-whistle* Man oh man oh man! Yumm-y!"\n\nTo say refusal to leave:\n\trepeat through Table of Refusals\n\tbegin;\n\t\tsay "[nope entry][paragraph break]";\n\t\tblank out the whole row;\n\t\trule succeeds;\n\tend repeat;\n\tsay "You can\'t. Eat your Ricechex."\n\nTable of Refusals\nnope\n"You can\'t go that way in the limited universe of this sponsored message."\n"Or that way."\n"You\'ve already tried that!"\n"Why would you want to walk away when you have an alluring bowl of Ricechex right here?"\n\nTest me with "n / i / x me / x dust / dig dust".\n\nTest ad with "n / s / n / s / n / i / x me / get bowl / taste ricechex / eat ricechex".\n\nTest ending with "x plate / x k-klak / open plate".\n\n');
+    myProject.pasteCode('"Some Assembly Required"\n\nGarment type is a kind of value. The garment types are vest, t-shirt, polo shirt, mandarin blouse, button-down, shell, experiment.\n\nEvery turn:\n\tassign identities.\n\nWhen play begins: assign identities.\n\nTo assign identities:\n\trepeat with item running through torsos\n\tbegin;\n\t\treassess item;\n\tend repeat.\n\nTo reassess (item - a torso):\n\tif the number of things which are part of the item is 0\n\tbegin;\n\t\tchange garment type of the item to vest;\n\t\trule succeeds;\n\tend if;\n\tif exactly two short sleeves are part of the item\n\tbegin;\n\t\tif a collar is part of the item,\n\t\t\tchange garment type of the item to polo shirt;\n\t\totherwise change garment type of the item to t-shirt;\n\t\trule succeeds;\n\tend if;\n\tif exactly two long sleeves are part of the item\n\tbegin;\n\t\tif a collar is part of the item,\n\t\t\tchange garment type of the item to button-down;\n\t\totherwise change garment type of the item to mandarin blouse;\n\t\trule succeeds;\n\tend if;\n\tif a collar is part of the item and the number of sleeves which are part of the item is 0, change garment type of the item to shell;\n\totherwise change garment type of the item to experiment.\n\nBefore cutting something which is worn by the player:\n\ttry taking off the noun.\n\nInstead of cutting something when something is part of the noun:\n\tsay "You cut up [the noun], snipping off [a list of things which are part of the noun].";\n\tnow every thing which is part of the noun is in the holder of the noun.\n\nInstead of cutting something which is part of something:\n\tsay "You carefully snip [the noun] free.";\n\tnow the player carries the noun.\n\nRule for printing the name of a torso: say "[garment type]".\n\nA torso is a kind of thing. A torso is always wearable. Understand "shirt" or "blouse" as a torso. A torso has a garment type. Understand the garment type property as describing a torso. A sleeve is a kind of thing. A short sleeve is a kind of sleeve. A long sleeve is a kind of sleeve. A collar is a kind of thing.\n\nUnderstand "sew [something] to [something]" as affixing it to. Affixing it to is an action applying to two things. Carry out affixing something to something: now the noun is part of the second noun. Report affixing something to something: assign identities; say "You sew [the noun] on, creating [a second noun]." Understand the command "stitch" as "sew".\n\nInstead of affixing something to something when the second noun is worn: say "You\'re wearing [the second noun]!"\n\nInstead of affixing a torso to something:\n\tif the second noun is a torso, say "Couture for Siamese twins is a daring field, but a bit of a niche market.";\n\totherwise try affixing the second noun to the noun.\n\nInstead of affixing a sleeve to something when at least two sleeves are part of the second noun: say "[The second noun] already sports [a list of sleeves that are part of the second noun]."\n\nInstead of affixing a collar to something when a collar is part of the second noun: say "[The second noun] already sports [a list of collars that are part of the second noun]."\n\nInstead of examining something when something is part of the noun: say "Stitched to [the noun] [is/are list of things which are part of the noun]."\n\n[Here is where the issue of precedence arises. We want to encourage Inform to select a cuttable object that is part of something else, rather than one of the spares:]\n\nDefinition: a thing is removable if it is part of something. Understand "cut [removable thing]" as cutting.\n\nThe Boutique is a room. "Still festively strewn with the confetti and streamers of the Grand Opening party, and still almost totally customer-free."\n\nThe player carries a torso. The player carries three short sleeves. The player carries two long sleeves. The player carries two collars.\n\nTest me with "sew collar to shirt / i / sew short sleeve to shirt / g / i / x polo shirt / cut collar / i / cut shirt / sew long sleeve to shirt / i / sew long sleeve to shirt / i / sew collar to shirt / g / i / wear button-down".\n\n');
 }
 </script>
-<a href="javascript:pasteCode321()"><img border=0 src=../doc_images/paste.png></a> &quot;Space Patrol #57 - 1953-10-31 - Stranded on Jupiter!&quot;
+<a href="javascript:pasteCode321()"><img border=0 src=../doc_images/paste.png></a> &quot;Some Assembly Required&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Part I - Serial
+<blockquote><font color="#000080">Garment type is a kind of value. The garment types are vest, t-shirt, polo shirt, mandarin blouse, button-down, shell, experiment.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Red Spot is a room. &quot;You are in the middle of a vast red oval plain. Overhead, the thick Jovian clouds swirl menacingly, and a fine acrid dust falls instead of rain.&quot; Some acrid dust is scenery in the Red Spot. The description of the dust is &quot;The rust-colored dust coats every surface. You've no idea how deep it goes.&quot;
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;assign identities.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going in Red Spot, say &quot;As you once told Cadet Lucky, Jupiter's a mighty big planet, maybe bigger than Iowa. Why, the Red Spot alone stretches out almost to the horizon.&quot;
+<blockquote><font color="#000080">When play begins: assign identities.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player wears a silver uniform and rubber boots. The player carries a shovel and an Analscope. The description of the Analscope is &quot;As you recall from Space Patrol #9 - 1952-11-29 - The Electronic Burglar, the Analscope is a device for locating buried metals. That's what guided you all the way from the orbit of Uranus. (Oh, all right, Neptune.) If only you hadn't crashed!&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The metal plate is a fixed in place container. It is openable and closed. In the metal plate is some water. The description of the metal plate is &quot;Stamped with the distinctive logo of the previous mission.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining the player, say &quot;Your hair clumps together stickily, thanks to the dustfall.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Digging is an action applying to one thing. Understand &quot;dig [something]&quot; or &quot;dig in [something]&quot; as digging.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of digging the dust, try looking under the dust. Instead of looking under the dust when the metal plate is not visible: move the metal plate to the location; say &quot;You brush aside the dust underfoot and -- what were the odds? -- it turns out that you landed just where the previous landing party did, thirteen ill-fated years ago. Here is the metal plate that covers their original well.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">But wait! Called by the clanging of your shovel on the plate, a band of Jovian pterodactyls swoop down to attack! You're totally defenceless! You don't have a hope! You're absolutely finished!&quot;; award 10 points; move K-Klak to Red Spot.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">K-Klak the Pterodactyl is an animal. &quot;K-Klak, leader of the Jupiter Pterodactyls, menaces you. A terrifying creature of scaly wings, with a dragon's tail, K-Klak stands... about 1/8th of an inch tall.&quot; Instead of doing something to K-Klak, say &quot;K-Klak makes a frankly panicky noise and leaps backwards, out of your way.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After opening the metal plate: award 10 points; say &quot;You have found water! You're saved! K-Klak makes a (very cautiously) pleased noise. Now to find the stolen Brainograph, and track down the crook with the thick Jewish accent and his henchmen with their thick Polish accents...&quot;; end the game in victory.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The maximum score is 20.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Part II - Cereal
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins, say &quot;Instant Ralstons and Regular Ralstons, the hot whole-wheat cereals in the red and white checkerboard packages present... SPACE PATROL... High adventure in the wild vast reaches of space... Missions of daring in the name of interplanetary justice... Travel into the future as Buzz Corey, Commander-in-Chief of the...&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Last score is a number that varies. Every turn: change the last score to the score.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Ralstons Ad is a scene. Ralstons Ad begins when score is not the last score and Ralstons Ad has not happened. Ralstons Ad ends when the Ricechex is consumed.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Include Basic Screen Effects by Emily Short.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When Ralstons Ad begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;center &quot;*** We'll be back in just a moment! ***&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;pause the game;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;strip the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to the Kitchen.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When Ralstons Ad ends:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;center &quot;*** And now, back to today's exciting adventure ***&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;pause the game;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;restore the player.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Saved location is a room that varies. Locker is a container. Wardrobe is a container.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To strip the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing carried by the player is in the locker;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing worn by the player is in the wardrobe;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change saved location to location.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To restore the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing carried by the player is in the Kitchen;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing in the locker is carried by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing in the wardrobe is worn by the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to saved location.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Space Patrol Kitchen is a room. &quot;The nerve center of the Space Patrol! This is where cadets fill up with their SUPER-FUEL. North leads to the astro control room, while back south is the cargo hold.&quot; A breakfast bowl is in the Kitchen. In the bowl is Ricechex. Ricechex is edible. The Ricechex can be consumed or uneaten. The Ricechex is uneaten.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going north in Kitchen: say &quot;[refusal to leave]&quot;. Instead of going south in Kitchen: say &quot;[refusal to leave]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining the player when Ralstons Ad is happening: say &quot;You are currently being played by a generically attractive person of about 30, with very good teeth and well-kept nails.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After eating the Ricechex: say &quot;That's right folks, always start your day the SPACE PATROL way with a tasty bowl of Ricechex, Wheatchex or good hot Ralstons. Mmmm Mmmm. You just can't get enough of the sugary goodness in Ricechex, Wheatchex and good hot Ralstons.&quot;; now the ricechex is consumed.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of tasting the Ricechex:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Wow! *wolf-whistle* Man oh man oh man! Yumm-y!&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say refusal to leave:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Refusals
+<blockquote><font color="#000080">To assign identities:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through torsos
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[nope entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reassess item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To reassess (item - a torso):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things which are part of the item is 0
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change garment type of the item to vest;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't. Eat your Ricechex.&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if exactly two short sleeves are part of the item
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a collar is part of the item,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change garment type of the item to polo shirt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise change garment type of the item to t-shirt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if exactly two long sleeves are part of the item
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a collar is part of the item,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change garment type of the item to button-down;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise change garment type of the item to mandarin blouse;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a collar is part of the item and the number of sleeves which are part of the item is 0, change garment type of the item to shell;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change garment type of the item to experiment.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Refusals
-<br>nope
-<br>&quot;You can't go that way in the limited universe of this sponsored message.&quot;
-<br>&quot;Or that way.&quot;
-<br>&quot;You've already tried that!&quot;
-<br>&quot;Why would you want to walk away when you have an alluring bowl of Ricechex right here?&quot;
+<blockquote><font color="#000080">Before cutting something which is worn by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try taking off the noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;n / i / x me / x dust / dig dust&quot;.
+<blockquote><font color="#000080">Instead of cutting something when something is part of the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You cut up [the noun], snipping off [a list of things which are part of the noun].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing which is part of the noun is in the holder of the noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test ad with &quot;n / s / n / s / n / i / x me / get bowl / taste ricechex / eat ricechex&quot;.
+<blockquote><font color="#000080">Instead of cutting something which is part of something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You carefully snip [the noun] free.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test ending with &quot;x plate / x k-klak / open plate&quot;.
+<blockquote><font color="#000080">Rule for printing the name of a torso: say &quot;[garment type]&quot;.
 </font></blockquote><p>
 <p>
-<p>Episode 57 of &quot;Space Patrol&quot; was actually called &quot;Iron Eaters Of Planet X&quot;, just in case the reader feels that any of the foregoing unfairly traduces a work of thoughtful science fiction.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc146.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e143"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex143.html#e143 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>122</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex143.html#e143 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Day One</font></b></a><br>A scene which plays through a series of events in order, then ends when the list of events is exhausted.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc145.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc147.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<blockquote><font color="#000080">A torso is a kind of thing. A torso is always wearable. Understand &quot;shirt&quot; or &quot;blouse&quot; as a torso. A torso has a garment type. Understand the garment type property as describing a torso. A sleeve is a kind of thing. A short sleeve is a kind of sleeve. A long sleeve is a kind of sleeve. A collar is a kind of thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;sew [something] to [something]&quot; as affixing it to. Affixing it to is an action applying to two things. Carry out affixing something to something: now the noun is part of the second noun. Report affixing something to something: assign identities; say &quot;You sew [the noun] on, creating [a second noun].&quot; Understand the command &quot;stitch&quot; as &quot;sew&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of affixing something to something when the second noun is worn: say &quot;You're wearing [the second noun]!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of affixing a torso to something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is a torso, say &quot;Couture for Siamese twins is a daring field, but a bit of a niche market.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise try affixing the second noun to the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of affixing a sleeve to something when at least two sleeves are part of the second noun: say &quot;[The second noun] already sports [a list of sleeves that are part of the second noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of affixing a collar to something when a collar is part of the second noun: say &quot;[The second noun] already sports [a list of collars that are part of the second noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining something when something is part of the noun: say &quot;Stitched to [the noun] [is/are list of things which are part of the noun].&quot;
+</font></blockquote><p>
+<p>
+<p>Here is where the issue of precedence arises. We want to encourage Inform to select a cuttable object that is part of something else, rather than one of the spares:
+<p>
+<blockquote><font color="#000080">Definition: a thing is removable if it is part of something. Understand &quot;cut [removable thing]&quot; as cutting.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Boutique is a room. &quot;Still festively strewn with the confetti and streamers of the Grand Opening party, and still almost totally customer-free.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries a torso. The player carries three short sleeves. The player carries two long sleeves. The player carries two collars.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;sew collar to shirt / i / sew short sleeve to shirt / g / i / x polo shirt / cut collar / i / cut shirt / sew long sleeve to shirt / i / sew long sleeve to shirt / i / sew collar to shirt / g / i / wear button-down&quot;.
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc255.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e139"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex139.html#e139 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>242</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex139.html#e139 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lakeside Living</font></b></a><br>Similar to "Lemonade", but with bodies of liquid that can never be depleted, and some adjustments to the "fill" command so that it will automatically attempt to fill from a large liquid source if possible.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc254.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc256.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

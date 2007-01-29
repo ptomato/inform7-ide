@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.9. Repeat</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.13. Phrases concerning rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,111 +8,151 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc159.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc161.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.9. Repeat</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Uptempo" -->
+<!-- SEARCH SECTION "Ex 286" -->
+<!-- SEARCH SORT "Ex 018-013-286" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc299.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc301.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.13. Phrases concerning rules</b></font></td></tr></table>
 <p>
-<p>The following kind of loop could if necessary be achieved just as well with a suitable &quot;while&quot;, but occurs so often that it is convenient to have a standard form. Repeat loops also have the great advantage of being certain to finish.
+<p>The &quot;ignore&quot; phrase is only one of a suite. The full list is:
 <p>
-<blockquote><font color="#000080">repeat with my counter running from 1 to 10 begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(phrases)
-<br>end repeat;
+<blockquote><font color="#000080">ignore ...rule...
+<br>reinstate ...rule...
 </font></blockquote><p>
 <p>
-<p>This is similar to the old FOR/NEXT loop from BASIC, for those with long memories, and runs through the given phrases ten times. Within those phrases, a special value called &quot;my counter&quot; has the value 1 the first time through, then the value 2, then 3 and so on up to 10. This value exists only within the loop, so it makes no sense to talk about &quot;my counter&quot; elsewhere. (It can of course be called whatever we like: this is only an example.)
+<p>The &quot;reinstate&quot; phrase simply reverses any previous &quot;ignore&quot; of the same rule, and is otherwise not useful.
 <p>
-<p>The &quot;begin&quot; and &quot;end repeat&quot; are compulsory for repeat loops, in the interests of clarity.
+<blockquote><font color="#000080">reject the result of ...rule...
+<br>accept the result of ...rule...
+</font></blockquote><p>
 <p>
-<p>We are allowed to &quot;nest&quot; loops, that is, to put one inside another.
+<p>Some rules produce results, as we shall see in the next section, but they can be set so that whatever result they produce will be ignored. Again, &quot;accept ...&quot; simply undoes a previous &quot;reject ...&quot; and otherwise has no effect.
+<p>
+<blockquote><font color="#000080">substitute ...first rule... for ...second rule...
+<br>restore the original ...second rule...
+</font></blockquote><p>
+<p>
+<p>Whenever the second rule is to be invoked - from any rulebook, or as a result of any &quot;follow&quot; instruction - invoke the first one instead. Again, &quot;restore ...&quot; simply undoes the effect of an earlier &quot;substitute&quot;.
+<p>
+<blockquote><font color="#000080">move ...first rule... to before/after ...second rule...
+</font></blockquote><p>
+<p>
+<p>This causes the first rule to be ignored whenever it turns up in the ordinary way, but to be invoked either immediately before or immediately after the second rule whenever that second rule is invoked. In effect, it cuts out the first rule from wherever it was, and glues it onto the second. Note that there is no obligation for the first rule to begin in the same rulebook(s) as the second, so this can be used to slot in a wholly new rule, perhaps only if certain circumstances hold.
+<p>
+<p>These rule-changing instructions allow apparently casual sentences to wreak havoc with the model world. This, for instance, is quite the recipe for mayhem and perplexity:
+<p>
+<blockquote><font color="#000080">A procedural rule: reject the result of the before rules; ignore the after rules; move the after rules to before the before rules.
+</font></blockquote><p>
+<p>
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e149"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc300.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>286</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc300.html#e149 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Uptempo</font></b></a><br>Adjust time advancement so the game clock moves fifteen minutes each turn.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>Suppose a game in which all actions take a very long time. Here's a simple implementation:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode28(code) {
+function pasteCode242(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('To plot a grid with size (S - a number):\n\trepeat with x running from 1 to S begin;\n\t\tsay "Row [x]:";\n\t\trepeat with y running from 1 to S begin;\n\t\t\tsay " [y]";\n\t\tend repeat;\n\t\tsay ".";\n\tend repeat.\n\n');
+    myProject.pasteCode('"Uptempo"\n\nThe fast time rule is listed instead of the advance time rule in the turn sequence rules.\n\nThis is the fast time rule:\n\tincrease the turn count by 1;\n\tchange the time of day to the time of day + 15 minutes.\n\nWhen play begins: change the right hand status line to "[time of day]".\n\nThe Temporal Hot Spot is a room.\n\nTest me with "z / z".\n\n');
 }
 </script>
-<a href="javascript:pasteCode28()"><img border=0 src=../doc_images/paste.png></a> To plot a grid with size (S - a number):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with x running from 1 to S begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Row [x]:&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with y running from 1 to S begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; [y]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<a href="javascript:pasteCode242()"><img border=0 src=../doc_images/paste.png></a> &quot;Uptempo&quot;
 </font></blockquote><p>
 <p>
-<p>If we then write
-<p>
-<blockquote><font color="#000080">plot a grid with size 5
+<blockquote><font color="#000080">The fast time rule is listed instead of the advance time rule in the turn sequence rules.
 </font></blockquote><p>
 <p>
-<p>then the result is
-<p>
-<blockquote><font color="#000080">Row 1: 1 2 3 4 5.
-<br>Row 2: 1 2 3 4 5.
-<br>Row 3: 1 2 3 4 5.
-<br>Row 4: 1 2 3 4 5.
-<br>Row 5: 1 2 3 4 5.
+<blockquote><font color="#000080">This is the fast time rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;increase the turn count by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the time of day to the time of day + 15 minutes.
 </font></blockquote><p>
 <p>
-<p>Thus the innermost phrase, the say which mentions &quot;y&quot;, happens 25 times.
+<blockquote><font color="#000080">When play begins: change the right hand status line to &quot;[time of day]&quot;.
+</font></blockquote><p>
 <p>
-<p><hr><p>
-<a name="e149"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc160.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>133</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc160.html#e149 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Wonka's Revenge</font></b></a><br>A lottery drum which redistributes the tickets inside whenever the player spins it.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<blockquote><font color="#000080">The Temporal Hot Spot is a room.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;z / z&quot;.
+</font></blockquote><p>
+<p>
+<p>This works fine as it stands, but we may run into some difficulty with it if we add scheduled events:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode243(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('At 9:30 AM:\n\tsay "Two turtles run by, almost too fast to see."\n\nAt 9:37 AM:\n\tsay "A snail blitzes past."\n\nAt 9:42 AM:\n\tsay "The grass grows."\n\nAt 9:50 AM:\n\tsay "Several flowers burst open."\n\n');
+}
+</script>
+<a href="javascript:pasteCode243()"><img border=0 src=../doc_images/paste.png></a> At 9:30 AM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Two turtles run by, almost too fast to see.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">At 9:37 AM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A snail blitzes past.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">At 9:42 AM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The grass grows.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">At 9:50 AM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Several flowers burst open.&quot;
+</font></blockquote><p>
+<p>
+<p>Time is counted forward after the schedule has already been consulted, so that only the 9:30 AM event happens between 9:30 and 9:45; the next two appear to occur between 9:45 and 10:00 AM, and the 9:50 AM event is not reported until the 10:00 AM to 10:15 wait. To get around this, we might schedule events only on the fifteen-minute mark when we want them to occur. Alternatively, we might try instead
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode244(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Wonka\'s Revenge"\n\nThe Caribou Lodge is a room. "Hundreds of expectant faces are turned your way from every table." A lottery drum is in the Lodge. "Before you is the lottery drum[if we have spun the drum], ready to disgorge a ticket[otherwise], waiting to be spun[end if]." In the drum are a red ticket, an orange ticket, a yellow ticket, a green ticket, a blue ticket, a purple ticket, and a ticket of pure gold. The drum is closed and openable.\n\nUnderstand "spin [something]" as spinning.\n\nSpinning is an action with past participle spun, applying to one thing.\n\nCheck spinning: if the noun is an open container which contains something, say "[The list of things in the noun] would fly out." instead.\n\nCarry out spinning a container:\n\tshuffle the contents of the noun.\n\nReport spinning:\n\tif the noun contains something, say "You rattle [if the noun is transparent][the list of things in the noun][otherwise]the stuff[end if] in [the noun].";\n\totherwise say "Nothing results of your shaking [the noun]."\n\n[Inform keeps track of the order in which things have been put into a container. If we want to change that order without the player\'s intervention, we can move the things ourselves.]\n\nTo shuffle the contents of (basket - a container):\n\tlet moves be the number of things in the basket;\n\trepeat with counter running from 1 to moves\n\tbegin;\n\t\tmove a random thing in the basket to the basket;\n\tend repeat.\n\nAfter opening the drum when we have spun the drum for the first time:\n\tif something (called the pick) is in the drum\n\tbegin;\n\t\ttry searching the drum;\n\t\tsay "[The pick] it is, then.";\n\t\tsilently try taking the pick;\n\t\tif the pick is the ticket of pure gold, end the game in victory;\n\t\totherwise end the game saying "Oh well, better luck next time.";\n\tend if.\n\nTest me with "open drum / look in drum / close drum / spin drum / open drum".\n');
+    myProject.pasteCode('"Uptempo"\n\nFirst turn sequence rule:\n\tincrease the turn count by 1;\n\tchange the time of day to the time of day + 14 minutes.\n\nWhen play begins: change the right hand status line to "[time of day]".\n\nThe Temporal Hot Spot is a room.\n\nAt 9:30 AM:\n\tsay "Two turtles run by, almost too fast to see."\n\nAt 9:37 AM:\n\tsay "A snail blitzes past."\n\nAt 9:42 AM:\n\tsay "The grass grows."\n\nAt 9:50 AM:\n\tsay "Several flowers burst open."\n\nTest me with "z / z / z / z".\n\n');
 }
 </script>
-<a href="javascript:pasteCode244()"><img border=0 src=../doc_images/paste.png></a> &quot;Wonka's Revenge&quot;
+<a href="javascript:pasteCode244()"><img border=0 src=../doc_images/paste.png></a> &quot;Uptempo&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Caribou Lodge is a room. &quot;Hundreds of expectant faces are turned your way from every table.&quot; A lottery drum is in the Lodge. &quot;Before you is the lottery drum[if we have spun the drum], ready to disgorge a ticket[otherwise], waiting to be spun[end if].&quot; In the drum are a red ticket, an orange ticket, a yellow ticket, a green ticket, a blue ticket, a purple ticket, and a ticket of pure gold. The drum is closed and openable.
+<blockquote><font color="#000080">First turn sequence rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;increase the turn count by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the time of day to the time of day + 14 minutes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;spin [something]&quot; as spinning.
+<blockquote><font color="#000080">When play begins: change the right hand status line to &quot;[time of day]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Spinning is an action with past participle spun, applying to one thing.
+<blockquote><font color="#000080">The Temporal Hot Spot is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check spinning: if the noun is an open container which contains something, say &quot;[The list of things in the noun] would fly out.&quot; instead.
+<blockquote><font color="#000080">At 9:30 AM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Two turtles run by, almost too fast to see.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out spinning a container:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;shuffle the contents of the noun.
+<blockquote><font color="#000080">At 9:37 AM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A snail blitzes past.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report spinning:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun contains something, say &quot;You rattle [if the noun is transparent][the list of things in the noun][otherwise]the stuff[end if] in [the noun].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Nothing results of your shaking [the noun].&quot;
+<blockquote><font color="#000080">At 9:42 AM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The grass grows.&quot;
 </font></blockquote><p>
 <p>
-<p>Inform keeps track of the order in which things have been put into a container. If we want to change that order without the player's intervention, we can move the things ourselves.
-<p>
-<blockquote><font color="#000080">To shuffle the contents of (basket - a container):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let moves be the number of things in the basket;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with counter running from 1 to moves
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move a random thing in the basket to the basket;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">At 9:50 AM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Several flowers burst open.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After opening the drum when we have spun the drum for the first time:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if something (called the pick) is in the drum
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try searching the drum;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The pick] it is, then.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the pick;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the pick is the ticket of pure gold, end the game in victory;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise end the game saying &quot;Oh well, better luck next time.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Test me with &quot;z / z / z / z&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;open drum / look in drum / close drum / spin drum / open drum&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc160.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc159.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc161.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>This moves time forward substantially at the beginning of each turn-sequence rule set, then checks the schedule and prints events, and then (using the ordinary advance time rule) moves time forward one last minute, for a total of fifteen minutes each move.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc300.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e104"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex104.html#e104 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>287</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex104.html#e104 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 1</font></b></a><br>A poisonous gas that spreads from room to room, incapacitating or killing the player when it reaches sufficient levels.<p></td></tr></table>
+<a name="e13"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex13.html#e13 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>288</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex13.html#e13 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Swigmore U.</font></b></a><br>Adding a new kind of supporter called a perch, where everything dropped lands on the floor.<p></td></tr></table>
+<a name="e103"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex103.html#e103 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>289</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex103.html#e103 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 2</font></b></a><br>Poisonous gas again, only this time it sinks.<p></td></tr></table>
+<a name="e173"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex173.html#e173 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>290</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex173.html#e173 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Solitude</font></b></a><br>Novice mode that prefaces every prompt with a list of possible commands the player could try, and highlights every important word used, to alert players to interactive items in the scenery.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc299.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc301.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -16,36 +16,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
  
-/* To do
-- "No inspectors enabled" inspector
-- Search documentation
-- Syntax analysis in background
-- Add command line options to start up with a certain file (and to automatically
-load Recent Manager entries)
-- Session saving
-- Do the Glade3, libglade, GtkAssistant, and libsexy
-Low priority
-- A real RTF parser / text converter
-When GtkSourceView is updated:
-- Find out how to highlight markup brackets in strings
-- Search text at word boundaries
-- Printing
-
-FOLLOWING RELEASES
-- Embedded interpreters
-- Skein, Transcript
-- I6 projects
-
-BUGS
-- use libxml2 as it ought to be used
-- get glulx compiling to work (new version of Inform 6??)
-- If files (as in, part of the .inform package spec) are missing when loading,
-create default ones
-- is_valid_extension does crappy things with strings
-- cblorb does not work with files with backslashes in their names
-(compile.c:376)
-*/
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif

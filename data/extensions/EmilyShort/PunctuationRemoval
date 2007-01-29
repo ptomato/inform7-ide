@@ -1,9 +1,24 @@
-Punctuation Removal by Emily Short begins here.
+Version 2 of Punctuation Removal by Emily Short begins here.
 
+Section 1 - Wrappers
 
 To remove stray punctuation:
 	(- PunctuationStripping(); -)
+
+To remove quotes:
+	(- Quotestripping(); -)
+
+To remove question marks:
+	(- Questionstripping(); -)
 	
+To remove exclamation points:
+	(- ExclamationStripping(); -)
+	
+To remove periods:
+	(- PeriodStripping(); -)
+
+Section 2 (for Z-machine only)
+
 Include (-
 
 [ PunctuationStripping i;
@@ -19,9 +34,6 @@ Include (-
 -)
 
 
-To remove quotes:
-	(- Quotestripping(); -)
-
 Include (-
 
 [ QuoteStripping i;
@@ -36,9 +48,6 @@ Include (-
 
 -)
 	
-To remove question marks:
-	(- Questionstripping(); -)
-
 Include (-
 
 [ Questionstripping i;
@@ -52,9 +61,6 @@ Include (-
 ];
 
 -)
-	
-To remove exclamation points:
-	(- ExclamationStripping(); -)
 
 Include (-
 
@@ -70,6 +76,111 @@ Include (-
 
 -)
 
+Include (-
+
+[ PeriodStripping i j;
+	for (i = 2 : i <= (buffer->1) + 1 : i++)
+	{ 
+		if ((buffer->i) == '.') 
+		{	buffer->i = ' ';  
+			for (j=(buffer->1) + 1: j >= i: j-- )
+			{
+				buffer->j = buffer->(j-1);
+			}
+			buffer->1 = (buffer->1)+1;
+		}
+	}
+	Tokenise__(buffer, parse);
+];
+
+-)
+
+Section 3 (for Glulx only) 
+
+Include (-
+
+[ BufferOut i;   
+	for (i = WORDSIZE : i <= (buffer-->0)+(WORDSIZE-1) : i++)
+	{  
+		print (char) (buffer->i);
+	} 
+];
+
+[ PunctuationStripping i;
+	for (i = WORDSIZE : i <= (buffer-->0)+(WORDSIZE-1) : i++)
+	{ 
+		if ((buffer->i) == '"' or '?' or '!') 
+		{	buffer->i = ' ';  
+		}
+	}
+	Tokenise__(buffer, parse);
+];
+
+-)
+
+
+Include (-
+
+[ QuoteStripping i;
+	for (i = WORDSIZE : i <= (buffer-->0)+(WORDSIZE-1) : i++)	{ 
+		if ((buffer->i) == '"') 
+		{	buffer->i = ' ';  
+		}
+	}
+	Tokenise__(buffer, parse);
+];
+
+-)
+	
+Include (-
+
+[ Questionstripping i;
+	for (i = WORDSIZE : i <= (buffer-->0)+(WORDSIZE-1) : i++)
+	{ 
+		if ((buffer->i) == '?') 
+		{	buffer->i = ' ';  
+		}
+	}
+	Tokenise__(buffer, parse);
+];
+
+-)
+
+Include (-
+
+[ ExclamationStripping i;
+	for (i = WORDSIZE : i <= (buffer-->0)+(WORDSIZE-1) : i++)
+	{ 
+		if ((buffer->i) == '!') 
+		{	buffer->i = ' ';  
+		}
+	}
+	Tokenise__(buffer, parse);
+];
+
+-)
+
+Include (-
+
+[ PeriodStripping i j;
+	for (i = WORDSIZE : i <= (buffer-->0)+(WORDSIZE-1) : i++)
+	{ 
+		if ((buffer->i) == '.') 
+		{	buffer->i = ' ';  
+			for (j=(buffer->1) + 1: j >= i: j-- )
+			{
+				buffer->j = buffer->(j-1);
+			}
+			buffer->1 = (buffer->1)+1;
+		}
+	}
+	Tokenise__(buffer, parse);
+];
+
+-)
+
+
+
 Punctuation Removal ends here.
 
 ---- DOCUMENTATION ----
@@ -83,6 +194,12 @@ Punctuation Removal provides phrases for removing unwanted punctuation marks fro
 and, to do all three of these things at once,
 
 	remove stray punctuation.
+
+Also provided, but not included in "remove stray punctuation", is
+
+	remove periods
+
+which we should use sparingly, since the player's command might reasonably include multiple actions separated by full stops.
 
 These phrases should be used during the After reading a command activity, so for instance in a game designed to be very patient with the player's quirks:
 

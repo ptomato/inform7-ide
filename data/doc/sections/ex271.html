@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.13. Let and temporary variables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.1. Descriptions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,93 +8,90 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc163.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc165.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.13. Let and temporary variables</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Verbosity" -->
+<!-- SEARCH SECTION "Ex 2" -->
+<!-- SEARCH SORT "Ex 003-001-002" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc27.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc29.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.1. Descriptions</b></font></td></tr></table>
 <p>
-<p>A variable, as we have seen, is a name for a value which changes, though always remaining of the same kind. For instance, if &quot;target&quot; is a number variable (or &quot;number that varies&quot;) then it may change value from 2 to 4, but not from 2 to &quot;fishknife&quot;.
+<p>At its simplest, the interactive fiction will be simulating a physical world to explore. The forerunner of today's IF is generally agreed to be a computer simulation by Will Crowther of the exploration of a cave system in the Mammoth and Flint Ridge chain of caves in Kentucky, a part of which might be described in Inform thus:
 <p>
-<p>To make complicated decisions, phrases often need to remember values on a temporary basis. We have already seen this for the counter in a &quot;repeat&quot; loop, which exists only inside that loop, and then is no longer needed. Now we define named values which exist only inside the current phrase. For instance:
-<p>
-<blockquote><font color="#000080">let outer bull be 25;
-<br>let the current appearance be &quot;reddish brown&quot;;
-<br>let the special room be Marley Wood;
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode4(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Cave Entrance"\n\nThe Cobble Crawl is a room. "You are crawling over cobbles in a low passage. There is a dim light at the east end of the passage."\n\nA wicker cage is here. "There is a small wicker cage discarded nearby."\n\nThe Debris Room is west of the Crawl. "You are in a debris room filled with stuff washed in from the surface. A low wide passage with cobbles becomes plugged with mud and debris here, but an awkward canyon leads upward and west. A note on the wall says, \'Magic word XYZZY\'."\n\nThe black rod is here. "A three foot black rod with a rusty star on one end lies nearby."\n\nAbove the Debris Room is the Sloping E/W Canyon. West of the Canyon is the Orange River Chamber.\n\n');
+}
+</script>
+<a href="javascript:pasteCode4()"><img border=0 src=../doc_images/paste.png></a> &quot;Cave Entrance&quot;
 </font></blockquote><p>
 <p>
-<p>creates temporary variables &quot;outer bull&quot;, &quot;current appearance&quot; and &quot;special room&quot;. The kinds of these are deduced from the values given, so that, for instance,
-<p>
-<blockquote><font color="#000080">say &quot;The outer bull scores [the outer bull in words] when you practice archery in [special room].&quot;
+<blockquote><font color="#000080">The Cobble Crawl is a room. &quot;You are crawling over cobbles in a low passage. There is a dim light at the east end of the passage.&quot;
 </font></blockquote><p>
 <p>
-<p>produces
-<p>
-<blockquote><font color="#000080">The outer bull scores twenty-five when you practice archery in Marley Wood.
+<blockquote><font color="#000080">A wicker cage is here. &quot;There is a small wicker cage discarded nearby.&quot;
 </font></blockquote><p>
 <p>
-<p>Temporary variables made by &quot;let&quot; are only temporarily in existence while a phrase is being carried out. Their values often change: we could say
-<p>
-<blockquote><font color="#000080">let x be 10;
-<br>change x to 11;
+<blockquote><font color="#000080">The Debris Room is west of the Crawl. &quot;You are in a debris room filled with stuff washed in from the surface. A low wide passage with cobbles becomes plugged with mud and debris here, but an awkward canyon leads upward and west. A note on the wall says, 'Magic word XYZZY'.&quot;
 </font></blockquote><p>
 <p>
-<p>for instance, or indeed we could &quot;let x be 10&quot; and then &quot;let x be 11&quot;. But although we are allowed to change the value, we are not allowed to change the kind of value. The name &quot;x&quot; must always have the same kind of value throughout the phrase to which it belongs, so the following will not be allowed:
-<p>
-<blockquote><font color="#000080">let x be 45;
-<br>change x to &quot;Norway&quot;;
+<blockquote><font color="#000080">The black rod is here. &quot;A three foot black rod with a rusty star on one end lies nearby.&quot;
 </font></blockquote><p>
 <p>
-<p>(The difference between &quot;let&quot; and &quot;change&quot; is that &quot;let&quot; can create a new temporary variable, whereas &quot;change&quot; can only alter one which already exists: on the other hand, &quot;change&quot; can change many other things as well, whereas &quot;let&quot; applies only to temporary variables.)
+<blockquote><font color="#000080">Above the Debris Room is the Sloping E/W Canyon. West of the Canyon is the Orange River Chamber.
+</font></blockquote><p>
+<p>
+<p>Here we sketch in four of Crowther's locations, and two objects: just enough to be able to walk around the caves and pick up the rod and the cage. The text in quotation marks will appear verbatim as paragraphs shown to the player as the caves are explored. The first paragraph, as we have seen, is the title of the work. The other quotations describe the places and objects introduced.
 <p>
 <p><hr><p>
-<a name="e196"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex196.html#e196 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>137</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex196.html#e196 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">A pushable box</font></b></a><br>More on using kinds of value inside phrases, this time to simulate something new: a box which, although it cannot be picked up, can be pushed around between three different places on the floor.<p></td></tr></table>
-<a name="e271"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc164.html#e271 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>138</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc164.html#e271 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Tinted wallpaper</font></b></a><br>A worked example using a new kind of value, "colour", within phrases to talk about tinted wallpaper.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Kinds of value come into their own inside phrases, as the following worked example may suggest. Suppose we have declared that:
+<!-- EXAMPLE START -->
+<a name="e271"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc28.html#e271 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>2</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc28.html#e271 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Verbosity</font></b></a><br>Making rooms give full descriptions each time we enter, even if we have visited before.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
 <p>
-<blockquote><font color="#000080">Colour is a kind of value. The colours are green, aquamarine and darkish purple.
+<p>By default, the description of a room is printed only when the player enters that room for the first time. Afterwards, the text is skipped, for brevity, though the player can see it again at any time by typing LOOK.
+<p>
+<p>This is not always desirable behavior, though, especially when the description of a room changes during play or we want to be sure that the player has access to all the important details: so it is also possible to override this default.
+<p>
+<p>As we saw in the previous chapter, we can set &quot;use options&quot; to control certain aspects of the player's experience. One of the use options is the option to
+<p>
+<blockquote><font color="#000080">Use full-length room descriptions.
 </font></blockquote><p>
 <p>
-<p>The effect is that &quot;colour&quot; is now a kind of value on a par with, for instance, &quot;number&quot;. We are allowed, for instance, in a phrase to write
+<p>which changes the defaults so that the description of a room is printed every time a player enters a room, whether or not he has been there previously.
 <p>
-<blockquote><font color="#000080">let the tint be aquamarine;
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode365(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Verbosity"\n\nUse full-length room descriptions.\n\nThe Wilkie Memorial Research Wing is a room. "The research wing was built onto the science building in 1967, when the college\'s finances were good but its aesthetic standards at a local minimum. A dull brown corridor recedes both north and south; drab olive doors open onto the laboratories of individual faculty members. The twitchy fluorescent lighting makes the whole thing flicker, as though it might wink out of existence at any moment.\n\nThe Men\'s Restroom is immediately west of this point."\n\nThe Men\'s Restroom is west of the Research Wing. "Well, yes, you really shouldn\'t be in here. But the nearest women\'s room is on the other side of the building, and at this hour you have the labs mostly to yourself. All the same, you try not to read any of the things scrawled over the urinals which might have been intended in confidence."\n\nTest me with "west / east".\n\n');
+}
+</script>
+<a href="javascript:pasteCode365()"><img border=0 src=../doc_images/paste.png></a> &quot;Verbosity&quot;
 </font></blockquote><p>
 <p>
-<p>to create a temporary quantity called &quot;tint&quot;, which always holds a colour, initially aquamarine. (If, later in the same phrase, we were to try &quot;let the tint be 15&quot;, we would be rebuffed because a colour can't be a number or vice versa. The tint may change colour, but must always be a colour.) We can also
-<p>
-<blockquote><font color="#000080">say &quot;The wallpaper has a distinctly [tint] wash.&quot;;
+<blockquote><font color="#000080">Use full-length room descriptions.
 </font></blockquote><p>
 <p>
-<p>which results in
-<p>
-<blockquote><font color="#000080">The wallpaper has a distinctly green wash.
-<br>The wallpaper has a distinctly aquamarine wash.
-<br>The wallpaper has a distinctly darkish purple wash.
+<blockquote><font color="#000080">The Wilkie Memorial Research Wing is a room. &quot;The research wing was built onto the science building in 1967, when the college's finances were good but its aesthetic standards at a local minimum. A dull brown corridor recedes both north and south; drab olive doors open onto the laboratories of individual faculty members. The twitchy fluorescent lighting makes the whole thing flicker, as though it might wink out of existence at any moment.
 </font></blockquote><p>
 <p>
-<p>as may be. (Oscar Wilde's last words: &quot;Either that wallpaper goes or I do.&quot;) As might be expected, we can also test conditions:
-<p>
-<blockquote><font color="#000080">if the tint is darkish purple then ...
+<blockquote><font color="#000080">The Men's Restroom is immediately west of this point.&quot;
 </font></blockquote><p>
 <p>
-<p>When a property is created that has the same name as a kind of value, like so:
-<p>
-<blockquote><font color="#000080">A door has a colour.
+<blockquote><font color="#000080">The Men's Restroom is west of the Research Wing. &quot;Well, yes, you really shouldn't be in here. But the nearest women's room is on the other side of the building, and at this hour you have the labs mostly to yourself. All the same, you try not to read any of the things scrawled over the urinals which might have been intended in confidence.&quot;
 </font></blockquote><p>
 <p>
-<p>it becomes a property whose value is required at all times to fit that quality. Thus
-<p>
-<blockquote><font color="#000080">The colour of a door is usually green.
-<br>The colour of the lounge door is aquamarine.
-<br>...
-<br>say &quot;The lounge door is [colour of lounge door].&quot;;
-<br>if the colour of the lounge door is green then ...
+<blockquote><font color="#000080">Test me with &quot;west / east&quot;.
 </font></blockquote><p>
 <p>
-<p>However, this is obviously rather cumbersome in English, so we can also more naturally write any of these:
+<p>If we type &quot;test me&quot; during play, these commands will be carried out automatically, and we can see that when we return to the Research Wing, the description is given a second time.
 <p>
-<blockquote><font color="#000080">A door is usually green.
-<br>The lounge door is aquamarine.
-<br>if the lounge door is green then ...
-<br>Before putting something into an aquamarine container: ...
-</font></blockquote><p>
+<p>(As a side note: the player can also turn full-length descriptions on or off with the commands &quot;verbose&quot; and &quot;brief&quot;, or set a minimal-description setting with the command &quot;superbrief&quot;. See the previous chapter on use options for more discussion of these points.)
 <p>
-<p>which are unambiguous since &quot;green&quot; is a colour and in the context of an object must imply the colour of that object.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc164.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc163.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc165.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>Finally, it is possible to exercise more precise control over what the player sees on his first and subsequent visits to a room; see the next example for details.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc28.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e152"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex152.html#e152 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>3</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex152.html#e152 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Slightly Wrong</font></b></a><br>A room whose description changes slightly after our first visit there.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc27.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc29.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,0 +1,153 @@
+! ChooseObjects.i6 segment
+
+!Constant COBJ_DEBUG;
+
+Constant MATCH_LIST_WORDS = (MATCH_LIST_SIZE/2);
+Constant COBJ_BITS_SIZE = (MATCH_LIST_WORDS*MATCH_LIST_WORDS/8);
+
+! the highest value returned by I7_CheckDPMR (see the Standard Rules)
+Constant HIGHEST_DPMR_SCORE = 4;
+
+Array alt_match_list --> (MATCH_LIST_WORDS+1);
+
+#ifdef TARGET_GLULX;
+[ COBJ__Copy words from to  i;
+	for (i=0: i<words: i++)
+		to-->i = from-->i;
+];
+#ifnot;
+[ COBJ__Copy words from to  bytes;
+	bytes = words * 2;
+	@copy_table from to bytes;
+];
+#endif;
+
+! swap alt_match_list with match_list/number_matched
+[ COBJ__SwapMatches i x;
+	! swap the counts
+	x = number_matched;
+	number_matched = alt_match_list-->0;
+	alt_match_list-->0 = x;
+	! swap the values
+	if (x < number_matched) x = number_matched;
+	for (i=x: i>0: i--) {
+		x = match_list-->(i-1);
+		match_list-->(i-1) = alt_match_list-->i;
+		alt_match_list-->i = x;
+	}
+];
+
+[ ChooseObjects obj code  l i swn spcount;
+	if (code<2) rfalse;
+
+	if (cobj_flag == 1) {
+		.CodeOne;
+		if (parameters > 0) {
+			#ifdef COBJ_DEBUG;
+			print "[scoring ", (the) obj, " (second)]^";
+			#endif;
+			return ScoreDabCombo(inputobjs-->2, obj);
+		} else {
+			#ifdef COBJ_DEBUG;
+			print "[scoring ", (the) obj, " (first) in ",
+				alt_match_list-->0, " combinations]^";
+			#endif;
+			l = 0;
+			for (i=1: i<=alt_match_list-->0: i++) {
+				spcount = ScoreDabCombo(obj, alt_match_list-->i);
+				if (spcount == HIGHEST_DPMR_SCORE) {
+					#ifdef COBJ_DEBUG;
+					print "[scored ", spcount, " - best possible]^";
+					#endif;
+					return spcount;
+				}
+				if (spcount>l) l = spcount;
+			}
+			return l;
+		}
+	}
+	if (cobj_flag == 2) {
+		.CodeTwo;
+		#ifdef COBJ_DEBUG;
+		print "[scoring ", (the) obj, " (simple)]^";
+		#endif;
+		if (parameters==0)
+			return ScoreDabCombo(obj, 0);
+		else
+			return ScoreDabCombo(inputobjs-->2, obj);
+	}
+
+	#ifdef COBJ_DEBUG;
+	print "[choosing a cobj strategy: ";
+	#endif;
+	swn = wn;
+	if (line_ttype-->pcount == PREPOSITION_TT) {
+		spcount = pcount;
+		while (line_ttype-->pcount == PREPOSITION_TT) pcount++;
+		if ((line_ttype-->pcount == ELEMENTARY_TT) && (line_tdata-->pcount == NOUN_TOKEN)) {
+			! Advance past the last preposition
+			while (wn < num_words) {
+				l = NextWord();
+				if ( l && (l->#dict_par1) &8 ) {	! if preposition
+					if (l == ALL1__WD or ALL2__WD or ALL3__WD or ALL4__WD or ALL5__WD) continue;
+					SafeSkipDescriptors();
+					! save the current match state
+					@push match_length; @push match_from; @push placed_in_flag;
+					alt_match_list-->0 = number_matched;
+					COBJ__Copy(number_matched, match_list, alt_match_list+WORDSIZE);
+					! now get all the matches for the second noun
+					match_length = 0; number_matched = 0; match_from = wn; placed_in_flag = 0;
+					SearchScope(actor, actors_location, line_tdata-->pcount);
+					#ifdef COBJ_DEBUG;
+					print number_matched, " possible second nouns]^";
+					#endif;
+					wn = swn;
+					cobj_flag = 1;
+					! restore match variables
+					COBJ__SwapMatches();
+					@pull placed_in_flag; @pull match_from; @pull match_length;
+					pcount = spcount;
+					jump CodeOne;
+				}
+			}
+		}
+		pcount = spcount;
+	}
+	wn = swn;	
+	
+	#ifdef COBJ_DEBUG;
+	print "nothing interesting]^";
+	#endif;
+	cobj_flag = 2;
+	jump CodeTwo;
+];
+
+[ SafeSkipDescriptors;
+	@push indef_mode; @push indef_type; @push indef_wanted;
+	@push indef_guess_p; @push indef_possambig; @push indef_owner;
+	@push indef_cases; @push indef_nspec_at;
+	
+	Descriptors();
+	
+	@pull indef_nspec_at; @pull indef_cases;
+	@pull indef_owner; @pull indef_possambig; @pull indef_guess_p;
+	@pull indef_wanted; @pull indef_type; @pull indef_mode;
+];
+
+[ ScoreDabCombo a b  result;
+	@push action; @push noun; @push second;
+	action = action_to_be;
+	if (action_reversed) {
+		noun = b; second = a;
+	} else {
+		noun = a; second = b;
+	}
+	result = I7_CheckDPMR();
+	@pull second; @pull noun; @pull action;
+	#ifdef COBJ_DEBUG;
+	print "[", (the) a, " / ", (the) b, " => ", result, "]^";
+	#endif;
+	return result;
+];
+
+! End of ChooseObjects.i6 segment

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.12. Defining phrases in Inform 6</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.6. Reading and talking</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,104 +8,108 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc331.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc333.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.12. Defining phrases in Inform 6</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Sybil 1" -->
+<!-- SEARCH SECTION "Ex 72" -->
+<!-- SEARCH SORT "Ex 007-006-072" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc95.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc97.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.6. Reading and talking</b></font></td></tr></table>
 <p>
-<p>The phrases described in this documentation, such as &quot;end the game in death&quot;, are all defined in the Standard Rules, and are for the most part defined not in terms of other I7 phrases but instead reduced to equivalents in I6. For instance:
+<p>A few actions apply not to items alone, but also involve what might be called conversation. The first is the one used for looking things up in books (which is conversation of a kind, even if the author is not present): &quot;consulting ... about ...&quot;. For example,
 <p>
-<blockquote><font color="#000080">To end the game in death: (- deadflag=1; -).
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode15(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('In the Grove is a book of sybilline verses.\n\nAfter consulting the book about "grove", say "The Grove is a sacred yadda, yadda. There\'s a tree, that sort of thing. Wisdom."\n\nAfter consulting the book about "future events", say "It\'s a bit, what\'s the word? Delphic."\n\n');
+}
+</script>
+<a href="javascript:pasteCode15()"><img border=0 src=../doc_images/paste.png></a> In the Grove is a book of sybilline verses.
 </font></blockquote><p>
 <p>
-<p>The notation &quot;(-&quot; and &quot;-)&quot; indicates that what comes in between is I6 code. The minus sign is supposed to be a mnemonic for the decrease from 7 to 6: later we shall use &quot;(+&quot; and &quot;+)&quot; to go back up the other way, from 6 to 7.
-<p>
-<p>When a phrase is defined as containing only a single command, and that command is defined using I6 - as here - it is compiled in-line. This means that the phrase &quot;end the game in death&quot; will always be translated as &quot;deadflag=1;&quot;, rather than being translated into a call to a suitable function whose only statement is &quot;deadflag=1;&quot;.
-<p>
-<p>This is an easy case since the wording never varies. More typical examples would be:
-<p>
-<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
-<br>To sort (T - table-name) in (TC - table-column) order:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
+<blockquote><font color="#000080">After consulting the book about &quot;grove&quot;, say &quot;The Grove is a sacred yadda, yadda. There's a tree, that sort of thing. Wisdom.&quot;
 </font></blockquote><p>
 <p>
-<p>When the braced name of one of the variables in the phrase preamble appears, this is compiled to the corresponding I6 expression at the relevant position in the I6 code. So, for instance,
-<p>
-<blockquote><font color="#000080">say the capacity of the basket
+<blockquote><font color="#000080">After consulting the book about &quot;future events&quot;, say &quot;It's a bit, what's the word? Delphic.&quot;
 </font></blockquote><p>
 <p>
-<p>might be compiled to
+<p>Note that what follows &quot;about&quot; here is a piece of text in double-quotes, and not the name of something. It can be almost any text at all, and in fact we shall later see (in the chapter on &quot;Understanding&quot;) that we can match complicated patterns of words, too.
 <p>
-<blockquote><font color="#000080">print O17_basket.capacity;
+<p>Similar actions are used for conversing with people:
+<p>
+<blockquote><font color="#000080">After asking the Sybil about &quot;verses&quot;, say &quot;She blushes.&quot;
 </font></blockquote><p>
 <p>
-<p>because &quot;{something}&quot; is expanded to &quot;capacity of the basket&quot; (I7 code) and then translated to &quot;O17_basket.capacity&quot; (I6 code), which is then spliced into the original I6 definition &quot;print {something};&quot;.
-<p>
-<p>Braces &quot;{&quot; are of course significant in I6. A real brace can be obtained by making the character following it a space, and then I7 will not attempt to read it as a request for substitution.
-<p>
-<p>Finally, note that while a normal I7 phrase definition can give a kind as what must be matched, e.g.,
-<p>
-<blockquote><font color="#000080">To release wild tigers into (arena - a room): ...
+<blockquote><font color="#000080">After telling the Sybil about &quot;persians&quot;, say &quot;She nods gravely.&quot;
 </font></blockquote><p>
 <p>
-<p>it is in general a bad idea, and will result in inefficient code, for an phrase defined using I6 to do this. Instead, if possible, match against &quot;object&quot;, where any room, region, thing or direction will be a valid match:
-<p>
-<blockquote><font color="#000080">To release wild tigers into (arena - an object): ...
+<blockquote><font color="#000080">After answering the Sybil that &quot;I am mad&quot;, say &quot;She sighs.&quot;
 </font></blockquote><p>
+<p>
+<p>These would be produced by commands like &quot;ask sybil about verses&quot;, &quot;tell sybil about persians&quot; and &quot;answer i am mad&quot;. Answering is very seldom used and can be forgotten about, but the distinction between asking and telling is often worth preserving, which is why there are two different actions for these. If you would prefer to make &quot;tell sybil about X&quot; do the same as &quot;ask sybil about X&quot;, the following rule would serve:
+<p>
+<blockquote><font color="#000080">Instead of telling the Sybil about something, try asking the Sybil about it.
+</font></blockquote><p>
+<p>
+<p>Games with a lot of conversation often involve great heaps of rules like the ones above, which can be repetitious to type out. We shall also later see (in the chapter on &quot;Tables&quot;) that we can tabulate questions and answers in a much more concise way, if we prefer.
 <p>
 <p><hr><p>
-<a name="e130"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc332.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>289</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc332.html#e130 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Odins</font></b></a><br>Making [is/are] and [it/them] say tokens that will choose appropriately based on the last object mentioned.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>The faithful reader may recall this example from early in the documentation. It was always a bit flawed, though, because it didn't account very well for the possibility that our game might contain some intrinsically plural items. Here we define a &quot;to say is/are&quot; ability, checking the appropriate property within Inform 6.
+<!-- EXAMPLE START -->
+<a name="e130"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc96.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>72</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc96.html#e130 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Sybil 1</font></b></a><br>Direct all ASK, TELL, and ANSWER commands to ASK, and accept multiple words for certain cases.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>Sometimes we do not particularly want to deal with all the variations on asking, telling, or answering someone something, but want to direct everything to a single conversational command:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode224(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Odins"\n\nThe House of a Mortal Farmer is a room. "Having two separate rooms, this house bespeaks considerable wealth and success at agriculture."\n\nThe Bedroom is inside from the House.\n\nA chair is a kind of supporter. A chair is always enterable.\n\nIn the House are a table, two chairs, a basket, and a hearth. On the table is a loaf of bread. Some shoes are on the table.\n\nThe description of a thing is usually "You give [the noun] a glance, but [it/they] [is/are] plainly beneath your attention."\n\nThe infant is a man in the basket. The description of the infant is "So strong and fat that you wonder whether one of your fellow gods is acquainted with the mistress of the house-- but it\'s no concern of yours, of course."\n\nThe last mentioned thing is a thing that varies.\n\nAfter printing the name of something (called the target):\n\tchange the last mentioned thing to the target.\n\nTo decide whether (item - a thing) acts plural:\n\t(- ({item} has pluralname) -);\n\nTo say is/are:\n\tif the last mentioned thing acts plural, say "are";\n\totherwise say "is".\n\nTo say it/they:\n\tif the last mentioned thing acts plural, say "they";\n\totherwise say "it".\n\nTest me with "x chair / x basket / x infant / x shoes".\n');
+    myProject.pasteCode('"Consulting the Oracle"\n\nThe Grove is a room. In the Grove is a woman called the Sybil.\n\nInstead of telling someone about something, try asking the noun about it. Instead of answering the noun that something, try asking the noun about it.\n\nInstead of asking the Sybil about "persians", say "She nods gravely."\n\n[And similarly, a difference between GIVE and SHOW is sometimes overkill:]\n\nInstead of showing something to someone, try giving the noun to the second noun.\n\nThe player carries a coin. Instead of giving the coin to the Sybil: move the coin to the Sybil; say "She accepts with a smile."\n\n[It is also often the case that we want to accept more than one form of a term. For instance]\n\nInstead of asking the Sybil about "Darius/king", say "Her smile unnerves you."\n\n[will match either "Darius" or "king". If necessary, we can go a step further and define our own token to match a variety of phrases, like this:]\n\nUnderstand "Athenians/Spartans/Greeks" or "hoplite army/forces" as "[Greeks]". Instead of asking the Sybil about "[Greeks]", say "She looks encouraging."\n\n[The token "[Greeks]" will match all of "Athenians", "Spartans", "Greeks", "hoplite army", or "hoplite forces". It will not match "hoplite" or "forces" alone; it is important to note that the / divides individual words which are understood equivalently, but does not define entire phrases as equivalent. More about how Inform understands specific phrases can be found in the chapter on Understanding.]\n\nTest me with "test one / test two".\n\nTest one with "ask sybil about persians / tell sybil about persians / sybil, persians / ask sybil about darius / ask sybil about king".\n\nTest two with "ask sybil about greeks / ask sybil about athenians / ask sybil about hoplite army / ask sybil about hoplite forces / give the coin to the sybil".\n');
 }
 </script>
-<a href="javascript:pasteCode224()"><img border=0 src=../doc_images/paste.png></a> &quot;Odins&quot;
+<a href="javascript:pasteCode224()"><img border=0 src=../doc_images/paste.png></a> &quot;Consulting the Oracle&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The House of a Mortal Farmer is a room. &quot;Having two separate rooms, this house bespeaks considerable wealth and success at agriculture.&quot;
+<blockquote><font color="#000080">The Grove is a room. In the Grove is a woman called the Sybil.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Bedroom is inside from the House.
+<blockquote><font color="#000080">Instead of telling someone about something, try asking the noun about it. Instead of answering the noun that something, try asking the noun about it.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A chair is a kind of supporter. A chair is always enterable.
+<blockquote><font color="#000080">Instead of asking the Sybil about &quot;persians&quot;, say &quot;She nods gravely.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">In the House are a table, two chairs, a basket, and a hearth. On the table is a loaf of bread. Some shoes are on the table.
+<p>And similarly, a difference between GIVE and SHOW is sometimes overkill:
+<p>
+<blockquote><font color="#000080">Instead of showing something to someone, try giving the noun to the second noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of a thing is usually &quot;You give [the noun] a glance, but [it/they] [is/are] plainly beneath your attention.&quot;
+<blockquote><font color="#000080">The player carries a coin. Instead of giving the coin to the Sybil: move the coin to the Sybil; say &quot;She accepts with a smile.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The infant is a man in the basket. The description of the infant is &quot;So strong and fat that you wonder whether one of your fellow gods is acquainted with the mistress of the house-- but it's no concern of yours, of course.&quot;
+<p>It is also often the case that we want to accept more than one form of a term. For instance
+<p>
+<blockquote><font color="#000080">Instead of asking the Sybil about &quot;Darius/king&quot;, say &quot;Her smile unnerves you.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The last mentioned thing is a thing that varies.
+<p>will match either &quot;Darius&quot; or &quot;king&quot;. If necessary, we can go a step further and define our own token to match a variety of phrases, like this:
+<p>
+<blockquote><font color="#000080">Understand &quot;Athenians/Spartans/Greeks&quot; or &quot;hoplite army/forces&quot; as &quot;[Greeks]&quot;. Instead of asking the Sybil about &quot;[Greeks]&quot;, say &quot;She looks encouraging.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After printing the name of something (called the target):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last mentioned thing to the target.
+<p>The token &quot;[Greeks]&quot; will match all of &quot;Athenians&quot;, &quot;Spartans&quot;, &quot;Greeks&quot;, &quot;hoplite army&quot;, or &quot;hoplite forces&quot;. It will not match &quot;hoplite&quot; or &quot;forces&quot; alone; it is important to note that the / divides individual words which are understood equivalently, but does not define entire phrases as equivalent. More about how Inform understands specific phrases can be found in the chapter on Understanding.
+<p>
+<blockquote><font color="#000080">Test me with &quot;test one / test two&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To decide whether (item - a thing) acts plural:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- ({item} has pluralname) -);
+<blockquote><font color="#000080">Test one with &quot;ask sybil about persians / tell sybil about persians / sybil, persians / ask sybil about darius / ask sybil about king&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say is/are:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last mentioned thing acts plural, say &quot;are&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;is&quot;.
+<blockquote><font color="#000080">Test two with &quot;ask sybil about greeks / ask sybil about athenians / ask sybil about hoplite army / ask sybil about hoplite forces / give the coin to the sybil&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say it/they:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last mentioned thing acts plural, say &quot;they&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;it&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x chair / x basket / x infant / x shoes&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc332.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e104"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex104.html#e104 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>290</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex104.html#e104 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Pink or Blue</font></b></a><br>Asking the player to select a gender to begin play.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc331.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc333.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc96.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e215"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex215.html#e215 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>73</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex215.html#e215 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Sybil 2</font></b></a><br>Making the character understand YES, SAY YES TO CHARACTER, TELL CHARACTER YES, ANSWER YES, and CHARACTER, YES.<p></td></tr></table>
+<a name="e61"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex61.html#e61 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>74</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex61.html#e61 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Costa Rican Ornithology</font></b></a><br>A fully-implemented book, answering questions from a table of data, and responding to failed consultation with a custom message such as "You flip through the Guide to Central American Birds, but find no reference to penguins."<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc95.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc97.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

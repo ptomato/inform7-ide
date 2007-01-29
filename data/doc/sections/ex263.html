@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.25. The location of something</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.3. Changing the status line</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,75 +8,73 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc50.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc52.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.25. The location of something</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Centered" -->
+<!-- SEARCH SECTION "Ex 93" -->
+<!-- SEARCH SORT "Ex 008-003-093" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc111.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc113.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.3. Changing the status line</b></font></td></tr></table>
 <p>
-<p>The model world created by Inform is partitioned into rooms. This means that everything which exists in the model world, exists in one of the rooms. If we write a sentence such as
+<p>The status line is the black bar along the top of a game being played, which ordinarily displays the current position, score and number of moves taken. Like the command prompt, it is not fixed but results from values which can be changed: the &quot;left hand status line&quot; and &quot;right hand status line&quot;.
 <p>
-<blockquote><font color="#000080">Professor Wilderspin is a man.
-</font></blockquote><p>
-<p>
-<p>and say nothing more about Wilderspin, then he does not physically exist at the start of the game: he is said to be &quot;out of play&quot;, and stays that way until we move him into one of the rooms. A better metaphor might be that he is waiting in the wings, ready to come onto the stage.
-<p>
-<p>Every thing is either out of play, or can be found in one of the rooms, and the property &quot;location of X&quot; gives us the room in question. The following condition tests, in effect, whether Wilderspin is in play:
-<p>
-<blockquote><font color="#000080">if the location of Wilderspin is a room, ...
-</font></blockquote><p>
-<p>
-<p>The &quot;location of the player&quot; is simply called the &quot;location&quot;, and as the player is always in play, this is always a room. If the player stands in Biblioll College and wears a waistcoat, inside which is a fob watch, then &quot;location of the fob watch&quot; is Biblioll College.
-<p>
-<p>In general, a thing cannot be in two rooms at once, but there are two exceptions: (two-sided) doors, present on both sides, and backdrops. The &quot;location of&quot; a door is its front side, whether it is one-sided or two-sided; but a backdrop is deemed to have no location, in the sense above. (Objects which are not things at all, such as rooms and directions, also have no location.)
-<p>
-<p>The idea of indirect containment is useful enough to have a name: Inform calls it &quot;enclosure&quot;. A thing encloses whatever is a part of itself, or inside itself, or on top of itself, and it also encloses anything that they enclose. And when something moves around, anything it encloses will move with it. In the example above, Biblioll College (a room) and the player (a person) both enclose the fob watch and the waistcoat. (The small print: a door is enclosed by the rooms on both sides; a backdrop is never enclosed.)
-<p>
-<p>Enclosure is only useful when being used as a question. So the following is fine:
-<p>
-<blockquote><font color="#000080">if the player encloses the fob watch, ...
-</font></blockquote><p>
-<p>
-<p>But these will produce problem messages:
-<p>
-<blockquote><font color="#000080">The player encloses the fob watch. The location of the trilobite is the Museum.
-</font></blockquote><p>
-<p>
-<p>because they are too vague. Inform needs to know exactly where the fob watch and the trilobite will begin the game, whereas these sentences leave room for doubt about who or what is actually holding them.
-<p>
-<p><hr><p>
-<a name="e263"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc51.html#e263 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>32</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc51.html#e263 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Van Helsing</font></b></a><br>A character who approaches the player, then follows him from room to room.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we want to write a character who tries to be in the same room as the player. We will do this by testing every turn whether the character's location and the player's location are the same; if the answer is no, the character will look for a path to the player's location, then try to move along that path. (We will learn more about finding paths and giving characters instructions later.)
-<p>
-<p>The result will be that if the player ever moves to another location, the character will automatically pursue him.
+<p>The default values are &quot;[the player's surroundings]&quot; for the left hand status line and &quot;[score]/[turn count]&quot; for the right hand status line. Score and turn count are numbers which vary in play (there will be much more about scoring later); &quot;[the player's surroundings]&quot; expands to a succinct description of where the player is, be this in darkness, in a lighted room or inside an opaque container such as a large packing case. These make useful elements to juggle in redesigning the status line, as in the following example:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode357(code) {
+function pasteCode20(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Van Helsing"\n\nThe Drawbridge is a room. North of the Drawbridge is the Immensely Enormous Entry Hall. West of the Entry Hall is the Vast Dining Area. North of the Vast Dining Area is the Colossal Kitchen. The Spooky Guano-filled Attic is above the Entry Hall.\n\nCount Dracula is a man in the Attic.\n\n[In the following condition, we could also have written "if the location of Count Dracula is not the location", because "location" by itself is always understood to be the player\'s location. But it seemed better for clarity to write it this way:]\n\nEvery turn:\n\tif the location of Count Dracula is not the location of the player\n\tbegin;\n\t\tlet the way be the best route from the location of Count Dracula to the location of the player, using doors;\n\t\ttry Count Dracula trying going the way;\n\totherwise;\n\t\tsay "\'Muhahaha,\' says Count Dracula.";\n\tend if.\n\nTest me with "z / z / n / w / e / u / z / d".\n\n');
+    myProject.pasteCode('When play begins:\n\tchange the left hand status line to\n\t\t"[the player\'s surroundings] / [turn count] / [score]";\n\tchange the right hand status line to "Time: [time of day]".\n\n');
 }
 </script>
-<a href="javascript:pasteCode357()"><img border=0 src=../doc_images/paste.png></a> &quot;Van Helsing&quot;
+<a href="javascript:pasteCode20()"><img border=0 src=../doc_images/paste.png></a> When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the left hand status line to
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;[the player's surroundings] / [turn count] / [score]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot;Time: [time of day]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Drawbridge is a room. North of the Drawbridge is the Immensely Enormous Entry Hall. West of the Entry Hall is the Vast Dining Area. North of the Vast Dining Area is the Colossal Kitchen. The Spooky Guano-filled Attic is above the Entry Hall.
+<p>The text in the right hand status line should be kept no more than 14 letters long, including any spaces. The left hand status line has more leeway, but should still be kept brief.
+<p>
+<p><hr><p>
+<a name="e238"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex238.html#e238 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>92</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex238.html#e238 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Politics as Usual</font></b></a><br>Have the status line indicate the current region of the map.<p></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e263"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc112.html#e263 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>93</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc112.html#e263 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Centered</font></b></a><br>Replacing the two-part status line with one that centers only the room name at the top of the screen.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>If we want to lay out the status line in some other way than with left-hand and right-hand entries, it is possible to do this as well. Later we will learn about the &quot;rule for constructing the status line&quot;, but here is a basic effect using this rule and an Inform extension included as part of the standard distribution, called Basic Screen Effects.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode358(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Centered"\n\nWhen play begins:\n\tsay "After months of boring through the Earth\'s crust in this metal-jawed vehicle, you break through..."\n\nThe Hollow Core is a room. "Truly a magnificent sight: the land curves up away from you in every direction, covered with the cities and fields of the Core People. Molten rock runs in the canals, bringing heat and light to every home.\n\nAt the center of the Earth hangs a dense black sun."\n\nInclude Basic Screen Effects by Emily Short.\n\nRule for constructing the status line:\n\tcenter "[location]" at row 1;\n\trule succeeds.\n\nTest me with "look".\n\n');
+}
+</script>
+<a href="javascript:pasteCode358()"><img border=0 src=../doc_images/paste.png></a> &quot;Centered&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Count Dracula is a man in the Attic.
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;After months of boring through the Earth's crust in this metal-jawed vehicle, you break through...&quot;
 </font></blockquote><p>
 <p>
-<p>In the following condition, we could also have written &quot;if the location of Count Dracula is not the location&quot;, because &quot;location&quot; by itself is always understood to be the player's location. But it seemed better for clarity to write it this way:
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location of Count Dracula is not the location of the player
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location of Count Dracula to the location of the player, using doors;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try Count Dracula trying going the way;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Muhahaha,' says Count Dracula.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">The Hollow Core is a room. &quot;Truly a magnificent sight: the land curves up away from you in every direction, covered with the cities and fields of the Core People. Molten rock runs in the canals, bringing heat and light to every home.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;z / z / n / w / e / u / z / d&quot;.
+<blockquote><font color="#000080">At the center of the Earth hangs a dense black sun.&quot;
 </font></blockquote><p>
 <p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc51.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc50.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc52.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<blockquote><font color="#000080">Include Basic Screen Effects by Emily Short.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for constructing the status line:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;center &quot;[location]&quot; at row 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;look&quot;.
+</font></blockquote><p>
+<p>
+<p>Basic Screen Effects also provides a mechanism for building complicated status lines of more than one row. To read its documentation, we include the extension, press Go!, and then consult the contents index that results.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc112.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc111.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc113.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

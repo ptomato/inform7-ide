@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.5. Unsuccessful attempts</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.6. The time of day</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,141 +8,101 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc174.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc176.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.5. Unsuccessful attempts</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "IPA" -->
+<!-- SEARCH SECTION "Ex 110" -->
+<!-- SEARCH SORT "Ex 009-006-110" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc132.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc134.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.6. The time of day</b></font></td></tr></table>
 <p>
-<p>Suppose, finally, that Will not only consents to try the action, but it also survives its passage through Before and Instead rules. What happens then? In principle, what happens to Will is exactly what would have happened to the player in his place. For instance:
+<p>Inform keeps track of the time of day automatically: play ordinarily begins at 9 AM and each turn takes one minute. In some works of interactive fiction, time of day is crucial: in others, it is irrelevant or even, by a sort of tacit convention, non-existent. So Inform does nothing to act upon the time, or to reveal it to the player, without instruction. Nevertheless it is there.
 <p>
-<blockquote><font color="#000080">> will, go east
-<br>Will leaves to the east.
+<p>A sentence like the following allows the initial time to be set up as something other than 9 AM:
+<p>
+<blockquote><font color="#000080">The time of day is 3:13 PM.
 </font></blockquote><p>
 <p>
-<p>If on the other hand Will's attempt is frustrated because one of the checking rules stops him, then Will's action fails. For instance, if Will tries going northeast but there is no room to northeast, one of the rules checking the &quot;going&quot; action will stop him. We will then see this:
+<p>Here, &quot;3:13 PM&quot; is a constant value of a kind not seen before: it's a kind of value called &quot;time&quot;, and the value &quot;time of day&quot; is a time that varies. After one turn it will be 3:14 PM, then 3:15 PM and so on.
 <p>
-<blockquote><font color="#000080">> will, go northeast
-<br>Will is unable to do that.
+<p>Note that the sentence above is an assertion (a statement about the initial state of affairs), not an instruction which can be part of a rule. It would be equivalent to write:
+<p>
+<blockquote><font color="#000080">When play begins, change the time of day to 3:13 PM.
 </font></blockquote><p>
 <p>
-<p>This is rather a generic message, and we may want something more interesting. We can provide that using yet another special kind of rule:
+<p>We more often use &quot;change the time of day to ...&quot; to take care of drastic events:
 <p>
-<blockquote><font color="#000080">Unsuccessful attempt by Will trying going: say &quot;Will blunders around going nowhere, as usual.&quot;
+<blockquote><font color="#000080">At the time when the player loses consciousness:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the time of day to 10:12 AM;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A mist comes over your vision, and when you come to, it is morning and you are in bed.&quot;
 </font></blockquote><p>
-<p>
-<p>Even that is still a little generic, though, because it treats all of the various ways that &quot;going&quot; can fail as the same. If we have ACTIONS switched on, we can see what goes on behind the scenes when we ask Will to walk into a door:
-<p>
-<blockquote><font color="#000080">>will, go west
-<br>[asking Will to try going west]
-<br>[(1) Will trying going west]
-<br>[(1) Will trying going west - failed the can't go through closed doors rule]
-<br>Will blunders around going nowhere, as usual.
-<br>[asking Will to try going west - succeeded]
-</font></blockquote><p>
-<p>
-<p>(The &quot;(1)&quot; lets us know that a new action is starting during the old one, and before the old one finishes: sometimes we go up to three or four deep, though seldom more in practical cases.) We can now rewrite the &quot;unsuccessful attempt&quot; rule like so:
-<p>
-<blockquote><font color="#000080">Unsuccessful attempt by Will trying going:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the can't go through closed doors rule, say &quot;Will looks doubtful and mumbles about doors.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Will blunders around going nowhere, as usual.&quot;
-</font></blockquote><p>
-<p>
-<p>The value &quot;reason the action failed&quot; is set to whichever checking rule threw out the action which Will tried. The names of these rules try to be self-explanatory - at any rate, those with gnomic names are not useful for this sort of thing, and can be ignored - and can be found out either using ACTIONS or by consulting the Actions index.
-<p>
-<p>Finally, note that &quot;unsuccessful attempt&quot; rules apply only when the person in question is being asked to perform the action by somebody else - as in the examples above.
 <p>
 <p><hr><p>
-<a name="e131"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc175.html#e131 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>148</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc175.html#e131 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Generation X</font></b></a><br>A person who goes along with the player's instructions, but reluctantly, and will get annoyed after too many repetitions of the same kind of unsuccessful command.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<!-- EXAMPLE START -->
+<a name="e131"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc133.html#e131 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>110</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc133.html#e131 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> IPA</font></b></a><br>Shops which each have opening and closing hours, so that it is impossible to go in at the wrong times, and the player is kicked out if he overstays his welcome.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>Suppose we wanted a game set in a living town, with locations opening and closing at different times of day, and business carrying on as usual. The point might be to force the player to plan his itinerary carefully to hit the right spots at the right times; or we might be writing a more contemplative piece, where part of the enjoyment came from just watching the characters wander around doing their daily business...
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode225(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Generation X"\n\nThe Volunteer Center is a room. "A fairly spartan office, though there are a few attractive posters from advertising campaigns of the past, and an ominous map charting the deforestation of Brazil."\n\nThe desk is scenery in the Volunteer Center. "Your standard metal desk, with a drawer for postal supplies and the like." On the desk is a pile of leaflets and a pile of business cards. The power stapler is a device on the desk. A drawer is part of the desk. It is openable and closed. In the drawer are a sponge and a roll of bulk-mail stamps.\n\nInstead of doing something:\n\tif examining, continue the action;\n\tif searching, continue the action;\n\tif looking, continue the action;\n\tif asking Jenna to try doing something, continue the action;\n\tsay "The whole point of this exercise is to train Jenna. Once you have her on the envelope-stuffing, you can go make some calls."\n\nInstead of answering Jenna that something:\n\tsay "You\'re going to have to break the instructions down to the simplest ones possible, given that she\'s in the mood to misunderstand on purpose."\n\nA cardboard box is in the Center. In the cardboard box is a pile of empty envelopes. The box is openable and closed. The description is "A recycling symbol is prominent on the side, which makes you feel a little bit better about using a mailing campaign for this cause."\n\nJenna is a woman in the Volunteer Center. "Your daughter Jenna is here, barely visible through the cloud of resentment." The description is "Jenna [if jenna carries something]has [the list of things carried by Jenna][otherwise]returns your stare, with added hostility[end if]."\n\nA persuasion rule for asking Jenna to try doing something: persuasion succeeds.\n\nUnsuccessful attempt by Jenna trying doing something:\n\trepeat through Table of Retorts\n\tbegin;\n\t\tif the reason the action failed is the cause entry\n\t\tbegin;\n\t\t\tsay "[response entry][paragraph break]";\n\t\t\trule succeeds;\n\t\tend if;\n\tend repeat;\n\tsay "\'I don\'t see how I\'m supposed to do that, Mom,\' Jenna says."\n\nTable of Retorts\ncause\tresponse\ncan\'t take yourself rule\t"\'Is that like \'get a grip on yourself\' or something?\' Jenna asks, momentarily diverted."\ncan\'t take what\'s fixed in place rule\t"[physical impossibility]"\ncan\'t take scenery rule\t"[physical impossibility]"\ncan\'t take what\'s already taken rule\t"[already done]"\ncan\'t drop what\'s already dropped rule\t"[already done]"\ncan\'t wear what\'s already worn rule\t"[already done]"\ncan\'t take off what\'s not worn rule\t"[already done]"\ncan\'t close what\'s already closed rule\t"[already done]"\ncan\'t open what\'s already open rule\t"[already done]"\ncan\'t switch off what\'s already off rule\t"[already done]"\ncan\'t switch on what\'s already on rule\t"[already done]"\ncan\'t unlock what\'s already unlocked rule\t"[already done]"\ncan\'t lock what\'s already locked rule\t"[already done]"\n\nTo say physical impossibility:\n\tsay "\'Maybe you should\'ve brought someone a little stronger,\' Jenna says. \'Like the Incredible Hulk.\' "\n\nTo say already done:\n\trepeat through Table of Bored Remarks\n\tbegin;\n\t\tsay "[response entry]";\n\t\tblank out the whole row;\n\t\trule succeeds;\n\tend repeat;\n\tsay "\'Okay, I\'m going to be, like, in the car,\' says Jenna. \'Outside.\' ";\n\tend the game saying "Jenna has gotten fed up".\n\nTable of Bored Remarks\nresponse\n"\'Did that,\' says Jenna."\n"\'Check,\' says Jenna."\n"\'Yeah, Mom, I already did that, okay?\'"\n"\'Look, if I have to be here doing dumb stuff, could you at least tell me to do stuff that isn\'t already done?\' Jenna asks wearily."\n"Jenna gives a great upward sigh, riffling her bangs. \'Once again... there is totally no point.\'"\n\nTest me with "e / x jenna / jenna, get stapler / jenna, get stapler / x jenna / jenna, drop stapler / jenna, drop stapler / jenna, open box / jenna, open box / jenna, switch stapler on / jenna, switch stapler on / jenna, take desk / jenna, open box / jenna, open box".\n');
+    myProject.pasteCode('"IPA"\n\nWhen play begins: change the right hand status line to "[time of day]".\n\nThe time of day is 9:50 AM.\n\nA shop is a kind of room. A shop has a time called the opening hour. The opening hour of the shop is usually 8 AM. A shop has a time called the closing hour. A shop usually has closing hour 6 PM.\n\nCheck going to a shop (called the target):\n\tif the time of day is before the opening hour of the target,\n\t\tsay "[The target] is locked up until [the opening hour of the target]." instead.\n\nCheck going to a shop (called the target):\n\tif the time of day is after the closing hour of the target,\n\t\tsay "[The target] has been closed since [the closing hour of the target]." instead.\n\nEvery turn when the location is a shop:\n\tlet deadline be the closing hour of the location;\n\tif the deadline is before the time of day\n\tbegin;\n\t\tlet target be a random adjacent room which is not a shop;\n\t\tsay "You are gently but firmly ushered out, since [the location] is closing.";\n\t\tmove the player to the target;\n\tend if.\n\nThe Strip-mall Parking Lot is a room. "Dead Christmas trees are heaped outside the bagel shop. Strips of dirty ice survive along the curb, and in the shadows of the lamp-posts. A wet, almost illegible sheet of algebra homework is plastered to the asphalt.\n\nPinewood Brewing Supply is at the east end of the lot."\n\nPinewood Brewing Supply is a shop. It is east of Parking Lot. The opening hour of Pinewood Brewing Supply is 10:00 AM. The closing hour of Pinewood Brewing Supply is 3:30 PM. "Shelves and shelves of malt and hops; large glass carboys, and plastic tubing; empty bottles; bottle-caps; bottle-labeling kits; starters for vinegar, sourdough, root beer.\n\nA sweet malty smell hangs in the air."\n\nInstead of going to Brewing Supply when the time of day is before the opening hour of Brewing Supply for the second time:\n\tsay "You rattle at the door again. \'Hold your horses, for crying out loud,\' yells a voice from within."\n\nNoah\'s Bagels is a shop. It is north of the Parking Lot. The opening hour of Noah\'s Bagels is 6:00 AM. The closing hour of Noah\'s Bagels is 11:00 AM. "The selection has been somewhat picked over, leaving you with your choice of Pumpernickel, Asiago, or Everything."\n\nTest me with "e / e / n / z / s / e / z / e / z / z / e".\n');
 }
 </script>
-<a href="javascript:pasteCode225()"><img border=0 src=../doc_images/paste.png></a> &quot;Generation X&quot;
+<a href="javascript:pasteCode225()"><img border=0 src=../doc_images/paste.png></a> &quot;IPA&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Volunteer Center is a room. &quot;A fairly spartan office, though there are a few attractive posters from advertising campaigns of the past, and an ominous map charting the deforestation of Brazil.&quot;
+<blockquote><font color="#000080">When play begins: change the right hand status line to &quot;[time of day]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The desk is scenery in the Volunteer Center. &quot;Your standard metal desk, with a drawer for postal supplies and the like.&quot; On the desk is a pile of leaflets and a pile of business cards. The power stapler is a device on the desk. A drawer is part of the desk. It is openable and closed. In the drawer are a sponge and a roll of bulk-mail stamps.
+<blockquote><font color="#000080">The time of day is 9:50 AM.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of doing something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if examining, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if searching, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if looking, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if asking Jenna to try doing something, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The whole point of this exercise is to train Jenna. Once you have her on the envelope-stuffing, you can go make some calls.&quot;
+<blockquote><font color="#000080">A shop is a kind of room. A shop has a time called the opening hour. The opening hour of the shop is usually 8 AM. A shop has a time called the closing hour. A shop usually has closing hour 6 PM.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of answering Jenna that something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're going to have to break the instructions down to the simplest ones possible, given that she's in the mood to misunderstand on purpose.&quot;
+<blockquote><font color="#000080">Check going to a shop (called the target):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the time of day is before the opening hour of the target,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The target] is locked up until [the opening hour of the target].&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A cardboard box is in the Center. In the cardboard box is a pile of empty envelopes. The box is openable and closed. The description is &quot;A recycling symbol is prominent on the side, which makes you feel a little bit better about using a mailing campaign for this cause.&quot;
+<blockquote><font color="#000080">Check going to a shop (called the target):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the time of day is after the closing hour of the target,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The target] has been closed since [the closing hour of the target].&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Jenna is a woman in the Volunteer Center. &quot;Your daughter Jenna is here, barely visible through the cloud of resentment.&quot; The description is &quot;Jenna [if jenna carries something]has [the list of things carried by Jenna][otherwise]returns your stare, with added hostility[end if].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A persuasion rule for asking Jenna to try doing something: persuasion succeeds.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Unsuccessful attempt by Jenna trying doing something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Retorts
+<blockquote><font color="#000080">Every turn when the location is a shop:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let deadline be the closing hour of the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the deadline is before the time of day
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the cause entry
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[response entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'I don't see how I'm supposed to do that, Mom,' Jenna says.&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let target be a random adjacent room which is not a shop;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are gently but firmly ushered out, since [the location] is closing.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the player to the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Retorts
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">cause</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">response</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't take yourself rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;'Is that like 'get a grip on yourself' or something?' Jenna asks, momentarily diverted.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't take what's fixed in place rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[physical impossibility]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't take scenery rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[physical impossibility]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't take what's already taken rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't drop what's already dropped rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't wear what's already worn rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't take off what's not worn rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't close what's already closed rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't open what's already open rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't switch off what's already off rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't switch on what's already on rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't unlock what's already unlocked rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">can't lock what's already locked rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">The Strip-mall Parking Lot is a room. &quot;Dead Christmas trees are heaped outside the bagel shop. Strips of dirty ice survive along the curb, and in the shadows of the lamp-posts. A wet, almost illegible sheet of algebra homework is plastered to the asphalt.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say physical impossibility:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Maybe you should've brought someone a little stronger,' Jenna says. 'Like the Incredible Hulk.' &quot;
+<blockquote><font color="#000080">Pinewood Brewing Supply is at the east end of the lot.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say already done:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Bored Remarks
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[response entry]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Okay, I'm going to be, like, in the car,' says Jenna. 'Outside.' &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Jenna has gotten fed up&quot;.
+<blockquote><font color="#000080">Pinewood Brewing Supply is a shop. It is east of Parking Lot. The opening hour of Pinewood Brewing Supply is 10:00 AM. The closing hour of Pinewood Brewing Supply is 3:30 PM. &quot;Shelves and shelves of malt and hops; large glass carboys, and plastic tubing; empty bottles; bottle-caps; bottle-labeling kits; starters for vinegar, sourdough, root beer.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Bored Remarks
-<br>response
-<br>&quot;'Did that,' says Jenna.&quot;
-<br>&quot;'Check,' says Jenna.&quot;
-<br>&quot;'Yeah, Mom, I already did that, okay?'&quot;
-<br>&quot;'Look, if I have to be here doing dumb stuff, could you at least tell me to do stuff that isn't already done?' Jenna asks wearily.&quot;
-<br>&quot;Jenna gives a great upward sigh, riffling her bangs. 'Once again... there is totally no point.'&quot;
+<blockquote><font color="#000080">A sweet malty smell hangs in the air.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;e / x jenna / jenna, get stapler / jenna, get stapler / x jenna / jenna, drop stapler / jenna, drop stapler / jenna, open box / jenna, open box / jenna, switch stapler on / jenna, switch stapler on / jenna, take desk / jenna, open box / jenna, open box&quot;.
+<blockquote><font color="#000080">Instead of going to Brewing Supply when the time of day is before the opening hour of Brewing Supply for the second time:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You rattle at the door again. 'Hold your horses, for crying out loud,' yells a voice from within.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc175.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc174.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc176.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>
+<blockquote><font color="#000080">Noah's Bagels is a shop. It is north of the Parking Lot. The opening hour of Noah's Bagels is 6:00 AM. The closing hour of Noah's Bagels is 11:00 AM. &quot;The selection has been somewhat picked over, leaving you with your choice of Pumpernickel, Asiago, or Everything.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;e / e / n / z / s / e / z / e / z / z / e&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc133.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc132.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc134.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

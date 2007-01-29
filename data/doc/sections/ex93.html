@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.7. Understanding any, understanding rooms</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.8. Action- vs object-based-rulebooks</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,98 +8,211 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc242.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc244.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.7. Understanding any, understanding rooms</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Flotation" -->
+<!-- SEARCH SECTION "Ex 281" -->
+<!-- SEARCH SORT "Ex 018-008-281" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc294.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc296.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.8. Action- vs object-based-rulebooks</b></font></td></tr></table>
 <p>
-<p>Ordinarily, if we write
+<p>The example of the appraisal rules, earlier in the chapter, was a rulebook whose rules were not tied to any specific action or item. We simply created rules for this rulebook by writing &quot;An appraisal rule: ...&quot; But most Inform rules do apply to either actions (&quot;Instead of drinking the wine: ...&quot;) or items (&quot;Rule for reaching inside the flask: ...&quot;); and these two sorts of rule belong to two sorts of rulebooks. For instance, the Before, Instead and After rulebooks are based on actions, while the rulebooks associated with activities (as used by rules like &quot;Rule for printing the name of: ...&quot;) are based on items. (As it turns out, the appraisal rulebook was action-based: it simply happened that we never specified any requirements on the action.)
 <p>
-<blockquote><font color="#000080">Understand &quot;manipulate [something]&quot;.
+<p>We have seen that the preamble for a rule can be quite complicated, but when we strip away the optional ways to limit its applicability, give it a name, and so forth, we are left with
+<p>
+<blockquote><font color="#000080">...rulebook name... [about/for/of/on/rule] [...what to apply to...]
 </font></blockquote><p>
 <p>
-<p>then the &quot;[something]&quot; will only match what is within reach or sight: this is the concept of &quot;scope&quot;, which is what prevents a player from spookily acting on objects from a distance. The parser itself prevents the manipulation rules from ever being invoked on such distant items, which is as it should be.
+<p>where the square-bracketed parts are optional. If the rulebook is object-based, the &quot;...what to apply to...&quot; should be a description, like &quot;a container&quot;; if action-based, it should be an action, like &quot;examining an open door&quot;.
 <p>
-<p>Sometimes, though, we positively want to allow this possibility. If we use the special word &quot;any&quot;, as in
+<p><b>1. Action-based rulebooks.</b> We have already mentioned before, after and instead. Other action-based rulebooks include the check, carry out, and report rules; general rulebooks such as every turn rules, the procedural rules, the visibility rules, the turn sequence rules; and rules specially for dealing with the actions of other characters, such as the persuasion and unsuccessful attempt rules. So the following would all be valid:
 <p>
-<blockquote><font color="#000080">Understand &quot;manipulate [any door]&quot;.
+<blockquote><font color="#000080">An every turn rule on kissing Clark:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lois glares in your direction.&quot;
 </font></blockquote><p>
 <p>
-<p>then any door, anywhere in the model world, can be allowed in the player's command. (Of course, the manipulation rules may not do what the player hopes: all that has happened is that the command is now possible to type.) The &quot;any&quot; can be followed by any description of items or rooms, and the latter opens up new possibilities, since rooms are ordinarily never allowed to be named in the player's commands.
-<p>
-<p>For example, the following gives the player the ability to walk between rooms without giving explicit directions of movement.
-<p>
-<blockquote><font color="#000080">Going by name is an action applying to one thing.
+<blockquote><font color="#000080">Procedural rule about someone trying taking the hat:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;ignore the can't take people's possessions rule.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out going by name: say &quot;You walk to [the noun].&quot;; move the player to the noun.
+<blockquote><font color="#000080">Visibility rule for looking under something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is carrying a lit thing (called lamp)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You shine [the lamp] under [the noun]...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;there is sufficient light;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;there is insufficient light.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;go to [any adjacent visited room]&quot; as going by name.
+<p>...all of which will take place on the occasions when these rulebooks would ordinarily be used, but take effect only if the action is the one specified.
+<p>
+<p>The persuasion rules are dependent on the current action, but, since they will only be consulted when we ask someone to do something, it is only useful to write rules like
+<p>
+<blockquote><font color="#000080">Persuasion rule for asking Kent to try going: ...
+<br>Persuasion rule: ...
 </font></blockquote><p>
 <p>
-<p>(This is really only a sketch: in a finished work, &quot;go to&quot; would produce helpful errors if non-adjacent but visited rooms were named, and we might also worry about rules applying to movement, because the method above will circumvent them.)
+<p>and not
+<p>
+<blockquote><font color="#000080">Persuasion rule for taking the blue egg-cup: ...
+</font></blockquote><p>
+<p>
+<p>Theoretically, the when play begins and when play ends rules could be written as things such as &quot;When play begins rule for looking: ...&quot;, but this is not useful in any way: actions are not happening then, so such rules would never take effect.
+<p>
+<p>Because action-based rulebooks tend to be the more useful of the two types of rulebook under most circumstances, this is the kind of rule created by default if we say:
+<p>
+<blockquote><font color="#000080">The judgment rules are a rulebook.
+</font></blockquote><p>
+<p>
+<p>Having done this, we would now be allowed to write
+<p>
+<blockquote><font color="#000080">A judgment rule for listening to the music:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh, Mozart is really too tedious to endure.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A judgment rule about Kent Taylor trying kissing the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Well, he's no Clark Gable, let's put it that way.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Judgment rule on eating Kraft dinner:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Bright orange and in no way related to real cheeses.&quot;
+</font></blockquote><p>
+<p>
+<p><b>2. Object-parametrized rulebooks.</b> Each activity creates three of these. For instance:
+<p>
+<blockquote><font color="#000080">Rule for printing the name of ...something...
+</font></blockquote><p>
+<p>
+<p>and equivalently, though less elegantly,
+<p>
+<blockquote><font color="#000080">Rule for printing the name ...something...
+<br>Rule for printing the name for ...something...
+</font></blockquote><p>
+<p>
+<p>Each activity also generates a before and after rulebook, as we've also seen. The reaching inside and reaching outside rules are also object-based rulebooks.
+<p>
+<p>We may make new object-based rulebooks in the process of making new activities, of course, but sometimes a whole new activity is overkill, since an activity produces three rulebooks (before, for, after). We can instead create a simple rulebook so:
+<p>
+<blockquote><font color="#000080">The flotation rules are an object-based-rulebook.
+</font></blockquote><p>
+<p>
+<p>Having done this, we would be allowed to write
+<p>
+<blockquote><font color="#000080">A flotation rule for the cork: rule succeeds.
+<br>A flotation rule for an inflated thing: rule succeeds.
+<br>A flotation rule: rule fails.
+</font></blockquote><p>
+<p>
+<p>And we might use the flotation rules in a circumstance like this:
+<p>
+<blockquote><font color="#000080">After inserting something into the well:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;consider the flotation rules for the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the rule succeeded
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] bobs on the surface.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] sinks out of sight.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
 <p>
 <p><hr><p>
-<a name="e164"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex164.html#e164 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>225</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex164.html#e164 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> One of Those Mornings</font></b></a><br>A FIND command that allows the player to find a lost object anywhere<p></td></tr></table>
-<a name="e93"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc243.html#e93 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>226</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc243.html#e93 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Actaeon</font></b></a><br>A FOLLOW command allowing the player to pursue a person who has just left the room.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we want the player to be able to go after characters who are moving around the map. The trick, of course, is that once characters are gone they are no longer visible to &quot;follow [person]&quot;, so we need &quot;follow [any person]&quot; to find them.
+<!-- EXAMPLE START -->
+<a name="e93"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc295.html#e93 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>281</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc295.html#e93 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Flotation</font></b></a><br>Objects that can sink or float in a well, depending on their own properties and the state of the surrounding environment.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>Here we want a rulebook to determine whether objects float or sink, so we create an object-based rulebook for the purpose. The more specific rules here, pertaining to corks and to inflated things, will be consulted first; then, as a default, the general flotation rule.
+<p>
+<p>We also want a switch that can turn flotation off at will. The rule about the big switch will be observed before the others because the when... clause makes it more specific than the other rules in the flotation rulebook.
+<p>
+<p>If we wanted, we could also put these rules into a rulebook in an explicit order, overriding Inform's automatic sorting by specificity.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode186(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Actaeon"\n\nA person has a room called last location.\n\nUnderstand "follow [any person]" as following. Understand the commands "chase" and "pursue" as "follow".\n\nFollowing is an action applying to one visible thing.\n\nCheck following:\n\tif the noun is the player, say "Wherever you go, there you are." instead;\n\tif the noun is visible, say "[The noun] is right here." instead;\n\tif the last location of the noun is not the location, say "It\'s not clear where [the noun] has gone." instead.\n\n[Here again the best route comes in handy:]\n\nCarry out following:\n\tlet the destination be a random room which contains the noun;\n\tif the destination is not a room, say "[The noun] isn\'t anywhere you can follow." instead;\n\tlet aim be the best route from the location to the destination;\n\tsay "(heading [aim])[line break]";\n\ttry going aim.\n\nCorinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.\n\nArtemis is a woman in Corinth.\n\n[We do also have to make sure that whenever we move a person from room to room, we record where they were moved from; otherwise, our clever restrictions about whom the player can pursue will not work properly.]\n\nTo move (pawn - a person) tidily to (target - a room):\n\tchange the last location of the pawn to the holder of the pawn;\n\tmove the pawn to the target.\n\nEvery turn:\n\tlet current location be the location of Artemis;\n\tlet next location be a random room which is adjacent to the current location;\n\tif Artemis is visible, say "Artemis heads to [the next location].";\n\tmove Artemis tidily to next location;\n\tif Artemis is visible, say "Artemis arrives from [the current location]."\n\nTest me with "wait / follow artemis / follow artemis / follow artemis".\n');
+    myProject.pasteCode('"Flotation"\n\nThe Pumping House is a room.\n\nA well is a fixed in place container in the Pumping House. The description of the well is "[if something is in the well]On the surface of the water you can see [a list of things in the well][otherwise]There is nothing on the surface of the water, nor can you see into the depths[end if]."\n\nThe well bottom is a container.\n\nThe cork, the rubber ring and a lead ingot are in the Pumping House.\n\nA big switch is a fixed in place device in the Pumping House. "A big switch labelled \'MAKE EVERYTHING SINK\' is mounted on one wall[if switched on]. It crackles with electricity[otherwise]. It is currently switched off and silent[end if]."\n\nA thing can be inflated or uninflated. A thing is usually uninflated. Before printing the name of an inflated thing: say "inflated ".\n\nThe rubber ring is inflated.\n\nThe flotation rules are an object-based-rulebook.\n\nA flotation rule for the cork: rule succeeds.\nA flotation rule for an inflated thing: rule succeeds.\nA flotation rule when the big switch is switched on: rule fails.\n\nAfter inserting something into the well:\n\tconsider the flotation rules for the noun;\n\tif the rule succeeded\n\tbegin;\n\t\tsay "[The noun] bobs on the surface.";\n\totherwise;\n\t\tmove the noun to the well bottom;\n\t\tsay "[The noun] sinks out of sight.";\n\tend if.\n\nA thing can be sinking, rising, or static. A thing is usually static.\n\nDefinition: a thing is wet:\n\tif it is in the well, yes;\n\tif it is in the well bottom, yes;\n\tno.\n\nEvery turn:\n\tnow every thing is static;\n\trepeat with item running through wet things\n\tbegin;\n\t\tconsider the flotation rules for the item;\n\t\tif the rule failed and the item is in the well, now the item is sinking;\n\t\tif the rule succeeded and the item is in the well bottom, now the item is rising;\n\tend repeat;\n\tnow every rising thing is in the well;\n\tnow every sinking thing is in the well bottom;\n\tif something is rising, say "[The list of rising things] rise[if the number of rising things is 1]s[end if] to the surface of the well.";\n\tif something is sinking, say "[The list of sinking things] sink[if the number of sinking things is 1]s[end if] out of sight."\n\n[And finally a few description rules to make things look prettier:]\n\nRule for writing a paragraph about the well when the well contains something:\n\tsay "The chief feature of the room is a concrete-sided well in which there float[if the number of things in the well is 1]s[end if] [a list of things in the well]."\n\nRule for writing a paragraph about the well:\n\tsay "The chief feature of the room is a concrete-sided well full of water."\n\n[As we recall from the chapter on activities, "writing a paragraph about..." is an activity; activities are themselves structured as sets of object-based rulebooks. The activity "writing a paragraph about" uses three object-based rulebooks (before writing..., for writing..., after writing...). We could have made a flotation activity as well, but in general it is overkill to make an activity to make success/failure decisions. For that purpose an object-based rulebook is sufficient.]\n\nTest me with "get all / put cork in well / put ring in well / put ingot in well / x well / get cork / get ring / switch switch on / put cork in well / put ring in well / x well / switch switch off / switch switch on".\n');
 }
 </script>
-<a href="javascript:pasteCode186()"><img border=0 src=../doc_images/paste.png></a> &quot;Actaeon&quot;
+<a href="javascript:pasteCode186()"><img border=0 src=../doc_images/paste.png></a> &quot;Flotation&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A person has a room called last location.
+<blockquote><font color="#000080">The Pumping House is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;follow [any person]&quot; as following. Understand the commands &quot;chase&quot; and &quot;pursue&quot; as &quot;follow&quot;.
+<blockquote><font color="#000080">A well is a fixed in place container in the Pumping House. The description of the well is &quot;[if something is in the well]On the surface of the water you can see [a list of things in the well][otherwise]There is nothing on the surface of the water, nor can you see into the depths[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Following is an action applying to one visible thing.
+<blockquote><font color="#000080">The well bottom is a container.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check following:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the player, say &quot;Wherever you go, there you are.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is visible, say &quot;[The noun] is right here.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last location of the noun is not the location, say &quot;It's not clear where [the noun] has gone.&quot; instead.
+<blockquote><font color="#000080">The cork, the rubber ring and a lead ingot are in the Pumping House.
 </font></blockquote><p>
 <p>
-<p>Here again the best route comes in handy:
-<p>
-<blockquote><font color="#000080">Carry out following:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the destination be a random room which contains the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the destination is not a room, say &quot;[The noun] isn't anywhere you can follow.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let aim be the best route from the location to the destination;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(heading [aim])[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try going aim.
+<blockquote><font color="#000080">A big switch is a fixed in place device in the Pumping House. &quot;A big switch labelled 'MAKE EVERYTHING SINK' is mounted on one wall[if switched on]. It crackles with electricity[otherwise]. It is currently switched off and silent[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.
+<blockquote><font color="#000080">A thing can be inflated or uninflated. A thing is usually uninflated. Before printing the name of an inflated thing: say &quot;inflated &quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Artemis is a woman in Corinth.
+<blockquote><font color="#000080">The rubber ring is inflated.
 </font></blockquote><p>
 <p>
-<p>We do also have to make sure that whenever we move a person from room to room, we record where they were moved from; otherwise, our clever restrictions about whom the player can pursue will not work properly.
+<blockquote><font color="#000080">The flotation rules are an object-based-rulebook.
+</font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To move (pawn - a person) tidily to (target - a room):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last location of the pawn to the holder of the pawn;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the pawn to the target.
+<blockquote><font color="#000080">A flotation rule for the cork: rule succeeds.
+<br>A flotation rule for an inflated thing: rule succeeds.
+<br>A flotation rule when the big switch is switched on: rule fails.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After inserting something into the well:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;consider the flotation rules for the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the rule succeeded
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] bobs on the surface.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the well bottom;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] sinks out of sight.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A thing can be sinking, rising, or static. A thing is usually static.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is wet:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is in the well, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is in the well bottom, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let current location be the location of Artemis;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let next location be a random room which is adjacent to the current location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis heads to [the next location].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move Artemis tidily to next location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis arrives from [the current location].&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing is static;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through wet things
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;consider the flotation rules for the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the rule failed and the item is in the well, now the item is sinking;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the rule succeeded and the item is in the well bottom, now the item is rising;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every rising thing is in the well;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every sinking thing is in the well bottom;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if something is rising, say &quot;[The list of rising things] rise[if the number of rising things is 1]s[end if] to the surface of the well.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if something is sinking, say &quot;[The list of sinking things] sink[if the number of sinking things is 1]s[end if] out of sight.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;wait / follow artemis / follow artemis / follow artemis&quot;.
+<p>And finally a few description rules to make things look prettier:
+<p>
+<blockquote><font color="#000080">Rule for writing a paragraph about the well when the well contains something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The chief feature of the room is a concrete-sided well in which there float[if the number of things in the well is 1]s[end if] [a list of things in the well].&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc243.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc242.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc244.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>
+<blockquote><font color="#000080">Rule for writing a paragraph about the well:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The chief feature of the room is a concrete-sided well full of water.&quot;
+</font></blockquote><p>
+<p>
+<p>As we recall from the chapter on activities, &quot;writing a paragraph about...&quot; is an activity; activities are themselves structured as sets of object-based rulebooks. The activity &quot;writing a paragraph about&quot; uses three object-based rulebooks (before writing..., for writing..., after writing...). We could have made a flotation activity as well, but in general it is overkill to make an activity to make success/failure decisions. For that purpose an object-based rulebook is sufficient.
+<p>
+<blockquote><font color="#000080">Test me with &quot;get all / put cork in well / put ring in well / put ingot in well / x well / get cork / get ring / switch switch on / put cork in well / put ring in well / x well / switch switch off / switch switch on&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc295.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc294.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc296.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

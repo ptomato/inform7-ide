@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.9. Check, carry out, report</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.5. New activities</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,135 +8,130 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc178.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc180.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.9. Check, carry out, report</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Crusoe" -->
+<!-- SEARCH SECTION "Ex 245" -->
+<!-- SEARCH SORT "Ex 017-005-245" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc259.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc261.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.5. New activities</b></font></td></tr></table>
 <p>
-<p>The normal behaviour of an action is specified by its three associated rulebooks - check, carry out and report. In the case of our &quot;photographing&quot; example, these rulebooks will be:
+<p>Activities are all about influencing the standard mechanisms which Inform uses, so it might at first seem that there is no need to create new activities: but on further reflection, quite a lot of the writing of interactive fiction involves creating new and systematic ways to do things, and as soon as we have a general rule, we will want to have exceptions. Inform therefore allows us to create our own activities, giving us ways to influence the operation of our own mechanisms.
 <p>
-<blockquote><font color="#000080"><b>Check photographing</b>. Here, for instance, we need to verify that the player has the camera. If any of our checks fail, we should say why and stop the action. If they succeed, we say nothing.
+<p>There are two kinds of activity: those which relate to a specific thing or room, and those which do not. The following creates one of each kind:
+<p>
+<blockquote><font color="#000080">Analysing something is an activity.
+<br>Assaying is an activity.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080"><b>Carry out photographing</b>. At this stage no further checking is needed (or allowed): the action now definitively takes place. At this point we might, for instance, deduct one from the number of exposures left on the film in the camera, or award the player points for capturing something interesting for posterity. But we should say nothing.
+<p>Here &quot;analysing something&quot; relates to a specific item: Inform knows this because it looks for the clue &quot;something&quot; (or &quot;of something&quot;) after the activity's name, which in the first case above is simply &quot;analysing&quot;.
+<p>
+<p>Creating an activity is like creating an action: it automatically makes new rulebooks - &quot;before analysing&quot;, &quot;for analysing&quot; and &quot;after analysing&quot; - but they start out empty, so the activity does nothing yet. Moreover, it never happens. We can make an activity happen at any time by writing phrases like so:
+<p>
+<blockquote><font color="#000080">carry out the analysing activity with the pitchblende;
+<br>carry out the assaying activity;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080"><b>Report photographing</b>. At this stage no further activity is needed (or allowed): whatever effect the action had, it has happened and is now over. All we can do is to say what has taken place.
+<p>To make the activity do something useful, we need to put a rule into its &quot;for&quot; rulebook:
+<p>
+<blockquote><font color="#000080">The last for assaying rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Professionally, you cast an eye around mineral deposits nearby, noticing [list of rocks in the location].&quot;
 </font></blockquote><p>
 <p>
-<p>So far we have not really gone into the business of what rulebooks are, and we don't do so here either - suffice to say that we can now create whatever rules we need:
+<p>&quot;The last&quot; is a technicality about rulebooks (see the next chapter) which, put briefly, guarantees that this rule comes last among all possible &quot;for assaying&quot; rules. This is good form because the whole point of an activity is to make it easy for further rules to interfere - so we deliberately hang back to last place, giving precedence to anybody else who wants it.
 <p>
-<blockquote><font color="#000080">A check photographing rule: if the camera is not carried then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
+<p>It may look rather pretentious to dress up the footling little &quot;assaying&quot; example as an activity, but it gains us more than might first appear. Every new activity created provides a context which other activities can observe. We could, for instance, define
+<p>
+<blockquote><font color="#000080">Rule for printing the name of a rock while assaying: ...
 </font></blockquote><p>
 <p>
-<p>In fact, writing &quot;a check photographing rule&quot; is over-formal. We can more simply label our rules like so:
-<p>
-<blockquote><font color="#000080">Check photographing: if we have photographed the noun then say &quot;You've already snapped [the noun].&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report photographing: say &quot;Click!&quot;
-</font></blockquote><p>
-<p>
-<p>For the sake of brevity, photography has no interesting consequence (no points to be won, no film to use up), so there are no carry out rules here. Note the way we used the word &quot;instead&quot; once again to stop actions in their tracks.
-<p>
-<p>We can continue to add rules at any point, and a classic thing that happens when testing a new work is that the designer realises there is a case which has not been thought of:
-<p>
-<blockquote><font color="#000080">Check photographing: if the noun is the camera then say &quot;That would require some sort of contraption with mirrors.&quot; instead.
-</font></blockquote><p>
+<p>so that during assays more technical names are used.
 <p>
 <p><hr><p>
-<a name="e56"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex56.html#e56 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>154</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex56.html#e56 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Waxwork</font></b></a><br>Containers and supporters that report their contents when you EXAMINE them.<p></td></tr></table>
-<a name="e75"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex75.html#e75 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>155</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex75.html#e75 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Dark Ages Revisited</font></b></a><br>An electric light kind of device which becomes lit when switched on and dark when switched off.<p></td></tr></table>
-<a name="e87"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex87.html#e87 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>156</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex87.html#e87 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Removal</font></b></a><br>TAKE expanded to give responses such as "You take the book from the shelf." or "You pick up the toy from the ground."<p></td></tr></table>
-<a name="e63"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc179.html#e63 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>157</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc179.html#e63 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Paddington</font></b></a><br>A CUT [something] WITH [something] command which acts differently on different types of objects.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we intend a game in which the player needs to cut things open on a regular basis. We'll want to check whether he has the proper tools handy, and deal graciously with commands such as CUT [something] when no tool is specified. So:
+<a name="e80"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex80.html#e80 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>243</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex80.html#e80 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> AARP-Gnosis</font></b></a><br>An Encyclopedia set which treats volumes in the same place as a single object, but can also be split up.<p></td></tr></table>
+<a name="e2"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex2.html#e2 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>244</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex2.html#e2 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Aftershock</font></b></a><br>Modifying the rules for examining a device so that all devices have some specific behavior when switched on, which is described at various times.<p></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e63"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc260.html#e63 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>245</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc260.html#e63 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Crusoe</font></b></a><br>Adding a "printing the description of something" activity.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>Suppose we want to add rules so that any time we examine a charred object (and most of our objects can be charred), a line about the charring is appended to the end of the object description. We could use &quot;after examining...&quot;, but perhaps we would prefer for the sentence about the charring not to appear in its own paragraph.
+<p>
+<p>This is an ideal occasion for a new activity. We look at the action index for &quot;examining&quot; to identify the rule that causes the old behavior (in this case, the &quot;standard examining rule&quot;); replace this with a new rule that calls our activity; and write our &quot;printing the description&quot; activity in such a way that it uses an object's description without forcing a paragraph return afterward.
+<p>
+<p>Then we will use &quot;after printing the description&quot; to add our line about charring, and make sure that the paragraph return does occur before the prompt.
+<p>
+<p>So:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode156(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Paddington"\n\nA blade is a kind of thing.\n\nUnderstand "cut [something] with [something]" as cutting it with.\n\nInstead of cutting something:\n\tif a blade (called the edge) is held by the player,\n\t\ttry cutting the noun with the edge;\n\totherwise say "Your fingernails are not sharp enough."\n\nCutting it with is an action applying to two things.\n\nCheck cutting it with:\n\tif the noun is a person, say "That would hurt." instead;\n\tif the second noun is not a blade, say "[The second noun] has not got enough of a blade." instead.\n\nCarry out cutting it with:\n\tchange the count of rips of the noun to the count of rips of the noun + 1.\n\nReport cutting it with:\n\tsay "You slash [the noun] with [the second noun]."\n\n[We\'ll need a way to account for all these cuts and rips.]\n\nDefinition: a thing is ripped if the count of rips of it > 0.  A thing has a number called the count of rips. After examining something ripped, say "You see [the count of rips of the noun in words] rip[s] in [the noun]."\n\n[So far, so good. But suppose that we\'d like cutting also to make containers be permanently open and impossible to close again. We could write an "instead" rule, but that would mean that only our instead instructions would take effect, overriding the normal cutting it with rules entirely. Better would be to add a second carry out rule:]\n\nCarry out cutting a container with something:\n\tnow the noun is open;\n\tnow the noun is unopenable.\n\n[Now our rule will occur whenever a container is cut, but play will still go on to the reporting stage. And indeed we can add more of these, of varying degrees of specificity:]\n\nCarry out cutting something which is part of something with something:\n\tmove the noun to the player.\n\nCarry out cutting the quilt with something:\n\tchange the description of the quilt to "Horribly tattered."\n\n[For that matter, we might want to add a report rule as well, to occur after the "You slash..." rule, so that every time the player cuts something open which has contents, the contents will be listed.]\n\nReport cutting it with:\n\tif the noun is open and the noun contains something,\n\t\tsay "Visible within [is/are list of things in the noun]."\n\n[This time we do not add the condition to the rule (ie, Report cutting an open noun...) If we did, this report rule would be more specific than the general report rule, and would occur first.]\n\nThe Safehouse is a room.\n\nThe teddy bear is a closed thing in the Safehouse. The description is "Fluffy[if the head is part of the bear], with an outsized head[otherwise], but headless[end if]." The head is a closed part of the teddy bear. In the bear is a large wad of stuffing. In the head are a small wad of stuffing and a packet of smuggled diamonds.\n\nThe quilt is a thing in the Safehouse. The description is "An old but comforting quilt."\n\nThe player carries a blade called a switchblade.\n\n[If we may be permitted to borrow one line from chapter 16, here is a final nicety to get rid of the "which is closed" statement on our closed unopenable teddy bear:]\n\nAfter printing the name of a closed unopenable container:\n\tomit contents in listing.\n\nTest me with "cut quilt with bear / cut quilt with switchblade / examine quilt / cut bear with switchblade / again / examine bear / cut head with switchblade / get diamonds / mourn loss of innocence".\n');
+    myProject.pasteCode('"Crusoe"\n\nThe Desert Isle is a room. "A pale expanse of sand, here and there developing into hillocks of grass, and a small clump of palms. The water is shallow here, and there are other islands within swimming distance -- or even wading distance, perhaps -- but none of them is any larger than your island, so it doesn\'t seem worth the trouble of visiting.\n\nA few hundred feet out, the water turns darker blue, the sea floor drops away, and there is nothing to be seen all the way down to the horizon, except a couple of fluffy clouds, and an occasional bird.\n\nThe remains of your fire smolder in the stone-lined pit."\n\nA thing can be charred or whole. A thing is usually whole. Instead of burning something: say "You hold [the noun] to the fire until it flares and chars."; change the noun to charred.\n\nThe player carries a stick. The description of the stick is "A strip of palm from the woodiest part of the leaf, about a foot and a half long."\n\nThe player carries a glass bottle and a piece of paper. The description of the paper is "A single blank sheet." In the glass bottle is a grain of sand. The glass bottle is openable and open. Instead of burning the glass bottle: say "You hold the bottle to the flame, but it grows uncomfortably warm."\n\nInstead of burning the grain of sand: say "You drop the grain into the fire pit, where it becomes indistinguishable from all the others."; remove the grain of sand from play. Instead of dropping the grain of sand: remove the grain of sand from play; say "You return the grain of sand to its brethren."\n\nThe fancy examining rule is listed instead of the standard examining rule in the carry out examining rules.\n\n[This instruction replaces a normal piece of the examine action, the standard examining rule, with another one of our own devising. (The replacement of the standard examining rule will be explained in more detail in the chapter on rulebooks.)]\n\nPrinting the description of something is an activity.\n\nThis is the fancy examining rule:\n\tcarry out the printing the description activity with the noun.\n\n[All we have done here is enclose what is usually just a rule inside an activity. This means that we can now write before and after rules for the activity, and also add special instructions like "Rule for printing the name of something while printing the description of something" -- this may not be likely to arise often, but Inform now has the concept of "printing the description of something" as a separate context of action. Next we add the modification that lets us append to the description without a new line:]\n\nRule for printing the description of something (called item):\n\tsay "[description of item] [run paragraph on]".\n\n["run paragraph on" here will mean that we do not get a paragraph break following the description, even if it ends with a period. We also insert a space, so that our follow-on comments will be properly punctuated.]\n\nAfter printing the description of something charred:\n\tsay "It is charred." instead.\n\n[The instead at the end of this line stops Inform for going on with any other "after printing the description of..." rules.]\n\n[And now, because we want to make sure that we always do get a paragraph break after our description, we add this rule last after all the other rules. "Last" and "first" rules are covered in more detail in the chapter on rulebooks.]\n\nLast after printing the description of something:\n\tsay paragraph break.\n\n[The player\'s description is handled in an unusual way, and this will produce a space paragraph break there where it should not. Instead, therefore, we will add an instead for examining the player (probably a good idea anyway):]\n\nInstead of examining the player:\n\tsay "You are sunburned and there is sand in cracks you didn\'t know existed."\n\nTest me with "i / x stick / x bottle / x sand / x paper / x me / burn stick / x stick / burn paper / x paper".\n');
 }
 </script>
-<a href="javascript:pasteCode156()"><img border=0 src=../doc_images/paste.png></a> &quot;Paddington&quot;
+<a href="javascript:pasteCode156()"><img border=0 src=../doc_images/paste.png></a> &quot;Crusoe&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A blade is a kind of thing.
+<blockquote><font color="#000080">The Desert Isle is a room. &quot;A pale expanse of sand, here and there developing into hillocks of grass, and a small clump of palms. The water is shallow here, and there are other islands within swimming distance -- or even wading distance, perhaps -- but none of them is any larger than your island, so it doesn't seem worth the trouble of visiting.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;cut [something] with [something]&quot; as cutting it with.
+<blockquote><font color="#000080">A few hundred feet out, the water turns darker blue, the sea floor drops away, and there is nothing to be seen all the way down to the horizon, except a couple of fluffy clouds, and an occasional bird.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of cutting something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a blade (called the edge) is held by the player,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try cutting the noun with the edge;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Your fingernails are not sharp enough.&quot;
+<blockquote><font color="#000080">The remains of your fire smolder in the stone-lined pit.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Cutting it with is an action applying to two things.
+<blockquote><font color="#000080">A thing can be charred or whole. A thing is usually whole. Instead of burning something: say &quot;You hold [the noun] to the fire until it flares and chars.&quot;; change the noun to charred.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check cutting it with:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is a person, say &quot;That would hurt.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not a blade, say &quot;[The second noun] has not got enough of a blade.&quot; instead.
+<blockquote><font color="#000080">The player carries a stick. The description of the stick is &quot;A strip of palm from the woodiest part of the leaf, about a foot and a half long.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out cutting it with:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the count of rips of the noun to the count of rips of the noun + 1.
+<blockquote><font color="#000080">The player carries a glass bottle and a piece of paper. The description of the paper is &quot;A single blank sheet.&quot; In the glass bottle is a grain of sand. The glass bottle is openable and open. Instead of burning the glass bottle: say &quot;You hold the bottle to the flame, but it grows uncomfortably warm.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report cutting it with:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You slash [the noun] with [the second noun].&quot;
+<blockquote><font color="#000080">Instead of burning the grain of sand: say &quot;You drop the grain into the fire pit, where it becomes indistinguishable from all the others.&quot;; remove the grain of sand from play. Instead of dropping the grain of sand: remove the grain of sand from play; say &quot;You return the grain of sand to its brethren.&quot;
 </font></blockquote><p>
 <p>
-<p>We'll need a way to account for all these cuts and rips.
-<p>
-<blockquote><font color="#000080">Definition: a thing is ripped if the count of rips of it > 0.  A thing has a number called the count of rips. After examining something ripped, say &quot;You see [the count of rips of the noun in words] rip[s] in [the noun].&quot;
+<blockquote><font color="#000080">The fancy examining rule is listed instead of the standard examining rule in the carry out examining rules.
 </font></blockquote><p>
 <p>
-<p>So far, so good. But suppose that we'd like cutting also to make containers be permanently open and impossible to close again. We could write an &quot;instead&quot; rule, but that would mean that only our instead instructions would take effect, overriding the normal cutting it with rules entirely. Better would be to add a second carry out rule:
+<p>This instruction replaces a normal piece of the examine action, the standard examining rule, with another one of our own devising. (The replacement of the standard examining rule will be explained in more detail in the chapter on rulebooks.)
 <p>
-<blockquote><font color="#000080">Carry out cutting a container with something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is open;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is unopenable.
+<blockquote><font color="#000080">Printing the description of something is an activity.
 </font></blockquote><p>
 <p>
-<p>Now our rule will occur whenever a container is cut, but play will still go on to the reporting stage. And indeed we can add more of these, of varying degrees of specificity:
-<p>
-<blockquote><font color="#000080">Carry out cutting something which is part of something with something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the player.
+<blockquote><font color="#000080">This is the fancy examining rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;carry out the printing the description activity with the noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out cutting the quilt with something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the description of the quilt to &quot;Horribly tattered.&quot;
+<p>All we have done here is enclose what is usually just a rule inside an activity. This means that we can now write before and after rules for the activity, and also add special instructions like &quot;Rule for printing the name of something while printing the description of something&quot; -- this may not be likely to arise often, but Inform now has the concept of &quot;printing the description of something&quot; as a separate context of action. Next we add the modification that lets us append to the description without a new line:
+<p>
+<blockquote><font color="#000080">Rule for printing the description of something (called item):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[description of item] [run paragraph on]&quot;.
 </font></blockquote><p>
 <p>
-<p>For that matter, we might want to add a report rule as well, to occur after the &quot;You slash...&quot; rule, so that every time the player cuts something open which has contents, the contents will be listed.
+<p>&quot;run paragraph on&quot; here will mean that we do not get a paragraph break following the description, even if it ends with a period. We also insert a space, so that our follow-on comments will be properly punctuated.
 <p>
-<blockquote><font color="#000080">Report cutting it with:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is open and the noun contains something,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Visible within [is/are list of things in the noun].&quot;
+<blockquote><font color="#000080">After printing the description of something charred:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is charred.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>This time we do not add the condition to the rule (ie, Report cutting an open noun...) If we did, this report rule would be more specific than the general report rule, and would occur first.
+<p>The instead at the end of this line stops Inform for going on with any other &quot;after printing the description of...&quot; rules.
 <p>
-<blockquote><font color="#000080">The Safehouse is a room.
+<p>And now, because we want to make sure that we always do get a paragraph break after our description, we add this rule last after all the other rules. &quot;Last&quot; and &quot;first&quot; rules are covered in more detail in the chapter on rulebooks.
+<p>
+<blockquote><font color="#000080">Last after printing the description of something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The teddy bear is a closed thing in the Safehouse. The description is &quot;Fluffy[if the head is part of the bear], with an outsized head[otherwise], but headless[end if].&quot; The head is a closed part of the teddy bear. In the bear is a large wad of stuffing. In the head are a small wad of stuffing and a packet of smuggled diamonds.
+<p>The player's description is handled in an unusual way, and this will produce a space paragraph break there where it should not. Instead, therefore, we will add an instead for examining the player (probably a good idea anyway):
+<p>
+<blockquote><font color="#000080">Instead of examining the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are sunburned and there is sand in cracks you didn't know existed.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The quilt is a thing in the Safehouse. The description is &quot;An old but comforting quilt.&quot;
+<blockquote><font color="#000080">Test me with &quot;i / x stick / x bottle / x sand / x paper / x me / burn stick / x stick / burn paper / x paper&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries a blade called a switchblade.
-</font></blockquote><p>
-<p>
-<p>If we may be permitted to borrow one line from chapter 16, here is a final nicety to get rid of the &quot;which is closed&quot; statement on our closed unopenable teddy bear:
-<p>
-<blockquote><font color="#000080">After printing the name of a closed unopenable container:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;omit contents in listing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;cut quilt with bear / cut quilt with switchblade / examine quilt / cut bear with switchblade / again / examine bear / cut head with switchblade / get diamonds / mourn loss of innocence&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc179.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc178.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc180.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc260.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc259.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc261.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

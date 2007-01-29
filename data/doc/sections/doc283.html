@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.30. Starting the virtual machine</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.28. Deciding whether all includes</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,14 +8,44 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc282.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc284.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.30. Starting the virtual machine</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Deciding whether all includes" -->
+<!-- SEARCH SECTION "17.28" -->
+<!-- SEARCH SORT "017-028-000" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc282.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc284.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.28. Deciding whether all includes</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> This activity is provided solely as a &quot;hook&quot; for any low-level tasks which need to be performed when the virtual computer which runs Inform story files is starting up. This happens much earlier than &quot;when play begins&quot; rules, and should be used only as a last resort.
+<p><b>1. When it happens.</b> When parsing a command such as &quot;take all&quot;, where the player uses &quot;all&quot; to signify everything within reach.
 <p>
-<p>It should be remembered that Inform can produce story files for several different virtual computers. On some of these, it will not be safe to print any text during this activity, as the windows which would display such text do not yet exist.
+<p><b>2. The default behaviour.</b> The actual method used is complicated, as &quot;all&quot; is not as simple as it seems - &quot;take all&quot; would not include the player's own body, for instance, or the crescent moon. The point of this action is to allow the normal method to be changed for given objects, or given kinds of object.
 <p>
-<p><b>2. The default behaviour.</b> None.
+<p><b>3. Examples.</b> (a) Removing scenery from &quot;all&quot;:
 <p>
-<p><b>3. Examples.</b> No detailed examples will be given here, but the activity might be used (for instance) to set styles for the Glulx windows shortly to be brought into existence.
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode78(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Rule for deciding whether all includes scenery: it does not.\n\n');
+}
+</script>
+<a href="javascript:pasteCode78()"><img border=0 src=../doc_images/paste.png></a> Rule for deciding whether all includes scenery: it does not.
+</font></blockquote><p>
+<p>
+<p>The phrases &quot;it does&quot; and &quot;it does not&quot; make a decision.
+<p>
+<p>(b) Ensuring that a given thing, which might otherwise be excluded, is included:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode79(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Rule for deciding whether all includes the oval roof: it does.\n\n');
+}
+</script>
+<a href="javascript:pasteCode79()"><img border=0 src=../doc_images/paste.png></a> Rule for deciding whether all includes the oval roof: it does.
+</font></blockquote><p>
+<p>
+<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows that the action will be taking, but nothing else. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc282.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc284.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

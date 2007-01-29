@@ -89,6 +89,8 @@ Constant DETAILS_ACT 19;
 Constant PARSERERROR_ACT 20;
 Constant IMPLICITTAKE_ACT 21;
 Constant VERYEARLY_ACT 22;
+Constant CLARIFY_ACT 23;
+Constant WHICH_ACT 24;
 
 Constant PARA_COMPLETED = 1;
 Constant PARA_LINEBREAK = 2;
@@ -1410,6 +1412,7 @@ Object  InformParser "(Inform Parser)"
   .ReType;
 
 #ifdef NI_BUILD_COUNT;
+	I7ResetChooseObjects();
     BeginActivity(COMMAND_ACT); if (ForActivity(COMMAND_ACT)==false) {
 #endif;
     Keyboard(buffer,parse);
@@ -1838,6 +1841,71 @@ Object  InformParser "(Inform Parser)"
 
                     pcount++;
                     if (line_ttype-->pcount == PREPOSITION_TT) {
+                        #Ifdef NI_BUILD_COUNT;
+                        ! skip ahead to a preposition word in the input
+                        do {
+                            l = NextWord();
+                        } until ((wn > num_words) ||
+                                 (l && (l->#dict_par1) & 8 ~= 0));
+                        
+                        if (wn > num_words) {
+                            #Ifdef DEBUG;
+                            if (parser_trace >= 2)
+                                print " [Look-ahead aborted: prepositions missing]^";
+                            #Endif;
+                            jump LineFailed;
+                        }
+                        
+                        do {
+                            if (PrepositionChain(l, pcount) ~= -1) {
+                                ! advance past the chain
+                                if ((line_token-->pcount)->0 & $20 ~= 0) {
+                                    pcount++;
+                                    while ((line_token-->pcount ~= ENDIT_TOKEN) &&
+                                           ((line_token-->pcount)->0 & $10 ~= 0))
+                                        pcount++;
+                                } else {
+                                    pcount++;
+                                }
+                            } else {
+                                ! try to find another preposition word
+                                do {
+                                    l = NextWord();
+                                } until ((wn >= num_words) ||
+                                         (l && (l->#dict_par1) & 8 ~= 0));
+                                
+                                if (l && (l->#dict_par1) & 8) continue;
+                                
+                                ! lookahead failed
+                                #Ifdef DEBUG;
+                                if (parser_trace >= 2)
+                                    print " [Look-ahead aborted: prepositions don't match]^";
+                                #endif;
+                                jump LineFailed;
+                            }
+                            l = NextWord();
+                        } until (line_ttype-->pcount ~= PREPOSITION_TT);
+                        
+                        ! put back the non-preposition we just read
+                        wn--;
+
+                        if ((line_ttype-->pcount == ELEMENTARY_TT) && (line_tdata-->pcount == NOUN_TOKEN)) {
+                            l = Descriptors();  ! skip past THE etc
+                            if (l~=0) etype=l;  ! don't allow multiple objects
+                            l = NounDomain(actors_location, actor, NOUN_TOKEN);
+                            #Ifdef DEBUG;
+                            if (parser_trace >= 2) {
+                                print " [Advanced to ~noun~ token: ";
+                                if (l == REPARSE_CODE) print "re-parse request]^";
+                                if (l == 1) print "but multiple found]^";
+                                if (l == 0) print "error ", etype, "]^";
+                                if (l >= 2) print (the) l, "]^";
+                            }
+                            #Endif; ! DEBUG
+                            if (l == REPARSE_CODE) jump ReParse;
+                            if (l >= 2) advance_warning = l;
+                        }
+                        #Ifnot; ! NI_BUILD_COUNT
                         while (line_ttype-->pcount == PREPOSITION_TT) pcount++;
 
                         if ((line_ttype-->pcount == ELEMENTARY_TT) && (line_tdata-->pcount == NOUN_TOKEN)) {
@@ -1866,6 +1934,7 @@ Object  InformParser "(Inform Parser)"
                                 }
                             }
                         }
+                        #Endif;
                     }
                     break;
                 }
@@ -2024,7 +2093,7 @@ Object  InformParser "(Inform Parser)"
                 ! ...explain any inferences made (using the pattern)...
 
                 if (inferfrom ~= 0) {
-                    print "("; PrintCommand(inferfrom); print ")^";
+                	PrintInferredCommand(inferfrom);
                     #ifdef NI_BUILD_COUNT; say__p = 0; #endif;
                 }
 
@@ -2095,6 +2164,7 @@ Object  InformParser "(Inform Parser)"
             } ! end of if(token ~= ENDIT_TOKEN) else
         } ! end of for(pcount++)
 
+        #Ifdef NI_BUILD_COUNT; .LineFailed; #Endif;
         ! The line has failed to match.
         ! We continue the outer "for" loop, trying the next line in the grammar.
 
@@ -2427,10 +2497,41 @@ Constant UNLIT_BIT  =  32;
     lookahead = x; return y;
 ];
 #ifnot;
-[ ParseToken given_ttype given_tdata token_n token;
-  return ParseToken__(given_ttype, given_tdata, token_n, token);
+Global parsetoken_nesting = 0;
+[ ParseToken given_ttype given_tdata token_n token  i t rv;
+	if (parsetoken_nesting > 0) {
+		! save match globals
+		@push match_from; @push token_filter; @push match_length;
+		@push number_of_classes; @push oops_from;
+		for (i=0: i<number_matched: i++) {
+			t = match_list-->i; @push t;
+			t = match_classes-->i; @push t;
+			t = match_scores-->i; @push t;
+		}
+		@push number_matched;
+	 }
+
+	parsetoken_nesting++;
+	rv = ParseToken__(given_ttype, given_tdata, token_n, token);
+	parsetoken_nesting--;
+
+	if (parsetoken_nesting > 0) {
+		! restore match globals
+		@pull number_matched;
+		for (i=0: i<number_matched: i++) {
+ 			@pull t; match_scores-->i = t;
+			@pull t; match_classes-->i = t;
+			@pull t; match_list-->i = t;
+   		}
+		@pull oops_from; @pull number_of_classes;
+		@pull match_length; @pull token_filter; @pull match_from;
+	}
+	return rv;
 ];
 #endif;
+![ ParseToken given_ttype given_tdata token_n token;
+!  return ParseToken__(given_ttype, given_tdata, token_n, token);
+!];
 
 [ ParseToken__
              given_ttype given_tdata token_n
@@ -2570,6 +2671,9 @@ Constant UNLIT_BIT  =  32;
       SCOPE_TT:
         scope_token = given_tdata;
         scope_stage = 1;
+        #Ifdef DEBUG;
+        if (parser_trace >= 3) print "  [Scope routine called at stage 1]^";
+        #Endif; ! DEBUG
         l = indirect(scope_token);
         #Ifdef DEBUG;
         if (parser_trace >= 3) print "  [Scope routine returned multiple-flag of ", l, "]^";
@@ -3038,6 +3142,11 @@ Constant UNLIT_BIT  =  32;
     ! Now we print up the question, using the equivalence classes as worked
     ! out by Adjudicate() so as not to repeat ourselves on plural objects...
 
+	#ifdef NI_BUILD_COUNT;
+	BeginActivity(WHICH_ACT);
+	if (ForActivity(WHICH_ACT)) jump SkipWhichQuestion;
+	#endif;
+
     if (context==CREATURE_TOKEN) L__M(##Miscellany, 45);
     else                         L__M(##Miscellany, 46);
 
@@ -3052,6 +3161,10 @@ Constant UNLIT_BIT  =  32;
         if (i == j-1) print (string) OR__TX;
     }
     L__M(##Miscellany, 57);
+
+	#ifdef NI_BUILD_COUNT;
+	.SkipWhichQuestion; EndActivity(WHICH_ACT);
+	#endif;
 
     ! ...and get an answer:
 
@@ -3579,12 +3692,18 @@ Constant SCORE__DIVISOR = 20;
     }
 
     if (multi_context == MULTI_TOKEN && action_to_be == ##Take) {
+        #Ifndef NI_BUILD_COUNT;
         for (i=1,low=0 : i<=multiple_object-->0 : i++)
             if (ScopeCeiling(multiple_object-->i)==ScopeCeiling(actor)) low++;
+        #Endif;
         #Ifdef DEBUG;
         if (parser_trace >= 4) print "   Token 2 plural case: number with actor ", low, "^";
         #Endif; ! DEBUG
+        #Ifdef NI_BUILD_COUNT;
+        if (take_all_rule == 2) {
+        #Ifnot;
         if (take_all_rule == 2 || low > 0) {
+        #Endif;
             for (i=1,low=0 : i<=multiple_object-->0 : i++) {
                 if (ScopeCeiling(multiple_object-->i) == ScopeCeiling(actor)) {
                     low++;
@@ -3686,7 +3805,7 @@ Constant SCORE__DIVISOR = 20;
     for (i=0 : i<number_matched : i++) {
         while (match_list-->i == -1) {
             if (i == number_matched-1) { number_matched--; break; }
-            for (j=i : j<number_matched : j++) {
+            for (j=i : j<number_matched-1 : j++) {
                 match_list-->j = match_list-->(j+1);
                 match_scores-->j = match_scores-->(j+1);
             }
@@ -3813,6 +3932,28 @@ Constant SCORE__DIVISOR = 20;
 !  preposition n)
 ! ----------------------------------------------------------------------------
 
+[ PrintInferredCommand from singleton_noun;
+
+	singleton_noun = FALSE;
+	if ((from ~= 0) && (from == pcount-1) &&
+		(pattern-->from > 1) && (pattern-->from < REPARSE_CODE))
+			singleton_noun = TRUE;
+
+	#ifdef NI_BUILD_COUNT;
+	if (singleton_noun) {
+		BeginActivity(CLARIFY_ACT, pattern-->from);
+		if (ForActivity(CLARIFY_ACT, pattern-->from) == 0) {
+			print "("; PrintCommand(from); print ")^";
+		}
+		EndActivity(CLARIFY_ACT, pattern-->from);
+	} else {
+		print "("; PrintCommand(from); print ")^";
+	}
+	#ifnot;
+		print "("; PrintCommand(from); print ")^";
+	#endif;
+];
+
 [ PrintCommand from i k spacing_flag;
     if (from == 0) {
         i = verb_word;
@@ -3825,7 +3966,7 @@ Constant SCORE__DIVISOR = 20;
         i = pattern-->k;
         if (i == PATTERN_NULL) continue;
         if (spacing_flag) print (char) ' ';
-        if (i ==0 ) { print (string) THOSET__TX; jump TokenPrinted; }
+        if (i == 0) { print (string) THOSET__TX; jump TokenPrinted; }
         if (i == 1) { print (string) THAT__TX;   jump TokenPrinted; }
         if (i >= REPARSE_CODE)
             print (address) No__Dword(i-REPARSE_CODE);
@@ -4009,7 +4150,10 @@ Constant SCORE__DIVISOR = 20;
 
     if (scope_token ~= 0) {
         scope_stage = 2;
-        if (indirect(scope_token) ~= 0) rtrue;
+        #Ifdef DEBUG;
+        if (parser_trace >= 3) print "  [Scope routine called at stage 2]^";
+        #Endif; ! DEBUG
+       if (indirect(scope_token) ~= 0) rtrue;
     }
 
     #ifdef NI_BUILD_COUNT;
@@ -4502,6 +4646,7 @@ Constant SCORE__DIVISOR = 20;
 ];
 
 [ NextWordStopped;
+	if (wn < 0) { return -1; }
     if (wn > parse->1) { wn++; return -1; }
     return NextWord();
 ];
@@ -5070,7 +5215,11 @@ Object  InformLibrary "(Inform Library)"
 
             } ! end of while()
 
+            #ifdef NI_BUILD_COUNT;
+            AfterLife();
+            #ifnot; ! NI_BUILD_COUNT;
             if (deadflag ~= 2) AfterLife();
+            #endif;
             if (deadflag == 0) jump very__late__error;
 
             #ifdef NI_BUILD_COUNT;
@@ -6769,9 +6918,11 @@ Array StorageForShortName -> 250 + WORDSIZE;
 	if (o == 0) { PrintCapitalised(NOTHING__TX, 0); rtrue; }
     i = indef_mode; indef_mode = true;
     if (o has proper) {
-    	indef_mode = NULL; I7_caps_mode = true;
+    	indef_mode = NULL;
+    	#Ifdef NI_BUILD_COUNT; I7_caps_mode = true; #Endif;
     	print (PSN__) o;
-    	indef_mode = i; I7_caps_mode = false;
+    	indef_mode = i;
+    	#Ifdef NI_BUILD_COUNT; I7_caps_mode = false; #Endif;
     	return;
     }
     if (o provides article) {
@@ -6799,9 +6950,11 @@ Array StorageForShortName -> 250 + WORDSIZE;
     #Endif;
     i = indef_mode; indef_mode = false;
     if ((o ofclass Object) && (o has proper)) {
-    	indef_mode = NULL; I7_caps_mode = true;
+    	indef_mode = NULL;
+    	#Ifdef NI_BUILD_COUNT; I7_caps_mode = true; #Endif;
     	print (PSN__) o;
-    	indef_mode = i; I7_caps_mode = false;
+    	indef_mode = i;
+    	#Ifdef NI_BUILD_COUNT; I7_caps_mode = false; #Endif;
     	return;
     }
     if ((~~o ofclass Object) || o has proper) {

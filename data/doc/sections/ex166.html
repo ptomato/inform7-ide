@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.12. Actions as conditions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.7. Understanding any, understanding rooms</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,64 +8,110 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc137.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc139.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.12. Actions as conditions</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "One of Those Mornings" -->
+<!-- SEARCH SECTION "Ex 228" -->
+<!-- SEARCH SORT "Ex 016-007-228" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc243.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc245.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.7. Understanding any, understanding rooms</b></font></td></tr></table>
 <p>
-<p>There are two ways that descriptions of actions can be used as conditions. First, we can simply describe an action, and then the condition will be true if that is what the player is trying to do, and not otherwise:
+<p>Ordinarily, if we write
 <p>
-<blockquote><font color="#000080">... if taking a container then ...
+<blockquote><font color="#000080">Understand &quot;manipulate [something]&quot;.
 </font></blockquote><p>
 <p>
-<p>This is actually an abbreviation for the longer, some would say preferable form:
+<p>then the &quot;[something]&quot; will only match what is within reach or sight: this is the concept of &quot;scope&quot;, which is what prevents a player from spookily acting on objects from a distance. The parser itself prevents the manipulation rules from ever being invoked on such distant items, which is as it should be.
 <p>
-<blockquote><font color="#000080">... if we are taking a container then ...
+<p>Sometimes, though, we positively want to allow this possibility. If we use the special word &quot;any&quot;, as in
+<p>
+<blockquote><font color="#000080">Understand &quot;manipulate [any door]&quot;.
 </font></blockquote><p>
 <p>
-<p>Secondly, we can talk about the past as well as the present, which is very useful since interactive fiction often contains situations which are changed by earlier events.
+<p>then any door, anywhere in the model world, can be allowed in the player's command. (Of course, the manipulation rules may not do what the player hopes: all that has happened is that the command is now possible to type.) The &quot;any&quot; can be followed by any description of items or rooms, and the latter opens up new possibilities, since rooms are ordinarily never allowed to be named in the player's commands.
 <p>
-<blockquote><font color="#000080">Instead of waiting when we have taken the lantern, say &quot;No, your acquisitive nature is roused now, and simply waiting will no longer do.&quot;
+<p>For example, the following gives the player the ability to walk between rooms without giving explicit directions of movement.
+<p>
+<blockquote><font color="#000080">Going by name is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<p>More on the past tense later, too: note that &quot;we are taking&quot; has become &quot;we have taken&quot;. For the rule to apply, it is not enough that the action &quot;taking the lantern&quot; has been tried: it must have succeeded.
+<blockquote><font color="#000080">Carry out going by name: say &quot;You walk to [the noun].&quot;; move the player to the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;go to [any adjacent visited room]&quot; as going by name.
+</font></blockquote><p>
+<p>
+<p>(This is really only a sketch: in a finished work, &quot;go to&quot; would produce helpful errors if non-adjacent but visited rooms were named, and we might also worry about rules applying to movement, because the method above will circumvent them.)
 <p>
 <p><hr><p>
-<a name="e172"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex172.html#e172 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>111</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex172.html#e172 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Night Sky</font></b></a><br>A room which changes its description depending on whether an object has been examined.<p></td></tr></table>
-<a name="e166"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc138.html#e166 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>112</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc138.html#e166 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Zero</font></b></a><br>A box which called "horribly heavy box" after the player has tried to take it the first time.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>The names of objects might want to change also:
+<!-- EXAMPLE START -->
+<a name="e166"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc244.html#e166 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>228</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc244.html#e166 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> One of Those Mornings</font></b></a><br>A FIND command that allows the player to find a lost object anywhere<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>Suppose that, contrary to the usual rules of interactive fiction, we want to allow the player to discover the locations of things he hasn't actually seen yet:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode260(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Zero"\n\nWeight is a kind of value. The weights are light, manageable, and horribly heavy. Everything has a weight.\n\nA thing is usually manageable.\n\n[This does require a rule from Chapter 16, but it\'s a fairly straightforward one:]\n\nBefore printing the name of a horribly heavy thing (called weighty object):\n\tif we have taken the weighty object, say "[weight] ".\n\nThe Nearly Empty Living Room is a room. "Nearly everything is out, all of Helen\'s possessions and most of yours." A man called Mr Zero is in the Nearly Empty Living Room. "Mr Zero, despite being heavily paid to assist in this operation, is giving you a look that clearly conveys his lack of interest in budging even one more item." The description of Mr Zero is "Many muscles, no hair."\n\nThe book box is a horribly heavy thing in the Living Room. The clothing box is a manageable thing in the Living Room. A broom, a dustpan, some packing tape, and a discarded newspaper are light things in the Living Room.\n\nAfter taking a horribly heavy thing:\n\tsay "Taken. (Oof.)"\n\nTest me with "get clothing / look / get book box / look / i / drop book box / look".\n');
+    myProject.pasteCode('"One of Those Mornings"\n\nUnderstand "find [any thing]" as finding.\n\nFinding is an action applying to one visible thing.\n\nCarry out finding:\n\tif the player is carrying the noun\n\tbegin;\n\t\tsay "You\'re holding [the noun]!";\n\totherwise;\n\t\tsay "You left [the noun] [if the noun is on a supporter]on[otherwise]in[end if] [the holder of the noun].";\n\tend if.\n\n[The holder of the noun can be a room, a supporter, or a container: the phrase is not picky. We would want to be a little more careful if it were ever possible for an item to have been "removed from play" in our game, since then the holder could be nothing, and that would have odd results. In this particular example, though, that will not arise.]\n\n[And that\'s it, as far as the find command goes. The rest is local color.]\n\nThe Exhibition Room is a room. It contains a closed locked lockable transparent openable container called the display case. The display case contains a priceless pearl. The display case is scenery. The description of the Exhibition Room is "By far the finest thing in the room is a priceless pearl in a glass display case. It should of course be yours[if key is not visible], if only you can remember where you hid the key[end if]."\n\nThe silver key unlocks the display case.\n\nA jade vase, a teak chest, a bronze teakettle, and a child\'s burial casket are openable closed containers in the Exhibition Room.\n\nAfter taking the pearl:\n\tsay "The pearl rolls into your hand, gleaming in the oblique light; your fortune is made.";\n\tend the game in victory.\n\n[If we want to have the key found in different places when the game is replayed:]\n\nWhen play begins:\n\tlet the space be a random container which is not the display case;\n\tmove the silver key to the space.\n\nEvery turn:\n\tsay "Your watch ticks with maddening loudness."\n\nThe time of day is 1:02 AM.\n\nAt 1:08 AM: say "The security guard arrives to find you fumbling about with keys. Curses."; end the game in death.\n\nTest me with "find pearl / find teakettle / get teakettle / find teakettle / find key".\n');
 }
 </script>
-<a href="javascript:pasteCode260()"><img border=0 src=../doc_images/paste.png></a> &quot;Zero&quot;
+<a href="javascript:pasteCode260()"><img border=0 src=../doc_images/paste.png></a> &quot;One of Those Mornings&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Weight is a kind of value. The weights are light, manageable, and horribly heavy. Everything has a weight.
+<blockquote><font color="#000080">Understand &quot;find [any thing]&quot; as finding.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing is usually manageable.
+<blockquote><font color="#000080">Finding is an action applying to one visible thing.
 </font></blockquote><p>
 <p>
-<p>This does require a rule from Chapter 16, but it's a fairly straightforward one:
-<p>
-<blockquote><font color="#000080">Before printing the name of a horribly heavy thing (called weighty object):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if we have taken the weighty object, say &quot;[weight] &quot;.
+<blockquote><font color="#000080">Carry out finding:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is carrying the noun
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're holding [the noun]!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You left [the noun] [if the noun is on a supporter]on[otherwise]in[end if] [the holder of the noun].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Nearly Empty Living Room is a room. &quot;Nearly everything is out, all of Helen's possessions and most of yours.&quot; A man called Mr Zero is in the Nearly Empty Living Room. &quot;Mr Zero, despite being heavily paid to assist in this operation, is giving you a look that clearly conveys his lack of interest in budging even one more item.&quot; The description of Mr Zero is &quot;Many muscles, no hair.&quot;
+<p>The holder of the noun can be a room, a supporter, or a container: the phrase is not picky. We would want to be a little more careful if it were ever possible for an item to have been &quot;removed from play&quot; in our game, since then the holder could be nothing, and that would have odd results. In this particular example, though, that will not arise.
+<p>
+<p>And that's it, as far as the find command goes. The rest is local color.
+<p>
+<blockquote><font color="#000080">The Exhibition Room is a room. It contains a closed locked lockable transparent openable container called the display case. The display case contains a priceless pearl. The display case is scenery. The description of the Exhibition Room is &quot;By far the finest thing in the room is a priceless pearl in a glass display case. It should of course be yours[if key is not visible], if only you can remember where you hid the key[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The book box is a horribly heavy thing in the Living Room. The clothing box is a manageable thing in the Living Room. A broom, a dustpan, some packing tape, and a discarded newspaper are light things in the Living Room.
+<blockquote><font color="#000080">The silver key unlocks the display case.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After taking a horribly heavy thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Taken. (Oof.)&quot;
+<blockquote><font color="#000080">A jade vase, a teak chest, a bronze teakettle, and a child's burial casket are openable closed containers in the Exhibition Room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;get clothing / look / get book box / look / i / drop book box / look&quot;.
+<blockquote><font color="#000080">After taking the pearl:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The pearl rolls into your hand, gleaming in the oblique light; your fortune is made.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc138.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc137.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc139.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>
+<p>If we want to have the key found in different places when the game is replayed:
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the space be a random container which is not the display case;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the silver key to the space.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your watch ticks with maddening loudness.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The time of day is 1:02 AM.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">At 1:08 AM: say &quot;The security guard arrives to find you fumbling about with keys. Curses.&quot;; end the game in death.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;find pearl / find teakettle / get teakettle / find teakettle / find key&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc244.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e95"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex95.html#e95 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>229</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex95.html#e95 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Actaeon</font></b></a><br>A FOLLOW command allowing the player to pursue a person who has just left the room.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc243.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc245.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

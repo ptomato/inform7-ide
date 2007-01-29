@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.6. Actions applying to kinds of value</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.7. Understanding any, understanding rooms</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,121 +8,106 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc241.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc243.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.6. Actions applying to kinds of value</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Actaeon" -->
+<!-- SEARCH SECTION "Ex 229" -->
+<!-- SEARCH SORT "Ex 016-007-229" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc243.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc245.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.7. Understanding any, understanding rooms</b></font></td></tr></table>
 <p>
-<p>Almost all actions apply to things: the player picks them up, pushes them, looks at them and so on. Only occasionally do we need to recognise other kinds of value: but when we do, we can, as in the example called &quot;Safety&quot;:
+<p>Ordinarily, if we write
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode59(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Safety"\n\nThe Vault is a room. "Snug yet paranoid, this represents the state of the art in cheerless security." The Safe is here. "A mammoth safe, with a dial which can spin to any number, has pride of place. It must weigh about the same as a small car, so don\'t get any ideas." In the Safe is a silver florin. The Safe is closed and fixed in place. Understand "dial" as the Safe.\n\nSpinning it to is an action applying to one thing and one number. Check spinning it to: if the noun is not the Safe then say "[The noun] does not spin." instead. Report spinning it to: say "Click! and nothing else happens."\n\nUnderstand "spin [something] to [a number]" as spinning it to.\n\nAfter spinning the closed Safe to 1384: change the Safe to open; say "Clonk! and the safe door swings slowly open, revealing [list of things in the Safe]."\n\n');
-}
-</script>
-<a href="javascript:pasteCode59()"><img border=0 src=../doc_images/paste.png></a> &quot;Safety&quot;
+<blockquote><font color="#000080">Understand &quot;manipulate [something]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Vault is a room. &quot;Snug yet paranoid, this represents the state of the art in cheerless security.&quot; The Safe is here. &quot;A mammoth safe, with a dial which can spin to any number, has pride of place. It must weigh about the same as a small car, so don't get any ideas.&quot; In the Safe is a silver florin. The Safe is closed and fixed in place. Understand &quot;dial&quot; as the Safe.
+<p>then the &quot;[something]&quot; will only match what is within reach or sight: this is the concept of &quot;scope&quot;, which is what prevents a player from spookily acting on objects from a distance. The parser itself prevents the manipulation rules from ever being invoked on such distant items, which is as it should be.
+<p>
+<p>Sometimes, though, we positively want to allow this possibility. If we use the special word &quot;any&quot;, as in
+<p>
+<blockquote><font color="#000080">Understand &quot;manipulate [any door]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Spinning it to is an action applying to one thing and one number. Check spinning it to: if the noun is not the Safe then say &quot;[The noun] does not spin.&quot; instead. Report spinning it to: say &quot;Click! and nothing else happens.&quot;
+<p>then any door, anywhere in the model world, can be allowed in the player's command. (Of course, the manipulation rules may not do what the player hopes: all that has happened is that the command is now possible to type.) The &quot;any&quot; can be followed by any description of items or rooms, and the latter opens up new possibilities, since rooms are ordinarily never allowed to be named in the player's commands.
+<p>
+<p>For example, the following gives the player the ability to walk between rooms without giving explicit directions of movement.
+<p>
+<blockquote><font color="#000080">Going by name is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;spin [something] to [a number]&quot; as spinning it to.
+<blockquote><font color="#000080">Carry out going by name: say &quot;You walk to [the noun].&quot;; move the player to the noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After spinning the closed Safe to 1384: change the Safe to open; say &quot;Clonk! and the safe door swings slowly open, revealing [list of things in the Safe].&quot;
+<blockquote><font color="#000080">Understand &quot;go to [any adjacent visited room]&quot; as going by name.
 </font></blockquote><p>
 <p>
-<p>The substitution &quot;[a number]&quot; matches any number (actually any whole number that is not too large) typed by the player. Inform checks the various kinds being used to make sure that everything matches, so, for instance, this would be disallowed:
-<p>
-<blockquote><font color="#000080">Understand &quot;spin [something] to [something]&quot; as spinning it to.
-</font></blockquote><p>
+<p>(This is really only a sketch: in a finished work, &quot;go to&quot; would produce helpful errors if non-adjacent but visited rooms were named, and we might also worry about rules applying to movement, because the method above will circumvent them.)
 <p>
 <p><hr><p>
-<a name="e249"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex249.html#e249 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>223</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex249.html#e249 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Tom's Midnight Garden</font></b></a><br>A clock kind that can be set to any time using "the time understood"; may be turned on and off; and will advance itself only when running. Time on the face is also reported differently depending on whether the clock is analog or digital.<p></td></tr></table>
-<a name="e95"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc242.html#e95 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>224</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc242.html#e95 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Ibid.</font></b></a><br>A system which allows the author to assign footnotes to descriptions, and permits the player to retrieve them again by number, using "the number understood". Footnotes will automatically number themselves, according to the order in which the player discovers them.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>&quot;Hitchhiker's Guide to the Galaxy&quot; introduced the idea of footnoted descriptions, and various IF games since have toyed with the idea. The recommended implementation in Inform 6 involved keeping an assortment of footnote objects around, but in Inform 7 the table is a much tidier way of handling the same problem.
+<a name="e166"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex166.html#e166 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>228</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex166.html#e166 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> One of Those Mornings</font></b></a><br>A FIND command that allows the player to find a lost object anywhere<p></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e95"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc244.html#e95 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>229</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc244.html#e95 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Actaeon</font></b></a><br>A FOLLOW command allowing the player to pursue a person who has just left the room.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>Suppose we want the player to be able to go after characters who are moving around the map. The trick, of course, is that once characters are gone they are no longer visible to &quot;follow [person]&quot;, so we need &quot;follow [any person]&quot; to find them.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode188(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Ibid."\n\nThe Ship Inn is a room. "Here you are in a lovely pub which your guidebook assures you is extremely authentic. [1 as a footnote].\n\nTo your left sits a party of Italians, with their guidebook.\n\nTo your right is a silent, but not unappealing, young man.".\n\nA party of Italians and a silent young man are people in the Ship Inn. The Italians and the young man are scenery.\n\nThe table is a supporter in the Ship Inn. On the table is a mysterious pie. The description of the pie is "Your waitress told you it was the specialty of the day, Steak and Owl Pie. [2 as a footnote]." The pie is edible.\n\nTable of Footnotes\nassignment\tnote\na number\t"Francis Drake ate here, if the sign on the door is to be believed"\n--\t"this is unlikely, considering that owls are protected animals in England these days [3 as a footnote]"\n--\t"moreover, you can\'t imagine that owl would be very tasty"\n\nFootnotes mentioned is a number that varies.\n\n[Whenever we mention a footnote for the first time, we need to assign it a number, which we will use consistently thereafter. And it\'s probably a good idea to protect ourselves against the author accidentally using a number too large for the footnote table, too. So:]\n\nTo say (footnote - a number) as a footnote:\n\tif footnote > number of filled rows in the Table of Footnotes\n\tbegin;\n\t\tsay "Programming error: footnote assignment out of range.";\n\totherwise;\n\t\tchoose row footnote in the Table of Footnotes;\n\t\tif there is an assignment entry\n\t\tbegin;\n\t\t\tsay "([assignment entry])";\n\t\totherwise;\n\t\t\tchange footnotes mentioned to footnotes mentioned + 1;\n\t\t\tchoose row footnote in the Table of Footnotes;\n\t\t\tchange assignment entry to footnotes mentioned;\n\t\t\tsay "([assignment entry])";\n\t\tend if;\n\tend if.\n\n[Now, in order to let the player view these footnotes, we\'ll need to parse numbers.]\n\nUnderstand "footnote [number]" as looking up a footnote.\n\nLooking up a footnote is an action applying to one number.\n\nCheck looking up a footnote:\n\tif the number understood > footnotes mentioned, say "You haven\'t seen any such footnote." instead;\n\tif the number understood < 1, say "Footnotes are numbered from 1."\n\nCarry out looking up a footnote:\n\tchoose row with assignment of number understood in the Table of Footnotes;\n\tsay "([assignment entry]): [note entry]."\n\nTest me with "footnote 1 / examine pie / footnote 2 / footnote 3".\n\n');
+    myProject.pasteCode('"Actaeon"\n\nA person has a room called last location.\n\nUnderstand "follow [any person]" as following. Understand the commands "chase" and "pursue" as "follow".\n\nFollowing is an action applying to one visible thing.\n\nCheck following:\n\tif the noun is the player, say "Wherever you go, there you are." instead;\n\tif the noun is visible, say "[The noun] is right here." instead;\n\tif the last location of the noun is not the location, say "It\'s not clear where [the noun] has gone." instead.\n\n[Here again the best route comes in handy:]\n\nCarry out following:\n\tlet the destination be the location of the noun;\n\tif the destination is not a room, say "[The noun] isn\'t anywhere you can follow." instead;\n\tlet aim be the best route from the location to the destination;\n\tsay "(heading [aim])[line break]";\n\ttry going aim.\n\nCorinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.\n\nArtemis is a woman in Corinth.\n\n[We do also have to make sure that whenever we move a person from room to room, we record where they were moved from; otherwise, our clever restrictions about whom the player can pursue will not work properly.]\n\nTo move (pawn - a person) tidily to (target - a room):\n\tchange the last location of the pawn to the holder of the pawn;\n\tmove the pawn to the target.\n\nEvery turn:\n\tlet current location be the location of Artemis;\n\tlet next location be a random room which is adjacent to the current location;\n\tif Artemis is visible, say "Artemis heads to [the next location].";\n\tmove Artemis tidily to next location;\n\tif Artemis is visible, say "Artemis arrives from [the current location]."\n\nTest me with "wait / follow artemis / follow artemis / follow artemis".\n');
 }
 </script>
-<a href="javascript:pasteCode188()"><img border=0 src=../doc_images/paste.png></a> &quot;Ibid.&quot;
+<a href="javascript:pasteCode188()"><img border=0 src=../doc_images/paste.png></a> &quot;Actaeon&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Ship Inn is a room. &quot;Here you are in a lovely pub which your guidebook assures you is extremely authentic. [1 as a footnote].
+<blockquote><font color="#000080">A person has a room called last location.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To your left sits a party of Italians, with their guidebook.
+<blockquote><font color="#000080">Understand &quot;follow [any person]&quot; as following. Understand the commands &quot;chase&quot; and &quot;pursue&quot; as &quot;follow&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To your right is a silent, but not unappealing, young man.&quot;.
+<blockquote><font color="#000080">Following is an action applying to one visible thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A party of Italians and a silent young man are people in the Ship Inn. The Italians and the young man are scenery.
+<blockquote><font color="#000080">Check following:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the player, say &quot;Wherever you go, there you are.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is visible, say &quot;[The noun] is right here.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last location of the noun is not the location, say &quot;It's not clear where [the noun] has gone.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The table is a supporter in the Ship Inn. On the table is a mysterious pie. The description of the pie is &quot;Your waitress told you it was the specialty of the day, Steak and Owl Pie. [2 as a footnote].&quot; The pie is edible.
+<p>Here again the best route comes in handy:
+<p>
+<blockquote><font color="#000080">Carry out following:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the destination be the location of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the destination is not a room, say &quot;[The noun] isn't anywhere you can follow.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let aim be the best route from the location to the destination;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(heading [aim])[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try going aim.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Footnotes
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font size=2 color="#000080">assignment</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">note</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;Francis Drake ate here, if the sign on the door is to be believed&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">--</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;this is unlikely, considering that owls are protected animals in England these days [3 as a footnote]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font size=2 color="#000080">--</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font size=2 color="#000080">&quot;moreover, you can't imagine that owl would be very tasty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Footnotes mentioned is a number that varies.
+<blockquote><font color="#000080">Artemis is a woman in Corinth.
 </font></blockquote><p>
 <p>
-<p>Whenever we mention a footnote for the first time, we need to assign it a number, which we will use consistently thereafter. And it's probably a good idea to protect ourselves against the author accidentally using a number too large for the footnote table, too. So:
+<p>We do also have to make sure that whenever we move a person from room to room, we record where they were moved from; otherwise, our clever restrictions about whom the player can pursue will not work properly.
 <p>
-<blockquote><font color="#000080">To say (footnote - a number) as a footnote:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if footnote > number of filled rows in the Table of Footnotes
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Programming error: footnote assignment out of range.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row footnote in the Table of Footnotes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if there is an assignment entry
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;([assignment entry])&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change footnotes mentioned to footnotes mentioned + 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row footnote in the Table of Footnotes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change assignment entry to footnotes mentioned;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;([assignment entry])&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">To move (pawn - a person) tidily to (target - a room):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last location of the pawn to the holder of the pawn;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the pawn to the target.
 </font></blockquote><p>
 <p>
-<p>Now, in order to let the player view these footnotes, we'll need to parse numbers.
-<p>
-<blockquote><font color="#000080">Understand &quot;footnote [number]&quot; as looking up a footnote.
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let current location be the location of Artemis;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let next location be a random room which is adjacent to the current location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis heads to [the next location].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move Artemis tidily to next location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis arrives from [the current location].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Looking up a footnote is an action applying to one number.
+<blockquote><font color="#000080">Test me with &quot;wait / follow artemis / follow artemis / follow artemis&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check looking up a footnote:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number understood > footnotes mentioned, say &quot;You haven't seen any such footnote.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number understood < 1, say &quot;Footnotes are numbered from 1.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out looking up a footnote:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row with assignment of number understood in the Table of Footnotes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;([assignment entry]): [note entry].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;footnote 1 / examine pie / footnote 2 / footnote 3&quot;.
-</font></blockquote><p>
-<p>
-<p>This method does require us to keep track of where a footnote appears in the table. If we found this inconvenient, we could add a column to the footnote table so that we could invoke it with tags like &quot;[appearance quip as a footnote]&quot;.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc242.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc241.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc243.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc244.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc243.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc245.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

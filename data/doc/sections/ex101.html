@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.13. First and last rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.12. Doors</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,195 +8,96 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc295.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc297.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.13. First and last rules</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Garibaldi 1" -->
+<!-- SEARCH SECTION "Ex 19" -->
+<!-- SEARCH SORT "Ex 003-012-019" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc38.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc40.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.12. Doors</b></font></td></tr></table>
 <p>
-<p>This is the final technicality on rulebooks. Rulebooks are, as we have seen, automatically sorted in order of how specific the conditions for invoking the relevant rules are, so that for instance
+<p>The map of an interactive fiction is the layout of rooms and the entrances and exits which connect them. So far, these map connections have always run from one room to another, like so:
 <p>
-<blockquote><font color="#000080">Instead of taking a container, ...
+<blockquote><font color="#000080">The Painted Room is north of the Undertomb.
 </font></blockquote><p>
 <p>
-<p>will always come before
+<p>However, we can also interpose doors between rooms, like so:
 <p>
-<blockquote><font color="#000080">Instead of taking something, ...
+<blockquote><font color="#000080">The heavy iron grating is east of the Orchard and west of the Undertomb. The grating is a door.
 </font></blockquote><p>
 <p>
-<p>Sometimes, though, and especially with rulebooks where there is no particular ordering because conditions are usually not attached anyway (for instance, with &quot;every turn&quot; rules), it is useful to be certain that a particular rule comes first or last: especially if there is some housekeeping to do.
+<p>The second sentence is needed since otherwise Inform will take &quot;heavy iron grating&quot; to be the name of a third room, whereas what we want is for the grating to be something physically present in both the Orchard and in the Undertomb, and acting as a conduit between them. To this end it needs to be a &quot;door&quot;, a kind we have not so far seen. In the absence of any other instruction, a newly created door will be fixed in place, closed and openable.
 <p>
-<p>For instance, the &quot;turn sequence&quot; rulebook, which is used behind the scenes to organise what happens at the end of each turn, has a crucial piece of housekeeping to do in order to maintain the consistency of the world model: it has to find out if the player's location has been plunged into darkness or, conversely, has been lit up since the last turn. It is essential that this happens last of all so that the situation cannot change again before the next time the player types at the keyboard.
+<p>The grating really does come in between the two rooms: the grating is what lies immediately east of the Orchard, not the Undertomb room. So if we wrote the following:
 <p>
-<p>Each rulebook, then, can have two special rules, the designated &quot;first&quot; rule and the designated &quot;last&quot; rule. These, if defined, have no individual names, so that nobody can displace them from their positions or meddle with them: they belong to whoever created the rulebook.
-<p>
-<blockquote><font color="#000080">The last appraisal rule: say &quot;The Speak-Your-Progress machine sputters to a halt. You decide not to take this as a comment on your recent performance.&quot;
+<blockquote><font color="#000080">The Undertomb is east of the Orchard. The heavy iron grating is east of the Orchard and west of the Undertomb. The grating is a door.
 </font></blockquote><p>
+<p>
+<p>then Inform would say that this is a contradiction: we said the Undertomb was east of the Orchard, but then we said that the grating was east of the Orchard.
+<p>
+<p>Inform's &quot;door&quot; kind can be used for all manner of conduits, so the word door need not be taken literally. In Ursula K. LeGuin's beguiling novel &quot;The Tombs of Atuan&quot;, from which the above rooms are stolen, it is not a grating which interposes, but:
+<p>
+<blockquote><font color="#000080">The red rock stair is east of the Orchard and above the Undertomb. The stair is an open door. The stair is not openable.
+</font></blockquote><p>
+<p>
+<p>In real life, most doors are two-sided, and can be used from either of the rooms which they join, but this is not always convenient for interactive fiction. Here is a one-sided door:
+<p>
+<blockquote><font color="#000080">The blue door is a door. It is south of Notting Hill. Through it is the Flat Landing.
+</font></blockquote><p>
+<p>
+<p>(Note the use of &quot;it&quot; here as an optional abbreviation.) This will make a door visible only on the Notting Hill side; no map connection will be made in the reverse direction, unless we ask for one.
+<p>
+<p>Should we ever need it, the values &quot;front side of ...&quot; and &quot;back side of ...&quot; reveal where a door is placed. (For instance, &quot;front side of the heavy iron grating&quot; is the Orchard.)
 <p>
 <p><hr><p>
-<a name="e277"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex277.html#e277 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>283</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex277.html#e277 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Replacing standard action report rules</font></b></a><br>Replacing the standard action report rules to reflect our own design.<p></td></tr></table>
-<a name="e102"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex102.html#e102 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>284</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex102.html#e102 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 1</font></b></a><br>A poisonous gas that spreads from room to room, incapacitating or killing the player when it reaches sufficient levels.<p></td></tr></table>
-<a name="e101"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc296.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>285</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc296.html#e101 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Lethal Concentration 2</font></b></a><br>Poisonous gas again, only this time it sinks.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>This is a slight variation on the previous gas diffusion example: the main difference is that gas preferentially moves towards lower rooms, and will gradually settle in the bottom floor. We do this by calculating the probability of movement separately for each pair of rooms.
+<a name="e36"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex36.html#e36 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>17</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex36.html#e36 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Disappointment Bay 5</font></b></a><br>Disappointment Bay: adding the door and the deck to our charter boat.<p></td></tr></table>
+<a name="e15"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex15.html#e15 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>18</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex15.html#e15 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Escape</font></b></a><br>Window that can be climbed through or looked through.<p></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e101"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc39.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>19</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc39.html#e101 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Garibaldi 1</font></b></a><br>Providing a security readout device by which the player can check on the status of all doors in the game.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>Suppose we would like to allow the player to view the status of all the doors functioning in the game; and we want to identify those doors by mentioning which two rooms they connect. The following uses some techniques that will be covered in later chapters, but the basic idea may be obvious:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode194(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Lethal Concentration"\n\nA concentration is a kind of value. 200.9ppm specifies concentration. 200.9 ppm specifies concentration.\n\nA room has a concentration called current concentration. A room has a concentration called former concentration.\n\nTo decide what number is the probability inverse between (space - a room) and (second space - a room):\n\tlet guess be 20;\n\tlet way be the best route from space to second space;\n\tif way is up, let guess be 50;\n\tif way is down, let guess be 10;\n\tif the guess is less than 10, decide on 10;\n\tdecide on guess.\n\n[If we wanted, we could introduce other concerns into the calculation here: open and closed doors, windows between rooms, rooms that are outdoors vs. those that are indoors, and so on. The possibilities are numerous, so we will stick with the simple principle that our poison gas sinks.]\n\nEvery turn:\n\tfollow the diffusion rules.\n\nThe diffusion rules are a rulebook.\n\nA diffusion rule (this is the gas movement rule):\n\trepeat with space running through rooms\n\tbegin;\n\t\tlet sum be 0.0 ppm;\n\t\trepeat with way running through directions\n\t\tbegin;\n\t\t\tlet second space be the room way from the space;\n\t\t\tif second space is a room\n\t\t\tbegin;\n\t\t\t\tlet incoming be the former concentration of the second space divided by the probability inverse between second space and space;\n\t\t\t\tlet outgoing be the former concentration of the space divided by  the probability inverse between space and second space;\n\t\t\t\tlet difference be incoming minus outgoing;\n\t\t\t\tincrease sum by the difference;\n\t\t\tend if;\n\t\tend repeat;\n\t\tchange current concentration of the space to the former concentration of the space plus the sum;\n\tend repeat.\n\nA diffusion rule (this is the resetting concentration rule):\n\trepeat with space running through rooms\n\tbegin;\n\t\tchange the former concentration of the space to the current concentration of the space;\n\tend repeat.\n\nThe last diffusion rule (this is the lethal dosage rule):\n\tif the current concentration of the location is greater than LC50\n\tbegin;\n\t\tsay "The concentration in the air overpowers you...";\n\t\tend the game in death;\n\totherwise;\n\t\tif the current concentration of the location is greater than TLV-STEL\n\t\tbegin;\n\t\t\tsay "You feel extremely uncomfortable in this environment.";\n\t\tend if;\n\tend if.\n\nInstead of doing something when the current concentration of the location is greater than TLV-STEL:\n\tif going, continue the action;\n\tsay "You can\'t work in this environment: your eyes and nose sting and it hurts to breathe."\n\nRoom 1A is west of Room 1B. Room 1B is west of Room 1C. Room 1C is west of Room 1D. Room 1D is west of Room 1E.\n\nRoom 2A is west of Room 2B and below room 1A. Room 2B is west of Room 2C and below Room 1B. Room 2C is west of Room 2D and below Room 1C. Room 2D is west of Room 2E and below Room 1D. Room 2E is south of Room 1E and below Room 1E.\n\nThe former concentration of Room 1C is 800.0 ppm.\n\nThe status grid is a device carried by the player. The status grid is switched on.\n\n[And just for fun, this time we\'ll make the grid prettier, too:]\n\nEvery turn:\n\ttry examining the grid.\n\n\tInstead of examining the status grid:\n\tsay "[fixed letter spacing][unicode box drawings light down and right][top bar][unicode box drawings light down and left][line break]";\n\tsay "[unicode box drawings light vertical]";\n\tsay "[state of room 1A][state of room 1B][state of room 1C][state of room 1D][state of room 1E]   upstairs[line break]";\n\tsay "[unicode box drawings light vertical and right][middle bar][unicode box drawings light vertical and left][line break]";\n\tsay "[unicode box drawings light vertical]";\n\tsay "[state of room 2A][state of room 2B][state of room 2C][state of room 2D][state of room 2E]   downstairs[line break]";\n\tsay "[unicode box drawings light up and right][bottom bar][unicode box drawings light up and left][variable letter spacing][line break]"\n\nInclude Unicode Character Names by Graham Nelson.\n\nTo say top bar:\n\trepeat with N running from 1 to 9\n\tbegin;\n\t\tif the remainder after dividing N by 2 is 0, say "[unicode box drawings light down and horizontal]";\n\t\totherwise say "[unicode box drawings light horizontal]";\n\tend repeat.\n\nTo say middle bar:\n\trepeat with N running from 1 to 9\n\tbegin;\n\t\tif the remainder after dividing N by 2 is 0, say "[unicode box drawings light vertical and horizontal]";\n\t\totherwise say "[unicode box drawings light triple dash horizontal]";\n\tend repeat.\n\nTo say bottom bar:\n\trepeat with N running from 1 to 9\n\tbegin;\n\t\tif the remainder after dividing N by 2 is 0, say "[unicode box drawings light up and horizontal]";\n\t\totherwise say "[unicode box drawings light horizontal]";\n\tend repeat.\n\nTLV is a concentration that varies. TLV is 30.0ppm. [Long-term exposure maximum, safe for 8 hours a day.]\n\nTLV-STEL is a concentration that varies. TLV-STEL is 50.0ppm. [Short-term exposure maximum, safe for fifteen minutes max.]\n\nTLV-C is a concentration that varies. TLV-C is 150.0ppm. [Absolute exposure ceiling.]\n\nLC50 is a concentration that varies. LC50 is 300.0ppm. [Concentration at which 50 percent of test subjects die of exposure, usually expressed in terms of time and body weight; in our LC50 these are factored in for the player\'s weight for one minute.]\n\nInclude Basic Screen Effects by Emily Short.\n\nTo say state of (space - a room):\n\tif the current concentration of space is less than TLV, say blue letters;\n\tif the current concentration of space is TLV, say blue letters;\n\tif the current concentration of space is greater than TLV, say green letters;\n\tif the current concentration of space is greater than TLV-STEL, say yellow letters;\n\tif the current concentration of space is greater than TLV-C, say red letters;\n\tsay "[unicode square with diagonal crosshatch fill]";\n\tsay default letters;\n\tsay "[unicode box drawings light vertical]".\n\nTest me with "z / z / z / z / z / z / z / z".\n\n');
+    myProject.pasteCode('"Garibaldi"\n\nThe security readout is a device. The description of the readout is "The screen is blank."\n\nInstead of examining the switched on security readout:\n\tsay "The screen reads: [fixed letter spacing]";\n\tsay line break;\n\trepeat with item running through doors\n\tbegin;\n\t\tsay line break;\n\t\tsay "  [item] ([front side of the item]/[back side of the item]): [if the item is locked]LOCKED[otherwise]UNLOCKED[end if]";\n\tend repeat;\n\tsay variable letter spacing;\n\tsay paragraph break.\n\n[It is more or less arbitrary which room winds up as the "front side" and which as the "back", but in this case it hardly matters.]\n\nThe player carries the security readout.\n\nThe Docking Bay is a room. The inner airlock is a door. It is north of the Docking Bay and south of the Zocalo. The inner airlock is lockable and unlocked.  The outer airlock is lockable and locked. It is a door. It is south of the Docking Bay and north of Space.\n\nThe quarantine seal is a door. It is west of the Zocalo and east of Medlab. Quarantine seal is locked.\n\nThe security pass unlocks the inner airlock. The player carries the security pass.\n\nTest me with "x readout / turn on readout / x readout / lock inner airlock with security pass / x readout".\n');
 }
 </script>
-<a href="javascript:pasteCode194()"><img border=0 src=../doc_images/paste.png></a> &quot;Lethal Concentration&quot;
+<a href="javascript:pasteCode194()"><img border=0 src=../doc_images/paste.png></a> &quot;Garibaldi&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A concentration is a kind of value. 200.9ppm specifies concentration. 200.9 ppm specifies concentration.
+<blockquote><font color="#000080">The security readout is a device. The description of the readout is &quot;The screen is blank.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A room has a concentration called current concentration. A room has a concentration called former concentration.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide what number is the probability inverse between (space - a room) and (second space - a room):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let guess be 20;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from space to second space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if way is up, let guess be 50;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if way is down, let guess be 10;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the guess is less than 10, decide on 10;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on guess.
-</font></blockquote><p>
-<p>
-<p>If we wanted, we could introduce other concerns into the calculation here: open and closed doors, windows between rooms, rooms that are outdoors vs. those that are indoors, and so on. The possibilities are numerous, so we will stick with the simple principle that our poison gas sinks.
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the diffusion rules.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The diffusion rules are a rulebook.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A diffusion rule (this is the gas movement rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with space running through rooms
+<blockquote><font color="#000080">Instead of examining the switched on security readout:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The screen reads: [fixed letter spacing]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say line break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through doors
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let sum be 0.0 ppm;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with way running through directions
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let second space be the room way from the space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if second space is a room
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let incoming be the former concentration of the second space divided by the probability inverse between second space and space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let outgoing be the former concentration of the space divided by  the probability inverse between space and second space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let difference be incoming minus outgoing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase sum by the difference;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change current concentration of the space to the former concentration of the space plus the sum;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say line break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [item] ([front side of the item]/[back side of the item]): [if the item is locked]LOCKED[otherwise]UNLOCKED[end if]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say variable letter spacing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A diffusion rule (this is the resetting concentration rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with space running through rooms
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the former concentration of the space to the current concentration of the space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<p>It is more or less arbitrary which room winds up as the &quot;front side&quot; and which as the &quot;back&quot;, but in this case it hardly matters.
+<p>
+<blockquote><font color="#000080">The player carries the security readout.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The last diffusion rule (this is the lethal dosage rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of the location is greater than LC50
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The concentration in the air overpowers you...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in death;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of the location is greater than TLV-STEL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You feel extremely uncomfortable in this environment.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">The Docking Bay is a room. The inner airlock is a door. It is north of the Docking Bay and south of the Zocalo. The inner airlock is lockable and unlocked.  The outer airlock is lockable and locked. It is a door. It is south of the Docking Bay and north of Space.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of doing something when the current concentration of the location is greater than TLV-STEL:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if going, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't work in this environment: your eyes and nose sting and it hurts to breathe.&quot;
+<blockquote><font color="#000080">The quarantine seal is a door. It is west of the Zocalo and east of Medlab. Quarantine seal is locked.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Room 1A is west of Room 1B. Room 1B is west of Room 1C. Room 1C is west of Room 1D. Room 1D is west of Room 1E.
+<blockquote><font color="#000080">The security pass unlocks the inner airlock. The player carries the security pass.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Room 2A is west of Room 2B and below room 1A. Room 2B is west of Room 2C and below Room 1B. Room 2C is west of Room 2D and below Room 1C. Room 2D is west of Room 2E and below Room 1D. Room 2E is south of Room 1E and below Room 1E.
+<blockquote><font color="#000080">Test me with &quot;x readout / turn on readout / x readout / lock inner airlock with security pass / x readout&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The former concentration of Room 1C is 800.0 ppm.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The status grid is a device carried by the player. The status grid is switched on.
-</font></blockquote><p>
-<p>
-<p>And just for fun, this time we'll make the grid prettier, too:
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the grid.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">&nbsp;&nbsp;&nbsp;&nbsp;Instead of examining the status grid:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[fixed letter spacing][unicode box drawings light down and right][top bar][unicode box drawings light down and left][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light vertical]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[state of room 1A][state of room 1B][state of room 1C][state of room 1D][state of room 1E]   upstairs[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light vertical and right][middle bar][unicode box drawings light vertical and left][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light vertical]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[state of room 2A][state of room 2B][state of room 2C][state of room 2D][state of room 2E]   downstairs[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light up and right][bottom bar][unicode box drawings light up and left][variable letter spacing][line break]&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Include Unicode Character Names by Graham Nelson.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say top bar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with N running from 1 to 9
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the remainder after dividing N by 2 is 0, say &quot;[unicode box drawings light down and horizontal]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[unicode box drawings light horizontal]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say middle bar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with N running from 1 to 9
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the remainder after dividing N by 2 is 0, say &quot;[unicode box drawings light vertical and horizontal]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[unicode box drawings light triple dash horizontal]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say bottom bar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with N running from 1 to 9
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the remainder after dividing N by 2 is 0, say &quot;[unicode box drawings light up and horizontal]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[unicode box drawings light horizontal]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">TLV is a concentration that varies. TLV is 30.0ppm. [Long-term exposure maximum, safe for 8 hours a day.]
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">TLV-STEL is a concentration that varies. TLV-STEL is 50.0ppm. [Short-term exposure maximum, safe for fifteen minutes max.]
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">TLV-C is a concentration that varies. TLV-C is 150.0ppm. [Absolute exposure ceiling.]
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">LC50 is a concentration that varies. LC50 is 300.0ppm. [Concentration at which 50 percent of test subjects die of exposure, usually expressed in terms of time and body weight; in our LC50 these are factored in for the player's weight for one minute.]
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Include Basic Screen Effects by Emily Short.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say state of (space - a room):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is less than TLV, say blue letters;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is TLV, say blue letters;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is greater than TLV, say green letters;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is greater than TLV-STEL, say yellow letters;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is greater than TLV-C, say red letters;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode square with diagonal crosshatch fill]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say default letters;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light vertical]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;z / z / z / z / z / z / z / z&quot;.
-</font></blockquote><p>
-<p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc296.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc295.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc297.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc39.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc38.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc40.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

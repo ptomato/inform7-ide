@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.11. Using Inform 6 within Inform 7</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.20. Settings in the map-maker</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,16 +8,42 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc330.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc332.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.11. Using Inform 6 within Inform 7</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Settings in the map-maker" -->
+<!-- SEARCH SECTION "20.20" -->
+<!-- SEARCH SORT "020-020-000" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc330.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Publishing</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc332.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.20. Settings in the map-maker</b></font></td></tr></table>
 <p>
-<p>To return to what was said on the first page of this documentation: Inform 7 (or I7), the current version, is not at all like Inform 6 (or I6). Internally, however, I7 works by translating the source text into an I6 program, so that in a practical sense the current version of Inform actually contains its predecessor.
+<p>The map-maker has altogether 35 named settings, and tweaking these can affect the result in ways which vary from the subtle to the grotesque. An important point is that the map-maker deals separately with the three levels in its working: the big picture of the whole map; each of the vertical slices which contain sub-maps; and finally all of the individual rooms. For instance, we might have 67 rooms, arranged on 3 vertical levels, all shown on one big map: Inform will try to show these stacked above each other, with the highest level at the top of the map, then the middle level, then the bottom level.
 <p>
-<p>The final sections of this chapter show how I6 code can be mixed directly in with I7. The remaining pages will therefore make little or no sense to those who do not already use I6. But for those who do know I6 already, it would be all too easy to write highly hybridised code, constantly mixing I6 and I7. The authors of Inform hope that this will not happen: for almost all purposes, I7 is much more powerful than I6, and fails - when it has to fail - in a way more helpful to the user. Ideally, all I6 content would be confined to extensions (and this may be mandated in future releases of Inform), and even writers of extensions are asked to pare down their usage of I6 to the minimum necessary.
+<p>Moreover, not only does the whole map have its 35 settings, but each level has its own independent collection of those 35 settings, and so does each individual room. So the actual number of variables in our example is 1+3+67 = 71 times 35, which is a lot. The convention is that setting the value of S (some setting, let's say) for something affects not only that thing, but also everything inside it, unless they have their own individual settings for S.
 <p>
-<p>The methods for incorporating I6 code into I7 have been designed with this in mind, that is, to encourage people to use I6 in as self-contained a way as possible: in particular to isolate the relatively few functions which need to be written in I6, and to give them natural language expression.
+<p>For example: one of the settings is called &quot;room-size&quot;, and is the size of the little square boxes representing a room, measured in points. (One point is 1/72 of an inch, so 72 points equals 1 inch: it's a traditional printer's measure.) Suppose we write:
 <p>
-<p>Finally, anyone hacking with I7 for a while is likely to become curious about the Standard Rules file, and to look at the text on which the Inform world model is founded. The file is, of course, no secret, but it can be misleading. For one thing, it appears to have great freedom to set up the world model as it pleases, but in fact the I7 compiler may well crash unless certain things are done just so in the Standard Rules: they depend on each other.
+<blockquote><font color="#000080">Index map with room-size set to 36
+<br>&nbsp;&nbsp;&nbsp;&nbsp;and room-size of level 2 set to 28
+<br>&nbsp;&nbsp;&nbsp;&nbsp;and room-size of the Hall of Kings set to 52.
+</font></blockquote><p>
 <p>
-<p>Moreover, the Standard Rules use a number of syntaxes which are not documented in this chapter: these are constantly being altered, and it would not be safe to imitate them. Any I6-related syntax which is not documented in this chapter may be removed or changed in effect at any time without warning, for instance in an update of Inform to fix bugs.
+<p>The first instruction sets the value of &quot;room-size&quot; for the whole map (note the lack of an &quot;of...&quot;); the second for level 2 of the map, and the last for a single room only. The result is that the Hall of Kings is drawn as 52x52 point box, all rooms on level 2 are 28x28 (except the Hall of Kings, if it's on level 2), and all others are 36x36, half an inch square.
+<p>
+<p>The setting instruction also allows three other useful forms. A setting &quot;of the first room&quot; applies to the room in which the game begins: we might for instance write
+<p>
+<blockquote><font color="#000080">Index map with room-outline-thickness of the first room set to 2.
+</font></blockquote><p>
+<p>
+<p>which gives this special room a bolder edge to it, since the default value is 1.
+<p>
+<p>We can also apply settings not just to single rooms but to all rooms of a given kind:
+<p>
+<blockquote><font color="#000080">A rivery room is a kind of room. Index map with room-colour of rivery rooms set to &quot;Navy&quot; and room-name-colour of rivery rooms set to &quot;White&quot;.
+</font></blockquote><p>
+<p>
+<p>Lastly, we can apply settings to all rooms in a given region:
+<p>
+<blockquote><font color="#000080">Northern Oxfordshire is a region. Hampton Poyle and Steeple Barton are in Northern Oxfordshire. Index map with room-name-font of Northern Oxfordshire set to &quot;Helvetica-Oblique&quot;.
+</font></blockquote><p>
+<p>
+<p>(Note that rooms and regions don't have their own individual sets of the 35 settings: what happens is just that instructions like the last one change more than one room at once.)
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc330.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc332.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

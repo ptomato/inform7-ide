@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.13. First and last rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.2. Named rules and rulebooks</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,55 +8,84 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc295.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc297.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.13. First and last rules</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Delayed Gratification" -->
+<!-- SEARCH SECTION "Ex 274" -->
+<!-- SEARCH SORT "Ex 018-002-274" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc288.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc290.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.2. Named rules and rulebooks</b></font></td></tr></table>
 <p>
-<p>This is the final technicality on rulebooks. Rulebooks are, as we have seen, automatically sorted in order of how specific the conditions for invoking the relevant rules are, so that for instance
+<p>Most of the rules built into Inform have names. For instance, a rule called &quot;the advance time rule&quot; is the one which increments the number of turns - usually visible on the &quot;status line&quot; displayed above the window of a game in progress - and advances the clock, which is usually not visible, but ticking away behind the scenes.
 <p>
-<blockquote><font color="#000080">Instead of taking a container, ...
+<p>A rulebook is a list of rules to be followed in sequence until one of them makes a decision. For instance, when actions get to the &quot;instead&quot; stage, each &quot;instead&quot; rule is tried until one of them chooses to do something. If the source text contains the rules
+<p>
+<blockquote><font color="#000080">Instead of taking something: say &quot;You have no particular need just now.&quot;
+<br>Instead of taking a fish: say &quot;It's all slimy.&quot;
 </font></blockquote><p>
 <p>
-<p>will always come before
+<p>and a command to TAKE something is tried, then only one of these rules will have any effect. The &quot;instead&quot; rulebook contains:
 <p>
-<blockquote><font color="#000080">Instead of taking something, ...
+<blockquote><font color="#000080">Rule (1) to be applied if the action matches &quot;taking a fish&quot;
+<br>Rule (2) to be applied if the action matches &quot;taking something&quot;
 </font></blockquote><p>
 <p>
-<p>Sometimes, though, and especially with rulebooks where there is no particular ordering because conditions are usually not attached anyway (for instance, with &quot;every turn&quot; rules), it is useful to be certain that a particular rule comes first or last: especially if there is some housekeeping to do.
+<p>Inside their rulebook, the rules are not listed in the order of definition in the source text. Rule (1) comes before rule (2) because it applies in more specific circumstances. This is the main idea: a rulebook gathers together rules about making some decision, or taking some action, and sorts them in order to give the more specific rules first choice about whether they want to intervene.
 <p>
-<p>For instance, the &quot;turn sequence&quot; rulebook, which is used behind the scenes to organise what happens at the end of each turn, has a crucial piece of housekeeping to do in order to maintain the consistency of the world model: it has to find out if the player's location has been plunged into darkness or, conversely, has been lit up since the last turn. It is essential that this happens last of all so that the situation cannot change again before the next time the player types at the keyboard.
+<p>Whereas only some rules are named (the two &quot;instead&quot; rules above have no name, for instance), every rulebook has a name. For convenience, the following forms of rule and rulebook name are synonymous:
 <p>
-<p>Each rulebook, then, can have two special rules, the designated &quot;first&quot; rule and the designated &quot;last&quot; rule. These, if defined, have no individual names, so that nobody can displace them from their positions or meddle with them: they belong to whoever created the rulebook.
-<p>
-<blockquote><font color="#000080">The last appraisal rule: say &quot;The Speak-Your-Progress machine sputters to a halt. You decide not to take this as a comment on your recent performance.&quot;
+<blockquote><font color="#000080">advance time = the advance time rule
 </font></blockquote><p>
+<p>
+<blockquote><font color="#000080">the instead rules = instead rulebook = instead
+</font></blockquote><p>
+<p>
+<p>The names of built-in rules have been chosen as descriptively as possible: the &quot;can't go through closed doors rule&quot;, for instance. Names for rules tend to be verbose, but this is a situation where clarity is very much better than brevity.
 <p>
 <p><hr><p>
-<a name="e277"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc296.html#e277 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>283</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc296.html#e277 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Replacing standard action report rules</font></b></a><br>Replacing the standard action report rules to reflect our own design.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we don't like the library responses for certain actions and would prefer something else. We could in theory write a lot of procedural rules which said, for instance, &quot;substitute new report dropping rule for standard report dropping rule&quot;, but this would get cumbersome.
-<p>
-<p>A sleeker way is to slip in our replacements at the beginning of each report rulebook, and then stop the action before it got as far as calling the standard report rule. For instance, if we were designing a game in the first person plural:
+<a name="e276"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex276.html#e276 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>273</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex276.html#e276 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Nine AM Appointment</font></b></a><br>A WAIT [number] MINUTES command which advances through an arbitrary number of turns.<p></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e277"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc289.html#e277 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>274</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc289.html#e277 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Delayed Gratification</font></b></a><br>A WAIT UNTIL [time] command which advances until the game clock reaches the correct hour.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode370(code) {
+function pasteCode371(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('First report dropping rule:\n\tsay "We casually toss [the noun] aside." instead.\n\nFirst report taking rule:\n\tsay "We gather [the noun] to ourselves." instead.\n\nFirst report waiting rule:\n\tsay "We talk amongst ourselves." instead.\n\n');
+    myProject.pasteCode('"Delayed Gratification"\n\nHanging around until is an action applying to one time.\n\nCheck hanging around until:\n\tif the time of day is the time understood, say "It is [time understood] now!" instead;\n\tif the time of day is after the time understood, say "It is too late for that now." instead.\n\nCarry out hanging around until:\n\twhile the time of day is before time understood repeatedly follow the turn sequence rules.\n\nReport hanging around until:\n\tsay "You yawn until [time understood]."\n\nUnderstand "wait until [time]" as hanging around until.\n\nThe Empty Field is a room. "It\'s an ordinary empty field. Nothing to see here at all-- yet. Wait until 11:45 PM, though."\n\nAt 11:45 PM:\n\tsay "Suddenly the air is filled with light and the sounds of an approaching band. Over the crest of the hill comes a parade of singing, stomping, hooting people: and not just people, but dogs, horses, elephants, giraffes... There are banners, and candles, and a flag that glows eerie-green in the dark; there is a float shaped like an enormous turtle, its shell covered with winking green lights; there is an old man dressed as a skeleton, carried in a litter, his neck garlanded with dried chiles. There are small girls throwing rose petals from a basket, and grown women half-naked carrying the emblems of Bacchic revelry, and two little boys each with a silver basin of clear water. All these go by in procession, and you join on at the end.";\n\tend the game in victory.\n\nTest me with "look / z / z / wait until 11:45 PM".\n');
 }
 </script>
-<a href="javascript:pasteCode370()"><img border=0 src=../doc_images/paste.png></a> First report dropping rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;We casually toss [the noun] aside.&quot; instead.
+<a href="javascript:pasteCode371()"><img border=0 src=../doc_images/paste.png></a> &quot;Delayed Gratification&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">First report taking rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;We gather [the noun] to ourselves.&quot; instead.
+<blockquote><font color="#000080">Hanging around until is an action applying to one time.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">First report waiting rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;We talk amongst ourselves.&quot; instead.
+<blockquote><font color="#000080">Check hanging around until:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the time of day is the time understood, say &quot;It is [time understood] now!&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the time of day is after the time understood, say &quot;It is too late for that now.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>...and so on throughout the action set.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc296.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e102"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex102.html#e102 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>284</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex102.html#e102 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 1</font></b></a><br>A poisonous gas that spreads from room to room, incapacitating or killing the player when it reaches sufficient levels.<p></td></tr></table>
-<a name="e101"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex101.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>285</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex101.html#e101 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 2</font></b></a><br>Poisonous gas again, only this time it sinks.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc295.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc297.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<blockquote><font color="#000080">Carry out hanging around until:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;while the time of day is before time understood repeatedly follow the turn sequence rules.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report hanging around until:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You yawn until [time understood].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;wait until [time]&quot; as hanging around until.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Empty Field is a room. &quot;It's an ordinary empty field. Nothing to see here at all-- yet. Wait until 11:45 PM, though.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">At 11:45 PM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Suddenly the air is filled with light and the sounds of an approaching band. Over the crest of the hill comes a parade of singing, stomping, hooting people: and not just people, but dogs, horses, elephants, giraffes... There are banners, and candles, and a flag that glows eerie-green in the dark; there is a float shaped like an enormous turtle, its shell covered with winking green lights; there is an old man dressed as a skeleton, carried in a litter, his neck garlanded with dried chiles. There are small girls throwing rose petals from a basket, and grown women half-naked carrying the emblems of Bacchic revelry, and two little boys each with a silver basin of clear water. All these go by in procession, and you join on at the end.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;look / z / z / wait until 11:45 PM&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc289.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc288.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc290.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

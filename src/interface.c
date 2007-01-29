@@ -3455,6 +3455,7 @@ create_inspector_window (void)
   GtkWidget *search_inspector_search_extensions;
   GtkWidget *search_inspector_search_documentation;
   GtkWidget *label86;
+  GtkWidget *no_inspector;
 
   inspector_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_size_request (inspector_window, 250, -1);
@@ -3590,6 +3591,11 @@ create_inspector_window (void)
   gtk_widget_show (label86);
   gtk_expander_set_label_widget (GTK_EXPANDER (search_inspector), label86);
 
+  no_inspector = gtk_label_new (_("No inspectors enabled."));
+  gtk_widget_show (no_inspector);
+  gtk_box_pack_start (GTK_BOX (vbox34), no_inspector, FALSE, FALSE, 0);
+  gtk_misc_set_alignment (GTK_MISC (no_inspector), 0, 0.5);
+
   g_signal_connect_after ((gpointer) inspector_window, "realize",
                           G_CALLBACK (after_inspector_window_realize),
                           NULL);
@@ -3626,6 +3632,7 @@ create_inspector_window (void)
   GLADE_HOOKUP_OBJECT (inspector_window, search_inspector_search_extensions, "search_inspector_search_extensions");
   GLADE_HOOKUP_OBJECT (inspector_window, search_inspector_search_documentation, "search_inspector_search_documentation");
   GLADE_HOOKUP_OBJECT (inspector_window, label86, "label86");
+  GLADE_HOOKUP_OBJECT (inspector_window, no_inspector, "no_inspector");
 
   return inspector_window;
 }

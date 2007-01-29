@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.5. Assemblies and body parts</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.23. Parts of things</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,151 +8,203 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc57.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc59.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.5. Assemblies and body parts</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Disappointment Bay 12" -->
+<!-- SEARCH SECTION "Ex 30" -->
+<!-- SEARCH SORT "Ex 003-023-030" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc49.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc51.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.23. Parts of things</b></font></td></tr></table>
 <p>
-<p>In the previous chapter, we saw that it was possible to make sub-parts of things. For instance,
+<p>Everything has one and only one kind. This is both good and bad: good for clarity, bad if something needs to behave in two different ways at once. How might we simulate a car with an ignition key, given that no single thing can be both a &quot;vehicle&quot; and a &quot;device&quot; at the same time?
 <p>
-<blockquote><font color="#000080">The white door is in the Drawing Room. The handle is part of the white door.
+<p>The Inform world model takes the view that such a car is too complicated to be simulated with a single thing. Instead it should be simulated as a vehicle (the car) which has a device (the ignition) attached. This is done using a third kind of containment to those seen so far (&quot;in...&quot; and &quot;on...&quot;): &quot;part of&quot;.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode8(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Buttons"\n\nThe Confectionary Workshop is a room. The Chocolate Machine is here. "The Chocolate Machine has pride of place. A lever and two buttons, one white, the other brown, seem to be the only controls. On top is a hopper."\n\nA container called the hopper is part of the Chocolate Machine. The lever, the white button and the brown button are parts of the Chocolate Machine.\n\nThe Chocolatier\'s desk is here. "The Chocolatier evidently works at the imposing green-leather topped desk facing the Machine. It has three drawers with brass handles."\n\nThe upper drawer, the middle drawer and the lower drawer are parts of the desk. The upper drawer, the middle drawer and the lower drawer are openable closed containers. In the middle drawer is a sugared almond. In the lower drawer is a Battenburg cake. On the desk is a liquorice twist.\n\nThe cake, the twist and the almond are edible.\n\n');
+}
+</script>
+<a href="javascript:pasteCode8()"><img border=0 src=../doc_images/paste.png></a> &quot;Buttons&quot;
 </font></blockquote><p>
 <p>
-<p>creates a door with an attached handle. But what if we want to say that not just this door, but every door, should have a handle? To do this we first need to create a kind called &quot;handle&quot;, since there will clearly need to be many handles. The solution is:
-<p>
-<blockquote><font color="#000080">A handle is a kind of thing. A handle is part of every door.
+<blockquote><font color="#000080">The Confectionary Workshop is a room. The Chocolate Machine is here. &quot;The Chocolate Machine has pride of place. A lever and two buttons, one white, the other brown, seem to be the only controls. On top is a hopper.&quot;
 </font></blockquote><p>
 <p>
-<p>&quot;Every&quot; is a loaded word and best used sparingly. A sentence like &quot;A handle is part of every handle&quot; would, if taken literally, mean that a handle takes forever to make and is never finished. Inform will reject this, but the moral is clear: we should think about what we are doing with &quot;every&quot;. Another restriction is it is not safe to meddle with the three fundamental kinds &quot;room&quot;, &quot;container&quot; or &quot;supporter&quot;, but in fact this one can be got around quite easily, like so -
-<p>
-<blockquote><font color="#000080">A silver coin is a kind of thing. A banking room is a kind of room. Five silver coins are in every banking room.
+<blockquote><font color="#000080">A container called the hopper is part of the Chocolate Machine. The lever, the white button and the brown button are parts of the Chocolate Machine.
 </font></blockquote><p>
 <p>
-<p>The effect of sentences like these is to make what we might call &quot;assemblies&quot; instead of single things. When a banking room is created, so are five more silver coins; when a door is created, so is another handle. Such sentences act not only on items created later on in the source text, but also on all those created so far.
-<p>
-<p>This is especially useful for body parts. If we would like to explore Voltaire's suggestion that history would have been very different if only Cleopatra's nose had been shorter, we will need noses:
-<p>
-<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person.
+<blockquote><font color="#000080">The Chocolatier's desk is here. &quot;The Chocolatier evidently works at the imposing green-leather topped desk facing the Machine. It has three drawers with brass handles.&quot;
 </font></blockquote><p>
 <p>
-<p>Something to bear in mind, though, is that in play the following may well happen:
-<p>
-<blockquote><font color="#000080">>examine nose
-<br>Which do you mean, your nose, Antony's nose or Cleopatra's nose?
+<blockquote><font color="#000080">The upper drawer, the middle drawer and the lower drawer are parts of the desk. The upper drawer, the middle drawer and the lower drawer are openable closed containers. In the middle drawer is a sugared almond. In the lower drawer is a Battenburg cake. On the desk is a liquorice twist.
 </font></blockquote><p>
 <p>
-<p>...because the player, being also a &quot;person&quot;, is as susceptible to the invention of noses as anyone else.
+<blockquote><font color="#000080">The cake, the twist and the almond are edible.
+</font></blockquote><p>
 <p>
-<p>Note that Inform names the otherwise nameless noses after their owners. It will always do this unless there are multiple indistinguishable things being created, as in the &quot;five silver coins are in every banking room&quot; example: those will all just be called &quot;silver coin&quot;.
+<p>The machine and the desk each have several &quot;parts&quot; representing subsidiary pieces of themselves. The desk is a &quot;supporter&quot; (it needs to be, for the liquorice twist to be on top) but also has three &quot;containers&quot; attached, each of which can be opened or closed independently.
+<p>
+<p>In the interests of realism, the standard rules of play protect these composite things. Thus if the desk were to be moved elsewhere (rolling on sugar casters perhaps) then its parts would move with it, and the player is not allowed to detach parts of things: the drawers can be opened or closed, but not pulled out altogether.
 <p>
 <p><hr><p>
-<a name="e194"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex194.html#e194 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>38</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex194.html#e194 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Being Prepared</font></b></a><br>A kind for jackets, which always includes a container called a pocket.<p></td></tr></table>
-<a name="e57"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex57.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>39</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex57.html#e57 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Model Shop</font></b></a><br>An "on/off button" which controls whatever device it is part of.<p></td></tr></table>
-<a name="e45"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc58.html#e45 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>40</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc58.html#e45 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> U-Stor-It</font></b></a><br>A "chest" kind which consists of a container which has a lid as a supporter.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Suppose we want to write a game in which there are a number of chests. Each of these chests will be a container, but have a lid which is a supporter.
+<a name="e212"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex212.html#e212 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>29</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex212.html#e212 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Brown</font></b></a><br>A red sticky label which can be attached to anything in the game, or removed again.<p></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e45"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc50.html#e45 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>30</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc50.html#e45 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Disappointment Bay 12</font></b></a><br>A final trip to Disappointment Bay: the scenario turned into a somewhat fuller scene, with various features that have not yet been explained.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode138(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"U-Stor-It"\n\nSection 1 - Assemblies and Supporters\n\nA chest is a kind of container. A chest is always openable. A chest is usually fixed in place. A chest is usually closed. The specification of a chest is "Represents a container with a separately implemented lid; the lid is itself a supporter."\n\nA lid is a kind of supporter. A lid is part of every chest. The specification of a lid is "A supporter attached to a chest, which can only support things when the chest is closed."\n\n[(The "specification" of a kind is not really a property, and is used instead to describe the kind in the Index. So the text of these specifications is never found in the game.) Of course, this doesn\'t get us very far. We will also want the game to correctly interpret variations on "open the chest" and "close the lid", redirecting actions appropriately.]\n\nSection 2 - Opening and closing\n\nBefore opening a lid which is part of a chest (called the item):\n\ttry opening the item instead.\n\nBefore closing a lid which is part of a chest (called the item):\n\ttry closing the item instead.\n\nBefore opening a chest when something is on the lid (called the obstruction) which is part of the noun:\n\trepeat with item running through things on the obstruction\n\tbegin;\n\t\tsay "(first removing [the item])[line break]";\n\t\ttry taking the item;\n\tend repeat;\n\nInstead of opening a chest when something is on a lid (called the item) which is part of the noun:\n\tsay "You\'d have to remove [the list of things on the item] from the lid first." instead.\n\nInstead of looking under a lid which is part of a chest (called the item):\n\ttry opening the item.\n\n\n[We may also want to be able to deal with "put in" and "put on" appropriately, even if the player names the wrong part of the object:]\n\nSection 3 - Insertion and Support\n\nBefore inserting something into a lid which is part of a chest (called the item):\n\ttry inserting the noun into the item instead.\n\nBefore putting something on a chest when a lid (called the item) is part of the second noun:\n\ttry putting the noun on the item instead.\n\n[Furthermore, we don\'t want the player to be able to put things on the lid while the chest is open:]\n\nBefore putting something on a lid which is part of an open chest (called the item):\n\tsay "(first closing [the item])[line break]";\n\ttry closing the item.\n\nInstead of putting something on a lid which is part of an open chest (called the item):\n\tsay "[The item] would need to be closed first.";\n\n[And then we may also want a couple of rules for describing our assembled object nicely:]\n\nSection 4 - Description in Rooms\n\nInstead of examining a closed chest when something is on a lid (called the top) which is part of the noun:\n\tsay "[The noun] is closed, and there [is/are list of things on the top] on top.";\n\nAfter printing the name of a chest (called the item) while listing contents of a room:\n\tif a lid (called the second item) which supports something is part of the item\n\tbegin;\n\t\tsay " (on which [is/are list of things on the second item])";\n\t\tomit contents in listing;\n\tend if.\n\n[Now we are free to create entire treasure rooms at a single blow:]\n\nSection 5 - U-Stor-It Facility\n\nThe U-Stor-It Facility is a room. The sea trunk, the shipping crate, and a metal box are chests in the U-Stor-It Facility. The metal box contains a sapphire, a gold coin, and a signed photograph of Babe Ruth.\n\n[Even though we have never explicitly defined it, the metal box has a "metal box\'s lid", which we can use at need.]\n\nThe metal box\'s lid supports a small card. The description of the small card is "It reads, \'Back in 5 mins - Pandora.\'"\n\nTest me with "open trunk / x card / open metal box / put all in metal box / get card / put card on box".\n');
+    myProject.pasteCode('"Disappointment Bay"\n\nInclude Locksmith by Emily Short.\n\nThe Cabin is a room.  "The front of the small cabin is entirely occupied with navigational instruments, a radar display, and radios for calling back to shore. Along each side runs a bench with faded blue vinyl cushions[if the compartment is closed], which can be lifted to reveal the storage space underneath[otherwise], one of which is currently lifted to allows access to the storage compartment within[end if]. A glass case against the wall contains several fishing rods.\n\nScratched windows offer a view of the surrounding bay, and there is a door south to the deck. A sign taped to one wall announces the menu of tours offered by the Yakutat Charter Boat Company."\n\nThe Cabin contains a glass case. In the glass case is a collection of fishing rods. Understand "rod" as the collection. The case is closed, transparent, openable, lockable, and locked. The case is scenery. The small silver key unlocks the case.\n\nThe bench is in the cabin. On the bench are some blue vinyl cushions. The bench is enterable and scenery. The cushions are scenery.\n\nA storage compartment is an openable closed container. It is part of the bench. Instead of opening the bench, try opening the storage compartment. Instead of closing the bench, try closing the storage compartment. Instead of pushing or pulling or turning the cushions, try opening the storage compartment. Understand "space" as the storage compartment.\n\nSome nets and a Coke are in the compartment. Understand "net" as the nets. The description of the nets is "They must have something to do with fish as well. Really, you\'re just here for the sights."\n\nSome navigational instruments, some scratched windows, a radar display, and some radios are scenery in the cabin. The radar, the instruments, and the radios are devices. The radar and the instruments are switched on.\n\nA screen is part of the radar. The description of the screen is "[if the radar is switched on]Phantom lights move across the screen.[otherwise]The screen is dark.[end if]". Instead of doing something other than examining to the screen, say "It\'s not good for much but looking at."\n\nThe Captain is a transparent man in the Cabin. "The captain sits at the wheel, steering the boat and occasionally checking the radar readout." The captain wears a baseball cap. The description of the cap is "It says, THE WORST DAY FISHING IS BETTER THAN THE BEST DAY WORKING." The captain carries the silver key. The description of the captain is "[The captain] is wearing [list of things worn by the captain][if the captain carries something] and carrying [list of things carried by the captain][end if]."\n\nThe description of the instruments is "Knowing what they do is the Captain\'s job." Instead of doing something other than examining to the instruments in the presence of the Captain: say "The Captain glares at you. Clearly you are not welcome to do that."\n\nThe description of the windows is "They\'re a bit the worse for wear, but you can still get an impressive view of the glacier through them. There were whales earlier, but they\'re gone now." Understand "window" as the windows.\n\nThe description of the radar is "Apparently necessary to avoid the larger icebergs."\n\nThe description of the radios is "With any luck you will not need to radio for help, but it is reassuring that these things are here."\n\nA sign is scenery in the Cabin. The description is "You can get half-day and full-day sight-seeing tours, and half-day and full-day fishing trips."\n\nThe view of the Malaspina glacier is a backdrop. It is everywhere. The description is "The Malaspina glacier covers much of the nearby slope, and -- beyond it -- an area as large as Rhode Island." Understand "view of the surrounding bay" or "surrounding bay" as the view.\n\nThe cabin door is south of the Cabin and north of the Deck. It is a door and scenery. The description of the Deck is "The whole back half of the boat is open, allowing you to view the surroundings without intervening windows -- if you can stand the cold."\n\nThe ice chest is a closed openable container in the Deck. "A very heavy ice chest sits on the ground." It is fixed in place and pushable between rooms.\n\nA quantity of ice is in the Deck. "All around the boat bob chunks of glacier ice." Understand "glacier ice" as the quantity. The description is "Curiously cooled into funny-shaped chunks." The printed name of the quantity is "glacier ice".\n\nInstead of taking the quantity of ice when the player is not carrying the nets: if the quantity of ice is handled, continue the action; say "You are having a hard time fishing out the ice with your bare hands."\n\nAfter taking the quantity of ice when the player is carrying the nets:\n\tsay "You scoop up the ice with the net and get it in hand."\n\nInstead of taking the chest: say "It\'s too heavy to lift, but you might be able to push it, and just inch it over the frame of the door."\n\nThe player is carrying a backpack. The player is wearing a pair of sunglasses. The description of the sunglasses is "The light off the water and the ice does get pretty bright sometimes."\n\nThe backpack is a player\'s holdall. The carrying capacity of the player is 3. The backpack is wearable.\n\nInstead of asking the Captain for the key:\n\tsay "\'Sure, you can -- well, get me a drink first, would you?\'"\n\nInstead of asking the Captain for the key when the Captain is carrying a cold Coke and the Captain is carrying the key:\n\tmove the key to the player;\n\tsay "\'Here, knock yourself out.\'"\n\nInstead of asking the Captain for the key when the Captain is not carrying the key: say "\'I already gave it to you. You didn\'t lose it, did you?\'"\n\nHeat is a kind of value. The heats are cold, cool, room temperature, and warm.\n\nA beverage is a kind of thing. A beverage is always edible and openable. A beverage has a heat. A beverage is usually warm. The Coke is a beverage. The beer is a beverage. The beer is in the backpack.\n\nInstead of giving or showing a beer to the Captain:\n\tsay "\'I don\'t drink on the job, thanks,\' he says. \'You can help yourself if you want it, though.\'"\n\nInstead of giving or showing a Coke to the Captain:\n\tsay "\'It needs chilling,\' the Captain remarks, disgruntled."\n\nInstead of giving or showing a cold Coke to the Captain:\n\tmove the Coke to the Captain;\n\taward 2 points;\n\tsay "\'Ah, thank you,\' he says. How he can drink an iced soda on a day like today is an open question, but Alaskans are special."\n\nEvery turn when the quantity of ice is in the ice chest:\n\trepeat with item running through beverages in the ice chest\n\tbegin;\n\t\tlet the current heat be the heat of the item;\n\t\tif the current heat is not cold, change the heat of the item to the heat before the current heat;\n\tend repeat.\n\nBefore printing the name of a beverage (called the drink):\n\tsay "[heat of the drink] ".\n\nUnderstand the heat property as describing a beverage.\n\nThe maximum score is 5.\n\nAfter taking the fishing rods:\n\tend the game in victory;\n\taward 3 points;\n\tsay "Success is yours! (Now if only you knew anything about fishing.)"\n\nTest me with "test first / test second / test third".\n\nTest first with "x captain / open case / i / ask captain for the key / give beer to captain / open bench / x nets / get nets / get coke / give coke to captain".\n\nTest second with "s / open chest / drop nets / get glacier ice / get nets / get glacier ice / put glacier ice in chest / get coke / put coke in chest".\n\nTest third with "x coke / g / g / g / get coke / n / give coke to captain / ask captain for key / open case / get rods".\n');
 }
 </script>
-<a href="javascript:pasteCode138()"><img border=0 src=../doc_images/paste.png></a> &quot;U-Stor-It&quot;
+<a href="javascript:pasteCode138()"><img border=0 src=../doc_images/paste.png></a> &quot;Disappointment Bay&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 1 - Assemblies and Supporters
+<blockquote><font color="#000080">Include Locksmith by Emily Short.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A chest is a kind of container. A chest is always openable. A chest is usually fixed in place. A chest is usually closed. The specification of a chest is &quot;Represents a container with a separately implemented lid; the lid is itself a supporter.&quot;
+<blockquote><font color="#000080">The Cabin is a room.  &quot;The front of the small cabin is entirely occupied with navigational instruments, a radar display, and radios for calling back to shore. Along each side runs a bench with faded blue vinyl cushions[if the compartment is closed], which can be lifted to reveal the storage space underneath[otherwise], one of which is currently lifted to allows access to the storage compartment within[end if]. A glass case against the wall contains several fishing rods.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A lid is a kind of supporter. A lid is part of every chest. The specification of a lid is &quot;A supporter attached to a chest, which can only support things when the chest is closed.&quot;
+<blockquote><font color="#000080">Scratched windows offer a view of the surrounding bay, and there is a door south to the deck. A sign taped to one wall announces the menu of tours offered by the Yakutat Charter Boat Company.&quot;
 </font></blockquote><p>
 <p>
-<p>(The &quot;specification&quot; of a kind is not really a property, and is used instead to describe the kind in the Index. So the text of these specifications is never found in the game.) Of course, this doesn't get us very far. We will also want the game to correctly interpret variations on &quot;open the chest&quot; and &quot;close the lid&quot;, redirecting actions appropriately.
-<p>
-<blockquote><font color="#000080">Section 2 - Opening and closing
+<blockquote><font color="#000080">The Cabin contains a glass case. In the glass case is a collection of fishing rods. Understand &quot;rod&quot; as the collection. The case is closed, transparent, openable, lockable, and locked. The case is scenery. The small silver key unlocks the case.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before opening a lid which is part of a chest (called the item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try opening the item instead.
+<blockquote><font color="#000080">The bench is in the cabin. On the bench are some blue vinyl cushions. The bench is enterable and scenery. The cushions are scenery.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before closing a lid which is part of a chest (called the item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try closing the item instead.
+<blockquote><font color="#000080">A storage compartment is an openable closed container. It is part of the bench. Instead of opening the bench, try opening the storage compartment. Instead of closing the bench, try closing the storage compartment. Instead of pushing or pulling or turning the cushions, try opening the storage compartment. Understand &quot;space&quot; as the storage compartment.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before opening a chest when something is on the lid (called the obstruction) which is part of the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things on the obstruction
+<blockquote><font color="#000080">Some nets and a Coke are in the compartment. Understand &quot;net&quot; as the nets. The description of the nets is &quot;They must have something to do with fish as well. Really, you're just here for the sights.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Some navigational instruments, some scratched windows, a radar display, and some radios are scenery in the cabin. The radar, the instruments, and the radios are devices. The radar and the instruments are switched on.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A screen is part of the radar. The description of the screen is &quot;[if the radar is switched on]Phantom lights move across the screen.[otherwise]The screen is dark.[end if]&quot;. Instead of doing something other than examining to the screen, say &quot;It's not good for much but looking at.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Captain is a transparent man in the Cabin. &quot;The captain sits at the wheel, steering the boat and occasionally checking the radar readout.&quot; The captain wears a baseball cap. The description of the cap is &quot;It says, THE WORST DAY FISHING IS BETTER THAN THE BEST DAY WORKING.&quot; The captain carries the silver key. The description of the captain is &quot;[The captain] is wearing [list of things worn by the captain][if the captain carries something] and carrying [list of things carried by the captain][end if].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the instruments is &quot;Knowing what they do is the Captain's job.&quot; Instead of doing something other than examining to the instruments in the presence of the Captain: say &quot;The Captain glares at you. Clearly you are not welcome to do that.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the windows is &quot;They're a bit the worse for wear, but you can still get an impressive view of the glacier through them. There were whales earlier, but they're gone now.&quot; Understand &quot;window&quot; as the windows.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the radar is &quot;Apparently necessary to avoid the larger icebergs.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the radios is &quot;With any luck you will not need to radio for help, but it is reassuring that these things are here.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A sign is scenery in the Cabin. The description is &quot;You can get half-day and full-day sight-seeing tours, and half-day and full-day fishing trips.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The view of the Malaspina glacier is a backdrop. It is everywhere. The description is &quot;The Malaspina glacier covers much of the nearby slope, and -- beyond it -- an area as large as Rhode Island.&quot; Understand &quot;view of the surrounding bay&quot; or &quot;surrounding bay&quot; as the view.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The cabin door is south of the Cabin and north of the Deck. It is a door and scenery. The description of the Deck is &quot;The whole back half of the boat is open, allowing you to view the surroundings without intervening windows -- if you can stand the cold.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The ice chest is a closed openable container in the Deck. &quot;A very heavy ice chest sits on the ground.&quot; It is fixed in place and pushable between rooms.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A quantity of ice is in the Deck. &quot;All around the boat bob chunks of glacier ice.&quot; Understand &quot;glacier ice&quot; as the quantity. The description is &quot;Curiously cooled into funny-shaped chunks.&quot; The printed name of the quantity is &quot;glacier ice&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of taking the quantity of ice when the player is not carrying the nets: if the quantity of ice is handled, continue the action; say &quot;You are having a hard time fishing out the ice with your bare hands.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After taking the quantity of ice when the player is carrying the nets:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You scoop up the ice with the net and get it in hand.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of taking the chest: say &quot;It's too heavy to lift, but you might be able to push it, and just inch it over the frame of the door.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player is carrying a backpack. The player is wearing a pair of sunglasses. The description of the sunglasses is &quot;The light off the water and the ice does get pretty bright sometimes.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The backpack is a player's holdall. The carrying capacity of the player is 3. The backpack is wearable.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking the Captain for the key:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Sure, you can -- well, get me a drink first, would you?'&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking the Captain for the key when the Captain is carrying a cold Coke and the Captain is carrying the key:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the key to the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Here, knock yourself out.'&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking the Captain for the key when the Captain is not carrying the key: say &quot;'I already gave it to you. You didn't lose it, did you?'&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Heat is a kind of value. The heats are cold, cool, room temperature, and warm.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A beverage is a kind of thing. A beverage is always edible and openable. A beverage has a heat. A beverage is usually warm. The Coke is a beverage. The beer is a beverage. The beer is in the backpack.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of giving or showing a beer to the Captain:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'I don't drink on the job, thanks,' he says. 'You can help yourself if you want it, though.'&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of giving or showing a Coke to the Captain:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'It needs chilling,' the Captain remarks, disgruntled.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of giving or showing a cold Coke to the Captain:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the Coke to the Captain;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;award 2 points;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Ah, thank you,' he says. How he can drink an iced soda on a day like today is an open question, but Alaskans are special.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the quantity of ice is in the ice chest:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through beverages in the ice chest
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first removing [the item])[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try taking the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the current heat be the heat of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current heat is not cold, change the heat of the item to the heat before the current heat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of opening a chest when something is on a lid (called the item) which is part of the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'd have to remove [the list of things on the item] from the lid first.&quot; instead.
+<blockquote><font color="#000080">Before printing the name of a beverage (called the drink):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[heat of the drink] &quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of looking under a lid which is part of a chest (called the item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try opening the item.
+<blockquote><font color="#000080">Understand the heat property as describing a beverage.
 </font></blockquote><p>
 <p>
-<p>
-<p>We may also want to be able to deal with &quot;put in&quot; and &quot;put on&quot; appropriately, even if the player names the wrong part of the object:
-<p>
-<blockquote><font color="#000080">Section 3 - Insertion and Support
+<blockquote><font color="#000080">The maximum score is 5.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before inserting something into a lid which is part of a chest (called the item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try inserting the noun into the item instead.
+<blockquote><font color="#000080">After taking the fishing rods:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;award 3 points;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Success is yours! (Now if only you knew anything about fishing.)&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before putting something on a chest when a lid (called the item) is part of the second noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try putting the noun on the item instead.
+<blockquote><font color="#000080">Test me with &quot;test first / test second / test third&quot;.
 </font></blockquote><p>
 <p>
-<p>Furthermore, we don't want the player to be able to put things on the lid while the chest is open:
-<p>
-<blockquote><font color="#000080">Before putting something on a lid which is part of an open chest (called the item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first closing [the item])[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try closing the item.
+<blockquote><font color="#000080">Test first with &quot;x captain / open case / i / ask captain for the key / give beer to captain / open bench / x nets / get nets / get coke / give coke to captain&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of putting something on a lid which is part of an open chest (called the item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The item] would need to be closed first.&quot;;
+<blockquote><font color="#000080">Test second with &quot;s / open chest / drop nets / get glacier ice / get nets / get glacier ice / put glacier ice in chest / get coke / put coke in chest&quot;.
 </font></blockquote><p>
 <p>
-<p>And then we may also want a couple of rules for describing our assembled object nicely:
-<p>
-<blockquote><font color="#000080">Section 4 - Description in Rooms
+<blockquote><font color="#000080">Test third with &quot;x coke / g / g / g / get coke / n / give coke to captain / ask captain for key / open case / get rods&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining a closed chest when something is on a lid (called the top) which is part of the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is closed, and there [is/are list of things on the top] on top.&quot;;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After printing the name of a chest (called the item) while listing contents of a room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a lid (called the second item) which supports something is part of the item
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; (on which [is/are list of things on the second item])&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;omit contents in listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>Now we are free to create entire treasure rooms at a single blow:
-<p>
-<blockquote><font color="#000080">Section 5 - U-Stor-It Facility
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The U-Stor-It Facility is a room. The sea trunk, the shipping crate, and a metal box are chests in the U-Stor-It Facility. The metal box contains a sapphire, a gold coin, and a signed photograph of Babe Ruth.
-</font></blockquote><p>
-<p>
-<p>Even though we have never explicitly defined it, the metal box has a &quot;metal box's lid&quot;, which we can use at need.
-<p>
-<blockquote><font color="#000080">The metal box's lid supports a small card. The description of the small card is &quot;It reads, 'Back in 5 mins - Pandora.'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;open trunk / x card / open metal box / put all in metal box / get card / put card on box&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc58.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc57.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc50.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc49.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc51.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

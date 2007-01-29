@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.13. Going from, going to</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5.4. Text with lists</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,90 +8,100 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc101.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc103.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.13. Going from, going to</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Control Center" -->
+<!-- SEARCH SECTION "Ex 48" -->
+<!-- SEARCH SORT "Ex 005-004-048" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc70.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap5.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 5: Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc72.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>5.4. Text with lists</b></font></td></tr></table>
 <p>
-<p>Going is an action defined like any other: it is the one which happens when the player tries to go from one location to another. But it is unlike other actions because it happens in two locations, not just one, and has other complications such as vehicles and doors to contend with. To make it easier to write legible and flexible rules, &quot;going&quot; is allowed to be described in a number of special ways not open to other actions, as demonstrated by the following example game:
+<p>The useful substitution &quot;[list of <i>description</i>]&quot; prints out, as an English sentence, a list of all the objects which match the given description. For instance,
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode16(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Going Going"\n\nThe Catalogue Room is east of the Front Stacks. South of the Catalogue Room is the Musicology Section.\n\nInstead of going nowhere from the Front Stacks, say "Bookcases obstruct almost all passages out of here."\n\nInstead of going nowhere, say "You really can\'t wander around at random in the Library."\n\nBefore going to the Catalogue Room, say "You emerge back into the Catalogue Room."\n\n');
-}
-</script>
-<a href="javascript:pasteCode16()"><img border=0 src=../doc_images/paste.png></a> &quot;Going Going&quot;
+<blockquote><font color="#000080">&quot;The places you can go are [list of rooms].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Catalogue Room is east of the Front Stacks. South of the Catalogue Room is the Musicology Section.
+<p>Any description can be given and, as we shall see, descriptions can be very flexible indeed:
+<p>
+<blockquote><font color="#000080">&quot;Mr Darcy glares proudly at you. He is wearing [list of things worn by Darcy] and carrying [list of things carried by Darcy].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going nowhere from the Front Stacks, say &quot;Bookcases obstruct almost all passages out of here.&quot;
+<p>And, if this were from a dramatisation of the novel by Miss Fielding rather than Miss Austen, we might find:
+<p>
+<blockquote><font color="#000080">Mr Darcy glares proudly at you. He is wearing a pair of Newcastle United boxer shorts and carrying a self-help book.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going nowhere, say &quot;You really can't wander around at random in the Library.&quot;
+<p>If the description matches nothing - for instance, if Darcy has empty hands - then &quot;nothing&quot; is printed. A more insidious problem is that the list may end up either singular or plural. We might be expecting that the example above will produce something like:
+<p>
+<blockquote><font color="#000080">The places you can go are Old Bailey, Bridget's Flat and TV Centre.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before going to the Catalogue Room, say &quot;You emerge back into the Catalogue Room.&quot;
+<p>But if there is only one room, then the result would be:
+<p>
+<blockquote><font color="#000080">The places you can go are Bridget's Flat.
 </font></blockquote><p>
 <p>
-<p>Note that &quot;going nowhere&quot; means trying a map connection which is blank, and if no rules intervene then &quot;You can't go that way&quot; is normally printed. Unless &quot;nowhere&quot; is specified, descriptions of going apply only when there is a map connection. So &quot;going from the Musicology Section&quot; would not match if the player were trying to go east from there, since there is no map connection to the east. Similarly, &quot;going somewhere&quot; excludes blank connections.
+<p>which is wrong. We can get around this with careful wording and a slightly different substitution:
 <p>
-<p>The places gone &quot;from&quot; or &quot;to&quot; can be regions instead of rooms. This is convenient when there are several different ways into or out of an area of map but a common rule needs to apply to all: so, for example,
-<p>
-<blockquote><font color="#000080">Before going from the Cultivated Land to the Wilderness, ...
-<br>Before going nowhere from the Wilderness, say &quot;Tangled brush forces you back.&quot;
+<blockquote><font color="#000080">&quot;Near here [is/are list of rooms].&quot;
 </font></blockquote><p>
 <p>
-<p>Note that it must be &quot;going nowhere from the Wilderness&quot;, not &quot;...in the Wilderness&quot;.
+<p>which uses &quot;is&quot; or &quot;are&quot; as appropriate. Lastly, we can also make the items listed take the definite article by writing:
 <p>
-<p>An important point about &quot;going... from&quot; is that, as mentioned in general terms above, it requires that there is actually a map connection that way: whereas &quot;going... in&quot; does not. Suppose there is no map connection north from the Wilderness. Then:
-<p>
-<blockquote><font color="#000080">Instead of going north from the Wilderness, say &quot;You'll never read this.&quot;
-<br>Instead of going north in the Wilderness, say &quot;Oh, it's too cold.&quot;
+<blockquote><font color="#000080">&quot;Mr Darcy impatiently bundles [the list of things carried by Darcy] into your hands and stomps out of the room.&quot;
 </font></blockquote><p>
 <p>
-<p>The first of these never happens, because it is logically impossible to go north from the Wilderness: but the second does happen. (Technically, this is because &quot;going north&quot; is the action, and &quot;in the Wilderness&quot; a separate condition tacked onto the rule.) This distinction is often useful - it allows us to write rules which apply only to feasible movements.
+<p>which might result in
+<p>
+<blockquote><font color="#000080">Mr Darcy impatiently bundles the self-help book and the Christmas card into your hands and stomps out of the room.
+</font></blockquote><p>
 <p>
 <p><hr><p>
-<a name="e110"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex110.html#e110 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>80</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex110.html#e110 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hagia Sophia</font></b></a><br>If the player tries to go a valid direction while on a supporter, make him stand up first; if he tries to go a nonexistent one, print a special refusal.<p></td></tr></table>
-<a name="e266"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex266.html#e266 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>81</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex266.html#e266 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A&E</font></b></a><br>Using regions to block access to an entire area when the player does not carry a pass, regardless of which entrance he uses.<p></td></tr></table>
-<a name="e224"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc102.html#e224 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>82</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc102.html#e224 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bumping into Walls</font></b></a><br>Offering the player a list of valid directions if he tries to go in a direction that leads nowhere.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<!-- EXAMPLE START -->
+<a name="e224"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc71.html#e224 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>48</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc71.html#e224 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Control Center</font></b></a><br>Objects which automatically include a description of their component parts whenever they are examined.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>It is straightforward to make a rule that anything with parts must mention all those parts during an EXAMINE command:
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode318(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Bumping into Walls"\n\n[First we add an instruction to determine which ways lead to other rooms.]\n\nDefinition: a direction is viable if the room it from the location is a room.\n\n[Now we build in the instruction for what Inform should say if the player tries to head in a direction that leads nowhere:]\n\nInstead of going nowhere:\n\tlet count of exits be the number of viable directions;\n\tif the count of exits is 0, say "You appear to be trapped in here." instead;\n\tif the count of exits is 1, say "From here, the only way out is to [list of viable directions].";\n\totherwise say "From here, the viable exits are to [list of viable directions]."\n\n[There is no theoretical reason why we have to define "count of exits" here: we could, if we wanted, just say "if the number of viable directions is 0", "if the number of viable directions is 1", and so on. However, each calculation of a "viable direction" takes a bit of computing power, so there is some slight savings in not requiring the game to count viable directions more than once in this routine.]\n\nDome is a room. North of Dome is North Chapel. South of the Dome is South Chapel. West of the Dome is Western End. Quiet Corner is northwest of the Dome, north of Western End, and west of North Chapel. Loud Corner is east of North Chapel, northeast of Dome, and north of Eastern End. Eastern End is north of Dim Corner and east of Dome. Dim Corner is southeast of Dome and east of South Chapel. Ruined Corner is southwest of Dome, west of South Chapel, and south of Western End.\n\nThe church door is east of Eastern End and west of the Courtyard. The church door is a door.\n\nTest me with "d / n / n / e / n / s / u / open door / e / n".\n');
+    myProject.pasteCode('"Control Center"\n\nAfter examining a thing when something is part of the noun:\n\tsay "[The noun] includes [list of things which are part of the noun]."\n\nThe Control Center is a room. "Here you are at the Control Center of the universe."\n\nThe Universe Management Computer is a fixed in place thing in the Control Center. "The Universe Management Computer sits directly before you, unguarded." The description of the Universe Management Computer is "The computer is so large that you would be unable to operate it all from one position. Alas, it does not come with a manual."\n\nA chartreuse indicator light, an ennui meter, a golden knob settable to 15,000 positions, a toothpick dispensor, and a button labeled RESTART are part of the Universe Management Computer.\n\nThe command chair is an enterable supporter in the Control Center. It is pushable between rooms. "Because the computer is too large for you to reach all of the front panel from a standing position, there is a command chair on casters which allows you to push back and forth." The description of the command chair is "Quite ordinary, really, but for the heady rush of power that comes of sitting in it.". Some casters are part of the command chair.\n\n[Now whenever we look at any object with components, we will first see the description, then a list of parts which belong to it. The following refinement brings in elements of later chapters, but it may be worth noting: because we\'ve written our rule as an "After examining...", anything that pre-empts the operation of the examine command will also prevent that rule from occurring. So for instance:]\n\nA hair-thick needle is part of the ennui meter.\n\nInstead of examining the ennui meter: say "You can\'t be bothered."\n\n[...would not result in the needle being mentioned.]\n\nTest me with "x chair / x computer / x ennui meter"\n\n');
 }
 </script>
-<a href="javascript:pasteCode318()"><img border=0 src=../doc_images/paste.png></a> &quot;Bumping into Walls&quot;
+<a href="javascript:pasteCode318()"><img border=0 src=../doc_images/paste.png></a> &quot;Control Center&quot;
 </font></blockquote><p>
 <p>
-<p>First we add an instruction to determine which ways lead to other rooms.
-<p>
-<blockquote><font color="#000080">Definition: a direction is viable if the room it from the location is a room.
+<blockquote><font color="#000080">After examining a thing when something is part of the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] includes [list of things which are part of the noun].&quot;
 </font></blockquote><p>
 <p>
-<p>Now we build in the instruction for what Inform should say if the player tries to head in a direction that leads nowhere:
-<p>
-<blockquote><font color="#000080">Instead of going nowhere:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let count of exits be the number of viable directions;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the count of exits is 0, say &quot;You appear to be trapped in here.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the count of exits is 1, say &quot;From here, the only way out is to [list of viable directions].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;From here, the viable exits are to [list of viable directions].&quot;
+<blockquote><font color="#000080">The Control Center is a room. &quot;Here you are at the Control Center of the universe.&quot;
 </font></blockquote><p>
 <p>
-<p>There is no theoretical reason why we have to define &quot;count of exits&quot; here: we could, if we wanted, just say &quot;if the number of viable directions is 0&quot;, &quot;if the number of viable directions is 1&quot;, and so on. However, each calculation of a &quot;viable direction&quot; takes a bit of computing power, so there is some slight savings in not requiring the game to count viable directions more than once in this routine.
-<p>
-<blockquote><font color="#000080">Dome is a room. North of Dome is North Chapel. South of the Dome is South Chapel. West of the Dome is Western End. Quiet Corner is northwest of the Dome, north of Western End, and west of North Chapel. Loud Corner is east of North Chapel, northeast of Dome, and north of Eastern End. Eastern End is north of Dim Corner and east of Dome. Dim Corner is southeast of Dome and east of South Chapel. Ruined Corner is southwest of Dome, west of South Chapel, and south of Western End.
+<blockquote><font color="#000080">The Universe Management Computer is a fixed in place thing in the Control Center. &quot;The Universe Management Computer sits directly before you, unguarded.&quot; The description of the Universe Management Computer is &quot;The computer is so large that you would be unable to operate it all from one position. Alas, it does not come with a manual.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The church door is east of Eastern End and west of the Courtyard. The church door is a door.
+<blockquote><font color="#000080">A chartreuse indicator light, an ennui meter, a golden knob settable to 15,000 positions, a toothpick dispensor, and a button labeled RESTART are part of the Universe Management Computer.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;d / n / n / e / n / s / u / open door / e / n&quot;.
+<blockquote><font color="#000080">The command chair is an enterable supporter in the Control Center. It is pushable between rooms. &quot;Because the computer is too large for you to reach all of the front panel from a standing position, there is a command chair on casters which allows you to push back and forth.&quot; The description of the command chair is &quot;Quite ordinary, really, but for the heady rush of power that comes of sitting in it.&quot;. Some casters are part of the command chair.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc102.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><a name="e96"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex96.html#e96 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>83</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex96.html#e96 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Polarity</font></b></a><br>A "go back" command that keeps track of the direction from which the player came, and sends him back.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc101.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc103.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>
+<p>Now whenever we look at any object with components, we will first see the description, then a list of parts which belong to it. The following refinement brings in elements of later chapters, but it may be worth noting: because we've written our rule as an &quot;After examining...&quot;, anything that pre-empts the operation of the examine command will also prevent that rule from occurring. So for instance:
+<p>
+<blockquote><font color="#000080">A hair-thick needle is part of the ennui meter.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining the ennui meter: say &quot;You can't be bothered.&quot;
+</font></blockquote><p>
+<p>
+<p>...would not result in the needle being mentioned.
+<p>
+<blockquote><font color="#000080">Test me with &quot;x chair / x computer / x ennui meter&quot;
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc71.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e144"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex144.html#e144 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>49</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex144.html#e144 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Tiny Garden</font></b></a><br>A lawn made up of several rooms, with part of the description written automatically.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc70.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc72.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

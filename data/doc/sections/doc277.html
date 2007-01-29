@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.24. Implicitly taking something</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.22. Clarifying the parser's choice of something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,39 +8,24 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc276.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc278.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.24. Implicitly taking something</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Clarifying the parser's choice of something" -->
+<!-- SEARCH SECTION "17.22" -->
+<!-- SEARCH SORT "017-022-000" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc276.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc278.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.22. Clarifying the parser's choice of something</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> When an action is tried which requires the actor (normally the player, of course) to be carrying something, but which is not in fact carried by that person. For instance, if the player types WEAR OVERCOAT in reference to a Moroccan overcoat currently draped over a chair.
+<p><b>1. When it happens.</b> When the player has typed an ambiguous noun reference, and Inform has made a decision about what was meant, and it matters what this decision is. (If the decision is between three identical gold coins, say, then it doesn't matter, and this activity does not take place.)
 <p>
-<p><b>2. The default behaviour.</b> To print text such as &quot;(first taking the Moroccan overcoat)&quot; and then silently try taking the object in question (the overcoat). If the take succeeds, the silence means that nothing else is printed: if it fails, it will say why.
+<p><b>2. The default behaviour.</b> Text in brackets such as ``(the laminated mahogany box)'' is printed, on its own line.
 <p>
-<p>No matter what rules are written for this activity, it is impossible to use it to allow the action to go ahead even without the item. The activity allows us to change how, or if, an implicit take will happen, but not to change the consequences of failure. (To do that, we would need a procedural rule to &quot;ignore the carrying requirements rule&quot;, but this kind of unstitching of the action machinery needs to be done with caution.)
+<p><b>3. Examples.</b> (a) In the following, asking to TAKE TOWER results in the parser choosing the souvenir model (because of the &quot;does the player mean...&quot; rule making the alternative unlikely), and then explaining itself by saying &quot;(The little one, obviously.)&quot; instead of &quot;(the souvenir model Eiffel Tower)&quot;.
 <p>
-<p><b>3. Examples.</b> (a) Forbidding implicit takes for certain dangerous items. (This seems especially fair if taking such items might cause death: the player will not wish to be killed on the strength only of our guess as to what he might be intending to do.)
-<p>
-<blockquote><font color="#000080">Rule for implicitly taking the curare:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ordinarily you'd pick up the curare in order to be able to do that, but this seems like a good moment for caution.&quot; instead.
+<blockquote><font color="#000080">The Champs du Mars is a room. The great Eiffel Tower is here. &quot;The great Tower stands high over you.&quot; The souvenir model Eiffel Tower is here. &quot;Comparatively tiny is the souvenir version.&quot; The great Eiffel Tower is fixed in place. Does the player mean taking the great Eiffel Tower: it is very unlikely.
 </font></blockquote><p>
 <p>
-<p>(b) Changing the way the implicit action is reported for the player:
-<p>
-<blockquote><font color="#000080">Rule for implicitly taking something (called target):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the target;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries the target, say &quot;You appropriate [the target] first, of course. [run paragraph on]&quot;
+<blockquote><font color="#000080">Rule for clarifying the parser's choice of the model tower: say &quot;(The little one, obviously.)&quot;
 </font></blockquote><p>
 <p>
-<p>(c) Combining implicit takes when the noun and second noun must both be carried:
-<p>
-<blockquote><font color="#000080">Rule for implicitly taking the noun when the second noun is a thing and the second noun is not carried by the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the second noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking both [the noun] and [the second noun])[line break]&quot;
-</font></blockquote><p>
-<p>
-<p>(d) Making another character reply amusingly:
-<p>
-<blockquote><font color="#000080">Rule for implicitly taking something which is carried by the player when the person asked is Clark:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'I don't see how I'm supposed to do that when you're holding [the noun],' remarks Clark sulkily.&quot; instead.
-</font></blockquote><p>
+<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows that the action will be taking, but nothing else. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc276.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc278.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

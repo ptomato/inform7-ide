@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.2. What sentences are made up from</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.7. New actions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,105 +8,225 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc189.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc191.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.2. What sentences are made up from</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Frizz" -->
+<!-- SEARCH SECTION "Ex 155" -->
+<!-- SEARCH SORT "Ex 012-007-155" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc177.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc179.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.7. New actions</b></font></td></tr></table>
 <p>
-<p>A sentence consists of two nouns with a verb between them. Usually, the two nouns are descriptions, as in:
+<p>It is not often that we need to create new actions, but a large work of interactive fiction with no novelty actions is a flavourless dish. Here we shall create an action for photographing things.
 <p>
-<blockquote><font color="#000080">Mr Collins is in a lighted room.
+<blockquote><font color="#000080">The Ruins is a room. &quot;You find this clearing in the rainforest oddly familiar.&quot; The camera is in the Ruins. &quot;Your elephantine camera hangs from a convenient branch.&quot;
 </font></blockquote><p>
 <p>
-<p>Here &quot;Mr Collins&quot; and &quot;a lighted room&quot; are descriptions, the full rules for which were given in Chapter 5. But there are sentences where one or both of the nouns is a value instead. For instance, in
-<p>
-<blockquote><font color="#000080">if the score is greater than 10, ...
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
 </font></blockquote><p>
 <p>
-<p>the sentence &quot;the score is greater than 10&quot; consists of two values (&quot;the score&quot; and &quot;10&quot;) connected by a verb part (&quot;is greater than&quot;).
+<p>In theory that text is already sufficient to make the new action, but what we have so far is rudimentary to say the least. The two qualifications give Inform the useful information that we cannot photograph in the dark, and that we need to be photographing something - not, as in the case of waiting or taking inventory, acting without reference to any particular thing external to ourselves.
 <p>
-<p>This chapter is about getting the most out of sentences by defining new verbs to express ideas not already built in to Inform. Before we can define a new sentence verb, however, we must first look at the meanings of verbs: which Inform calls &quot;relations&quot;.
+<p>The word &quot;visible&quot; here tells Inform that we do not need to be able to touch the thing in question: a line of sight is good enough. These two stipulations were necessary because the default arrangement is that any object must be in touching range, and that most actions can be performed in darkness. (Also, note that if you invent an action which needs to apply to directions like &quot;north&quot; or &quot;south&quot;, you need to make this apply to visible things, because the object used inside Inform to represent the idea of &quot;north&quot; can be seen but not touched.) Occasionally, when writing general rules about actions, it can be useful to find out what the current action's requirements are: the following conditions do what they suggest.
+<p>
+<blockquote><font color="#000080">if the action requires a touchable noun...
+<br>if the action requires a touchable second noun...
+<br>if the action requires light...
+</font></blockquote><p>
+<p>
+<p>For instance, if we are currently examining something, then the first condition will be untrue, because that requires only a visible noun.
+<p>
+<p>As further examples, here we create &quot;blinking&quot; and &quot;scraping X with Y&quot;. Note the use of &quot;it&quot; to indicate that the name of an object should go here.
+<p>
+<blockquote><font color="#000080">Blinking is an action applying to nothing. Scraping it with is an action applying to two things.
+</font></blockquote><p>
+<p>
+<p>The photographing action now exists, but with two provisos: (a) it never happens, because Inform does not know what commands by the player should cause it, and (b) even if it were to happen, nothing would follow, because Inform does not know what to do. (There are no check, carry out or report rules yet.)
+<p>
+<p>The first problem is easily overcome:
+<p>
+<blockquote><font color="#000080">Understand &quot;photograph [something]&quot; as photographing.
+</font></blockquote><p>
+<p>
+<p>We will return to the whole subject of parsing, as this process of understanding the player's commands is called, later. But this gives the gist of it.
 <p>
 <p><hr><p>
-<a name="e111"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc190.html#e111 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>171</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc190.html#e111 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Formal syntax of sentences</font></b></a><br>A more formal description of the sentence grammar used by Inform for both assertions and conditions.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>An entire grammar for the whole mass of Inform would not be linguistically interesting: it contains many convenient wordings which are not really part of a grand pattern. Inform does, however, have a formal notion of a Sentence, a grammatical structure which we shall call S. It is almost true that conditions (&quot;if the flowerpot is on the wall&quot;) have the same grammar as assertions (&quot;The flowerpot is on the wall&quot;) and &quot;now&quot; phrases (&quot;now the flowerpot is on the wall&quot;). All three use the S grammar, so we could define an assertion as &quot;S.&quot;, say that &quot;if S&quot;, &quot;while S&quot;, &quot;when S&quot; and so on are conditions, and say that &quot;now S&quot; defines the &quot;now&quot; declaration.
+<a name="e67"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex67.html#e67 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>154</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex67.html#e67 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">DIAGNOSE command</font></b></a><br>A DIAGNOSE command which allows the player to check on the health of someone.<p></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e111"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc178.html#e111 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>155</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc178.html#e111 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Frizz</font></b></a><br>Liquid flows within containers and soaks objects that are not waterproof; any contact with a wet object can dampen our gloves.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
 <p>
-<p>Grammatical sentences do not necessarily make sense, of course. Many perfectly grammatical assertions in fact give rise to problem messages:
+<p>Suppose we have some items that get wet in contact with other damp things; in particular, if we touch anything wet while wearing a pair of gloves, the gloves too get damp. This requires that we be systematic about detecting all cases where contact occurs. So:
 <p>
-<blockquote><font color="#000080">The wicker basket is not in the kitchen. (<i>Unhelpfully negative.</i>)
-<br>The wicker basket has been in the kitchen. (<i>Talks about a time which never existed.</i>)
-<br>The wicker basket is full. (<i>Full of what? Too vague.</i>)
-<br>The wicker basket is the ginger cat. (<i>Demonstrably false.</i>)
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode204(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Frizz"\n\nA thing can be waterproof or porous. A container is usually waterproof. An animal is usually waterproof.\n\nA thing can be sodden or dry.\n\nA container can be waterfilled or empty.\n\nBefore printing the name of a sodden thing: say "sodden ". Understand the sodden property as describing a thing.\n\nThe player wears a pair of woolly gloves. Instead of wearing a sodden thing: say "You dubiously contemplate [the noun], and decide it\'s best to wear dry clothing."\n\nEvery turn:\n\tfollow the liquid distribution rules.\n\nThe liquid distribution rules is a rulebook.\n\nA liquid distribution rule:\n\trepeat with item running through containers\n\tbegin;\n\t\tif the item is open and the item is empty and the item is in a waterfilled container\n\t\tbegin;\n\t\t\tnow the item is waterfilled;\n\t\t\tif the player can see the item, say "[The item] fills up with water, of course.";\n\t\tend if;\n\tend repeat.\n\nA liquid distribution rule:\n\trepeat with item running through things in a waterfilled container\n\tbegin;\n\t\tif the item is porous and the item is dry\n\t\tbegin;\n\t\t\tif the player can see the item, say "[The item] soaks through.";\n\t\t\tnow the item is sodden;\n\t\tend if;\n\tend repeat.\n\nA liquid distribution rule:\n\trepeat with item running through sodden things in the airing cupboard\n\tbegin;\n\t\tif the item is not The Last Man, now the item is dry;\n\tend repeat.\n\nThe last liquid distribution rule:\n\tif the player carries a dry copy of The Last Man, end the game in victory.\n\nInstead of examining a waterfilled container:\n\tsay "[The noun] is full of water[if the noun contains something visible]; it also contains [the list of things in the noun][end if]."\n\nInstead of examining a container:\n\tsay "Dry inside[if the noun contains something visible], and containing [a list of things in the noun]."\n\nA book is a kind of thing. Instead of examining a sodden book, say "[The noun] is too soaked to read, thanks to someone\'s carelessness." Understand "book" as a book.\n\nThe copy of The Last Man is a book. The description of The Last Man is "Mary Shelley\'s very own original copy, loaned to you under the strictest of agreements[if the pond encloses the copy]. How it came to be in its present position is a long story, and not important at the moment: the critical thing is not to blame oneself - who could have anticipated the cricket bat, anyway? - but to fix it immediately, before anything worse occurs[end if]." The The Last Man is in the ziploc bag. The ziploc bag is waterproof and empty. It is openable, transparent, and closed.\n\nThe Back Garden is a room. The Back Garden contains a pond. The pond is a waterfilled container. In the pond is the ziploc bag. A carp is in the pond. The carp is an animal. Instead of taking the carp, say "You\'re not fast enough."\n\nRule for writing a paragraph about the pond:\n\tif the pond encloses the Last Man\n\tbegin;\n\t\tsay "It is a beautiful day just at the end of spring and beginning of summer. The sun shines, the trees blossom, the world conspires in Edenic cheerfulness. You can take in none of it. Your eye is on [the Last Man].";\n\totherwise;\n\t\tsay "The pond[if something is in the pond] (containing [the list of things in the pond])[end if] remains a figure of menace in an otherwise lushly verdant landscape.";\n\tend if.\n\nBefore printing the name of the Last Man when the Last Man is enclosed by the Pond: if the Last Man is dry, say "delicate, valuable ".\n\nAfter printing the name of something (called the target) while writing a paragraph about something:\n\tif the Last Man is enclosed by the Pond\n\tbegin;\n\t\tif the target is in something (called the parent), say " - which is in [the parent]";\n\tend if.\n\nThe Kitchen is west of the Back Garden. "Not in any sense your province: Mrs Peaswell gets agitated if anyone besides herself so much as boils a kettle. In general it is best to sneak through, disturbing as little as possible and preserving the cosy domestic fiction that academics cannot cook.\n\nThe nearby stairwell leads up to the second floor."\n\nThe Stairwell is above the Kitchen. "Halfway up and halfway down." The airing cupboard is a container in the Stairwell. "An airing cupboard here contains the heating system, and is the ideal place for restoring wet items to a dry state." The airing cupboard is fixed in place.\n\nCarry out doing something when the player wears the dry gloves:\n\tif we get wet\n\tbegin;\n\t\t\tif the player wears the gloves and the gloves are dry\n\t\tbegin;\n\t\t\tnow the gloves are sodden;\n\t\t\tsay "(soaking your gloves in the process)";\n\t\tend if;\n\tend if.\n\nCarry out doing something when the player wears the sodden gloves:\n\tif the The Last Man must be touched and the Last Man is not sodden\n\tbegin;\n\t\tsay "(soaking the parched pages of The Last Man with the rude touch of your sodden gloves)";\n\t\tnow the The Last Man is sodden;\n\tend if.\n\nCheck doing something when the player does not wear the gloves:\n\tif The Last Man must be touched\n\tbegin;\n\t\tif The Last Man is dry, say "[The The Last Man] is too precious to endanger when you are not wearing gloves." instead;\n\t\totherwise say "You hesitate instinctively, then recollect that you can hardly harm [The The Last Man] any more than it has already been harmed...";\n\tend if.\n\nTo decide whether we get wet:\n\tif the noun is not a thing, no;\n\tif the noun dampens us, yes;\n\tif the second noun is not a thing, no;\n\tif the second noun dampens us, yes;\n\tno.\n\nTo decide whether (item - a thing) dampens us:\n\tif the item is not liquiferous, no;\n\tif item must be touched, yes;\n\tno.\n\nTo decide whether (item - a thing) must be touched:\n\tif the item is the noun and the action requires a touchable noun, yes;\n\tif the item is the second noun and the action requires a touchable second noun, yes;\n\tno.\n\nDefinition: a thing is liquiferous:\n\tif it is sodden, yes;\n\tif it is in a waterfilled container, yes;\n\tno.\n\nTest me with "x book / x bag / get bag / take off gloves / w / u / put gloves in cupboard / z / open bag / touch book / push book / turn book / get gloves / wear gloves / get book".\n\nTest disaster with "open bag".\n\nTest mishandling with "get bag / open bag / get book".\n');
+}
+</script>
+<a href="javascript:pasteCode204()"><img border=0 src=../doc_images/paste.png></a> &quot;Frizz&quot;
 </font></blockquote><p>
 <p>
-<p>Whereas the first three, at least, would be sensible as conditions. So saying that assertions are &quot;just like&quot; conditions is a little misleading: what they have in common is S, the underlying grammar they each use as a starting-point.
-<p>
-<p>To define S, we break it up into subsidiary structures. The most important is the Description Phrase (DP), examples of which include &quot;the red basket&quot;, &quot;somewhere lighted&quot; and &quot;an empty open container&quot;. This we will take as read, since the account given at the start of Chapter 5 is quite explicit. Clearly sentences include DPs, but they also include other ingredients. The general pattern used in Inform is very simple:
-<p>
-<blockquote><font color="#000080">1. S = DP + VP
-<br>2. VP = Verb + DP
+<blockquote><font color="#000080">A thing can be waterproof or porous. A container is usually waterproof. An animal is usually waterproof.
 </font></blockquote><p>
 <p>
-<p>where VP is another structure, the Verb Phrase. For instance:
-<p>
-<blockquote><font color="#000080">S (The horseman wears a riding helmet)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;= DP (The horseman) + VP (wears a riding helmet)
-<br>VP (wears a riding helmet)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;= Verb (wears) + DP (a riding helmet)
+<blockquote><font color="#000080">A thing can be sodden or dry.
 </font></blockquote><p>
 <p>
-<p>In that example, the Verb was the single word &quot;wears&quot;. More generally, Inform allows a Verb to include adverbs and prepositions, to be negated, and to come in any of four tenses, so the following are all valid examples of Verb in our grammar:
-<p>
-<blockquote><font color="#000080">wore
-<br>carries
-<br>is carried by
-<br>had not been inside
+<blockquote><font color="#000080">A container can be waterfilled or empty.
 </font></blockquote><p>
 <p>
-<p>Although we are not going through the definition of Description Phrases in detail, it is worth noticing how &quot;which&quot; and &quot;who&quot; behave:
-<p>
-<blockquote><font color="#000080">3a. DP = DP + which + VP
-<br>3b. DP = DP + who + VP
+<blockquote><font color="#000080">Before printing the name of a sodden thing: say &quot;sodden &quot;. Understand the sodden property as describing a thing.
 </font></blockquote><p>
 <p>
-<p>Thus &quot;an open container which is in the Ballroom&quot; can be broken down as:
-<p>
-<blockquote><font color="#000080">DP (an open container) + which + VP (is in the Ballroom)
+<blockquote><font color="#000080">The player wears a pair of woolly gloves. Instead of wearing a sodden thing: say &quot;You dubiously contemplate [the noun], and decide it's best to wear dry clothing.&quot;
 </font></blockquote><p>
 <p>
-<p>To understand compounds like &quot;something in a container&quot;, we have to invent a new grammatical structure for &quot;in a container&quot; and similar: let's call this a Relative Phrase (RP).
-<p>
-<blockquote><font color="#000080">4. DP = DP + RP
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the liquid distribution rules.
 </font></blockquote><p>
 <p>
-<p>Thus &quot;an open container in the Ballroom&quot; is DP (an open container) + RP (in the Ballroom). Relative Phrases have two different forms:
-<p>
-<blockquote><font color="#000080">5a. RP = Preposition + DP
-<br>5b. RP = Participle + DP
+<blockquote><font color="#000080">The liquid distribution rules is a rulebook.
 </font></blockquote><p>
 <p>
-<p>so that &quot;in a container&quot; is an example of 5a. An example of 5b would be
-<p>
-<blockquote><font color="#000080">RP (worn by Mr Darcy) = Participle (worn by) + DP (Mr Darcy)
+<blockquote><font color="#000080">A liquid distribution rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through containers
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is open and the item is empty and the item is in a waterfilled container
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the item is waterfilled;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player can see the item, say &quot;[The item] fills up with water, of course.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>That is nearly it, but not quite: we must go back to the &quot;almost&quot; in the statement above that assertions and conditions &quot;almost&quot; have the same grammar S. The difference arises from a curious irregularity in English called subject-verb inversion (see the <i>Oxford English Grammar</i> at 3.22F), whereby assertions can be reversed but not conditions. For instance,
-<p>
-<blockquote><font color="#000080">In the Garden is a sunflower.
+<blockquote><font color="#000080">A liquid distribution rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things in a waterfilled container
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is porous and the item is dry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player can see the item, say &quot;[The item] soaks through.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the item is sodden;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>This does not follow the pattern S = DP + VP, because &quot;in the garden&quot; is not a DP: indeed, it is not a noun at all. To make sense of this sentence, Inform reverses it to &quot;A sunflower is in the Garden&quot;, which does indeed follow DP + VP. Hence the final rule:
-<p>
-<blockquote><font color="#000080">6 (assertions only). S = RP + Verb + DP
+<blockquote><font color="#000080">A liquid distribution rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through sodden things in the airing cupboard
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is not The Last Man, now the item is dry;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>So the condition &quot;if in the garden is a sunflower...&quot; fails because rule 6 does not apply to the grammar for conditions: while occasional poetic uses of subject-verb inversion do turn up in conditions (&quot;If On A Winter's Night A Traveller&quot;, say), they are rare in ordinary English usage, and illegal in Inform. That completes the S grammar, so to recap:
-<p>
-<blockquote><font color="#000080">1. S = DP + VP
-<br>2. VP = Verb + DP
-<br>3a. DP = DP + which + VP
-<br>3b. DP = DP + who + VP
-<br>4. DP = DP + RP
-<br>5a. RP = Preposition + DP
-<br>5b. RP = Participle + DP
-<br>6 (assertions only). S = RP + Verb + DP
+<blockquote><font color="#000080">The last liquid distribution rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries a dry copy of The Last Man, end the game in victory.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc190.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc189.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc191.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>
+<blockquote><font color="#000080">Instead of examining a waterfilled container:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is full of water[if the noun contains something visible]; it also contains [the list of things in the noun][end if].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining a container:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Dry inside[if the noun contains something visible], and containing [a list of things in the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A book is a kind of thing. Instead of examining a sodden book, say &quot;[The noun] is too soaked to read, thanks to someone's carelessness.&quot; Understand &quot;book&quot; as a book.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The copy of The Last Man is a book. The description of The Last Man is &quot;Mary Shelley's very own original copy, loaned to you under the strictest of agreements[if the pond encloses the copy]. How it came to be in its present position is a long story, and not important at the moment: the critical thing is not to blame oneself - who could have anticipated the cricket bat, anyway? - but to fix it immediately, before anything worse occurs[end if].&quot; The The Last Man is in the ziploc bag. The ziploc bag is waterproof and empty. It is openable, transparent, and closed.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Back Garden is a room. The Back Garden contains a pond. The pond is a waterfilled container. In the pond is the ziploc bag. A carp is in the pond. The carp is an animal. Instead of taking the carp, say &quot;You're not fast enough.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for writing a paragraph about the pond:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the pond encloses the Last Man
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is a beautiful day just at the end of spring and beginning of summer. The sun shines, the trees blossom, the world conspires in Edenic cheerfulness. You can take in none of it. Your eye is on [the Last Man].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The pond[if something is in the pond] (containing [the list of things in the pond])[end if] remains a figure of menace in an otherwise lushly verdant landscape.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before printing the name of the Last Man when the Last Man is enclosed by the Pond: if the Last Man is dry, say &quot;delicate, valuable &quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After printing the name of something (called the target) while writing a paragraph about something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the Last Man is enclosed by the Pond
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the target is in something (called the parent), say &quot; - which is in [the parent]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Kitchen is west of the Back Garden. &quot;Not in any sense your province: Mrs Peaswell gets agitated if anyone besides herself so much as boils a kettle. In general it is best to sneak through, disturbing as little as possible and preserving the cosy domestic fiction that academics cannot cook.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The nearby stairwell leads up to the second floor.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Stairwell is above the Kitchen. &quot;Halfway up and halfway down.&quot; The airing cupboard is a container in the Stairwell. &quot;An airing cupboard here contains the heating system, and is the ideal place for restoring wet items to a dry state.&quot; The airing cupboard is fixed in place.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out doing something when the player wears the dry gloves:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if we get wet
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player wears the gloves and the gloves are dry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the gloves are sodden;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(soaking your gloves in the process)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out doing something when the player wears the sodden gloves:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the The Last Man must be touched and the Last Man is not sodden
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(soaking the parched pages of The Last Man with the rude touch of your sodden gloves)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the The Last Man is sodden;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check doing something when the player does not wear the gloves:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if The Last Man must be touched
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if The Last Man is dry, say &quot;[The The Last Man] is too precious to endanger when you are not wearing gloves.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You hesitate instinctively, then recollect that you can hardly harm [The The Last Man] any more than it has already been harmed...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide whether we get wet:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a thing, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun dampens us, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not a thing, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun dampens us, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide whether (item - a thing) dampens us:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is not liquiferous, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if item must be touched, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide whether (item - a thing) must be touched:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is the noun and the action requires a touchable noun, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is the second noun and the action requires a touchable second noun, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is liquiferous:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is sodden, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is in a waterfilled container, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x book / x bag / get bag / take off gloves / w / u / put gloves in cupboard / z / open bag / touch book / push book / turn book / get gloves / wear gloves / get book&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test disaster with &quot;open bag&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test mishandling with &quot;get bag / open bag / get book&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc178.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc177.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc179.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

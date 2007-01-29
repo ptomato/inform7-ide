@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.17. In what order?</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.16. The value after and the value before</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,41 +8,33 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc167.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc169.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.17. In what order?</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "The value after and the value before" -->
+<!-- SEARCH SECTION "11.16" -->
+<!-- SEARCH SORT "011-016-000" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc167.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc169.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.16. The value after and the value before</b></font></td></tr></table>
 <p>
-<p>Recall the definition:
+<p>Arithmetic is fundamental to most systems for computer programming: with Inform that is less true, so we only now come to the first mention of the addition of numbers. As might be expected, &quot;+&quot; can be used to combine two number values into one:
 <p>
-<blockquote><font color="#000080">To slam shut (box - an open container): say &quot;With great panache, you slam shut [the box].&quot;.
+<blockquote><font color="#000080">change the score to the score + 4
 </font></blockquote><p>
 <p>
-<p>Suppose we then try to &quot;slam shut the wall safe&quot; at a time during play when the wall safe is already closed. An error message will then be printed during play, since there must be a mistake in the design. The combination of checking both at construction time and continuously during play guarantees that, in all cases, a varying item such as &quot;box&quot; in the definition of &quot;To slam shut (box - open container)&quot; always satisfies the condition laid down.
+<p>(This can also be spelled out &quot;plus&quot;: or we could have written &quot;increase the score by 4&quot;. Similarly, we can &quot;decrease&quot;.) Inform generally expects to apply addition only to two numbers, so we cannot normally apply &quot;+&quot; to values like these:
 <p>
-<p>Instead suppose we also have the following definition:
-<p>
-<blockquote><font color="#000080">To slam shut (box - a container): say &quot;You are unable to slam shut [the box], which is already closed.&quot;.
+<blockquote><font color="#000080">Colour is a kind of value. The colours are red, orange, yellow, green, blue, indigo and violet.
 </font></blockquote><p>
 <p>
-<p>We now have two definitions of &quot;slam shut&quot;. Sometimes the box it's applied to will be closed, in which case only the second definition fits, and will be the one used. But if the box is open, both definitions fit. Which will happen? The rule is:
+<p>There will be more about arithmetic on new kinds of value in the chapter on Units, but it may be useful to note that although we cannot (ordinarily) add up colours, we do automatically have two ways to make new colours from old:
 <p>
-<blockquote><font color="#000080">1. A narrower condition takes precedence over a broader one;
+<blockquote><font color="#000080">the colour after C
+<br>the colour before C
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">2. If neither condition is narrower than the other, then whichever phrase was defined later in the source code is the one taking precedence;
-</font></blockquote><p>
+<p>produce the next, and the previous colour respectively, in order of their declaration. Thus &quot;the colour after red&quot; is orange; &quot;the colour before blue&quot; is green. The values wrap around, that is, &quot;the colour before red&quot; is violet and &quot;the colour after violet&quot; is red.
 <p>
-<blockquote><font color="#000080">3. Except that if the phrase is being used in the definition of phrase P, then P is always last in precedence order, so that recursion is always the very last possibility considered. This allows more specific or later definitions to make use of less specific or earlier ones in a natural way.
-</font></blockquote><p>
+<p>We are also allowed to use number-like comparisons with new kinds of value. Thus &quot;red < yellow&quot; is true, while &quot;green >= violet&quot; is not. Again, more on comparisons in the chapter on units.
 <p>
-<p>Rule 1 ensures that a definition involving &quot;open container&quot; takes priority over one which merely involves &quot;container&quot;, for instance.
-<p>
-<p>And therefore when the box is open, it's the more specific phrase to do with open containers which is invoked: so, with great panache, the box is slammed shut.
-<p>
-<p>On the other hand, neither of these patterns is narrower than the other:
-<p>
-<blockquote><font color="#000080">To describe (something - transparent): ...
-<br>To describe (something - container): ...
-</font></blockquote><p>
-<p>
-<p>Some containers are transparent, some not; some transparent things are containers, some not. Rule 1 therefore does not apply, so it is the later of the two phrases which takes effect.
-<p>
+<p><hr><p>
+<a name="e81"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex81.html#e81 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>145</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex81.html#e81 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Entropy</font></b></a><br>All objects in the game have a heat, but if not kept insulated they will tend toward room temperature (and at a somewhat exaggerated rate).<p></td></tr></table>
+<a name="e204"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex204.html#e204 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>146</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex204.html#e204 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Hang of Thursdays</font></b></a><br>Turns take a quarter day each, and the game rotates through the days of the week.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc167.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc169.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

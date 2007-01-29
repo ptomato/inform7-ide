@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.7. Procedural rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.2. New commands for old grammar</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,118 +8,75 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc289.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc291.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.7. Procedural rules</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Anchorite" -->
+<!-- SEARCH SECTION "Ex 219" -->
+<!-- SEARCH SORT "Ex 016-002-219" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc238.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc240.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.2. New commands for old grammar</b></font></td></tr></table>
 <p>
-<p>Before any rule or rulebook is followed, a special rulebook is always consulted first. This is called the &quot;procedural rules&quot;, and it starts out empty: so if we write no procedural rules, empty it will remain.
+<p>In the photography example, we are providing entirely new grammar for an action  not ordinarily built in to Inform. But we often want simply to provide alternative grammar for existing actions, or even to put new interpretations on commands that Inform already recognises. For instance:
 <p>
-<p>Like the points of order which precede a debate, the procedural rules are not intended to contribute to any decision in themselves, but merely to sort out which voices are to be heard when the time for decision comes. Should some rules be waived, or others substituted? Should the rulebook be rearranged, in certain circumstances? And so on. Procedural rules offer enormous flexibility and with them one could deconstruct Inform and put it back together in a very different shape - but in practical situations they will only occasionally be needed.
-<p>
-<p>Procedural rules are not allowed to say anything, or indeed to do anything which might have practical consequences; they are only allowed to think about the current situation (if they need to) and then use special phrases (if they choose to) which affect how other rules are to be followed. For instance:
-<p>
-<blockquote><font color="#000080">A procedural rule: if in the Timeless Void then ignore the advance time rule.
+<blockquote><font color="#000080">Understand &quot;deposit [something] in [an open container]&quot; as inserting it into.
 </font></blockquote><p>
 <p>
-<p>Since the &quot;advance time rule&quot; is the one which moves on the number of turns and the clock, this means that the Timeless Void lives up to its name.
+<p>The inserting action is built in to Inform, but the command &quot;deposit&quot; is not, so this is created as new. It is occasionally useful to put a twist on this:
+<p>
+<blockquote><font color="#000080">Understand &quot;fill [an open container] with [something]&quot; as inserting it into (with nouns reversed).
+</font></blockquote><p>
+<p>
+<p>The clause &quot;(with nouns reversed)&quot; tells Inform to exchange the two nouns parsed, which is necessary because the inserting action expects the noun to be the item and the second noun to be the container, not vice versa.
+<p>
+<p>The following example:
+<p>
+<blockquote><font color="#000080">Understand &quot;access [something]&quot; as opening.
+</font></blockquote><p>
+<p>
+<p>might look as if it makes &quot;access&quot; behave just like &quot;open&quot; when the player types it, but that's not so: &quot;open&quot; can also be used in constructions like &quot;open the door with the brass key&quot;, in which case it is understood as the unlocking action. We could add another line to make &quot;access&quot; behave this way too, but if what we really want is to make &quot;access&quot; behave just like &quot;open&quot;, it's easier simply to say so:
+<p>
+<blockquote><font color="#000080">Understand the command &quot;access&quot; as &quot;open&quot;.
+</font></blockquote><p>
+<p>
+<p>This is very useful when adding a new command which needs synonyms:
+<p>
+<blockquote><font color="#000080">Understand the commands &quot;snap&quot; and &quot;picture&quot; as &quot;photograph&quot;.
+</font></blockquote><p>
+<p>
+<p>We can check the current stock of commands by looking at the table in the Actions index: for instance, before making &quot;snap&quot; synonymous with &quot;photograph&quot;, it might be wise to check that it is not already defined as a command for breaking something.
 <p>
 <p><hr><p>
-<a name="e146"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex146.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>274</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex146.html#e146 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Access All Areas</font></b></a><br>The Pointy Hat of Liminal Transgression allows its wearer to walk clean through closed doors.<p></td></tr></table>
-<a name="e250"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex250.html#e250 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>275</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex250.html#e250 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Instant EXAMINE and LOOK</font></b></a><br>A set of actions which do not take any game time at all.<p></td></tr></table>
-<a name="e108"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc290.html#e108 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>276</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc290.html#e108 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bribery</font></b></a><br>A GIVE command that gets rid of Inform's default refusal message in favor of something a bit more sophisticated.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>If we want to rewrite the functionality of a command that usually ends with a &quot;block...&quot; rule, we will have to begin by turning the blocking off.
+<!-- EXAMPLE START -->
+<a name="e108"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc239.html#e108 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>219</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc239.html#e108 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Anchorite</font></b></a><br>By default, Inform understands GET OFF, GET UP, or GET OUT when the player is sitting or standing on an enterable object. We might also want to add GET DOWN and DOWN as exit commands, though:<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>With GET DOWN, we can replace the whole command, which will not interfere with the normal function of the TAKE verb, or allow the player to attempt to GET any other directions:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode201(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Bribery"\n\nProcedural rule: ignore the block giving rule.\n\n[As it happens, correct behavior is built into the GIVE command once "block giving" is turned off, so we do not have to write a replacement report or carry-out rule; the object will be transferred to the possession of the caterpillar. But we do want to adjust the action just a little so that our gift cheers up the recipient:]\n\nCarry out giving (this is the gratitude for gifts rule): improve the mood of the second noun.\n\nMood is a kind of value. The moods are hostile, suspicious, indifferent, friendly, and adoring. An animal has a mood. An animal is usually indifferent.\n\nTo improve the mood of (character - an animal):\n\tif the mood of character is less than friendly, change the mood of the character to the mood after the mood of the character.\n\n[Now whenever we give something to an animal, the animal will be pleased about the present. Of course, we might also want to add a check rule to giving, to see whether the offering is something the recipient really wants:]\n\nCheck giving (this is the polite refusal of unwanted objects rule):\n\tif the noun interests the second noun\n\tbegin;\n\t\tdo nothing;\n\totherwise;\n\t\tsay "[The second noun] disdainfully refuses [the noun]." instead;\n\tend if.\n\nTo decide whether (item - a thing) interests (character - a person):\n\tif the character has the item, no;\n\tif the item is edible, yes;\n\tno.\n\nInstead of showing something to someone:\ntry giving the noun to the second noun.\n\n[There is already a perfectly workable report rule that will describe what happens when we give something to someone, but let\'s say we want to report on the recipient\'s changed mood, too:]\n\nAfter giving something to someone:\n\tsay "You give [the noun] to [the second noun], who appears mollified and is now merely [mood of the second noun]."\n\n[And the rest is all scenario:]\n\nThe Leafy Branch is a room. "You stand on smooth bark dappled by sunlight. The scent-trail runs forward to home.\n\nThe branch continues forward and backward from here, and a stem extends forward-up."\n\nInstead of going south in Leafy Branch, say "You must not back down! The scent trail leads onward!"\n\nThe Very Hungry Caterpillar is a hostile animal in the Leafy Branch. "[The Caterpillar] looks [mood]." Instead of examining the Caterpillar, say "[The caterpillar] appears [mood]."\n\nThe player carries an edible thing called a peanut crumb. The carrying capacity of the player is 1. After taking something, say "You lift [the noun], though it is nearly your own size."\n\nInstead of going north in the presence of a hostile caterpillar:\n\tsay "[The Caterpillar] moves to block your exit, glaring down at you with all the bristles on its skin extended to full size."\n\nInstead of going north in the presence of a suspicious caterpillar:\n\tsay "[The Caterpillar] moves to block your exit, though it might allow you past if you offered further tribute."\n\nThe Leaf Face is above the branch. "The smooth and shiny surface of the leaf extends forward from here, but you have lost the scent-trail. This is not the way home."  The pear fragment is an edible thing in Leaf Face. The dead aphid is a thing in Leaf Face.\n\nThe Twig is north of Leafy Branch. "The scent-trail is weak but not entirely gone, and you pursue it faithfully..."\n\nAfter going to the Twig:\n\tsay "The scent-trail is weak but not entirely gone, and you pursue it faithfully...";\n\tend the game in victory.\n\nUnderstand "forward-up" as up. Understand "forward" as north. Understand "backward" as south.  Understand "backward-down" as down.\n\nTest me with "forward / give crumb to caterpillar / forward / forward-up / get aphid / get fragment / down / give aphid to caterpillar / drop aphid / forward-up / get fragment / down / give fragment / forward".\n');
+    myProject.pasteCode('"Anchorite"\n\nThe Solitary Place is a room. "A glittering, shimmering desert without either locusts or honey." The pillar is an enterable supporter in the Solitary Place. "The broken pillar is short enough to climb and sit on." The description of the pillar is "Once it was a monument: a long frieze of battles and lion-hunts spirals up the side, in honor of an earthly king." The player is on the pillar.\n\nUnderstand "get down" as exiting.\n\n[This doesn\'t cover the case where the player just types "DOWN", and we don\'t want to preempt the normal operation of the GO action here. So instead of writing a new understand instruction, we might catch this one at the action-processing level:]\n\nInstead of going down when the player is on a supporter:\n\ttry exiting.\n\nTest me with "down / enter pillar / get down / down / get down".\n');
 }
 </script>
-<a href="javascript:pasteCode201()"><img border=0 src=../doc_images/paste.png></a> &quot;Bribery&quot;
+<a href="javascript:pasteCode201()"><img border=0 src=../doc_images/paste.png></a> &quot;Anchorite&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Procedural rule: ignore the block giving rule.
+<blockquote><font color="#000080">The Solitary Place is a room. &quot;A glittering, shimmering desert without either locusts or honey.&quot; The pillar is an enterable supporter in the Solitary Place. &quot;The broken pillar is short enough to climb and sit on.&quot; The description of the pillar is &quot;Once it was a monument: a long frieze of battles and lion-hunts spirals up the side, in honor of an earthly king.&quot; The player is on the pillar.
 </font></blockquote><p>
 <p>
-<p>As it happens, correct behavior is built into the GIVE command once &quot;block giving&quot; is turned off, so we do not have to write a replacement report or carry-out rule; the object will be transferred to the possession of the caterpillar. But we do want to adjust the action just a little so that our gift cheers up the recipient:
-<p>
-<blockquote><font color="#000080">Carry out giving (this is the gratitude for gifts rule): improve the mood of the second noun.
+<blockquote><font color="#000080">Understand &quot;get down&quot; as exiting.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Mood is a kind of value. The moods are hostile, suspicious, indifferent, friendly, and adoring. An animal has a mood. An animal is usually indifferent.
+<p>This doesn't cover the case where the player just types &quot;DOWN&quot;, and we don't want to preempt the normal operation of the GO action here. So instead of writing a new understand instruction, we might catch this one at the action-processing level:
+<p>
+<blockquote><font color="#000080">Instead of going down when the player is on a supporter:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try exiting.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To improve the mood of (character - an animal):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the mood of character is less than friendly, change the mood of the character to the mood after the mood of the character.
+<blockquote><font color="#000080">Test me with &quot;down / enter pillar / get down / down / get down&quot;.
 </font></blockquote><p>
-<p>
-<p>Now whenever we give something to an animal, the animal will be pleased about the present. Of course, we might also want to add a check rule to giving, to see whether the offering is something the recipient really wants:
-<p>
-<blockquote><font color="#000080">Check giving (this is the polite refusal of unwanted objects rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun interests the second noun
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do nothing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The second noun] disdainfully refuses [the noun].&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide whether (item - a thing) interests (character - a person):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the character has the item, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is edible, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of showing something to someone:
-<br>try giving the noun to the second noun.
-</font></blockquote><p>
-<p>
-<p>There is already a perfectly workable report rule that will describe what happens when we give something to someone, but let's say we want to report on the recipient's changed mood, too:
-<p>
-<blockquote><font color="#000080">After giving something to someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You give [the noun] to [the second noun], who appears mollified and is now merely [mood of the second noun].&quot;
-</font></blockquote><p>
-<p>
-<p>And the rest is all scenario:
-<p>
-<blockquote><font color="#000080">The Leafy Branch is a room. &quot;You stand on smooth bark dappled by sunlight. The scent-trail runs forward to home.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The branch continues forward and backward from here, and a stem extends forward-up.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going south in Leafy Branch, say &quot;You must not back down! The scent trail leads onward!&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Very Hungry Caterpillar is a hostile animal in the Leafy Branch. &quot;[The Caterpillar] looks [mood].&quot; Instead of examining the Caterpillar, say &quot;[The caterpillar] appears [mood].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries an edible thing called a peanut crumb. The carrying capacity of the player is 1. After taking something, say &quot;You lift [the noun], though it is nearly your own size.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going north in the presence of a hostile caterpillar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The Caterpillar] moves to block your exit, glaring down at you with all the bristles on its skin extended to full size.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going north in the presence of a suspicious caterpillar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The Caterpillar] moves to block your exit, though it might allow you past if you offered further tribute.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Leaf Face is above the branch. &quot;The smooth and shiny surface of the leaf extends forward from here, but you have lost the scent-trail. This is not the way home.&quot;  The pear fragment is an edible thing in Leaf Face. The dead aphid is a thing in Leaf Face.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Twig is north of Leafy Branch. &quot;The scent-trail is weak but not entirely gone, and you pursue it faithfully...&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After going to the Twig:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The scent-trail is weak but not entirely gone, and you pursue it faithfully...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;forward-up&quot; as up. Understand &quot;forward&quot; as north. Understand &quot;backward&quot; as south.  Understand &quot;backward-down&quot; as down.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;forward / give crumb to caterpillar / forward / forward-up / get aphid / get fragment / down / give aphid to caterpillar / drop aphid / forward-up / get fragment / down / give fragment / forward&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc290.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc289.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc291.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc239.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e4"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex4.html#e4 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>220</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex4.html#e4 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alpaca Farm</font></b></a><br>A generic USE action which behaves sensibly with a range of different objects, expanding on the EMPLOY example above.<p></td></tr></table>
+<a name="e54"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex54.html#e54 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>221</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex54.html#e54 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloak of Darkness</font></b></a><br>Implementation of "Cloak of Darkness", a simple example game that for years has been used to demonstrate the features of IF languages.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc238.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc240.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

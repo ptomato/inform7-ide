@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.23. Parts of things</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.12. Arithmetic with units</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,195 +8,136 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc48.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc50.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.23. Parts of things</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Frozen Assets" -->
+<!-- SEARCH SECTION "Ex 195" -->
+<!-- SEARCH SORT "Ex 014-012-195" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc215.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc217.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.12. Arithmetic with units</b></font></td></tr></table>
 <p>
-<p>Everything has one and only one kind. This is both good and bad: good for clarity, bad if something needs to behave in two different ways at once. How might we simulate a car with an ignition key, given that no single thing can be both a &quot;vehicle&quot; and a &quot;device&quot; at the same time?
-<p>
-<p>The Inform world model takes the view that such a car is too complicated to be simulated with a single thing. Instead it should be simulated as a vehicle (the car) which has a device (the ignition) attached. This is done using a third kind of containment to those seen so far (&quot;in...&quot; and &quot;on...&quot;): &quot;part of&quot;.
+<p>Inform allows us to perform arithmetic on units only where that would make sense, and it keeps track of the results. For instance,
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode8(code) {
+function pasteCode36(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Buttons"\n\nThe Confectionary Workshop is a room. The Chocolate Machine is here. "The Chocolate Machine has pride of place. A lever and two buttons, one white, the other brown, seem to be the only controls. On top is a hopper."\n\nA container called the hopper is part of the Chocolate Machine. The lever, the white button and the brown button are parts of the Chocolate Machine.\n\nThe Chocolatier\'s desk is here. "The Chocolatier evidently works at the imposing green-leather topped desk facing the Machine. It has three drawers with brass handles."\n\nThe upper drawer, the middle drawer and the lower drawer are parts of the desk. The upper drawer, the middle drawer and the lower drawer are openable closed containers. In the middle drawer is a sugared almond. In the lower drawer is a Battenburg cake. On the desk is a liquorice twist.\n\nThe cake, the twist and the almond are edible.\n\n');
+    myProject.pasteCode('The Weighbridge is a room. "A sign declares that the maximum load is [100kg multiplied by 3]."\n\n');
 }
 </script>
-<a href="javascript:pasteCode8()"><img border=0 src=../doc_images/paste.png></a> &quot;Buttons&quot;
+<a href="javascript:pasteCode36()"><img border=0 src=../doc_images/paste.png></a> The Weighbridge is a room. &quot;A sign declares that the maximum load is [100kg multiplied by 3].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Confectionary Workshop is a room. The Chocolate Machine is here. &quot;The Chocolate Machine has pride of place. A lever and two buttons, one white, the other brown, seem to be the only controls. On top is a hopper.&quot;
+<p>...will produce the text &quot;A sign declares that the maximum load is 300kg.&quot; Here Inform knows that it makes sense to multiply a weight by 3, and that the result will be a weight. Similarly, Inform allows us to add and subtract weights, and several different forms of division are allowed:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode37(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('The blackboard is in the Weighbridge. "A blackboard propped against one wall reads: \'122 / 10 is [122 divided by 10] remainder [remainder after dividing 122 by 10]; but 122kg / 10kg is [122kg divided by 10kg] remainder [remainder after dividing 122kg by 10kg]; and 122kg / 10 is [122kg divided by 10] remainder [remainder after dividing 122kg by 10].\'"\n\n');
+}
+</script>
+<a href="javascript:pasteCode37()"><img border=0 src=../doc_images/paste.png></a> The blackboard is in the Weighbridge. &quot;A blackboard propped against one wall reads: '122 / 10 is [122 divided by 10] remainder [remainder after dividing 122 by 10]; but 122kg / 10kg is [122kg divided by 10kg] remainder [remainder after dividing 122kg by 10kg]; and 122kg / 10 is [122kg divided by 10] remainder [remainder after dividing 122kg by 10].'&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A container called the hopper is part of the Chocolate Machine. The lever, the white button and the brown button are parts of the Chocolate Machine.
+<p>When we visit the Weighbridge, we find:
+<p>
+<blockquote><font color="#000080">A blackboard propped against one wall reads: &quot;122 / 10 is 12 remainder 2; but 122kg / 10kg is 12 remainder 2kg; and 122kg / 10 is 12kg remainder 2kg.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Chocolatier's desk is here. &quot;The Chocolatier evidently works at the imposing green-leather topped desk facing the Machine. It has three drawers with brass handles.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The upper drawer, the middle drawer and the lower drawer are parts of the desk. The upper drawer, the middle drawer and the lower drawer are openable closed containers. In the middle drawer is a sugared almond. In the lower drawer is a Battenburg cake. On the desk is a liquorice twist.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The cake, the twist and the almond are edible.
-</font></blockquote><p>
-<p>
-<p>The machine and the desk each have several &quot;parts&quot; representing subsidiary pieces of themselves. The desk is a &quot;supporter&quot; (it needs to be, for the liquorice twist to be on top) but also has three &quot;containers&quot; attached, each of which can be opened or closed independently.
-<p>
-<p>In the interests of realism, the standard rules of play protect these composite things. Thus if the desk were to be moved elsewhere (rolling on sugar casters perhaps) then its parts would move with it, and the player is not allowed to detach parts of things: the drawers can be opened or closed, but not pulled out altogether.
+<p>Whereas we are not allowed to divide 122 by 10kg: that would make no sense, since 122 is a number and not made up of kilograms. Inform will produce a problem message if we try.
 <p>
 <p><hr><p>
-<a name="e208"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex208.html#e208 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>29</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex208.html#e208 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Brown</font></b></a><br>A red sticky label which can be attached to anything in the game, or removed again.<p></td></tr></table>
-<a name="e44"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc49.html#e44 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>30</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc49.html#e44 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Disappointment Bay 12</font></b></a><br>A final trip to Disappointment Bay: the scenario turned into a somewhat fuller scene, with various features that have not yet been explained.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
+<!-- EXAMPLE START -->
+<a name="e44"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc216.html#e44 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>195</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc216.html#e44 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Frozen Assets</font></b></a><br>A treatment of money which keeps track of how much the player has on him, and a BUY command which lets him go shopping.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>In our brave new world, everything will have a price, so we had better spell this out.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode137(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Disappointment Bay"\n\nInclude Locksmith by Emily Short.\n\nThe Cabin is a room.  "The front of the small cabin is entirely occupied with navigational instruments, a radar display, and radios for calling back to shore. Along each side runs a bench with faded blue vinyl cushions[if the compartment is closed], which can be lifted to reveal the storage space underneath[otherwise], one of which is currently lifted to allows access to the storage compartment within[end if]. A glass case against the wall contains several fishing rods.\n\nScratched windows offer a view of the surrounding bay, and there is a door south to the deck. A sign taped to one wall announces the menu of tours offered by the Yakutat Charter Boat Company."\n\nThe Cabin contains a glass case. In the glass case is a collection of fishing rods. Understand "rod" as the collection. The case is closed, transparent, openable, lockable, and locked. The case is scenery. The small silver key unlocks the case.\n\nThe bench is in the cabin. On the bench are some blue vinyl cushions. The bench is enterable and scenery. The cushions are scenery.\n\nA storage compartment is an openable closed container. It is part of the bench. Instead of opening the bench, try opening the storage compartment. Instead of closing the bench, try closing the storage compartment. Instead of pushing or pulling or turning the cushions, try opening the storage compartment. Understand "space" as the storage compartment.\n\nSome nets and a Coke are in the compartment. Understand "net" as the nets. The description of the nets is "They must have something to do with fish as well. Really, you\'re just here for the sights."\n\nSome navigational instruments, some scratched windows, a radar display, and some radios are scenery in the cabin. The radar, the instruments, and the radios are devices. The radar and the instruments are switched on.\n\nA screen is part of the radar. The description of the screen is "[if the radar is switched on]Phantom lights move across the screen.[otherwise]The screen is dark.[end if]". Instead of doing something other than examining to the screen, say "It\'s not good for much but looking at."\n\nThe Captain is a transparent man in the Cabin. "The captain sits at the wheel, steering the boat and occasionally checking the radar readout." The captain wears a baseball cap. The description of the cap is "It says, THE WORST DAY FISHING IS BETTER THAN THE BEST DAY WORKING." The captain carries the silver key. The description of the captain is "[The captain] is wearing [list of things worn by the captain][if the captain carries something] and carrying [list of things carried by the captain][end if]."\n\nThe description of the instruments is "Knowing what they do is the Captain\'s job." Instead of doing something other than examining to the instruments in the presence of the Captain: say "The Captain glares at you. Clearly you are not welcome to do that."\n\nThe description of the windows is "They\'re a bit the worse for wear, but you can still get an impressive view of the glacier through them. There were whales earlier, but they\'re gone now." Understand "window" as the windows.\n\nThe description of the radar is "Apparently necessary to avoid the larger icebergs."\n\nThe description of the radios is "With any luck you will not need to radio for help, but it is reassuring that these things are here."\n\nA sign is scenery in the Cabin. The description is "You can get half-day and full-day sight-seeing tours, and half-day and full-day fishing trips."\n\nThe view of the Malaspina glacier is a backdrop. It is everywhere. The description is "The Malaspina glacier covers much of the nearby slope, and -- beyond it -- an area as large as Rhode Island." Understand "view of the surrounding bay" or "surrounding bay" as the view.\n\nThe cabin door is south of the Cabin and north of the Deck. It is a door and scenery. The description of the Deck is "The whole back half of the boat is open, allowing you to view the surroundings without intervening windows -- if you can stand the cold."\n\nThe ice chest is a closed openable container in the Deck. "A very heavy ice chest sits on the ground." It is fixed in place and pushable between rooms.\n\nA quantity of ice is in the Deck. "All around the boat bob chunks of glacier ice." Understand "glacier ice" as the quantity. The description is "Curiously cooled into funny-shaped chunks." The printed name of the quantity is "glacier ice".\n\nInstead of taking the quantity of ice when the player is not carrying the nets: if the quantity of ice is handled, continue the action; say "You are having a hard time fishing out the ice with your bare hands."\n\nAfter taking the quantity of ice when the player is carrying the nets:\n\tsay "You scoop up the ice with the net and get it in hand."\n\nInstead of taking the chest: say "It\'s too heavy to lift, but you might be able to push it, and just inch it over the frame of the door."\n\nThe player is carrying a backpack. The player is wearing a pair of sunglasses. The description of the sunglasses is "The light off the water and the ice does get pretty bright sometimes."\n\nThe backpack is a player\'s holdall. The carrying capacity of the player is 3. The backpack is wearable.\n\nInstead of asking the Captain for the key:\n\tsay "\'Sure, you can -- well, get me a drink first, would you?\'"\n\nInstead of asking the Captain for the key when the Captain is carrying a cold Coke and the Captain is carrying the key:\n\tmove the key to the player;\n\tsay "\'Here, knock yourself out.\'"\n\nInstead of asking the Captain for the key when the Captain is not carrying the key: say "\'I already gave it to you. You didn\'t lose it, did you?\'"\n\nHeat is a kind of value. The heats are cold, cool, room temperature, and warm.\n\nA beverage is a kind of thing. A beverage is always edible and openable. A beverage has a heat. A beverage is usually warm. The Coke is a beverage. The beer is a beverage. The beer is in the backpack.\n\nInstead of giving or showing a beer to the Captain:\n\tsay "\'I don\'t drink on the job, thanks,\' he says. \'You can help yourself if you want it, though.\'"\n\nInstead of giving or showing a Coke to the Captain:\n\tsay "\'It needs chilling,\' the Captain remarks, disgruntled."\n\nInstead of giving or showing a cold Coke to the Captain:\n\tmove the Coke to the Captain;\n\taward 2 points;\n\tsay "\'Ah, thank you,\' he says. How he can drink an iced soda on a day like today is an open question, but Alaskans are special."\n\nEvery turn when the quantity of ice is in the ice chest:\n\trepeat with item running through beverages in the ice chest\n\tbegin;\n\t\tlet the current heat be the heat of the item;\n\t\tif the current heat is not cold, change the heat of the item to the heat before the current heat;\n\tend repeat.\n\nBefore printing the name of a beverage (called the drink):\n\tsay "[heat of the drink] ".\n\nUnderstand the heat property as describing a beverage.\n\nThe maximum score is 5.\n\nAfter taking the fishing rods:\n\tend the game in victory;\n\taward 3 points;\n\tsay "Success is yours! (Now if only you knew anything about fishing.)"\n\nTest me with "test first / test second / test third".\n\nTest first with "x captain / open case / i / ask captain for the key / give beer to captain / open bench / x nets / get nets / get coke / give coke to captain".\n\nTest second with "s / open chest / drop nets / get glacier ice / get nets / get glacier ice / put glacier ice in chest / get coke / put coke in chest".\n\nTest third with "x coke / g / g / g / get coke / n / give coke to captain / ask captain for key / open case / get rods".\n');
+    myProject.pasteCode('"Frozen Assets"\n\nPrice is a kind of value. $10.99 specifies a price. A thing has a price. The price of a thing is usually $0.00. After examining something for sale, say "It can be yours for [the price of the noun]."\n\n[Now we assume a simple shopping model in which the player can\'t take anything without paying for it.]\n\nDefinition: a thing is free if the price of it is $0.00.\nDefinition: a thing is for sale if it is not free.\n\nInstead of taking something for sale:\n\tsay "You\'ll have to pay for that."\n\nBefore buying something for sale when the money is not in the wallet:\n\tsay "You\'re broke." instead.\n\nBefore buying something for sale when the money is free:\n\tsay "You\'re broke." instead.\n\nBefore buying something for sale when the price of the money is less than the price of the noun:\n\tsay "Your funds do not run to the price of [the noun]." instead.\n\nInstead of buying something:\n\tchange price of the money to the price of the money minus the price of the noun;\n\tsay "You fork over [the price of the noun] for [the noun], leaving yourself with [the price of the money].";\n\tif the money is free, remove the money from play;\n\tchange the price of the noun to $0.00;\n\tnow the player is carrying the noun.\n\n[The player\'s money object is going to be a bit unusual, because it has value but cannot itself be bought.]\n\nThe player carries a wallet. The wallet contains money. The price of the money is $4.50. The printed name of the money is "[price of the money] in cash". Understand "cash" as the money.\n\nInstead of taking the money:\n\tsay "Best to leave it alone until you need to buy something."\n\nInstead of buying something free:\n\tsay "[The noun] is yours already."\n\nInstead of buying the money:\n\tsay "The money belongs to you; you buy things with it."\n\n[Now we just need something to buy.]\n\nThe Dessert Parlor is a room. "An underlit, over-crowded room campily furnished with a lot of gilt-frame mirrors and twinkle lights: it is essentially a brothel of food. The service is slow at best, and on Saturday nights glacial. However. The wares on display more than make up for these trivial inconveniences."\n\nThe vanilla ice cream is an edible thing in the Parlor. The price of the ice cream is $2.45. The description is "In the scale of ice creams, you recognize this as a very inferior vanilla because it has no adjectives in the title."\n\nThe raspberry tart is an edible thing in the Parlor. The price of the tart is $4.50. The description is "An almond-laced shell packed with raspberries-under-glaze."\n\nThe syllabub is an edible thing in the Parlor. The price of the syllabub is $4.25. The description is "Whipped cream, alcohol, and lime juice, a substance without any redeeming food value whatever."\n\nThe espresso cake is an edible thing in the Parlor. The price of the espresso cake is $5.50. The description is "A lethal wedge of purest blackness."\n\nTest me with "inventory / examine syllabub / get syllabub / buy syllabub / drop it / get it / buy raspberry tart".\n\n');
 }
 </script>
-<a href="javascript:pasteCode137()"><img border=0 src=../doc_images/paste.png></a> &quot;Disappointment Bay&quot;
+<a href="javascript:pasteCode137()"><img border=0 src=../doc_images/paste.png></a> &quot;Frozen Assets&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Include Locksmith by Emily Short.
+<blockquote><font color="#000080">Price is a kind of value. $10.99 specifies a price. A thing has a price. The price of a thing is usually $0.00. After examining something for sale, say &quot;It can be yours for [the price of the noun].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Cabin is a room.  &quot;The front of the small cabin is entirely occupied with navigational instruments, a radar display, and radios for calling back to shore. Along each side runs a bench with faded blue vinyl cushions[if the compartment is closed], which can be lifted to reveal the storage space underneath[otherwise], one of which is currently lifted to allows access to the storage compartment within[end if]. A glass case against the wall contains several fishing rods.
+<p>Now we assume a simple shopping model in which the player can't take anything without paying for it.
+<p>
+<blockquote><font color="#000080">Definition: a thing is free if the price of it is $0.00.
+<br>Definition: a thing is for sale if it is not free.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Scratched windows offer a view of the surrounding bay, and there is a door south to the deck. A sign taped to one wall announces the menu of tours offered by the Yakutat Charter Boat Company.&quot;
+<blockquote><font color="#000080">Instead of taking something for sale:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'll have to pay for that.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Cabin contains a glass case. In the glass case is a collection of fishing rods. Understand &quot;rod&quot; as the collection. The case is closed, transparent, openable, lockable, and locked. The case is scenery. The small silver key unlocks the case.
+<blockquote><font color="#000080">Before buying something for sale when the money is not in the wallet:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're broke.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The bench is in the cabin. On the bench are some blue vinyl cushions. The bench is enterable and scenery. The cushions are scenery.
+<blockquote><font color="#000080">Before buying something for sale when the money is free:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're broke.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A storage compartment is an openable closed container. It is part of the bench. Instead of opening the bench, try opening the storage compartment. Instead of closing the bench, try closing the storage compartment. Instead of pushing or pulling or turning the cushions, try opening the storage compartment. Understand &quot;space&quot; as the storage compartment.
+<blockquote><font color="#000080">Before buying something for sale when the price of the money is less than the price of the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your funds do not run to the price of [the noun].&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Some nets and a Coke are in the compartment. Understand &quot;net&quot; as the nets. The description of the nets is &quot;They must have something to do with fish as well. Really, you're just here for the sights.&quot;
+<blockquote><font color="#000080">Instead of buying something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change price of the money to the price of the money minus the price of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You fork over [the price of the noun] for [the noun], leaving yourself with [the price of the money].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the money is free, remove the money from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the price of the noun to $0.00;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is carrying the noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Some navigational instruments, some scratched windows, a radar display, and some radios are scenery in the cabin. The radar, the instruments, and the radios are devices. The radar and the instruments are switched on.
+<p>The player's money object is going to be a bit unusual, because it has value but cannot itself be bought.
+<p>
+<blockquote><font color="#000080">The player carries a wallet. The wallet contains money. The price of the money is $4.50. The printed name of the money is &quot;[price of the money] in cash&quot;. Understand &quot;cash&quot; as the money.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A screen is part of the radar. The description of the screen is &quot;[if the radar is switched on]Phantom lights move across the screen.[otherwise]The screen is dark.[end if]&quot;. Instead of doing something other than examining to the screen, say &quot;It's not good for much but looking at.&quot;
+<blockquote><font color="#000080">Instead of taking the money:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Best to leave it alone until you need to buy something.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Captain is a transparent man in the Cabin. &quot;The captain sits at the wheel, steering the boat and occasionally checking the radar readout.&quot; The captain wears a baseball cap. The description of the cap is &quot;It says, THE WORST DAY FISHING IS BETTER THAN THE BEST DAY WORKING.&quot; The captain carries the silver key. The description of the captain is &quot;[The captain] is wearing [list of things worn by the captain][if the captain carries something] and carrying [list of things carried by the captain][end if].&quot;
+<blockquote><font color="#000080">Instead of buying something free:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is yours already.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the instruments is &quot;Knowing what they do is the Captain's job.&quot; Instead of doing something other than examining to the instruments in the presence of the Captain: say &quot;The Captain glares at you. Clearly you are not welcome to do that.&quot;
+<blockquote><font color="#000080">Instead of buying the money:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The money belongs to you; you buy things with it.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the windows is &quot;They're a bit the worse for wear, but you can still get an impressive view of the glacier through them. There were whales earlier, but they're gone now.&quot; Understand &quot;window&quot; as the windows.
+<p>Now we just need something to buy.
+<p>
+<blockquote><font color="#000080">The Dessert Parlor is a room. &quot;An underlit, over-crowded room campily furnished with a lot of gilt-frame mirrors and twinkle lights: it is essentially a brothel of food. The service is slow at best, and on Saturday nights glacial. However. The wares on display more than make up for these trivial inconveniences.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the radar is &quot;Apparently necessary to avoid the larger icebergs.&quot;
+<blockquote><font color="#000080">The vanilla ice cream is an edible thing in the Parlor. The price of the ice cream is $2.45. The description is &quot;In the scale of ice creams, you recognize this as a very inferior vanilla because it has no adjectives in the title.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the radios is &quot;With any luck you will not need to radio for help, but it is reassuring that these things are here.&quot;
+<blockquote><font color="#000080">The raspberry tart is an edible thing in the Parlor. The price of the tart is $4.50. The description is &quot;An almond-laced shell packed with raspberries-under-glaze.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A sign is scenery in the Cabin. The description is &quot;You can get half-day and full-day sight-seeing tours, and half-day and full-day fishing trips.&quot;
+<blockquote><font color="#000080">The syllabub is an edible thing in the Parlor. The price of the syllabub is $4.25. The description is &quot;Whipped cream, alcohol, and lime juice, a substance without any redeeming food value whatever.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The view of the Malaspina glacier is a backdrop. It is everywhere. The description is &quot;The Malaspina glacier covers much of the nearby slope, and -- beyond it -- an area as large as Rhode Island.&quot; Understand &quot;view of the surrounding bay&quot; or &quot;surrounding bay&quot; as the view.
+<blockquote><font color="#000080">The espresso cake is an edible thing in the Parlor. The price of the espresso cake is $5.50. The description is &quot;A lethal wedge of purest blackness.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The cabin door is south of the Cabin and north of the Deck. It is a door and scenery. The description of the Deck is &quot;The whole back half of the boat is open, allowing you to view the surroundings without intervening windows -- if you can stand the cold.&quot;
+<blockquote><font color="#000080">Test me with &quot;inventory / examine syllabub / get syllabub / buy syllabub / drop it / get it / buy raspberry tart&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The ice chest is a closed openable container in the Deck. &quot;A very heavy ice chest sits on the ground.&quot; It is fixed in place and pushable between rooms.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A quantity of ice is in the Deck. &quot;All around the boat bob chunks of glacier ice.&quot; Understand &quot;glacier ice&quot; as the quantity. The description is &quot;Curiously cooled into funny-shaped chunks.&quot; The printed name of the quantity is &quot;glacier ice&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of taking the quantity of ice when the player is not carrying the nets: if the quantity of ice is handled, continue the action; say &quot;You are having a hard time fishing out the ice with your bare hands.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After taking the quantity of ice when the player is carrying the nets:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You scoop up the ice with the net and get it in hand.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of taking the chest: say &quot;It's too heavy to lift, but you might be able to push it, and just inch it over the frame of the door.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player is carrying a backpack. The player is wearing a pair of sunglasses. The description of the sunglasses is &quot;The light off the water and the ice does get pretty bright sometimes.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The backpack is a player's holdall. The carrying capacity of the player is 3. The backpack is wearable.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking the Captain for the key:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Sure, you can -- well, get me a drink first, would you?'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking the Captain for the key when the Captain is carrying a cold Coke and the Captain is carrying the key:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the key to the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Here, knock yourself out.'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking the Captain for the key when the Captain is not carrying the key: say &quot;'I already gave it to you. You didn't lose it, did you?'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Heat is a kind of value. The heats are cold, cool, room temperature, and warm.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A beverage is a kind of thing. A beverage is always edible and openable. A beverage has a heat. A beverage is usually warm. The Coke is a beverage. The beer is a beverage. The beer is in the backpack.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of giving or showing a beer to the Captain:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'I don't drink on the job, thanks,' he says. 'You can help yourself if you want it, though.'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of giving or showing a Coke to the Captain:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'It needs chilling,' the Captain remarks, disgruntled.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of giving or showing a cold Coke to the Captain:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the Coke to the Captain;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;award 2 points;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Ah, thank you,' he says. How he can drink an iced soda on a day like today is an open question, but Alaskans are special.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the quantity of ice is in the ice chest:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through beverages in the ice chest
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the current heat be the heat of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current heat is not cold, change the heat of the item to the heat before the current heat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before printing the name of a beverage (called the drink):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[heat of the drink] &quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand the heat property as describing a beverage.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The maximum score is 5.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After taking the fishing rods:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;award 3 points;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Success is yours! (Now if only you knew anything about fishing.)&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;test first / test second / test third&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test first with &quot;x captain / open case / i / ask captain for the key / give beer to captain / open bench / x nets / get nets / get coke / give coke to captain&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test second with &quot;s / open chest / drop nets / get glacier ice / get nets / get glacier ice / put glacier ice in chest / get coke / put coke in chest&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test third with &quot;x coke / g / g / g / get coke / n / give coke to captain / ask captain for key / open case / get rods&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc49.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc48.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc50.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p>Implementing caloric units for this scenario is left as an exercise for the reader.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc216.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e12"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex12.html#e12 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>196</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex12.html#e12 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Money for Nothing</font></b></a><br>An OFFER price FOR command, allowing the player to bargain with a flexible seller.<p></td></tr></table>
+<a name="e146"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex146.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>197</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex146.html#e146 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lemonade</font></b></a><br>Containers for liquid which keep track of how much liquid they are holding and of what kind, and allow quantities to be moved from one container to another.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc215.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc217.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

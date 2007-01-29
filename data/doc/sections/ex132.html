@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.4. When play ends</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.13. Defining phrases in Inform 6</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,125 +8,112 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc129.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc131.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.4. When play ends</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Odins" -->
+<!-- SEARCH SECTION "Ex 296" -->
+<!-- SEARCH SORT "Ex 021-013-296" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc347.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc349.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.13. Defining phrases in Inform 6</b></font></td></tr></table>
 <p>
-<p>Short of something like a power cut, the game can only end when one of the two participants chooses to end it: either the player, by deciding that enough is enough, or us.
+<p>The phrases described in this documentation, such as &quot;end the game in death&quot;, are all defined in the Standard Rules, and are for the most part defined not in terms of other I7 phrases but instead reduced to equivalents in I6. For instance:
 <p>
-<p>If we decide that a conclusion of some kind, happy or not, has been reached, we can herald that moment with phrases like so:
-<p>
-<blockquote><font color="#000080">end the game in death
-<br>end the game in victory
-<br>end the game saying &quot;You have come to a full stop&quot;
+<blockquote><font color="#000080">To end the game in death: (- deadflag=1; -).
 </font></blockquote><p>
 <p>
-<p>The phrase &quot;end the game in death&quot; is equivalent to ending it saying &quot;You have died&quot;, and similarly victory simply means announcing &quot;You have won&quot;. The more general phrase allows any text (short, please) to be used:
+<p>The notation &quot;(-&quot; and &quot;-)&quot; indicates that what comes in between is I6 code. The minus sign is supposed to be a mnemonic for the decrease from 7 to 6: later we shall use &quot;(+&quot; and &quot;+)&quot; to go back up the other way, from 6 to 7.
 <p>
-<blockquote><font color="#000080">Instead of eating the fish, end the game saying &quot;You have been poisoned&quot;.
+<p>When a phrase is defined as containing only a single command, and that command is defined using I6 - as here - it is compiled in-line. This means that the phrase &quot;end the game in death&quot; will always be translated as &quot;deadflag=1;&quot;, rather than being translated into a call to a suitable function whose only statement is &quot;deadflag=1;&quot;.
+<p>
+<p>This is an easy case since the wording never varies. More typical examples would be:
+<p>
+<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
+<br>To sort (T - table-name) in (TC - table-column) order:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
 </font></blockquote><p>
 <p>
-<p>The rulebook &quot;when play ends&quot; is the matching bookend to &quot;when play begins&quot;. It is followed when the game decides to end (not when the player simply gives up and quits), and before any epitaph like
+<p>When the braced name of one of the variables in the phrase preamble appears, this is compiled to the corresponding I6 expression at the relevant position in the I6 code. So, for instance,
 <p>
-<blockquote><font color="#000080">*** You have been poisoned ***
+<blockquote><font color="#000080">say the capacity of the basket
 </font></blockquote><p>
 <p>
-<p>appears. For example:
+<p>might be compiled to
 <p>
-<blockquote><font color="#000080">When play ends, say &quot;Oh dear.&quot;
+<blockquote><font color="#000080">print O17_basket.capacity;
 </font></blockquote><p>
 <p>
-<p>In such a rule, the phrase &quot;resume the game&quot; will cause play to continue exactly as if no ending had been reached at all:
+<p>because &quot;{something}&quot; is expanded to &quot;capacity of the basket&quot; (I7 code) and then translated to &quot;O17_basket.capacity&quot; (I6 code), which is then spliced into the original I6 definition &quot;print {something};&quot;.
 <p>
-<blockquote><font color="#000080">When play ends: say &quot;Oh dear. Still, here's another chance.&quot;; resume the game.
+<p>Braces &quot;{&quot; are of course significant in I6. A real brace can be obtained by making the character following it a space, and then I7 will not attempt to read it as a request for substitution.
+<p>
+<p>Finally, note that while a normal I7 phrase definition can give a kind as what must be matched, e.g.,
+<p>
+<blockquote><font color="#000080">To release wild tigers into (arena - a room): ...
+</font></blockquote><p>
+<p>
+<p>it is in general a bad idea, and will result in inefficient code, for an phrase defined using I6 to do this. Instead, if possible, match against &quot;object&quot;, where any room, region, thing or direction will be a valid match:
+<p>
+<blockquote><font color="#000080">To release wild tigers into (arena - an object): ...
 </font></blockquote><p>
 <p>
 <p><hr><p>
-<a name="e132"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc130.html#e132 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>104</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc130.html#e132 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Big Sky Country</font></b></a><br>Allowing the player to continue play after a fatal accident, but penalizing him by scattering his possessions around the game map.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2><p>
-<p>Some older games allowed the player to be resurrected after a death, but punished him by distributing his possessions far and wide. Here we emulate that effect.
+<!-- EXAMPLE START -->
+<a name="e132"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc348.html#e132 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>296</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=doc348.html#e132 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Odins</font></b></a><br>Making [is/are] and [it/them] say tokens that will choose appropriately based on the last object mentioned.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font size=2>
+<p>
+<p>The faithful reader may recall this example from early in the documentation. It was always a bit flawed, though, because it didn't account very well for the possibility that our game might contain some intrinsically plural items. Here we define a &quot;to say is/are&quot; ability, checking the appropriate property within Inform 6.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
 function pasteCode226(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Big Sky Country"\n\nWhen play begins: say "There\'s a bit of a drive over from Anaconda, Montana, and then through a couple or three ghost towns, but finally you find what you\'re looking for, and strike out on foot..."\n\nEntrance to Devil\'s Canyon is a room. "You are at the top of a steep road, which proceeds down into the canyon proper." A sign is in Devil\'s Canyon. It is fixed in place. "An ominous sign has been put up by the local sheriff\'s office." The description is "PROCEED AT OWN RISK - NO RESCUES!"\n\nInstead of going down when a random chance of 1 in 3 succeeds:\n\tsay "Whoooops, your footing is not as secure as you thought...";\n\tend the game in death.\n\nDusty Path is below Entrance. "A dusty path, with grey-brown thorny bushes on either side. Immediately to your right is a sheer drop; far below you can see the rusting remains of a Model T that some fool tried to drive by here."\n\nHairpin is below Dusty Path. "A sharp bend in the road, doubling back down towards the bottom of the canyon. Just north of here there is also a small cavern of some kind[if the stick pin is in the cavern], which attracts your eye with some glittery thing[end if]."\n\nThe Cavern is north of Hairpin. "Really not much more than a little hollow in the side of the canyon." In the cavern are a snake and a diamond stick pin. The snake is an animal. The description of the snake is "You\'re no expert, but it looks like a rattler."\n\nInstead of taking the diamond stick pin in the presence of the snake: say "Turns out the snake is partial to that there pin, and takes exception to your intending to make off with it."; end the game in death.\n\n[In a fuller implementation of this game, we might make it possible to get by the snake, but in this version, it\'s just going to remain troublesome.]\n\nCrooked Path is below Hairpin. "You\'re about two thirds of the way down to the bottom of the cavern at this point."\n\nAt the Spot is below Crooked Path. "This\'ll be it: a bare patch of ground that might as well have an X painted right on it."\n\nRule for supplying a missing noun while digging:\n\tchange noun to the location.\n\nUnderstand "dig" or "dig hole/here" or "dig in ground/dirt/earth" as digging. Digging is an action applying to one thing.\n\nInstead of digging at the spot:\n\tsay "You dig and dig, and after a half hour or so, sure enough, you do turn up a big box of gold! You\'re going to be richer than God and Bill Gates put together.";\n\taward 5 points;\n\tend the game in victory.\n\nInstead of digging at the spot when the player does not carry the shovel:\n\tsay "What, without your shovel? That won\'t work too well."\n\nThe player carries a walking stick. The player wears a hat, a whistle, and a daypack. The daypack contains a mylar blanket, a granola bar, a cellular phone, a water bottle, a folding shovel, and a photocopied map. The granola bar is edible. Instead of drinking the water, say "You quench your thirst, for the time being." The description of the map is "The map shows the winding path of Devil\'s Canyon, with a large X down by the south end. That would be where your uncle Jesse buried the gold from the train robbery."\n\nThe maximum score is 5.\n\nWhen play ends:\n\tsay "Oh dear, that ought to be fatal! However, if you like I can get you out of it...\n\n\tShall I? >";\n\tif the player consents\n\tbegin;\n\t\trepeat with item running through things had by the player\n\t\tbegin;\n\t\t\tmove the item to a random visited room;\n\t\tend repeat;\n\t\tsay "A strong wind picks you up and sets you back at [the location], though perhaps minus a few of your things.";\n\t\tresume the game;\n\t\ttry looking;\n\tend if.\n\n');
+    myProject.pasteCode('"Odins"\n\nThe House of a Mortal Farmer is a room. "Having two separate rooms, this house bespeaks considerable wealth and success at agriculture."\n\nThe Bedroom is inside from the House.\n\nA chair is a kind of supporter. A chair is always enterable.\n\nIn the House are a table, two chairs, a basket, and a hearth. On the table is a loaf of bread. Some shoes are on the table.\n\nThe description of a thing is usually "You give [the noun] a glance, but [it/they] [is/are] plainly beneath your attention."\n\nThe infant is a man in the basket. The description of the infant is "So strong and fat that you wonder whether one of your fellow gods is acquainted with the mistress of the house-- but it\'s no concern of yours, of course."\n\nThe last mentioned thing is a thing that varies.\n\nAfter printing the name of something (called the target):\n\tchange the last mentioned thing to the target.\n\nTo decide whether (item - a thing) acts plural:\n\t(- ({item} has pluralname) -);\n\nTo say is/are:\n\tif the last mentioned thing acts plural, say "are";\n\totherwise say "is".\n\nTo say it/they:\n\tif the last mentioned thing acts plural, say "they";\n\totherwise say "it".\n\nTest me with "x chair / x basket / x infant / x shoes".\n');
 }
 </script>
-<a href="javascript:pasteCode226()"><img border=0 src=../doc_images/paste.png></a> &quot;Big Sky Country&quot;
+<a href="javascript:pasteCode226()"><img border=0 src=../doc_images/paste.png></a> &quot;Odins&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins: say &quot;There's a bit of a drive over from Anaconda, Montana, and then through a couple or three ghost towns, but finally you find what you're looking for, and strike out on foot...&quot;
+<blockquote><font color="#000080">The House of a Mortal Farmer is a room. &quot;Having two separate rooms, this house bespeaks considerable wealth and success at agriculture.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Entrance to Devil's Canyon is a room. &quot;You are at the top of a steep road, which proceeds down into the canyon proper.&quot; A sign is in Devil's Canyon. It is fixed in place. &quot;An ominous sign has been put up by the local sheriff's office.&quot; The description is &quot;PROCEED AT OWN RISK - NO RESCUES!&quot;
+<blockquote><font color="#000080">The Bedroom is inside from the House.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going down when a random chance of 1 in 3 succeeds:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Whoooops, your footing is not as secure as you thought...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in death.
+<blockquote><font color="#000080">A chair is a kind of supporter. A chair is always enterable.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Dusty Path is below Entrance. &quot;A dusty path, with grey-brown thorny bushes on either side. Immediately to your right is a sheer drop; far below you can see the rusting remains of a Model T that some fool tried to drive by here.&quot;
+<blockquote><font color="#000080">In the House are a table, two chairs, a basket, and a hearth. On the table is a loaf of bread. Some shoes are on the table.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Hairpin is below Dusty Path. &quot;A sharp bend in the road, doubling back down towards the bottom of the canyon. Just north of here there is also a small cavern of some kind[if the stick pin is in the cavern], which attracts your eye with some glittery thing[end if].&quot;
+<blockquote><font color="#000080">The description of a thing is usually &quot;You give [the noun] a glance, but [it/they] [is/are] plainly beneath your attention.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Cavern is north of Hairpin. &quot;Really not much more than a little hollow in the side of the canyon.&quot; In the cavern are a snake and a diamond stick pin. The snake is an animal. The description of the snake is &quot;You're no expert, but it looks like a rattler.&quot;
+<blockquote><font color="#000080">The infant is a man in the basket. The description of the infant is &quot;So strong and fat that you wonder whether one of your fellow gods is acquainted with the mistress of the house-- but it's no concern of yours, of course.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of taking the diamond stick pin in the presence of the snake: say &quot;Turns out the snake is partial to that there pin, and takes exception to your intending to make off with it.&quot;; end the game in death.
+<blockquote><font color="#000080">The last mentioned thing is a thing that varies.
 </font></blockquote><p>
 <p>
-<p>In a fuller implementation of this game, we might make it possible to get by the snake, but in this version, it's just going to remain troublesome.
-<p>
-<blockquote><font color="#000080">Crooked Path is below Hairpin. &quot;You're about two thirds of the way down to the bottom of the cavern at this point.&quot;
+<blockquote><font color="#000080">After printing the name of something (called the target):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last mentioned thing to the target.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">At the Spot is below Crooked Path. &quot;This'll be it: a bare patch of ground that might as well have an X painted right on it.&quot;
+<blockquote><font color="#000080">To decide whether (item - a thing) acts plural:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- ({item} has pluralname) -);
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for supplying a missing noun while digging:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change noun to the location.
+<blockquote><font color="#000080">To say is/are:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last mentioned thing acts plural, say &quot;are&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;is&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;dig&quot; or &quot;dig hole/here&quot; or &quot;dig in ground/dirt/earth&quot; as digging. Digging is an action applying to one thing.
+<blockquote><font color="#000080">To say it/they:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last mentioned thing acts plural, say &quot;they&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;it&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of digging at the spot:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You dig and dig, and after a half hour or so, sure enough, you do turn up a big box of gold! You're going to be richer than God and Bill Gates put together.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;award 5 points;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
+<blockquote><font color="#000080">Test me with &quot;x chair / x basket / x infant / x shoes&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of digging at the spot when the player does not carry the shovel:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;What, without your shovel? That won't work too well.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries a walking stick. The player wears a hat, a whistle, and a daypack. The daypack contains a mylar blanket, a granola bar, a cellular phone, a water bottle, a folding shovel, and a photocopied map. The granola bar is edible. Instead of drinking the water, say &quot;You quench your thirst, for the time being.&quot; The description of the map is &quot;The map shows the winding path of Devil's Canyon, with a large X down by the south end. That would be where your uncle Jesse buried the gold from the train robbery.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The maximum score is 5.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play ends:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh dear, that ought to be fatal! However, if you like I can get you out of it...
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">&nbsp;&nbsp;&nbsp;&nbsp;Shall I? >&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player consents
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things had by the player
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the item to a random visited room;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A strong wind picks you up and sets you back at [the location], though perhaps minus a few of your things.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resume the game;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try looking;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>&quot;If the player consents&quot; is just a convenient way to ask a yes/no question that the player must answer before going on with the game.
-<p>
-<p>Notice that this &quot;when the play ends&quot; event will not occur when the game ends in victory -- which is exactly what we want.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc130.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p><p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc129.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc131.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc348.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e106"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex106.html#e106 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>297</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex106.html#e106 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Pink or Blue</font></b></a><br>Asking the player to select a gender to begin play.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc347.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc349.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

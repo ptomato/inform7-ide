@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.9. Success and failure</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.5. Sorting and indexing of rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,42 +8,20 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc291.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc293.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.9. Success and failure</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Sorting and indexing of rules" -->
+<!-- SEARCH SECTION "18.5" -->
+<!-- SEARCH SORT "018-005-000" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc291.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc293.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.5. Sorting and indexing of rules</b></font></td></tr></table>
 <p>
-<p>Though we have blurred over this point so far, every rule has one of three outcomes: success, failure and neither. The default outcome is neither, and for many rules (the every turn rules, for instance) success or failure would be ignored anyway, which is how we managed not to mention all this before. Indeed, the instruction
+<p>The Rules page of the index for a project offers a view of the rulebooks and their contents, with two major exceptions: built-in rules for specific actions are left to the Actions page, and any rules for scene endings or beginnings are left to the Scenes page.
 <p>
-<blockquote><font color="#000080">follow the appraisal rules
-</font></blockquote><p>
+<p>As we have seen, we need to know the name of a rule before we can change its rulebook listing or alter its applicability. The Rules and Actions index pages show the names of the built-in rules, which are not worth memorising. (Typing can be saved by selecting a rule's name, using Copy and then using Paste to insert the name into the source text.)
 <p>
-<p>throws away the result, whatever it may be, which is why results have not come up in the discussion so far. All the same, results can make a difference even in examples like this one. When a rulebook is working through a list of rules, any rule which succeeds or fails (we say that it &quot;stops&quot;) causes the rulebook to stop at once, so that no subsequent rules in the book will be invoked. For instance, if any &quot;check taking&quot; rule fails, the whole &quot;check taking&quot; rulebook immediately fails, and that is the end of the action.
+<p>In the Rules index, each rulebook is named (in italic type) and then followed by a list of the rules within it, one on each line: if nothing follows, then the rulebook is currently empty. The rules are given in order, and icons are used which indicate which rules are more specific than which others: for instance, a green-tipped arrow running downwards indicates that the rule below is more specific than the rule above. Hovering the mouse over such an icon should bring up a &quot;tooltip&quot; which explains Inform's reasoning:
 <p>
-<p>When a rule or rulebook &quot;stops&quot;, a value can optionally also result: this means that rulebooks can be used to calculate quantities, as well as taking yes/no decisions, or simply carrying out activities.
+<p><img border=0 src=../doc_images/rulesorting.png>
 <p>
-<p>Generally speaking, stops are needed for different reasons in different rulebooks, so there are specialised syntaxes for bringing them about. We saw an example of this with the &quot;reaching inside&quot; rulebook:
+<p>As this suggests, Inform performs its automatic sorting using a precise collection of Laws (the term &quot;rules&quot; would be ambiguous here, so we call these guidelines Laws instead), and the tooltip shows which Law was applied. It is bad style to write source text which absolutely depends on detailed points of these Laws, but they are documented at the end of this chapter for those who do wish to see the full details.
 <p>
-<blockquote><font color="#000080">A rule for reaching inside the flask: say &quot;Your hand passes through the glass as if it were not there, chilling you to the bone.&quot;; allow access.
-</font></blockquote><p>
-<p>
-<p>&quot;Allow access&quot; does nothing more than cause the rule, and therefore the rulebook, to stop and succeed: &quot;deny access&quot; causes it to fail.
-<p>
-<p>The following phrases work in any rulebook:
-<p>
-<blockquote><font color="#000080">rule succeeds
-<br>rule fails
-<br>rule succeeds with result (...)
-<br>rule fails with result (...)
-</font></blockquote><p>
-<p>
-<p>The result can be a room, a thing or a text. It can be referred to as
-<p>
-<blockquote><font color="#000080">the result of the rule
-</font></blockquote><p>
-<p>
-<p>which is nothing if the rule ended without success or failure.
-<p>
-<p>Thus, &quot;the result of the rule&quot; will refer to the result of whatever rule or rulebook we last consulted. Similarly, &quot;if rule succeeded&quot; and &quot;if rule failed&quot; will tell us how the last-consulted rule or rulebook ended.
-<p>
-<p><hr><p>
-<a name="e88"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex88.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>280</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex88.html#e88 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Feline Behavior</font></b></a><br>A cat which reacts to whatever items it has handy, returning the result of a rulebook for further processing.<p></td></tr></table>
-<a name="e247"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex247.html#e247 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>281</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex247.html#e247 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Kyoto</font></b></a><br>Expanding the effects of the THROW something AT something command so that objects do make contact with one another.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc291.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc293.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

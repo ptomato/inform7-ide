@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.5. If</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.4. Conditions and questions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -8,49 +8,36 @@ color:white;
 }
 -->
 </STYLE>
-<body><font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc155.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc157.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.5. If</b></font></td></tr></table>
+<body>
+<!-- SEARCH TITLE "Conditions and questions" -->
+<!-- SEARCH SECTION "11.4" -->
+<!-- SEARCH SORT "011-004-000" -->
+<font size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc155.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc157.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.4. Conditions and questions</b></font></td></tr></table>
 <p>
-<p>We now run through a few special phrases which control other phrases: causing them to repeat, perhaps, or to be skipped. These phrases are equivalent to the &quot;control structures&quot; of other computer programming languages: no system for interactive fiction can possibly be adequate unless it allows us to carry out arbitrary computations, so the pretence that Inform is not really a programming language must be dropped sooner or later. That time is now.
+<p>A variety of &quot;conditions&quot; have already appeared in this documentation. A condition is a phrase which describes a situation which might be true, or might be false, and examples might include:
 <p>
-<p>The phrase:
-<p>
-<blockquote><font color="#000080">if (... condition ...) then (... another whole phrase ...)
+<blockquote><font color="#000080">Mr Kite is in Bishopsgate
+<br>the score is greater than 10
+<br>Sherlock Holmes suspects a woman
 </font></blockquote><p>
 <p>
-<p>causes the phrase after &quot;then&quot; to be followed only if the condition holds. Some people prefer to use a comma, which is treated just the same:
+<p>These are all examples of sentences, formed by putting nouns either side of a verb, and clearly a wide range of conditions can be written this way. But there are also a few special conditions built into Inform which have a fixed wording, and test questions difficult to address with ordinary sentences. For instance, the condition
 <p>
-<blockquote><font color="#000080">if (... condition ...), (... another whole phrase ...)
+<blockquote><font color="#000080">in darkness
 </font></blockquote><p>
 <p>
-<p>Because of this conventional use of a comma, it is a good idea to avoid using a comma in the condition itself:
+<p>(e.g., &quot;if in darkness...&quot;) tests whether the player is currently in the dark, and this is better than the more obvious-looking
 <p>
-<blockquote><font color="#000080">if opening, closing a door, ...
+<blockquote><font color="#000080">the player is in a dark room
 </font></blockquote><p>
 <p>
-<p>tends to confuse Inform.
+<p>since the player might have a torch, or be inside a cage which is itself in a dark room, and so on. Another example of a condition not easily written as a sentence is
 <p>
-<p>There are many different forms of condition in Inform (and, as we shall see, we can easily add more), but the simplest is:
-<p>
-<blockquote><font color="#000080">(first value) is (second value)
+<blockquote><font color="#000080">player consents
 </font></blockquote><p>
 <p>
-<p>As always, Inform checks that these two values are of kinds which can be compared. The following will produce an objection, for instance:
+<p>(e.g., &quot;if the player consents...&quot;) which is unusual in doing something and not simply making a silent check: it waits for the player to type YES (or Y) or NO (or N) at the keyboard.
 <p>
-<blockquote><font color="#000080">if 10 is a door then say &quot;Huzzah!&quot;
-</font></blockquote><p>
-<p>
-<p>since it makes no sense to ask the question, and the only result will be the baffled reply:
-<p>
-<blockquote><font color="#000080"><b>Problem.</b> In the line 'if 10 is a door then say &quot;Huzzah!&quot;' <img border=0 src=../doc_images/Reveal.png>, I can't determine whether or not '10 is a door', because it seems to ask if a number is some sort of door.
-</font></blockquote><p>
-<p>
-<p>This, however, would be fine:
-<p>
-<blockquote><font color="#000080">To comment upon (whatever - a thing):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is transparent then say &quot;I see right through this!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is an open door then say &quot;Oh look, an open door!&quot;.
-</font></blockquote><p>
-<p>
-<p>since &quot;whatever&quot; is known to be a thing, and Inform knows that things are indeed sometimes transparent and sometimes open doors.
-<p>
+<p><hr><p>
+<a name="e199"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex199.html#e199 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>132</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font size=2><a href=ex199.html#e199 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Proposal</font></b></a><br>Asking the player a yes/no question which he must answer, and another which he may answer or not as he chooses.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc155.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc157.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
