@@ -1755,6 +1755,7 @@ create_find_dialog (void)
       gtk_window_set_icon (GTK_WINDOW (find_dialog), find_dialog_icon_pixbuf);
       gdk_pixbuf_unref (find_dialog_icon_pixbuf);
     }
+  gtk_window_set_skip_pager_hint (GTK_WINDOW (find_dialog), TRUE);
   gtk_window_set_type_hint (GTK_WINDOW (find_dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 
   dialog_vbox3 = GTK_DIALOG (find_dialog)->vbox;
@@ -1813,6 +1814,8 @@ create_find_dialog (void)
   gtk_widget_show (find_algorithm);
   gtk_box_pack_start (GTK_BOX (hbox25), find_algorithm, TRUE, TRUE, 0);
   gtk_combo_box_append_text (GTK_COMBO_BOX (find_algorithm), _("Contains"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (find_algorithm), _("Starts with"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (find_algorithm), _("Full word"));
 
   dialog_action_area3 = GTK_DIALOG (find_dialog)->action_area;
   gtk_widget_show (dialog_action_area3);
@@ -2172,6 +2175,7 @@ create_new_dialog (void)
       gtk_window_set_icon (GTK_WINDOW (new_dialog), new_dialog_icon_pixbuf);
       gdk_pixbuf_unref (new_dialog_icon_pixbuf);
     }
+  gtk_window_set_skip_pager_hint (GTK_WINDOW (new_dialog), TRUE);
 
   new_druid = gnome_druid_new ();
   gtk_widget_show (new_druid);
@@ -2631,6 +2635,7 @@ create_prefs_dialog (void)
       gtk_window_set_icon (GTK_WINDOW (prefs_dialog), prefs_dialog_icon_pixbuf);
       gdk_pixbuf_unref (prefs_dialog_icon_pixbuf);
     }
+  gtk_window_set_skip_pager_hint (GTK_WINDOW (prefs_dialog), TRUE);
   gtk_window_set_type_hint (GTK_WINDOW (prefs_dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 
   dialog_vbox4 = GTK_DIALOG (prefs_dialog)->vbox;
@@ -3468,6 +3473,7 @@ create_inspector_window (void)
       gdk_pixbuf_unref (inspector_window_icon_pixbuf);
     }
   gtk_window_set_skip_taskbar_hint (GTK_WINDOW (inspector_window), TRUE);
+  gtk_window_set_skip_pager_hint (GTK_WINDOW (inspector_window), TRUE);
   gtk_window_set_type_hint (GTK_WINDOW (inspector_window), GDK_WINDOW_TYPE_HINT_UTILITY);
 
   vbox34 = gtk_vbox_new (FALSE, 0);
@@ -3500,6 +3506,7 @@ create_inspector_window (void)
   scrolledwindow43 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (scrolledwindow43);
   gtk_container_add (GTK_CONTAINER (headings_inspector), scrolledwindow43);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow43), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow43), GTK_SHADOW_IN);
 
   headings = gtk_tree_view_new ();
@@ -3535,6 +3542,7 @@ create_inspector_window (void)
   gtk_widget_show (search_inspector);
   gtk_box_pack_start (GTK_BOX (vbox34), search_inspector, TRUE, TRUE, 0);
   gtk_widget_set_size_request (search_inspector, 250, -1);
+  gtk_expander_set_expanded (GTK_EXPANDER (search_inspector), TRUE);
 
   vbox35 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox35);
@@ -3552,6 +3560,7 @@ create_inspector_window (void)
   gtk_widget_show (search_inspector_text);
   gtk_box_pack_start (GTK_BOX (hbox27), search_inspector_text, TRUE, TRUE, 0);
   gtk_entry_set_invisible_char (GTK_ENTRY (search_inspector_text), 8226);
+  gtk_entry_set_activates_default (GTK_ENTRY (search_inspector_text), TRUE);
 
   search_inspector_case_sensitive = gtk_check_button_new_with_mnemonic (_("Case sensitive"));
   gtk_widget_show (search_inspector_case_sensitive);
@@ -3565,10 +3574,13 @@ create_inspector_window (void)
   gtk_widget_show (search_inspector_algorithm);
   gtk_box_pack_start (GTK_BOX (hbox28), search_inspector_algorithm, TRUE, TRUE, 0);
   gtk_combo_box_append_text (GTK_COMBO_BOX (search_inspector_algorithm), _("Contains"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (search_inspector_algorithm), _("Starts with"));
+  gtk_combo_box_append_text (GTK_COMBO_BOX (search_inspector_algorithm), _("Full word"));
 
   search_inspector_search = gtk_button_new_from_stock ("gtk-find");
   gtk_widget_show (search_inspector_search);
   gtk_box_pack_start (GTK_BOX (hbox28), search_inspector_search, FALSE, FALSE, 0);
+  GTK_WIDGET_SET_FLAGS (search_inspector_search, GTK_CAN_DEFAULT);
 
   hseparator4 = gtk_hseparator_new ();
   gtk_widget_show (hseparator4);
@@ -3602,6 +3614,9 @@ create_inspector_window (void)
   g_signal_connect ((gpointer) inspector_window, "delete_event",
                     G_CALLBACK (gtk_widget_hide_on_delete),
                     NULL);
+  g_signal_connect ((gpointer) search_inspector_search, "clicked",
+                    G_CALLBACK (on_search_inspector_search_clicked),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (inspector_window, inspector_window, "inspector_window");
@@ -3634,6 +3649,75 @@ create_inspector_window (void)
   GLADE_HOOKUP_OBJECT (inspector_window, label86, "label86");
   GLADE_HOOKUP_OBJECT (inspector_window, no_inspector, "no_inspector");
 
+  gtk_widget_grab_default (search_inspector_search);
   return inspector_window;
+}
+
+GtkWidget*
+create_search_window (void)
+{
+  GtkWidget *search_window;
+  GdkPixbuf *search_window_icon_pixbuf;
+  GtkWidget *vbox36;
+  GtkWidget *hbox29;
+  GtkWidget *label88;
+  GtkWidget *search_text_label;
+  GtkWidget *scrolledwindow45;
+  GtkWidget *search_results_view;
+
+  search_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (search_window), _("Search results"));
+  gtk_window_set_position (GTK_WINDOW (search_window), GTK_WIN_POS_CENTER);
+  search_window_icon_pixbuf = create_pixbuf ("gnome-inform7/Inform.png");
+  if (search_window_icon_pixbuf)
+    {
+      gtk_window_set_icon (GTK_WINDOW (search_window), search_window_icon_pixbuf);
+      gdk_pixbuf_unref (search_window_icon_pixbuf);
+    }
+  gtk_window_set_skip_pager_hint (GTK_WINDOW (search_window), TRUE);
+  gtk_window_set_type_hint (GTK_WINDOW (search_window), GDK_WINDOW_TYPE_HINT_UTILITY);
+
+  vbox36 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox36);
+  gtk_container_add (GTK_CONTAINER (search_window), vbox36);
+
+  hbox29 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox29);
+  gtk_box_pack_start (GTK_BOX (vbox36), hbox29, FALSE, FALSE, 0);
+
+  label88 = gtk_label_new (_("Search results for: "));
+  gtk_widget_show (label88);
+  gtk_box_pack_start (GTK_BOX (hbox29), label88, FALSE, FALSE, 0);
+  gtk_misc_set_alignment (GTK_MISC (label88), 0, 0.53);
+  gtk_misc_set_padding (GTK_MISC (label88), 3, 5);
+
+  search_text_label = gtk_label_new ("");
+  gtk_widget_show (search_text_label);
+  gtk_box_pack_start (GTK_BOX (hbox29), search_text_label, TRUE, TRUE, 0);
+  gtk_misc_set_alignment (GTK_MISC (search_text_label), 0, 0.5);
+  gtk_label_set_ellipsize (GTK_LABEL (search_text_label), PANGO_ELLIPSIZE_END);
+
+  scrolledwindow45 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow45);
+  gtk_box_pack_start (GTK_BOX (vbox36), scrolledwindow45, TRUE, TRUE, 0);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow45), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow45), GTK_SHADOW_IN);
+
+  search_results_view = gtk_tree_view_new ();
+  gtk_widget_show (search_results_view);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow45), search_results_view);
+  gtk_widget_set_size_request (search_results_view, -1, 250);
+  gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (search_results_view), TRUE);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (search_window, search_window, "search_window");
+  GLADE_HOOKUP_OBJECT (search_window, vbox36, "vbox36");
+  GLADE_HOOKUP_OBJECT (search_window, hbox29, "hbox29");
+  GLADE_HOOKUP_OBJECT (search_window, label88, "label88");
+  GLADE_HOOKUP_OBJECT (search_window, search_text_label, "search_text_label");
+  GLADE_HOOKUP_OBJECT (search_window, scrolledwindow45, "scrolledwindow45");
+  GLADE_HOOKUP_OBJECT (search_window, search_results_view, "search_results_view");
+
+  return search_window;
 }
 

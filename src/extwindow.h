@@ -79,4 +79,6 @@ on_ext_window_delete_event             (GtkWidget       *widget,
 void
 on_ext_window_destroy                  (GtkObject       *object,
                                         gpointer         user_data);
+
+void jump_to_line_ext(GtkWidget *widget, gint line);
 #endif

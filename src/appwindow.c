@@ -35,6 +35,7 @@
 #include "compile.h"
 #include "tabgame.h"
 #include "inspector.h"
+#include "searchwindow.h"
 
 /* Gets a pointer to either the left or the right notebook in this window */
 GtkNotebook *get_notebook(GtkWidget *thiswidget, int right) {
@@ -103,6 +104,11 @@ gboolean check_datafile(const gchar *filename) {
 void display_status_message(GtkWidget *thiswidget, const gchar *message) {
     gnome_appbar_set_status(GNOME_APPBAR(lookup_widget(thiswidget,
       "main_appbar")), message);
+}
+
+void display_status_busy(GtkWidget *thiswidget) {
+    gtk_progress_bar_pulse(gnome_appbar_get_progress(GNOME_APPBAR(lookup_widget(
+      thiswidget, "main_appbar"))));
 }
 
 /* The following function is from Damian Iverleigh's patch to GtkContainer,
@@ -924,7 +930,7 @@ on_source_search_activate              (GtkEntry        *entry,
 {
     struct story *thestory = get_story(GTK_WIDGET(entry));
     find(GTK_TEXT_BUFFER(thestory->buffer), gtk_entry_get_text(entry), TRUE,
-      TRUE, FALSE);
+      TRUE, FIND_CONTAINS, FALSE);
     /* Do not free or modify the strings from gtk_entry_get_text */
     scroll_text_view_to_cursor(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "source_l")));
@@ -936,8 +942,11 @@ void
 on_docs_search_activate                (GtkEntry        *entry,
                                         gpointer         user_data)
 {
-    error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(entry))), NULL,
-      "Searching the documentation is not yet implemented.");
+    const gchar *search_text = gtk_entry_get_text(entry);
+    GList *list = search_doc(search_text, TRUE /*ignore case*/, FIND_CONTAINS);
+    GtkWidget *search_window = new_search_window(
+      gtk_widget_get_toplevel(GTK_WIDGET(entry)), search_text, list);
+    gtk_widget_show(search_window);
 }
 
 

@@ -899,7 +899,6 @@ void populate_extension_lists(GtkWidget *thiswidget) {
         if(err) {
             error_dialog(GTK_WINDOW(thiswidget), err, "Error opening extensions"
               " directory: ");
-            g_free(extension_dir);
             return;
         }
         const gchar *author_entry;

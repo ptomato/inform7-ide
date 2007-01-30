@@ -31,5 +31,6 @@
 #include "prefs.h"
 #include "tabgame.h"
 #include "inspector.h"
+#include "searchwindow.h"
 
 /* This is where Glade puts newly-created callback function prototypes. */

@@ -82,7 +82,9 @@ void set_ext_filename(struct extension *ext, gchar *filename) {
     if(ext->filename)
         g_free(ext->filename);
     ext->filename = g_strdup(filename);
-    gtk_window_set_title(GTK_WINDOW(ext->window), strrchr(filename, '/') + 1);
+    gchar *title = g_path_get_basename(filename);
+    gtk_window_set_title(GTK_WINDOW(ext->window), title);
+    g_free(title);
     update_window_list();
 }
 
@@ -98,4 +100,15 @@ void for_each_extension_buffer(void (*func)(GtkSourceBuffer *)) {
     GSList *iter;
     for(iter = extlist; iter != NULL; iter = g_slist_next(iter))
         func(((struct extension *)(iter->data))->buffer);
+}
+
+
+/* Check whether extension 'filename' is open and return a pointer to its
+extension structure, otherwise return NULL */
+struct extension *get_extension_if_open(gchar *filename) {
+    GSList *iter;
+    for(iter = extlist; iter != NULL; iter = g_slist_next(iter))
+        if(!strcmp(filename, ((struct extension *)(iter->data))->filename))
+            return (struct extension *)(iter->data);
+    return NULL;
 }

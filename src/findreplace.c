@@ -41,7 +41,7 @@ after_find_dialog_realize              (GtkWidget       *widget,
 {
     /* Set the find algorithm to "contains" */
     gtk_combo_box_set_active(
-      GTK_COMBO_BOX(lookup_widget(widget, "find_algorithm")), 0);
+      GTK_COMBO_BOX(lookup_widget(widget, "find_algorithm")), FIND_CONTAINS);
 }
 
 
@@ -85,7 +85,9 @@ on_find_next_clicked                   (GtkButton       *button,
       "find_ignore_case"))),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
       "find_wrap"))),
-      FALSE /* not reverse */);
+      FALSE /* not reverse */,
+      gtk_combo_box_get_active(GTK_COMBO_BOX(lookup_widget(thiswidget,
+      "find_algorithm"))));
       /* Do not free or modify the strings from gtk_entry_get_text */
     scroll_text_view_to_cursor(
       GTK_TEXT_VIEW(lookup_widget(((struct story *)user_data)->window,
@@ -108,7 +110,9 @@ on_xfind_next_clicked                   (GtkButton       *button,
       "find_ignore_case"))),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
       "find_wrap"))),
-      FALSE /* not reverse */);
+      FALSE /* not reverse */,
+      gtk_combo_box_get_active(GTK_COMBO_BOX(lookup_widget(thiswidget,
+      "find_algorithm"))));
       /* Do not free or modify the strings from gtk_entry_get_text */
     scroll_text_view_to_cursor(
       GTK_TEXT_VIEW(lookup_widget(((struct extension *)user_data)->window,
@@ -129,7 +133,9 @@ on_find_previous_clicked               (GtkButton       *button,
       "find_ignore_case"))),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
       "find_wrap"))),
-      TRUE /* reverse */);
+      TRUE /* reverse */,
+      gtk_combo_box_get_active(GTK_COMBO_BOX(lookup_widget(thiswidget,
+      "find_algorithm"))));
       /* Do not free or modify the strings from gtk_entry_get_text */
     scroll_text_view_to_cursor(
       GTK_TEXT_VIEW(lookup_widget(((struct story *)user_data)->window,
@@ -152,7 +158,9 @@ on_xfind_previous_clicked              (GtkButton       *button,
       "find_ignore_case"))),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
       "find_wrap"))),
-      TRUE /* reverse */);
+      TRUE /* reverse */,
+      gtk_combo_box_get_active(GTK_COMBO_BOX(lookup_widget(thiswidget,
+      "find_algorithm"))));
       /* Do not free or modify the strings from gtk_entry_get_text */
     scroll_text_view_to_cursor(
       GTK_TEXT_VIEW(lookup_widget(((struct extension *)user_data)->window,
@@ -175,7 +183,10 @@ on_find_replace_find_clicked           (GtkButton       *button,
       "find_ignore_case"))),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
       "find_wrap"))),
-      FALSE /* not reverse */, TRUE /* go to next occurrence */);
+      FALSE /* not reverse */,
+      gtk_combo_box_get_active(GTK_COMBO_BOX(lookup_widget(thiswidget,
+      "find_algorithm"))),
+      TRUE /* go to next occurrence */);
     scroll_text_view_to_cursor(
       GTK_TEXT_VIEW(lookup_widget(((struct story *)user_data)->window,
       "source_l")));
@@ -200,7 +211,10 @@ on_xfind_replace_find_clicked          (GtkButton       *button,
       "find_ignore_case"))),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
       "find_wrap"))),
-      FALSE /* not reverse */, TRUE /* go to next occurrence */);
+      FALSE /* not reverse */,
+      gtk_combo_box_get_active(GTK_COMBO_BOX(lookup_widget(thiswidget,
+      "find_algorithm"))),
+      TRUE /* go to next occurrence */);
     scroll_text_view_to_cursor(
       GTK_TEXT_VIEW(lookup_widget(((struct extension *)user_data)->window,
       "ext_code")));
@@ -220,7 +234,9 @@ on_find_replace_all_clicked        (GtkButton       *button,
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
         "find_replace_text"))),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
-        "find_ignore_case"))));
+        "find_ignore_case"))),
+      gtk_combo_box_get_active(GTK_COMBO_BOX(lookup_widget(thiswidget,
+        "find_algorithm"))));
       /* Do not free or modify the strings from gtk_entry_get_text */
 
     gtk_widget_destroy(gtk_widget_get_toplevel(thiswidget));
@@ -247,7 +263,9 @@ on_xfind_replace_all_clicked        (GtkButton       *button,
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
         "find_replace_text"))),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
-        "find_ignore_case"))));
+        "find_ignore_case"))),
+      gtk_combo_box_get_active(GTK_COMBO_BOX(lookup_widget(thiswidget,
+        "find_algorithm"))));
       /* Do not free or modify the strings from gtk_entry_get_text */
 
     gtk_widget_destroy(gtk_widget_get_toplevel(thiswidget));
@@ -262,7 +280,7 @@ on_xfind_replace_all_clicked        (GtkButton       *button,
 
 
 void find(GtkTextBuffer *buffer, const gchar *text, gboolean ignore_case,
-gboolean wrap, gboolean reverse) {
+gboolean wrap, gboolean reverse, int algorithm) {
     GtkTextIter cursor, match_start, match_end;
     GtkWidget *dialog;
 
@@ -274,7 +292,7 @@ gboolean wrap, gboolean reverse) {
       : gtk_text_buffer_get_selection_bound(buffer));
 
     if(find_next(text, &cursor, &match_start, &match_end, ignore_case,
-      reverse)) {
+      reverse, algorithm)) {
         gtk_text_buffer_select_range(buffer, &match_start, &match_end);
         return;
     } else {
@@ -287,7 +305,7 @@ gboolean wrap, gboolean reverse) {
             else
                 gtk_text_buffer_get_start_iter(buffer, &cursor);
             if(find_next(text, &cursor, &match_start, &match_end, ignore_case,
-              reverse)) {
+              reverse, algorithm)) {
                 gtk_text_buffer_select_range(buffer, &match_start, &match_end);
                 return;
             } else {
@@ -315,21 +333,41 @@ gboolean wrap, gboolean reverse) {
 and puts it in the text iterators match_start and match_end */
 gboolean find_next(const gchar *search_text, GtkTextIter *search_from,
   GtkTextIter *match_start, GtkTextIter *match_end, gboolean ignore_case,
-  gboolean reverse) {
-    if(reverse)
-        return gtk_source_iter_backward_search(search_from, search_text,
-          GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY |
-          (ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
-          match_start, match_end, NULL);
-    else
-        return gtk_source_iter_forward_search(search_from, search_text,
-          GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY |
-          (ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
-          match_start, match_end, NULL);
+  gboolean reverse, int algorithm) {
+    gboolean retval, do_it_again;
+    /* It's probably better to implement it this way, i.e. non-recursively, so
+      that we don't run out of stack space? */
+      
+    do {
+        do_it_again = FALSE;
+        if(reverse)
+            retval = gtk_source_iter_backward_search(search_from, search_text,
+              GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY |
+              (ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+              match_start, match_end, NULL);
+        else
+            retval = gtk_source_iter_forward_search(search_from, search_text,
+              GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY |
+              (ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+              match_start, match_end, NULL);
+        if(retval) {
+            if(algorithm == FIND_STARTS_WITH) {
+                if(!gtk_text_iter_starts_word(match_start))
+                    do_it_again = TRUE;
+            } else if(algorithm == FIND_FULL_WORD) {
+                if(!gtk_text_iter_starts_word(match_start)
+                  || !gtk_text_iter_ends_word(match_end))
+                    do_it_again = TRUE;
+            }      
+        }
+        if(do_it_again)
+            *search_from = *match_end;
+    } while(do_it_again);
+    return retval;
 }
 
 int replace_all(GtkTextBuffer *buffer, const gchar *search_text,
-const gchar *replace_text, gboolean ignore_case) {
+const gchar *replace_text, gboolean ignore_case, int algorithm) {
     GtkTextIter cursor, match_start, match_end;
     
     /* Replace All counts as one action for Undo */
@@ -339,7 +377,7 @@ const gchar *replace_text, gboolean ignore_case) {
     int replace_count = 0;
 
     while(find_next(search_text, &cursor, &match_start, &match_end, ignore_case,
-      FALSE)) {
+      FALSE, algorithm)) {
         gtk_text_buffer_delete(buffer, &match_start, &match_end);
         gtk_text_buffer_insert(buffer, &match_start, replace_text, -1);
         gtk_text_buffer_get_start_iter(buffer, &cursor);
@@ -353,7 +391,7 @@ const gchar *replace_text, gboolean ignore_case) {
 
 void replace(GtkTextBuffer *buffer, const gchar *search_text,
 const gchar *replace_text, gboolean ignore_case, gboolean wrap,
-gboolean reverse, gboolean find_next) {
+gboolean reverse, int algorithm, gboolean find_next) {
     GtkTextIter insert, selection_bound;
 
     gtk_text_buffer_get_selection_bounds(buffer, &insert, &selection_bound);
@@ -363,7 +401,7 @@ gboolean reverse, gboolean find_next) {
     if(ignore_case? strcasecmp(selected, search_text)
       : strcmp(selected, search_text)) {
         /* if the text is NOT selected, "find" again to select the text */
-        find(buffer, search_text, ignore_case, wrap, reverse);
+        find(buffer, search_text, ignore_case, wrap, reverse, algorithm);
         g_free(selected);
         return; /* do nothing, wait for the user to click replace again */
     }
@@ -376,7 +414,7 @@ gboolean reverse, gboolean find_next) {
 
     /* Find the next occurrence of the text */
     if(find_next)
-        find(buffer, search_text, ignore_case, wrap, reverse);
+        find(buffer, search_text, ignore_case, wrap, reverse, algorithm);
     
     g_free(selected);
 }

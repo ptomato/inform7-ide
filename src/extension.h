@@ -40,5 +40,6 @@ struct extension *get_ext(GtkWidget *widget);
 void set_ext_filename(struct extension *ext, gchar *filename);
 void for_each_extension_window(void (*func)(GtkWidget *));
 void for_each_extension_buffer(void (*func)(GtkSourceBuffer *));
+struct extension *get_extension_if_open(gchar *filename);
 
 #endif

@@ -67,6 +67,7 @@ int choose_notebook(GtkWidget *thiswidget, int newtab);
 gchar *get_datafile_path(const gchar *filename);
 gboolean check_datafile(const gchar *filename);
 void display_status_message(GtkWidget *thiswidget, const gchar *message);
+void display_status_busy(GtkWidget *thiswidget);
 
 GtkWidget *gtk_container_get_focus_child   (GtkContainer     *container);
 

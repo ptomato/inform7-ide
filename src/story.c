@@ -113,8 +113,9 @@ void set_story_filename(struct story *thestory, gchar *filename) {
     if(thestory->filename)
         g_free(thestory->filename);
     thestory->filename = g_strdup(filename);
-    gtk_window_set_title(GTK_WINDOW(thestory->window),
-      strrchr(filename, '/') + 1);
+    gchar *title = g_path_get_basename(filename);
+    gtk_window_set_title(GTK_WINDOW(thestory->window), title);
+    g_free(title);
     update_window_list();
 }
 

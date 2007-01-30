@@ -37,7 +37,8 @@ gnome_inform7_SOURCES = \
     skein.c skein.h \
     error.c error.h \
 	inspector.c inspector.h \
-    rtf.c rtf.h
+    rtf.c rtf.h \
+    searchwindow.c searchwindow.h
 
 gnome_inform7_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
 
