@@ -126,6 +126,13 @@ void for_each_story_window(void (*func)(GtkWidget *)) {
         func(((struct story *)(iter->data))->window);
 }
 
+/* Carry out func for each story window in idle time */
+void for_each_story_window_idle(GSourceFunc func) {
+    GSList *iter;
+    for(iter = storylist; iter != NULL; iter = g_slist_next(iter))
+        g_idle_add(func, (gpointer)(((struct story *)(iter->data))->window));
+}
+
 /* Carry out func for each story buffer */
 void for_each_story_buffer(void (*func)(GtkSourceBuffer *)) {
     GSList *iter;

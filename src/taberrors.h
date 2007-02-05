@@ -1,4 +1,4 @@
-/*  Copyright 2006 P.F. Chimento
+/*  Copyright 2007 P.F. Chimento
  *  This file is part of GNOME Inform 7.
  * 
  *  GNOME Inform 7 is free software; you can redistribute it and/or modify
@@ -16,31 +16,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
  
-#ifndef EXTENSION_H
-#define EXTENSION_H
+#ifndef _TABERRORS_H
+#define _TABERRORS_H
 
 #include <gnome.h>
 #include <gtksourceview/gtksourcebuffer.h>
-#include <libgnomevfs/gnome-vfs.h>
 
-struct extension {
-    /* The toplevel window in which this extension is being edited */
-    GtkWidget *window;
-    /* This extension's filename */
-    gchar *filename;
-    /* File monitor */
-    GnomeVFSMonitorHandle *monitor;
-    /* The program code */
-    GtkSourceBuffer *buffer;
-};
+void add_debug_tabs(GtkWidget *window);
+void remove_debug_tabs(GtkWidget *window);
+GtkSourceBuffer *create_inform6_source_buffer();
 
-struct extension *new_ext();
-void delete_ext(struct extension *oldext);
-struct extension *get_ext(GtkWidget *widget);
-void set_ext_filename(struct extension *ext, gchar *filename);
-void for_each_extension_window(void (*func)(GtkWidget *));
-void for_each_extension_window_idle(GSourceFunc func);
-void for_each_extension_buffer(void (*func)(GtkSourceBuffer *));
-struct extension *get_extension_if_open(gchar *filename);
-
-#endif
+#endif /* _TABERRORS_H */

@@ -237,22 +237,15 @@ on_prefs_rebuild_compiler_toggle_toggled
 void
 on_prefs_close_clicked                 (GtkButton       *button,
                                         gpointer         user_data);
-
-gboolean
-on_prefs_dialog_delete_event           (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
                                         
 void update_style(GtkSourceView *thiswidget);
 void update_font(GtkWidget *thiswidget);
 void update_font_size(GtkWidget *thiswidget);
 void update_tabs(GtkSourceView *thiswidget);
 void populate_extension_lists(GtkWidget *thiswidget);
-
-void update_app_window_fonts(GtkWidget *window);
-void update_ext_window_fonts(GtkWidget *window);
+gboolean update_app_window_fonts(gpointer data);
+gboolean update_ext_window_fonts(gpointer data);
+gboolean update_app_window_font_sizes(gpointer data);
 void update_source_highlight(GtkSourceBuffer *buffer);
-void add_debug_tabs(GtkWidget *window);
-void remove_debug_tabs(GtkWidget *window);
 
 #endif

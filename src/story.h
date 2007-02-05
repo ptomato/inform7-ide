@@ -66,6 +66,7 @@ void delete_story(struct story *oldstory);
 struct story *get_story(GtkWidget *widget);
 void set_story_filename(struct story *thestory, gchar *filename);
 void for_each_story_window(void (*func)(GtkWidget *));
+void for_each_story_window_idle(GSourceFunc func);
 void for_each_story_buffer(void (*func)(GtkSourceBuffer *));
 gchar *get_story_extension(struct story *thestory);
 

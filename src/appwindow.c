@@ -36,6 +36,7 @@
 #include "tabgame.h"
 #include "inspector.h"
 #include "searchwindow.h"
+#include "taberrors.h"
 
 /* Gets a pointer to either the left or the right notebook in this window */
 GtkNotebook *get_notebook(GtkWidget *thiswidget, int right) {
@@ -154,13 +155,23 @@ after_app_window_realize               (GtkWidget       *widget,
       GTK_MENU_ITEM(lookup_widget(widget, "open_recent")),
       recent_menu);
     
-    /* Create a text buffer for the Errors/Progress text view */
+    /* Create a text buffer for the Progress, Debugging and I6 text views */
     GtkTextBuffer *buffer = gtk_text_buffer_new(NULL);
     gtk_text_view_set_buffer(GTK_TEXT_VIEW(lookup_widget(widget,
       "compiler_output_l")), buffer);
     gtk_text_view_set_buffer(GTK_TEXT_VIEW(lookup_widget(widget,
       "compiler_output_r")), buffer);
-    
+    buffer = gtk_text_buffer_new(NULL);
+    gtk_text_view_set_buffer(GTK_TEXT_VIEW(lookup_widget(widget,
+      "debugging_l")), buffer);
+    gtk_text_view_set_buffer(GTK_TEXT_VIEW(lookup_widget(widget,
+      "debugging_r")), buffer);
+    GtkSourceBuffer *i6buffer = create_inform6_source_buffer();
+    gtk_text_view_set_buffer(GTK_TEXT_VIEW(lookup_widget(widget,
+      "inform6_l")), GTK_TEXT_BUFFER(i6buffer));
+    gtk_text_view_set_buffer(GTK_TEXT_VIEW(lookup_widget(widget,
+      "inform6_r")), GTK_TEXT_BUFFER(i6buffer));
+        
     /* Set the Errors/Progress to a monospace font */
     PangoFontDescription *font = pango_font_description_new();
     pango_font_description_set_family(font, "Bitstream Vera Sans Mono,"
@@ -799,6 +810,104 @@ on_next_sub_panel_activate             (GtkMenuItem     *menuitem,
             gtk_notebook_next_page(subnotebook);
     }
     /* else do nothing */
+}
+
+
+void
+on_show_actions_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    int right = choose_notebook(GTK_WIDGET(menuitem), TAB_INDEX);
+    gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), right),
+      TAB_INDEX);
+    gtk_notebook_set_current_page(
+      GTK_NOTEBOOK(lookup_widget(GTK_WIDGET(menuitem),
+      right? "index_notebook_r" : "index_notebook_l")),
+      TAB_INDEX_ACTIONS);
+}
+
+
+void
+on_show_contents_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    int right = choose_notebook(GTK_WIDGET(menuitem), TAB_INDEX);
+    gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), right),
+      TAB_INDEX);
+    gtk_notebook_set_current_page(
+      GTK_NOTEBOOK(lookup_widget(GTK_WIDGET(menuitem),
+      right? "index_notebook_r" : "index_notebook_l")),
+      TAB_INDEX_CONTENTS);
+}
+
+
+void
+on_show_kinds_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    int right = choose_notebook(GTK_WIDGET(menuitem), TAB_INDEX);
+    gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), right),
+      TAB_INDEX);
+    gtk_notebook_set_current_page(
+      GTK_NOTEBOOK(lookup_widget(GTK_WIDGET(menuitem),
+      right? "index_notebook_r" : "index_notebook_l")),
+      TAB_INDEX_KINDS);
+}
+
+
+void
+on_show_phrasebook_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    int right = choose_notebook(GTK_WIDGET(menuitem), TAB_INDEX);
+    gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), right),
+      TAB_INDEX);
+    gtk_notebook_set_current_page(
+      GTK_NOTEBOOK(lookup_widget(GTK_WIDGET(menuitem),
+      right? "index_notebook_r" : "index_notebook_l")),
+      TAB_INDEX_PHRASEBOOK);
+}
+
+
+void
+on_show_rules_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    int right = choose_notebook(GTK_WIDGET(menuitem), TAB_INDEX);
+    gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), right),
+      TAB_INDEX);
+    gtk_notebook_set_current_page(
+      GTK_NOTEBOOK(lookup_widget(GTK_WIDGET(menuitem),
+      right? "index_notebook_r" : "index_notebook_l")),
+      TAB_INDEX_RULES);
+}
+
+
+void
+on_show_scenes_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    int right = choose_notebook(GTK_WIDGET(menuitem), TAB_INDEX);
+    gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), right),
+      TAB_INDEX);
+    gtk_notebook_set_current_page(
+      GTK_NOTEBOOK(lookup_widget(GTK_WIDGET(menuitem),
+      right? "index_notebook_r" : "index_notebook_l")),
+      TAB_INDEX_SCENES);
+}
+
+
+void
+on_show_world_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    int right = choose_notebook(GTK_WIDGET(menuitem), TAB_INDEX);
+    gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), right),
+      TAB_INDEX);
+    gtk_notebook_set_current_page(
+      GTK_NOTEBOOK(lookup_widget(GTK_WIDGET(menuitem),
+      right? "index_notebook_r" : "index_notebook_l")),
+      TAB_INDEX_WORLD);
 }
 
 

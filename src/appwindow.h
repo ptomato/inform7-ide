@@ -213,6 +213,34 @@ on_switch_sides_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
+on_show_actions_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_contents_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_kinds_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_phrasebook_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_rules_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_scenes_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_show_world_activate                 (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
 on_next_sub_panel_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 

@@ -19,10 +19,7 @@
 #include <ctype.h>
 #include <gnome.h>
 #include <glib/gstdio.h>
-#include <gtksourceview/gtksourceview.h>
 #include <gtksourceview/gtksourcebuffer.h>
-#include <gtksourceview/gtksourcelanguage.h>
-#include <gtksourceview/gtksourcelanguagesmanager.h>
 #include <pango/pango-font.h>
 
 #include "prefs.h"
@@ -36,6 +33,7 @@
 #include "error.h"
 #include "colorscheme.h"
 #include "inspector.h"
+#include "taberrors.h"
 
 /* Check whether the user has selected something (not an author name) that can
 be removed, and if so, enable the remove button */
@@ -299,6 +297,8 @@ on_prefs_font_set_changed              (GtkComboBox     *combobox,
     
     update_font(lookup_widget(GTK_WIDGET(combobox), "source_example"));
     update_font(lookup_widget(GTK_WIDGET(combobox), "tab_example"));
+    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
 }
 
 
@@ -326,6 +326,8 @@ on_prefs_custom_font_font_set          (GtkFontButton   *fontbutton,
     config_file_set_string("Fonts", "CustomFont", ptr);
     update_font(lookup_widget(GTK_WIDGET(fontbutton), "source_example"));
     update_font(lookup_widget(GTK_WIDGET(fontbutton), "tab_example"));
+    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
     g_free(fontname);
 }
 
@@ -338,6 +340,8 @@ on_prefs_font_styling_changed          (GtkComboBox     *combobox,
       gtk_combo_box_get_active(combobox));
     update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(combobox),
       "source_example")));
+    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
 }
 
 
@@ -349,6 +353,9 @@ on_prefs_font_size_changed             (GtkComboBox     *combobox,
       gtk_combo_box_get_active(combobox));
     update_font(lookup_widget(GTK_WIDGET(combobox), "source_example"));
     update_font(lookup_widget(GTK_WIDGET(combobox), "tab_example"));
+    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    for_each_story_window_idle((GSourceFunc)update_app_window_font_sizes);
 }
 
 
@@ -360,6 +367,8 @@ on_prefs_change_colors_changed         (GtkComboBox     *combobox,
       gtk_combo_box_get_active(combobox));
     update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(combobox),
       "source_example")));
+    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
 }
 
 
@@ -371,6 +380,8 @@ on_prefs_color_set_changed             (GtkComboBox     *combobox,
       gtk_combo_box_get_active(combobox));
     update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(combobox),
       "source_example")));
+    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
 }
 
 /* Create a GtkSourceView and -Buffer and fill it with the example text */
@@ -415,6 +426,8 @@ on_tab_ruler_value_changed             (GtkRange        *range,
       GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(range), "tab_example")));
     update_tabs(
       GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(range), "source_example")));
+    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
 }
 
 
@@ -627,30 +640,11 @@ on_prefs_enable_highlighting_toggle_toggled
 {
     gboolean state = gtk_toggle_button_get_active(togglebutton);
     config_file_set_bool("Syntax", "Highlighting", state);
-    /* make the other checkboxes dependent on this checkbox active or inactive*/
-#if 0 /* Not implemented in this version */
-    gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
-      "prefs_indent_toggle"), state);
-    gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
-      "prefs_follow_symbols_toggle"), state);
-    
-    if(state)
-        state = gtk_toggle_button_get_active(
-          GTK_TOGGLE_BUTTON(lookup_widget(GTK_WIDGET(togglebutton),
-          "prefs_follow_symbols_toggle")));
-    /* If the "enable_highlighting" toggle is true, then these three still
-    depend on the status of the "follow_symbols" toggle */
-
-    gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
-      "prefs_intelligent_inspector_toggle"), state);
-    gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
-      "prefs_auto_indent_toggle"), state);
-    gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
-      "prefs_auto_number_toggle"), state);
-#endif
     
     for_each_story_buffer(&update_source_highlight);
     for_each_extension_buffer(&update_source_highlight);
+    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
 }
 
 
@@ -669,15 +663,18 @@ on_prefs_follow_symbols_toggle_toggled (GtkToggleButton *togglebutton,
 {
     gboolean state = gtk_toggle_button_get_active(togglebutton);
     config_file_set_bool("Syntax", "Intelligence", state);
-#if 0 /* Not implemented in this version */
     /* make the other checkboxes dependent on this checkbox active or inactive*/
+#if 0
     gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
       "prefs_intelligent_inspector_toggle"), state);
     gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
-      "prefs_auto_indent_toggle"), state);
-    gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
       "prefs_auto_number_toggle"), state);
 #endif
+    
+    update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(togglebutton),
+      "source_example")));
+    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
 }
 
 
@@ -765,34 +762,30 @@ void
 on_prefs_close_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-    /* Do the font updating when the dialog closes, and not on the fly like the
-    other settings */
-    for_each_story_window(&update_app_window_fonts);
-    for_each_extension_window(&update_ext_window_fonts);
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 }
 
 
-gboolean
-on_prefs_dialog_delete_event           (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-    /* Do the font updating when the dialog closes, and not on the fly like the
-    other settings */
-    for_each_story_window(&update_app_window_fonts);
-    for_each_extension_window(&update_ext_window_fonts);
-    return FALSE; /* Propagate the signal further */
-}
-
-/* Get the language associated with this sourceview and update the highlighting
-style */
+/* Get the language associated with this sourceview, update the highlighting
+style, and redo the extra highlighting */
 void update_style(GtkSourceView *thiswidget) {
     GtkSourceBuffer *buffer = GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(thiswidget)));
     /* Do not unreference the language */
     GtkSourceLanguage *language = gtk_source_buffer_get_language(buffer);
     set_highlight_styles(language);
+    
+    /* Remove the old string markup tag and make a new one */
+    GtkTextTag *markup = gtk_text_tag_table_lookup(
+      gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER(buffer)), "string-markup");
+    if(markup != NULL)
+        gtk_text_tag_table_remove(
+          gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER(buffer)), markup);
+    gtk_text_tag_table_add(
+      gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER(buffer)),
+      create_string_markup_tag());
+    /* Redo the extra highlighting */
+    g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
 }
 
 /* Change the font that this widget uses */
@@ -919,15 +912,18 @@ void populate_extension_lists(GtkWidget *thiswidget) {
  */
 
 /* Update the fonts and highlighting colors in this extension editing window */
-void update_ext_window_fonts(GtkWidget *window) {
-    GtkWidget *widget = lookup_widget(window, "ext_code");
+gboolean update_ext_window_fonts(gpointer data) {
+    GtkWidget *widget = lookup_widget((GtkWidget *)data, "ext_code");
     update_font(widget);
     update_tabs(GTK_SOURCE_VIEW(widget));
     update_style(GTK_SOURCE_VIEW(widget));
+    return FALSE; /* One-shot idle function */
 }
 
-/* Update the fonts and highlighting colors in this main window */
-void update_app_window_fonts(GtkWidget *window) {
+/* Update the fonts and highlighting colors in this main window, but not the
+widgets that only need their font size updated */
+gboolean update_app_window_fonts(gpointer data) {
+    GtkWidget *window = (GtkWidget *)data;
     GtkWidget *widget;
 
     widget = lookup_widget(window, "source_l");
@@ -938,178 +934,48 @@ void update_app_window_fonts(GtkWidget *window) {
     update_font(widget);
     update_tabs(GTK_SOURCE_VIEW(widget));
     update_style(GTK_SOURCE_VIEW(widget));
+    widget = lookup_widget(window, "inform6_l");
+    update_font(widget);
+    update_tabs(GTK_SOURCE_VIEW(widget));
+    widget = lookup_widget(window, "inform6_r");
+    update_font(widget);
+    update_tabs(GTK_SOURCE_VIEW(widget));
+    return FALSE; /* One-shot idle function */
+}
+
+/* Update the font sizes of widgets in this main window that don't have
+styles */
+gboolean update_app_window_font_sizes(gpointer data) {
+    GtkWidget *window = (GtkWidget *)data;
+    GtkWidget *widget;
     
-    widget = lookup_widget(window, "problems_l");
-    update_font_size(widget);
-    widget = lookup_widget(window, "problems_r");
-    update_font_size(widget);
-    widget = lookup_widget(window, "actions_l");
-    update_font_size(widget);
-    widget = lookup_widget(window, "actions_r");
-    update_font_size(widget);
-    widget = lookup_widget(window, "contents_l");
-    update_font_size(widget);
-    widget = lookup_widget(window, "contents_r");
-    update_font_size(widget);
-    widget = lookup_widget(window, "kinds_l");
-    update_font_size(widget);
-    widget = lookup_widget(window, "kinds_r");
-    update_font_size(widget);
-    widget = lookup_widget(window, "phrasebook_l");
-    update_font_size(widget);
-    widget = lookup_widget(window, "phrasebook_r");
-    update_font_size(widget);
-    widget = lookup_widget(window, "rules_l");
-    update_font_size(widget);
-    widget = lookup_widget(window, "rules_r");
-    update_font_size(widget);
-    widget = lookup_widget(window, "scenes_l");
-    update_font_size(widget);
-    widget = lookup_widget(window, "scenes_r");
-    update_font_size(widget);
-    widget = lookup_widget(window, "world_l");
-    update_font_size(widget);
-    widget = lookup_widget(window, "world_r");
-    update_font_size(widget);
-    widget = lookup_widget(window, "game_l");
-    update_font_size(widget);
-    widget = lookup_widget(window, "game_r");
-    update_font_size(widget);
-    widget = lookup_widget(window, "docs_l");
-    update_font_size(widget);
-    widget = lookup_widget(window, "docs_r");
-    update_font_size(widget);
+    gchar *widget_names[] = {
+        "problems_l",   "problems_r",
+        "actions_l",    "actions_r",
+        "contents_l",   "contents_r",
+        "kinds_l",      "kinds_r",
+        "phrasebook_l", "phrasebook_r",
+        "rules_l",      "rules_r",
+        "scenes_l",     "scenes_r",
+        "world_l",      "world_r",
+        "game_l",       "game_r",
+        "docs_l",       "docs_r",
+        "debugging_l",  "debugging_r"
+    };
+#define NUM_WIDGET_NAMES (sizeof(widget_names) / sizeof(widget_names[0]))
     
-    /* Do the extra tabs too if the user has them switched on */
-    if(config_file_get_bool("Debugging", "ShowLog")) {
-        widget = gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(
-          GTK_NOTEBOOK(lookup_widget(window, "errors_notebook_l")),
-          TAB_ERRORS_DEBUGGING)));
+    int foo;
+    for(foo = 0; foo < NUM_WIDGET_NAMES; foo++) {
+        widget = lookup_widget(window, widget_names[foo]);
         update_font_size(widget);
-        widget = gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(
-          GTK_NOTEBOOK(lookup_widget(window, "errors_notebook_r")),
-          TAB_ERRORS_DEBUGGING)));
-        update_font_size(widget);
-        widget = gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(
-          GTK_NOTEBOOK(lookup_widget(window, "errors_notebook_l")),
-          TAB_ERRORS_INFORM6)));
-        update_font(widget);
-        /*update_style(GTK_SOURCE_VIEW(widget));*/
-        widget = gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(
-          GTK_NOTEBOOK(lookup_widget(window, "errors_notebook_r")),
-          TAB_ERRORS_INFORM6)));
-        update_font(widget);
-        /*update_style(GTK_SOURCE_VIEW(widget));*/
+        while(gtk_events_pending())
+            gtk_main_iteration();
     }
+    return FALSE; /* One-shot idle function */
 }
 
 /* Turn source highlighting on or off in this source buffer */
 void update_source_highlight(GtkSourceBuffer *buffer) {
     gtk_source_buffer_set_highlight(buffer, config_file_get_bool("Syntax",
       "Highlighting"));
-}
-
-/* Add the debugging tabs to this main window */
-void add_debug_tabs(GtkWidget *window) {
-    GtkWidget *notebook = lookup_widget(window, "errors_notebook_l");
-    if(gtk_notebook_get_n_pages(GTK_NOTEBOOK(notebook)) != 2)
-        return;
-    
-    GtkWidget *debugview = gtk_text_view_new();
-    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(debugview), GTK_WRAP_WORD_CHAR);
-    gtk_text_view_set_editable(GTK_TEXT_VIEW(debugview), FALSE);
-    update_font_size(debugview);
-    gtk_widget_show(debugview);
-    GtkWidget *scroll = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
-      GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_container_add(GTK_CONTAINER(scroll), debugview);
-    gtk_widget_show(scroll);
-    GtkTextBuffer *debugbuffer = gtk_text_view_get_buffer(
-      GTK_TEXT_VIEW(debugview));
-    GtkWidget *debuglabel = gtk_label_new("Debugging");
-    gtk_widget_show(debuglabel);
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scroll, debuglabel);
-    
-    GtkWidget *i6view = gtk_source_view_new();
-    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(i6view), GTK_WRAP_WORD);
-    gtk_text_view_set_editable(GTK_TEXT_VIEW(i6view), FALSE);
-    update_font(i6view);
-    gtk_widget_show(i6view);
-    scroll = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
-      GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_container_add(GTK_CONTAINER(scroll), i6view);
-    gtk_widget_show(scroll);
-    GtkTextBuffer *i6buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(i6view));
-    GtkWidget *i6label = gtk_label_new("Inform 6");
-    gtk_widget_show(i6label);
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scroll, i6label);
-    
-    notebook = lookup_widget(window, "errors_notebook_r");
-    if(gtk_notebook_get_n_pages(GTK_NOTEBOOK(notebook)) != 2)
-        return;
-    
-    debugview = gtk_text_view_new_with_buffer(debugbuffer);
-    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(debugview), GTK_WRAP_WORD_CHAR);
-    gtk_text_view_set_editable(GTK_TEXT_VIEW(debugview), FALSE);
-    update_font_size(debugview);
-    gtk_widget_show(debugview);
-    scroll = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
-      GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_container_add(GTK_CONTAINER(scroll), debugview);
-    gtk_widget_show(scroll);
-    debuglabel = gtk_label_new("Debugging");
-    gtk_widget_show(debuglabel);
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scroll, debuglabel);
-    
-    i6view = gtk_source_view_new_with_buffer(GTK_SOURCE_BUFFER(i6buffer));
-    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(i6view), GTK_WRAP_WORD);
-    gtk_text_view_set_editable(GTK_TEXT_VIEW(i6view), FALSE);
-    update_font(i6view);
-    gtk_widget_show(i6view);
-    scroll = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
-      GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_container_add(GTK_CONTAINER(scroll), i6view);
-    gtk_widget_show(scroll);
-    i6label = gtk_label_new("Inform 6");
-    gtk_widget_show(i6label);
-    gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scroll, i6label);
-    
-    /* Set up the Inform 6 highlighting */
-    GtkSourceLanguage *language;
-    GtkSourceLanguagesManager *lmanager;
-    GList ldirs;
-    
-    gchar *specfile = get_datafile_path("inform.lang");
-
-    ldirs.data = g_path_get_dirname(specfile);
-    ldirs.prev = NULL;
-    ldirs.next = NULL;
-    lmanager = GTK_SOURCE_LANGUAGES_MANAGER(g_object_new(
-      GTK_TYPE_SOURCE_LANGUAGES_MANAGER, "lang_files_dirs", &ldirs, NULL));
-    language = gtk_source_languages_manager_get_language_from_mime_type(
-      lmanager, "text/x-inform");
-    if(language != NULL) {
-        set_highlight_styles(language);
-		gtk_source_buffer_set_highlight(GTK_SOURCE_BUFFER(i6buffer), TRUE);
-		gtk_source_buffer_set_language(GTK_SOURCE_BUFFER(i6buffer), language);
-    }
-    g_object_unref((gpointer)lmanager);
-}
-
-/* Remove the debugging tabs from this window */
-void remove_debug_tabs(GtkWidget *window) {
-    GtkWidget *notebook = lookup_widget(window, "errors_notebook_l");
-    if(gtk_notebook_get_n_pages(GTK_NOTEBOOK(notebook)) != 4)
-        return;
-    gtk_notebook_remove_page(GTK_NOTEBOOK(notebook), -1);
-    gtk_notebook_remove_page(GTK_NOTEBOOK(notebook), -1);
-    notebook = lookup_widget(window, "errors_notebook_r");
-    if(gtk_notebook_get_n_pages(GTK_NOTEBOOK(notebook)) != 4)
-        return;
-    gtk_notebook_remove_page(GTK_NOTEBOOK(notebook), -1);
-    gtk_notebook_remove_page(GTK_NOTEBOOK(notebook), -1);
 }

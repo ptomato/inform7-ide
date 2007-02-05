@@ -95,6 +95,13 @@ void for_each_extension_window(void (*func)(GtkWidget *)) {
         func(((struct extension *)(iter->data))->window);
 }
 
+/* Carry out func on each topwindow in idle time */
+void for_each_extension_window_idle(GSourceFunc func) {
+    GSList *iter;
+    for(iter = extlist; iter != NULL; iter = g_slist_next(iter))
+        g_idle_add(func,(gpointer)(((struct extension *)(iter->data))->window));
+}
+
 /* Carry out func on each text buffer */
 void for_each_extension_buffer(void (*func)(GtkSourceBuffer *)) {
     GSList *iter;

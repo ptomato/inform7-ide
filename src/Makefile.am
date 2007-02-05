@@ -38,7 +38,8 @@ gnome_inform7_SOURCES = \
     error.c error.h \
 	inspector.c inspector.h \
     rtf.c rtf.h \
-    searchwindow.c searchwindow.h
+    searchwindow.c searchwindow.h \
+    taberrors.c taberrors.h
 
 gnome_inform7_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
 

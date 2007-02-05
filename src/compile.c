@@ -195,30 +195,26 @@ void compile_stage2(GPid pid, gint status, gpointer thestory) {
       loadfile);
     g_free(loadfile);
       
-    /* Show the debug log and Inform 6 code if necessary */
-    if(config_file_get_bool("Debugging", "ShowLog")) {
-        gchar *buffer;
-        gchar *filename = g_build_filename(((struct story *)thestory)->filename,
-          "Build", "Debug log.txt", NULL);
-        /* Ignore errors, just don't show it if it's not there */
-        if(g_file_get_contents(filename, &buffer, NULL, NULL))
-            gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
-              gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(GTK_NOTEBOOK(
-              lookup_widget(((struct story *)thestory)->window,
-              "errors_notebook_l")), TAB_ERRORS_DEBUGGING))))), buffer, -1);
-        g_free(buffer);
-        g_free(filename);
-        
-        filename = g_build_filename(((struct story *)thestory)->filename,
-          "Build", "auto.inf", NULL);
-        if(g_file_get_contents(filename, &buffer, NULL, NULL))
-            gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
-              gtk_bin_get_child(GTK_BIN(gtk_notebook_get_nth_page(GTK_NOTEBOOK(
-              lookup_widget(((struct story *)thestory)->window,
-              "errors_notebook_l")), TAB_ERRORS_INFORM6))))), buffer, -1);
-        g_free(buffer);
-        g_free(filename);
-    }
+    /* Show the debug log and Inform 6 code */
+    gchar *text;
+    gchar *filename = g_build_filename(((struct story *)thestory)->filename,
+      "Build", "Debug log.txt", NULL);
+    /* Ignore errors, just don't show it if it's not there */
+    if(g_file_get_contents(filename, &text, NULL, NULL))
+        gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
+          lookup_widget(((struct story *)thestory)->window,
+          "debugging_l"))), text, -1);
+    g_free(text);
+    g_free(filename);
+    
+    filename = g_build_filename(((struct story *)thestory)->filename,
+      "Build", "auto.inf", NULL);
+    if(g_file_get_contents(filename, &text, NULL, NULL))
+        gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
+          lookup_widget(((struct story *)thestory)->window,
+          "inform6_l"))), text, -1);
+    g_free(text);
+    g_free(filename);
       
     /* Show the problems tab */
     int right = choose_notebook(((struct story *)thestory)->window, TAB_ERRORS);

@@ -26,8 +26,13 @@ GtkWidget*
 source_create (gchar *widget_name, gchar *string1, gchar *string2,
                 gint int1, gint int2);
 
+GtkTextTag *create_string_markup_tag();
 GtkSourceBuffer *create_natural_inform_source_buffer();
 void paste_code (GtkSourceBuffer *buffer, gchar *code);
 void jump_to_line(GtkWidget *widget, gint line);
-
+void after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start,
+  GtkTextIter *end, gpointer data);
+void after_source_buffer_insert_text(GtkTextBuffer *buffer,
+  GtkTextIter *location, gchar *text, gint len, gpointer data);
+gboolean do_extra_highlighting(gpointer data);
 #endif
