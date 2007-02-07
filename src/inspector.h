@@ -41,8 +41,14 @@ void
 on_search_inspector_search_clicked     (GtkButton       *button,
                                         gpointer         user_data);
 
+gboolean
+on_inspector_window_delete             (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
+
 void update_inspectors();
 void show_inspector(int which, gboolean show);
 void refresh_inspector(struct story *thestory);
+void save_inspector_window_position();
 
 #endif /* INSPECTOR_H */

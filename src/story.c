@@ -86,7 +86,8 @@ void delete_story(struct story *oldstory) {
     }
     gtk_widget_destroy(oldstory->window);
     destroy_skein(oldstory->theskein);
-    gnome_vfs_monitor_cancel(oldstory->monitor);
+    if(oldstory->monitor)
+        gnome_vfs_monitor_cancel(oldstory->monitor);
     g_free(oldstory);
     
     update_window_list();

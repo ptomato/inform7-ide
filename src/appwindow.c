@@ -205,6 +205,12 @@ after_app_window_realize               (GtkWidget       *widget,
     /* Turn the right page to "Documentation" */
     gtk_notebook_set_current_page(get_notebook(widget, RIGHT),
       TAB_DOCUMENTATION);
+    
+    /* Show the inspector window if necessary */
+    if(config_file_get_bool("Settings", "InspectorVisible")) {
+        extern GtkWidget *inspector_window;
+        gtk_widget_show(inspector_window);
+    }
 }
 
 /* Whenever a main window receives the focus, make the inspector display that
@@ -248,6 +254,8 @@ on_open_activate                       (GtkMenuItem     *menuitem,
         gchar *filename = gtk_file_chooser_get_filename(
           GTK_FILE_CHOOSER(dialog));
         thestory = open_project(filename);
+        if(thestory == NULL)
+            return;
         g_free(filename);
         gtk_widget_show(thestory->window);
     }
@@ -337,7 +345,8 @@ on_open_extension_activate             (GtkMenuItem     *menuitem,
     gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
     ext = open_extension(filename);
     g_free(filename);
-    gtk_widget_show(ext->window);
+    if(ext != NULL)
+        gtk_widget_show(ext->window);
     gtk_widget_destroy(dialog);
 }
 
@@ -558,12 +567,82 @@ on_find_activate                       (GtkMenuItem     *menuitem,
     gtk_widget_show(dialog);
 }
 
+
 void
 on_preferences_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     GtkWidget *dialog = create_prefs_dialog();
     gtk_widget_show(dialog);
+}
+
+
+void
+on_shift_selection_right_activate      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    /* Adapted from gtksourceview.c */
+    struct story *thestory = get_story(GTK_WIDGET(menuitem));
+    GtkTextBuffer *buffer = GTK_TEXT_BUFFER(thestory->buffer);
+    GtkTextIter start, end;
+    gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
+    gint start_line = gtk_text_iter_get_line(&start);
+    gint end_line = gtk_text_iter_get_line(&end);
+    gint i;
+
+    /* if the end of the selection is before the first character on a line,
+    don't indent it */
+    if((gtk_text_iter_get_visible_line_offset(&end) == 0)
+      && (end_line > start_line))
+        end_line--;
+
+    gtk_text_buffer_begin_user_action(buffer);
+    for(i = start_line; i <= end_line; i++) {
+        GtkTextIter iter;
+        gtk_text_buffer_get_iter_at_line(buffer, &iter, i);
+
+        /* don't add indentation on empty lines */
+        if(gtk_text_iter_ends_line(&iter))
+            continue;
+
+        gtk_text_buffer_insert(buffer, &iter, "\t", -1);
+	}
+	gtk_text_buffer_end_user_action(buffer);
+}
+
+
+void
+on_shift_selection_left_activate       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    /* Adapted from gtksourceview.c */
+    struct story *thestory = get_story(GTK_WIDGET(menuitem));
+    GtkTextBuffer *buffer = GTK_TEXT_BUFFER(thestory->buffer);
+    GtkTextIter start, end;
+    gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
+    gint start_line = gtk_text_iter_get_line(&start);
+    gint end_line = gtk_text_iter_get_line(&end);
+    gint i;
+
+    /* if the end of the selection is before the first character on a line,
+    don't indent it */
+	if((gtk_text_iter_get_visible_line_offset(&end) == 0)
+      && (end_line > start_line))
+        end_line--;
+
+    gtk_text_buffer_begin_user_action(buffer);
+    for(i = start_line; i <= end_line; i++) {
+        GtkTextIter iter, iter2;
+
+        gtk_text_buffer_get_iter_at_line(buffer, &iter, i);
+
+        if(gtk_text_iter_get_char(&iter) == '\t') {
+            iter2 = iter;
+            gtk_text_iter_forward_char(&iter2);
+            gtk_text_buffer_delete(buffer, &iter, &iter2);
+        }
+    }
+    gtk_text_buffer_end_user_action(buffer);
 }
 
 
@@ -649,6 +728,7 @@ on_show_inspectors_activate            (GtkMenuItem     *menuitem,
 {
     extern GtkWidget *inspector_window;
     gtk_widget_show(inspector_window);
+    config_file_set_bool("Settings", "InspectorVisible", TRUE);
 }
 
 
@@ -1125,7 +1205,8 @@ on_app_window_destroy                  (GtkObject       *object,
     if(thestory == NULL)
         return;
     
-    if(gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(thestory->buffer))) {
+    if(gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(thestory->buffer))
+      || gtk_text_buffer_get_modified(thestory->notes)) {
         gchar *filename = g_path_get_basename(thestory->filename);
         GtkWidget *save_changes_dialog = gtk_message_dialog_new_with_markup(
           GTK_WINDOW(thestory->window),

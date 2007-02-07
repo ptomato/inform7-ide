@@ -116,20 +116,23 @@ void paste_code(GtkSourceBuffer *buffer, gchar *code) {
 /* Scroll the source views to the specified line of the source */
 void jump_to_line(GtkWidget *widget, gint line) {
     struct story *thestory = get_story(widget);
-    GtkTextIter cursor;
+    GtkTextIter cursor, line_end;
     
     int right = choose_notebook(widget, TAB_SOURCE);
     gtk_notebook_set_current_page(get_notebook(widget, right), TAB_SOURCE);
+    GtkWidget *view = lookup_widget(thestory->window, 
+      right? "source_r" : "source_l");
     
     gtk_text_buffer_get_iter_at_line(GTK_TEXT_BUFFER(thestory->buffer), &cursor,
       line - 1); /* line is counted from 0 */
-    gtk_text_buffer_place_cursor(GTK_TEXT_BUFFER(thestory->buffer), &cursor);
-    gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(lookup_widget(thestory->window,
-      right? "source_r" : "source_l")),
+    line_end = cursor;
+    gtk_text_iter_forward_to_line_end(&line_end);
+    gtk_text_buffer_select_range(GTK_TEXT_BUFFER(thestory->buffer), &cursor,
+      &line_end);
+    gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(view),
       gtk_text_buffer_get_insert(GTK_TEXT_BUFFER(thestory->buffer)),
       0.25, FALSE, 0.0, 0.0);
-    gtk_widget_grab_focus(lookup_widget(thestory->window,
-      right? "source_r" : "source_l"));
+    gtk_widget_grab_focus(view);
 }
 
 void after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start,
@@ -146,6 +149,8 @@ void after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start,
 void after_source_buffer_insert_text(GtkTextBuffer *buffer,
   GtkTextIter *location, gchar *text, gint len, gpointer data) {
     /* If the inserted text ended in a newline, then do auto-indenting */
+    /* We could use gtk_source_view_set_auto_indent(), but that auto-indents
+      leading spaces as well as tabs, and we don't want that */
     if(g_str_has_suffix(text, "\n") &&
       config_file_get_bool("Syntax", "AutoIndent")) {
         int tab_count = 0;
@@ -170,6 +175,7 @@ void after_source_buffer_insert_text(GtkTextBuffer *buffer,
         g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
     }
 }
+
 
 gboolean do_extra_highlighting(gpointer data) {
     GtkTextIter iter;

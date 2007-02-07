@@ -78,7 +78,26 @@ static GnomeUIInfo edit_menu_uiinfo[] =
   GNOMEUIINFO_END
 };
 
-static GnomeUIInfo game_menu_uiinfo[] =
+static GnomeUIInfo format_menu_uiinfo[] =
+{
+  {
+    GNOME_APP_UI_ITEM, N_("Shift Selection _Right"),
+    NULL,
+    (gpointer) on_shift_selection_right_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_bracketright, (GdkModifierType) GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Shift Selection _Left"),
+    NULL,
+    (gpointer) on_shift_selection_left_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_bracketleft, (GdkModifierType) GDK_CONTROL_MASK, NULL
+  },
+  GNOMEUIINFO_END
+};
+
+static GnomeUIInfo build_menu_uiinfo[] =
 {
   {
     GNOME_APP_UI_ITEM, N_("Refresh _Index"),
@@ -142,20 +161,6 @@ static GnomeUIInfo show_tabs_menu_uiinfo[] =
     (gpointer) on_show_index_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_F3, (GdkModifierType) GDK_SHIFT_MASK, NULL
-  },
-  {
-    GNOME_APP_UI_ITEM, N_("S_kein"),
-    NULL,
-    (gpointer) on_show_skein_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    GDK_F4, (GdkModifierType) GDK_SHIFT_MASK, NULL
-  },
-  {
-    GNOME_APP_UI_ITEM, N_("_Transcript"),
-    NULL,
-    (gpointer) on_show_transcript_activate, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    GDK_F5, (GdkModifierType) GDK_SHIFT_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Game"),
@@ -324,7 +329,20 @@ static GnomeUIInfo menubar1_uiinfo[] =
 {
   GNOMEUIINFO_MENU_FILE_TREE (filemenu_menu_uiinfo),
   GNOMEUIINFO_MENU_EDIT_TREE (edit_menu_uiinfo),
-  GNOMEUIINFO_MENU_GAME_TREE (game_menu_uiinfo),
+  {
+    GNOME_APP_UI_SUBTREE, N_("Fo_rmat"),
+    NULL,
+    format_menu_uiinfo, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
+  },
+  {
+    GNOME_APP_UI_SUBTREE, N_("_Build"),
+    NULL,
+    build_menu_uiinfo, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
+  },
   GNOMEUIINFO_MENU_WINDOWS_TREE (windows_menu_uiinfo),
   GNOMEUIINFO_MENU_HELP_TREE (help_menu_uiinfo),
   GNOMEUIINFO_END
@@ -520,7 +538,7 @@ create_app_window (void)
 
   gnome_app_create_menus (GNOME_APP (app_window), menubar1_uiinfo);
 
-  gtk_widget_set_sensitive (game_menu_uiinfo[4].widget, FALSE);
+  gtk_widget_set_sensitive (build_menu_uiinfo[4].widget, FALSE);
 
   toolbar1 = gtk_toolbar_new ();
   gtk_widget_show (toolbar1);
@@ -837,7 +855,6 @@ create_app_window (void)
   gtk_label_set_angle (GTK_LABEL (label10), 270);
 
   vbox3 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_show (vbox3);
   gtk_container_add (GTK_CONTAINER (notebook_l), vbox3);
 
   hbox11 = gtk_hbox_new (FALSE, 0);
@@ -870,7 +887,6 @@ create_app_window (void)
   gtk_label_set_angle (GTK_LABEL (label11), 270);
 
   vbox9 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_show (vbox9);
   gtk_container_add (GTK_CONTAINER (notebook_l), vbox9);
 
   bless_all_l = gtk_button_new_with_mnemonic (_("Bless All"));
@@ -1199,7 +1215,6 @@ create_app_window (void)
   gtk_label_set_angle (GTK_LABEL (label37), 270);
 
   vbox6 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_show (vbox6);
   gtk_container_add (GTK_CONTAINER (notebook_r), vbox6);
 
   hbox12 = gtk_hbox_new (FALSE, 0);
@@ -1232,7 +1247,6 @@ create_app_window (void)
   gtk_label_set_angle (GTK_LABEL (label38), 270);
 
   vbox10 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_show (vbox10);
   gtk_container_add (GTK_CONTAINER (notebook_r), vbox10);
 
   bless_all_r = gtk_button_new_with_mnemonic (_("Bless All"));
@@ -1445,28 +1459,29 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[8].widget, "find");
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[9].widget, "separator23");
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[10].widget, "preferences");
-  GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[2].widget, "game");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[0].widget, "refresh_index");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[1].widget, "separator27");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[2].widget, "go");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[3].widget, "replay");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[4].widget, "stop");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[5].widget, "separator12");
-  GLADE_HOOKUP_OBJECT (app_window, game_menu_uiinfo[6].widget, "release");
-  GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[3].widget, "windows");
+  GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[2].widget, "format");
+  GLADE_HOOKUP_OBJECT (app_window, format_menu_uiinfo[0].widget, "shift_selection_right");
+  GLADE_HOOKUP_OBJECT (app_window, format_menu_uiinfo[1].widget, "shift_selection_left");
+  GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[3].widget, "build");
+  GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[0].widget, "refresh_index");
+  GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[1].widget, "separator27");
+  GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[2].widget, "go");
+  GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[3].widget, "replay");
+  GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[4].widget, "stop");
+  GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[5].widget, "separator12");
+  GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[6].widget, "release");
+  GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[4].widget, "windows");
   GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[0].widget, "show_inspectors");
   GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[1].widget, "show_tabs");
   GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[0].widget, "show_source");
   GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[1].widget, "show_errors");
   GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[2].widget, "show_index");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[3].widget, "show_skein");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[4].widget, "show_transcript");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[5].widget, "show_game");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[6].widget, "show_documentation");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[7].widget, "show_settings");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[8].widget, "separator28");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[9].widget, "switch_sides");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[10].widget, "next_sub_panel");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[3].widget, "show_game");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[4].widget, "show_documentation");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[5].widget, "show_settings");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[6].widget, "separator28");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[7].widget, "switch_sides");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[8].widget, "next_sub_panel");
   GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[2].widget, "show_index");
   GLADE_HOOKUP_OBJECT (app_window, show_index_menu_uiinfo[0].widget, "show_actions");
   GLADE_HOOKUP_OBJECT (app_window, show_index_menu_uiinfo[1].widget, "show_contents");
@@ -1476,7 +1491,7 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, show_index_menu_uiinfo[5].widget, "show_scenes");
   GLADE_HOOKUP_OBJECT (app_window, show_index_menu_uiinfo[6].widget, "show_world");
   GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[3].widget, "separator13");
-  GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[4].widget, "help");
+  GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[5].widget, "help");
   GLADE_HOOKUP_OBJECT (app_window, help_menu_uiinfo[0].widget, "inform_help");
   GLADE_HOOKUP_OBJECT (app_window, help_menu_uiinfo[1].widget, "gnome_notes");
   GLADE_HOOKUP_OBJECT (app_window, help_menu_uiinfo[2].widget, "license");
@@ -3627,6 +3642,7 @@ create_inspector_window (void)
   notes_inspector = gtk_expander_new (NULL);
   gtk_widget_show (notes_inspector);
   gtk_box_pack_start (GTK_BOX (vbox34), notes_inspector, TRUE, TRUE, 0);
+  gtk_expander_set_expanded (GTK_EXPANDER (notes_inspector), TRUE);
 
   scrolledwindow42 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (scrolledwindow42);
@@ -3637,6 +3653,7 @@ create_inspector_window (void)
   notes = gtk_text_view_new ();
   gtk_widget_show (notes);
   gtk_container_add (GTK_CONTAINER (scrolledwindow42), notes);
+  gtk_widget_set_size_request (notes, -1, 200);
   gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (notes), GTK_WRAP_WORD);
 
   label83 = gtk_label_new (_("Notes"));
@@ -3756,7 +3773,7 @@ create_inspector_window (void)
                           G_CALLBACK (after_inspector_window_realize),
                           NULL);
   g_signal_connect ((gpointer) inspector_window, "delete_event",
-                    G_CALLBACK (gtk_widget_hide_on_delete),
+                    G_CALLBACK (on_inspector_window_delete),
                     NULL);
   g_signal_connect ((gpointer) search_inspector_search, "clicked",
                     G_CALLBACK (on_search_inspector_search_clicked),

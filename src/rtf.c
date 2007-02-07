@@ -93,9 +93,14 @@ static gchar *rtf_unescape(const gchar *source) {
             
             /* Keywords that are destinations; ignore everything in the group */
             if(*p == '*' || !strncmp(p, "fonttbl", 7)
-              || !strncmp(p, "colortbl", 8))
+              || !strncmp(p, "colortbl", 8)) {
                 while(*p++ != '}')
                     ;
+                /* A space after a group is ignored */
+                if(isspace(*p))
+                    p++;
+                continue;
+            }
             
             if(*p == '\'') {
                 *q++ = '?'; /* Special character */

@@ -42,7 +42,8 @@ Returns TRUE if we can proceed, FALSE if the user cancelled. */
 gboolean verify_save(GtkWidget *thiswidget) {
     struct story *thestory = get_story(thiswidget);
     
-    if(gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(thestory->buffer))) {
+    if(gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(thestory->buffer))
+      || gtk_text_buffer_get_modified(thestory->notes)) {
         GtkWidget *save_changes_dialog = gtk_message_dialog_new_with_markup(
           GTK_WINDOW(gtk_widget_get_toplevel(thiswidget)),
           GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -225,6 +226,7 @@ struct story *open_project(gchar *directory) {
     gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(thestory->buffer), &start);
     gtk_text_buffer_place_cursor(GTK_TEXT_BUFFER(thestory->buffer), &start);
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(thestory->buffer), FALSE);
+    gtk_text_buffer_set_modified(thestory->notes, FALSE);
     
     return thestory;
 }
@@ -257,8 +259,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     
     /* Save the source */
     GtkTextIter start, end;
-    gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(thestory->buffer), &start);
-    gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(thestory->buffer), &end);
+    gtk_text_buffer_get_bounds(GTK_TEXT_BUFFER(thestory->buffer), &start, &end);
     /* Get text in UTF-8 */
     text = gtk_text_buffer_get_text(GTK_TEXT_BUFFER(thestory->buffer), &start,
       &end, FALSE);
@@ -341,6 +342,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     delete_build_files(thestory);
     
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(thestory->buffer), FALSE);
+    gtk_text_buffer_set_modified(thestory->notes, FALSE);
     config_file_set_string("Settings", "LastProject", directory);
 }
 

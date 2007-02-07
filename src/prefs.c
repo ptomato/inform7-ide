@@ -293,12 +293,15 @@ on_prefs_font_set_changed              (GtkComboBox     *combobox,
                                         gpointer         user_data)
 {
     int setting = gtk_combo_box_get_active(combobox);
-    config_file_set_int("Fonts", "FontSet", setting);
+    int oldsetting = config_file_get_int("Fonts", "FontSet");
     
-    update_font(lookup_widget(GTK_WIDGET(combobox), "source_example"));
-    update_font(lookup_widget(GTK_WIDGET(combobox), "tab_example"));
-    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
-    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    if(setting != oldsetting) {
+        config_file_set_int("Fonts", "FontSet", setting);
+        update_font(lookup_widget(GTK_WIDGET(combobox), "source_example"));
+        update_font(lookup_widget(GTK_WIDGET(combobox), "tab_example"));
+        for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+        for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    }
 }
 
 
@@ -323,11 +326,15 @@ on_prefs_custom_font_font_set          (GtkFontButton   *fontbutton,
         ptr += 5;
     g_strreverse(ptr);
     
-    config_file_set_string("Fonts", "CustomFont", ptr);
-    update_font(lookup_widget(GTK_WIDGET(fontbutton), "source_example"));
-    update_font(lookup_widget(GTK_WIDGET(fontbutton), "tab_example"));
-    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
-    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    gchar *oldsetting = config_file_get_string("Fonts", "CustomFont");
+    if(strcmp(ptr, oldsetting) != 0) {
+        config_file_set_string("Fonts", "CustomFont", ptr);
+        update_font(lookup_widget(GTK_WIDGET(fontbutton), "source_example"));
+        update_font(lookup_widget(GTK_WIDGET(fontbutton), "tab_example"));
+        for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+        for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    }
+    g_free(oldsetting);
     g_free(fontname);
 }
 
@@ -336,12 +343,16 @@ void
 on_prefs_font_styling_changed          (GtkComboBox     *combobox,
                                         gpointer         user_data)
 {
-    config_file_set_int("Fonts", "FontStyling",
-      gtk_combo_box_get_active(combobox));
-    update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(combobox),
-      "source_example")));
-    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
-    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    int setting = gtk_combo_box_get_active(combobox);
+    int oldsetting = config_file_get_int("Fonts", "FontStyling");
+    
+    if(setting != oldsetting) {
+        config_file_set_int("Fonts", "FontStyling", setting);
+        update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(combobox),
+          "source_example")));
+        for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+        for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    }
 }
 
 
@@ -349,13 +360,17 @@ void
 on_prefs_font_size_changed             (GtkComboBox     *combobox,
                                         gpointer         user_data)
 {
-    config_file_set_int("Fonts", "FontSize",
-      gtk_combo_box_get_active(combobox));
-    update_font(lookup_widget(GTK_WIDGET(combobox), "source_example"));
-    update_font(lookup_widget(GTK_WIDGET(combobox), "tab_example"));
-    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
-    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
-    for_each_story_window_idle((GSourceFunc)update_app_window_font_sizes);
+    int setting = gtk_combo_box_get_active(combobox);
+    int oldsetting = config_file_get_int("Fonts", "FontSize");
+    
+    if(setting != oldsetting) {
+        config_file_set_int("Fonts", "FontSize", setting);
+        update_font(lookup_widget(GTK_WIDGET(combobox), "source_example"));
+        update_font(lookup_widget(GTK_WIDGET(combobox), "tab_example"));
+        for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+        for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+        for_each_story_window_idle((GSourceFunc)update_app_window_font_sizes);
+    }
 }
 
 
@@ -363,12 +378,16 @@ void
 on_prefs_change_colors_changed         (GtkComboBox     *combobox,
                                         gpointer         user_data)
 {
-    config_file_set_int("Colors", "ChangeColors",
-      gtk_combo_box_get_active(combobox));
-    update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(combobox),
-      "source_example")));
-    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
-    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    int setting = gtk_combo_box_get_active(combobox);
+    int oldsetting = config_file_get_int("Colors", "ChangeColors");
+    
+    if(setting != oldsetting) {
+        config_file_set_int("Colors", "ChangeColors", setting);
+        update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(combobox),
+          "source_example")));
+        for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+        for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    }
 }
 
 
@@ -376,12 +395,16 @@ void
 on_prefs_color_set_changed             (GtkComboBox     *combobox,
                                         gpointer         user_data)
 {
-    config_file_set_int("Colors", "ColorSet",
-      gtk_combo_box_get_active(combobox));
-    update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(combobox),
-      "source_example")));
-    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
-    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    int setting = gtk_combo_box_get_active(combobox);
+    int oldsetting = config_file_get_int("Colors", "ColorSet");
+    
+    if(setting != oldsetting) {
+        config_file_set_int("Colors", "ColorSet", setting);
+        update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(combobox),
+          "source_example")));
+        for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+        for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    }
 }
 
 /* Create a GtkSourceView and -Buffer and fill it with the example text */
@@ -399,6 +422,8 @@ source_example_create (gchar *widget_name, gchar *string1, gchar *string2,
       "the case is open]many eyes stray to your broached cask. "
       "[otherwise]nobody takes much notice of a man heaving a cask about. "
       "[end if]Sleek gondolas jostle at the plank pier.\"", -1);
+    update_font(source);
+    update_tabs(GTK_SOURCE_VIEW(source));
     return source;
 }
 
@@ -420,14 +445,18 @@ void
 on_tab_ruler_value_changed             (GtkRange        *range,
                                         gpointer         user_data)
 {
-    gint spaces = (gint)gtk_range_get_value(range);
-    config_file_set_int("Tabs", "TabWidth", spaces);
-    update_tabs(
-      GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(range), "tab_example")));
-    update_tabs(
-      GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(range), "source_example")));
-    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
-    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    gint setting = (gint)gtk_range_get_value(range);
+    int oldsetting = config_file_get_int("Tabs", "TabWidth");
+    
+    if(setting != oldsetting) {
+    config_file_set_int("Tabs", "TabWidth", setting);
+        update_tabs(
+          GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(range), "tab_example")));
+        update_tabs(
+          GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(range), "source_example")));
+        for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+        for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    }
 }
 
 
@@ -638,13 +667,16 @@ on_prefs_enable_highlighting_toggle_toggled
                                         (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-    gboolean state = gtk_toggle_button_get_active(togglebutton);
-    config_file_set_bool("Syntax", "Highlighting", state);
+    gboolean setting = gtk_toggle_button_get_active(togglebutton);
+    gboolean oldsetting = config_file_get_bool("Syntax", "Highlighting");
     
-    for_each_story_buffer(&update_source_highlight);
-    for_each_extension_buffer(&update_source_highlight);
-    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
-    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    if(setting != oldsetting) {
+        config_file_set_bool("Syntax", "Highlighting", setting);
+        for_each_story_buffer(&update_source_highlight);
+        for_each_extension_buffer(&update_source_highlight);
+        for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+        for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    }
 }
 
 
@@ -661,20 +693,24 @@ void
 on_prefs_follow_symbols_toggle_toggled (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-    gboolean state = gtk_toggle_button_get_active(togglebutton);
-    config_file_set_bool("Syntax", "Intelligence", state);
-    /* make the other checkboxes dependent on this checkbox active or inactive*/
-#if 0
-    gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
-      "prefs_intelligent_inspector_toggle"), state);
-    gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
-      "prefs_auto_number_toggle"), state);
-#endif
+    gboolean setting = gtk_toggle_button_get_active(togglebutton);
+    gboolean oldsetting = config_file_get_bool("Syntax", "Intelligence");
     
-    update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(togglebutton),
-      "source_example")));
-    for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
-    for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    if(setting != oldsetting) {
+        config_file_set_bool("Syntax", "Intelligence", setting);
+        /* make the other checkboxes dependent on this checkbox active or inactive*/
+#if 0
+        gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
+          "prefs_intelligent_inspector_toggle"), state);
+        gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
+          "prefs_auto_number_toggle"), state);
+#endif
+        
+        update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(togglebutton),
+          "source_example")));
+        for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
+        for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+    }
 }
 
 
@@ -741,10 +777,13 @@ void
 on_prefs_show_log_toggle_toggled       (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-    gboolean state = gtk_toggle_button_get_active(togglebutton);
-    config_file_set_bool("Debugging", "ShowLog", state);
+    gboolean setting = gtk_toggle_button_get_active(togglebutton);
+    gboolean oldsetting = config_file_get_bool("Debugging", "ShowLog");
     
-    for_each_story_window(state? add_debug_tabs : remove_debug_tabs);
+    if(setting != oldsetting) {
+        config_file_set_bool("Debugging", "ShowLog", setting);
+        for_each_story_window(setting? add_debug_tabs : remove_debug_tabs);
+    }
 }
 
 

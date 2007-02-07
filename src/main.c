@@ -36,6 +36,9 @@
 
 #include "configfile.h"
 #include "compile.h"
+#include "inspector.h"
+#include "file.h"
+#include "windowlist.h"
 
 int
 main (int argc, char *argv[])
@@ -49,10 +52,23 @@ main (int argc, char *argv[])
     textdomain (GETTEXT_PACKAGE);
 #endif
 
+    /* Set up the command-line options */
+    gchar **remaining_args = NULL;
+    GOptionEntry option_entries[] = {
+		{ G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY,
+		  &remaining_args,
+		  "Special option that collects any remaining arguments for us" },
+		{ NULL }
+	};
+    GOptionContext *option_context = g_option_context_new(
+      "[FILES...] - Interactive fiction IDE");
+    g_option_context_add_main_entries(option_context, option_entries, NULL);
+    
     gnome_program_init(PACKAGE, VERSION, LIBGNOMEUI_MODULE,
       argc, argv,
+      GNOME_PARAM_GOPTION_CONTEXT, option_context,
       GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR,
-      NULL);
+      GNOME_PARAM_NONE);
     
     /* Create the .gnome-inform7 dir if it doesn't already exist */
     gchar *extensions_dir = get_extension_path(NULL, NULL);
@@ -73,10 +89,31 @@ main (int argc, char *argv[])
     /* Create the global inspector window, but keep it hidden */
     inspector_window = create_inspector_window();
     
-    /* Create the splash window */
-    welcome_dialog = create_welcome_dialog();
-    gtk_widget_show(welcome_dialog);
+    /* Do stuff with the remaining command line arguments (files) */
+    if(remaining_args != NULL) {
+	    gint i, num_args;
+
+		num_args = g_strv_length(remaining_args);
+		for (i = 0; i < num_args; ++i) {
+			struct story *thestory = open_project(remaining_args[i]);
+            if(thestory != NULL)
+                gtk_widget_show(thestory->window);
+		}
+		g_strfreev (remaining_args);
+		remaining_args = NULL;
+	} 
+    
+    /* If no windows were opened from command line arguments */
+    if(get_num_app_windows() == 0) {
+        /* Create the splash window */
+        welcome_dialog = create_welcome_dialog();
+        gtk_widget_show(welcome_dialog);
+    }
 
     gtk_main();
+    
+    /* Save the position of the inspector window */
+    save_inspector_window_position();
+    
     return 0;
 }

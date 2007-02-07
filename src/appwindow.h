@@ -153,6 +153,14 @@ on_preferences_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
+on_shift_selection_right_activate      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_shift_selection_left_activate       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
 on_refresh_index_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 

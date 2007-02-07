@@ -323,11 +323,14 @@ on_ext_window_destroy                  (GtkObject       *object,
 /* Scroll to the requested line number. */
 void jump_to_line_ext(GtkWidget *widget, gint line) {
     struct extension *ext = get_ext(widget);
-    GtkTextIter cursor;
+    GtkTextIter cursor, line_end;
         
     gtk_text_buffer_get_iter_at_line(GTK_TEXT_BUFFER(ext->buffer), &cursor,
       line - 1); /* line is counted from 0 */
-    gtk_text_buffer_place_cursor(GTK_TEXT_BUFFER(ext->buffer), &cursor);
+    line_end = cursor;
+    gtk_text_iter_forward_to_line_end(&line_end);
+    gtk_text_buffer_select_range(GTK_TEXT_BUFFER(ext->buffer), &cursor,
+      &line_end);
     gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(lookup_widget(ext->window,
       "ext_code")),
     gtk_text_buffer_get_insert(GTK_TEXT_BUFFER(ext->buffer)),

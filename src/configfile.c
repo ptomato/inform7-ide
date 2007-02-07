@@ -51,7 +51,10 @@ void check_config_file() {
         config_file_set_string("User", "Name", "");
     }
     if(!gconf_client_dir_exists(client, GCONF_BASE_PATH "/Settings", &err)) {
-        /* do nothing; LastProject should stay empty, it is set elsewhere */
+        /* LastProject should stay empty, it is set elsewhere */
+        config_file_set_bool("Settings", "InspectorVisible", FALSE);
+        config_file_set_int("Settings", "InspectorPosX", 0);
+        config_file_set_int("Settings", "InspectorPosY", 0);
     }
     if(!gconf_client_dir_exists(client, GCONF_BASE_PATH "/Fonts", &err)) {
         config_file_set_int("Fonts", "FontSet", FONT_SET_STANDARD);

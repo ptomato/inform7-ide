@@ -42,6 +42,11 @@ after_inspector_window_realize         (GtkWidget       *widget,
       FIND_CONTAINS);
     
     update_inspectors();
+
+    /* Move the window to the saved position */    
+    gtk_window_move(GTK_WINDOW(inspector_window),
+      config_file_get_int("Settings", "InspectorPosX"),
+      config_file_get_int("Settings", "InspectorPosY"));
 }
 
 
@@ -104,6 +109,19 @@ on_search_inspector_search_clicked     (GtkButton       *button,
     gtk_widget_show(search_window);
 }
 
+
+/* Hide the window instead of deleting it */
+gboolean
+on_inspector_window_delete             (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    gtk_widget_hide(widget);
+    config_file_set_bool("Settings", "InspectorVisible", TRUE);
+    return TRUE; /* Interrupt the event */
+}
+
+
 /* Show or hide the inspectors according to the user's preferences */
 void update_inspectors() {
     /* Show the message that no inspectors are showing; then, if one is showing,
@@ -156,4 +174,13 @@ void refresh_inspector(struct story *thestory) {
     /* Refresh the notes inspector */
     GtkWidget *widget = lookup_widget(inspector_window, "notes");
     gtk_text_view_set_buffer(GTK_TEXT_VIEW(widget), thestory->notes);
+}
+
+
+/* Get the position of the inspector window and save it for the next run */
+void save_inspector_window_position() {
+    gint x, y;
+    gtk_window_get_position(GTK_WINDOW(inspector_window), &x, &y);
+    config_file_set_int("Settings", "InspectorPosX", x);
+    config_file_set_int("Settings", "InspectorPosY", y);
 }
