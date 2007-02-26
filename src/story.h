@@ -31,6 +31,12 @@ enum {
     FORMAT_GLULX = 256
 };
 
+enum {
+    HEADING_TITLE,
+    HEADING_LINE,
+    NUM_HEADING_COLUMNS
+};
+
 struct story {
     /* The toplevel window in which this story is being edited */
     GtkWidget *window;
@@ -42,6 +48,8 @@ struct story {
     GtkSourceBuffer *buffer;
     /* The user's notes */
     GtkTextBuffer *notes;
+    /* The tree of section headings */
+    GtkTreeStore *headings;
     /* Various settings */
     int story_format;
     gboolean make_blorb;

@@ -3047,7 +3047,6 @@ create_prefs_dialog (void)
   prefs_headings_toggle = gtk_check_button_new_with_mnemonic (_("Headings"));
   gtk_widget_show (prefs_headings_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_headings_toggle, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (prefs_headings_toggle, FALSE);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_headings_toggle), TRUE);
 
   prefs_skein_toggle = gtk_check_button_new_with_mnemonic (_("Skein"));
@@ -3257,7 +3256,6 @@ create_prefs_dialog (void)
   prefs_intelligent_inspector_toggle = gtk_check_button_new_with_mnemonic (_("Use intelligent index inspector"));
   gtk_widget_show (prefs_intelligent_inspector_toggle);
   gtk_box_pack_start (GTK_BOX (vbox27), prefs_intelligent_inspector_toggle, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (prefs_intelligent_inspector_toggle, FALSE);
   gtk_tooltips_set_tip (tooltips, prefs_intelligent_inspector_toggle, _("If this option is checked, the index inspector will show a real-time display of the sections in your source file. If it is unchecked, it will display the last index calculated by the Natural Inform compiler, i.e. the state of the index at the last time you compiled or ran the story."), NULL);
 
   prefs_auto_number_toggle = gtk_check_button_new_with_mnemonic (_("Auto-number sections"));
@@ -3663,6 +3661,7 @@ create_inspector_window (void)
   headings_inspector = gtk_expander_new (NULL);
   gtk_widget_show (headings_inspector);
   gtk_box_pack_start (GTK_BOX (vbox34), headings_inspector, TRUE, TRUE, 0);
+  gtk_expander_set_expanded (GTK_EXPANDER (headings_inspector), TRUE);
 
   scrolledwindow43 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (scrolledwindow43);
@@ -3673,7 +3672,9 @@ create_inspector_window (void)
   headings = gtk_tree_view_new ();
   gtk_widget_show (headings);
   gtk_container_add (GTK_CONTAINER (scrolledwindow43), headings);
+  gtk_widget_set_size_request (headings, -1, 200);
   gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (headings), FALSE);
+  gtk_tree_view_set_enable_search (GTK_TREE_VIEW (headings), FALSE);
   gtk_tree_view_set_fixed_height_mode (GTK_TREE_VIEW (headings), TRUE);
 
   label84 = gtk_label_new (_("Headings"));
@@ -3741,6 +3742,7 @@ create_inspector_window (void)
   search_inspector_search = gtk_button_new_from_stock ("gtk-find");
   gtk_widget_show (search_inspector_search);
   gtk_box_pack_start (GTK_BOX (hbox28), search_inspector_search, FALSE, FALSE, 0);
+  gtk_widget_set_sensitive (search_inspector_search, FALSE);
   GTK_WIDGET_SET_FLAGS (search_inspector_search, GTK_CAN_DEFAULT);
 
   hseparator4 = gtk_hseparator_new ();
@@ -3774,6 +3776,12 @@ create_inspector_window (void)
                           NULL);
   g_signal_connect ((gpointer) inspector_window, "delete_event",
                     G_CALLBACK (on_inspector_window_delete),
+                    NULL);
+  g_signal_connect ((gpointer) headings, "row_activated",
+                    G_CALLBACK (on_headings_row_activated),
+                    NULL);
+  g_signal_connect ((gpointer) search_inspector_text, "changed",
+                    G_CALLBACK (on_search_inspector_text_changed),
                     NULL);
   g_signal_connect ((gpointer) search_inspector_search, "clicked",
                     G_CALLBACK (on_search_inspector_search_clicked),

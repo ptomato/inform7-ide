@@ -25,6 +25,7 @@
 #include "searchwindow.h"
 #include "appwindow.h"
 #include "findreplace.h"
+#include "tabsource.h"
 
 /* The global pointer to the inspector window */
 GtkWidget *inspector_window;
@@ -41,12 +42,38 @@ after_inspector_window_realize         (GtkWidget       *widget,
       GTK_COMBO_BOX(lookup_widget(widget, "search_inspector_algorithm")),
       FIND_CONTAINS);
     
+    /* Make the column of the headings inspector */
+    GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+    GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(
+      "Contents",
+      renderer,
+      "text", HEADING_TITLE,
+      NULL);
+    gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_FIXED);
+    /* Why do I have to set the damn sizing every time */
+    gtk_tree_view_append_column(
+      GTK_TREE_VIEW(lookup_widget(widget, "headings")),
+      column);
+    
     update_inspectors();
 
     /* Move the window to the saved position */    
     gtk_window_move(GTK_WINDOW(inspector_window),
       config_file_get_int("Settings", "InspectorPosX"),
       config_file_get_int("Settings", "InspectorPosY"));
+}
+
+
+/* Text changed; activate the Search button if there is text in it */
+void
+on_search_inspector_text_changed       (GtkEditable     *editable,
+                                        gpointer         user_data)
+{
+    /* Do not free or modify the strings from gtk_entry_get_text */
+    const gchar *text = gtk_entry_get_text(GTK_ENTRY(editable));
+    gtk_widget_set_sensitive(
+      lookup_widget(GTK_WIDGET(editable), "search_inspector_search"), 
+      !(text == NULL || strlen(text) == 0));
 }
 
 
@@ -122,6 +149,22 @@ on_inspector_window_delete             (GtkWidget       *widget,
 }
 
 
+/* Jump to the heading when its index entry is double-clicked */
+void
+on_headings_row_activated              (GtkTreeView     *treeview,
+                                        GtkTreePath     *path,
+                                        GtkTreeViewColumn *column,
+                                        gpointer         user_data)
+{
+    GtkTreeModel *model = gtk_tree_view_get_model(treeview);
+    GtkTreeIter iter;
+    gtk_tree_model_get_iter(model, &iter, path);
+    gint lineno;
+    gtk_tree_model_get(model, &iter, HEADING_LINE, &lineno, -1);
+    jump_to_line(inspecting->window, lineno);
+}
+
+
 /* Show or hide the inspectors according to the user's preferences */
 void update_inspectors() {
     /* Show the message that no inspectors are showing; then, if one is showing,
@@ -164,6 +207,7 @@ void show_inspector(int which, gboolean show) {
         gtk_widget_hide(inspector);
 }
 
+
 /* Display the data from the story in the inspector. (Do not check whether we
    are already displaying the data from the same story, because this function is
    also called when we just want to refresh the data. */
@@ -172,8 +216,17 @@ void refresh_inspector(struct story *thestory) {
     inspecting = thestory;
     
     /* Refresh the notes inspector */
-    GtkWidget *widget = lookup_widget(inspector_window, "notes");
-    gtk_text_view_set_buffer(GTK_TEXT_VIEW(widget), thestory->notes);
+    gtk_text_view_set_buffer(
+      GTK_TEXT_VIEW(lookup_widget(inspector_window, "notes")),
+      thestory->notes);
+    
+    /* Refresh the headings inspector */
+    gtk_tree_view_set_model(
+      GTK_TREE_VIEW(lookup_widget(inspector_window, "headings")),
+      GTK_TREE_MODEL(thestory->headings));
+    if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
+        g_idle_add((GSourceFunc)reindex_headings, NULL);
+    }
 }
 
 
@@ -183,4 +236,85 @@ void save_inspector_window_position() {
     gtk_window_get_position(GTK_WINDOW(inspector_window), &x, &y);
     config_file_set_int("Settings", "InspectorPosX", x);
     config_file_set_int("Settings", "InspectorPosY", y);
+}
+
+
+/* Reindex the section headings and update them in the inspector window */
+gboolean reindex_headings(gpointer data) {
+    GtkTextBuffer *buffer = GTK_TEXT_BUFFER(inspecting->buffer);
+    GtkTextIter pos, end;
+    gtk_text_buffer_get_start_iter(buffer, &pos);
+    
+    GtkTreeStore *tree = inspecting->headings;
+    gtk_tree_store_clear(tree);
+    GtkTreeIter volume, book, part, chapter, section;
+    gboolean volume_used = FALSE, book_used = FALSE, part_used = FALSE,
+      chapter_used = FALSE;
+    
+    while(gtk_text_iter_get_char(&pos) != 0) {
+        if(gtk_text_iter_get_char(&pos) == '\n') {
+            gtk_text_iter_forward_line(&pos);
+            end = pos;
+            gtk_text_iter_forward_line(&end);
+            if(gtk_text_iter_get_char(&end) == '\n') {
+                /* Preceded and followed by a blank line */
+                /* Get the entire line and its line number, chop the \n */
+                gchar *text = g_strchomp(gtk_text_iter_get_text(&pos, &end));
+                gchar *lcase = g_utf8_strdown(text, -1);
+                gint lineno = gtk_text_iter_get_line(&pos) + 1;
+                /* Line numbers counted from 0 */
+                
+                if(g_str_has_prefix(lcase, "volume")) {
+                    gtk_tree_store_append(tree, &volume, NULL);
+                    volume_used = TRUE;
+                    gtk_tree_store_set(tree, &volume,
+                      HEADING_TITLE, text,
+                      HEADING_LINE, lineno,
+                      -1);
+                } else if(g_str_has_prefix(lcase, "book")) {
+                    gtk_tree_store_append(tree, &book,
+                      volume_used? &volume : NULL);
+                    book_used = TRUE;
+                    gtk_tree_store_set(tree, &book,
+                      HEADING_TITLE, text,
+                      HEADING_LINE, lineno,
+                      -1);
+                } else if(g_str_has_prefix(lcase, "part")) {
+                    gtk_tree_store_append(tree, &part,
+                      book_used? &book :
+                      volume_used? &volume : NULL);
+                    part_used = TRUE;
+                    gtk_tree_store_set(tree, &part,
+                      HEADING_TITLE, text,
+                      HEADING_LINE, lineno,
+                      -1);
+                } else if(g_str_has_prefix(lcase, "chapter")) {
+                    gtk_tree_store_append(tree, &chapter,
+                      part_used? &part :
+                      book_used? &book :
+                      volume_used? &volume : NULL);
+                    chapter_used = TRUE;
+                    gtk_tree_store_set(tree, &chapter,
+                      HEADING_TITLE, text,
+                      HEADING_LINE, lineno,
+                      -1);
+                } else if(g_str_has_prefix(lcase, "section")) {
+                    gtk_tree_store_append(tree, &section,
+                      chapter_used? &chapter :
+                      part_used? &part :
+                      book_used? &book :
+                      volume_used? &volume : NULL);
+                    gtk_tree_store_set(tree, &section,
+                      HEADING_TITLE, text,
+                      HEADING_LINE, lineno,
+                      -1);
+                }
+                g_free(text);
+                g_free(lcase);
+            }
+        }    
+        gtk_text_iter_forward_line(&pos);
+    }
+    
+    return FALSE; /* One-shot idle function */
 }

@@ -29,6 +29,7 @@
 #include "support.h"
 #include "prefs.h"
 #include "configfile.h"
+#include "inspector.h"
 
 /* Create our default source view */
 GtkWidget*
@@ -126,7 +127,9 @@ void jump_to_line(GtkWidget *widget, gint line) {
     gtk_text_buffer_get_iter_at_line(GTK_TEXT_BUFFER(thestory->buffer), &cursor,
       line - 1); /* line is counted from 0 */
     line_end = cursor;
-    gtk_text_iter_forward_to_line_end(&line_end);
+    if(!gtk_text_iter_ends_line(&line_end))
+        /* if already at end, this will push it to the end of the NEXT line */
+        gtk_text_iter_forward_to_line_end(&line_end);
     gtk_text_buffer_select_range(GTK_TEXT_BUFFER(thestory->buffer), &cursor,
       &line_end);
     gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(view),
@@ -137,13 +140,15 @@ void jump_to_line(GtkWidget *widget, gint line) {
 
 void after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start,
   GtkTextIter *end, gpointer data) {
-    if(!config_file_get_bool("Syntax", "Highlighting"))
-        return;
     if(!config_file_get_bool("Syntax", "Intelligence"))
         return;
     /* Do the extra highlighting anytime text is deleted, because running after
     the default signal handler means we have no access to the deleted text. */
-    g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
+    if(config_file_get_bool("Syntax", "Highlighting"))
+        g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
+    /* Reindex the section headings now for the same reason */
+    if(config_file_get_bool("Syntax", "IntelligentIndexInspector"))
+        g_idle_add((GSourceFunc)reindex_headings, NULL);
 }
 
 void after_source_buffer_insert_text(GtkTextBuffer *buffer,
@@ -173,6 +178,12 @@ void after_source_buffer_insert_text(GtkTextBuffer *buffer,
     if(config_file_get_bool("Syntax", "Highlighting") &&
       (strchr(text, '[') || strchr(text, ']') || strchr(text, '\"'))) {
         g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
+    }
+    
+    /* For any text, a section heading might have been entered or changed, so
+    reindex the section headings */
+    if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
+        g_idle_add((GSourceFunc)reindex_headings, NULL);
     }
 }
 

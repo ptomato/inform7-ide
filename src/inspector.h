@@ -38,6 +38,10 @@ after_inspector_window_realize         (GtkWidget       *widget,
                                         gpointer         user_data);
 
 void
+on_search_inspector_text_changed       (GtkEditable     *editable,
+                                        gpointer         user_data);
+
+void
 on_search_inspector_search_clicked     (GtkButton       *button,
                                         gpointer         user_data);
 
@@ -46,9 +50,16 @@ on_inspector_window_delete             (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data);
 
+void
+on_headings_row_activated              (GtkTreeView     *treeview,
+                                        GtkTreePath     *path,
+                                        GtkTreeViewColumn *column,
+                                        gpointer         user_data);
+
 void update_inspectors();
 void show_inspector(int which, gboolean show);
 void refresh_inspector(struct story *thestory);
 void save_inspector_window_position();
+gboolean reindex_headings(gpointer data);
 
 #endif /* INSPECTOR_H */

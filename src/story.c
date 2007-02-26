@@ -45,6 +45,9 @@ struct story *new_story() {
     newstory->window = create_app_window();
     newstory->buffer = create_natural_inform_source_buffer();
     newstory->notes = gtk_text_buffer_new(NULL);
+    newstory->headings = gtk_tree_store_new(NUM_HEADING_COLUMNS,
+      G_TYPE_STRING, /* Heading title */
+      G_TYPE_INT /* Line number */);
 
     /* Connect the source buffer to both of our sourceviews */
     gtk_text_view_set_buffer(
