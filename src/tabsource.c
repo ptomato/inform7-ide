@@ -185,6 +185,44 @@ void after_source_buffer_insert_text(GtkTextBuffer *buffer,
     if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
         g_idle_add((GSourceFunc)reindex_headings, NULL);
     }
+    
+    /* If the text ends with a space, check whether it is a section heading that
+    needs auto-numbering */
+    if(config_file_get_bool("Syntax", "AutoNumberSections")) {
+        if(g_str_has_suffix(text, " ")) {
+            gint line = gtk_text_iter_get_line(location);
+            GtkTextIter line_start;
+            gtk_text_buffer_get_iter_at_line(buffer, &line_start, line);
+            GtkTextIter prev_line = line_start;
+            gtk_text_iter_backward_line(&prev_line);
+            gchar *line_text = gtk_text_iter_get_text(&line_start, location);
+            gchar *lcase = g_utf8_strdown(line_text, -1);
+            
+            if(gtk_text_iter_get_char(&prev_line) == '\n' /*blank line before*/
+              && !(strcmp(lcase, "volume ") && strcmp(lcase, "book ")
+              && strcmp(lcase, "part ") && strcmp(lcase, "chapter ")
+              && strcmp(lcase, "section "))) {
+                /* Count all this as one action for undo */
+                gtk_text_buffer_begin_user_action(buffer);
+                gtk_text_buffer_insert(buffer, location, "0 - ", -1);
+                renumber_sections(buffer);
+                gtk_text_buffer_end_user_action(buffer);
+            }
+            
+            g_free(line_text);
+            g_free(lcase);
+
+            /* For some reason renumber_sections moves the cursor to the start
+            of the next line; this counteracts that */
+            GtkTextIter cursor;
+            GtkTextMark *mark = gtk_text_buffer_get_insert(buffer);
+            gtk_text_buffer_get_iter_at_mark(buffer, &cursor, mark);
+            if(gtk_text_iter_starts_line(&cursor)) {
+                gtk_text_iter_backward_char(&cursor);
+                gtk_text_buffer_place_cursor(buffer, &cursor);
+            }
+        }
+    }
 }
 
 
@@ -240,4 +278,68 @@ gboolean do_extra_highlighting(gpointer data) {
     }
     
     return FALSE; /* one-shot idle function */
+}
+
+
+void renumber_sections(GtkTextBuffer *buffer) {
+    GtkTextIter pos, end;
+    int volume = 1, book = 1, part = 1, chapter = 1, section = 1;
+    
+    gtk_text_buffer_get_start_iter(buffer, &pos);
+    
+    while(gtk_text_iter_get_char(&pos) != 0) {
+        if(gtk_text_iter_get_char(&pos) == '\n') {
+            gtk_text_iter_forward_line(&pos);
+            end = pos;
+            gboolean not_last = gtk_text_iter_forward_line(&end);
+            if(!not_last || gtk_text_iter_get_char(&end) == '\n') {
+                /* Preceded and followed by a blank line,
+                or only preceded by one and current line is last line */
+                /* Get the entire line and its line number, chop the \n */
+                gchar *text = gtk_text_iter_get_text(&pos, &end);
+                gchar *lcase = g_utf8_strdown(text, -1);
+                gchar *title = strchr(text, '-');
+                if(g_str_has_suffix(title, "\n"))
+                    *(strrchr(title, '\n')) = '\0'; /* remove trailing \n */
+                gchar *newtitle;
+                
+                if(g_str_has_prefix(lcase, "volume")) {
+                    newtitle = g_strdup_printf("Volume %d %s\n", volume++,
+                      title);
+                    gtk_text_buffer_delete(buffer, &pos, &end);
+                    gtk_text_buffer_insert(buffer, &pos, newtitle, -1);
+                    g_free(newtitle);
+                    book = part = chapter = section = 1;
+                } else if(g_str_has_prefix(lcase, "book")) {
+                    newtitle = g_strdup_printf("Book %d %s\n", book++, title);
+                    gtk_text_buffer_delete(buffer, &pos, &end);
+                    gtk_text_buffer_insert(buffer, &pos, newtitle, -1);
+                    g_free(newtitle);
+                    part = chapter = section = 1;
+                } else if(g_str_has_prefix(lcase, "part")) {
+                    newtitle = g_strdup_printf("Part %d %s\n", part++, title);
+                    gtk_text_buffer_delete(buffer, &pos, &end);
+                    gtk_text_buffer_insert(buffer, &pos, newtitle, -1);
+                    g_free(newtitle);
+                    chapter = section = 1;
+                } else if(g_str_has_prefix(lcase, "chapter")) {
+                    newtitle = g_strdup_printf("Chapter %d %s\n", chapter++,
+                      title);
+                    gtk_text_buffer_delete(buffer, &pos, &end);
+                    gtk_text_buffer_insert(buffer, &pos, newtitle, -1);
+                    g_free(newtitle);
+                    section = 1;
+                } else if(g_str_has_prefix(lcase, "section")) {
+                    newtitle = g_strdup_printf("Section %d %s\n", section++,
+                      title);
+                    gtk_text_buffer_delete(buffer, &pos, &end);
+                    gtk_text_buffer_insert(buffer, &pos, newtitle, -1);
+                    g_free(newtitle);
+                }
+                g_free(text);
+                g_free(lcase);
+            }
+        }    
+        gtk_text_iter_forward_line(&pos);
+    }
 }

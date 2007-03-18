@@ -699,12 +699,10 @@ on_prefs_follow_symbols_toggle_toggled (GtkToggleButton *togglebutton,
     if(setting != oldsetting) {
         config_file_set_bool("Syntax", "Intelligence", setting);
         /* make the other checkboxes dependent on this checkbox active or inactive*/
-#if 0
         gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
-          "prefs_intelligent_inspector_toggle"), state);
+          "prefs_intelligent_inspector_toggle"), setting);
         gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
-          "prefs_auto_number_toggle"), state);
-#endif
+          "prefs_auto_number_toggle"), setting);
         
         update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(togglebutton),
           "source_example")));

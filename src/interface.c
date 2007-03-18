@@ -94,6 +94,14 @@ static GnomeUIInfo format_menu_uiinfo[] =
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_bracketleft, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
+  GNOMEUIINFO_SEPARATOR,
+  {
+    GNOME_APP_UI_ITEM, N_("Renumber _All Sections"),
+    NULL,
+    (gpointer) on_renumber_all_sections_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
+  },
   GNOMEUIINFO_END
 };
 
@@ -1462,6 +1470,8 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[2].widget, "format");
   GLADE_HOOKUP_OBJECT (app_window, format_menu_uiinfo[0].widget, "shift_selection_right");
   GLADE_HOOKUP_OBJECT (app_window, format_menu_uiinfo[1].widget, "shift_selection_left");
+  GLADE_HOOKUP_OBJECT (app_window, format_menu_uiinfo[2].widget, "separator31");
+  GLADE_HOOKUP_OBJECT (app_window, format_menu_uiinfo[3].widget, "renumber_all_sections");
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[3].widget, "build");
   GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[0].widget, "refresh_index");
   GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[1].widget, "separator27");
@@ -3261,7 +3271,6 @@ create_prefs_dialog (void)
   prefs_auto_number_toggle = gtk_check_button_new_with_mnemonic (_("Auto-number sections"));
   gtk_widget_show (prefs_auto_number_toggle);
   gtk_box_pack_start (GTK_BOX (vbox27), prefs_auto_number_toggle, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (prefs_auto_number_toggle, FALSE);
   gtk_tooltips_set_tip (tooltips, prefs_auto_number_toggle, _("If you check this option, Inform will automatically renumber sections when you insert a new one. It will also automatically insert a section number as you type: if you type \"Part \", Inform will insert \"2 - \" and renumber the previous Part 2 to Part 3 and so on."), NULL);
 
   hseparator3 = gtk_hseparator_new ();

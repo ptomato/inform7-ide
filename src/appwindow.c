@@ -37,6 +37,7 @@
 #include "inspector.h"
 #include "searchwindow.h"
 #include "taberrors.h"
+#include "tabsource.h"
 
 /* Gets a pointer to either the left or the right notebook in this window */
 GtkNotebook *get_notebook(GtkWidget *thiswidget, int right) {
@@ -642,6 +643,20 @@ on_shift_selection_left_activate       (GtkMenuItem     *menuitem,
             gtk_text_buffer_delete(buffer, &iter, &iter2);
         }
     }
+    gtk_text_buffer_end_user_action(buffer);
+}
+
+
+void
+on_renumber_all_sections_activate      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    struct story *thestory = get_story(GTK_WIDGET(menuitem));
+    GtkTextBuffer *buffer = GTK_TEXT_BUFFER(thestory->buffer);
+    
+    /* Renumbering sections counts as one action for Undo */
+    gtk_text_buffer_begin_user_action(buffer);
+    renumber_sections(buffer);
     gtk_text_buffer_end_user_action(buffer);
 }
 

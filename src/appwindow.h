@@ -161,6 +161,10 @@ on_shift_selection_left_activate       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
+on_renumber_all_sections_activate      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
 on_refresh_index_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 

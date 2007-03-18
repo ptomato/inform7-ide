@@ -35,4 +35,5 @@ void after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start,
 void after_source_buffer_insert_text(GtkTextBuffer *buffer,
   GtkTextIter *location, gchar *text, gint len, gpointer data);
 gboolean do_extra_highlighting(gpointer data);
+void renumber_sections(GtkTextBuffer *buffer);
 #endif
