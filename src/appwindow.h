@@ -149,6 +149,14 @@ on_find_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
+on_autocheck_spelling_activate         (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_check_spelling_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
 on_preferences_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 

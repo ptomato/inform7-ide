@@ -18,6 +18,7 @@
  
 #include <gnome.h>
 #include <string.h>
+#include <gtkspell/gtkspell.h>
 
 #include "appwindow.h"
 #include "file.h"
@@ -182,6 +183,14 @@ after_app_window_realize               (GtkWidget       *widget,
     gtk_widget_modify_font(lookup_widget(widget, "compiler_output_r"), font);
     pango_font_description_free(font);
     
+    /* Attach the spelling checkers to the source views and ensure the correct
+    state of the menu */
+    if(config_file_get_bool("Settings", "SpellCheck"))
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(lookup_widget(widget,
+          "autocheck_spelling")), TRUE);
+    else
+        gtk_widget_set_sensitive(lookup_widget(widget, "check_spelling"),FALSE);
+
     /* Set the slider position of the panes at 50% */
     gint slider_pos;
     g_object_get(GTK_PANED(lookup_widget(widget, "facingpages")), 
@@ -566,6 +575,52 @@ on_find_activate                       (GtkMenuItem     *menuitem,
     g_signal_connect((gpointer)lookup_widget(dialog, "find_replace_all"),
       "clicked", G_CALLBACK(on_find_replace_all_clicked), thestory);
     gtk_widget_show(dialog);
+}
+
+
+void
+on_autocheck_spelling_activate         (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    gboolean check = gtk_check_menu_item_get_active(
+      GTK_CHECK_MENU_ITEM(menuitem));
+    gtk_widget_set_sensitive(
+      lookup_widget(GTK_WIDGET(menuitem), "check_spelling"), check);
+    config_file_set_bool("Settings", "SpellCheck", check);
+    /* Set the default for new windows to whatever the user chose last */
+    
+    if(check) {
+        GError *err = NULL;
+        if(!gtkspell_new_attach(
+          GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "source_l")),
+          NULL, &err))
+            error_dialog(
+              GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
+              err, "Error initializing spell checking: ");
+        else if(!gtkspell_new_attach(
+          GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "source_r")),
+          NULL, &err)) 
+            error_dialog(
+              GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
+              err, "Error initializing spell checking: ");
+    } else {
+        gtkspell_detach(gtkspell_get_from_text_view(
+          GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "source_l"))));
+        gtkspell_detach(gtkspell_get_from_text_view(
+          GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "source_r"))));
+        /* BUG in GtkSpell: removing the second one generates error messages */
+    }
+}
+
+
+void
+on_check_spelling_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    GtkSpell *spellchecker = gtkspell_get_from_text_view(
+      GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "source_l")));
+    if(spellchecker)
+        gtkspell_recheck_all(spellchecker);
 }
 
 

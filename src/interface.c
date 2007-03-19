@@ -62,6 +62,25 @@ static GnomeUIInfo filemenu_menu_uiinfo[] =
   GNOMEUIINFO_END
 };
 
+static GnomeUIInfo spelling_menu_uiinfo[] =
+{
+  {
+    GNOME_APP_UI_TOGGLEITEM, N_("_Autocheck Spelling"),
+    NULL,
+    (gpointer) on_autocheck_spelling_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("_Recheck Document"),
+    NULL,
+    (gpointer) on_check_spelling_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, "gtk-spell-check",
+    GDK_F7, (GdkModifierType) 0, NULL
+  },
+  GNOMEUIINFO_END
+};
+
 static GnomeUIInfo edit_menu_uiinfo[] =
 {
   GNOMEUIINFO_MENU_UNDO_ITEM (on_undo_activate, NULL),
@@ -73,6 +92,13 @@ static GnomeUIInfo edit_menu_uiinfo[] =
   GNOMEUIINFO_MENU_SELECT_ALL_ITEM (on_select_all_activate, NULL),
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_FIND_ITEM (on_find_activate, NULL),
+  {
+    GNOME_APP_UI_SUBTREE, N_("_Spelling"),
+    NULL,
+    spelling_menu_uiinfo, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, "gtk-spell-check",
+    0, (GdkModifierType) 0, NULL
+  },
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_PREFERENCES_ITEM (on_preferences_activate, NULL),
   GNOMEUIINFO_END
@@ -1465,8 +1491,11 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[6].widget, "select_all");
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[7].widget, "separator4");
   GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[8].widget, "find");
-  GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[9].widget, "separator23");
-  GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[10].widget, "preferences");
+  GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[9].widget, "spelling");
+  GLADE_HOOKUP_OBJECT (app_window, spelling_menu_uiinfo[0].widget, "autocheck_spelling");
+  GLADE_HOOKUP_OBJECT (app_window, spelling_menu_uiinfo[1].widget, "check_spelling");
+  GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[10].widget, "separator23");
+  GLADE_HOOKUP_OBJECT (app_window, edit_menu_uiinfo[11].widget, "preferences");
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[2].widget, "format");
   GLADE_HOOKUP_OBJECT (app_window, format_menu_uiinfo[0].widget, "shift_selection_right");
   GLADE_HOOKUP_OBJECT (app_window, format_menu_uiinfo[1].widget, "shift_selection_left");
@@ -2164,6 +2193,25 @@ static GnomeUIInfo xfile_menu_uiinfo[] =
   GNOMEUIINFO_END
 };
 
+static GnomeUIInfo xspelling_menu_uiinfo[] =
+{
+  {
+    GNOME_APP_UI_TOGGLEITEM, N_("_Autocheck Spelling"),
+    NULL,
+    (gpointer) on_xautocheck_spelling_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("_Recheck Document"),
+    NULL,
+    (gpointer) on_xcheck_spelling_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, "gtk-spell-check",
+    GDK_F7, (GdkModifierType) 0, NULL
+  },
+  GNOMEUIINFO_END
+};
+
 static GnomeUIInfo xedit_menu_uiinfo[] =
 {
   GNOMEUIINFO_MENU_UNDO_ITEM (on_xundo_activate, NULL),
@@ -2175,6 +2223,13 @@ static GnomeUIInfo xedit_menu_uiinfo[] =
   GNOMEUIINFO_MENU_SELECT_ALL_ITEM (on_xselect_all_activate, NULL),
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_FIND_ITEM (on_xfind_activate, NULL),
+  {
+    GNOME_APP_UI_SUBTREE, N_("_Spelling"),
+    NULL,
+    xspelling_menu_uiinfo, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, "gtk-spell-check",
+    0, (GdkModifierType) 0, NULL
+  },
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_PREFERENCES_ITEM (on_preferences_activate, NULL),
   GNOMEUIINFO_END
@@ -2278,8 +2333,11 @@ create_ext_window (void)
   GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[6].widget, "xselect_all");
   GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[7].widget, "separator17");
   GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[8].widget, "xfind");
-  GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[9].widget, "separator24");
-  GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[10].widget, "xpreferences");
+  GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[9].widget, "xspelling");
+  GLADE_HOOKUP_OBJECT (ext_window, xspelling_menu_uiinfo[0].widget, "xautocheck_spelling");
+  GLADE_HOOKUP_OBJECT (ext_window, xspelling_menu_uiinfo[1].widget, "xcheck_spelling");
+  GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[10].widget, "separator24");
+  GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[11].widget, "xpreferences");
   GLADE_HOOKUP_OBJECT (ext_window, menubar2_uiinfo[2].widget, "xwindows");
   GLADE_HOOKUP_OBJECT (ext_window, xwindows_menu_uiinfo[0].widget, "xshow_inspectors");
   GLADE_HOOKUP_OBJECT (ext_window, xwindows_menu_uiinfo[1].widget, "separator22");

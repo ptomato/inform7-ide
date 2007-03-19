@@ -17,6 +17,7 @@
  */
  
 #include <gnome.h>
+#include <gtkspell/gtkspell.h>
 #include <gtksourceview/gtksourceview.h>
 
 #include "extwindow.h"
@@ -29,6 +30,8 @@
 #include "file.h"
 #include "windowlist.h"
 #include "prefs.h"
+#include "error.h"
+#include "configfile.h"
 
 /* Callbacks for the extension editing window; most of them just call the
 callbacks for the main window */
@@ -48,6 +51,14 @@ after_ext_window_realize               (GtkWidget       *widget,
     gtk_menu_item_set_submenu(
       GTK_MENU_ITEM(lookup_widget(widget, "xopen_recent")),
       recent_menu);
+    
+    /* Attach the spelling checker to the source view and ensure the correct
+    state of the menu */
+    if(config_file_get_bool("Settings", "SpellCheck"))
+        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(lookup_widget(widget,
+          "xautocheck_spelling")), TRUE);
+    else
+        gtk_widget_set_sensitive(lookup_widget(widget,"xcheck_spelling"),FALSE);
 }
 
 
@@ -238,6 +249,42 @@ on_xfind_activate                      (GtkMenuItem     *menuitem,
     g_signal_connect((gpointer)lookup_widget(dialog, "find_replace_all"),
       "clicked", G_CALLBACK(on_xfind_replace_all_clicked), ext);
     gtk_widget_show(dialog);
+}
+
+
+void
+on_xautocheck_spelling_activate        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    gboolean check = gtk_check_menu_item_get_active(
+      GTK_CHECK_MENU_ITEM(menuitem));
+    gtk_widget_set_sensitive(
+      lookup_widget(GTK_WIDGET(menuitem), "xcheck_spelling"), check);
+    config_file_set_bool("Settings", "SpellCheck", check);
+    /* Set the default for new windows to whatever the user chose last */
+    
+    if(check) {
+        GError *err = NULL;
+        if(!gtkspell_new_attach(
+          GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "ext_code")),
+          NULL, &err))
+            error_dialog(
+              GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
+              err, "Error initializing spell checking: ");
+    } else
+        gtkspell_detach(gtkspell_get_from_text_view(
+          GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "ext_code"))));
+}
+
+
+void
+on_xcheck_spelling_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    GtkSpell *spellchecker = gtkspell_get_from_text_view(
+      GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "ext_code")));
+    if(spellchecker)
+        gtkspell_recheck_all(spellchecker);
 }
 
 

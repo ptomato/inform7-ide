@@ -52,6 +52,7 @@ void check_config_file() {
     }
     if(!gconf_client_dir_exists(client, GCONF_BASE_PATH "/Settings", &err)) {
         /* LastProject should stay empty, it is set elsewhere */
+        config_file_set_bool("Settings", "SpellCheck", FALSE);
         config_file_set_bool("Settings", "InspectorVisible", FALSE);
         config_file_set_int("Settings", "InspectorPosX", 0);
         config_file_set_int("Settings", "InspectorPosY", 0);
