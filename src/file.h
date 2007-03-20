@@ -39,5 +39,4 @@ void project_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
   const gchar *info_uri, GnomeVFSMonitorEventType event_type, gpointer data);
 void extension_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
   const gchar *info_uri, GnomeVFSMonitorEventType event_type, gpointer data);
-    
 #endif

@@ -146,9 +146,10 @@ struct story *open_project(gchar *directory) {
     } else {
         GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
         recent_data->display_name = g_filename_display_basename(directory);
+        recent_data->description = g_filename_display_basename(directory);
         recent_data->mime_type = g_strdup("text/x-natural-inform");
         recent_data->app_name = g_strdup("GNOME Inform 7");
-        recent_data->app_exec = g_strdup("gnome-inform7");
+        recent_data->app_exec = g_strdup("gnome-inform7 \f");
         /* We use the groups "inform7_project" and "inform7_extension" to
         determine how to open a file from the recent manager */
         recent_data->groups = g_new(gchar *, 2);
@@ -190,33 +191,35 @@ struct story *open_project(gchar *directory) {
     
     /* Read the settings */
     filename = g_build_filename(directory, "Settings.plist", NULL);
-
-    xmlDoc *doc = xmlReadFile(filename, NULL, 0);
-    if (doc == NULL) {
-        error_dialog(NULL, NULL, "Failed to parse '%s'. Using default settings",
-          filename);
-        g_free(filename);
-        return NULL;
+    if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
+        xmlDoc *doc = xmlReadFile(filename, NULL, 0);
+        if (doc == NULL) {
+            error_dialog(NULL, NULL, "Failed to parse '%s'. Using default "
+              "settings", filename);
+        } else {
+            /* To do: This part sucks, because there is almost no documentation for
+            libxml2. There must be some better way to do this. */
+            xmlNode *node = find_node(doc, (xmlChar *)"IFSettingCreateBlorb");
+            if(node) {
+                node = node->next;
+                thestory->make_blorb = !xmlStrcmp(node->name,
+                  (xmlChar *)"true") ? TRUE : FALSE;
+            } /* else default setting */
+        
+            node = find_node(doc, (xmlChar *)"IFSettingZCodeVersion");
+            if(node) {
+                node = node->next;
+                xmlChar *content = xmlNodeGetContent(node);
+                thestory->story_format = atoi((char *)content);
+                xmlFree(content);
+            } /* else default setting */
+            xmlFreeDoc(doc);
+        }
+    } else {
+        error_dialog(NULL, NULL, "Could not open the project's settings file, "
+          "'%s'. Using default settings.", filename);
     }
     g_free(filename);
-    
-    /* To do: This part sucks, because there is almost no documentation for
-    libxml2. There must be some better way to do this. */
-    xmlNode *node = find_node(doc, (xmlChar *)"IFSettingCreateBlorb");
-    if(node) {
-        node = node->next;
-        thestory->make_blorb = !xmlStrcmp(node->name,
-          (xmlChar *)"true") ? TRUE : FALSE;
-    } /* else default setting */
-
-    node = find_node(doc, (xmlChar *)"IFSettingZCodeVersion");
-    if(node) {
-        node = node->next;
-        xmlChar *content = xmlNodeGetContent(node);
-        thestory->story_format = atoi((char *)content);
-        xmlFree(content);
-    } /* else default setting */
-    xmlFreeDoc(doc);
     
     /* Load index tabs if they exist and update settings */
     reload_index_tabs(thestory);
@@ -383,14 +386,12 @@ gboolean verify_save_ext(GtkWidget *thiswidget) {
 }
 
 /* Reads an extension file to check whether it is a valid Inform 7 extension,
-and returns the extension name and author. Does dangerous things with the
-strings. 'name' and 'author' must both be allocated to at least maxsize. This
-function was adapted from the Windows source. */
-static gboolean is_valid_extension(const gchar *text, gchar *name,
-gchar *author, guint maxsize) {
+and returns the extension name and author stored in the locations pointed to by
+'name' and 'author'. If the function returns TRUE, they must be freed
+afterwards. This function was adapted from the Windows source. */
+static gboolean is_valid_extension(const gchar *text, gchar **thename,
+gchar **theauthor) {
     g_return_val_if_fail(text != NULL, FALSE);
-    g_return_val_if_fail(name != NULL, FALSE);
-    g_return_val_if_fail(author != NULL, FALSE);
     
     gchar *firstline = g_strdup(text);
     gchar *pntr = strchr(firstline, '\n');
@@ -403,8 +404,6 @@ gchar *author, guint maxsize) {
             g_free(firstline);
             return FALSE; /* file is binary */
         }
-    
-    g_assert(maxsize >= strlen(firstline));
     
     gchar **tokens = g_strsplit_set(g_strstrip(firstline), " \t", 0);
     g_free(firstline);
@@ -425,28 +424,42 @@ gchar *author, guint maxsize) {
     if(ptr[0] != NULL && (!strcmp(ptr[0], "The") || !strcmp(ptr[0], "the")))
         ptr++;
     
-    strcpy(name, "");
+    gchar *name = NULL;
     while(ptr[0] != NULL && strcmp(ptr[0], "by")) {
-        if(strlen(name))
-            g_strlcat(name, " ", maxsize);
-        g_strlcat(name, ptr[0], maxsize);
+        if(name) {
+            gchar *newname = g_strconcat(name, " ", ptr[0], NULL);
+            g_free(name);
+            name = newname;
+        } else
+            name = g_strdup(ptr[0]);
         ptr++;
     }
     ptr++; /* Skip "by" */
-    strcpy(author, "");
+    
+    gchar *author = NULL;
     while(ptr[0] != NULL && strcmp(ptr[0], "begins")) {
         /* Author's name ends before "begins here", or at end of line */
-        if(strlen(author))
-            g_strlcat(author, " ", maxsize);
-        g_strlcat(author, ptr[0], maxsize);
+        if(author) {
+            gchar *newauthor = g_strconcat(author, " ", ptr[0], NULL);
+            g_free(author);
+            author = newauthor;
+        } else
+            author = g_strdup(ptr[0]);
         ptr++;
     }
     g_strfreev(tokens);
     
-    if(!strlen(name))
+    if(!name) {
+        if(!author)
+            g_free(author);
         return FALSE;
-    if(!strlen(author))
+    }
+    if(!author) {
+        g_free(name);
         return FALSE;
+    }
+    thename = &name;
+    theauthor = &author;
     return TRUE;
 }
 
@@ -484,6 +497,8 @@ struct extension *open_extension(gchar *filename) {
         g_error_free(err);
     } else {
         GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
+        recent_data->display_name = g_filename_display_basename(filename);
+        recent_data->description = g_filename_display_basename(filename);
         recent_data->mime_type = g_strdup("text/x-natural-inform");
         recent_data->app_name = g_strdup("GNOME Inform 7");
         recent_data->app_exec = g_strdup("gnome-inform7");
@@ -550,17 +565,15 @@ void install_extension(const gchar *filename) {
     }
     
     /* Make sure the file is actually an Inform 7 extension */
-    gchar *name = g_malloc(1024);
-    gchar *author = g_malloc(1024);
-    if(!is_valid_extension(text, name, author, 1024)) {
+    gchar *name = NULL;
+    gchar *author = NULL;
+    if(!is_valid_extension(text, &name, &author)) {
         error_dialog(NULL, NULL, "The file '%s' does not seem to be an "
           "extension. Extensions should be saved as UTF-8 text format files, "
           "and should start with a line of one of these forms:\n\n<Extension> "
           "by <Author> begins here.\nVersion <Version> of <Extension> by "
           "<Author> begins here.", filename);
         g_free(text);
-        g_free(name);
-        g_free(author);
         return;
     }
 
@@ -623,14 +636,31 @@ void finish_release(struct story *thestory, gboolean everything_ok) {
     GError *err = NULL;
     
     /* make up a release file name */
+    gchar *blorb_ext;
+    GtkFileFilter *filter = gtk_file_filter_new();
+    
+    if(thestory->story_format == FORMAT_GLULX) {
+        blorb_ext = g_strdup("gblorb");
+        gtk_file_filter_set_name(filter, "Glulx games (.ulx,.gblorb)");
+        gtk_file_filter_add_pattern(filter, "*.ulx");
+        gtk_file_filter_add_pattern(filter, "*.gblorb");
+    } else {
+        blorb_ext = g_strdup("zblorb");
+        gtk_file_filter_set_name(filter, "Z-code games (.z?,.zblorb)");
+        gtk_file_filter_add_pattern(filter, "*.z?");
+        gtk_file_filter_add_pattern(filter, "*.zblorb");
+    }
+    
+    /* Get the appropriate file name extension */        
     gchar *ext = g_strdup(thestory->make_blorb?
-      "zblorb" : get_story_extension(thestory));
+      blorb_ext : get_story_extension(thestory));
+    g_free(blorb_ext);
+    /* Append it to the file name */
     gchar *name = g_path_get_basename(thestory->filename);
     gchar *pos = strchr(name, '.');
     *pos = '\0';
     gchar *filename = g_strconcat(name, ".", ext, NULL);    
     g_free(name);
-    g_free(ext);
     
     /* Create a file chooser */
     GtkWidget *dialog = gtk_file_chooser_dialog_new("Save the game for release",
@@ -642,19 +672,15 @@ void finish_release(struct story *thestory, gboolean everything_ok) {
       TRUE);
     gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), filename);
     g_free(filename);
-    GtkFileFilter *filter = gtk_file_filter_new();
-    gtk_file_filter_set_name(filter, "Game Files (.z?,.zblorb)");
-    gtk_file_filter_add_pattern(filter, "*.z?");
-    gtk_file_filter_add_pattern(filter, "*.zblorb");
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
     
     /* Copy the finished file to the release location */
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-        gchar *oldfile_base = g_strconcat("output.",
-          get_story_extension(thestory), NULL);
+        gchar *oldfile_base = g_strconcat("output.", ext, NULL);
         gchar *oldfile = g_build_filename(thestory->filename, "Build",
           oldfile_base, NULL);
+        g_free(oldfile_base);
         gsize bytes_read;
         gchar *text;
         
@@ -662,7 +688,7 @@ void finish_release(struct story *thestory, gboolean everything_ok) {
             error_dialog(NULL, err, "Error reading file '%s': ", oldfile);
             g_free(filename);
             g_free(oldfile);
-            g_free(oldfile_base);
+            g_free(ext);
             gtk_widget_destroy(dialog);
             return;
         }
@@ -672,9 +698,10 @@ void finish_release(struct story *thestory, gboolean everything_ok) {
         }
         g_free(filename);
         g_free(oldfile);
-        g_free(oldfile_base);
         g_free(text);
     }
+    
+    g_free(ext);
     gtk_widget_destroy(dialog);
 }
 

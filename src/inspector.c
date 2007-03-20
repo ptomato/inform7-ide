@@ -241,6 +241,8 @@ void save_inspector_window_position() {
 
 /* Reindex the section headings and update them in the inspector window */
 gboolean reindex_headings(gpointer data) {
+    if(!inspecting)
+        return FALSE; /* do nothing */
     GtkTextBuffer *buffer = GTK_TEXT_BUFFER(inspecting->buffer);
     GtkTextIter pos, end;
     gtk_text_buffer_get_start_iter(buffer, &pos);

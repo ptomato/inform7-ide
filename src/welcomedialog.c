@@ -98,8 +98,13 @@ on_welcome_open_button_clicked         (GtkButton       *button,
         return;
     }
 
-    gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+    if(thestory == NULL) {
+        /* Take us back to the welcome dialog */
+        gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+        return;
+    }
     gtk_widget_show(thestory->window);
+    gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 }
 
 void
@@ -142,14 +147,23 @@ on_welcome_reopen_button_clicked       (GtkButton       *button,
     }
     g_list_free(recent);
     
+    /* Hide the welcome dialog when opening the new story */
+    gtk_widget_hide(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+    
     struct story *thestory;
     gchar *trash = g_path_get_dirname(projectname); /* Remove "story.ni" */
     gchar *projectdir = g_path_get_dirname(trash); /* Remove "Source" */
     thestory = open_project(projectdir);
     g_free(projectdir);
     g_free(trash);
-    gtk_widget_show(thestory->window);
     g_free(projectname);
     /* Do not free the string from gtk_recent_info_get_uri */
+    
+    if(thestory == NULL) {
+        /* Take us back to the welcome dialog */
+        gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+        return;
+    }
+    gtk_widget_show(thestory->window);
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 }

@@ -31,7 +31,7 @@ static GnomeUIInfo filemenu_menu_uiinfo[] =
   GNOMEUIINFO_MENU_NEW_ITEM (N_("_New..."), NULL, on_new_activate, NULL),
   GNOMEUIINFO_MENU_OPEN_ITEM (on_open_activate, NULL),
   {
-    GNOME_APP_UI_ITEM, N_("Open Recent"),
+    GNOME_APP_UI_ITEM, N_("O_pen Recent"),
     NULL,
     (gpointer) NULL, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,

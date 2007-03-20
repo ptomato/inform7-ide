@@ -393,7 +393,9 @@ void compile_stage3(GPid pid, gint status, gpointer thestory) {
         gchar **commandline = g_new(gchar *, 4);
         commandline[0] = g_strdup("cblorb");
         commandline[1] = g_strdup("Release.blurb");
-        commandline[2] = g_build_filename("Build", "output.zblorb", NULL);
+        commandline[2] = g_build_filename("Build", 
+          (((struct story *)thestory)->story_format == FORMAT_GLULX)?
+          "output.gblorb" : "output.zblorb", NULL);
         commandline[3] = NULL;
         
         display_status_message(((struct story *)thestory)->window,
