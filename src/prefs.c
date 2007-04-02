@@ -454,8 +454,8 @@ on_tab_ruler_value_changed             (GtkRange        *range,
           GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(range), "tab_example")));
         update_tabs(
           GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(range), "source_example")));
-        for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
-        for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
+        for_each_story_window_idle((GSourceFunc)update_app_window_tabs);
+        for_each_extension_window_idle((GSourceFunc)update_ext_window_tabs);
     }
 }
 
@@ -569,7 +569,11 @@ on_prefs_i7_extension_add_clicked      (GtkButton       *button,
     g_slist_free(extlist);
     gtk_widget_destroy(dialog);
     
+    /* Refresh all lists of extensions */
     populate_extension_lists(GTK_WIDGET(button));
+    for_each_story_window_idle((GSourceFunc)update_app_window_extensions_menu);
+    for_each_extension_window_idle(
+      (GSourceFunc)update_ext_window_extensions_menu);
 }
 
 
@@ -640,7 +644,11 @@ on_prefs_i7_extension_remove_clicked   (GtkButton       *button,
         gtk_tree_path_free(path);
     }
     
+    /* Refresh all lists of extensions */
     populate_extension_lists(GTK_WIDGET(button));
+    for_each_story_window_idle((GSourceFunc)update_app_window_extensions_menu);
+    for_each_extension_window_idle(
+      (GSourceFunc)update_ext_window_extensions_menu);
 }
 
 
@@ -833,8 +841,9 @@ void update_font(GtkWidget *thiswidget) {
     int setting = config_file_get_int("Fonts", "FontSet");
     switch(setting) {
         case FONT_SET_PROGRAMMER:
-            pango_font_description_set_family(font, "Bitstream Vera Sans Mono,"
-              "Monospace,Courier New");
+            pango_font_description_set_family(font, "DejaVu Sans Mono,"
+              "DejaVu Sans LGC Mono,Bitstream Vera Sans Mono,Courier New,"
+              "Luxi Mono,Monospace");
             break;
         case FONT_SET_CUSTOM:
             customfont = config_file_get_string("Fonts", "CustomFont");
@@ -843,8 +852,8 @@ void update_font(GtkWidget *thiswidget) {
             break;
         case FONT_SET_STANDARD:
         default:
-            pango_font_description_set_family(font, "Bitstream Vera Sans,"
-              "Sans,Arial");
+            pango_font_description_set_family(font, "DejaVu Sans,"
+              "DejaVu LGC Sans,Bitstream Vera Sans,Arial,Luxi Sans,Sans");
     }
     
     int size = config_file_get_int("Fonts", "FontSize");
@@ -948,6 +957,21 @@ void populate_extension_lists(GtkWidget *thiswidget) {
  * each window
  */
 
+/* Only update the tabs in an extension editing window */
+gboolean update_ext_window_tabs(gpointer data) {
+    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "ext_code")));
+    return FALSE; /* One-shot idle function */
+}
+
+/* Only update the tabs in this main window */
+gboolean update_app_window_tabs(gpointer data) {
+    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "source_l")));
+    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "source_r")));
+    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "inform6_l")));
+    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "inform6_r")));
+    return FALSE; /* One-shot idle function */
+}
+
 /* Update the fonts and highlighting colors in this extension editing window */
 gboolean update_ext_window_fonts(gpointer data) {
     GtkWidget *widget = lookup_widget((GtkWidget *)data, "ext_code");
@@ -1015,4 +1039,24 @@ gboolean update_app_window_font_sizes(gpointer data) {
 void update_source_highlight(GtkSourceBuffer *buffer) {
     gtk_source_buffer_set_highlight(buffer, config_file_get_bool("Syntax",
       "Highlighting"));
+}
+
+/* Update the "Open Extensions" menu in this main window */
+gboolean update_app_window_extensions_menu(gpointer data) {
+    GtkWidget *menu;
+    if((menu = create_open_extension_submenu()))
+        gtk_menu_item_set_submenu(
+          GTK_MENU_ITEM(lookup_widget((GtkWidget *)data, "open_extension")),
+          menu);
+    return FALSE; /* One-shot idle function */
+}
+
+/* Update the "Open Extensions" menu in this main window */
+gboolean update_ext_window_extensions_menu(gpointer data) {
+    GtkWidget *menu;
+    if((menu = create_open_extension_submenu()))
+        gtk_menu_item_set_submenu(
+          GTK_MENU_ITEM(lookup_widget((GtkWidget *)data, "xopen_extension")),
+          menu);
+    return FALSE; /* One-shot idle function */
 }

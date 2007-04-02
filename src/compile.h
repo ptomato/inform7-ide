@@ -25,9 +25,24 @@
 
 void run_census(gboolean wait);
 void compile_project(struct story *thestory);
-void compile_stage2(GPid pid, gint status, gpointer thestory);
-void compile_stage3(GPid pid, gint status, gpointer thestory);
-void compile_stage4(GPid pid, gint status, gpointer thestory);
+
+void prepare_ni_compiler(struct story *thestory);
+void start_ni_compiler(struct story *thestory);
+void finish_ni_compiler(GPid pid, gint status, gpointer data);
+
+void prepare_i6_compiler(struct story *thestory);
+void start_i6_compiler(struct story *thestory);
+void finish_i6_compiler(GPid pid, gint status, gpointer data);
+
+void prepare_cblorb_compiler(struct story *thestory);
+void start_cblorb_compiler(struct story *thestory);
+void finish_cblorb_compiler(GPid pid, gint status, gpointer data);
+
+void finish_refresh_index(struct story *thestory);    
+void finish_save_debug_build(struct story *thestory);
+void finish_run(struct story *thestory);
+void finish_release(struct story *thestory);
+
 GPid run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output);
 void set_up_io_channel(gint fd, GtkTextBuffer *output);
 gboolean write_channel_to_buffer(GIOChannel *ioc, GIOCondition cond,

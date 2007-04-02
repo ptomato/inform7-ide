@@ -22,18 +22,21 @@
 #include <gnome.h>
 #include <gtksourceview/gtksourceview.h>
 
+/* Three options for editor font */
 enum {
     FONT_SET_STANDARD,
     FONT_SET_PROGRAMMER,
     FONT_SET_CUSTOM
 };
 
+/* Three options for syntax highlighting */
 enum {
     FONT_STYLING_NONE,
     FONT_STYLING_SUBTLE,
     FONT_STYLING_OFTEN
 };
 
+/* Four different text size options */
 enum {
     FONT_SIZE_STANDARD,
     FONT_SIZE_MEDIUM,
@@ -41,6 +44,7 @@ enum {
     FONT_SIZE_HUGE
 };
 
+/* Pango point sizes of text size options */
 enum {
     SIZE_STANDARD = 10,
     SIZE_MEDIUM = 11,
@@ -48,16 +52,27 @@ enum {
     SIZE_HUGE = 18
 };
 
+/* Three options for color syntax highlighting */
 enum {
     CHANGE_COLORS_NEVER,
     CHANGE_COLORS_OCCASIONALLY,
     CHANGE_COLORS_OFTEN
 };
 
+/* The three color sets */
 enum {
     COLOR_SET_SUBDUED,
     COLOR_SET_STANDARD,
     COLOR_SET_PSYCHEDELIC
+};
+
+/* The tabs in the preferences window */
+enum {
+    TAB_STYLES,
+    TAB_INSPECTORS,
+    TAB_EXTENSIONS,
+    TAB_INTELLIGENCE,
+    TAB_ADVANCED
 };
 
 void
@@ -243,9 +258,12 @@ void update_font(GtkWidget *thiswidget);
 void update_font_size(GtkWidget *thiswidget);
 void update_tabs(GtkSourceView *thiswidget);
 void populate_extension_lists(GtkWidget *thiswidget);
+gboolean update_app_window_tabs(gpointer data);
+gboolean update_ext_window_tabs(gpointer data);
 gboolean update_app_window_fonts(gpointer data);
 gboolean update_ext_window_fonts(gpointer data);
 gboolean update_app_window_font_sizes(gpointer data);
 void update_source_highlight(GtkSourceBuffer *buffer);
-
+gboolean update_app_window_extensions_menu(gpointer data);
+gboolean update_ext_window_extensions_menu(gpointer data);
 #endif

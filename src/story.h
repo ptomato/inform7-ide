@@ -37,6 +37,15 @@ enum {
     NUM_HEADING_COLUMNS
 };
 
+/* Compiling actions */
+enum {
+    COMPILE_NONE,
+    COMPILE_REFRESH_INDEX,
+    COMPILE_SAVE_DEBUG_BUILD,
+    COMPILE_RUN,
+    COMPILE_RELEASE
+};
+
 struct story {
     /* The toplevel window in which this story is being edited */
     GtkWidget *window;
@@ -61,8 +70,7 @@ struct story {
     gulong handler_commit;
     
     /* Compile actions */
-    gboolean release;
-    gboolean run;
+    int action;
     
     /* Skein */
     skein theskein;

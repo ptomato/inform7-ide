@@ -28,11 +28,11 @@
 
 static GnomeUIInfo filemenu_menu_uiinfo[] =
 {
-  GNOMEUIINFO_MENU_NEW_ITEM (N_("_New..."), NULL, on_new_activate, NULL),
+  GNOMEUIINFO_MENU_NEW_ITEM (N_("_New..."), N_("Start a new story"), on_new_activate, NULL),
   GNOMEUIINFO_MENU_OPEN_ITEM (on_open_activate, NULL),
   {
     GNOME_APP_UI_ITEM, N_("O_pen Recent"),
-    NULL,
+    N_("Open a recently opened file"),
     (gpointer) NULL, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     0, (GdkModifierType) 0, NULL
@@ -46,9 +46,9 @@ static GnomeUIInfo filemenu_menu_uiinfo[] =
     0, (GdkModifierType) 0, NULL
   },
   {
-    GNOME_APP_UI_ITEM, N_("Open _Extension..."),
+    GNOME_APP_UI_ITEM, N_("Open _Extension"),
     N_("Open an existing extension"),
-    (gpointer) on_open_extension_activate, NULL, NULL,
+    (gpointer) NULL, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     0, (GdkModifierType) 0, NULL
   },
@@ -66,14 +66,14 @@ static GnomeUIInfo spelling_menu_uiinfo[] =
 {
   {
     GNOME_APP_UI_TOGGLEITEM, N_("_Autocheck Spelling"),
-    NULL,
+    N_("Automatically underline misspelled words in the story"),
     (gpointer) on_autocheck_spelling_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Recheck Document"),
-    NULL,
+    N_("Spellcheck the entire story now"),
     (gpointer) on_check_spelling_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-spell-check",
     GDK_F7, (GdkModifierType) 0, NULL
@@ -108,14 +108,14 @@ static GnomeUIInfo format_menu_uiinfo[] =
 {
   {
     GNOME_APP_UI_ITEM, N_("Shift Selection _Right"),
-    NULL,
+    N_("Insert a tab before each line of the selection"),
     (gpointer) on_shift_selection_right_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_bracketright, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Shift Selection _Left"),
-    NULL,
+    N_("Remove a tab from each line of the selection"),
     (gpointer) on_shift_selection_left_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_bracketleft, (GdkModifierType) GDK_CONTROL_MASK, NULL
@@ -123,7 +123,7 @@ static GnomeUIInfo format_menu_uiinfo[] =
   GNOMEUIINFO_SEPARATOR,
   {
     GNOME_APP_UI_ITEM, N_("Renumber _All Sections"),
-    NULL,
+    N_("Automatically number all the sections in the story"),
     (gpointer) on_renumber_all_sections_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     0, (GdkModifierType) 0, NULL
@@ -135,7 +135,7 @@ static GnomeUIInfo build_menu_uiinfo[] =
 {
   {
     GNOME_APP_UI_ITEM, N_("Refresh _Index"),
-    NULL,
+    N_("Recompile the index files and display them"),
     (gpointer) on_refresh_index_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-convert",
     GDK_I, (GdkModifierType) GDK_CONTROL_MASK, NULL
@@ -143,21 +143,21 @@ static GnomeUIInfo build_menu_uiinfo[] =
   GNOMEUIINFO_SEPARATOR,
   {
     GNOME_APP_UI_ITEM, N_("_Go"),
-    N_("Compile the project and then run it"),
+    N_("Compile and run the story"),
     (gpointer) on_go_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-go-forward",
     GDK_R, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Replay"),
-    N_("Compile the project and then replay commands"),
+    N_("Compile the story, and re-run to the previously active play point"),
     (gpointer) on_replay_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-refresh",
     GDK_R, (GdkModifierType) GDK_CONTROL_MASK | GDK_MOD1_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Stop"),
-    N_("Stop the currently running game"),
+    N_("Stop the story that's currently running"),
     (gpointer) on_stop_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-stop",
     GDK_Q, (GdkModifierType) GDK_CONTROL_MASK | GDK_SHIFT_MASK, NULL
@@ -165,10 +165,17 @@ static GnomeUIInfo build_menu_uiinfo[] =
   GNOMEUIINFO_SEPARATOR,
   {
     GNOME_APP_UI_ITEM, N_("R_elease"),
-    N_("Compile the project for release"),
+    N_("Compile the story ready for release"),
     (gpointer) on_release_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-cdrom",
     GDK_R, (GdkModifierType) GDK_CONTROL_MASK | GDK_SHIFT_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Save _Debug Build..."),
+    N_("Compile the story with debugging features on and export it"),
+    (gpointer) on_save_debug_build_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
   },
   GNOMEUIINFO_END
 };
@@ -177,42 +184,42 @@ static GnomeUIInfo show_tabs_menu_uiinfo[] =
 {
   {
     GNOME_APP_UI_ITEM, N_("_Source"),
-    NULL,
+    N_("Show the Source tab"),
     (gpointer) on_show_source_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_F1, (GdkModifierType) GDK_SHIFT_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Errors"),
-    NULL,
+    N_("Show the Errors tab"),
     (gpointer) on_show_errors_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_F2, (GdkModifierType) GDK_SHIFT_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Index"),
-    NULL,
+    N_("Show the Index tab"),
     (gpointer) on_show_index_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_F3, (GdkModifierType) GDK_SHIFT_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Game"),
-    NULL,
+    N_("Show the Game tab"),
     (gpointer) on_show_game_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_F6, (GdkModifierType) GDK_SHIFT_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Documentation"),
-    NULL,
+    N_("Show the Documentation tab"),
     (gpointer) on_show_documentation_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_F7, (GdkModifierType) GDK_SHIFT_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("Setti_ngs"),
-    NULL,
+    N_("Show the Settings tab"),
     (gpointer) on_show_settings_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_F8, (GdkModifierType) GDK_SHIFT_MASK, NULL
@@ -227,7 +234,7 @@ static GnomeUIInfo show_tabs_menu_uiinfo[] =
   },
   {
     GNOME_APP_UI_ITEM, N_("Ne_xt Sub Panel"),
-    NULL,
+    N_("Move to the next sub panel in this panel"),
     (gpointer) on_next_sub_panel_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_F6, (GdkModifierType) GDK_CONTROL_MASK, NULL
@@ -239,49 +246,49 @@ static GnomeUIInfo show_index_menu_uiinfo[] =
 {
   {
     GNOME_APP_UI_ITEM, N_("_Actions"),
-    NULL,
+    N_("Show the Actions index"),
     (gpointer) on_show_actions_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_3, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Contents"),
-    NULL,
+    N_("Show the Contents index"),
     (gpointer) on_show_contents_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_4, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Kinds"),
-    NULL,
+    N_("Show the Kinds index"),
     (gpointer) on_show_kinds_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_5, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Phrasebook"),
-    NULL,
+    N_("Show the Phrasebook index"),
     (gpointer) on_show_phrasebook_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_6, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Rules"),
-    NULL,
+    N_("Show the Rules index"),
     (gpointer) on_show_rules_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_7, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Scenes"),
-    NULL,
+    N_("Show the Scenes index"),
     (gpointer) on_show_scenes_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_8, (GdkModifierType) GDK_CONTROL_MASK, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_World"),
-    NULL,
+    N_("Show the World index"),
     (gpointer) on_show_world_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     GDK_9, (GdkModifierType) GDK_CONTROL_MASK, NULL
@@ -293,7 +300,7 @@ static GnomeUIInfo windows_menu_uiinfo[] =
 {
   {
     GNOME_APP_UI_ITEM, N_("Show _Inspectors"),
-    NULL,
+    N_("Show the inspectors toolbar"),
     (gpointer) on_show_inspectors_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-zoom-in",
     GDK_I, (GdkModifierType) GDK_CONTROL_MASK | GDK_MOD1_MASK, NULL
@@ -320,7 +327,7 @@ static GnomeUIInfo help_menu_uiinfo[] =
 {
   {
     GNOME_APP_UI_ITEM, N_("Inform _Help"),
-    N_("Show the main help page"),
+    N_("Show the documentation index"),
     (gpointer) on_inform_help_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-help",
     GDK_F1, (GdkModifierType) 0, NULL
@@ -397,13 +404,10 @@ create_app_window (void)
   GtkWidget *separatortoolitem1;
   GtkWidget *release_toolbutton;
   GtkWidget *separatortoolitem2;
-  GtkWidget *toolitem1;
-  GtkWidget *image13;
-  GtkWidget *toolitem2;
-  GtkWidget *source_search;
-  GtkWidget *toolitem4;
-  GtkWidget *image12;
+  GtkWidget *toolitem6;
   GtkWidget *toolitem3;
+  GtkWidget *image12;
+  GtkWidget *toolitem5;
   GtkWidget *docs_search;
   GtkWidget *separatortoolitem3;
   GtkWidget *help_toolbutton;
@@ -551,12 +555,9 @@ create_app_window (void)
   GtkWidget *label42;
   GtkWidget *label43;
   GtkWidget *main_appbar;
-  GtkAccelGroup *accel_group;
   GtkTooltips *tooltips;
 
   tooltips = gtk_tooltips_new ();
-
-  accel_group = gtk_accel_group_new ();
 
   app_window = gnome_app_new ("GNOME Inform 7", _("Inform"));
   gtk_window_set_default_size (GTK_WINDOW (app_window), 1000, 750);
@@ -588,20 +589,20 @@ create_app_window (void)
   go_toolbutton = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Go"));
   gtk_widget_show (go_toolbutton);
   gtk_container_add (GTK_CONTAINER (toolbar1), go_toolbutton);
-  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (go_toolbutton), tooltips, _("Compile the project and then run it"), NULL);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (go_toolbutton), tooltips, _("Compile and run the story"), NULL);
 
   tmp_image = gtk_image_new_from_stock ("gtk-refresh", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   replay_toolbutton = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Replay"));
   gtk_widget_show (replay_toolbutton);
   gtk_container_add (GTK_CONTAINER (toolbar1), replay_toolbutton);
-  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (replay_toolbutton), tooltips, _("Compile the project and then replay commands"), NULL);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (replay_toolbutton), tooltips, _("Compile the story, and re-run through the skein to the previously active play point"), NULL);
 
   stop_toolbutton = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-stop");
   gtk_widget_show (stop_toolbutton);
   gtk_container_add (GTK_CONTAINER (toolbar1), stop_toolbutton);
   gtk_widget_set_sensitive (stop_toolbutton, FALSE);
-  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (stop_toolbutton), tooltips, _("Stop the currently running game"), NULL);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (stop_toolbutton), tooltips, _("Stop the story that's currently running"), NULL);
 
   separatortoolitem1 = (GtkWidget*) gtk_separator_tool_item_new ();
   gtk_widget_show (separatortoolitem1);
@@ -612,52 +613,35 @@ create_app_window (void)
   release_toolbutton = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Release"));
   gtk_widget_show (release_toolbutton);
   gtk_container_add (GTK_CONTAINER (toolbar1), release_toolbutton);
-  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (release_toolbutton), tooltips, _("Compile the project for release"), NULL);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (release_toolbutton), tooltips, _("Compile the story ready for release (with all debugging features turned off) and save the result"), NULL);
 
   separatortoolitem2 = (GtkWidget*) gtk_separator_tool_item_new ();
   gtk_widget_show (separatortoolitem2);
   gtk_container_add (GTK_CONTAINER (toolbar1), separatortoolitem2);
 
-  toolitem1 = (GtkWidget*) gtk_tool_item_new ();
-  gtk_widget_show (toolitem1);
-  gtk_container_add (GTK_CONTAINER (toolbar1), toolitem1);
-
-  image13 = gtk_image_new_from_stock ("gtk-find", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image13);
-  gtk_container_add (GTK_CONTAINER (toolitem1), image13);
-  gtk_misc_set_alignment (GTK_MISC (image13), 1, 0.5);
-  gtk_misc_set_padding (GTK_MISC (image13), 4, 0);
-
-  toolitem2 = (GtkWidget*) gtk_tool_item_new ();
-  gtk_widget_show (toolitem2);
-  gtk_container_add (GTK_CONTAINER (toolbar1), toolitem2);
-
-  source_search = gtk_entry_new ();
-  gtk_widget_show (source_search);
-  gtk_container_add (GTK_CONTAINER (toolitem2), source_search);
-  gtk_widget_add_accelerator (source_search, "activate", accel_group,
-                              GDK_F3, (GdkModifierType) 0,
-                              GTK_ACCEL_VISIBLE);
-  gtk_entry_set_text (GTK_ENTRY (source_search), _("Project"));
-  gtk_entry_set_invisible_char (GTK_ENTRY (source_search), 8226);
-
-  toolitem4 = (GtkWidget*) gtk_tool_item_new ();
-  gtk_widget_show (toolitem4);
-  gtk_container_add (GTK_CONTAINER (toolbar1), toolitem4);
-
-  image12 = gtk_image_new_from_stock ("gtk-find", GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (image12);
-  gtk_container_add (GTK_CONTAINER (toolitem4), image12);
-  gtk_misc_set_alignment (GTK_MISC (image12), 1, 0.5);
-  gtk_misc_set_padding (GTK_MISC (image12), 4, 0);
+  toolitem6 = (GtkWidget*) gtk_tool_item_new ();
+  gtk_widget_show (toolitem6);
+  gtk_tool_item_set_expand (GTK_TOOL_ITEM (toolitem6), TRUE);
+  gtk_container_add (GTK_CONTAINER (toolbar1), toolitem6);
 
   toolitem3 = (GtkWidget*) gtk_tool_item_new ();
   gtk_widget_show (toolitem3);
   gtk_container_add (GTK_CONTAINER (toolbar1), toolitem3);
 
+  image12 = gtk_image_new_from_stock ("gtk-find", GTK_ICON_SIZE_BUTTON);
+  gtk_widget_show (image12);
+  gtk_container_add (GTK_CONTAINER (toolitem3), image12);
+  gtk_misc_set_alignment (GTK_MISC (image12), 1, 0.5);
+  gtk_misc_set_padding (GTK_MISC (image12), 4, 0);
+
+  toolitem5 = (GtkWidget*) gtk_tool_item_new ();
+  gtk_widget_show (toolitem5);
+  gtk_container_add (GTK_CONTAINER (toolbar1), toolitem5);
+
   docs_search = gtk_entry_new ();
   gtk_widget_show (docs_search);
-  gtk_container_add (GTK_CONTAINER (toolitem3), docs_search);
+  gtk_container_add (GTK_CONTAINER (toolitem5), docs_search);
+  gtk_tooltips_set_tip (tooltips, docs_search, _("Search the documentation for a particular phrase"), NULL);
   gtk_entry_set_text (GTK_ENTRY (docs_search), _("Documentation"));
   gtk_entry_set_invisible_char (GTK_ENTRY (docs_search), 8226);
 
@@ -668,7 +652,7 @@ create_app_window (void)
   help_toolbutton = (GtkWidget*) gtk_tool_button_new_from_stock ("gtk-help");
   gtk_widget_show (help_toolbutton);
   gtk_container_add (GTK_CONTAINER (toolbar1), help_toolbutton);
-  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (help_toolbutton), tooltips, _("Show the main help page"), NULL);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (help_toolbutton), tooltips, _("Show the documentation index"), NULL);
 
   facingpages = gtk_hpaned_new ();
   gtk_widget_show (facingpages);
@@ -1424,12 +1408,6 @@ create_app_window (void)
   g_signal_connect ((gpointer) release_toolbutton, "clicked",
                     G_CALLBACK (on_release_toolbutton_clicked),
                     NULL);
-  g_signal_connect ((gpointer) source_search, "activate",
-                    G_CALLBACK (on_source_search_activate),
-                    NULL);
-  g_signal_connect ((gpointer) source_search, "focus_in_event",
-                    G_CALLBACK (on_source_search_focus),
-                    NULL);
   g_signal_connect ((gpointer) docs_search, "activate",
                     G_CALLBACK (on_docs_search_activate),
                     NULL);
@@ -1509,6 +1487,7 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[4].widget, "stop");
   GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[5].widget, "separator12");
   GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[6].widget, "release");
+  GLADE_HOOKUP_OBJECT (app_window, build_menu_uiinfo[7].widget, "save_debug_build");
   GLADE_HOOKUP_OBJECT (app_window, menubar1_uiinfo[4].widget, "windows");
   GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[0].widget, "show_inspectors");
   GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[1].widget, "show_tabs");
@@ -1546,13 +1525,10 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, separatortoolitem1, "separatortoolitem1");
   GLADE_HOOKUP_OBJECT (app_window, release_toolbutton, "release_toolbutton");
   GLADE_HOOKUP_OBJECT (app_window, separatortoolitem2, "separatortoolitem2");
-  GLADE_HOOKUP_OBJECT (app_window, toolitem1, "toolitem1");
-  GLADE_HOOKUP_OBJECT (app_window, image13, "image13");
-  GLADE_HOOKUP_OBJECT (app_window, toolitem2, "toolitem2");
-  GLADE_HOOKUP_OBJECT (app_window, source_search, "source_search");
-  GLADE_HOOKUP_OBJECT (app_window, toolitem4, "toolitem4");
-  GLADE_HOOKUP_OBJECT (app_window, image12, "image12");
+  GLADE_HOOKUP_OBJECT (app_window, toolitem6, "toolitem6");
   GLADE_HOOKUP_OBJECT (app_window, toolitem3, "toolitem3");
+  GLADE_HOOKUP_OBJECT (app_window, image12, "image12");
+  GLADE_HOOKUP_OBJECT (app_window, toolitem5, "toolitem5");
   GLADE_HOOKUP_OBJECT (app_window, docs_search, "docs_search");
   GLADE_HOOKUP_OBJECT (app_window, separatortoolitem3, "separatortoolitem3");
   GLADE_HOOKUP_OBJECT (app_window, help_toolbutton, "help_toolbutton");
@@ -1700,8 +1676,6 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, main_appbar, "main_appbar");
   GLADE_HOOKUP_OBJECT_NO_REF (app_window, tooltips, "tooltips");
 
-  gtk_window_add_accel_group (GTK_WINDOW (app_window), accel_group);
-
   return app_window;
 }
 
@@ -1710,16 +1684,16 @@ create_about_window (void)
 {
   GtkWidget *about_window;
   const gchar *authors[] = {
-    "Inform written by",
-    "\tGraham Nelson with help from",
-    "\tEmily Short and many others",
-    "GNOME Inform front-end written by",
+    "Inform written by:",
+    "\tGraham Nelson",
+    "Glulx compiler written by:",
+    "\tGraham Nelson and Andrew Plotkin",
+    "GNOME Inform front-end written by:",
     "\tP.F. Chimento",
-    "MacOS X Inform front-end written by",
-    "\tAndrew Hunter",
-    "Windows Inform front-end written by",
-    "\tDavid Kinder",
-    "Contributions to Inform 6",
+    "Based on front-ends by",
+    "\tAndrew Hunter (Mac OS X)",
+    "\tDavid Kinder (Windows)",
+    "Contributions to the compiler:",
     "\tEmily Short",
     "\tGunther Schmidl",
     "\tAndrew Plotkin",
@@ -1742,6 +1716,7 @@ create_about_window (void)
   gtk_window_set_destroy_with_parent (GTK_WINDOW (about_window), TRUE);
   gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (about_window), VERSION);
   gtk_about_dialog_set_name (GTK_ABOUT_DIALOG (about_window), _("GNOME Inform 7"));
+  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_window), _("Inform (1.0 6.31/4K41)\n\nCopyright 2006\342\200\2222007 P.F. Chimento (front end),\nGraham Nelson et al. (compiler)."));
   gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (about_window), _("A GNOME IDE for Inform 7"));
   gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (about_window), "www.inform-fiction.org");
   gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (about_window), _("www.inform-fiction.org"));
@@ -1749,6 +1724,10 @@ create_about_window (void)
   gtk_about_dialog_set_translator_credits (GTK_ABOUT_DIALOG (about_window), translators);
   about_window_logo_pixbuf = create_pixbuf ("gnome-inform7/Inform-large.png");
   gtk_about_dialog_set_logo (GTK_ABOUT_DIALOG (about_window), about_window_logo_pixbuf);
+
+  g_signal_connect ((gpointer) about_window, "response",
+                    G_CALLBACK (gtk_widget_destroy),
+                    NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (about_window, about_window, "about_window");
@@ -2108,6 +2087,7 @@ create_find_dialog (void)
   gtk_widget_show (find_close);
   gtk_dialog_add_action_widget (GTK_DIALOG (find_dialog), find_close, GTK_RESPONSE_CLOSE);
   GTK_WIDGET_SET_FLAGS (find_close, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, find_close, _("Close this window"), NULL);
 
   g_signal_connect_after ((gpointer) find_dialog, "realize",
                           G_CALLBACK (after_find_dialog_realize),
@@ -2159,11 +2139,11 @@ create_find_dialog (void)
 
 static GnomeUIInfo xfile_menu_uiinfo[] =
 {
-  GNOMEUIINFO_MENU_NEW_ITEM (N_("_New"), NULL, on_new_activate, NULL),
+  GNOMEUIINFO_MENU_NEW_ITEM (N_("_New"), N_("Start a new extension"), on_new_activate, NULL),
   GNOMEUIINFO_MENU_OPEN_ITEM (on_open_activate, NULL),
   {
     GNOME_APP_UI_ITEM, N_("Open Recent"),
-    NULL,
+    N_("Open a recently used file"),
     (gpointer) NULL, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     0, (GdkModifierType) 0, NULL
@@ -2177,9 +2157,9 @@ static GnomeUIInfo xfile_menu_uiinfo[] =
     0, (GdkModifierType) 0, NULL
   },
   {
-    GNOME_APP_UI_ITEM, N_("Open _Extension..."),
+    GNOME_APP_UI_ITEM, N_("Open _Extension"),
     N_("Open an existing extension"),
-    (gpointer) on_open_extension_activate, NULL, NULL,
+    (gpointer) NULL, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     0, (GdkModifierType) 0, NULL
   },
@@ -2197,14 +2177,14 @@ static GnomeUIInfo xspelling_menu_uiinfo[] =
 {
   {
     GNOME_APP_UI_TOGGLEITEM, N_("_Autocheck Spelling"),
-    NULL,
+    N_("Automatically underline misspelled words in the story"),
     (gpointer) on_xautocheck_spelling_activate, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     0, (GdkModifierType) 0, NULL
   },
   {
     GNOME_APP_UI_ITEM, N_("_Recheck Document"),
-    NULL,
+    N_("Spellcheck the entire story now"),
     (gpointer) on_xcheck_spelling_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-spell-check",
     GDK_F7, (GdkModifierType) 0, NULL
@@ -2239,7 +2219,7 @@ static GnomeUIInfo xwindows_menu_uiinfo[] =
 {
   {
     GNOME_APP_UI_ITEM, N_("Show _Inspectors"),
-    NULL,
+    N_("Show the inspectors toolbar"),
     (gpointer) on_show_inspectors_activate, NULL, NULL,
     GNOME_APP_PIXMAP_STOCK, "gtk-zoom-in",
     GDK_I, (GdkModifierType) GDK_CONTROL_MASK | GDK_MOD1_MASK, NULL
@@ -2266,7 +2246,7 @@ create_ext_window (void)
   GtkWidget *ext_code;
   GtkWidget *extension_appbar;
 
-  ext_window = gnome_app_new ("GNOME Inform 7", _("Extension"));
+  ext_window = gnome_app_new ("GNOME Inform 7", _("Inform"));
   gtk_window_set_default_size (GTK_WINDOW (ext_window), 500, 650);
   ext_window_icon_pixbuf = create_pixbuf ("gnome-inform7/Inform.png");
   if (ext_window_icon_pixbuf)
@@ -2751,7 +2731,7 @@ create_prefs_dialog (void)
   GtkWidget *prefs_dialog;
   GdkPixbuf *prefs_dialog_icon_pixbuf;
   GtkWidget *dialog_vbox4;
-  GtkWidget *notebook1;
+  GtkWidget *prefs_notebook;
   GtkWidget *vbox19;
   GtkWidget *frame3;
   GtkWidget *alignment8;
@@ -2876,13 +2856,13 @@ create_prefs_dialog (void)
   dialog_vbox4 = GTK_DIALOG (prefs_dialog)->vbox;
   gtk_widget_show (dialog_vbox4);
 
-  notebook1 = gtk_notebook_new ();
-  gtk_widget_show (notebook1);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox4), notebook1, TRUE, TRUE, 0);
+  prefs_notebook = gtk_notebook_new ();
+  gtk_widget_show (prefs_notebook);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox4), prefs_notebook, TRUE, TRUE, 0);
 
   vbox19 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox19);
-  gtk_container_add (GTK_CONTAINER (notebook1), vbox19);
+  gtk_container_add (GTK_CONTAINER (prefs_notebook), vbox19);
   gtk_container_set_border_width (GTK_CONTAINER (vbox19), 3);
 
   frame3 = gtk_frame_new (NULL);
@@ -2954,6 +2934,7 @@ create_prefs_dialog (void)
   gtk_table_attach (GTK_TABLE (table2), prefs_custom_font, 1, 2, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
+  gtk_tooltips_set_tip (tooltips, prefs_custom_font, _("This selects the custom font that will be used for displaying the Inform source code when \"Font set\" is set to \"Custom.\""), NULL);
   gtk_font_button_set_show_style (GTK_FONT_BUTTON (prefs_custom_font), FALSE);
   gtk_font_button_set_show_size (GTK_FONT_BUTTON (prefs_custom_font), FALSE);
   gtk_font_button_set_use_font (GTK_FONT_BUTTON (prefs_custom_font), TRUE);
@@ -3057,6 +3038,7 @@ create_prefs_dialog (void)
   gtk_widget_set_size_request (tab_example, -1, 25);
   GTK_WIDGET_UNSET_FLAGS (tab_example, GTK_CAN_FOCUS);
   GTK_WIDGET_UNSET_FLAGS (tab_example, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, tab_example, _("This shows a preview of the tab width setting you have chosen above"), NULL);
 
   label79 = gtk_label_new (_("<b>Tab width</b>"));
   gtk_widget_show (label79);
@@ -3077,11 +3059,12 @@ create_prefs_dialog (void)
 
   label65 = gtk_label_new (_("Styles"));
   gtk_widget_show (label65);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 0), label65);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (prefs_notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (prefs_notebook), 0), label65);
+  gtk_misc_set_alignment (GTK_MISC (label65), 0.5, 0.48);
 
   frame5 = gtk_frame_new (NULL);
   gtk_widget_show (frame5);
-  gtk_container_add (GTK_CONTAINER (notebook1), frame5);
+  gtk_container_add (GTK_CONTAINER (prefs_notebook), frame5);
   gtk_container_set_border_width (GTK_CONTAINER (frame5), 3);
 
   alignment10 = gtk_alignment_new (0.5, 0.5, 1, 1);
@@ -3115,6 +3098,7 @@ create_prefs_dialog (void)
   prefs_headings_toggle = gtk_check_button_new_with_mnemonic (_("Headings"));
   gtk_widget_show (prefs_headings_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_headings_toggle, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, prefs_headings_toggle, _("The headings inspector shows a table of contents of the current story, and allows you to jump quickly to each section"), NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_headings_toggle), TRUE);
 
   prefs_skein_toggle = gtk_check_button_new_with_mnemonic (_("Skein"));
@@ -3127,6 +3111,7 @@ create_prefs_dialog (void)
   prefs_search_toggle = gtk_check_button_new_with_mnemonic (_("Search"));
   gtk_widget_show (prefs_search_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_search_toggle, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, prefs_search_toggle, _("The search inspector provides a small search dialog."), NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_search_toggle), TRUE);
 
   label77 = gtk_label_new (_("<b>General</b>"));
@@ -3175,11 +3160,11 @@ create_prefs_dialog (void)
 
   label66 = gtk_label_new (_("Inspectors"));
   gtk_widget_show (label66);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 1), label66);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (prefs_notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (prefs_notebook), 1), label66);
 
   vbox23 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox23);
-  gtk_container_add (GTK_CONTAINER (notebook1), vbox23);
+  gtk_container_add (GTK_CONTAINER (prefs_notebook), vbox23);
   gtk_container_set_border_width (GTK_CONTAINER (vbox23), 3);
 
   frame6 = gtk_frame_new (NULL);
@@ -3285,11 +3270,11 @@ create_prefs_dialog (void)
 
   label67 = gtk_label_new (_("Extensions"));
   gtk_widget_show (label67);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 2), label67);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (prefs_notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (prefs_notebook), 2), label67);
 
   vbox26 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox26);
-  gtk_container_add (GTK_CONTAINER (notebook1), vbox26);
+  gtk_container_add (GTK_CONTAINER (prefs_notebook), vbox26);
 
   prefs_enable_highlighting_toggle = gtk_check_button_new_with_mnemonic (_("Enable syntax highlighting"));
   gtk_widget_show (prefs_enable_highlighting_toggle);
@@ -3321,10 +3306,10 @@ create_prefs_dialog (void)
   gtk_widget_show (vbox27);
   gtk_container_add (GTK_CONTAINER (alignment14), vbox27);
 
-  prefs_intelligent_inspector_toggle = gtk_check_button_new_with_mnemonic (_("Use intelligent index inspector"));
+  prefs_intelligent_inspector_toggle = gtk_check_button_new_with_mnemonic (_("Use intelligent headings inspector"));
   gtk_widget_show (prefs_intelligent_inspector_toggle);
   gtk_box_pack_start (GTK_BOX (vbox27), prefs_intelligent_inspector_toggle, FALSE, FALSE, 0);
-  gtk_tooltips_set_tip (tooltips, prefs_intelligent_inspector_toggle, _("If this option is checked, the index inspector will show a real-time display of the sections in your source file. If it is unchecked, it will display the last index calculated by the Natural Inform compiler, i.e. the state of the index at the last time you compiled or ran the story."), NULL);
+  gtk_tooltips_set_tip (tooltips, prefs_intelligent_inspector_toggle, _("If this option is checked, the headings inspector will show a real-time display of the sections in your source file. If it is unchecked, it will display the last index calculated by the Natural Inform compiler, i.e. the state of the index at the last time you compiled or ran the story."), NULL);
 
   prefs_auto_number_toggle = gtk_check_button_new_with_mnemonic (_("Auto-number sections"));
   gtk_widget_show (prefs_auto_number_toggle);
@@ -3348,11 +3333,11 @@ create_prefs_dialog (void)
 
   label68 = gtk_label_new (_("Intelligence"));
   gtk_widget_show (label68);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 3), label68);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (prefs_notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (prefs_notebook), 3), label68);
 
   vbox28 = gtk_vbox_new (FALSE, 0);
   gtk_widget_show (vbox28);
-  gtk_container_add (GTK_CONTAINER (notebook1), vbox28);
+  gtk_container_add (GTK_CONTAINER (prefs_notebook), vbox28);
 
   frame8 = gtk_frame_new (NULL);
   gtk_widget_show (frame8);
@@ -3423,7 +3408,7 @@ create_prefs_dialog (void)
 
   label69 = gtk_label_new (_("Advanced"));
   gtk_widget_show (label69);
-  gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook1), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook1), 4), label69);
+  gtk_notebook_set_tab_label (GTK_NOTEBOOK (prefs_notebook), gtk_notebook_get_nth_page (GTK_NOTEBOOK (prefs_notebook), 4), label69);
 
   dialog_action_area4 = GTK_DIALOG (prefs_dialog)->action_area;
   gtk_widget_show (dialog_action_area4);
@@ -3540,7 +3525,7 @@ create_prefs_dialog (void)
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (prefs_dialog, prefs_dialog, "prefs_dialog");
   GLADE_HOOKUP_OBJECT_NO_REF (prefs_dialog, dialog_vbox4, "dialog_vbox4");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, notebook1, "notebook1");
+  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_notebook, "prefs_notebook");
   GLADE_HOOKUP_OBJECT (prefs_dialog, vbox19, "vbox19");
   GLADE_HOOKUP_OBJECT (prefs_dialog, frame3, "frame3");
   GLADE_HOOKUP_OBJECT (prefs_dialog, alignment8, "alignment8");
@@ -3685,6 +3670,9 @@ create_inspector_window (void)
   GtkWidget *search_inspector_search_documentation;
   GtkWidget *label86;
   GtkWidget *no_inspector;
+  GtkTooltips *tooltips;
+
+  tooltips = gtk_tooltips_new ();
 
   inspector_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_size_request (inspector_window, 250, -1);
@@ -3719,6 +3707,7 @@ create_inspector_window (void)
   gtk_widget_show (notes);
   gtk_container_add (GTK_CONTAINER (scrolledwindow42), notes);
   gtk_widget_set_size_request (notes, -1, 200);
+  gtk_tooltips_set_tip (tooltips, notes, _("You can enter notes about the current project here."), NULL);
   gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (notes), GTK_WRAP_WORD);
 
   label83 = gtk_label_new (_("Notes"));
@@ -3740,6 +3729,7 @@ create_inspector_window (void)
   gtk_widget_show (headings);
   gtk_container_add (GTK_CONTAINER (scrolledwindow43), headings);
   gtk_widget_set_size_request (headings, -1, 200);
+  gtk_tooltips_set_tip (tooltips, headings, _("This shows a table of contents for the current project."), NULL);
   gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (headings), FALSE);
   gtk_tree_view_set_enable_search (GTK_TREE_VIEW (headings), FALSE);
   gtk_tree_view_set_fixed_height_mode (GTK_TREE_VIEW (headings), TRUE);
@@ -3788,12 +3778,14 @@ create_inspector_window (void)
   search_inspector_text = gtk_entry_new ();
   gtk_widget_show (search_inspector_text);
   gtk_box_pack_start (GTK_BOX (hbox27), search_inspector_text, TRUE, TRUE, 0);
+  gtk_tooltips_set_tip (tooltips, search_inspector_text, _("Enter the phrase you want to search for here."), NULL);
   gtk_entry_set_invisible_char (GTK_ENTRY (search_inspector_text), 8226);
   gtk_entry_set_activates_default (GTK_ENTRY (search_inspector_text), TRUE);
 
   search_inspector_case_sensitive = gtk_check_button_new_with_mnemonic (_("Case sensitive"));
   gtk_widget_show (search_inspector_case_sensitive);
   gtk_box_pack_start (GTK_BOX (vbox35), search_inspector_case_sensitive, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, search_inspector_case_sensitive, _("If checked, the search string will be matched with exact case."), NULL);
 
   hbox28 = gtk_hbox_new (FALSE, 0);
   gtk_widget_show (hbox28);
@@ -3811,6 +3803,7 @@ create_inspector_window (void)
   gtk_box_pack_start (GTK_BOX (hbox28), search_inspector_search, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (search_inspector_search, FALSE);
   GTK_WIDGET_SET_FLAGS (search_inspector_search, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip (tooltips, search_inspector_search, _("Click this to begin the search."), NULL);
 
   hseparator4 = gtk_hseparator_new ();
   gtk_widget_show (hseparator4);
@@ -3819,15 +3812,18 @@ create_inspector_window (void)
   search_inspector_search_project = gtk_check_button_new_with_mnemonic (_("Project files"));
   gtk_widget_show (search_inspector_search_project);
   gtk_box_pack_start (GTK_BOX (vbox35), search_inspector_search_project, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, search_inspector_search_project, _("If this is checked, the files in the current project will be searched."), NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (search_inspector_search_project), TRUE);
 
   search_inspector_search_extensions = gtk_check_button_new_with_mnemonic (_("Extensions"));
   gtk_widget_show (search_inspector_search_extensions);
   gtk_box_pack_start (GTK_BOX (vbox35), search_inspector_search_extensions, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, search_inspector_search_extensions, _("If this is checked, the extensions will be searched."), NULL);
 
   search_inspector_search_documentation = gtk_check_button_new_with_mnemonic (_("Documentation"));
   gtk_widget_show (search_inspector_search_documentation);
   gtk_box_pack_start (GTK_BOX (vbox35), search_inspector_search_documentation, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip (tooltips, search_inspector_search_documentation, _("If this is checked, the documentation will be searched."), NULL);
 
   label86 = gtk_label_new (_("Search Files"));
   gtk_widget_show (label86);
@@ -3884,6 +3880,7 @@ create_inspector_window (void)
   GLADE_HOOKUP_OBJECT (inspector_window, search_inspector_search_documentation, "search_inspector_search_documentation");
   GLADE_HOOKUP_OBJECT (inspector_window, label86, "label86");
   GLADE_HOOKUP_OBJECT (inspector_window, no_inspector, "no_inspector");
+  GLADE_HOOKUP_OBJECT_NO_REF (inspector_window, tooltips, "tooltips");
 
   gtk_widget_grab_default (search_inspector_search);
   return inspector_window;
@@ -3900,6 +3897,9 @@ create_search_window (void)
   GtkWidget *search_text_label;
   GtkWidget *scrolledwindow45;
   GtkWidget *search_results_view;
+  GtkTooltips *tooltips;
+
+  tooltips = gtk_tooltips_new ();
 
   search_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title (GTK_WINDOW (search_window), _("Search results"));
@@ -3943,6 +3943,7 @@ create_search_window (void)
   gtk_widget_show (search_results_view);
   gtk_container_add (GTK_CONTAINER (scrolledwindow45), search_results_view);
   gtk_widget_set_size_request (search_results_view, -1, 250);
+  gtk_tooltips_set_tip (tooltips, search_results_view, _("This shows the list of results from the search displayed above."), NULL);
   gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (search_results_view), TRUE);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -3953,6 +3954,7 @@ create_search_window (void)
   GLADE_HOOKUP_OBJECT (search_window, search_text_label, "search_text_label");
   GLADE_HOOKUP_OBJECT (search_window, scrolledwindow45, "scrolledwindow45");
   GLADE_HOOKUP_OBJECT (search_window, search_results_view, "search_results_view");
+  GLADE_HOOKUP_OBJECT_NO_REF (search_window, tooltips, "tooltips");
 
   return search_window;
 }

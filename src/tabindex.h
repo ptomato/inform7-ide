@@ -24,6 +24,6 @@
 
 void blank_index_tabs(GtkWidget *thiswidget);
 gboolean check_and_load_idle(gpointer thestory);
-void reload_index_tabs(struct story *thestory);
+void reload_index_tabs(struct story *thestory, gboolean wait);
 
 #endif

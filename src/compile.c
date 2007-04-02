@@ -70,19 +70,28 @@ void run_census(gboolean wait) {
     g_free(working_dir);
 }
 
-/* Start the compiling process in the background and set up the callback that
-is called when the Natural Inform stage is finished. */
+/* Start the compiling process */
 void compile_project(struct story *thestory) {
+    prepare_ni_compiler(thestory);
+    start_ni_compiler(thestory);
+}
+
+/* Set everything up for using the NI compiler */
+void prepare_ni_compiler(struct story *thestory) {
     GError *err = NULL;
+    
+    /* Output buffer for messages */
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
     
-    /* Show the errors tab */
+    /* Show the Errors/Progress tab */
+    gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(thestory->window,
+      "errors_notebook_r")), TAB_ERRORS_PROGRESS);
+    gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(thestory->window,
+      "errors_notebook_l")), TAB_ERRORS_PROGRESS);
     int right = choose_notebook(thestory->window, TAB_ERRORS);
     gtk_notebook_set_current_page(get_notebook(thestory->window, right),
       TAB_ERRORS);
-    gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(thestory->window,
-      right? "errors_notebook_r" : "errors_notebook_l")), TAB_ERRORS_PROGRESS);
     
     /* Clear the previous compile output */
     gtk_text_buffer_set_text(buffer, "", -1);
@@ -116,12 +125,23 @@ void compile_project(struct story *thestory) {
         free(uuid_string);
     }
     g_free(uuid_file);
- 
+    
+    /* Display status message */
+    display_status_message(thestory->window, "Running Natural Inform...");
+}
+
+
+/* Start the NI compiler and set up the callback for when it is finished */
+void start_ni_compiler(struct story *thestory) {
+    /* Output buffer for messages */
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(
+      GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
+    
     /* Build the command line */
     gchar *working_dir = g_build_filename(g_get_home_dir(), ".wine", "drive_c",
       NULL);
     gchar **commandline; 
-    if(((struct story *)thestory)->release) {
+    if(thestory->action == COMPILE_RELEASE) {
         commandline = g_new(gchar *, 9);
         commandline[7] = g_strdup("-release");
         commandline[8] = NULL;
@@ -138,35 +158,28 @@ void compile_project(struct story *thestory) {
     commandline[6] = g_strconcat("-extension=", get_story_extension(thestory),
       NULL);
 
-    display_status_message(thestory->window, "Running Natural Inform...");
     GPid pid = run_command(working_dir, commandline, buffer);
     /* set up a watch for the exit status */
-    g_child_watch_add(pid, compile_stage2, (gpointer)thestory);
+    g_child_watch_add(pid, finish_ni_compiler, (gpointer)thestory);
     
     g_strfreev(commandline);
     g_free(working_dir);
 }
 
-/* Display any errors, continue the compiling process by running Inform 6, and
-set up the callback for when that exits */
-void compile_stage2(GPid pid, gint status, gpointer thestory) {
+/* Display any errors from the NI compiler and continue on */
+void finish_ni_compiler(GPid pid, gint status, gpointer data) {
+    struct story *thestory = (struct story *)data;
+
     /* Get the ni.exe exit code */
     int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
-    
-    /* Get the text buffer to put our output in; it's the same buffer for both
-    left and right */
-    GtkTextBuffer *buffer = gtk_text_view_get_buffer(
-      GTK_TEXT_VIEW(lookup_widget(((struct story *)thestory)->window,
-      "compiler_output_l")));
       
-    /* Make the necessary changes to all the tabs */
+    /* Display the appropriate HTML error or success page */
     gchar *loadfile;
     gchar *trash = NULL;
     switch(exit_code) {
         case 0:
         case 1:
-            loadfile = g_build_filename(((struct story *)thestory)->filename,
-              PROBLEMS_FILE, NULL);
+            loadfile = g_build_filename(thestory->filename, PROBLEMS_FILE,NULL);
             break;
         case 2:
             trash = g_build_filename("doc", "sections", "Error2.html", NULL);
@@ -186,92 +199,112 @@ void compile_stage2(GPid pid, gint status, gpointer thestory) {
             break;
     }
     g_free(trash);
-    
-    html_load_file(GTK_HTML(lookup_widget(
-      ((struct story *)thestory)->window, "problems_l")),
+    html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_l")),
       loadfile);
-    html_load_file(GTK_HTML(lookup_widget(
-      ((struct story *)thestory)->window, "problems_r")),
+    html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_r")),
       loadfile);
     g_free(loadfile);
       
-    /* Show the debug log and Inform 6 code */
+    /* Refresh the debug log */
     gchar *text;
-    gchar *filename = g_build_filename(((struct story *)thestory)->filename,
-      "Build", "Debug log.txt", NULL);
+    gchar *filename = g_build_filename(thestory->filename, "Build",
+      "Debug log.txt", NULL);
     /* Ignore errors, just don't show it if it's not there */
     if(g_file_get_contents(filename, &text, NULL, NULL))
         gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
-          lookup_widget(((struct story *)thestory)->window,
-          "debugging_l"))), text, -1);
+          lookup_widget(thestory->window, "debugging_l"))), text, -1);
     g_free(text);
     g_free(filename);
     
-    filename = g_build_filename(((struct story *)thestory)->filename,
-      "Build", "auto.inf", NULL);
+    /* Refresh the I6 code */
+    filename = g_build_filename(thestory->filename, "Build", "auto.inf", NULL);
     if(g_file_get_contents(filename, &text, NULL, NULL))
         gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
-          lookup_widget(((struct story *)thestory)->window,
-          "inform6_l"))), text, -1);
+          lookup_widget(thestory->window, "inform6_l"))), text, -1);
     g_free(text);
     g_free(filename);
       
-    /* Show the problems tab */
-    int right = choose_notebook(((struct story *)thestory)->window, TAB_ERRORS);
-    gtk_notebook_set_current_page(get_notebook(
-      ((struct story *)thestory)->window, right), TAB_ERRORS);
-    gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(
-      ((struct story *)thestory)->window,
-      right? "errors_notebook_r" : "errors_notebook_l")), TAB_ERRORS_PROBLEMS);
+    /* Stop here and show the Errors/Problems tab if there was an error */
+    if(exit_code != 0) {
+        gtk_notebook_set_current_page(
+          GTK_NOTEBOOK(lookup_widget(thestory->window, "errors_notebook_l")),
+          TAB_ERRORS_PROBLEMS);
+        gtk_notebook_set_current_page(
+          GTK_NOTEBOOK(lookup_widget(thestory->window, "errors_notebook_r")),
+          TAB_ERRORS_PROBLEMS);
+        int right = choose_notebook(thestory->window, TAB_ERRORS);
+        gtk_notebook_set_current_page(get_notebook(thestory->window, right),
+          TAB_ERRORS);
+        display_status_message(thestory->window, "Compiling failed.");
+        return;
+    }
+
+    /* Decide what to do next */
+    switch(thestory->action) {
+    case COMPILE_REFRESH_INDEX:
+        finish_refresh_index(thestory);
+        break;
+    case COMPILE_SAVE_DEBUG_BUILD:
+    case COMPILE_RUN:
+    case COMPILE_RELEASE:
+        prepare_i6_compiler(thestory);
+        start_i6_compiler(thestory);
+        break;
+    default:
+        ;
+    }
+}
     
-    if(exit_code == 0) {
-        /* Refresh the index and documentation tabs */
-        reload_index_tabs((struct story *)thestory);
-        html_refresh(GTK_HTML(lookup_widget(((struct story *)thestory)->window,
-          "docs_l")));
-        html_refresh(GTK_HTML(lookup_widget(((struct story *)thestory)->window,
-          "docs_r")));
-    
-        /* Now, start Inform6 */
-        /* Build the command line */
-        gchar *working_dir = g_build_filename(
-          ((struct story *)thestory)->filename, "Build", NULL);
-        gchar **commandline = g_new(gchar *, 6);
-        gchar *libdir = get_datafile_path("lib/Natural");
-        commandline[0] = g_strdup("inform-" INFORM_VERSION "-inform7");
-        commandline[1] = g_strconcat("-w",
-          ((struct story *)thestory)->release? "~S~D" : "SD",
-          (((struct story *)thestory)->story_format == FORMAT_GLULX)? "G" :
-          ((((struct story *)thestory)->story_format == FORMAT_Z8)? "v8" : "v5"),
-          NULL);
-        commandline[2] = g_strconcat("+include_path=../Source,", libdir, ",./",
-          NULL);
-        commandline[3] = g_strdup("auto.inf");
-        commandline[4] = g_strconcat("output.",
-          get_story_extension((struct story *)thestory), NULL);
-        commandline[5] = NULL;
-        
-        display_status_message(((struct story *)thestory)->window,
-          "Running Inform 6...");
-        GPid child_pid = run_command(working_dir, commandline, buffer);
-        /* set up a watch for the exit status */
-        g_child_watch_add(child_pid, compile_stage3, thestory);
-        
-        g_strfreev(commandline);
-        g_free(working_dir);
-        g_free(libdir);
-    } else
-        display_status_message(((struct story *)thestory)->window,
-          "Compiling failed.");
+
+/* Get ready to run the I6 compiler; right now this does almost nothing */
+void prepare_i6_compiler(struct story *thestory) {
+    display_status_message(thestory->window, "Running Inform 6...");
 }
 
-/* Display any errors from Inform 6, start cBlorb if we are building for
-release, or run the story file if we are running. */
-void compile_stage3(GPid pid, gint status, gpointer thestory) {
-    int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
+
+/* Run the I6 compiler */
+void start_i6_compiler(struct story *thestory) {
+    /* Get the text buffer to put our output in */
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(
-      GTK_TEXT_VIEW(lookup_widget(((struct story *)thestory)->window,
-      "compiler_output_l")));
+      GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
+    
+    /* Build the command line */
+    gchar *working_dir = g_build_filename(thestory->filename, "Build",NULL);
+    gchar **commandline = g_new(gchar *, 6);
+    gchar *libdir = get_datafile_path("lib/Natural");
+    commandline[0] = g_strdup("inform-" INFORM_VERSION "-inform7");
+    commandline[1] = g_strconcat("-w",
+      (thestory->action == COMPILE_RELEASE)? "~S~D" : "SD",
+      (thestory->story_format == FORMAT_GLULX)? "G" :
+      ((thestory->story_format == FORMAT_Z8)? "v8" : "v5"),
+      NULL);
+    commandline[2] = g_strconcat("+include_path=../Source,", libdir, ",./",
+      NULL);
+    commandline[3] = g_strdup("auto.inf");
+    commandline[4] = g_strconcat("output.",
+      get_story_extension(thestory), NULL);
+    commandline[5] = NULL;
+
+    GPid child_pid = run_command(working_dir, commandline, buffer);
+    /* set up a watch for the exit status */
+    g_child_watch_add(child_pid, finish_i6_compiler, (gpointer)thestory);
+    
+    g_strfreev(commandline);
+    g_free(working_dir);
+    g_free(libdir);
+        
+}
+
+/* Display any errors from Inform 6 and decide what to do next */
+void finish_i6_compiler(GPid pid, gint status, gpointer data) {
+    struct story *thestory = (struct story *)data;
+
+    /* Get exit code from I6 process */
+    int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
+    
+    /* Display the exit status of the I6 compiler in the Progress tab */
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(
+      GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
       
     gchar *statusmsg = g_strdup_printf("\nCompiler finished with code %d\n",
       exit_code);
@@ -284,6 +317,7 @@ void compile_stage3(GPid pid, gint status, gpointer thestory) {
     int line;
     gchar *loadfile = NULL;
 
+    /* Display the appropriate HTML error pages */
     for(line = gtk_text_buffer_get_line_count(buffer) - 1; line >= 0; line--) {
         gchar *msg, *pos;
         gtk_text_buffer_get_iter_at_line(buffer, &start, line);
@@ -325,133 +359,349 @@ void compile_stage3(GPid pid, gint status, gpointer thestory) {
         }
         g_free(msg);
     }
-    
     if(loadfile) {
-        html_load_file(GTK_HTML(lookup_widget(
-          ((struct story *)thestory)->window, "problems_l")),
+        html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_l")),
           loadfile);
-        html_load_file(GTK_HTML(lookup_widget(
-          ((struct story *)thestory)->window, "problems_r")),
+        html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_r")),
           loadfile);
         g_free(loadfile);
-          
-        /* Show the problems tab */
-        int right = choose_notebook(((struct story *)thestory)->window,
-          TAB_ERRORS);
-        gtk_notebook_set_current_page(get_notebook(
-          ((struct story *)thestory)->window, right), TAB_ERRORS);
-        gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(
-          ((struct story *)thestory)->window,
-          right? "errors_notebook_r" : "errors_notebook_l")),
-          TAB_ERRORS_PROBLEMS);
     }
     
+    /* Stop here and show the Errors/Problems tab if there was an error */
     if(exit_code != 0) {
-        display_status_message(((struct story *)thestory)->window,
-          "Compiling failed.");
+        gtk_notebook_set_current_page(
+          GTK_NOTEBOOK(lookup_widget(thestory->window, "errors_notebook_l")),
+          TAB_ERRORS_PROBLEMS);
+        gtk_notebook_set_current_page(
+          GTK_NOTEBOOK(lookup_widget(thestory->window, "errors_notebook_r")),
+          TAB_ERRORS_PROBLEMS);
+        int right = choose_notebook(thestory->window, TAB_ERRORS);
+        gtk_notebook_set_current_page(get_notebook(thestory->window, right),
+          TAB_ERRORS);
+        display_status_message(thestory->window, "Compiling failed.");
         return;
     }
     
-    if(((struct story *)thestory)->release) {
-        /* Skip this if we are not making a Blorb file */
-        if(!(((struct story *)thestory)->make_blorb)) {
-            finish_release((struct story *)thestory, exit_code == 0);
-            return;
-        }
-        
-        /* first we need to edit the blurb file, because there are backward
-        slashes in the directory names. This can be removed when we have a
-        native version of the compiler. */
-        gchar *blurbfile = g_build_filename(
-          ((struct story *)thestory)->filename, "Release.blurb", NULL);
-        GError *err = NULL;
-        gchar *blurbtext;
-        if(!g_file_get_contents(blurbfile, &blurbtext, NULL, &err)) {
-            error_dialog(GTK_WINDOW(((struct story *)thestory)->window), err,
-              "Cannot open Release.blurb file: ");
-            g_free(blurbfile);
-            return;
-        }
-        /* Replace all backslashes with forward slashes. This causes a bug: now
-        cblorb will not work with files with backslashes in their names. */
-        gchar *pos;
-        while((pos = strchr(blurbtext, '\\')))
-            *pos = '/';
-        /* Write the contents back to the file */
-        if(!g_file_set_contents(blurbfile, blurbtext, -1, &err)) {
-            error_dialog(GTK_WINDOW(((struct story *)thestory)->window), err,
-              "Cannot write to Release.blurb file: ");
-            g_free(blurbfile);
-            g_free(blurbtext);
-            return;
-        }
-        g_free(blurbfile);
-        g_free(blurbtext);
-        
-        /* Now run cblorb */
-        gchar *working_dir = g_strdup(((struct story *)thestory)->filename);
-        gchar **commandline = g_new(gchar *, 4);
-        commandline[0] = g_strdup("cblorb");
-        commandline[1] = g_strdup("Release.blurb");
-        commandline[2] = g_build_filename("Build", 
-          (((struct story *)thestory)->story_format == FORMAT_GLULX)?
-          "output.gblorb" : "output.zblorb", NULL);
-        commandline[3] = NULL;
-        
-        display_status_message(((struct story *)thestory)->window,
-          "Running cBlorb...");
-        GPid child_pid = run_command(working_dir, commandline, buffer);
-        /* set up a watch for the exit status */
-        g_child_watch_add(child_pid, compile_stage4, thestory);
-        
-        g_strfreev(commandline);
-        g_free(working_dir);
-    } else
-        display_status_message(((struct story *)thestory)->window,
-          "Compiling succeeded.");
-        
-    if(((struct story *)thestory)->run) {
-        /* Run the project if we need to */
-        run_project((struct story *)thestory);
-    } else {
-        /* Display the index */
-        gtk_notebook_set_current_page(
-          get_notebook(((struct story *)thestory)->window,
-          choose_notebook(((struct story *)thestory)->window, TAB_INDEX)),
-          TAB_INDEX);
+    /* Decide what to do next */
+    switch(thestory->action) {
+    case COMPILE_SAVE_DEBUG_BUILD:
+        finish_save_debug_build(thestory);
+        break;
+    case COMPILE_RUN:
+        finish_run(thestory);
+        break;
+    case COMPILE_RELEASE:
+        if(thestory->make_blorb) {
+            prepare_cblorb_compiler(thestory);
+            start_cblorb_compiler(thestory);
+        } else
+            finish_release(thestory);
+        break;
+    default:
+        ;
     }
 }
 
-/* Display any errors from cBlorb and then pass it along to finish_release */
-void compile_stage4(GPid pid, gint status, gpointer thestory) {
+
+/* Get ready to run the CBlorb compiler */
+void prepare_cblorb_compiler(struct story *thestory) {
+    /* first we need to edit the blurb file, because there are backward
+    slashes in the directory names. This can be removed when we have a
+    native version of the compiler. */
+    gchar *blurbfile = g_build_filename(thestory->filename, "Release.blurb",
+      NULL);
+    GError *err = NULL;
+    gchar *blurbtext;
+    if(!g_file_get_contents(blurbfile, &blurbtext, NULL, &err)) {
+        error_dialog(GTK_WINDOW(thestory->window), err,
+          "Cannot open Release.blurb file: ");
+        g_free(blurbfile);
+        return;
+    }
+    /* Replace all backslashes with forward slashes. This causes a bug: now
+    cblorb will not work with files with backslashes in their names. */
+    gchar *pos;
+    while((pos = strchr(blurbtext, '\\')))
+        *pos = '/';
+    /* Write the contents back to the file */
+    if(!g_file_set_contents(blurbfile, blurbtext, -1, &err)) {
+        error_dialog(GTK_WINDOW(thestory->window), err,
+          "Cannot write to Release.blurb file: ");
+        g_free(blurbfile);
+        g_free(blurbtext);
+        return;
+    }
+    g_free(blurbfile);
+    g_free(blurbtext);
+    
+    display_status_message(thestory->window, "Running cBlorb...");
+}
+
+
+/* Run the CBlorb compiler */
+void start_cblorb_compiler(struct story *thestory) {
+    /* Get buffer for messages */
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(
+      GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
+    
+    /* Build the command line */
+    gchar *working_dir = g_strdup(thestory->filename);
+    gchar **commandline = g_new(gchar *, 4);
+    commandline[0] = g_strdup("cblorb");
+    commandline[1] = g_strdup("Release.blurb");
+    commandline[2] = g_build_filename("Build", 
+      (thestory->story_format == FORMAT_GLULX)?
+      "output.gblorb" : "output.zblorb", NULL);
+    commandline[3] = NULL;
+
+    GPid child_pid = run_command(working_dir, commandline, buffer);
+    /* set up a watch for the exit status */
+    g_child_watch_add(child_pid, finish_cblorb_compiler, (gpointer)thestory);
+    
+    g_strfreev(commandline);
+    g_free(working_dir);
+    return;
+}
+    
+/* Display any errors from cBlorb */
+void finish_cblorb_compiler(GPid pid, gint status, gpointer data) {
+    struct story *thestory = (struct story *)data;
+    
+    /* Get exit code from CBlorb */
     int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
     
+    /* Display the appropriate HTML page */
     gchar *trash;
     trash = get_datafile_path(g_build_filename("doc", "sections",
       (exit_code == 0)? "GoodCblorb.html" : "ErrorCblorb.html", NULL));
-    html_load_file(GTK_HTML(lookup_widget(
-      ((struct story *)thestory)->window, "problems_l")), trash);
-    html_load_file(GTK_HTML(lookup_widget(
-      ((struct story *)thestory)->window, "problems_r")), trash);
-      
-    /* Show the problems tab */
-    int right = choose_notebook(((struct story *)thestory)->window,
-      TAB_ERRORS);
-    gtk_notebook_set_current_page(get_notebook(
-      ((struct story *)thestory)->window, right), TAB_ERRORS);
-    gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(
-      ((struct story *)thestory)->window,
-      right? "errors_notebook_r" : "errors_notebook_l")),
-      TAB_ERRORS_PROBLEMS);
+    html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_l")),
+      trash);
+    html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_r")),
+      trash);
 
-    display_status_message(((struct story *)thestory)->window,
-      (exit_code == 0)? "Compiling succeeded." : "Compiling failed.");
-      
-    /* Do the rest of the releasing, and pass along the error code. We don't
-    bother checking for the 'run' flag as it's not an option in the IDE to
-    build for release and run at the same time. */
-    finish_release((struct story *)thestory, exit_code == 0);
+    /* Stop here and show the Errors/Problems tab if there was an error */
+    if(exit_code != 0) {
+        int right = choose_notebook(thestory->window, TAB_ERRORS);
+        gtk_notebook_set_current_page(get_notebook(thestory->window, right),
+          TAB_ERRORS);
+        gtk_notebook_set_current_page(
+          GTK_NOTEBOOK(lookup_widget(thestory->window,
+          right? "errors_notebook_r" : "errors_notebook_l")),
+          TAB_ERRORS_PROBLEMS);
+        display_status_message(thestory->window, "Compiling failed.");
+        return;
+    }
+    
+    /* Decide what to do next */
+    switch(thestory->action) {
+    case COMPILE_RELEASE:
+        finish_release(thestory);
+        break;
+    default:
+        ;
+    }
 }
+
+static void finish_common(struct story *thestory) {
+    /* Display status message */
+    display_status_message(thestory->window, "Compiling succeeded.");
+    
+    /* Switch the Errors tab to the Problems page */
+    gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(thestory->window,
+      "errors_notebook_r")), TAB_ERRORS_PROBLEMS);
+    gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(thestory->window,
+      "errors_notebook_l")), TAB_ERRORS_PROBLEMS);
+}
+
+/* Finish up the user's Refresh Index command */
+void finish_refresh_index(struct story *thestory) {
+    finish_common(thestory);
+    
+    /* Refresh the index and documentation tabs */
+    reload_index_tabs(thestory, TRUE);
+    html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_l")));
+    html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_r")));
+    
+    /* Display the index */
+    gtk_notebook_set_current_page(get_notebook(thestory->window,
+      choose_notebook(thestory->window, TAB_INDEX)), TAB_INDEX);
+}
+
+
+/* Finish up the user's Save Debug Build command */
+void finish_save_debug_build(struct story *thestory) {
+    GError *err = NULL;
+    finish_common(thestory);
+    
+    /* Switch to the Errors tab */
+    int right = choose_notebook(thestory->window, TAB_ERRORS);
+    gtk_notebook_set_current_page(get_notebook(thestory->window, right),
+      TAB_ERRORS);
+    
+    /* Make a file filter */
+    GtkFileFilter *filter = gtk_file_filter_new();
+    gtk_file_filter_set_name(filter, "Game files (.z?,.ulx)");
+    gtk_file_filter_add_pattern(filter, "*.ulx");
+    gtk_file_filter_add_pattern(filter, "*.z?");
+    
+    /* Get the appropriate file name extension */        
+    gchar *ext = g_strdup(get_story_extension(thestory));
+    /* Append it to the file name */
+    gchar *name = g_path_get_basename(thestory->filename);
+    gchar *pos = strchr(name, '.');
+    *pos = '\0';
+    gchar *filename = g_strconcat(name, ".", ext, NULL);    
+    g_free(name);
+    
+    /* Create a file chooser */
+    GtkWidget *dialog = gtk_file_chooser_dialog_new("Save debug build",
+      GTK_WINDOW(thestory->window), GTK_FILE_CHOOSER_ACTION_SAVE,
+      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+      NULL);
+    gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog),
+      TRUE);
+    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), filename);
+    g_free(filename);
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+    
+    /* Copy the finished file to the release location */
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+        gchar *oldfile_base = g_strconcat("output.", ext, NULL);
+        gchar *oldfile = g_build_filename(thestory->filename, "Build",
+          oldfile_base, NULL);
+        g_free(oldfile_base);
+        gsize bytes_read;
+        gchar *text;
+        
+        if(!g_file_get_contents(oldfile, &text, &bytes_read, &err)) {
+            error_dialog(NULL, err, "Error reading file '%s': ", oldfile);
+            g_free(filename);
+            g_free(oldfile);
+            g_free(ext);
+            gtk_widget_destroy(dialog);
+            return;
+        }
+        if(!g_file_set_contents(filename, text, bytes_read, &err)) {
+            error_dialog(NULL, err, "Error reading file '%s': ", filename);
+            /* here we are at the end of the function, free data below */
+        }
+        g_free(filename);
+        g_free(oldfile);
+        g_free(text);
+    }
+    
+    g_free(ext);
+    gtk_widget_destroy(dialog);
+    
+    /* Refresh the index and documentation tabs */
+    reload_index_tabs(thestory, FALSE);
+    html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_l")));
+    html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_r")));
+}
+
+
+/* Finish up the user's Go or Replay command */
+void finish_run(struct story *thestory) {
+    finish_common(thestory);
+    
+    /* Run the project */
+    run_project(thestory);
+    
+    /* Refresh the index and documentation tabs */
+    reload_index_tabs(thestory, FALSE);
+    html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_l")));
+    html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_r")));
+}
+
+
+/* Finish up the user's Release command by choosing a location to store the
+project */
+void finish_release(struct story *thestory) {
+    GError *err = NULL;
+    finish_common(thestory);
+    
+    /* Switch to the Errors tab */
+    int right = choose_notebook(thestory->window, TAB_ERRORS);
+    gtk_notebook_set_current_page(get_notebook(thestory->window, right),
+      TAB_ERRORS);
+    
+    /* make up a release file name */
+    gchar *blorb_ext;
+    GtkFileFilter *filter = gtk_file_filter_new();
+    
+    if(thestory->story_format == FORMAT_GLULX) {
+        blorb_ext = g_strdup("gblorb");
+        gtk_file_filter_set_name(filter, "Glulx games (.ulx,.gblorb)");
+        gtk_file_filter_add_pattern(filter, "*.ulx");
+        gtk_file_filter_add_pattern(filter, "*.gblorb");
+    } else {
+        blorb_ext = g_strdup("zblorb");
+        gtk_file_filter_set_name(filter, "Z-code games (.z?,.zblorb)");
+        gtk_file_filter_add_pattern(filter, "*.z?");
+        gtk_file_filter_add_pattern(filter, "*.zblorb");
+    }
+    
+    /* Get the appropriate file name extension */        
+    gchar *ext = g_strdup(thestory->make_blorb?
+      blorb_ext : get_story_extension(thestory));
+    g_free(blorb_ext);
+    /* Append it to the file name */
+    gchar *name = g_path_get_basename(thestory->filename);
+    gchar *pos = strchr(name, '.');
+    *pos = '\0';
+    gchar *filename = g_strconcat(name, ".", ext, NULL);    
+    g_free(name);
+    
+    /* Create a file chooser */
+    GtkWidget *dialog = gtk_file_chooser_dialog_new("Save the game for release",
+      GTK_WINDOW(thestory->window), GTK_FILE_CHOOSER_ACTION_SAVE,
+      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+      NULL);
+    gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog),
+      TRUE);
+    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), filename);
+    g_free(filename);
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+    
+    /* Copy the finished file to the release location */
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+        gchar *oldfile_base = g_strconcat("output.", ext, NULL);
+        gchar *oldfile = g_build_filename(thestory->filename, "Build",
+          oldfile_base, NULL);
+        g_free(oldfile_base);
+        gsize bytes_read;
+        gchar *text;
+        
+        if(!g_file_get_contents(oldfile, &text, &bytes_read, &err)) {
+            error_dialog(NULL, err, "Error reading file '%s': ", oldfile);
+            g_free(filename);
+            g_free(oldfile);
+            g_free(ext);
+            gtk_widget_destroy(dialog);
+            return;
+        }
+        if(!g_file_set_contents(filename, text, bytes_read, &err)) {
+            error_dialog(NULL, err, "Error reading file '%s': ", filename);
+            /* here we are at the end of the function, free data below */
+        }
+        g_free(filename);
+        g_free(oldfile);
+        g_free(text);
+    }
+    
+    g_free(ext);
+    gtk_widget_destroy(dialog);
+    
+    /* Refresh the index and documentation tabs */
+    reload_index_tabs(thestory, FALSE);
+    html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_l")));
+    html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_r")));
+}
+
 
 /*
  * The following three functions are thanks to Tim-Philipp Mueller's example

@@ -24,6 +24,7 @@
 #include <gtksourceview/gtksourcebuffer.h>
 #include <ctype.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <string.h>
 
 #include "story.h"
 #include "support.h"
@@ -222,7 +223,7 @@ struct story *open_project(gchar *directory) {
     g_free(filename);
     
     /* Load index tabs if they exist and update settings */
-    reload_index_tabs(thestory);
+    reload_index_tabs(thestory, FALSE);
     update_settings(thestory);
 
     GtkTextIter start;
@@ -393,12 +394,13 @@ static gboolean is_valid_extension(const gchar *text, gchar **thename,
 gchar **theauthor) {
     g_return_val_if_fail(text != NULL, FALSE);
     
-    gchar *firstline = g_strdup(text);
-    gchar *pntr = strchr(firstline, '\n');
-    if(pntr) /*is NULL if \n does not occur*/
-        *pntr = '\0';
+    /* Separate the first line of the extension */
+    /* add '\r' to the string to recognize other systems' return characters; but
+    the ni compiler doesn't seem to do that, so neither do we! */
+    gchar *firstline = g_strndup(text, strcspn(text, "\n"));
     
     /* Make sure the file is not binary; there has GOT to be a better way! */
+    gchar *pntr;
     for(pntr = firstline; *pntr != '\0'; pntr++)
         if(!isprint(*pntr)) {
             g_free(firstline);
@@ -437,8 +439,9 @@ gchar **theauthor) {
     ptr++; /* Skip "by" */
     
     gchar *author = NULL;
-    while(ptr[0] != NULL && strcmp(ptr[0], "begins")) {
-        /* Author's name ends before "begins here", or at end of line */
+    while(ptr[0] != NULL &&
+      strcmp(ptr[0], "begins") && strcmp(ptr[0], "begin")) {
+        /* Author's name ends before "begin(s) here", or at end of line */
         if(author) {
             gchar *newauthor = g_strconcat(author, " ", ptr[0], NULL);
             g_free(author);
@@ -458,8 +461,10 @@ gchar **theauthor) {
         g_free(name);
         return FALSE;
     }
-    thename = &name;
-    theauthor = &author;
+    *thename = g_strdup(name);
+    *theauthor = g_strdup(author);
+    g_free(name);
+    g_free(author);
     return TRUE;
 }
 
@@ -626,83 +631,6 @@ void install_extension(const gchar *filename) {
 
     /* Index the new extensions, in the foreground */
     run_census(TRUE);
-}
-
-/* Finish off the release process by choosing a location to store the project */
-void finish_release(struct story *thestory, gboolean everything_ok) {
-    if(!everything_ok)
-        return;
-    
-    GError *err = NULL;
-    
-    /* make up a release file name */
-    gchar *blorb_ext;
-    GtkFileFilter *filter = gtk_file_filter_new();
-    
-    if(thestory->story_format == FORMAT_GLULX) {
-        blorb_ext = g_strdup("gblorb");
-        gtk_file_filter_set_name(filter, "Glulx games (.ulx,.gblorb)");
-        gtk_file_filter_add_pattern(filter, "*.ulx");
-        gtk_file_filter_add_pattern(filter, "*.gblorb");
-    } else {
-        blorb_ext = g_strdup("zblorb");
-        gtk_file_filter_set_name(filter, "Z-code games (.z?,.zblorb)");
-        gtk_file_filter_add_pattern(filter, "*.z?");
-        gtk_file_filter_add_pattern(filter, "*.zblorb");
-    }
-    
-    /* Get the appropriate file name extension */        
-    gchar *ext = g_strdup(thestory->make_blorb?
-      blorb_ext : get_story_extension(thestory));
-    g_free(blorb_ext);
-    /* Append it to the file name */
-    gchar *name = g_path_get_basename(thestory->filename);
-    gchar *pos = strchr(name, '.');
-    *pos = '\0';
-    gchar *filename = g_strconcat(name, ".", ext, NULL);    
-    g_free(name);
-    
-    /* Create a file chooser */
-    GtkWidget *dialog = gtk_file_chooser_dialog_new("Save the game for release",
-      GTK_WINDOW(thestory->window), GTK_FILE_CHOOSER_ACTION_SAVE,
-      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-      GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-      NULL);
-    gtk_file_chooser_set_do_overwrite_confirmation(GTK_FILE_CHOOSER(dialog),
-      TRUE);
-    gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog), filename);
-    g_free(filename);
-    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
-    
-    /* Copy the finished file to the release location */
-    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
-        filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-        gchar *oldfile_base = g_strconcat("output.", ext, NULL);
-        gchar *oldfile = g_build_filename(thestory->filename, "Build",
-          oldfile_base, NULL);
-        g_free(oldfile_base);
-        gsize bytes_read;
-        gchar *text;
-        
-        if(!g_file_get_contents(oldfile, &text, &bytes_read, &err)) {
-            error_dialog(NULL, err, "Error reading file '%s': ", oldfile);
-            g_free(filename);
-            g_free(oldfile);
-            g_free(ext);
-            gtk_widget_destroy(dialog);
-            return;
-        }
-        if(!g_file_set_contents(filename, text, bytes_read, &err)) {
-            error_dialog(NULL, err, "Error reading file '%s': ", filename);
-            /* here we are at the end of the function, free data below */
-        }
-        g_free(filename);
-        g_free(oldfile);
-        g_free(text);
-    }
-    
-    g_free(ext);
-    gtk_widget_destroy(dialog);
 }
 
 /* Helper function to delete a file relative to the project path; does nothing

@@ -97,7 +97,7 @@ game_create (gchar *widget_name, gchar *string1, gchar *string2,
     vte_terminal_set_audible_bell(term, FALSE);
     vte_terminal_set_allow_bold(term, TRUE);
     vte_terminal_set_scroll_on_keystroke(term, TRUE);
-    vte_terminal_set_font_from_string(term, "Bitstream Vera Sans Mono 10");
+    vte_terminal_set_font_from_string(term, "DejaVu Sans Mono 10");
     update_font_size(GTK_WIDGET(term));
     return GTK_WIDGET(term);
 }

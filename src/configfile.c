@@ -59,7 +59,7 @@ void check_config_file() {
     }
     if(!gconf_client_dir_exists(client, GCONF_BASE_PATH "/Fonts", &err)) {
         config_file_set_int("Fonts", "FontSet", FONT_SET_STANDARD);
-        config_file_set_string("Fonts", "CustomFont", "Bitstream Vera Sans 11");
+        config_file_set_string("Fonts", "CustomFont", "DejaVu Sans 11");
         config_file_set_int("Fonts", "FontStyling", FONT_STYLING_OFTEN);
         config_file_set_int("Fonts", "FontSize", FONT_SIZE_STANDARD);
     }

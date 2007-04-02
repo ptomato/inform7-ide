@@ -40,17 +40,14 @@ void
 after_ext_window_realize               (GtkWidget       *widget,
                                         gpointer         user_data)
 {
-    /* Create the Open Recent submenu */
-    GtkRecentManager *manager = gtk_recent_manager_get_default();
-    GtkWidget *recent_menu = gtk_recent_chooser_menu_new_for_manager(manager);
-    GtkRecentFilter *filter = gtk_recent_filter_new();
-    gtk_recent_filter_add_application(filter, "GNOME Inform 7");
-    gtk_recent_chooser_set_filter(GTK_RECENT_CHOOSER(recent_menu), filter);
-    g_signal_connect(recent_menu, "item-activated",
-      G_CALLBACK(on_open_recent_activate), NULL);
-    gtk_menu_item_set_submenu(
-      GTK_MENU_ITEM(lookup_widget(widget, "xopen_recent")),
-      recent_menu);
+    /* Create some submenus and attach them */
+    GtkWidget *menu;
+    if((menu = create_open_recent_submenu()))
+        gtk_menu_item_set_submenu(
+          GTK_MENU_ITEM(lookup_widget(widget, "xopen_recent")), menu);
+    if((menu = create_open_extension_submenu()))
+        gtk_menu_item_set_submenu(
+          GTK_MENU_ITEM(lookup_widget(widget, "xopen_extension")), menu);
     
     /* Attach the spelling checker to the source view and ensure the correct
     state of the menu */

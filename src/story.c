@@ -64,8 +64,7 @@ struct story *new_story() {
     newstory->interp_process = 0;
     newstory->handler_child_exit = 0;
     newstory->handler_commit = 0;
-    newstory->release = FALSE;
-    newstory->run = FALSE;
+    newstory->action = COMPILE_NONE;
     
     /* Create an empty skein */
     newstory->theskein = create_skein();

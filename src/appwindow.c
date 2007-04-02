@@ -114,6 +114,68 @@ void display_status_busy(GtkWidget *thiswidget) {
       thiswidget, "main_appbar"))));
 }
 
+/* Create the Open Recent submenu */
+GtkWidget *create_open_recent_submenu() {
+    GtkWidget *recent_menu = gtk_recent_chooser_menu_new();
+    gtk_recent_chooser_set_limit(GTK_RECENT_CHOOSER(recent_menu), -1);
+    GtkRecentFilter *filter = gtk_recent_filter_new();
+    gtk_recent_filter_add_application(filter, "GNOME Inform 7");
+    gtk_recent_chooser_set_filter(GTK_RECENT_CHOOSER(recent_menu), filter);
+    g_signal_connect(recent_menu, "item-activated",
+      G_CALLBACK(on_open_recent_activate), NULL);
+    return recent_menu;
+}
+
+/* Create the Open Extension submenu and return it*/
+GtkWidget *create_open_extension_submenu() {
+    GError *err = NULL;
+    gchar *extension_dir = get_extension_path(NULL, NULL);
+    GDir *extensions = g_dir_open(extension_dir, 0, &err);
+    g_free(extension_dir);
+    if(err) {
+        error_dialog(NULL, err, "Error opening extensions directory: ");
+        return NULL;
+    }
+    
+    GtkWidget *open_ext_menu = gtk_menu_new();
+    
+    const gchar *dir_entry;
+    while((dir_entry = g_dir_read_name(extensions)) != NULL
+      && strcmp(dir_entry, "Reserved")) {
+        /* Read each extension dir, but skip "Reserved" */
+        
+        GtkWidget *authoritem = gtk_menu_item_new_with_label(dir_entry);
+        GtkWidget *authormenu = gtk_menu_new();
+        gtk_menu_item_set_submenu(GTK_MENU_ITEM(authoritem), authormenu);
+        
+        gchar *author_dir = get_extension_path(dir_entry, NULL);
+        GDir *author = g_dir_open(author_dir, 0, &err);
+        g_free(author_dir);
+        if(err) {
+            error_dialog(NULL, err, "Error opening extensions directory: ");
+            return NULL;
+        }
+        const gchar *author_entry;
+        while((author_entry = g_dir_read_name(author)) != NULL) {
+            GtkWidget *extitem = gtk_menu_item_new_with_label(author_entry);
+            gchar *path = get_extension_path(dir_entry, author_entry);
+            g_signal_connect(extitem, "activate",
+                G_CALLBACK(on_open_extension_activate),
+                (gpointer)path);
+            /* Do not free path */
+            gtk_menu_shell_append(GTK_MENU_SHELL(authormenu), extitem);
+            gtk_widget_show(extitem);            
+        }
+        g_dir_close(author);
+        
+        gtk_menu_shell_append(GTK_MENU_SHELL(open_ext_menu), authoritem);
+        gtk_widget_show(authoritem);
+    }
+    g_dir_close(extensions);
+    
+    return open_ext_menu;
+}
+
 /* The following function is from Damian Iverleigh's patch to GtkContainer,
 http://mail.gnome.org/archives/gtk-devel-list/2001-October/msg00516.html */
 
@@ -145,17 +207,14 @@ void
 after_app_window_realize               (GtkWidget       *widget,
                                         gpointer         user_data)
 {
-    /* Create the Open Recent submenu */
-    GtkWidget *recent_menu = gtk_recent_chooser_menu_new();
-    gtk_recent_chooser_set_limit(GTK_RECENT_CHOOSER(recent_menu), -1);
-    GtkRecentFilter *filter = gtk_recent_filter_new();
-    gtk_recent_filter_add_application(filter, "GNOME Inform 7");
-    gtk_recent_chooser_set_filter(GTK_RECENT_CHOOSER(recent_menu), filter);
-    g_signal_connect(recent_menu, "item-activated",
-      G_CALLBACK(on_open_recent_activate), NULL);
-    gtk_menu_item_set_submenu(
-      GTK_MENU_ITEM(lookup_widget(widget, "open_recent")),
-      recent_menu);
+    /* Create some submenus and attach them */
+    GtkWidget *menu;
+    if((menu = create_open_recent_submenu()))
+        gtk_menu_item_set_submenu(
+          GTK_MENU_ITEM(lookup_widget(widget, "open_recent")), menu);
+    if((menu = create_open_extension_submenu()))
+        gtk_menu_item_set_submenu(
+          GTK_MENU_ITEM(lookup_widget(widget, "open_extension")), menu);
     
     /* Create a text buffer for the Progress, Debugging and I6 text views */
     GtkTextBuffer *buffer = gtk_text_buffer_new(NULL);
@@ -176,8 +235,9 @@ after_app_window_realize               (GtkWidget       *widget,
         
     /* Set the Errors/Progress to a monospace font */
     PangoFontDescription *font = pango_font_description_new();
-    pango_font_description_set_family(font, "Bitstream Vera Sans Mono,"
-      "Monospace,Courier New");
+    pango_font_description_set_family(font, "DejaVu Sans Mono,"
+      "DejaVu LGC Sans Mono,Bitstream Vera Sans Mono,Courier New,Luxi Mono,"
+      "Monospace");
     pango_font_description_set_size(font, 10 * PANGO_SCALE);
     gtk_widget_modify_font(lookup_widget(widget, "compiler_output_l"), font);
     gtk_widget_modify_font(lookup_widget(widget, "compiler_output_r"), font);
@@ -307,30 +367,17 @@ void
 on_install_extension_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    /* Create a file chooser that can select multiple files */
-    GtkWidget *dialog = gtk_file_chooser_dialog_new(
-      "Select the extensions to install",
-      GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
-      GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
-    gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
+    /* Open the Preferences window */
+    GtkWidget *dialog = create_prefs_dialog();
+    gtk_widget_show(dialog);
     
-    if (gtk_dialog_run(GTK_DIALOG (dialog)) != GTK_RESPONSE_ACCEPT) {
-        gtk_widget_destroy(dialog);
-        return;
-    }
-
-    /* Iterate through the list of files returned by the file chooser and
-    install them. */    
-    GSList *extlist = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
-    GSList *iter;
-    for(iter = extlist; iter != NULL; iter = g_slist_next(iter)) {
-        install_extension((gchar *)iter->data);
-        g_free(iter->data);
-    }
+    /* Select the Extensions tab */
+    gtk_notebook_set_current_page(
+      GTK_NOTEBOOK(lookup_widget(dialog, "prefs_notebook")), TAB_EXTENSIONS);
     
-    g_slist_free(extlist);
-    gtk_widget_destroy(dialog);
+    /* Pretend the user clicked the Add button */
+    on_prefs_i7_extension_add_clicked(
+      GTK_BUTTON(lookup_widget(dialog, "prefs_i7_extension_add")), NULL);
 }
 
 
@@ -339,26 +386,9 @@ on_open_extension_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     struct extension *ext;
-        
-    /* Create a file chooser that starts in the extensions directory */
-    GtkWidget *dialog = gtk_file_chooser_dialog_new("Open Extension",
-      GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
-      GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-      GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
-    gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog),
-      get_extension_path(NULL, NULL));
-    
-    if (gtk_dialog_run(GTK_DIALOG (dialog)) != GTK_RESPONSE_ACCEPT) {
-        gtk_widget_destroy(dialog);
-        return;
-    }
-    
-    gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-    ext = open_extension(filename);
-    g_free(filename);
+    ext = open_extension((gchar *)user_data);
     if(ext != NULL)
         gtk_widget_show(ext->window);
-    gtk_widget_destroy(dialog);
 }
 
 
@@ -726,9 +756,8 @@ on_refresh_index_activate              (GtkMenuItem     *menuitem,
     stop_project(thestory);
     /* Save the project */
     on_save_activate(menuitem, user_data);
-    /* Compile, not for release, show the index instead of running */
-    thestory->release = FALSE;
-    thestory->run = FALSE;
+    /* Compile, and show the index instead of running */
+    thestory->action = COMPILE_REFRESH_INDEX;
     compile_project(thestory);
 }
 
@@ -742,9 +771,8 @@ on_go_activate                         (GtkMenuItem     *menuitem,
     stop_project(thestory);
     /* Save the project */
     on_save_activate(menuitem, user_data);
-    /* Compile, not for release, do run afterwards */
-    thestory->release = FALSE;
-    thestory->run = TRUE;
+    /* Compile and run */
+    thestory->action = COMPILE_RUN;
     /* Reset the skein to the beginning */
     thestory->theskein = reset_skein(thestory->theskein,
       &(thestory->skein_ptr));
@@ -761,9 +789,8 @@ on_replay_activate                     (GtkMenuItem     *menuitem,
     stop_project(thestory);
     /* Save the project */
     on_save_activate(menuitem, user_data);
-    /* Compile, not for release, do run afterwards */
-    thestory->release = FALSE;
-    thestory->run = TRUE;
+    /* Compile and run */
+    thestory->action = COMPILE_RUN;
     compile_project(thestory);
 }
 
@@ -786,9 +813,23 @@ on_release_activate                    (GtkMenuItem     *menuitem,
     stop_project(thestory);
     /* Save the project */
     on_save_activate(menuitem, user_data);
-    /* Compile for release, then do not run */
-    thestory->release = TRUE;
-    thestory->run = FALSE;
+    /* Compile for release, and do not run */
+    thestory->action = COMPILE_RELEASE;
+    compile_project(thestory);
+}
+
+
+void
+on_save_debug_build_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    struct story *thestory = get_story(GTK_WIDGET(menuitem));
+    /* Stop the project if running */
+    stop_project(thestory);
+    /* Save the project */
+    on_save_activate(menuitem, user_data);
+    /* Compile, not for release, and save the output file */
+    thestory->action = COMPILE_SAVE_DEBUG_BUILD;
     compile_project(thestory);
 }
 
@@ -1184,19 +1225,6 @@ on_release_toolbutton_clicked          (GtkToolButton   *toolbutton,
       "release")), user_data);
 }
 
-void
-on_source_search_activate              (GtkEntry        *entry,
-                                        gpointer         user_data)
-{
-    struct story *thestory = get_story(GTK_WIDGET(entry));
-    find(GTK_TEXT_BUFFER(thestory->buffer), gtk_entry_get_text(entry), TRUE,
-      TRUE, FIND_CONTAINS, FALSE);
-    /* Do not free or modify the strings from gtk_entry_get_text */
-    scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(thestory->window, "source_l")));
-    scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(thestory->window, "source_r")));
-}
 
 void
 on_docs_search_activate                (GtkEntry        *entry,
@@ -1207,16 +1235,6 @@ on_docs_search_activate                (GtkEntry        *entry,
     GtkWidget *search_window = new_search_window(
       gtk_widget_get_toplevel(GTK_WIDGET(entry)), search_text, list);
     gtk_widget_show(search_window);
-}
-
-
-gboolean
-on_source_search_focus                 (GtkWidget       *widget,
-                                        GdkEventFocus   *event,
-                                        gpointer         user_data)
-{
-    gtk_editable_delete_text(GTK_EDITABLE(widget), 0, -1);
-    return TRUE;
 }
 
 

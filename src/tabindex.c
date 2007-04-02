@@ -151,6 +151,10 @@ gboolean check_and_load_idle(gpointer thestory) {
 }
 
 /* Load all the correct files in the index tabs, if they exist */
-void reload_index_tabs(struct story *thestory) {
-    g_idle_add((GSourceFunc)check_and_load_idle, (gpointer)thestory);
+void reload_index_tabs(struct story *thestory, gboolean wait) {
+    if(wait)
+        while(check_and_load_idle((gpointer)thestory))
+            ;
+    else
+        g_idle_add((GSourceFunc)check_and_load_idle, (gpointer)thestory);
 }

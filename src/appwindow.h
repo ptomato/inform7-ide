@@ -68,6 +68,8 @@ gchar *get_datafile_path(const gchar *filename);
 gboolean check_datafile(const gchar *filename);
 void display_status_message(GtkWidget *thiswidget, const gchar *message);
 void display_status_busy(GtkWidget *thiswidget);
+GtkWidget *create_open_recent_submenu();
+GtkWidget *create_open_extension_submenu();
 
 GtkWidget *gtk_container_get_focus_child   (GtkContainer     *container);
 
@@ -193,6 +195,10 @@ on_release_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
 void
+on_save_debug_build_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
 on_show_inspectors_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
@@ -305,16 +311,7 @@ on_release_toolbutton_clicked          (GtkToolButton   *toolbutton,
                                         gpointer         user_data);
 
 void
-on_source_search_activate              (GtkEntry        *entry,
-                                        gpointer         user_data);
-
-void
 on_docs_search_activate                (GtkEntry        *entry,
-                                        gpointer         user_data);
-
-gboolean
-on_source_search_focus                 (GtkWidget       *widget,
-                                        GdkEventFocus   *event,
                                         gpointer         user_data);
 
 gboolean
