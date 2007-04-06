@@ -1772,7 +1772,7 @@ create_welcome_dialog (void)
   gtk_widget_show (vbox14);
   gtk_container_add (GTK_CONTAINER (welcome_dialog), vbox14);
 
-  label4 = gtk_label_new (_("Welcome to Inform 7, a design system\nfor interactive fiction based on natural\nlanguage.\n\nTo begin writing, please click one of the\nthree buttons below.\n\nInform 7 was created by Graham Nelson,\nwith the help of Emily Short and many\nothers. The GNOME front-end was\nwritten by P.F. Chimento."));
+  label4 = gtk_label_new (_("Welcome to Inform 7, a design system\nfor interactive fiction based on natural\nlanguage.\n\nTo begin writing, please click one of the\nthree buttons below.\n\nInform 7 was created by Graham Nelson,\nwith the help of Emily Short and many\nothers. The GNOME front-end was written\nby P.F. Chimento.\n\nThis is Public Beta build 4S08."));
   gtk_widget_show (label4);
   gtk_box_pack_start (GTK_BOX (vbox14), label4, FALSE, FALSE, 0);
   gtk_label_set_line_wrap (GTK_LABEL (label4), TRUE);
@@ -1782,7 +1782,7 @@ create_welcome_dialog (void)
   alignment7 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment7);
   gtk_box_pack_start (GTK_BOX (vbox14), alignment7, TRUE, TRUE, 0);
-  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment7), 0, 0, 300, 0);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment7), 0, 0, 315, 0);
 
   vbuttonbox1 = gtk_vbutton_box_new ();
   gtk_widget_show (vbuttonbox1);
@@ -1808,7 +1808,7 @@ create_welcome_dialog (void)
   gtk_widget_show (image1);
   gtk_box_pack_start (GTK_BOX (hbox1), image1, FALSE, FALSE, 0);
 
-  label1 = gtk_label_new_with_mnemonic (_("Start a _new project..."));
+  label1 = gtk_label_new_with_mnemonic (_("Start a _new project"));
   gtk_widget_show (label1);
   gtk_box_pack_start (GTK_BOX (hbox1), label1, FALSE, FALSE, 0);
 
@@ -1851,7 +1851,7 @@ create_welcome_dialog (void)
   gtk_widget_show (image3);
   gtk_box_pack_start (GTK_BOX (hbox3), image3, FALSE, FALSE, 0);
 
-  label3 = gtk_label_new_with_mnemonic (_("_Open an existing project..."));
+  label3 = gtk_label_new_with_mnemonic (_("_Open an existing project"));
   gtk_widget_show (label3);
   gtk_box_pack_start (GTK_BOX (hbox3), label3, FALSE, FALSE, 0);
 
