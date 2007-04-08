@@ -1,0 +1,67 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5.6. Line breaks and paragraph breaks</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body>
+<!-- SEARCH TITLE "Examining everything at once" -->
+<!-- SEARCH SECTION "Ex 56" -->
+<!-- SEARCH SORT "Ex 005-006-056" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc71.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap5.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 5: Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc73.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>5.6. Line breaks and paragraph breaks</b></font></td></tr></table>
+<p>
+<p>Inform has an automatic mechanism which tries to ensure that paragraph breaks occur naturally when different rules produce text. Thus, if a rule says &quot;Arnold suddenly rushed out of the room!&quot;, this will normally be set apart from the text preceding it by a paragraph break.
+<p>
+<p>This mechanism is quite hard to fool, but not impossible. So saying &quot;[line break]&quot; forces a line break in the text, and &quot;[paragraph break]&quot; forces a paragraph break.
+<p>
+<p>More subtly, saying &quot;[run paragraph on]&quot; effectively makes the next paragraph run straight on from the current one. And saying &quot;[conditional paragraph break]&quot; marks a place where Inform can put a paragraph break if it needs one. (This is sometimes useful when producing a large amount of text which changes with the circumstances so that it is hard to predict in advance whether a paragraph break is needed or not.)
+<p>
+<p>There is just one other form of paragraph break, used only in special circumstances: printing clarificatory text after a command, when we are telling the player that we are making a guess at what was meant. For instance:
+<p>
+<blockquote><font color="#000080">(first opening the Wicket Gate)
+</font></blockquote><p>
+<p>
+<p>Conventional spacing here is that text should immediately follow on the next line, unless we are going to a different room and looking around, in which case a line break should be added. We can get this spacing convention using the text substitution &quot;[command clarification break]&quot;; for instance:
+<p>
+<blockquote><font color="#000080">say &quot;(first opening [the noun])[command clarification break]&quot;;
+</font></blockquote><p>
+<p>
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e233"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc72.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>55</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc72.html#e233 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Examining everything at once</font></b></a><br>Making the SEARCH command examine all the scenery in the current location.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>We have to create a suitable action and say what it does, and to repeat what we do through all the scenery items. That needs material from subsequent chapters, but is quite ordinary Inform all the same:
+<p>
+<blockquote><font color="#000080">Studying the vicinity is an action applying to nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report studying the vicinity:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location does not contain something which is scenery, say &quot;There's little of interest in the [location].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with point of interest running through scenery in the location
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[point of interest]: [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try examining the point of interest;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;search&quot; as studying the vicinity.
+</font></blockquote><p>
+<p>
+<p>The reason for this example is to show the use of saying &quot;[run paragraph on]&quot;. It means we have output such as:
+<p>
+<blockquote><font color="#000080">>search
+<br>hive: The honeycombed hive is all around you, thrumming with life.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">honey: Wax-sealed honey has been cached in many of the hexagonal nurseries.
+</font></blockquote><p>
+<p>
+<p>Without the running on, the prompts &quot;hive:&quot; and &quot;honey:&quot; would be separated from the descriptions following them, which would look a little odd.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc72.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc71.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc73.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

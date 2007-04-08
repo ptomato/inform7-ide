@@ -17,6 +17,7 @@
  */
  
 #include <gnome.h>
+#include <glib/gstdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
@@ -38,36 +39,29 @@
 #include "tabgame.h"
 
 #define BUFSIZE 1024
-#define INFORM_VERSION "6.31" /* see check_external_binaries in configfile.c */
 #define PROBLEMS_FILE "Build", "Problems.html"
 
 /* Start the compiler running the census of extensions. If wait is TRUE, it will
 not do it in the background. */
 void run_census(gboolean wait) {
     /* Build the command line */
-    gchar *working_dir = g_build_filename(g_get_home_dir(), ".wine", "drive_c",
-      NULL);
-    gchar **commandline; 
-
-    commandline = g_new(gchar *, 6);
-    commandline[0] = g_strdup("wine");
-    commandline[1] = get_datafile_path("ni.exe");
-    commandline[2] = g_strdup("-rules");
-    commandline[3] = get_datafile_path("extensions");
-    commandline[4] = g_strdup("-census");
-    commandline[5] = NULL;
+    gchar **commandline = g_new(gchar *, 5);
+    commandline[0] = get_datafile_path_va("Compilers", "ni", NULL);
+    commandline[1] = g_strdup("--rules");
+    commandline[2] = get_datafile_path_va("Inform7", "Extensions", NULL);
+    commandline[3] = g_strdup("--census");
+    commandline[4] = NULL;
     
     if(wait)
-        g_spawn_sync(working_dir, commandline, NULL, G_SPAWN_SEARCH_PATH
+        g_spawn_sync(g_get_home_dir(), commandline, NULL, G_SPAWN_SEARCH_PATH
           | G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
           NULL, NULL, NULL, NULL, NULL, NULL);
     else
-        g_spawn_async(working_dir, commandline, NULL, G_SPAWN_SEARCH_PATH
+        g_spawn_async(g_get_home_dir(), commandline, NULL, G_SPAWN_SEARCH_PATH
           | G_SPAWN_STDOUT_TO_DEV_NULL | G_SPAWN_STDERR_TO_DEV_NULL,
           NULL, NULL, NULL, NULL);
     
     g_strfreev(commandline);
-    g_free(working_dir);
 }
 
 /* Start the compiling process */
@@ -138,32 +132,28 @@ void start_ni_compiler(struct story *thestory) {
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
     
     /* Build the command line */
-    gchar *working_dir = g_build_filename(g_get_home_dir(), ".wine", "drive_c",
-      NULL);
     gchar **commandline; 
     if(thestory->action == COMPILE_RELEASE) {
-        commandline = g_new(gchar *, 9);
-        commandline[7] = g_strdup("-release");
-        commandline[8] = NULL;
-    } else {
         commandline = g_new(gchar *, 8);
+        commandline[6] = g_strdup("--release");
         commandline[7] = NULL;
+    } else {
+        commandline = g_new(gchar *, 7);
+        commandline[6] = NULL;
     }
-    commandline[0] = g_strdup("wine");
-    commandline[1] = get_datafile_path("ni.exe");
-    commandline[2] = g_strdup("-rules");
-    commandline[3] = get_datafile_path("extensions");
-    commandline[4] = g_strdup("-package");
-    commandline[5] = g_strdup(thestory->filename);
-    commandline[6] = g_strconcat("-extension=", get_story_extension(thestory),
+    commandline[0] = get_datafile_path_va("Compilers", "ni", NULL);
+    commandline[1] = g_strdup("--rules");
+    commandline[2] = get_datafile_path_va("Inform7", "Extensions", NULL);
+    commandline[3] = g_strconcat("--extension=", get_story_extension(thestory),
       NULL);
+    commandline[4] = g_strdup("--package");
+    commandline[5] = g_strdup(thestory->filename);
 
-    GPid pid = run_command(working_dir, commandline, buffer);
+    GPid pid = run_command(thestory->filename, commandline, buffer);
     /* set up a watch for the exit status */
     g_child_watch_add(pid, finish_ni_compiler, (gpointer)thestory);
     
     g_strfreev(commandline);
-    g_free(working_dir);
 }
 
 /* Display any errors from the NI compiler and continue on */
@@ -182,20 +172,20 @@ void finish_ni_compiler(GPid pid, gint status, gpointer data) {
             loadfile = g_build_filename(thestory->filename, PROBLEMS_FILE,NULL);
             break;
         case 2:
-            trash = g_build_filename("doc", "sections", "Error2.html", NULL);
-            loadfile = get_datafile_path(trash);
+            loadfile = get_datafile_path_va("Documentation", "Sections",
+              "Error2.html", NULL);
             break;
         case 10:
-            trash = g_build_filename("doc", "sections", "Error10.html", NULL);
-            loadfile = get_datafile_path(trash);
+            loadfile = get_datafile_path_va("Documentation", "Sections",
+              "Error10.html", NULL);
             break;
         case 11:
-            trash = g_build_filename("doc", "sections", "Error11.html", NULL);
-            loadfile = get_datafile_path(trash);
+            loadfile = get_datafile_path_va("Documentation", "Sections",
+              "Error11.html", NULL);
             break;
         default:
-            trash = g_build_filename("doc", "sections", "Error0.html", NULL);
-            loadfile = get_datafile_path(trash);
+            loadfile = get_datafile_path_va("Documentation", "Sections",
+              "Error0.html", NULL);
             break;
     }
     g_free(trash);
@@ -269,21 +259,21 @@ void start_i6_compiler(struct story *thestory) {
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
     
     /* Build the command line */
-    gchar *working_dir = g_build_filename(thestory->filename, "Build",NULL);
-    gchar **commandline = g_new(gchar *, 6);
-    gchar *libdir = get_datafile_path("lib/Natural");
-    commandline[0] = g_strdup("inform-" INFORM_VERSION "-inform7");
-    commandline[1] = g_strconcat("-w",
+    gchar *working_dir = g_build_filename(thestory->filename, "Build", NULL);
+    gchar **commandline = g_new(gchar *, 7);
+    gchar *libdir = get_datafile_path_va("Library", "Natural", NULL);
+    commandline[0] = get_datafile_path_va("Compilers", "inform-6.31-biplatform",
+      NULL);
+    commandline[1] = g_strconcat("-kE2wx",
       (thestory->action == COMPILE_RELEASE)? "~S~D" : "SD",
       (thestory->story_format == FORMAT_GLULX)? "G" :
       ((thestory->story_format == FORMAT_Z8)? "v8" : "v5"),
       NULL);
-    commandline[2] = g_strconcat("+include_path=../Source,", libdir, ",./",
-      NULL);
+    commandline[2] = g_strconcat("+", libdir, NULL);
     commandline[3] = g_strdup("auto.inf");
-    commandline[4] = g_strconcat("output.",
-      get_story_extension(thestory), NULL);
-    commandline[5] = NULL;
+    commandline[4] = g_strdup("-o");
+    commandline[5] = g_strconcat("output.", get_story_extension(thestory),NULL);
+    commandline[6] = NULL;
 
     GPid child_pid = run_command(working_dir, commandline, buffer);
     /* set up a watch for the exit status */
@@ -329,32 +319,23 @@ void finish_i6_compiler(GPid pid, gint status, gpointer data) {
             g_strchug(pos); /* remove leading whitespace */
             
             char scratch[256];
-            gchar *trash;
-            
             if(sscanf(pos, "The memory setting %[^)] has been exceeded.",
-              scratch) == 1) {
-                trash = g_build_filename("doc", "sections", 
+              scratch) == 1)
+                loadfile = get_datafile_path_va("Documentation", "Sections", 
                   "ErrorI6MemorySetting.html", NULL);
-                loadfile = get_datafile_path(trash);
-            } else if(sscanf(pos, "This program has overflowed the maximum "
-              "readable-memory size of the %s format.", scratch) == 1) {
-                trash = g_build_filename("doc", "sections",
-                "ErrorI6Readable.html", NULL);
-                loadfile = get_datafile_path(trash);
-            } else if(sscanf(pos, "The story file exceeds %s limit",
-              scratch) == 1) {
-                trash = g_build_filename("doc", "sections",
+            else if(sscanf(pos, "This program has overflowed the maximum "
+              "readable-memory size of the %s format.", scratch) == 1)
+                loadfile = get_datafile_path_va("Documentation", "Sections",
+                  "ErrorI6Readable.html", NULL);
+            else if(sscanf(pos, "The story file exceeds %s limit",
+              scratch) == 1)
+                loadfile = get_datafile_path_va("Documentation", "Sections",
                   "ErrorI6TooBig.html", NULL);
-                loadfile = get_datafile_path(trash);
-            } else {
-                trash = g_build_filename("doc", "sections", "ErrorI6.html",
-                  NULL);
-                loadfile = get_datafile_path(trash);
-            }
-            
+            else
+                loadfile = get_datafile_path_va("Documentation", "Sections",
+                  "ErrorI6.html", NULL);
+           
             g_free(msg);
-            g_free(trash);
-            
             break;
         }
         g_free(msg);
@@ -408,7 +389,7 @@ void prepare_cblorb_compiler(struct story *thestory) {
     /* first we need to edit the blurb file, because there are backward
     slashes in the directory names. This can be removed when we have a
     native version of the compiler. */
-    gchar *blurbfile = g_build_filename(thestory->filename, "Release.blurb",
+    /*gchar *blurbfile = g_build_filename(thestory->filename, "Release.blurb",
       NULL);
     GError *err = NULL;
     gchar *blurbtext;
@@ -417,14 +398,14 @@ void prepare_cblorb_compiler(struct story *thestory) {
           "Cannot open Release.blurb file: ");
         g_free(blurbfile);
         return;
-    }
+    }*/
     /* Replace all backslashes with forward slashes. This causes a bug: now
     cblorb will not work with files with backslashes in their names. */
-    gchar *pos;
+ /*   gchar *pos;
     while((pos = strchr(blurbtext, '\\')))
-        *pos = '/';
+        *pos = '/'; */
     /* Write the contents back to the file */
-    if(!g_file_set_contents(blurbfile, blurbtext, -1, &err)) {
+ /*   if(!g_file_set_contents(blurbfile, blurbtext, -1, &err)) {
         error_dialog(GTK_WINDOW(thestory->window), err,
           "Cannot write to Release.blurb file: ");
         g_free(blurbfile);
@@ -433,7 +414,7 @@ void prepare_cblorb_compiler(struct story *thestory) {
     }
     g_free(blurbfile);
     g_free(blurbtext);
-    
+    */
     display_status_message(thestory->window, "Running cBlorb...");
 }
 
@@ -446,13 +427,10 @@ void start_cblorb_compiler(struct story *thestory) {
     
     /* Build the command line */
     gchar *working_dir = g_strdup(thestory->filename);
-    gchar **commandline = g_new(gchar *, 4);
-    commandline[0] = g_strdup("cblorb");
+    gchar **commandline = g_new(gchar *, 3);
+    commandline[0] = get_datafile_path_va("Compilers", "cBlorb", NULL);
     commandline[1] = g_strdup("Release.blurb");
-    commandline[2] = g_build_filename("Build", 
-      (thestory->story_format == FORMAT_GLULX)?
-      "output.gblorb" : "output.zblorb", NULL);
-    commandline[3] = NULL;
+    commandline[2] = NULL;
 
     GPid child_pid = run_command(working_dir, commandline, buffer);
     /* set up a watch for the exit status */
@@ -471,13 +449,13 @@ void finish_cblorb_compiler(GPid pid, gint status, gpointer data) {
     int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
     
     /* Display the appropriate HTML page */
-    gchar *trash;
-    trash = get_datafile_path(g_build_filename("doc", "sections",
-      (exit_code == 0)? "GoodCblorb.html" : "ErrorCblorb.html", NULL));
+    gchar *trash = get_datafile_path_va("Documentation", "Sections",
+      (exit_code == 0)? "GoodCblorb.html" : "ErrorCblorb.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_l")),
       trash);
     html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_r")),
       trash);
+    g_free(trash);
 
     /* Stop here and show the Errors/Problems tab if there was an error */
     if(exit_code != 0) {
@@ -530,7 +508,6 @@ void finish_refresh_index(struct story *thestory) {
 
 /* Finish up the user's Save Debug Build command */
 void finish_save_debug_build(struct story *thestory) {
-    GError *err = NULL;
     finish_common(thestory);
     
     /* Switch to the Errors tab */
@@ -565,31 +542,26 @@ void finish_save_debug_build(struct story *thestory) {
     g_free(filename);
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
     
-    /* Copy the finished file to the release location */
+    /* Copy the finished file to the chosen location */
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
         gchar *oldfile_base = g_strconcat("output.", ext, NULL);
         gchar *oldfile = g_build_filename(thestory->filename, "Build",
           oldfile_base, NULL);
         g_free(oldfile_base);
-        gsize bytes_read;
-        gchar *text;
         
-        if(!g_file_get_contents(oldfile, &text, &bytes_read, &err)) {
-            error_dialog(NULL, err, "Error reading file '%s': ", oldfile);
+        if(g_rename(oldfile, filename)) {
+            error_dialog(NULL, NULL, "Error copying file '%s' to '%s': ",
+              oldfile, filename);
             g_free(filename);
             g_free(oldfile);
             g_free(ext);
             gtk_widget_destroy(dialog);
             return;
         }
-        if(!g_file_set_contents(filename, text, bytes_read, &err)) {
-            error_dialog(NULL, err, "Error reading file '%s': ", filename);
-            /* here we are at the end of the function, free data below */
-        }
+
         g_free(filename);
         g_free(oldfile);
-        g_free(text);
     }
     
     g_free(ext);
@@ -619,7 +591,6 @@ void finish_run(struct story *thestory) {
 /* Finish up the user's Release command by choosing a location to store the
 project */
 void finish_release(struct story *thestory) {
-    GError *err = NULL;
     finish_common(thestory);
     
     /* Switch to the Errors tab */
@@ -669,28 +640,22 @@ void finish_release(struct story *thestory) {
     /* Copy the finished file to the release location */
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-        gchar *oldfile_base = g_strconcat("output.", ext, NULL);
-        gchar *oldfile = g_build_filename(thestory->filename, "Build",
-          oldfile_base, NULL);
-        g_free(oldfile_base);
-        gsize bytes_read;
-        gchar *text;
-        
-        if(!g_file_get_contents(oldfile, &text, &bytes_read, &err)) {
-            error_dialog(NULL, err, "Error reading file '%s': ", oldfile);
+        gchar *oldfile = g_build_filename(thestory->filename, "story.zblorb",
+          NULL);
+        /* the Linux cBlorb compiler calls its output "story.zblorb" even if
+        it's a .gblorb file */
+       
+        if(g_rename(oldfile, filename)) {
+            error_dialog(NULL, NULL, "Error copying file '%s' to '%s': ",
+              oldfile, filename);
             g_free(filename);
             g_free(oldfile);
             g_free(ext);
             gtk_widget_destroy(dialog);
             return;
         }
-        if(!g_file_set_contents(filename, text, bytes_read, &err)) {
-            error_dialog(NULL, err, "Error reading file '%s': ", filename);
-            /* here we are at the end of the function, free data below */
-        }
         g_free(filename);
         g_free(oldfile);
-        g_free(text);
     }
     
     g_free(ext);

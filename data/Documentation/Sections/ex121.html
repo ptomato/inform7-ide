@@ -1,0 +1,80 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.7. New value properties</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body>
+<!-- SEARCH TITLE "Would you...?" -->
+<!-- SEARCH SECTION "Ex 45" -->
+<!-- SEARCH SORT "Ex 004-007-045" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc59.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc61.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.7. New value properties</b></font></td></tr></table>
+<p>
+<p>Moving on to properties which contain values, such as the &quot;matching key&quot; property of a door or a container, we need to use a different formulation.
+<p>
+<blockquote><font color="#000080">A dead end has some text called river sound. The river sound of a dead end is usually &quot;a faint whispering of running water&quot;. The Tortuous Alcove has river sound &quot;a gurgle of running water&quot;.
+</font></blockquote><p>
+<p>
+<p>The property &quot;river sound&quot; is now applicable only to dead ends, and we would not be allowed to talk about it in any other context. As can be seen, it holds a piece of text. If we tried the following:
+<p>
+<blockquote><font color="#000080">The river sound of the Tortuous Alcove is 7.
+</font></blockquote><p>
+<p>
+<p>...then Inform would object, because the number 7 is the wrong kind of value to go into the &quot;river sound&quot; property. If we need a numerical property, we can try this instead:
+<p>
+<blockquote><font color="#000080">A dead end has a number called the difficulty rating. The Tortuous Alcove has difficulty rating 7.
+</font></blockquote><p>
+<p>
+<p>Suppose that we were to add:
+<p>
+<blockquote><font color="#000080">The Exquisitely Narrow Defile is a dead end.
+</font></blockquote><p>
+<p>
+<p>The Defile must have a river sound, of course, because we said that every dead end would have one. But we haven't specified it. What Inform does is to start off the property holding the &quot;default value&quot; for this kind of value: that is, it sees that the river sound has to be &quot;some text&quot;, and it fills in the default value for text: which is the empty text, consisting of no words at all, and written &quot;&quot;. Similarly, its difficulty rating is set to 0. (A table of the kinds which can be used for properties, and their default values, can be found in the Kinds index.)
+<p>
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e121"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc60.html#e121 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>44</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc60.html#e121 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Would you...?</font></b></a><br>Adding new properties to objects, and checking for their presence.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>For instance, if we want to give some objects a flavor:
+<p>
+<blockquote><font color="#000080">&quot;Would you...?&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The House is a room. The mouse is an animal in the House.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries some green eggs and a ham.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A food is a kind of thing that is edible. Food has some text called flavor. The flavor of food is usually &quot;Tolerable.&quot;
+</font></blockquote><p>
+<p>
+<p>Things are, in general, not edible by default, so we have to make them edible specifically in order to allow them to be eaten by the player. Here we've defined food to be edible by default, and we have given it a standard piece of flavor text.
+<p>
+<blockquote><font color="#000080">The ham and the green eggs are food. The flavor of the green eggs is &quot;Delicious!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After eating something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun provides the property flavor, say &quot;[the flavor of the noun][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;It's [noun]-flavored.&quot;
+</font></blockquote><p>
+<p>
+<p>Note that we use &quot;if the noun has a flavor...&quot; to make sure that the property exists before attempting to use it. Otherwise, there is the risk that we will try to print a property that does not exist, resulting in errors in the game.
+<p>
+<p>We will only get the &quot;It's [noun]-flavored.&quot; response if we successfully eat something that is not a food and does not have flavor text. To test this feature, let's suppose something that isn't exactly food but can theoretically be chewed on:
+<p>
+<blockquote><font color="#000080">The player carries some paper. The paper is edible.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;eat ham / eat green eggs / eat paper&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc60.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e138"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex138.html#e138 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>45</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex138.html#e138 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Straw Boater</font></b></a><br>Using text properties that apply only to some things and are not defined for others.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc61.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

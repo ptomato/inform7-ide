@@ -461,9 +461,7 @@ GList *search_doc(const gchar *text, gboolean ignore_case, int algorithm) {
 	
 	if(doc_index == NULL) { /* documentation index hasn't been built yet */
 		gboolean example = FALSE;
-		gchar *docdirname = g_build_filename("doc", "sections", NULL);
-        gchar *docpath = get_datafile_path(docdirname);
-        g_free(docdirname);
+        gchar *docpath = get_datafile_path_va("Documentation", "Sections",NULL);
         
         GDir *docdir;
         if((docdir = g_dir_open(docpath, 0, &err)) == NULL) {

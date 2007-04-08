@@ -91,6 +91,42 @@ gchar *get_datafile_path(const gchar *filename) {
     return NULL;
 }
 
+/* Concatenates the path elements and returns the path to the filename in the
+application data directory. Must end with NULL. */
+gchar *get_datafile_path_va(const gchar *path1, ...) {
+    va_list ap;
+    
+    int num_args = 0;
+    va_start(ap, path1);
+    do
+        num_args++;
+    while(va_arg(ap, gchar *) != NULL);
+    va_end(ap);
+    
+    gchar **args = g_new(gchar *, num_args + 2);
+    args[0] = g_strdup("gnome-inform7");
+    args[1] = g_strdup(path1);
+    int i;
+    va_start(ap, path1);
+    for(i = 2; i < num_args + 2; i++)
+        args[i] = g_strdup(va_arg(ap, gchar *));
+    va_end(ap);
+    
+    gchar *real_filename = g_build_filenamev(args);
+    gchar *path = gnome_program_locate_file(gnome_program_get(), 
+      GNOME_FILE_DOMAIN_APP_DATADIR, real_filename, TRUE, NULL);
+    g_free(real_filename);
+    
+    if(path) {
+        g_strfreev(args);
+        return path;
+    }
+    error_dialog(NULL, NULL, "An application file, %s, was not found. Please "
+      "reinstall GNOME Inform 7.", args[num_args]); /* argument before NULL */
+    g_strfreev(args);
+    return NULL;
+}
+
 /* Returns TRUE if filename exists in the data directory, otherwise FALSE.
 Used when we do not necessarily want to return an error if it does not. */
 gboolean check_datafile(const gchar *filename) {
@@ -264,7 +300,7 @@ after_app_window_realize               (GtkWidget       *widget,
         add_debug_tabs(widget);
     
     /* Load the documentation index page in "Documentation" */
-    gchar *htmlfile = get_datafile_path("doc/index.html");
+    gchar *htmlfile = get_datafile_path_va("Documentation", "index.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(widget, "docs_l")), htmlfile);
     html_load_file(GTK_HTML(lookup_widget(widget, "docs_r")), htmlfile);
     g_free(htmlfile);
@@ -1108,7 +1144,7 @@ on_inform_help_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     int panel = choose_notebook(GTK_WIDGET(menuitem), TAB_DOCUMENTATION);
-    gchar *file = get_datafile_path("doc/index.html");
+    gchar *file = get_datafile_path_va("Documentation", "index.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(menuitem),
       (panel == LEFT)? "docs_l" : "docs_r")), file);
     g_free(file);
@@ -1123,7 +1159,8 @@ on_gnome_notes_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     int panel = choose_notebook(GTK_WIDGET(menuitem), TAB_DOCUMENTATION);
-    gchar *file = get_datafile_path("doc/gnome/gnome.html");
+    gchar *file = get_datafile_path_va("Documentation", "gnome", "gnome.html",
+      NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(menuitem),
       (panel == LEFT)? "docs_l" : "docs_r")), file);
     g_free(file);
@@ -1138,7 +1175,8 @@ on_license_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     int panel = choose_notebook(GTK_WIDGET(menuitem), TAB_DOCUMENTATION);
-    gchar *file = get_datafile_path("doc/licenses/license.html");
+    gchar *file = get_datafile_path_va("Documentation", "licenses",
+      "license.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(menuitem),
       (panel == LEFT)? "docs_l" : "docs_r")), file);
     g_free(file);
@@ -1153,8 +1191,8 @@ on_help_extensions_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     int panel = choose_notebook(GTK_WIDGET(menuitem), TAB_DOCUMENTATION);
-    gchar *file = g_build_filename(g_get_home_dir(), ".wine", "drive_c",
-      "Inform", "Documentation", "Extensions.html", NULL);
+    gchar *file = g_build_filename(g_get_home_dir(), "Inform", "Documentation",
+      "Extensions.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(menuitem),
       (panel == LEFT)? "docs_l" : "docs_r")), file);
     g_free(file);
@@ -1169,7 +1207,7 @@ on_recipe_book_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
     int panel = choose_notebook(GTK_WIDGET(menuitem), TAB_DOCUMENTATION);
-    gchar *file = get_datafile_path("doc/recipes.html");
+    gchar *file = get_datafile_path_va("Documentation", "recipes.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(menuitem),
       (panel == LEFT)? "docs_l" : "docs_r")), file);
     g_free(file);

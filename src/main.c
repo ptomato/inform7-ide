@@ -70,7 +70,7 @@ main (int argc, char *argv[])
       GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR,
       GNOME_PARAM_NONE);
     
-    /* Create the .gnome-inform7 dir if it doesn't already exist */
+    /* Create the Gnome Inform7 dir if it doesn't already exist */
     gchar *extensions_dir = get_extension_path(NULL, NULL);
     g_mkdir_with_parents(extensions_dir, 0777);
     g_free(extensions_dir);

@@ -1,0 +1,115 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.13. Going from, going to</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+-->
+</STYLE>
+<body>
+<!-- SEARCH TITLE "Polarity" -->
+<!-- SEARCH SECTION "Ex 87" -->
+<!-- SEARCH SORT "Ex 007-013-087" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc101.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc103.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.13. Going from, going to</b></font></td></tr></table>
+<p>
+<p>Going is an action defined like any other: it is the one which happens when the player tries to go from one location to another. But it is unlike other actions because it happens in two locations, not just one, and has other complications such as vehicles and doors to contend with. To make it easier to write legible and flexible rules, &quot;going&quot; is allowed to be described in a number of special ways not open to other actions, as demonstrated by the following example game:
+<p>
+<blockquote><font color="#000080">&quot;Going Going&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Catalogue Room is east of the Front Stacks. South of the Catalogue Room is the Musicology Section.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going nowhere from the Front Stacks, say &quot;Bookcases obstruct almost all passages out of here.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going nowhere, say &quot;You really can't wander around at random in the Library.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before going to the Catalogue Room, say &quot;You emerge back into the Catalogue Room.&quot;
+</font></blockquote><p>
+<p>
+<p>Note that &quot;going nowhere&quot; means trying a map connection which is blank, and if no rules intervene then &quot;You can't go that way&quot; is normally printed. Unless &quot;nowhere&quot; is specified, descriptions of going apply only when there is a map connection. So &quot;going from the Musicology Section&quot; would not match if the player were trying to go east from there, since there is no map connection to the east. Similarly, &quot;going somewhere&quot; excludes blank connections.
+<p>
+<p>The places gone &quot;from&quot; or &quot;to&quot; can be specific named regions instead of rooms. This is convenient when there are several different ways into or out of an area of map but a common rule needs to apply to all: so, for example,
+<p>
+<blockquote><font color="#000080">Before going from the Cultivated Land to the Wilderness, ...
+<br>Before going nowhere from the Wilderness, say &quot;Tangled brush forces you back.&quot;
+</font></blockquote><p>
+<p>
+<p>Note that it must be &quot;going nowhere from the Wilderness&quot;, not &quot;...in the Wilderness&quot;. (Note also the caveat that the regions must be named: &quot;going from a region&quot;, or something similarly nonspecific, will not work.)
+<p>
+<p>An important point about &quot;going... from&quot; is that, as mentioned in general terms above, it requires that there is actually a map connection that way: whereas &quot;going... in&quot; does not. Suppose there is no map connection north from the Wilderness. Then:
+<p>
+<blockquote><font color="#000080">Instead of going north from the Wilderness, say &quot;You'll never read this.&quot;
+<br>Instead of going north in the Wilderness, say &quot;Oh, it's too cold.&quot;
+</font></blockquote><p>
+<p>
+<p>The first of these never happens, because it is logically impossible to go north from the Wilderness: but the second does happen. (Technically, this is because &quot;going north&quot; is the action, and &quot;in the Wilderness&quot; a separate condition tacked onto the rule.) This distinction is often useful - it allows us to write rules which apply only to feasible movements.
+<p>
+<p>This may be a good place to mention a small restriction on the ways we can specify an action for a rule to apply to, and how it can be overcome. The restriction is that the action should only involve constant quantities, so that the following does not work:
+<p>
+<blockquote><font color="#000080">The Dome is a room. The Hutch is north of the Dome. The rabbit is in the Hutch. Before going to the location of the rabbit, say &quot;You pick up a scent!&quot;
+</font></blockquote><p>
+<p>
+<p>because &quot;the location of the rabbit&quot; is a quantity which changes in play (the player can pick up the rabbit and take him to the Dome, for instance). However, we can get around this restriction by defining a suitable adjective, like so:
+<p>
+<blockquote><font color="#000080">The Dome is a room. The Hutch is north of the Dome. The rabbit is in the Hutch. Definition: a room is rabbit-infested if it is the location of the rabbit. Before going to a rabbit-infested room, say &quot;You pick up a scent!&quot;
+</font></blockquote><p>
+<p>
+<p><hr><p>
+<a name="e114"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex114.html#e114 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>83</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex114.html#e114 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Veronica</font></b></a><br>An effect that occurs only when the player leaves a region entirely.<p></td></tr></table>
+<a name="e279"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex279.html#e279 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>84</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex279.html#e279 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A&E</font></b></a><br>Using regions to block access to an entire area when the player does not carry a pass, regardless of which entrance he uses.<p></td></tr></table>
+<a name="e90"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex90.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>85</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex90.html#e90 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hagia Sophia</font></b></a><br>If the player tries to go a valid direction while on a supporter, make him stand up first; if he tries to go a nonexistent one, print a special refusal.<p></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e120"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc102.html#e120 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>86</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc102.html#e120 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Polarity</font></b></a><br>A "go back" command that keeps track of the direction from which the player came, and sends him back.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>The main trick of this is always to record where the player has gone when he has just moved.
+<p>
+<blockquote><font color="#000080">&quot;Polarity&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The former location is a room that varies.
+</font></blockquote><p>
+<p>
+<p>Here we record where the player has been before moving him; by calling this the &quot;first carry out going rule&quot;, we make sure that this rule is followed during the going action before any other pieces of the movement occur. For more detail, see the chapters on advanced actions and on rules.
+<p>
+<blockquote><font color="#000080">First carry out going rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the former location to the location.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;go back&quot; as retreating. Understand &quot;back&quot; or &quot;return&quot; or &quot;retreat&quot; as retreating.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Retreating is an action applying to nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out retreating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from the location to the former location, using doors;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if way is a direction, try going way;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You can't see an open way back.&quot;
+</font></blockquote><p>
+<p>
+<p>And to deal with the case where the player has not yet moved:
+<p>
+<blockquote><font color="#000080">When play begins: change the former location to the Dome.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of retreating when the former location is the location: say &quot;You haven't gone anywhere yet.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Dome is a room. North of Dome is North Chapel. South of the Dome is South Chapel. West of the Dome is Western End. Quiet Corner is northwest of the Dome, north of Western End, and west of North Chapel. Loud Corner is east of North Chapel, northeast of Dome, and north of Eastern End. Eastern End is north of Dim Corner and east of Dome. Dim Corner is southeast of Dome and east of South Chapel. Ruined Corner is southwest of Dome, west of South Chapel, and south of Western End.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The church door is east of Eastern End and west of the Courtyard. The church door is a door.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;back / n / go back / e / open door / go through door / go back&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc102.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e69"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex69.html#e69 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>87</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex69.html#e69 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bumping into Walls</font></b></a><br>Offering the player a list of valid directions if he tries to go in a direction that leads nowhere.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc101.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc103.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

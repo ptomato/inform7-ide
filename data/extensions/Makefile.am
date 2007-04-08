@@ -1,1 +1,0 @@
-SUBDIRS = EmilyShort GrahamNelson Reserved

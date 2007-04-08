@@ -20,6 +20,7 @@
 #define APP_WINDOW_H
 
 #include <gnome.h>
+#include <stdarg.h>
 
 /* The names of the tabs in each notebook */
 enum {
@@ -65,6 +66,7 @@ GtkNotebook *get_notebook(GtkWidget *thiswidget, int right);
 int get_current_notebook(GtkWidget *thiswidget);
 int choose_notebook(GtkWidget *thiswidget, int newtab);
 gchar *get_datafile_path(const gchar *filename);
+gchar *get_datafile_path_va(const gchar *path1, ...);
 gboolean check_datafile(const gchar *filename);
 void display_status_message(GtkWidget *thiswidget, const gchar *message);
 void display_status_busy(GtkWidget *thiswidget);

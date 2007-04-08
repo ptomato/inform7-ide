@@ -117,7 +117,7 @@ void run_project(struct story *thestory) {
     gchar **args;
     if(thestory->story_format == FORMAT_GLULX) {
         args = g_new(gchar *,4);
-        args[0] = g_strdup("glulxe-inform7");
+        args[0] = get_datafile_path_va("Interpreters", "dumb-glulxe", NULL);
         args[1] = g_strdup("-w57");
         args[2] = g_strdup("output.ulx");
         args[3] = NULL;

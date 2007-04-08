@@ -25,7 +25,7 @@
 
 #define GCONF_BASE_PATH "/apps/gnome-inform7"
 /* The above are not directory separators, so they should be slashes! */
-#define EXTENSIONS_BASE_PATH ".wine", "drive_c", "Inform", "Extensions"
+#define EXTENSIONS_BASE_PATH "Inform", "Extensions"
 
 /* Returns the directory for installed extensions, with the author and name path
 components tacked on if they are not NULL. Returns an allocated string which
@@ -100,33 +100,12 @@ void check_config_file() {
 /* Check to see if all the external binaries are in the path and the wine
 directory is set up correctly */
 gboolean check_external_binaries() {
-    gchar *external_binaries[] = {
-        "wine", "frotz"
-    };
-    gchar *names[] = {
-        "Wine", "the Frotz interpreter"
-    };
-    
-    int foo;
-    for(foo = 0; foo < 2; foo++)
-        if(!g_find_program_in_path(external_binaries[foo])) {
-            error_dialog(NULL, NULL, "The '%s' binary was not found in your "
-              "path. You must have %s installed in order to use GnomeInform 7.",
-              external_binaries[foo], names[foo]);
-            return FALSE;
-        }
-
-    gchar *wine_home = g_build_filename(g_get_home_dir(), ".wine", "drive_c", 
-      "windows", NULL);
-        
-    if(!g_file_test(wine_home, G_FILE_TEST_EXISTS)) {
-        error_dialog(NULL, NULL, "You did not configure Wine the way I "
-          "expected. Please link your virtual C: drive to '~/.wine/drive_c'. "
-          "Running the command 'wineprefixcreate' will probably do this.");
-        g_free(wine_home);
+    if(!g_find_program_in_path("frotz")) {
+        error_dialog(NULL, NULL, "The 'frotz' binary was not found in your "
+          "path. You must have the Frotz interpreter installed in order to use "
+          "GnomeInform 7.");
         return FALSE;
     }
-    g_free(wine_home);
     return TRUE;
 }
 
