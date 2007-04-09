@@ -15,7 +15,7 @@ Source: gnome-inform7-%{ver}.tar.gz
 URL: http://www.inform-fiction.org/
 Packager: P.F. Chimento <philip.chimento@gmail.com>
 BuildRoot: %{_tmppath}/%{name}-root
-Requires: wine frotz
+Requires: frotz
 
 %description
 GNOME Inform 7 is a port of the Mac OS X and Windows versions of the integrated
@@ -27,9 +27,6 @@ language for writing interactive fiction (also known as text adventures.)
 
 %build
 %configure
-#pushd src/inform
-#%configure
-#popd
 make
 
 %install
@@ -42,13 +39,22 @@ rm -rf %{buildroot}
 %files
 %defattr(-, root, root)
 %doc README AUTHORS COPYING NEWS ChangeLog
-%{_bindir}/*
+%{_bindir}/gnome-inform7
+%{_datadir}/applications/gnome-inform7.desktop
 %{_datadir}/gnome-inform7/*
 %{_datadir}/gnome-inform7/*/*
-%{_datadir}/gnome-inform7/*/*/*
-%{_datadir}/gnome-inform7/*/*/*/*
-%{_datadir}/inform/*/*/*
-%{_datadir}/pixmaps/*
-%{_datadir}/pixmaps/*/*
-%{_includedir}/*
-%{_datadir}/applications/*
+%{_datadir}/gnome-inform7/Documentation/doc_images/*
+%{_datadir}/gnome-inform7/Documentation/gnome/*
+%{_datadir}/gnome-inform7/Documentation/licenses/*
+%{_datadir}/gnome-inform7/Documentation/Sections/*
+%{_datadir}/gnome-inform7/Inform7/Extensions/Emily*/*
+%{_datadir}/gnome-inform7/Inform7/Extensions/Graham*/*
+%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/*
+%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/*/*
+%{_datadir}/gnome-inform7/Library/Natural/*
+%{_datadir}/pixmaps/Inform.png
+%{_datadir}/pixmaps/gnome-inform7/*
+
+%changelog
+* Mon Apr 9 2007 P.F. Chimento <philip.chimento@gmail.com>
+- Updated to version 0.2.

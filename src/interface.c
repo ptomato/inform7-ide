@@ -1738,7 +1738,7 @@ create_about_window (void)
   gtk_window_set_destroy_with_parent (GTK_WINDOW (about_window), TRUE);
   gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (about_window), VERSION);
   gtk_about_dialog_set_name (GTK_ABOUT_DIALOG (about_window), _("GNOME Inform 7"));
-  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_window), _("Inform (1.0 6.31/4K41)\n\nCopyright 2006\342\200\2222007 P.F. Chimento (front end),\nGraham Nelson et al. (compiler)."));
+  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_window), _("Inform (1.0 6.31/4K41)\n\nCopyright 2006-2007 P.F. Chimento (front end),\nGraham Nelson et al. (compiler)."));
   gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (about_window), _("A GNOME IDE for Inform 7"));
   gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (about_window), "www.inform-fiction.org");
   gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (about_window), _("www.inform-fiction.org"));

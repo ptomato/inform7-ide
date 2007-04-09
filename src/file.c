@@ -17,8 +17,6 @@
  */
  
 #include <gnome.h>
-#include <libxml/parser.h>
-#include <libxml/tree.h>
 #include <glib/gprintf.h>
 #include <glib/gstdio.h>
 #include <gtksourceview/gtksourcebuffer.h>
