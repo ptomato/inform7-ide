@@ -148,6 +148,8 @@ gchar *get_story_extension(struct story *thestory) {
     switch(thestory->story_format) {
         case FORMAT_Z5:
             return "z5";
+        case FORMAT_Z6:
+            return "z6";
         case FORMAT_Z8:
             return "z8";
         case FORMAT_GLULX:

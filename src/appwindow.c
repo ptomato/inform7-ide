@@ -176,10 +176,16 @@ GtkWidget *create_open_extension_submenu() {
     GtkWidget *open_ext_menu = gtk_menu_new();
     
     const gchar *dir_entry;
-    while((dir_entry = g_dir_read_name(extensions)) != NULL
-      && strcmp(dir_entry, "Reserved")) {
-        /* Read each extension dir, but skip "Reserved" */
-        
+    while((dir_entry = g_dir_read_name(extensions)) != NULL) {
+        if(!strcmp(dir_entry, "Reserved"))
+            continue;
+        gchar *dirname = get_extension_path(dir_entry, NULL);
+        if(g_file_test(dirname, G_FILE_TEST_IS_SYMLINK)) {
+            g_free(dirname);
+            continue;
+        }
+        g_free(dirname);
+        /* Read each extension dir, but skip "Reserved" and symlinks*/
         GtkWidget *authoritem = gtk_menu_item_new_with_label(dir_entry);
         GtkWidget *authormenu = gtk_menu_new();
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(authoritem), authormenu);
@@ -193,14 +199,21 @@ GtkWidget *create_open_extension_submenu() {
         }
         const gchar *author_entry;
         while((author_entry = g_dir_read_name(author)) != NULL) {
+            gchar *extname = get_extension_path(dir_entry, author_entry);
+            if(g_file_test(extname, G_FILE_TEST_IS_SYMLINK)) {
+                g_free(extname);
+                continue;
+            }
+            g_free(extname);
+            /* Read files in the dir, but skip symlinks */
             GtkWidget *extitem = gtk_menu_item_new_with_label(author_entry);
             gchar *path = get_extension_path(dir_entry, author_entry);
             g_signal_connect(extitem, "activate",
-                G_CALLBACK(on_open_extension_activate),
-                (gpointer)path);
+              G_CALLBACK(on_open_extension_activate),
+              (gpointer)path);
             /* Do not free path */
             gtk_menu_shell_append(GTK_MENU_SHELL(authormenu), extitem);
-            gtk_widget_show(extitem);            
+            gtk_widget_show(extitem);   
         }
         g_dir_close(author);
         

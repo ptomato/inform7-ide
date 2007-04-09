@@ -252,6 +252,36 @@ void prepare_i6_compiler(struct story *thestory) {
 }
 
 
+/* Determine i6 compiler switches, given the compiler action and the virtual
+machine format. Return string must be freed. */
+static gchar *get_i6_compiler_switches(gboolean release, int format) {
+    gchar *debug_switches, *version_switches, *retval;
+    
+    /* Switch off strict warnings and debug if the game is for release */
+    if(release)
+        debug_switches = g_strdup("~S~D");
+    else
+        debug_switches = g_strdup("SD");
+    /* Pick the appropriate virtual machine version */
+    switch(format) {
+    case FORMAT_GLULX:
+        version_switches = g_strdup("G");
+        break;
+    case FORMAT_Z8:
+        version_switches = g_strdup("v8");
+        break;
+    case FORMAT_Z6:
+        version_switches = g_strdup("v6");
+        break;
+    case FORMAT_Z5:
+    default:
+        version_switches = g_strdup("v5");
+    }
+    
+    retval = g_strconcat("-kE2w", debug_switches, version_switches, "x", NULL);
+    return retval;
+}
+
 /* Run the I6 compiler */
 void start_i6_compiler(struct story *thestory) {
     /* Get the text buffer to put our output in */
@@ -264,11 +294,8 @@ void start_i6_compiler(struct story *thestory) {
     gchar *libdir = get_datafile_path_va("Library", "Natural", NULL);
     commandline[0] = get_datafile_path_va("Compilers", "inform-6.31-biplatform",
       NULL);
-    commandline[1] = g_strconcat("-kE2wx",
-      (thestory->action == COMPILE_RELEASE)? "~S~D" : "SD",
-      (thestory->story_format == FORMAT_GLULX)? "G" :
-      ((thestory->story_format == FORMAT_Z8)? "v8" : "v5"),
-      NULL);
+    commandline[1] = get_i6_compiler_switches(
+      thestory->action == COMPILE_RELEASE, thestory->story_format);
     commandline[2] = g_strconcat("+", libdir, NULL);
     commandline[3] = g_strdup("auto.inf");
     commandline[4] = g_strdup("-o");
@@ -386,35 +413,6 @@ void finish_i6_compiler(GPid pid, gint status, gpointer data) {
 
 /* Get ready to run the CBlorb compiler */
 void prepare_cblorb_compiler(struct story *thestory) {
-    /* first we need to edit the blurb file, because there are backward
-    slashes in the directory names. This can be removed when we have a
-    native version of the compiler. */
-    /*gchar *blurbfile = g_build_filename(thestory->filename, "Release.blurb",
-      NULL);
-    GError *err = NULL;
-    gchar *blurbtext;
-    if(!g_file_get_contents(blurbfile, &blurbtext, NULL, &err)) {
-        error_dialog(GTK_WINDOW(thestory->window), err,
-          "Cannot open Release.blurb file: ");
-        g_free(blurbfile);
-        return;
-    }*/
-    /* Replace all backslashes with forward slashes. This causes a bug: now
-    cblorb will not work with files with backslashes in their names. */
- /*   gchar *pos;
-    while((pos = strchr(blurbtext, '\\')))
-        *pos = '/'; */
-    /* Write the contents back to the file */
- /*   if(!g_file_set_contents(blurbfile, blurbtext, -1, &err)) {
-        error_dialog(GTK_WINDOW(thestory->window), err,
-          "Cannot write to Release.blurb file: ");
-        g_free(blurbfile);
-        g_free(blurbtext);
-        return;
-    }
-    g_free(blurbfile);
-    g_free(blurbtext);
-    */
     display_status_message(thestory->window, "Running cBlorb...");
 }
 

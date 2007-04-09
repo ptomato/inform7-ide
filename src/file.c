@@ -75,45 +75,6 @@ gboolean verify_save(GtkWidget *thiswidget) {
     return TRUE;
 }
 
-/* DEBUGGING FUNCTION */
-/* static void
-print_element_names(xmlNode * a_node)
-{
-    xmlNode *cur_node = NULL;
-
-    for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
-        fprintf(stderr, "name: %s children: {", cur_node->name);
-        print_element_names(cur_node->children);
-        fprintf(stderr, "}");
-    }
-}*/
-
-/* iterate through the XML document to find the node with name nodename */
-xmlNode *find_node(xmlDoc *doc, xmlChar *nodename) {
-    xmlNode *node = xmlDocGetRootElement(doc);
-    xmlChar *content, *name;
-    node = node->children;
-    while (node != NULL) {
-        name = xmlStrdup(node->name);
-        content = xmlNodeGetContent(node);
-        if(!xmlStrcmp(name, (xmlChar *)"dict") &&
-          xmlStrstr(content, nodename)) {
-            node = node->children;
-        } else if(!xmlStrcmp(name, (xmlChar *)"key") &&
-          !xmlStrcmp(content, nodename)) {
-           /* fprintf(stderr, "%s - %s\n", name, content);*/
-            xmlFree(name);
-            xmlFree(content);
-            return node;   
-        } else {
-            node = node->next;
-        }
-        xmlFree(name);
-        xmlFree(content);
-    }
-    return NULL;
-}
-
 /* Read a project directory, loading all the appropriate files into a new
 story struct and returning that */
 struct story *open_project(gchar *directory) {
@@ -178,7 +139,7 @@ struct story *open_project(gchar *directory) {
 
     /* Read the notes */
     filename = g_build_filename(directory, "notes.rtf", NULL);
-    if(!g_file_get_contents(filename, &text, NULL, &err)) {
+    if(!g_file_get_contents(filename, &text, NULL, NULL)) {
         /* Don't fail if the file is unreadable; instead, just make some blank notes */
         text = g_strdup(
           "{\\rtf1\\mac\\ansicpg10000\\cocoartf824\\cocoasubrtf410\n"
@@ -192,36 +153,32 @@ struct story *open_project(gchar *directory) {
     
     /* Read the settings */
     filename = g_build_filename(directory, "Settings.plist", NULL);
-    if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
-        xmlDoc *doc = xmlReadFile(filename, NULL, 0);
-        if (doc == NULL) {
-            error_dialog(NULL, NULL, "Failed to parse '%s'. Using default "
-              "settings", filename);
-        } else {
-            /* To do: This part sucks, because there is almost no documentation for
-            libxml2. There must be some better way to do this. */
-            xmlNode *node = find_node(doc, (xmlChar *)"IFSettingCreateBlorb");
-            if(node) {
-                node = node->next;
-                thestory->make_blorb = !xmlStrcmp(node->name,
-                  (xmlChar *)"true") ? TRUE : FALSE;
-            } /* else default setting */
-        
-            node = find_node(doc, (xmlChar *)"IFSettingZCodeVersion");
-            if(node) {
-                node = node->next;
-                xmlChar *content = xmlNodeGetContent(node);
-                thestory->story_format = atoi((char *)content);
-                xmlFree(content);
-            } /* else default setting */
-            xmlFreeDoc(doc);
+    if(g_file_get_contents(filename, &text, NULL, &err)) {
+        gchar **lines = g_strsplit_set(text, "\n\r", -1);
+        g_free(text);
+        gchar **ptr;
+        for(ptr = lines; *ptr != NULL; ptr++) {
+            if(strstr(*ptr, "<key>IFSettingCreateBlorb</key>")) {
+                if(++ptr == NULL)
+                    break;
+                if(strstr(*ptr, "<true/>"))
+                    thestory->make_blorb = TRUE;
+            } else if(strstr(*ptr, "<key>IFSettingZCodeVersion</key>")) {
+                if(++ptr == NULL)
+                    break;
+                int version;
+                if(sscanf(*ptr, " <integer> %d </integer> ", &version) == 1
+                  && (version == FORMAT_Z5 || version == FORMAT_Z6 
+                  || version == FORMAT_Z8 || version == FORMAT_GLULX))
+                    thestory->story_format = version;
+            }
         }
-    } else {
+        g_strfreev(lines);
+    } else
         error_dialog(NULL, NULL, "Could not open the project's settings file, "
           "'%s'. Using default settings.", filename);
-    }
-    g_free(filename);
-    
+    g_free(filename);    
+
     /* Load index tabs if they exist and update settings */
     reload_index_tabs(thestory, FALSE);
     update_settings(thestory);
@@ -581,19 +538,49 @@ void install_extension(const gchar *filename) {
         g_free(text);
         return;
     }
-
+    
+    /* Get the lowercase names for the author and extension */
+    gchar *author_lc = g_utf8_strdown(author, -1);
+    gchar *name_lc = g_utf8_strdown(name, -1);
+    
     /* Create the directory for that author if it does not exist already */
     gchar *dir = get_extension_path(author, NULL);
-    if(g_mkdir_with_parents(dir, 0777) == -1) {
-        error_dialog(NULL, NULL, "Error creating directory '%s'.", dir);
-        g_free(name);
-        g_free(author);
-        g_free(dir);
-        g_free(text);
-        return;
+    gchar *dir_lc = get_extension_path(author_lc, NULL);
+    
+    if(!g_file_test(dir, G_FILE_TEST_EXISTS)) {
+        if(g_file_test(dir_lc, G_FILE_TEST_EXISTS)) {
+            error_dialog(NULL, NULL, "A file called '%s' already exists. GNOME "
+              "Inform 7 needs to use this name to link to the extension. Remove"
+              " the file and try again.", dir_lc);
+            g_free(name);   g_free(name_lc);
+            g_free(author); g_free(author_lc);
+            g_free(dir);    g_free(dir_lc);
+            g_free(text);
+            return;
+        }
+        if(g_mkdir_with_parents(dir, 0777) == -1) {
+            error_dialog(NULL, NULL, "Error creating directory '%s'.", dir);
+            g_free(name);   g_free(name_lc);
+            g_free(author); g_free(author_lc);
+            g_free(dir);    g_free(dir_lc);
+            g_free(text);
+            return;
+        }
+        if(symlink(dir, dir_lc)) {
+            error_dialog(NULL, NULL, "Error linking '%s' to '%s'.", dir_lc,dir);
+            g_free(name);   g_free(name_lc);
+            g_free(author); g_free(author_lc);
+            g_free(dir);    g_free(dir_lc);
+            g_free(text);
+            return;
+        }
     }
+    
     gchar *targetfile = g_build_filename(dir, name, NULL);
-    g_free(dir);
+    gchar *targetfile_lc = g_build_filename(dir_lc, name_lc, NULL);
+    g_free(dir);    g_free(dir_lc);
+    g_free(author_lc);
+    g_free(name_lc);
 
     /* Check if the extension is already installed */
     if(g_file_test(targetfile, G_FILE_TEST_EXISTS)) {
@@ -604,7 +591,7 @@ void install_extension(const gchar *filename) {
           name, author);
         if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_YES) {
             gtk_widget_destroy(dialog);
-            g_free(targetfile);
+            g_free(targetfile); g_free(targetfile_lc);
             g_free(name);
             g_free(author);
             g_free(text);
@@ -612,26 +599,110 @@ void install_extension(const gchar *filename) {
         }
         gtk_widget_destroy(dialog);
     }
-    
+    if(g_file_test(targetfile_lc, G_FILE_TEST_EXISTS)) {
+        error_dialog(NULL, NULL, "A file called '%s' already exists. GNOME "
+          "Inform 7 needs to use this name to link to the extension. Remove the"
+          " file and try again.", targetfile_lc);
+        g_free(targetfile); g_free(targetfile_lc);
+        g_free(name);
+        g_free(author);
+        g_free(text);
+        return;
+    }
+        
     /* Copy the extension file to the user's extensions dir */
     if(!g_file_set_contents(targetfile, text, -1, &err)) {
         error_dialog(NULL, NULL, "Error copying file '%s' to '%s': ", filename,
           targetfile);
         g_free(text);
-        g_free(targetfile);
+        g_free(targetfile); g_free(targetfile_lc);
+        g_free(name);
+        g_free(author);
+        return;
+    }
+    
+    /* Make a lowercase link */
+    if(symlink(targetfile, targetfile_lc)) {
+        error_dialog(NULL, NULL, "Error linking '%s' to '%s'.", targetfile_lc,
+          targetfile_lc);
+        g_free(text);
+        g_free(targetfile); g_free(targetfile_lc);
         g_free(name);
         g_free(author);
         return;
     }
     
     g_free(text);
-    g_free(targetfile);
+    g_free(targetfile); g_free(targetfile_lc);
     g_free(name);
     g_free(author);
 
     /* Index the new extensions, in the foreground */
     run_census(TRUE);
 }
+
+
+/* Delete extension and remove author dir if empty */
+void delete_extension(gchar *author, gchar *extname) {
+    /* Remove extension */
+    gchar *filename = get_extension_path(author, extname);
+    if(g_remove(filename) == -1) {
+        GtkWidget *dialog = gtk_message_dialog_new(NULL,
+          GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+          "There was an error removing %s.", filename);
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        g_free(filename);
+        return;
+    }
+    g_free(filename);
+    
+    /* Remove lowercase symlink to extension */
+    gchar *extname_lc = g_utf8_strdown(extname, -1);
+    filename = get_extension_path(author, extname_lc);
+    g_free(extname_lc);
+    if(g_remove(filename) == -1) {
+        GtkWidget *dialog = gtk_message_dialog_new(NULL,
+          GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+          "There was an error removing %s.", filename);
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        g_free(filename);
+        return;
+    }
+    g_free(filename);
+    
+    /* Remove author directory if empty */
+    filename = get_extension_path(author, NULL); 
+    if(g_rmdir(filename) == -1) {
+        /* if there were other extensions, just return; but if it failed for any
+        other reason, display an error */
+        if(errno != ENOTEMPTY) {
+            GtkWidget *dialog = gtk_message_dialog_new(NULL,
+              GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+              "There was an error removing %s.", filename);
+            gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+        }
+        g_free(filename);
+        return;
+    }
+    g_free(filename);
+    
+    /* Remove lowercase symlink to author directory */
+    gchar *author_lc = g_utf8_strdown(author, -1);
+    filename = get_extension_path(author_lc, NULL);
+    g_free(author_lc);
+    if(g_remove(filename) == -1) {
+        GtkWidget *dialog = gtk_message_dialog_new(NULL,
+          GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+          "There was an error removing %s.", filename);
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    }
+    g_free(filename);
+}
+
 
 /* Helper function to delete a file relative to the project path; does nothing
 if file does not exist */

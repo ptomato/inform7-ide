@@ -479,6 +479,7 @@ create_app_window (void)
   GtkWidget *z5_button_l;
   GSList *z5_button_l_group = NULL;
   GtkWidget *z8_button_l;
+  GtkWidget *z6_button_l;
   GtkWidget *glulx_button_l;
   GtkWidget *blorb_button_l;
   GtkWidget *label25;
@@ -550,6 +551,7 @@ create_app_window (void)
   GtkWidget *z5_button_r;
   GSList *z5_button_r_group = NULL;
   GtkWidget *z8_button_r;
+  GtkWidget *z6_button_r;
   GtkWidget *glulx_button_r;
   GtkWidget *blorb_button_r;
   GtkWidget *label42;
@@ -981,7 +983,7 @@ create_app_window (void)
   gtk_widget_show (vbox5);
   gtk_container_add (GTK_CONTAINER (alignment4), vbox5);
 
-  z5_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 5 (up to 256 K)"));
+  z5_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 5 (up to 256k)"));
   gtk_widget_show (z5_button_l);
   gtk_box_pack_start (GTK_BOX (vbox5), z5_button_l, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, z5_button_l, _("Z-code version 5 games run on Z-machine interpreters (such as frotz or Zoom), and have an upper limit of 256k for the size of the story file."), NULL);
@@ -989,14 +991,20 @@ create_app_window (void)
   z5_button_l_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z5_button_l));
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (z5_button_l), TRUE);
 
-  z8_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 8 (up to 512 K)"));
+  z8_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 8 (up to 512k)"));
   gtk_widget_show (z8_button_l);
   gtk_box_pack_start (GTK_BOX (vbox5), z8_button_l, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, z8_button_l, _("Z-code version 8 games run on a Z-machine interpreter (such as frotz or Zoom), and have an upper limit of 512k for the size of the story file. Choose this if your story has become too large for the version 5 format."), NULL);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (z8_button_l), z5_button_l_group);
   z5_button_l_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z8_button_l));
 
-  glulx_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Glulx (up to 4 Gb)"));
+  z6_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 6 (up to 512k, graphical)"));
+  gtk_widget_show (z6_button_l);
+  gtk_box_pack_start (GTK_BOX (vbox5), z6_button_l, FALSE, FALSE, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (z6_button_l), z5_button_l_group);
+  z5_button_l_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z6_button_l));
+
+  glulx_button_l = gtk_radio_button_new_with_mnemonic (NULL, _("Glulx (up to 4Gb)"));
   gtk_widget_show (glulx_button_l);
   gtk_box_pack_start (GTK_BOX (vbox5), glulx_button_l, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, glulx_button_l, _("Glulx stories use a different interpreter to the Z-code versions, and do not suffer from any limitations in size. Your players will need to use an interpreter such as glulxe to run these stories. Glulx stories usually use the Glk library for display, which has a different feel to the Z-machine display."), NULL);
@@ -1341,7 +1349,7 @@ create_app_window (void)
   gtk_widget_show (vbox8);
   gtk_container_add (GTK_CONTAINER (alignment5), vbox8);
 
-  z5_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 5 (up to 256 K)"));
+  z5_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 5 (up to 256k)"));
   gtk_widget_show (z5_button_r);
   gtk_box_pack_start (GTK_BOX (vbox8), z5_button_r, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, z5_button_r, _("Z-code version 5 games run on Z-machine interpreters (such as frotz or Zoom), and have an upper limit of 256k for the size of the story file."), NULL);
@@ -1349,14 +1357,20 @@ create_app_window (void)
   z5_button_r_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z5_button_r));
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (z5_button_r), TRUE);
 
-  z8_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 8 (up to 512 K)"));
+  z8_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 8 (up to 512k)"));
   gtk_widget_show (z8_button_r);
   gtk_box_pack_start (GTK_BOX (vbox8), z8_button_r, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, z8_button_r, _("Z-code version 8 games run on a Z-machine interpreter (such as frotz or Zoom), and have an upper limit of 512k for the size of the story file. Choose this if your story has become too large for the version 5 format."), NULL);
   gtk_radio_button_set_group (GTK_RADIO_BUTTON (z8_button_r), z5_button_r_group);
   z5_button_r_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z8_button_r));
 
-  glulx_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Glulx (up to 4 Gb)"));
+  z6_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Z-code version 6 (up to 512k, graphical)"));
+  gtk_widget_show (z6_button_r);
+  gtk_box_pack_start (GTK_BOX (vbox8), z6_button_r, FALSE, FALSE, 0);
+  gtk_radio_button_set_group (GTK_RADIO_BUTTON (z6_button_r), z5_button_r_group);
+  z5_button_r_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (z6_button_r));
+
+  glulx_button_r = gtk_radio_button_new_with_mnemonic (NULL, _("Glulx (up to 4Gb)"));
   gtk_widget_show (glulx_button_r);
   gtk_box_pack_start (GTK_BOX (vbox8), glulx_button_r, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, glulx_button_r, _("Glulx stories use a different interpreter to the Z-code versions, and do not suffer from any limitations in size. Your players will need to use an interpreter such as glulxe to run these stories. Glulx stories usually use the Glk library for display, which has a different feel to the Z-machine display."), NULL);
@@ -1418,28 +1432,34 @@ create_app_window (void)
                     G_CALLBACK (on_help_toolbutton_clicked),
                     NULL);
   g_signal_connect ((gpointer) z5_button_l, "toggled",
-                    G_CALLBACK (on_z5_button_l_toggled),
+                    G_CALLBACK (on_z5_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) z8_button_l, "toggled",
-                    G_CALLBACK (on_z8_button_l_toggled),
+                    G_CALLBACK (on_z8_button_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) z6_button_l, "toggled",
+                    G_CALLBACK (on_z6_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) glulx_button_l, "toggled",
-                    G_CALLBACK (on_glulx_button_l_toggled),
+                    G_CALLBACK (on_glulx_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) blorb_button_l, "toggled",
-                    G_CALLBACK (on_blorb_button_l_toggled),
+                    G_CALLBACK (on_blorb_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) z5_button_r, "toggled",
-                    G_CALLBACK (on_z5_button_l_toggled),
+                    G_CALLBACK (on_z5_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) z8_button_r, "toggled",
-                    G_CALLBACK (on_z8_button_r_toggled),
+                    G_CALLBACK (on_z8_button_toggled),
+                    NULL);
+  g_signal_connect ((gpointer) z6_button_r, "toggled",
+                    G_CALLBACK (on_z6_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) glulx_button_r, "toggled",
-                    G_CALLBACK (on_glulx_button_r_toggled),
+                    G_CALLBACK (on_glulx_button_toggled),
                     NULL);
   g_signal_connect ((gpointer) blorb_button_r, "toggled",
-                    G_CALLBACK (on_blorb_button_r_toggled),
+                    G_CALLBACK (on_blorb_button_toggled),
                     NULL);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
@@ -1599,6 +1619,7 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, vbox5, "vbox5");
   GLADE_HOOKUP_OBJECT (app_window, z5_button_l, "z5_button_l");
   GLADE_HOOKUP_OBJECT (app_window, z8_button_l, "z8_button_l");
+  GLADE_HOOKUP_OBJECT (app_window, z6_button_l, "z6_button_l");
   GLADE_HOOKUP_OBJECT (app_window, glulx_button_l, "glulx_button_l");
   GLADE_HOOKUP_OBJECT (app_window, blorb_button_l, "blorb_button_l");
   GLADE_HOOKUP_OBJECT (app_window, label25, "label25");
@@ -1669,6 +1690,7 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, vbox8, "vbox8");
   GLADE_HOOKUP_OBJECT (app_window, z5_button_r, "z5_button_r");
   GLADE_HOOKUP_OBJECT (app_window, z8_button_r, "z8_button_r");
+  GLADE_HOOKUP_OBJECT (app_window, z6_button_r, "z6_button_r");
   GLADE_HOOKUP_OBJECT (app_window, glulx_button_r, "glulx_button_r");
   GLADE_HOOKUP_OBJECT (app_window, blorb_button_r, "blorb_button_r");
   GLADE_HOOKUP_OBJECT (app_window, label42, "label42");

@@ -23,154 +23,108 @@
 #include "support.h"
 
 void
-on_z5_button_l_toggled                 (GtkToggleButton *togglebutton,
+on_z5_button_toggled                   (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
     struct story *thestory = get_story(GTK_WIDGET(togglebutton));
-
-    if(gtk_toggle_button_get_active(togglebutton))
+    gboolean active = gtk_toggle_button_get_active(togglebutton);
+    if(active)
         thestory->story_format = FORMAT_Z5;
 
     /* When the one changes, change the other */
-    gtk_toggle_button_set_active(
-      GTK_TOGGLE_BUTTON(lookup_widget(
-        GTK_WIDGET(togglebutton),
-        "z5_button_r")),
-      gtk_toggle_button_get_active(togglebutton));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+        GTK_WIDGET(togglebutton), "z5_button_l")), active);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+        GTK_WIDGET(togglebutton), "z5_button_r")), active);
 }
 
 
 void
-on_z8_button_l_toggled                 (GtkToggleButton *togglebutton,
+on_z6_button_toggled                   (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
     struct story *thestory = get_story(GTK_WIDGET(togglebutton));
+    gboolean active = gtk_toggle_button_get_active(togglebutton);
+    if(active)
+        thestory->story_format = FORMAT_Z6;
 
-    if(gtk_toggle_button_get_active(togglebutton))
+    /* When the one changes, change the other */
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+        GTK_WIDGET(togglebutton), "z6_button_l")), active);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+        GTK_WIDGET(togglebutton), "z6_button_r")), active);
+}
+
+
+void
+on_z8_button_toggled                   (GtkToggleButton *togglebutton,
+                                        gpointer         user_data)
+{
+    struct story *thestory = get_story(GTK_WIDGET(togglebutton));
+    gboolean active = gtk_toggle_button_get_active(togglebutton);
+    if(active)
         thestory->story_format = FORMAT_Z8;
 
     /* When the one changes, change the other */
-    gtk_toggle_button_set_active(
-      GTK_TOGGLE_BUTTON(lookup_widget(
-        GTK_WIDGET(togglebutton),
-        "z8_button_r")),
-      gtk_toggle_button_get_active(togglebutton));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+        GTK_WIDGET(togglebutton), "z8_button_l")), active);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+        GTK_WIDGET(togglebutton), "z8_button_r")), active);
 }
 
 
 void
-on_glulx_button_l_toggled              (GtkToggleButton *togglebutton,
+on_glulx_button_toggled                (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
     struct story *thestory = get_story(GTK_WIDGET(togglebutton));
-
-    if(gtk_toggle_button_get_active(togglebutton))
+    gboolean active = gtk_toggle_button_get_active(togglebutton);
+    if(active)
         thestory->story_format = FORMAT_GLULX;
 
     /* When the one changes, change the other */
-    gtk_toggle_button_set_active(
-      GTK_TOGGLE_BUTTON(lookup_widget(
-        GTK_WIDGET(togglebutton),
-        "glulx_button_r")),
-      gtk_toggle_button_get_active(togglebutton));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+        GTK_WIDGET(togglebutton), "glulx_button_l")), active);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+        GTK_WIDGET(togglebutton), "glulx_button_r")), active);
 }
 
+
 void
-on_blorb_button_l_toggled              (GtkToggleButton *togglebutton,
+on_blorb_button_toggled                (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
     struct story *thestory = get_story(GTK_WIDGET(togglebutton));
-
     thestory->make_blorb = gtk_toggle_button_get_active(togglebutton);
 
     /* When the one changes, change the other */
-    gtk_toggle_button_set_active(
-      GTK_TOGGLE_BUTTON(lookup_widget(
-        GTK_WIDGET(togglebutton),
-        "blorb_button_r")),
-      gtk_toggle_button_get_active(togglebutton));
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+        GTK_WIDGET(togglebutton), "blorb_button_l")), thestory->make_blorb);
+    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+        GTK_WIDGET(togglebutton), "blorb_button_r")), thestory->make_blorb);
 }
 
-void
-on_z5_button_r_toggled                 (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-    struct story *thestory = get_story(GTK_WIDGET(togglebutton));
-
-    if(gtk_toggle_button_get_active(togglebutton))
-        thestory->story_format = FORMAT_Z5;
-
-    /* When the one changes, change the other */
-    gtk_toggle_button_set_active(
-      GTK_TOGGLE_BUTTON(lookup_widget(
-        GTK_WIDGET(togglebutton),
-        "z5_button_l")),
-      gtk_toggle_button_get_active(togglebutton));
-}
-
-
-void
-on_z8_button_r_toggled                 (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-    struct story *thestory = get_story(GTK_WIDGET(togglebutton));
-
-    if(gtk_toggle_button_get_active(togglebutton))
-        thestory->story_format = FORMAT_Z8;
-
-    /* When the one changes, change the other */
-    gtk_toggle_button_set_active(
-      GTK_TOGGLE_BUTTON(lookup_widget(
-        GTK_WIDGET(togglebutton),
-        "z8_button_l")),
-      gtk_toggle_button_get_active(togglebutton));
-}
-
-
-void
-on_glulx_button_r_toggled              (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-    struct story *thestory = get_story(GTK_WIDGET(togglebutton));
-
-    if(gtk_toggle_button_get_active(togglebutton))
-        thestory->story_format = FORMAT_GLULX;
-
-    /* When the one changes, change the other */
-    gtk_toggle_button_set_active(
-      GTK_TOGGLE_BUTTON(lookup_widget(
-        GTK_WIDGET(togglebutton),
-        "glulx_button_l")),
-      gtk_toggle_button_get_active(togglebutton));
-}
-
-void
-on_blorb_button_r_toggled              (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-    struct story *thestory = get_story(GTK_WIDGET(togglebutton));
-
-    thestory->make_blorb = gtk_toggle_button_get_active(togglebutton);
-
-    /* When the one changes, change the other */
-    gtk_toggle_button_set_active(
-      GTK_TOGGLE_BUTTON(lookup_widget(
-        GTK_WIDGET(togglebutton),
-        "blorb_button_l")),
-      gtk_toggle_button_get_active(togglebutton));
-}
 
 /* Select all the right buttons according to the story settings */
 void update_settings(struct story *thestory) {
-    gtk_toggle_button_set_active(
-      GTK_TOGGLE_BUTTON(lookup_widget(thestory->window, "z5_button_l")),
-      thestory->story_format == FORMAT_Z5);
-    gtk_toggle_button_set_active(
-      GTK_TOGGLE_BUTTON(lookup_widget(thestory->window, "z8_button_l")),
-      thestory->story_format == FORMAT_Z8);
-    gtk_toggle_button_set_active(
-      GTK_TOGGLE_BUTTON(lookup_widget(thestory->window, "glulx_button_l")),
-      thestory->story_format == FORMAT_GLULX);
+    switch(thestory->story_format) {
+    case FORMAT_Z6:
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+          thestory->window, "z6_button_l")), TRUE);
+        break;
+    case FORMAT_Z8:
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+          thestory->window, "z8_button_l")), TRUE);
+        break;
+    case FORMAT_GLULX:
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+          thestory->window, "glulx_button_l")), TRUE);
+        break;
+    case FORMAT_Z5:
+    default:
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
+          thestory->window, "z5_button_l")), TRUE);
+    }
     gtk_toggle_button_set_active(
       GTK_TOGGLE_BUTTON(lookup_widget(thestory->window, "blorb_button_l")),
       thestory->make_blorb);

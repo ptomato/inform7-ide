@@ -606,39 +606,13 @@ on_prefs_i7_extension_remove_clicked   (GtkButton       *button,
           GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION,
           GTK_BUTTONS_YES_NO, "Are you sure you want to remove %s by %s?", 
           extname, author);
-        gtk_dialog_run(GTK_DIALOG(dialog));
+        gint result = gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
         
-        gchar *filename = get_extension_path(author, extname);
-        if(g_remove(filename) == -1) {
-            GtkWidget *dialog = gtk_message_dialog_new(
-              GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-              GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-              "There was an error removing %s.", extname);
-            gtk_dialog_run(GTK_DIALOG(dialog));
-            gtk_widget_destroy(dialog);
-            g_free(filename);
-            g_free(extname);
-            g_free(author);
-            gtk_tree_path_free(path);
-            return;
-        }
-        g_free(filename);
+        /* Delete the extension and remove its directory if empty */
+        if(result == GTK_RESPONSE_YES)
+            delete_extension(author, extname);
         
-        filename = get_extension_path(author, NULL); 
-        if(g_rmdir(filename) == -1 && errno != ENOTEMPTY) {
-            /* if it failed for any other reason than that there were other
-            extensions in the directory */
-            GtkWidget *dialog = gtk_message_dialog_new(
-              GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
-              GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR,
-              GTK_BUTTONS_OK, "There was an error removing %s.", extname);
-            gtk_dialog_run(GTK_DIALOG(dialog));
-            gtk_widget_destroy(dialog);
-            /* here we are at the end of the function anyway so don't bother
-            freeing and returning */
-        }
-        g_free(filename);
         g_free(extname);
         g_free(author);
         gtk_tree_path_free(path);
@@ -927,21 +901,35 @@ void populate_extension_lists(GtkWidget *thiswidget) {
     GtkTreeIter parent_iter, child_iter;
     
     const gchar *dir_entry;
-    while((dir_entry = g_dir_read_name(extensions)) != NULL
-      && strcmp(dir_entry, "Reserved")) {
-        /* Read each extension dir, but skip "Reserved" */
+    while((dir_entry = g_dir_read_name(extensions)) != NULL) {
+        if(!strcmp(dir_entry, "Reserved"))
+            continue;
+        gchar *dirname = get_extension_path(dir_entry, NULL);
+        if(g_file_test(dirname, G_FILE_TEST_IS_SYMLINK)) {
+            g_free(dirname);
+            continue;
+        }
+        g_free(dirname);
+        /* Read each extension dir, but skip "Reserved" and symlinks */
         gtk_tree_store_append(store, &parent_iter, NULL);
         gtk_tree_store_set(store, &parent_iter, 0, dir_entry, -1);
         gchar *author_dir = get_extension_path(dir_entry, NULL);
         GDir *author = g_dir_open(author_dir, 0, &err);
         g_free(author_dir);
         if(err) {
-            error_dialog(GTK_WINDOW(thiswidget), err, "Error opening extensions"
-              " directory: ");
+            error_dialog(GTK_WINDOW(thiswidget), err, "Error opening "
+              "extensions directory: ");
             return;
         }
         const gchar *author_entry;
         while((author_entry = g_dir_read_name(author)) != NULL) {
+            gchar *extname = get_extension_path(dir_entry, author_entry);
+            if(g_file_test(extname, G_FILE_TEST_IS_SYMLINK)) {
+                g_free(extname);
+                continue;
+            }
+            g_free(extname);
+            /* Read each file, but skip symlinks */
             gtk_tree_store_append(store, &child_iter, &parent_iter);
             gtk_tree_store_set(store, &child_iter, 0, author_entry, -1);
         }

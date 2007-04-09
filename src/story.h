@@ -27,6 +27,7 @@
 
 enum {
     FORMAT_Z5 = 5,
+    FORMAT_Z6 = 6,
     FORMAT_Z8 = 8,
     FORMAT_GLULX = 256
 };
