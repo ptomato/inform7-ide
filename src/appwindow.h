@@ -65,15 +65,10 @@ enum { LEFT = 0, RIGHT };
 GtkNotebook *get_notebook(GtkWidget *thiswidget, int right);
 int get_current_notebook(GtkWidget *thiswidget);
 int choose_notebook(GtkWidget *thiswidget, int newtab);
-gchar *get_datafile_path(const gchar *filename);
-gchar *get_datafile_path_va(const gchar *path1, ...);
-gboolean check_datafile(const gchar *filename);
 void display_status_message(GtkWidget *thiswidget, const gchar *message);
 void display_status_busy(GtkWidget *thiswidget);
 GtkWidget *create_open_recent_submenu();
 GtkWidget *create_open_extension_submenu();
-
-GtkWidget *gtk_container_get_focus_child   (GtkContainer     *container);
 
 void
 after_app_window_realize               (GtkWidget       *widget,

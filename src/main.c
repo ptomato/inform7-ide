@@ -30,12 +30,12 @@
 # error You need at least GTK+ 2.10.0 to run this code.
 #endif
 
-#include "callbacks.h"
 #include "interface.h"
 #include "support.h"
 
 #include "configfile.h"
 #include "compile.h"
+#include "datafile.h"
 #include "inspector.h"
 #include "file.h"
 #include "windowlist.h"

@@ -18,9 +18,10 @@
  
 #include <gnome.h>
 
-#include "tabsettings.h"
-#include "story.h"
 #include "support.h"
+
+#include "story.h"
+#include "tabsettings.h"
 
 void
 on_z5_button_toggled                   (GtkToggleButton *togglebutton,

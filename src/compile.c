@@ -28,19 +28,34 @@
 #endif
 
 #include "support.h"
-#include "compile.h"
-#include "story.h"
-#include "appwindow.h"
-#include "html.h"
-#include "tabindex.h"
-#include "file.h"
-#include "error.h"
-#include "configfile.h"
-#include "tabgame.h"
 
-#define BUFSIZE 1024
+#include "appwindow.h"
+#include "compile.h"
+#include "datafile.h"
+#include "error.h"
+#include "html.h"
+#include "spawn.h"
+#include "story.h"
+#include "tabgame.h"
+#include "tabindex.h"
+
 #define PROBLEMS_FILE "Build", "Problems.html"
 
+/* Declare these functions static so they can stay in this order */
+static void prepare_ni_compiler(struct story *thestory);
+static void start_ni_compiler(struct story *thestory);
+static void finish_ni_compiler(GPid pid, gint status, gpointer data);
+static void prepare_i6_compiler(struct story *thestory);
+static void start_i6_compiler(struct story *thestory);
+static void finish_i6_compiler(GPid pid, gint status, gpointer data);
+static void prepare_cblorb_compiler(struct story *thestory);
+static void start_cblorb_compiler(struct story *thestory);
+static void finish_cblorb_compiler(GPid pid, gint status, gpointer data);
+static void finish_refresh_index(struct story *thestory);
+static void finish_save_debug_build(struct story *thestory);
+static void finish_run(struct story *thestory);
+static void finish_release(struct story *thestory);
+    
 /* Start the compiler running the census of extensions. If wait is TRUE, it will
 not do it in the background. */
 void run_census(gboolean wait) {
@@ -71,7 +86,7 @@ void compile_project(struct story *thestory) {
 }
 
 /* Set everything up for using the NI compiler */
-void prepare_ni_compiler(struct story *thestory) {
+static void prepare_ni_compiler(struct story *thestory) {
     GError *err = NULL;
     
     /* Output buffer for messages */
@@ -126,7 +141,7 @@ void prepare_ni_compiler(struct story *thestory) {
 
 
 /* Start the NI compiler and set up the callback for when it is finished */
-void start_ni_compiler(struct story *thestory) {
+static void start_ni_compiler(struct story *thestory) {
     /* Output buffer for messages */
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
@@ -157,7 +172,7 @@ void start_ni_compiler(struct story *thestory) {
 }
 
 /* Display any errors from the NI compiler and continue on */
-void finish_ni_compiler(GPid pid, gint status, gpointer data) {
+static void finish_ni_compiler(GPid pid, gint status, gpointer data) {
     struct story *thestory = (struct story *)data;
 
     /* Get the ni.exe exit code */
@@ -247,7 +262,7 @@ void finish_ni_compiler(GPid pid, gint status, gpointer data) {
     
 
 /* Get ready to run the I6 compiler; right now this does almost nothing */
-void prepare_i6_compiler(struct story *thestory) {
+static void prepare_i6_compiler(struct story *thestory) {
     display_status_message(thestory->window, "Running Inform 6...");
 }
 
@@ -283,7 +298,7 @@ static gchar *get_i6_compiler_switches(gboolean release, int format) {
 }
 
 /* Run the I6 compiler */
-void start_i6_compiler(struct story *thestory) {
+static void start_i6_compiler(struct story *thestory) {
     /* Get the text buffer to put our output in */
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
@@ -313,7 +328,7 @@ void start_i6_compiler(struct story *thestory) {
 }
 
 /* Display any errors from Inform 6 and decide what to do next */
-void finish_i6_compiler(GPid pid, gint status, gpointer data) {
+static void finish_i6_compiler(GPid pid, gint status, gpointer data) {
     struct story *thestory = (struct story *)data;
 
     /* Get exit code from I6 process */
@@ -412,13 +427,13 @@ void finish_i6_compiler(GPid pid, gint status, gpointer data) {
 
 
 /* Get ready to run the CBlorb compiler */
-void prepare_cblorb_compiler(struct story *thestory) {
+static void prepare_cblorb_compiler(struct story *thestory) {
     display_status_message(thestory->window, "Running cBlorb...");
 }
 
 
 /* Run the CBlorb compiler */
-void start_cblorb_compiler(struct story *thestory) {
+static void start_cblorb_compiler(struct story *thestory) {
     /* Get buffer for messages */
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
@@ -440,7 +455,7 @@ void start_cblorb_compiler(struct story *thestory) {
 }
     
 /* Display any errors from cBlorb */
-void finish_cblorb_compiler(GPid pid, gint status, gpointer data) {
+static void finish_cblorb_compiler(GPid pid, gint status, gpointer data) {
     struct story *thestory = (struct story *)data;
     
     /* Get exit code from CBlorb */
@@ -490,7 +505,7 @@ static void finish_common(struct story *thestory) {
 }
 
 /* Finish up the user's Refresh Index command */
-void finish_refresh_index(struct story *thestory) {
+static void finish_refresh_index(struct story *thestory) {
     finish_common(thestory);
     
     /* Refresh the index and documentation tabs */
@@ -505,7 +520,7 @@ void finish_refresh_index(struct story *thestory) {
 
 
 /* Finish up the user's Save Debug Build command */
-void finish_save_debug_build(struct story *thestory) {
+static void finish_save_debug_build(struct story *thestory) {
     finish_common(thestory);
     
     /* Switch to the Errors tab */
@@ -573,7 +588,7 @@ void finish_save_debug_build(struct story *thestory) {
 
 
 /* Finish up the user's Go or Replay command */
-void finish_run(struct story *thestory) {
+static void finish_run(struct story *thestory) {
     finish_common(thestory);
     
     /* Run the project */
@@ -588,7 +603,7 @@ void finish_run(struct story *thestory) {
 
 /* Finish up the user's Release command by choosing a location to store the
 project */
-void finish_release(struct story *thestory) {
+static void finish_release(struct story *thestory) {
     finish_common(thestory);
     
     /* Switch to the Errors tab */
@@ -663,81 +678,4 @@ void finish_release(struct story *thestory) {
     reload_index_tabs(thestory, FALSE);
     html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_l")));
     html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_r")));
-}
-
-
-/*
- * The following three functions are thanks to Tim-Philipp Mueller's example
- * From http://scentric.net/tmp/spawn-async-with-pipes-gtk.c 
- */
-
-/* Runs a command (in argv[0]) with working directory wd, and pipes the output
-to a GtkTextBuffer */
-GPid run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output) {
-    GError *err = NULL;
-    GPid child_pid;
-    gint stdout_fd, stderr_fd;
-    
-    if (!g_spawn_async_with_pipes(
-      wd,           /* working directory */
-      argv,         /* command and arguments */
-      NULL,         /* do not change environment */
-      (GSpawnFlags) G_SPAWN_SEARCH_PATH   /* look for command in $PATH  */
-      | G_SPAWN_DO_NOT_REAP_CHILD,  /* we'll check the exit status ourself */
-      NULL,         /* child setup function */
-      NULL,         /* child setup func data argument */
-      &child_pid,   /* where to store the child's PID */
-      NULL,         /* default stdin = /dev/null */
-      output? &stdout_fd : NULL,   /* where to put stdout file descriptor */
-      output? &stderr_fd : NULL,   /* where to put stderr file descriptor */
-      &err)) {
-        error_dialog(NULL, err, "Could not spawn process: ");
-        return (GPid)0;
-    }
-    
-    /* Now use GIOChannels to monitor stdout and stderr */
-    if(output != NULL) {
-        set_up_io_channel(stdout_fd, output);
-        set_up_io_channel(stderr_fd, output);
-    }
-    
-    return child_pid;
-}
-
-/* Set up an IO channel from a file descriptor to a GtkTextBuffer */
-void set_up_io_channel(gint fd, GtkTextBuffer *output) {
-    GIOChannel *ioc = g_io_channel_unix_new(fd);
-    g_io_channel_set_encoding(ioc, NULL, NULL); /* enc. NULL = binary data? */
-    g_io_channel_set_buffered(ioc, FALSE);
-    g_io_channel_set_close_on_unref(ioc, TRUE);
-    g_io_add_watch(ioc, G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL, 
-      write_channel_to_buffer, (gpointer)output);
-	g_io_channel_unref (ioc);
-}
-
-/* The callback for writing data from the IO channel to the buffer */
-gboolean write_channel_to_buffer(GIOChannel *ioc, GIOCondition cond,
-gpointer buffer) {
-    /* data for us to read? */
-    if(cond & (G_IO_IN | G_IO_PRI)) {
-        GIOStatus result;
-        gchar scratch[BUFSIZE];
-        gsize chars_read = 0;
-        
-        memset(scratch, 0, BUFSIZE); /* clear the buffer */
-        result = g_io_channel_read_chars(ioc, scratch, BUFSIZE, &chars_read,
-          NULL);
-        
-        if (chars_read <= 0 || result != G_IO_STATUS_NORMAL)
-            return FALSE;
-        
-        GtkTextIter iter;
-        gtk_text_buffer_get_end_iter((GtkTextBuffer *)buffer, &iter);
-        gtk_text_buffer_insert((GtkTextBuffer *)buffer, &iter, scratch,
-          chars_read);
-    }
-    
-    if (cond & (G_IO_ERR | G_IO_HUP | G_IO_NVAL))
-        return FALSE;
-    return TRUE;
 }

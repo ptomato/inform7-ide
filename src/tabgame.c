@@ -23,12 +23,14 @@
 #include <string.h>
 #include <vte/vte.h>
 
-#include "tabgame.h"
-#include "story.h"
-#include "appwindow.h"
 #include "support.h"
-#include "skein.h"
+
+#include "appwindow.h"
+#include "datafile.h"
 #include "prefs.h"
+#include "skein.h"
+#include "story.h"
+#include "tabgame.h"
 
 /* Callback for when the child process is finished */
 static void on_interpreter_exit(VteTerminal *terminal, gpointer thestory) {

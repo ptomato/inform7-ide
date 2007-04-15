@@ -74,6 +74,7 @@ void update_window_list() {
           gtk_window_get_title(GTK_WINDOW((GtkWidget *)(iter->data))));
         item.user_data = (gpointer)(iter->data);
         memcpy(newitems + count, &item, sizeof(GnomeUIInfo));
+        g_free(item.label);
     }
     memcpy(newitems + count, &end_marker, sizeof(GnomeUIInfo));
     

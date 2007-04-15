@@ -75,10 +75,6 @@ void
 on_xautocheck_spelling_activate        (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-GtkWidget*
-ext_code_create (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2);
-
 gboolean
 on_ext_window_delete_event             (GtkWidget       *widget,
                                         GdkEvent        *event,

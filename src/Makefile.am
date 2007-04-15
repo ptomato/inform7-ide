@@ -5,7 +5,7 @@ INCLUDES = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	@PACKAGE_CFLAGS@
 
-AM_CFLAGS = -Wall
+AM_CFLAGS = -Wall -O0 -g
 
 bin_PROGRAMS = gnome-inform7
 
@@ -37,7 +37,10 @@ gnome_inform7_SOURCES = \
 	inspector.c inspector.h \
     rtf.c rtf.h \
     searchwindow.c searchwindow.h \
-    taberrors.c taberrors.h
+    taberrors.c taberrors.h \
+    datafile.c datafile.h \
+    spawn.c spawn.h \
+    widgets.c widgets.h
 
 gnome_inform7_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
 

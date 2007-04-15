@@ -20,18 +20,18 @@
 #include <gtkspell/gtkspell.h>
 #include <gtksourceview/gtksourceview.h>
 
-#include "extwindow.h"
-#include "extension.h"
-#include "appwindow.h"
-#include "story.h"
-#include "findreplace.h"
 #include "interface.h"
 #include "support.h"
-#include "file.h"
-#include "windowlist.h"
-#include "prefs.h"
-#include "error.h"
+
+#include "appwindow.h"
 #include "configfile.h"
+#include "error.h"
+#include "extension.h"
+#include "extwindow.h"
+#include "file.h"
+#include "findreplace.h"
+#include "prefs.h"
+#include "windowlist.h"
 
 /* Callbacks for the extension editing window; most of them just call the
 callbacks for the main window */
@@ -283,21 +283,6 @@ on_xcheck_spelling_activate            (GtkMenuItem     *menuitem,
     if(spellchecker)
         gtkspell_recheck_all(spellchecker);
 }
-
-
-/* Create the GtkSourceView that displays the code */
-GtkWidget*
-ext_code_create (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
-{
-    GtkWidget *source = gtk_source_view_new();
-    gtk_widget_set_name(source, widget_name);
-    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(source), GTK_WRAP_WORD);
-    update_font(source);
-    update_tabs(GTK_SOURCE_VIEW(source));
-    return source;
-}
-
 
 gboolean
 on_ext_window_delete_event             (GtkWidget       *widget,

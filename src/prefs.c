@@ -22,18 +22,191 @@
 #include <gtksourceview/gtksourcebuffer.h>
 #include <pango/pango-font.h>
 
-#include "prefs.h"
-#include "tabsource.h"
 #include "support.h"
+
+#include "appwindow.h"
+#include "colorscheme.h"
 #include "configfile.h"
-#include "story.h"
+#include "datafile.h"
+#include "error.h"
 #include "extension.h"
 #include "file.h"
-#include "appwindow.h"
-#include "error.h"
-#include "colorscheme.h"
 #include "inspector.h"
+#include "prefs.h"
+#include "story.h"
 #include "taberrors.h"
+#include "tabsource.h"
+
+/* Look in the user's extensions directory and list all the extensions there in
+the treeview widget */
+static void populate_extension_lists(GtkWidget *thiswidget) {
+    GError *err = NULL;
+    gchar *extension_dir = get_extension_path(NULL, NULL);
+    GDir *extensions = g_dir_open(extension_dir, 0, &err);
+    g_free(extension_dir);
+    if(err) {
+        error_dialog(GTK_WINDOW(thiswidget), err, "Error opening extensions "
+          "directory: ");
+        return;
+    }
+    
+    GtkTreeView *view = GTK_TREE_VIEW(lookup_widget(thiswidget,
+      "prefs_i7_extensions_view"));
+    GtkTreeStore *store = gtk_tree_store_new(1, G_TYPE_STRING);
+    GtkTreeIter parent_iter, child_iter;
+    
+    const gchar *dir_entry;
+    while((dir_entry = g_dir_read_name(extensions)) != NULL) {
+        if(!strcmp(dir_entry, "Reserved"))
+            continue;
+        gchar *dirname = get_extension_path(dir_entry, NULL);
+        if(g_file_test(dirname, G_FILE_TEST_IS_SYMLINK)) {
+            g_free(dirname);
+            continue;
+        }
+        g_free(dirname);
+        /* Read each extension dir, but skip "Reserved" and symlinks */
+        gtk_tree_store_append(store, &parent_iter, NULL);
+        gtk_tree_store_set(store, &parent_iter, 0, dir_entry, -1);
+        gchar *author_dir = get_extension_path(dir_entry, NULL);
+        GDir *author = g_dir_open(author_dir, 0, &err);
+        g_free(author_dir);
+        if(err) {
+            error_dialog(GTK_WINDOW(thiswidget), err, "Error opening "
+              "extensions directory: ");
+            return;
+        }
+        const gchar *author_entry;
+        while((author_entry = g_dir_read_name(author)) != NULL) {
+            gchar *extname = get_extension_path(dir_entry, author_entry);
+            if(g_file_test(extname, G_FILE_TEST_IS_SYMLINK)) {
+                g_free(extname);
+                continue;
+            }
+            g_free(extname);
+            /* Read each file, but skip symlinks */
+            gtk_tree_store_append(store, &child_iter, &parent_iter);
+            gtk_tree_store_set(store, &child_iter, 0, author_entry, -1);
+        }
+        g_dir_close(author);
+    }
+    g_dir_close(extensions);    
+    
+    gtk_tree_view_set_model(view, GTK_TREE_MODEL(store));
+}
+
+/*
+ * Here are the for_each_bla bla bla functions for changing settings in
+ * each window
+ */
+
+/* Only update the tabs in an extension editing window */
+static gboolean update_ext_window_tabs(gpointer data) {
+    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "ext_code")));
+    return FALSE; /* One-shot idle function */
+}
+
+/* Only update the tabs in this main window */
+static gboolean update_app_window_tabs(gpointer data) {
+    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "source_l")));
+    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "source_r")));
+    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "inform6_l")));
+    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "inform6_r")));
+    return FALSE; /* One-shot idle function */
+}
+
+/* Update the fonts and highlighting colors in this extension editing window */
+static gboolean update_ext_window_fonts(gpointer data) {
+    GtkWidget *widget = lookup_widget((GtkWidget *)data, "ext_code");
+    update_font(widget);
+    update_tabs(GTK_SOURCE_VIEW(widget));
+    update_style(GTK_SOURCE_VIEW(widget));
+    return FALSE; /* One-shot idle function */
+}
+
+/* Update the fonts and highlighting colors in this main window, but not the
+widgets that only need their font size updated */
+static gboolean update_app_window_fonts(gpointer data) {
+    GtkWidget *window = (GtkWidget *)data;
+    GtkWidget *widget;
+
+    widget = lookup_widget(window, "source_l");
+    update_font(widget);
+    update_tabs(GTK_SOURCE_VIEW(widget));
+    update_style(GTK_SOURCE_VIEW(widget));
+    widget = lookup_widget(window, "source_r");
+    update_font(widget);
+    update_tabs(GTK_SOURCE_VIEW(widget));
+    update_style(GTK_SOURCE_VIEW(widget));
+    widget = lookup_widget(window, "inform6_l");
+    update_font(widget);
+    update_tabs(GTK_SOURCE_VIEW(widget));
+    widget = lookup_widget(window, "inform6_r");
+    update_font(widget);
+    update_tabs(GTK_SOURCE_VIEW(widget));
+    return FALSE; /* One-shot idle function */
+}
+
+/* Update the font sizes of widgets in this main window that don't have
+styles */
+static gboolean update_app_window_font_sizes(gpointer data) {
+    GtkWidget *window = (GtkWidget *)data;
+    GtkWidget *widget;
+    
+    gchar *widget_names[] = {
+        "problems_l",   "problems_r",
+        "actions_l",    "actions_r",
+        "contents_l",   "contents_r",
+        "kinds_l",      "kinds_r",
+        "phrasebook_l", "phrasebook_r",
+        "rules_l",      "rules_r",
+        "scenes_l",     "scenes_r",
+        "world_l",      "world_r",
+        "game_l",       "game_r",
+        "docs_l",       "docs_r",
+        "debugging_l",  "debugging_r"
+    };
+#define NUM_WIDGET_NAMES (sizeof(widget_names) / sizeof(widget_names[0]))
+    
+    int foo;
+    for(foo = 0; foo < NUM_WIDGET_NAMES; foo++) {
+        widget = lookup_widget(window, widget_names[foo]);
+        update_font_size(widget);
+        while(gtk_events_pending())
+            gtk_main_iteration();
+    }
+    return FALSE; /* One-shot idle function */
+}
+
+/* Turn source highlighting on or off in this source buffer */
+static void update_source_highlight(GtkSourceBuffer *buffer) {
+    gtk_source_buffer_set_highlight(buffer, config_file_get_bool("Syntax",
+      "Highlighting"));
+}
+
+/* Update the "Open Extensions" menu in this main window */
+static gboolean update_app_window_extensions_menu(gpointer data) {
+    GtkWidget *menu;
+    if((menu = create_open_extension_submenu()))
+        gtk_menu_item_set_submenu(
+          GTK_MENU_ITEM(lookup_widget((GtkWidget *)data, "open_extension")),
+          menu);
+    return FALSE; /* One-shot idle function */
+}
+
+/* Update the "Open Extensions" menu in this main window */
+static gboolean update_ext_window_extensions_menu(gpointer data) {
+    GtkWidget *menu;
+    if((menu = create_open_extension_submenu()))
+        gtk_menu_item_set_submenu(
+          GTK_MENU_ITEM(lookup_widget((GtkWidget *)data, "xopen_extension")),
+          menu);
+    return FALSE; /* One-shot idle function */
+}
+
+/*
+ * CALLBACKS
+ */
 
 /* Check whether the user has selected something (not an author name) that can
 be removed, and if so, enable the remove button */
@@ -405,40 +578,6 @@ on_prefs_color_set_changed             (GtkComboBox     *combobox,
         for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
         for_each_extension_window_idle((GSourceFunc)update_ext_window_fonts);
     }
-}
-
-/* Create a GtkSourceView and -Buffer and fill it with the example text */
-GtkWidget*
-source_example_create (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
-{
-    GtkSourceBuffer *buffer = create_natural_inform_source_buffer();
-    GtkWidget *source = gtk_source_view_new_with_buffer(buffer);
-    gtk_widget_set_name(source, widget_name);
-    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(source), GTK_WRAP_WORD);
-    gtk_text_buffer_set_text(GTK_TEXT_BUFFER(buffer),
-      "\nPart One - the Wharf\n\nThe Customs Wharf is a room. [change the "
-      "description if the cask is open] \"Amid the bustle of the quayside, [if "
-      "the case is open]many eyes stray to your broached cask. "
-      "[otherwise]nobody takes much notice of a man heaving a cask about. "
-      "[end if]Sleek gondolas jostle at the plank pier.\"", -1);
-    update_font(source);
-    update_tabs(GTK_SOURCE_VIEW(source));
-    return source;
-}
-
-/* Create another GtkSourceView with examples of tab stops */
-GtkWidget*
-tab_example_create (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
-{
-    GtkWidget *source = gtk_source_view_new();
-    gtk_widget_set_name(source, widget_name);
-    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(source));
-    gtk_text_buffer_set_text(buffer, "\tTab\tTab\tTab\tTab\tTab\tTab\tTab", -1);
-    update_font(source);
-    update_tabs(GTK_SOURCE_VIEW(source));
-    return source;
 }
 
 void
@@ -880,171 +1019,4 @@ void update_tabs(GtkSourceView *thiswidget) {
     if(spaces == 0)
         spaces = 8; /* default is 8 */
     gtk_source_view_set_tabs_width(thiswidget, spaces);
-}
-
-/* Look in the user's extensions directory and list all the extensions there in
-the treeview widget */
-void populate_extension_lists(GtkWidget *thiswidget) {
-    GError *err = NULL;
-    gchar *extension_dir = get_extension_path(NULL, NULL);
-    GDir *extensions = g_dir_open(extension_dir, 0, &err);
-    g_free(extension_dir);
-    if(err) {
-        error_dialog(GTK_WINDOW(thiswidget), err, "Error opening extensions "
-          "directory: ");
-        return;
-    }
-    
-    GtkTreeView *view = GTK_TREE_VIEW(lookup_widget(thiswidget,
-      "prefs_i7_extensions_view"));
-    GtkTreeStore *store = gtk_tree_store_new(1, G_TYPE_STRING);
-    GtkTreeIter parent_iter, child_iter;
-    
-    const gchar *dir_entry;
-    while((dir_entry = g_dir_read_name(extensions)) != NULL) {
-        if(!strcmp(dir_entry, "Reserved"))
-            continue;
-        gchar *dirname = get_extension_path(dir_entry, NULL);
-        if(g_file_test(dirname, G_FILE_TEST_IS_SYMLINK)) {
-            g_free(dirname);
-            continue;
-        }
-        g_free(dirname);
-        /* Read each extension dir, but skip "Reserved" and symlinks */
-        gtk_tree_store_append(store, &parent_iter, NULL);
-        gtk_tree_store_set(store, &parent_iter, 0, dir_entry, -1);
-        gchar *author_dir = get_extension_path(dir_entry, NULL);
-        GDir *author = g_dir_open(author_dir, 0, &err);
-        g_free(author_dir);
-        if(err) {
-            error_dialog(GTK_WINDOW(thiswidget), err, "Error opening "
-              "extensions directory: ");
-            return;
-        }
-        const gchar *author_entry;
-        while((author_entry = g_dir_read_name(author)) != NULL) {
-            gchar *extname = get_extension_path(dir_entry, author_entry);
-            if(g_file_test(extname, G_FILE_TEST_IS_SYMLINK)) {
-                g_free(extname);
-                continue;
-            }
-            g_free(extname);
-            /* Read each file, but skip symlinks */
-            gtk_tree_store_append(store, &child_iter, &parent_iter);
-            gtk_tree_store_set(store, &child_iter, 0, author_entry, -1);
-        }
-        g_dir_close(author);
-    }
-    g_dir_close(extensions);    
-    
-    gtk_tree_view_set_model(view, GTK_TREE_MODEL(store));
-}
-
-/*
- * Here are the for_each_bla bla bla functions for changing settings in
- * each window
- */
-
-/* Only update the tabs in an extension editing window */
-gboolean update_ext_window_tabs(gpointer data) {
-    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "ext_code")));
-    return FALSE; /* One-shot idle function */
-}
-
-/* Only update the tabs in this main window */
-gboolean update_app_window_tabs(gpointer data) {
-    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "source_l")));
-    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "source_r")));
-    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "inform6_l")));
-    update_tabs(GTK_SOURCE_VIEW(lookup_widget((GtkWidget *)data, "inform6_r")));
-    return FALSE; /* One-shot idle function */
-}
-
-/* Update the fonts and highlighting colors in this extension editing window */
-gboolean update_ext_window_fonts(gpointer data) {
-    GtkWidget *widget = lookup_widget((GtkWidget *)data, "ext_code");
-    update_font(widget);
-    update_tabs(GTK_SOURCE_VIEW(widget));
-    update_style(GTK_SOURCE_VIEW(widget));
-    return FALSE; /* One-shot idle function */
-}
-
-/* Update the fonts and highlighting colors in this main window, but not the
-widgets that only need their font size updated */
-gboolean update_app_window_fonts(gpointer data) {
-    GtkWidget *window = (GtkWidget *)data;
-    GtkWidget *widget;
-
-    widget = lookup_widget(window, "source_l");
-    update_font(widget);
-    update_tabs(GTK_SOURCE_VIEW(widget));
-    update_style(GTK_SOURCE_VIEW(widget));
-    widget = lookup_widget(window, "source_r");
-    update_font(widget);
-    update_tabs(GTK_SOURCE_VIEW(widget));
-    update_style(GTK_SOURCE_VIEW(widget));
-    widget = lookup_widget(window, "inform6_l");
-    update_font(widget);
-    update_tabs(GTK_SOURCE_VIEW(widget));
-    widget = lookup_widget(window, "inform6_r");
-    update_font(widget);
-    update_tabs(GTK_SOURCE_VIEW(widget));
-    return FALSE; /* One-shot idle function */
-}
-
-/* Update the font sizes of widgets in this main window that don't have
-styles */
-gboolean update_app_window_font_sizes(gpointer data) {
-    GtkWidget *window = (GtkWidget *)data;
-    GtkWidget *widget;
-    
-    gchar *widget_names[] = {
-        "problems_l",   "problems_r",
-        "actions_l",    "actions_r",
-        "contents_l",   "contents_r",
-        "kinds_l",      "kinds_r",
-        "phrasebook_l", "phrasebook_r",
-        "rules_l",      "rules_r",
-        "scenes_l",     "scenes_r",
-        "world_l",      "world_r",
-        "game_l",       "game_r",
-        "docs_l",       "docs_r",
-        "debugging_l",  "debugging_r"
-    };
-#define NUM_WIDGET_NAMES (sizeof(widget_names) / sizeof(widget_names[0]))
-    
-    int foo;
-    for(foo = 0; foo < NUM_WIDGET_NAMES; foo++) {
-        widget = lookup_widget(window, widget_names[foo]);
-        update_font_size(widget);
-        while(gtk_events_pending())
-            gtk_main_iteration();
-    }
-    return FALSE; /* One-shot idle function */
-}
-
-/* Turn source highlighting on or off in this source buffer */
-void update_source_highlight(GtkSourceBuffer *buffer) {
-    gtk_source_buffer_set_highlight(buffer, config_file_get_bool("Syntax",
-      "Highlighting"));
-}
-
-/* Update the "Open Extensions" menu in this main window */
-gboolean update_app_window_extensions_menu(gpointer data) {
-    GtkWidget *menu;
-    if((menu = create_open_extension_submenu()))
-        gtk_menu_item_set_submenu(
-          GTK_MENU_ITEM(lookup_widget((GtkWidget *)data, "open_extension")),
-          menu);
-    return FALSE; /* One-shot idle function */
-}
-
-/* Update the "Open Extensions" menu in this main window */
-gboolean update_ext_window_extensions_menu(gpointer data) {
-    GtkWidget *menu;
-    if((menu = create_open_extension_submenu()))
-        gtk_menu_item_set_submenu(
-          GTK_MENU_ITEM(lookup_widget((GtkWidget *)data, "xopen_extension")),
-          menu);
-    return FALSE; /* One-shot idle function */
 }

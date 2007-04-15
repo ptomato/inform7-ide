@@ -21,9 +21,10 @@
 #include <gtksourceview/gtksourcelanguage.h>
 #include <gtksourceview/gtksourcelanguagesmanager.h>
 
-#include "appwindow.h"
-#include "colorscheme.h"
 #include "support.h"
+
+#include "colorscheme.h"
+#include "datafile.h"
 
 /* Add the debugging tabs to this main window */
 void add_debug_tabs(GtkWidget *window) {

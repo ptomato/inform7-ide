@@ -23,19 +23,20 @@
 #include <gtkhtml/gtkhtml.h>
 #include <gtksourceview/gtksourceiter.h>
 
-#include "appwindow.h"
-#include "error.h"
-#include "searchwindow.h"
 #include "interface.h"
 #include "support.h"
+
+#include "appwindow.h"
+#include "datafile.h"
+#include "error.h"
+#include "extension.h"
+#include "extwindow.h"
+#include "file.h"
+#include "findreplace.h"
 #include "html.h"
+#include "searchwindow.h"
 #include "story.h"
 #include "tabsource.h"
-#include "configfile.h"
-#include "file.h"
-#include "extwindow.h"
-#include "extension.h"
-#include "findreplace.h"
 
 /* An index of the text of the documentation and example pages. Only built
 the first time someone does a documentation search, and freed atexit. */
@@ -61,6 +62,30 @@ enum {
     SEARCH_WINDOW_NUM_COLUMNS
 };
 
+enum {
+    RESULT_TYPE_PROJECT,
+    RESULT_TYPE_EXTENSION,
+    RESULT_TYPE_DOCUMENTATION
+};
+
+typedef struct {
+    gchar *context;
+    gchar *source_sort;
+    gchar *source_location;
+    gchar *source_file;
+    int result_type;
+    int lineno;
+} Result;
+
+
+/* Free the data in a Result structure */
+static void result_free(Result *foo) {
+    g_free(foo->context);
+    g_free(foo->source_sort);
+    g_free(foo->source_location);
+    g_free(foo->source_file);
+    g_free(foo);
+}
 
 /* Callback for double-clicking on one of the search results */
 void
@@ -174,16 +199,6 @@ GtkWidget *new_search_window(GtkWidget *main_window, const gchar *text,
     
     return search_window;
 }
-
-/* Free the data in a Result structure */
-void result_free(Result *foo) {
-    g_free(foo->context);
-    g_free(foo->source_sort);
-    g_free(foo->source_location);
-    g_free(foo->source_file);
-    g_free(foo);
-}
-
 
 /* Free the internal private documentation index. No need to call this function;
 it is connected to atexit. */

@@ -23,28 +23,10 @@
 #include <gtkhtml/gtkhtml.h>
 #include <gtkhtml/gtkhtml-stream.h>
 
-struct source_entry {
-    GtkHTML *html;
-    gchar *source;
-};
-
-void source_table_add(GtkHTML *html, gchar *source);
-void source_table_remove(GtkHTML *html);
-void source_table_update(GtkHTML *html, gchar *source);
-gchar *source_table_get(GtkHTML *html);
-
 GtkWidget *create_html(gchar *widget_name, gchar *string1, gchar *string2,
   gint int1, gint int2);
 void html_load_file(GtkHTML *html, const gchar *filename);
 void html_load_blank(GtkHTML *html);
 void html_refresh(GtkHTML *html);
-
-void on_url_requested(GtkHTML *html, const gchar *url, GtkHTMLStream *handle,
-  gpointer data);
-void on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data);
-void on_html_destroy(GtkObject *widget, gpointer data);
-gchar *get_base_name(const gchar *url);
-gchar *javascript_find_paste_code(const gchar *source,
-  const gchar *function_call);
 
 #endif

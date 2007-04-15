@@ -21,19 +21,163 @@
 #include <gtksourceview/gtksourceiter.h>
 
 #include "support.h"
-#include "findreplace.h"
-#include "story.h"
+
 #include "extension.h"
+#include "findreplace.h"
 
 /* Scroll the text view so that the cursor is within the inner 25%-75%, if
 possible. */
-void scroll_text_view_to_cursor(GtkTextView *view) {
+static void scroll_text_view_to_cursor(GtkTextView *view) {
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(view);
     gtk_text_view_scroll_to_mark(view,
         gtk_text_buffer_get_insert(buffer),
         0.25, FALSE, 0.0, 0.0);
 }
 
+
+/* Searches for the next (or previous) occurrence of the string search_text
+and puts it in the text iterators match_start and match_end */
+static gboolean find_next(const gchar *search_text, GtkTextIter *search_from,
+  GtkTextIter *match_start, GtkTextIter *match_end, gboolean ignore_case,
+  gboolean reverse, int algorithm) {
+    gboolean retval, do_it_again;
+    /* It's probably better to implement it this way, i.e. non-recursively, so
+      that we don't run out of stack space? */
+      
+    do {
+        do_it_again = FALSE;
+        if(reverse)
+            retval = gtk_source_iter_backward_search(search_from, search_text,
+              GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY |
+              (ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+              match_start, match_end, NULL);
+        else
+            retval = gtk_source_iter_forward_search(search_from, search_text,
+              GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY |
+              (ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
+              match_start, match_end, NULL);
+        if(retval) {
+            if(algorithm == FIND_STARTS_WITH) {
+                if(!gtk_text_iter_starts_word(match_start))
+                    do_it_again = TRUE;
+            } else if(algorithm == FIND_FULL_WORD) {
+                if(!gtk_text_iter_starts_word(match_start)
+                  || !gtk_text_iter_ends_word(match_end))
+                    do_it_again = TRUE;
+            }      
+        }
+        if(do_it_again)
+            *search_from = *match_end;
+    } while(do_it_again);
+    return retval;
+}
+
+static void find(GtkTextBuffer *buffer, const gchar *text, gboolean ignore_case,
+gboolean wrap, gboolean reverse, int algorithm) {
+    GtkTextIter cursor, match_start, match_end;
+    GtkWidget *dialog;
+
+    /* If there is a selection, start searching past it; otherwise start
+    searching from the cursor. Likewise, if searching backwards, start before
+    the selection. */
+    gtk_text_buffer_get_iter_at_mark(buffer, &cursor, reverse?
+      gtk_text_buffer_get_insert(buffer)
+      : gtk_text_buffer_get_selection_bound(buffer));
+
+    if(find_next(text, &cursor, &match_start, &match_end, ignore_case,
+      reverse, algorithm)) {
+        gtk_text_buffer_select_range(buffer, &match_start, &match_end);
+        return;
+    } else {
+        /* Here it gets a little convoluted, because we don't want to keep
+        wrapping around a million times. */
+        if(wrap) {
+            /* Wrap the search around to the beginning/end */
+            if(reverse)
+                gtk_text_buffer_get_end_iter(buffer, &cursor);
+            else
+                gtk_text_buffer_get_start_iter(buffer, &cursor);
+            if(find_next(text, &cursor, &match_start, &match_end, ignore_case,
+              reverse, algorithm)) {
+                gtk_text_buffer_select_range(buffer, &match_start, &match_end);
+                return;
+            } else {
+                /* Text does not occur in the whole document */
+                dialog = gtk_message_dialog_new(
+                  NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
+                  "Search text not found.");
+                gtk_dialog_run(GTK_DIALOG(dialog));
+                gtk_widget_destroy(dialog);
+                return;
+            }
+        } else {
+            /* Wrap is turned off, text was not found */
+            dialog = gtk_message_dialog_new(
+              NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
+              "Search text not found.");
+            gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+            return;
+        }
+    }
+}
+
+static int replace_all(GtkTextBuffer *buffer, const gchar *search_text,
+const gchar *replace_text, gboolean ignore_case, int algorithm) {
+    GtkTextIter cursor, match_start, match_end;
+    
+    /* Replace All counts as one action for Undo */
+    gtk_text_buffer_begin_user_action(buffer);
+
+    gtk_text_buffer_get_start_iter(buffer, &cursor);
+    int replace_count = 0;
+
+    while(find_next(search_text, &cursor, &match_start, &match_end, ignore_case,
+      FALSE, algorithm)) {
+        gtk_text_buffer_delete(buffer, &match_start, &match_end);
+        gtk_text_buffer_insert(buffer, &match_start, replace_text, -1);
+        gtk_text_buffer_get_start_iter(buffer, &cursor);
+        replace_count++;
+    }
+
+    gtk_text_buffer_end_user_action(buffer);
+    
+    return replace_count;
+}
+
+static void replace(GtkTextBuffer *buffer, const gchar *search_text,
+const gchar *replace_text, gboolean ignore_case, gboolean wrap,
+gboolean reverse, int algorithm, gboolean find_next) {
+    GtkTextIter insert, selection_bound;
+
+    gtk_text_buffer_get_selection_bounds(buffer, &insert, &selection_bound);
+    gchar *selected = gtk_text_buffer_get_text(buffer, &insert,
+      &selection_bound, FALSE);
+
+    if(ignore_case? strcasecmp(selected, search_text)
+      : strcmp(selected, search_text)) {
+        /* if the text is NOT selected, "find" again to select the text */
+        find(buffer, search_text, ignore_case, wrap, reverse, algorithm);
+        g_free(selected);
+        return; /* do nothing, wait for the user to click replace again */
+    }
+
+    /* Replacing counts as one action for Undo */
+    gtk_text_buffer_begin_user_action(buffer);
+    gtk_text_buffer_delete(buffer, &insert, &selection_bound);
+    gtk_text_buffer_insert(buffer, &insert, replace_text, -1);
+    gtk_text_buffer_end_user_action(buffer);
+
+    /* Find the next occurrence of the text */
+    if(find_next)
+        find(buffer, search_text, ignore_case, wrap, reverse, algorithm);
+    
+    g_free(selected);
+}
+
+/*
+ * CALLBACKS
+ */
 
 void
 after_find_dialog_realize              (GtkWidget       *widget,
@@ -276,145 +420,4 @@ on_xfind_replace_all_clicked        (GtkButton       *button,
       "%d occurences replaced.", replace_count);
     gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
-}
-
-
-void find(GtkTextBuffer *buffer, const gchar *text, gboolean ignore_case,
-gboolean wrap, gboolean reverse, int algorithm) {
-    GtkTextIter cursor, match_start, match_end;
-    GtkWidget *dialog;
-
-    /* If there is a selection, start searching past it; otherwise start
-    searching from the cursor. Likewise, if searching backwards, start before
-    the selection. */
-    gtk_text_buffer_get_iter_at_mark(buffer, &cursor, reverse?
-      gtk_text_buffer_get_insert(buffer)
-      : gtk_text_buffer_get_selection_bound(buffer));
-
-    if(find_next(text, &cursor, &match_start, &match_end, ignore_case,
-      reverse, algorithm)) {
-        gtk_text_buffer_select_range(buffer, &match_start, &match_end);
-        return;
-    } else {
-        /* Here it gets a little convoluted, because we don't want to keep
-        wrapping around a million times. */
-        if(wrap) {
-            /* Wrap the search around to the beginning/end */
-            if(reverse)
-                gtk_text_buffer_get_end_iter(buffer, &cursor);
-            else
-                gtk_text_buffer_get_start_iter(buffer, &cursor);
-            if(find_next(text, &cursor, &match_start, &match_end, ignore_case,
-              reverse, algorithm)) {
-                gtk_text_buffer_select_range(buffer, &match_start, &match_end);
-                return;
-            } else {
-                /* Text does not occur in the whole document */
-                dialog = gtk_message_dialog_new(
-                  NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
-                  "Search text not found.");
-                gtk_dialog_run(GTK_DIALOG(dialog));
-                gtk_widget_destroy(dialog);
-                return;
-            }
-        } else {
-            /* Wrap is turned off, text was not found */
-            dialog = gtk_message_dialog_new(
-              NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
-              "Search text not found.");
-            gtk_dialog_run(GTK_DIALOG(dialog));
-            gtk_widget_destroy(dialog);
-            return;
-        }
-    }
-}
-
-/* Searches for the next (or previous) occurrence of the string search_text
-and puts it in the text iterators match_start and match_end */
-gboolean find_next(const gchar *search_text, GtkTextIter *search_from,
-  GtkTextIter *match_start, GtkTextIter *match_end, gboolean ignore_case,
-  gboolean reverse, int algorithm) {
-    gboolean retval, do_it_again;
-    /* It's probably better to implement it this way, i.e. non-recursively, so
-      that we don't run out of stack space? */
-      
-    do {
-        do_it_again = FALSE;
-        if(reverse)
-            retval = gtk_source_iter_backward_search(search_from, search_text,
-              GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY |
-              (ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
-              match_start, match_end, NULL);
-        else
-            retval = gtk_source_iter_forward_search(search_from, search_text,
-              GTK_SOURCE_SEARCH_VISIBLE_ONLY | GTK_SOURCE_SEARCH_TEXT_ONLY |
-              (ignore_case? GTK_SOURCE_SEARCH_CASE_INSENSITIVE : 0),
-              match_start, match_end, NULL);
-        if(retval) {
-            if(algorithm == FIND_STARTS_WITH) {
-                if(!gtk_text_iter_starts_word(match_start))
-                    do_it_again = TRUE;
-            } else if(algorithm == FIND_FULL_WORD) {
-                if(!gtk_text_iter_starts_word(match_start)
-                  || !gtk_text_iter_ends_word(match_end))
-                    do_it_again = TRUE;
-            }      
-        }
-        if(do_it_again)
-            *search_from = *match_end;
-    } while(do_it_again);
-    return retval;
-}
-
-int replace_all(GtkTextBuffer *buffer, const gchar *search_text,
-const gchar *replace_text, gboolean ignore_case, int algorithm) {
-    GtkTextIter cursor, match_start, match_end;
-    
-    /* Replace All counts as one action for Undo */
-    gtk_text_buffer_begin_user_action(buffer);
-
-    gtk_text_buffer_get_start_iter(buffer, &cursor);
-    int replace_count = 0;
-
-    while(find_next(search_text, &cursor, &match_start, &match_end, ignore_case,
-      FALSE, algorithm)) {
-        gtk_text_buffer_delete(buffer, &match_start, &match_end);
-        gtk_text_buffer_insert(buffer, &match_start, replace_text, -1);
-        gtk_text_buffer_get_start_iter(buffer, &cursor);
-        replace_count++;
-    }
-
-    gtk_text_buffer_end_user_action(buffer);
-    
-    return replace_count;
-}
-
-void replace(GtkTextBuffer *buffer, const gchar *search_text,
-const gchar *replace_text, gboolean ignore_case, gboolean wrap,
-gboolean reverse, int algorithm, gboolean find_next) {
-    GtkTextIter insert, selection_bound;
-
-    gtk_text_buffer_get_selection_bounds(buffer, &insert, &selection_bound);
-    gchar *selected = gtk_text_buffer_get_text(buffer, &insert,
-      &selection_bound, FALSE);
-
-    if(ignore_case? strcasecmp(selected, search_text)
-      : strcmp(selected, search_text)) {
-        /* if the text is NOT selected, "find" again to select the text */
-        find(buffer, search_text, ignore_case, wrap, reverse, algorithm);
-        g_free(selected);
-        return; /* do nothing, wait for the user to click replace again */
-    }
-
-    /* Replacing counts as one action for Undo */
-    gtk_text_buffer_begin_user_action(buffer);
-    gtk_text_buffer_delete(buffer, &insert, &selection_bound);
-    gtk_text_buffer_insert(buffer, &insert, replace_text, -1);
-    gtk_text_buffer_end_user_action(buffer);
-
-    /* Find the next occurrence of the text */
-    if(find_next)
-        find(buffer, search_text, ignore_case, wrap, reverse, algorithm);
-    
-    g_free(selected);
 }

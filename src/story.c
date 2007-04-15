@@ -21,16 +21,15 @@
 #include <gtksourceview/gtksourcebuffer.h>
 #include <libgnomevfs/gnome-vfs.h>
 
-#include "story.h"
 #include "interface.h"
 #include "support.h"
+
+#include "file.h"
+#include "skein.h"
+#include "story.h"
+#include "tabgame.h"
 #include "tabsource.h"
 #include "windowlist.h"
-#include "prefs.h"
-#include "configfile.h"
-#include "skein.h"
-#include "tabgame.h"
-#include "file.h"
 
 /* This is the list of all story structures that are currently allocated */
 static GSList *storylist = NULL;

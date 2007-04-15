@@ -20,25 +20,49 @@
 #include <string.h>
 #include <gtkspell/gtkspell.h>
 
-#include "appwindow.h"
-#include "file.h"
 #include "interface.h"
 #include "support.h"
-#include "story.h"
-#include "tabsettings.h"
-#include "html.h"
-#include "findreplace.h"
-#include "prefs.h"
-#include "skein.h"
-#include "error.h"
-#include "configfile.h"
-#include "windowlist.h"
+
+#include "appwindow.h"
 #include "compile.h"
-#include "tabgame.h"
+#include "configfile.h"
+#include "datafile.h"
+#include "error.h"
+#include "extension.h"
+#include "file.h"
+#include "findreplace.h"
+#include "html.h"
 #include "inspector.h"
+#include "prefs.h"
 #include "searchwindow.h"
+#include "skein.h"
+#include "story.h"
 #include "taberrors.h"
+#include "tabgame.h"
 #include "tabsource.h"
+#include "windowlist.h"
+
+/* The following function is from Damian Iverleigh's patch to GtkContainer,
+http://mail.gnome.org/archives/gtk-devel-list/2001-October/msg00516.html */
+
+/**
+ * gtk_container_get_focus_child:
+ * @container: a #GtkContainer
+ * 
+ * Retrieves the currently focused child of the container. See
+ * gtk_container_set_focus_child().
+ *
+ * Return value: pointer to the widget of the focused child (NULL
+ * if none is set
+ **/
+static GtkWidget *
+gtk_container_get_focus_child (GtkContainer *container)
+{
+    g_return_val_if_fail (container != NULL, NULL);
+    g_return_val_if_fail (GTK_IS_CONTAINER (container), NULL);
+
+    return container->focus_child;
+}
 
 /* Gets a pointer to either the left or the right notebook in this window */
 GtkNotebook *get_notebook(GtkWidget *thiswidget, int right) {
@@ -76,67 +100,6 @@ int choose_notebook(GtkWidget *thiswidget, int newtab) {
 		return RIGHT;
 	/* Use the left panel unless that is source too */
 	return (left == TAB_SOURCE)? RIGHT : LEFT;
-}
-
-/* Returns the path to filename in the application data directory. */
-gchar *get_datafile_path(const gchar *filename) {
-    gchar *real_filename = g_build_filename("gnome-inform7", filename, NULL);
-    gchar *path = gnome_program_locate_file(gnome_program_get(), 
-      GNOME_FILE_DOMAIN_APP_DATADIR, real_filename, TRUE, NULL);
-    g_free(real_filename);
-    if(path)
-        return path;
-    error_dialog(NULL, NULL, "An application file, %s, was not found. Please "
-      "reinstall GNOME Inform 7.", filename);
-    return NULL;
-}
-
-/* Concatenates the path elements and returns the path to the filename in the
-application data directory. Must end with NULL. */
-gchar *get_datafile_path_va(const gchar *path1, ...) {
-    va_list ap;
-    
-    int num_args = 0;
-    va_start(ap, path1);
-    do
-        num_args++;
-    while(va_arg(ap, gchar *) != NULL);
-    va_end(ap);
-    
-    gchar **args = g_new(gchar *, num_args + 2);
-    args[0] = g_strdup("gnome-inform7");
-    args[1] = g_strdup(path1);
-    int i;
-    va_start(ap, path1);
-    for(i = 2; i < num_args + 2; i++)
-        args[i] = g_strdup(va_arg(ap, gchar *));
-    va_end(ap);
-    
-    gchar *real_filename = g_build_filenamev(args);
-    gchar *path = gnome_program_locate_file(gnome_program_get(), 
-      GNOME_FILE_DOMAIN_APP_DATADIR, real_filename, TRUE, NULL);
-    g_free(real_filename);
-    
-    if(path) {
-        g_strfreev(args);
-        return path;
-    }
-    error_dialog(NULL, NULL, "An application file, %s, was not found. Please "
-      "reinstall GNOME Inform 7.", args[num_args]); /* argument before NULL */
-    g_strfreev(args);
-    return NULL;
-}
-
-/* Returns TRUE if filename exists in the data directory, otherwise FALSE.
-Used when we do not necessarily want to return an error if it does not. */
-gboolean check_datafile(const gchar *filename) {
-    gchar *real_filename = g_build_filename("gnome-inform7", filename, NULL);
-    gchar *path = gnome_program_locate_file(gnome_program_get(), 
-      GNOME_FILE_DOMAIN_APP_DATADIR, real_filename, TRUE, NULL);
-    g_free(real_filename);
-    if(path)
-        return TRUE;
-    return FALSE;
 }
 
 /* Displays the message text in the status bar of the current window. */
@@ -223,28 +186,6 @@ GtkWidget *create_open_extension_submenu() {
     g_dir_close(extensions);
     
     return open_ext_menu;
-}
-
-/* The following function is from Damian Iverleigh's patch to GtkContainer,
-http://mail.gnome.org/archives/gtk-devel-list/2001-October/msg00516.html */
-
-/**
- * gtk_container_get_focus_child:
- * @container: a #GtkContainer
- * 
- * Retrieves the currently focused child of the container. See
- * gtk_container_set_focus_child().
- *
- * Return value: pointer to the widget of the focused child (NULL
- * if none is set
- **/
-GtkWidget *
-gtk_container_get_focus_child (GtkContainer *container)
-{
-    g_return_val_if_fail (container != NULL, NULL);
-    g_return_val_if_fail (GTK_IS_CONTAINER (container), NULL);
-
-    return container->focus_child;
 }
 
 /* 

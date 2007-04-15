@@ -674,7 +674,7 @@ create_app_window (void)
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow12), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow12), GTK_SHADOW_IN);
 
-  source_l = source_create ("source_l", "", "", 0, 0);
+  source_l = custom_gtk_source_view_create ("source_l", "", "", 0, 0);
   gtk_widget_show (source_l);
   gtk_container_add (GTK_CONTAINER (scrolledwindow12), source_l);
   GTK_WIDGET_SET_FLAGS (source_l, GTK_CAN_FOCUS);
@@ -742,7 +742,7 @@ create_app_window (void)
   gtk_container_add (GTK_CONTAINER (errors_notebook_l), inform6_page_l);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (inform6_page_l), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  inform6_l = source_create ("inform6_l", "", "", 0, 0);
+  inform6_l = custom_gtk_source_view_create ("inform6_l", "", "", 0, 0);
   gtk_widget_show (inform6_l);
   gtk_container_add (GTK_CONTAINER (inform6_page_l), inform6_l);
   GTK_WIDGET_UNSET_FLAGS (inform6_l, GTK_CAN_FOCUS);
@@ -1040,7 +1040,7 @@ create_app_window (void)
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow13), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow13), GTK_SHADOW_IN);
 
-  source_r = source_create ("source_r", "", "", 0, 0);
+  source_r = custom_gtk_source_view_create ("source_r", "", "", 0, 0);
   gtk_widget_show (source_r);
   gtk_container_add (GTK_CONTAINER (scrolledwindow13), source_r);
   GTK_WIDGET_SET_FLAGS (source_r, GTK_CAN_FOCUS);
@@ -1108,7 +1108,7 @@ create_app_window (void)
   gtk_container_add (GTK_CONTAINER (errors_notebook_r), inform6_page_r);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (inform6_page_r), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  inform6_r = source_create ("inform6_r", "", "", 0, 0);
+  inform6_r = custom_gtk_source_view_create ("inform6_r", "", "", 0, 0);
   gtk_widget_show (inform6_r);
   gtk_container_add (GTK_CONTAINER (inform6_page_r), inform6_r);
   GTK_WIDGET_UNSET_FLAGS (inform6_r, GTK_CAN_FOCUS);
@@ -2287,7 +2287,7 @@ create_ext_window (void)
   gnome_app_set_contents (GNOME_APP (ext_window), scrolledwindow34);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow34), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-  ext_code = ext_code_create ("ext_code", "", "", 0, 0);
+  ext_code = custom_gtk_source_view_create ("ext_code", "", "", 0, 0);
   gtk_widget_show (ext_code);
   gtk_container_add (GTK_CONTAINER (scrolledwindow34), ext_code);
   GTK_WIDGET_SET_FLAGS (ext_code, GTK_CAN_FOCUS);

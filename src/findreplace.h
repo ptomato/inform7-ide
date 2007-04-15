@@ -29,8 +29,6 @@ enum {
     FIND_FULL_WORD
 };
 
-void scroll_text_view_to_cursor(GtkTextView *view);
-
 void
 after_find_dialog_realize              (GtkWidget       *widget,
                                         gpointer         user_data);
@@ -82,16 +80,5 @@ on_find_replace_all_clicked            (GtkButton       *button,
 void
 on_xfind_replace_all_clicked           (GtkButton       *button,
                                         gpointer         user_data);
-                                        
-void find(GtkTextBuffer *buffer, const gchar *text, gboolean ignore_case,
-  gboolean wrap, gboolean reverse, int algorithm);
-gboolean find_next(const gchar *search_text, GtkTextIter *search_from,
-  GtkTextIter *match_start, GtkTextIter *match_end, gboolean ignore_case,
-  gboolean reverse, int algorithm);
-int replace_all(GtkTextBuffer *buffer, const gchar *search_text,
-  const gchar *replace_text, gboolean ignore_case, int algorithm);
-void replace(GtkTextBuffer *buffer, const gchar *search_text,
-  const gchar *replace_text, gboolean ignore_case, gboolean wrap,
-  gboolean reverse, int algorithm, gboolean find_next);
   
 #endif

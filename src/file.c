@@ -24,17 +24,145 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <string.h>
 
-#include "story.h"
 #include "support.h"
 #include "callbacks.h"
-#include "tabsettings.h"
+
 #include "appwindow.h"
-#include "extension.h"
-#include "configfile.h"
-#include "error.h"
 #include "compile.h"
+#include "configfile.h"
+#include "datafile.h"
+#include "error.h"
+#include "extension.h"
+#include "extwindow.h"
 #include "file.h"
 #include "rtf.h"
+#include "story.h"
+#include "tabindex.h"
+#include "tabsettings.h"
+
+/*
+ * FUNCTIONS FOR SETTING UP FILE MONITORS
+ */
+
+static GnomeVFSMonitorHandle *monitor_file(const gchar *filename,
+  GnomeVFSMonitorCallback callback, gpointer data) {
+    GnomeVFSMonitorHandle *retval;
+    GError *err;
+    gchar *file_uri;
+
+    if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
+        /* fail discreetly */
+        g_warning("Cannot convert project filename to URI: %s", err->message);
+        g_error_free(err);
+        return NULL;
+    }
+    if(gnome_vfs_monitor_add(&retval, file_uri, GNOME_VFS_MONITOR_FILE,
+      callback, data) != GNOME_VFS_OK) {
+        g_warning("Could not start file monitor for %s", file_uri);
+        g_free(file_uri);
+        return NULL;
+    }
+    g_free(file_uri);
+    return retval;
+}
+
+static void project_changed(GnomeVFSMonitorHandle *handle,
+  const gchar *monitor_uri, const gchar *info_uri,
+  GnomeVFSMonitorEventType event_type, gpointer data) {
+    struct story *thestory = (struct story *)data;
+    
+    if(event_type == GNOME_VFS_MONITOR_EVENT_CHANGED
+      || event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
+        /* g_file_set_contents works by deleting and creating */
+        GtkWidget *dialog = gtk_message_dialog_new(
+        (GtkWindow *)thestory->window, GTK_DIALOG_DESTROY_WITH_PARENT,
+        GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
+        "The game's source code has been modified from outside Inform.\n"
+        "Do you want to reload it?");
+        if(gtk_dialog_run((GtkDialog *)dialog) == GTK_RESPONSE_YES) {
+            GError *err = NULL;
+            gchar *filename, *text;
+            
+            /* Read the source */
+            if((filename = g_filename_from_uri(info_uri, NULL, &err)) == NULL) {
+                g_warning("Cannot get filename from URI: %s", err->message);
+                g_error_free(err);
+                gtk_widget_destroy(dialog);
+                return;
+            }
+            if(!g_file_get_contents(filename, &text, NULL, &err)) {
+                error_dialog((GtkWindow *)thestory->window, err,
+                "Could not open the project's source file, '%s'.\n\n"
+                "Make sure that this file has not been deleted or renamed. ",
+                filename);
+                g_error_free(err);
+                gtk_widget_destroy(dialog);
+                g_free(filename);
+                return;
+            }
+    
+            /* Write the source to the source buffer, clearing the undo history */
+            gtk_source_buffer_begin_not_undoable_action(thestory->buffer);
+            gtk_text_buffer_set_text(
+              GTK_TEXT_BUFFER(thestory->buffer), text, -1);
+            gtk_source_buffer_end_not_undoable_action(thestory->buffer);
+            gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(thestory->buffer),
+              FALSE);
+            
+            g_free(filename);
+            g_free(text);
+        }
+        gtk_widget_destroy(dialog);
+    }
+}
+
+static void extension_changed(GnomeVFSMonitorHandle *handle,
+  const gchar *monitor_uri, const gchar *info_uri,
+  GnomeVFSMonitorEventType event_type, gpointer data) {
+    struct extension *ext = (struct extension *)data;
+      
+    if(event_type == GNOME_VFS_MONITOR_EVENT_CHANGED
+      || event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
+        GtkWidget *dialog = gtk_message_dialog_new((GtkWindow *)ext->window,
+        GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
+        "The extension's source code has been modified from outside Inform.\n"
+        "Do you want to reload it?");
+        if(gtk_dialog_run((GtkDialog *)dialog) == GTK_RESPONSE_YES) {
+            GError *err = NULL;
+            gchar *filename, *text;
+            
+            /* Read the source */
+            if((filename = g_filename_from_uri(info_uri, NULL, &err)) == NULL) {
+                g_warning("Cannot get filename from URI: %s", err->message);
+                g_error_free(err);
+                gtk_widget_destroy(dialog);
+                return;
+            }
+            if(!g_file_get_contents(filename, &text, NULL, &err)) {
+                error_dialog((GtkWindow *)ext->window, err,
+                "Could not open the extension '%s': ", filename);
+                g_error_free(err);
+                gtk_widget_destroy(dialog);
+                g_free(filename);
+                return;
+            }
+        
+            /* Put the text in the source buffer, clearing the undo history */
+            gtk_source_buffer_begin_not_undoable_action(ext->buffer);
+            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(ext->buffer), text, -1);
+            gtk_source_buffer_end_not_undoable_action(ext->buffer);
+            gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ext->buffer), FALSE);
+            
+            g_free(filename);
+            g_free(text);
+        }
+        gtk_widget_destroy(dialog);
+    }
+}
+
+/*
+ * FUNCTIONS FOR SAVING AND LOADING STUFF
+ */
 
 /* If the document is not saved, ask the user whether he/she wants to save it.
 Returns TRUE if we can proceed, FALSE if the user cancelled. */
@@ -85,6 +213,7 @@ struct story *open_project(gchar *directory) {
 
     /* Read the source */
     filename = g_build_filename(source_dir, "story.ni", NULL);
+    g_free(source_dir);
     if(!g_file_get_contents(filename, &text, NULL, &err)) {
         error_dialog(NULL, err, "Could not open the project's source file, "
           "'%s'.\n\nMake sure that this file has not been deleted or renamed. ",
@@ -225,15 +354,14 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     
     /* Write text to file */
     filename = g_build_filename(source_dir, "story.ni", NULL);
+    g_free(source_dir);
     if(!g_file_set_contents(filename, text, -1, &err)) {
         error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(thiswidget)), err,
           "Error saving file '%s': ", filename);
-        g_free(source_dir);
         g_free(filename);
         g_free(text);
         return;
     }
-    g_free(source_dir);
     g_free(text);
 
     /* Start file monitoring again */
@@ -742,119 +870,5 @@ void delete_build_files(struct story *thestory) {
             delete_from_project_dir(thestory, "Index", "Scenes.html");
             delete_from_project_dir(thestory, "Index", "World.html");
         }
-    }
-}
-
-GnomeVFSMonitorHandle *monitor_file(const gchar *filename,
-  GnomeVFSMonitorCallback callback, gpointer data) {
-    GnomeVFSMonitorHandle *retval;
-    GError *err;
-    gchar *file_uri;
-
-    if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
-        /* fail discreetly */
-        g_warning("Cannot convert project filename to URI: %s", err->message);
-        g_error_free(err);
-        return NULL;
-    }
-    if(gnome_vfs_monitor_add(&retval, file_uri, GNOME_VFS_MONITOR_FILE,
-      callback, data) != GNOME_VFS_OK) {
-        g_warning("Could not start file monitor for %s", file_uri);
-        g_free(file_uri);
-        return NULL;
-    }
-    g_free(file_uri);
-    return retval;
-}
-
-void project_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
-  const gchar *info_uri, GnomeVFSMonitorEventType event_type, gpointer data) {
-    struct story *thestory = (struct story *)data;
-    
-    if(event_type == GNOME_VFS_MONITOR_EVENT_CHANGED
-      || event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
-        /* g_file_set_contents works by deleting and creating */
-        GtkWidget *dialog = gtk_message_dialog_new(
-        (GtkWindow *)thestory->window, GTK_DIALOG_DESTROY_WITH_PARENT,
-        GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
-        "The game's source code has been modified from outside Inform.\n"
-        "Do you want to reload it?");
-        if(gtk_dialog_run((GtkDialog *)dialog) == GTK_RESPONSE_YES) {
-            GError *err = NULL;
-            gchar *filename, *text;
-            
-            /* Read the source */
-            if((filename = g_filename_from_uri(info_uri, NULL, &err)) == NULL) {
-                g_warning("Cannot get filename from URI: %s", err->message);
-                g_error_free(err);
-                gtk_widget_destroy(dialog);
-                return;
-            }
-            if(!g_file_get_contents(filename, &text, NULL, &err)) {
-                error_dialog((GtkWindow *)thestory->window, err,
-                "Could not open the project's source file, '%s'.\n\n"
-                "Make sure that this file has not been deleted or renamed. ",
-                filename);
-                g_error_free(err);
-                gtk_widget_destroy(dialog);
-                g_free(filename);
-                return;
-            }
-    
-            /* Write the source to the source buffer, clearing the undo history */
-            gtk_source_buffer_begin_not_undoable_action(thestory->buffer);
-            gtk_text_buffer_set_text(
-              GTK_TEXT_BUFFER(thestory->buffer), text, -1);
-            gtk_source_buffer_end_not_undoable_action(thestory->buffer);
-            gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(thestory->buffer),
-              FALSE);
-            
-            g_free(filename);
-            g_free(text);
-        }
-        gtk_widget_destroy(dialog);
-    }
-}
-
-void extension_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
-  const gchar *info_uri, GnomeVFSMonitorEventType event_type, gpointer data) {
-    struct extension *ext = (struct extension *)data;
-      
-    if(event_type == GNOME_VFS_MONITOR_EVENT_CHANGED
-      || event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
-        GtkWidget *dialog = gtk_message_dialog_new((GtkWindow *)ext->window,
-        GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
-        "The extension's source code has been modified from outside Inform.\n"
-        "Do you want to reload it?");
-        if(gtk_dialog_run((GtkDialog *)dialog) == GTK_RESPONSE_YES) {
-            GError *err = NULL;
-            gchar *filename, *text;
-            
-            /* Read the source */
-            if((filename = g_filename_from_uri(info_uri, NULL, &err)) == NULL) {
-                g_warning("Cannot get filename from URI: %s", err->message);
-                g_error_free(err);
-                gtk_widget_destroy(dialog);
-                return;
-            }
-            if(!g_file_get_contents(filename, &text, NULL, &err)) {
-                error_dialog((GtkWindow *)ext->window, err,
-                "Could not open the extension '%s': ", filename);
-                g_error_free(err);
-                gtk_widget_destroy(dialog);
-                g_free(filename);
-                return;
-            }
-        
-            /* Put the text in the source buffer, clearing the undo history */
-            gtk_source_buffer_begin_not_undoable_action(ext->buffer);
-            gtk_text_buffer_set_text(GTK_TEXT_BUFFER(ext->buffer), text, -1);
-            gtk_source_buffer_end_not_undoable_action(ext->buffer);
-            gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ext->buffer), FALSE);
-            
-            g_free(filename);
-            g_free(text);
-        }
-        gtk_widget_destroy(dialog);
     }
 }

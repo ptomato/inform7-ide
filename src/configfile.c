@@ -20,25 +20,11 @@
 #include <gconf/gconf-client.h>
 
 #include "configfile.h"
-#include "prefs.h"
 #include "error.h"
+#include "prefs.h"
 
 #define GCONF_BASE_PATH "/apps/gnome-inform7"
 /* The above are not directory separators, so they should be slashes! */
-#define EXTENSIONS_BASE_PATH "Inform", "Extensions"
-
-/* Returns the directory for installed extensions, with the author and name path
-components tacked on if they are not NULL. Returns an allocated string which
-must be freed. */
-gchar *get_extension_path(const gchar *author, const gchar *extname) {
-    if(!author)
-        return g_build_filename(g_get_home_dir(), EXTENSIONS_BASE_PATH, NULL);
-    if(!extname)
-        return g_build_filename(g_get_home_dir(), EXTENSIONS_BASE_PATH, author,
-          NULL);
-    return g_build_filename(g_get_home_dir(), EXTENSIONS_BASE_PATH, author,
-      extname, NULL);
-}
 
 /* Check if the config keys exist and if not, set them to defaults. */
 /* This could probably be done a lot better with a GConf schema, but,
@@ -95,18 +81,6 @@ void check_config_file() {
         config_file_set_bool("Debugging", "ShowLog", FALSE);
         config_file_set_bool("Debugging", "RebuildCompiler", FALSE);
     }
-}
-
-/* Check to see if all the external binaries are in the path and the wine
-directory is set up correctly */
-gboolean check_external_binaries() {
-    if(!g_find_program_in_path("frotz")) {
-        error_dialog(NULL, NULL, "The 'frotz' binary was not found in your "
-          "path. You must have the Frotz interpreter installed in order to use "
-          "GnomeInform 7.");
-        return FALSE;
-    }
-    return TRUE;
 }
 
 /* The next six functions are wrappers for GConf setting and getting functions,

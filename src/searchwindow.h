@@ -22,22 +22,6 @@
 #include <gnome.h>
 #include "story.h"
 
-enum {
-    RESULT_TYPE_PROJECT,
-    RESULT_TYPE_EXTENSION,
-    RESULT_TYPE_DOCUMENTATION
-};
-
-typedef struct {
-    gchar *context;
-    gchar *source_sort;
-    gchar *source_location;
-    gchar *source_file;
-    int result_type;
-    int lineno;
-} Result;
-
-void result_free(Result *foo);
 GList *search_doc(const gchar *text, gboolean ignore_case, int algorithm);
 GList *search_project(const gchar *text, struct story *thestory,
   gboolean ignore_case, int algorithm);

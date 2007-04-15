@@ -20,12 +20,12 @@
 #include <string.h>
 #include <libgnomevfs/gnome-vfs.h>
 
-#include "extension.h"
 #include "interface.h"
-#include "tabsource.h"
 #include "support.h"
+
+#include "extension.h"
+#include "tabsource.h"
 #include "windowlist.h"
-#include "prefs.h"
 
 static GSList *extlist = NULL;
 

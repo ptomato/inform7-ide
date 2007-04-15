@@ -20,14 +20,15 @@
 #include <string.h>
 #include <gtksourceview/gtksourcebuffer.h>
 
-#include "newdialog.h"
 #include "interface.h"
 #include "support.h"
-#include "story.h"
+
 #include "configfile.h"
-#include "extension.h"
-#include "windowlist.h"
 #include "error.h"
+#include "extension.h"
+#include "newdialog.h"
+#include "story.h"
+#include "windowlist.h"
 
 enum {
     TYPE_NOTHING,

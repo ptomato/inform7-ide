@@ -18,12 +18,13 @@
  
 #include <gnome.h>
 
-#include "welcomedialog.h"
 #include "interface.h"
 #include "support.h"
-#include "story.h"
+
+#include "datafile.h"
 #include "file.h"
-#include "configfile.h"
+#include "story.h"
+#include "welcomedialog.h"
 
 void
 after_welcome_dialog_realize           (GtkWidget       *widget,

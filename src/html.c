@@ -20,21 +20,29 @@
 #include <gtkhtml/gtkhtml.h>
 #include <gtkhtml/gtkhtml-stream.h>
 
-#include "html.h"
-#include "appwindow.h"
-#include "tabsource.h"
-#include "story.h"
 #include "support.h"
-#include "prefs.h"
+
+#include "appwindow.h"
+#include "datafile.h"
 #include "error.h"
+#include "html.h"
+#include "prefs.h"
+#include "story.h"
+#include "tabsource.h"
 
 /* GtkHTML ignores and erases <script> tags; so, when we load an URL we keep the
 source and store it in this table, so we can refer back to the original
 source. Stupid and ugly, but necessary. */
 static GSList *source_table = NULL;
 
+/* Structure representing an entry in the HTML source table */
+struct source_entry {
+    GtkHTML *html;
+    gchar *source;
+};
+
 /* Add the source of a HTML page to the table, with the GtkHTML widget as key*/
-void source_table_add(GtkHTML *html, gchar *source) {
+static void source_table_add(GtkHTML *html, gchar *source) {
     g_return_if_fail(html != NULL);
     g_return_if_fail(source != NULL);
     
@@ -45,7 +53,7 @@ void source_table_add(GtkHTML *html, gchar *source) {
 }
 
 /* Remove an entry from the HTML source table */
-void source_table_remove(GtkHTML *html) {
+static void source_table_remove(GtkHTML *html) {
     g_return_if_fail(html != NULL);
     
     GSList *iter;
@@ -59,7 +67,7 @@ void source_table_remove(GtkHTML *html) {
 
 /* The GtkHTML widget is now displaying another HTML file, change it in the
 table */
-void source_table_update(GtkHTML *html, gchar *source) {
+static void source_table_update(GtkHTML *html, gchar *source) {
     g_return_if_fail(html != NULL);
     g_return_if_fail(source != NULL);
     
@@ -72,7 +80,7 @@ void source_table_update(GtkHTML *html, gchar *source) {
 }
 
 /* Get the HTML source from the table */
-gchar *source_table_get(GtkHTML *html) {
+static gchar *source_table_get(GtkHTML *html) {
     g_return_val_if_fail(html != NULL, NULL);
     
     GSList *iter;
@@ -82,71 +90,78 @@ gchar *source_table_get(GtkHTML *html) {
     return NULL;
 }
 
-/* Create a GtkHTML widget and do all the standard stuff that we do to all our
-GtkHTML widgets */
-GtkWidget *create_html(gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
-{
-    GtkWidget *html = gtk_html_new();
-    g_signal_connect(html, "url_requested", G_CALLBACK(on_url_requested), NULL);
-    g_signal_connect(html, "link_clicked", G_CALLBACK(on_link_clicked), NULL);
-    g_signal_connect(html, "destroy", G_CALLBACK(on_html_destroy), NULL);
-    source_table_add(GTK_HTML(html), "");
-    update_font_size(html);
-    return html;
-}
-
-/* Have the html widget display the HTML file in filename */
-void html_load_file(GtkHTML *html, const gchar *filename) {
-    g_return_if_fail(html != NULL);
-    g_return_if_fail(filename != NULL || strlen(filename));
+/* Get the base path of an URL, for relative paths */
+static gchar *get_base_name(const gchar *url) {
+    g_return_val_if_fail(url != NULL, NULL);
     
-    GError *err = NULL;
-    gchar *buf;
+    gchar *newbase = g_malloc(strlen(url));
+    strcpy(newbase, "");
 
-    /* Set the base path for relative paths in the HTML file */
-    gchar *newbase = get_base_name(filename);
-    gtk_html_set_base(html, newbase);
-    g_free(newbase);
-
-    /* Open a stream and write the contents of the file to it */
-    GtkHTMLStream *stream = gtk_html_begin(html);
-    if(g_file_get_contents(filename, &buf, NULL, &err)) {
-        source_table_update(html, buf);
-        gtk_html_write(html, stream, buf, strlen(buf));
-        gtk_html_end(html, stream, GTK_HTML_STREAM_OK);
-        g_free(buf);
-        return;
+    /* here we realize a minuscule improvement in performance by removing
+    redundant directory changes in the base URL; oh, and also we remove the
+    filename from the end */
+    gchar **parts = g_strsplit(url, G_DIR_SEPARATOR_S, 0);
+    gchar **ptr;
+    for(ptr = parts ; *(ptr + 1) ; ptr++) { /*do not copy the last element*/
+        if(strcmp(*ptr, "..")
+          && strcmp(*ptr, ".")
+          && !strcmp(*(ptr + 1), ".."))
+            /* (if this element is not '.' or '..' and the next one is '..') */
+            ptr++; /* skip them */
+        else {
+            g_strlcat(newbase, *ptr, strlen(url));
+            g_strlcat(newbase, G_DIR_SEPARATOR_S, strlen(url));
+        }
     }
-    gtk_html_end(html, stream, GTK_HTML_STREAM_ERROR);
-    error_dialog(NULL, err, "Error opening HTML file '%s': ", filename);
+    g_strfreev(parts);
+    return newbase;
 }
 
-/* Blank the GtkHTML widget */
-void html_load_blank(GtkHTML *html) {
-    g_return_if_fail(html != NULL);
+/* Find the code to be pasted within one of the pasteCode134, etc. javascript
+functions */
+static gchar *javascript_find_paste_code(const gchar *source,
+const gchar *function_call) {
+    g_return_val_if_fail(source != NULL, NULL);
+    g_return_val_if_fail(function_call != NULL, NULL);
     
-    GtkHTMLStream *stream = gtk_html_begin(html);
-    gtk_html_end(html, stream, GTK_HTML_STREAM_OK);
-    source_table_update(html, "");
-}
+    gchar *retval;
+    gchar *function_name = g_strdup(function_call);
+    
+    /* erase everything after the first parenthesis as arguments */
+    gchar *args;
+    if((args = strchr(function_name, '(')))
+        *args = '\0';
 
-/* Reload the current page from the "cache" */
-void html_refresh(GtkHTML *html) {
-    g_return_if_fail(html != NULL);
+    gchar *buf = g_strdup(source);
+    gchar *beginptr = strstr(buf, "<script language=\"JavaScript\">");
+    if(beginptr == NULL)
+        return NULL;
+    beginptr += strlen("<script language=\"JavaScript\">");
+    gchar *endptr = strstr(beginptr, "</script>");
+    ptrdiff_t length = endptr - beginptr;
+    gchar *result = g_strndup(beginptr, length);
     
-    GtkHTMLStream *stream = gtk_html_begin(html);
-    gchar *buf = source_table_get(html);
-    gtk_html_write(html, stream, buf, strlen(buf));  
-    gtk_html_end(html, stream, GTK_HTML_STREAM_OK);
+    if(strstr(result, function_name)) {
+        gchar *temp = g_strdup(strstr(result, "pasteCode('")
+          + strlen("pasteCode('"));
+        *(strstr(temp, "');")) = '\0';
+        retval = g_strcompress(temp);
+        g_free(temp);
+    } else
+        retval = javascript_find_paste_code(endptr, function_call);
+    
+    g_free(result);
+    g_free(function_name);
+    g_free(buf);
+    return retval;
 }
 
 /* This is the function responsible for getting the data from the URLs. There is
 already a stream opened at this point, so we do not handle anything that does
 not involve data being written to the GtkHTML widget. That should already have
 been done in on_link_clicked. */
-void on_url_requested(GtkHTML *html, const gchar *url, GtkHTMLStream *handle,
-gpointer data) {
+static void on_url_requested(GtkHTML *html, const gchar *url,
+GtkHTMLStream *handle, gpointer data) {
     g_return_if_fail(html != NULL);
     g_return_if_fail(url != NULL);
     g_return_if_fail(handle != NULL);
@@ -211,7 +226,8 @@ gpointer data) {
 /* This function is called when the user clicks on a link. It handles the
 different protocols used by the Inform help browser and, if necessary,
 eventually passes control to on_url_requested */
-void on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data) {
+static void on_link_clicked(GtkHTML *html, const gchar *requested_url,
+  gpointer data) {
     g_return_if_fail(html != NULL);
     g_return_if_fail(requested_url != NULL);
     
@@ -353,73 +369,66 @@ void on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data) {
 }
 
 /* Destructor which removes the entry from the source table */
-void on_html_destroy(GtkObject *widget, gpointer data)
+static void on_html_destroy(GtkObject *widget, gpointer data)
 {
     source_table_remove(GTK_HTML(widget));
 }
 
-/* Get the base path of an URL, for relative paths */
-gchar *get_base_name(const gchar *url) {
-    g_return_val_if_fail(url != NULL, NULL);
-    
-    gchar *newbase = g_malloc(strlen(url));
-    strcpy(newbase, "");
-
-    /* here we realize a minuscule improvement in performance by removing
-    redundant directory changes in the base URL; oh, and also we remove the
-    filename from the end */
-    gchar **parts = g_strsplit(url, G_DIR_SEPARATOR_S, 0);
-    gchar **ptr;
-    for(ptr = parts ; *(ptr + 1) ; ptr++) { /*do not copy the last element*/
-        if(strcmp(*ptr, "..")
-          && strcmp(*ptr, ".")
-          && !strcmp(*(ptr + 1), ".."))
-            /* (if this element is not '.' or '..' and the next one is '..') */
-            ptr++; /* skip them */
-        else {
-            g_strlcat(newbase, *ptr, strlen(url));
-            g_strlcat(newbase, G_DIR_SEPARATOR_S, strlen(url));
-        }
-    }
-    g_strfreev(parts);
-    return newbase;
+/* Create a GtkHTML widget and do all the standard stuff that we do to all our
+GtkHTML widgets */
+GtkWidget *create_html(gchar *widget_name, gchar *string1, gchar *string2,
+                gint int1, gint int2)
+{
+    GtkWidget *html = gtk_html_new();
+    g_signal_connect(html, "url_requested", G_CALLBACK(on_url_requested), NULL);
+    g_signal_connect(html, "link_clicked", G_CALLBACK(on_link_clicked), NULL);
+    g_signal_connect(html, "destroy", G_CALLBACK(on_html_destroy), NULL);
+    source_table_add(GTK_HTML(html), "");
+    update_font_size(html);
+    return html;
 }
 
-/* Find the code to be pasted within one of the pasteCode134, etc. javascript
-functions */
-gchar *javascript_find_paste_code(const gchar *source,
-const gchar *function_call) {
-    g_return_val_if_fail(source != NULL, NULL);
-    g_return_val_if_fail(function_call != NULL, NULL);
+/* Have the html widget display the HTML file in filename */
+void html_load_file(GtkHTML *html, const gchar *filename) {
+    g_return_if_fail(html != NULL);
+    g_return_if_fail(filename != NULL || strlen(filename));
     
-    gchar *retval;
-    gchar *function_name = g_strdup(function_call);
-    
-    /* erase everything after the first parenthesis as arguments */
-    gchar *args;
-    if((args = strchr(function_name, '(')))
-        *args = '\0';
+    GError *err = NULL;
+    gchar *buf;
 
-    gchar *buf = g_strdup(source);
-    gchar *beginptr = strstr(buf, "<script language=\"JavaScript\">");
-    if(beginptr == NULL)
-        return NULL;
-    beginptr += strlen("<script language=\"JavaScript\">");
-    gchar *endptr = strstr(beginptr, "</script>");
-    ptrdiff_t length = endptr - beginptr;
-    gchar *result = g_strndup(beginptr, length);
+    /* Set the base path for relative paths in the HTML file */
+    gchar *newbase = get_base_name(filename);
+    gtk_html_set_base(html, newbase);
+    g_free(newbase);
+
+    /* Open a stream and write the contents of the file to it */
+    GtkHTMLStream *stream = gtk_html_begin(html);
+    if(g_file_get_contents(filename, &buf, NULL, &err)) {
+        source_table_update(html, buf);
+        gtk_html_write(html, stream, buf, strlen(buf));
+        gtk_html_end(html, stream, GTK_HTML_STREAM_OK);
+        g_free(buf);
+        return;
+    }
+    gtk_html_end(html, stream, GTK_HTML_STREAM_ERROR);
+    error_dialog(NULL, err, "Error opening HTML file '%s': ", filename);
+}
+
+/* Blank the GtkHTML widget */
+void html_load_blank(GtkHTML *html) {
+    g_return_if_fail(html != NULL);
     
-    if(strstr(result, function_name)) {
-        gchar *temp = g_strdup(strstr(result, "pasteCode('")
-          + strlen("pasteCode('"));
-        *(strstr(temp, "');")) = '\0';
-        retval = g_strcompress(temp);
-        g_free(temp);
-    } else
-        retval = javascript_find_paste_code(endptr, function_call);
+    GtkHTMLStream *stream = gtk_html_begin(html);
+    gtk_html_end(html, stream, GTK_HTML_STREAM_OK);
+    source_table_update(html, "");
+}
+
+/* Reload the current page from the "cache" */
+void html_refresh(GtkHTML *html) {
+    g_return_if_fail(html != NULL);
     
-    g_free(result);
-    g_free(function_name);
-    g_free(buf);
-    return retval;
+    GtkHTMLStream *stream = gtk_html_begin(html);
+    gchar *buf = source_table_get(html);
+    gtk_html_write(html, stream, buf, strlen(buf));  
+    gtk_html_end(html, stream, GTK_HTML_STREAM_OK);
 }

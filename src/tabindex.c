@@ -18,13 +18,14 @@
  
 #include <gnome.h>
 
-#include "html.h"
-#include "appwindow.h"
-#include "story.h"
 #include "support.h"
 
+#include "appwindow.h"
+#include "html.h"
+#include "story.h"
+
 /* Load blank pages in all the index tabs */
-void blank_index_tabs(GtkWidget *thiswidget) {
+/*void blank_index_tabs(GtkWidget *thiswidget) {
     html_load_blank(GTK_HTML(lookup_widget(thiswidget, "actions_l")));
     html_load_blank(GTK_HTML(lookup_widget(thiswidget, "actions_r")));
     html_load_blank(GTK_HTML(lookup_widget(thiswidget, "contents_l")));
@@ -39,11 +40,11 @@ void blank_index_tabs(GtkWidget *thiswidget) {
     html_load_blank(GTK_HTML(lookup_widget(thiswidget, "scenes_r")));
     html_load_blank(GTK_HTML(lookup_widget(thiswidget, "world_l")));
     html_load_blank(GTK_HTML(lookup_widget(thiswidget, "world_r")));
-}
+}*/
 
 /* Idle function to check whether an index file exists and to load it, or a
 blank page if it doesn't exist. */
-gboolean check_and_load_idle(gpointer thestory) {
+static gboolean check_and_load_idle(gpointer thestory) {
     static int counter = TAB_INDEX_FIRST;
     GtkWidget *widget = ((struct story *)thestory)->window;
     gchar *filename = NULL;

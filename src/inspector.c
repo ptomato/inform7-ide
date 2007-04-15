@@ -18,13 +18,14 @@
 
 #include <gnome.h>
 
-#include "inspector.h"
-#include "configfile.h"
 #include "support.h"
-#include "story.h"
-#include "searchwindow.h"
+
 #include "appwindow.h"
+#include "configfile.h"
 #include "findreplace.h"
+#include "inspector.h"
+#include "searchwindow.h"
+#include "story.h"
 #include "tabsource.h"
 
 /* The global pointer to the inspector window */
@@ -164,24 +165,8 @@ on_headings_row_activated              (GtkTreeView     *treeview,
     jump_to_line(inspecting->window, lineno);
 }
 
-
-/* Show or hide the inspectors according to the user's preferences */
-void update_inspectors() {
-    /* Show the message that no inspectors are showing; then, if one is showing,
-    hide it again */
-    gtk_widget_show(lookup_widget(inspector_window, "no_inspector"));
-    show_inspector(INSPECTOR_NOTES,
-      config_file_get_bool("Inspectors", "Notes"));
-    show_inspector(INSPECTOR_HEADINGS,
-      config_file_get_bool("Inspectors", "Headings"));
-    show_inspector(INSPECTOR_SKEIN,
-      config_file_get_bool("Inspectors", "Skein"));
-    show_inspector(INSPECTOR_SEARCH_FILES,
-      config_file_get_bool("Inspectors", "Search"));
-}
-
 /* Show or hide the inspector in the inspector window */
-void show_inspector(int which, gboolean show) {
+static void show_inspector(int which, gboolean show) {
     GtkWidget *inspector = NULL;
     switch(which) {
       case INSPECTOR_NOTES:
@@ -207,6 +192,20 @@ void show_inspector(int which, gboolean show) {
         gtk_widget_hide(inspector);
 }
 
+/* Show or hide the inspectors according to the user's preferences */
+void update_inspectors() {
+    /* Show the message that no inspectors are showing; then, if one is showing,
+    hide it again */
+    gtk_widget_show(lookup_widget(inspector_window, "no_inspector"));
+    show_inspector(INSPECTOR_NOTES,
+      config_file_get_bool("Inspectors", "Notes"));
+    show_inspector(INSPECTOR_HEADINGS,
+      config_file_get_bool("Inspectors", "Headings"));
+    show_inspector(INSPECTOR_SKEIN,
+      config_file_get_bool("Inspectors", "Skein"));
+    show_inspector(INSPECTOR_SEARCH_FILES,
+      config_file_get_bool("Inspectors", "Search"));
+}
 
 /* Display the data from the story in the inspector. (Do not check whether we
    are already displaying the data from the same story, because this function is
@@ -228,7 +227,6 @@ void refresh_inspector(struct story *thestory) {
         g_idle_add((GSourceFunc)reindex_headings, NULL);
     }
 }
-
 
 /* Get the position of the inspector window and save it for the next run */
 void save_inspector_window_position() {

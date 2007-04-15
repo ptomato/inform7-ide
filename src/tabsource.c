@@ -22,26 +22,102 @@
 #include <gtksourceview/gtksourcelanguage.h>
 #include <gtksourceview/gtksourcelanguagesmanager.h>
 
-#include "tabsource.h"
+#include "support.h"
+
 #include "appwindow.h"
 #include "colorscheme.h"
-#include "story.h"
-#include "support.h"
-#include "prefs.h"
 #include "configfile.h"
+#include "datafile.h"
 #include "inspector.h"
+#include "prefs.h"
+#include "story.h"
+#include "tabsource.h"
 
-/* Create our default source view */
-GtkWidget*
-source_create (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
-{
-    GtkWidget *source = gtk_source_view_new();
-    gtk_widget_set_name(source, widget_name);
-    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(source), GTK_WRAP_WORD);
-    update_font(source);
-    update_tabs(GTK_SOURCE_VIEW(source));
-    return source;
+static void after_source_buffer_delete_range(GtkTextBuffer *buffer,
+  GtkTextIter *start, GtkTextIter *end, gpointer data) {
+    if(!config_file_get_bool("Syntax", "Intelligence"))
+        return;
+    /* Do the extra highlighting anytime text is deleted, because running after
+    the default signal handler means we have no access to the deleted text. */
+    if(config_file_get_bool("Syntax", "Highlighting"))
+        g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
+    /* Reindex the section headings now for the same reason */
+    if(config_file_get_bool("Syntax", "IntelligentIndexInspector"))
+        g_idle_add((GSourceFunc)reindex_headings, NULL);
+}
+
+static void after_source_buffer_insert_text(GtkTextBuffer *buffer,
+  GtkTextIter *location, gchar *text, gint len, gpointer data) {
+    /* If the inserted text ended in a newline, then do auto-indenting */
+    /* We could use gtk_source_view_set_auto_indent(), but that auto-indents
+      leading spaces as well as tabs, and we don't want that */
+    if(g_str_has_suffix(text, "\n") &&
+      config_file_get_bool("Syntax", "AutoIndent")) {
+        int tab_count = 0;
+        GtkTextIter prev_line = *location;
+        gtk_text_iter_backward_line(&prev_line);
+        while(gtk_text_iter_get_char(&prev_line) == '\t') {
+            gtk_text_iter_forward_char(&prev_line);
+            tab_count++;
+        }
+        gchar *tabs = g_strnfill(tab_count, '\t');
+        gtk_text_buffer_insert_at_cursor(buffer, tabs, -1);
+    }
+    
+    /* Return after that if we are not doing intelligent symbol following */    
+    if(!config_file_get_bool("Syntax", "Intelligence"))
+        return;
+    
+    /* if the inserted text contains a [, ] or ", then the highlighting for the
+    markup brackets may have changed, so redo the extra highlighting */
+    if(config_file_get_bool("Syntax", "Highlighting") &&
+      (strchr(text, '[') || strchr(text, ']') || strchr(text, '\"'))) {
+        g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
+    }
+    
+    /* For any text, a section heading might have been entered or changed, so
+    reindex the section headings */
+    if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
+        g_idle_add((GSourceFunc)reindex_headings, NULL);
+    }
+    
+    /* If the text ends with a space, check whether it is a section heading that
+    needs auto-numbering */
+    if(config_file_get_bool("Syntax", "AutoNumberSections")) {
+        if(g_str_has_suffix(text, " ")) {
+            gint line = gtk_text_iter_get_line(location);
+            GtkTextIter line_start;
+            gtk_text_buffer_get_iter_at_line(buffer, &line_start, line);
+            GtkTextIter prev_line = line_start;
+            gtk_text_iter_backward_line(&prev_line);
+            gchar *line_text = gtk_text_iter_get_text(&line_start, location);
+            gchar *lcase = g_utf8_strdown(line_text, -1);
+            
+            if(gtk_text_iter_get_char(&prev_line) == '\n' /*blank line before*/
+              && !(strcmp(lcase, "volume ") && strcmp(lcase, "book ")
+              && strcmp(lcase, "part ") && strcmp(lcase, "chapter ")
+              && strcmp(lcase, "section "))) {
+                /* Count all this as one action for undo */
+                gtk_text_buffer_begin_user_action(buffer);
+                gtk_text_buffer_insert(buffer, location, "0 - ", -1);
+                renumber_sections(buffer);
+                gtk_text_buffer_end_user_action(buffer);
+            }
+            
+            g_free(line_text);
+            g_free(lcase);
+
+            /* For some reason renumber_sections moves the cursor to the start
+            of the next line; this counteracts that */
+            GtkTextIter cursor;
+            GtkTextMark *mark = gtk_text_buffer_get_insert(buffer);
+            gtk_text_buffer_get_iter_at_mark(buffer, &cursor, mark);
+            if(gtk_text_iter_starts_line(&cursor)) {
+                gtk_text_iter_backward_char(&cursor);
+                gtk_text_buffer_place_cursor(buffer, &cursor);
+            }
+        }
+    }
 }
 
 GtkTextTag *create_string_markup_tag() {
@@ -136,93 +212,6 @@ void jump_to_line(GtkWidget *widget, gint line) {
       gtk_text_buffer_get_insert(GTK_TEXT_BUFFER(thestory->buffer)),
       0.25, FALSE, 0.0, 0.0);
     gtk_widget_grab_focus(view);
-}
-
-void after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start,
-  GtkTextIter *end, gpointer data) {
-    if(!config_file_get_bool("Syntax", "Intelligence"))
-        return;
-    /* Do the extra highlighting anytime text is deleted, because running after
-    the default signal handler means we have no access to the deleted text. */
-    if(config_file_get_bool("Syntax", "Highlighting"))
-        g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
-    /* Reindex the section headings now for the same reason */
-    if(config_file_get_bool("Syntax", "IntelligentIndexInspector"))
-        g_idle_add((GSourceFunc)reindex_headings, NULL);
-}
-
-void after_source_buffer_insert_text(GtkTextBuffer *buffer,
-  GtkTextIter *location, gchar *text, gint len, gpointer data) {
-    /* If the inserted text ended in a newline, then do auto-indenting */
-    /* We could use gtk_source_view_set_auto_indent(), but that auto-indents
-      leading spaces as well as tabs, and we don't want that */
-    if(g_str_has_suffix(text, "\n") &&
-      config_file_get_bool("Syntax", "AutoIndent")) {
-        int tab_count = 0;
-        GtkTextIter prev_line = *location;
-        gtk_text_iter_backward_line(&prev_line);
-        while(gtk_text_iter_get_char(&prev_line) == '\t') {
-            gtk_text_iter_forward_char(&prev_line);
-            tab_count++;
-        }
-        gchar *tabs = g_strnfill(tab_count, '\t');
-        gtk_text_buffer_insert_at_cursor(buffer, tabs, -1);
-    }
-    
-    /* Return after that if we are not doing intelligent symbol following */    
-    if(!config_file_get_bool("Syntax", "Intelligence"))
-        return;
-    
-    /* if the inserted text contains a [, ] or ", then the highlighting for the
-    markup brackets may have changed, so redo the extra highlighting */
-    if(config_file_get_bool("Syntax", "Highlighting") &&
-      (strchr(text, '[') || strchr(text, ']') || strchr(text, '\"'))) {
-        g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
-    }
-    
-    /* For any text, a section heading might have been entered or changed, so
-    reindex the section headings */
-    if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
-        g_idle_add((GSourceFunc)reindex_headings, NULL);
-    }
-    
-    /* If the text ends with a space, check whether it is a section heading that
-    needs auto-numbering */
-    if(config_file_get_bool("Syntax", "AutoNumberSections")) {
-        if(g_str_has_suffix(text, " ")) {
-            gint line = gtk_text_iter_get_line(location);
-            GtkTextIter line_start;
-            gtk_text_buffer_get_iter_at_line(buffer, &line_start, line);
-            GtkTextIter prev_line = line_start;
-            gtk_text_iter_backward_line(&prev_line);
-            gchar *line_text = gtk_text_iter_get_text(&line_start, location);
-            gchar *lcase = g_utf8_strdown(line_text, -1);
-            
-            if(gtk_text_iter_get_char(&prev_line) == '\n' /*blank line before*/
-              && !(strcmp(lcase, "volume ") && strcmp(lcase, "book ")
-              && strcmp(lcase, "part ") && strcmp(lcase, "chapter ")
-              && strcmp(lcase, "section "))) {
-                /* Count all this as one action for undo */
-                gtk_text_buffer_begin_user_action(buffer);
-                gtk_text_buffer_insert(buffer, location, "0 - ", -1);
-                renumber_sections(buffer);
-                gtk_text_buffer_end_user_action(buffer);
-            }
-            
-            g_free(line_text);
-            g_free(lcase);
-
-            /* For some reason renumber_sections moves the cursor to the start
-            of the next line; this counteracts that */
-            GtkTextIter cursor;
-            GtkTextMark *mark = gtk_text_buffer_get_insert(buffer);
-            gtk_text_buffer_get_iter_at_mark(buffer, &cursor, mark);
-            if(gtk_text_iter_starts_line(&cursor)) {
-                gtk_text_iter_backward_char(&cursor);
-                gtk_text_buffer_place_cursor(buffer, &cursor);
-            }
-        }
-    }
 }
 
 
