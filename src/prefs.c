@@ -299,12 +299,16 @@ on_prefs_dialog_realize                (GtkWidget       *widget,
     trash = lookup_widget(widget, "prefs_intelligent_inspector_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Syntax", "IntelligentIndexInspector"));
+    if(!config_file_get_bool("Syntax", "Intelligence"))
+        gtk_widget_set_sensitive(trash, FALSE);
     trash = lookup_widget(widget, "prefs_auto_indent_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Syntax", "AutoIndent"));
     trash = lookup_widget(widget, "prefs_auto_number_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Syntax", "AutoNumberSections"));
+    if(!config_file_get_bool("Syntax", "Intelligence"))
+        gtk_widget_set_sensitive(trash, FALSE);
     trash = lookup_widget(widget, "prefs_author");
     scratch = config_file_get_string("User", "Name");
     gtk_entry_set_text(GTK_ENTRY(trash), scratch);

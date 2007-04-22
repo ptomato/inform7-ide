@@ -39,11 +39,15 @@ static void after_source_buffer_delete_range(GtkTextBuffer *buffer,
         return;
     /* Do the extra highlighting anytime text is deleted, because running after
     the default signal handler means we have no access to the deleted text. */
-    if(config_file_get_bool("Syntax", "Highlighting"))
+    if(config_file_get_bool("Syntax", "Highlighting")) {
         g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
+    }
     /* Reindex the section headings now for the same reason */
-    if(config_file_get_bool("Syntax", "IntelligentIndexInspector"))
-        g_idle_add((GSourceFunc)reindex_headings, NULL);
+    if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
+        g_idle_remove_by_data(GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
+        g_idle_add((GSourceFunc)reindex_headings,
+          GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
+    }
 }
 
 static void after_source_buffer_insert_text(GtkTextBuffer *buffer,
@@ -78,7 +82,9 @@ static void after_source_buffer_insert_text(GtkTextBuffer *buffer,
     /* For any text, a section heading might have been entered or changed, so
     reindex the section headings */
     if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
-        g_idle_add((GSourceFunc)reindex_headings, NULL);
+        g_idle_remove_by_data(GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
+        g_idle_add((GSourceFunc)reindex_headings,
+          GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
     }
     
     /* If the text ends with a space, check whether it is a section heading that
@@ -214,7 +220,8 @@ void jump_to_line(GtkWidget *widget, gint line) {
     gtk_widget_grab_focus(view);
 }
 
-
+/* Idle function that looks for markup inside strings and highlights it with
+GtkSourceBuffer tags */
 gboolean do_extra_highlighting(gpointer data) {
     GtkTextIter iter;
     gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(data), &iter);
@@ -269,7 +276,7 @@ gboolean do_extra_highlighting(gpointer data) {
     return FALSE; /* one-shot idle function */
 }
 
-
+/* Look for all the section headings and renumber them */
 void renumber_sections(GtkTextBuffer *buffer) {
     GtkTextIter pos, end;
     int volume = 1, book = 1, part = 1, chapter = 1, section = 1;

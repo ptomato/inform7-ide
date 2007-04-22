@@ -478,9 +478,9 @@ gchar **theauthor) {
     g_return_val_if_fail(text != NULL, FALSE);
     
     /* Separate the first line of the extension */
-    /* add '\r' to the string to recognize other systems' return characters; but
-    the ni compiler doesn't seem to do that, so neither do we! */
-    gchar *firstline = g_strndup(text, strcspn(text, "\n"));
+    /* '\r' is added to the string to recognize other systems' return
+    characters; even though the ni compiler doesn't seem to do that. */
+    gchar *firstline = g_strndup(text, strcspn(text, "\n\r"));
     
     /* Make sure the file is not binary; there has GOT to be a better way! */
     gchar *pntr;
@@ -735,7 +735,20 @@ void install_extension(const gchar *filename) {
         g_free(text);
         return;
     }
-        
+    
+    /* Change newline separators to \n */
+    if(strstr(text, "\r\n")) {
+        gchar **lines = g_strsplit(text, "\r\n", 0);
+        g_free(text);
+        text = g_strjoinv("\n", lines);
+        g_strfreev(lines);
+    } else if(strstr(text, "\r")) {
+        gchar **lines = g_strsplit(text, "\r", 0);
+        g_free(text);
+        text = g_strjoinv("\n", lines);
+        g_strfreev(lines);
+    }
+    
     /* Copy the extension file to the user's extensions dir */
     if(!g_file_set_contents(targetfile, text, -1, &err)) {
         error_dialog(NULL, NULL, "Error copying file '%s' to '%s': ", filename,

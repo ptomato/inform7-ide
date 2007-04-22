@@ -224,7 +224,9 @@ void refresh_inspector(struct story *thestory) {
       GTK_TREE_VIEW(lookup_widget(inspector_window, "headings")),
       GTK_TREE_MODEL(thestory->headings));
     if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
-        g_idle_add((GSourceFunc)reindex_headings, NULL);
+        g_idle_remove_by_data(GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
+        g_idle_add((GSourceFunc)reindex_headings,
+          GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
     }
 }
 
@@ -241,6 +243,7 @@ void save_inspector_window_position() {
 gboolean reindex_headings(gpointer data) {
     if(!inspecting)
         return FALSE; /* do nothing */
+    
     GtkTextBuffer *buffer = GTK_TEXT_BUFFER(inspecting->buffer);
     GtkTextIter pos, end;
     gtk_text_buffer_get_start_iter(buffer, &pos);

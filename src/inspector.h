@@ -23,6 +23,9 @@
 
 #include "story.h"
 
+/* Identifier for the reindex_headings() idle function */
+#define IDLE_REINDEX_HEADINGS (42)
+
 /* The names of the inspectors */
 enum {
     INSPECTOR_FIRST = 0,
