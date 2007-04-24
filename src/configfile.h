@@ -21,11 +21,7 @@
 
 #include <gnome.h>
 
-gchar *get_extensions_base_path();
-gchar *get_extension_path(const gchar *author, const gchar *extname);
 void check_config_file();
-gboolean check_external_binaries();
-
 void config_file_set_string(gchar *path, gchar *key, const gchar *value);
 gchar *config_file_get_string(gchar *path, gchar *key);
 void config_file_set_int(gchar *path, gchar *key, const gint value);
