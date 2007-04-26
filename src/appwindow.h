@@ -22,6 +22,10 @@
 #include <gnome.h>
 #include <stdarg.h>
 
+#if !GTK_CHECK_VERSION(2,10,0)
+# define SUCKY_GNOME 1
+#endif
+
 /* The names of the tabs in each notebook */
 enum {
     TAB_FIRST = 0,
@@ -87,9 +91,15 @@ void
 on_open_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
+#if !defined(SUCKY_GNOME)
 void
 on_open_recent_activate                (GtkRecentChooser *chooser,
                                         gpointer         user_data);
+#else
+void
+on_open_recent_activate                (GtkFileChooser  *chooser,
+                                        gpointer         user_data);
+#endif
 
 void
 on_install_extension_activate          (GtkMenuItem     *menuitem,

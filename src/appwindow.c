@@ -115,6 +115,7 @@ void display_status_busy(GtkWidget *thiswidget) {
 
 /* Create the Open Recent submenu */
 GtkWidget *create_open_recent_submenu() {
+#if !defined(SUCKY_GNOME)
     GtkWidget *recent_menu = gtk_recent_chooser_menu_new();
     gtk_recent_chooser_set_limit(GTK_RECENT_CHOOSER(recent_menu), -1);
     GtkRecentFilter *filter = gtk_recent_filter_new();
@@ -123,6 +124,9 @@ GtkWidget *create_open_recent_submenu() {
     g_signal_connect(recent_menu, "item-activated",
       G_CALLBACK(on_open_recent_activate), NULL);
     return recent_menu;
+#else
+    return NULL;    /* Will this crash? */
+#endif
 }
 
 /* Create the Open Extension submenu and return it*/
@@ -321,8 +325,9 @@ on_open_activate                       (GtkMenuItem     *menuitem,
     gtk_widget_destroy(dialog);
 }
 
+#if !defined(SUCKY_GNOME)
 void
-on_open_recent_activate                (GtkRecentChooser *chooser,
+on_open_recent_activate                (GtkRecentChooser  *chooser,
                                         gpointer         user_data)
 {
     GError *err;
@@ -352,6 +357,13 @@ on_open_recent_activate                (GtkRecentChooser *chooser,
     g_free(filename);    
     gtk_recent_info_unref(item);
 }
+#else
+void
+on_open_recent_activate                (GtkFileChooser  *chooser,
+                                        gpointer         user_data)
+{
+}
+#endif
 
 void
 on_install_extension_activate          (GtkMenuItem     *menuitem,

@@ -21,6 +21,10 @@
 
 #include <gnome.h>
 
+#if !GTK_CHECK_VERSION(2,10,0)
+# define SUCKY_GNOME 1
+#endif
+
 void
 after_welcome_dialog_realize           (GtkWidget       *widget,
                                         gpointer         user_data);

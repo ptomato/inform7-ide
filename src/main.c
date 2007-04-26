@@ -26,8 +26,8 @@
 # error You need at least GLib 2.8.0 to run this code.
 #endif
 
-#if !GTK_CHECK_VERSION(2,10,0)
-# error You need at least GTK+ 2.10.0 to run this code.
+#if !GTK_CHECK_VERSION(2,8,0)
+# error You need at least GTK+ 2.8.0 to run this code.
 #endif
 
 #include "interface.h"

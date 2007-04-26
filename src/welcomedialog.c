@@ -39,6 +39,7 @@ after_welcome_dialog_realize           (GtkWidget       *widget,
     gtk_widget_modify_style(widget, newstyle);
     
     /* If there is no "last project", make the reopen button inactive */
+#if !defined(SUCKY_GNOME)
     GtkRecentManager *manager = gtk_recent_manager_get_default();
     GList *recent = gtk_recent_manager_get_items(manager);
     GList *iter;
@@ -57,6 +58,7 @@ after_welcome_dialog_realize           (GtkWidget       *widget,
         gtk_recent_info_unref((GtkRecentInfo *)(iter->data));
     }
     g_list_free(recent);
+#endif
 }
 
 void
@@ -112,6 +114,7 @@ void
 on_welcome_reopen_button_clicked       (GtkButton       *button,
                                         gpointer         user_data)
 {
+#if !defined(SUCKY_GNOME)
     GtkRecentManager *manager = gtk_recent_manager_get_default();
     GList *recent = gtk_recent_manager_get_items(manager);
     GList *iter;
@@ -167,4 +170,5 @@ on_welcome_reopen_button_clicked       (GtkButton       *button,
     }
     gtk_widget_show(thestory->window);
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+#endif
 }

@@ -224,6 +224,7 @@ struct story *open_project(gchar *directory) {
     }
     
     /* Update the list of recently used files */
+#if !defined(SUCKY_GNOME)
     GtkRecentManager *manager = gtk_recent_manager_get_default();
     /* Add story.ni as the actual file to open, in case any other application
     wants to open it, and set the display name to the project directory */
@@ -250,6 +251,7 @@ struct story *open_project(gchar *directory) {
         g_free(recent_data);
     }
     g_free(file_uri);
+#endif
     
     /* Watch for changes to the source file */
     thestory->monitor = monitor_file(filename, project_changed,
@@ -577,6 +579,7 @@ struct extension *open_extension(gchar *filename) {
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ext->buffer), FALSE);
     
     /* Update the list of recently used files */
+#if !defined(SUCKY_GNOME)
     GtkRecentManager *manager = gtk_recent_manager_get_default();
     gchar *file_uri;
     if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
@@ -601,6 +604,7 @@ struct extension *open_extension(gchar *filename) {
         g_free(recent_data);
         g_free(file_uri);
     }
+#endif
     
     ext->monitor = monitor_file(filename, extension_changed, (gpointer)ext);
     

@@ -21,6 +21,10 @@
 
 #include <gnome.h>
 
+#if !GTK_CHECK_VERSION(2,10,0)
+# define SUCKY_GNOME 1
+#endif
+
 #include "story.h"
 #include "extension.h"
 
