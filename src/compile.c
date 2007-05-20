@@ -31,6 +31,7 @@
 
 #include "appwindow.h"
 #include "compile.h"
+#include "configfile.h"
 #include "datafile.h"
 #include "error.h"
 #include "html.h"
@@ -139,6 +140,18 @@ static void prepare_ni_compiler(struct story *thestory) {
     display_status_message(thestory->window, "Running Natural Inform...");
 }
 
+/* Display the NI compiler's status in the app status bar */
+static void display_ni_status(gpointer data, gchar *text) {
+    GtkProgressBar *progressbar = (GtkProgressBar *)data;
+    gint percent;
+    gchar *message;
+    
+    if(sscanf(text, " ++ %d%% (%a[^)]", &percent, &message) == 2) {
+        gtk_progress_bar_set_fraction(progressbar, percent / 100.0);
+        gtk_progress_bar_set_text(progressbar, message);
+        free(message);
+    }
+}
 
 /* Start the NI compiler and set up the callback for when it is finished */
 static void start_ni_compiler(struct story *thestory) {
@@ -164,7 +177,13 @@ static void start_ni_compiler(struct story *thestory) {
     commandline[4] = g_strdup("--package");
     commandline[5] = g_strdup(thestory->filename);
 
-    GPid pid = run_command(thestory->filename, commandline, buffer);
+    /* Run the command and pipe its output to the text buffer. Also pipe stderr
+    through a function that analyzes the progress messages and puts them in the
+    progress bar. */
+    GtkProgressBar *progress = gnome_appbar_get_progress(
+      GNOME_APPBAR(lookup_widget(thestory->window, "main_appbar")));
+    GPid pid = run_command_hook(thestory->filename, commandline, buffer,
+                                display_ni_status, progress, FALSE, TRUE);
     /* set up a watch for the exit status */
     g_child_watch_add(pid, finish_ni_compiler, (gpointer)thestory);
     
@@ -175,6 +194,9 @@ static void start_ni_compiler(struct story *thestory) {
 static void finish_ni_compiler(GPid pid, gint status, gpointer data) {
     struct story *thestory = (struct story *)data;
 
+    /* Clear the progress indicator */
+    clear_status(thestory->window);
+        
     /* Get the ni.exe exit code */
     int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
       
@@ -209,25 +231,31 @@ static void finish_ni_compiler(GPid pid, gint status, gpointer data) {
     html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_r")),
       loadfile);
     g_free(loadfile);
-      
-    /* Refresh the debug log */
-    gchar *text;
-    gchar *filename = g_build_filename(thestory->filename, "Build",
-      "Debug log.txt", NULL);
-    /* Ignore errors, just don't show it if it's not there */
-    if(g_file_get_contents(filename, &text, NULL, NULL))
-        gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
-          lookup_widget(thestory->window, "debugging_l"))), text, -1);
-    g_free(text);
-    g_free(filename);
     
-    /* Refresh the I6 code */
-    filename = g_build_filename(thestory->filename, "Build", "auto.inf", NULL);
-    if(g_file_get_contents(filename, &text, NULL, NULL))
-        gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
-          lookup_widget(thestory->window, "inform6_l"))), text, -1);
-    g_free(text);
-    g_free(filename);
+    if(config_file_get_bool("Debugging", "ShowLog")) {
+        /* Update */
+        while(gtk_events_pending())
+            g_main_context_iteration(NULL, FALSE);
+        
+        /* Refresh the debug log */
+        gchar *text;
+        gchar *filename = g_build_filename(thestory->filename, "Build",
+          "Debug log.txt", NULL);
+        /* Ignore errors, just don't show it if it's not there */
+        if(g_file_get_contents(filename, &text, NULL, NULL))
+            gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
+              lookup_widget(thestory->window, "debugging_l"))), text, -1);
+        g_free(text);
+        g_free(filename);
+        
+        /* Refresh the I6 code */
+        filename = g_build_filename(thestory->filename, "Build", "auto.inf", NULL);
+        if(g_file_get_contents(filename, &text, NULL, NULL))
+            gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
+              lookup_widget(thestory->window, "inform6_l"))), text, -1);
+        g_free(text);
+        g_free(filename);
+    }
       
     /* Stop here and show the Errors/Problems tab if there was an error */
     if(exit_code != 0) {
@@ -297,6 +325,11 @@ static gchar *get_i6_compiler_switches(gboolean release, int format) {
     return retval;
 }
 
+static void display_i6_status(gpointer data, gchar *text) {
+    if(strchr(text, '#'))
+        gtk_progress_bar_pulse((GtkProgressBar *)data);
+}
+
 /* Run the I6 compiler */
 static void start_i6_compiler(struct story *thestory) {
     /* Get the text buffer to put our output in */
@@ -317,7 +350,10 @@ static void start_i6_compiler(struct story *thestory) {
     commandline[5] = g_strconcat("output.", get_story_extension(thestory),NULL);
     commandline[6] = NULL;
 
-    GPid child_pid = run_command(working_dir, commandline, buffer);
+    GtkProgressBar *progress = gnome_appbar_get_progress(
+      GNOME_APPBAR(lookup_widget(thestory->window, "main_appbar")));
+    GPid child_pid = run_command_hook(working_dir, commandline, buffer,
+      display_i6_status, progress, TRUE, FALSE);
     /* set up a watch for the exit status */
     g_child_watch_add(child_pid, finish_i6_compiler, (gpointer)thestory);
     
@@ -331,6 +367,9 @@ static void start_i6_compiler(struct story *thestory) {
 static void finish_i6_compiler(GPid pid, gint status, gpointer data) {
     struct story *thestory = (struct story *)data;
 
+    /* Clear the status bar */
+    clear_status(thestory->window);
+    
     /* Get exit code from I6 process */
     int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
     
@@ -496,12 +535,16 @@ static void finish_cblorb_compiler(GPid pid, gint status, gpointer data) {
 static void finish_common(struct story *thestory) {
     /* Display status message */
     display_status_message(thestory->window, "Compiling succeeded.");
-    
+                                 
     /* Switch the Errors tab to the Problems page */
     gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(thestory->window,
       "errors_notebook_r")), TAB_ERRORS_PROBLEMS);
     gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(thestory->window,
       "errors_notebook_l")), TAB_ERRORS_PROBLEMS);
+  
+    /* Update */
+    while(gtk_events_pending())
+	  g_main_context_iteration(NULL, FALSE);
 }
 
 /* Finish up the user's Refresh Index command */

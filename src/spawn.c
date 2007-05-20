@@ -23,8 +23,14 @@
 
 #define BUFSIZE 1024
 
+typedef struct {
+    GtkTextBuffer *output;
+    IOHookFunc *callback;
+    gpointer *data;
+} IOHookData;
+
 /*
- * The following three functions are thanks to Tim-Philipp Mueller's example
+ * The following three functions are adapted from Tim-Philipp Mueller's example
  * From http://scentric.net/tmp/spawn-async-with-pipes-gtk.c 
  */
 
@@ -69,7 +75,7 @@ void set_up_io_channel(gint fd, GtkTextBuffer *output) {
     g_io_channel_set_close_on_unref(ioc, TRUE);
     g_io_add_watch(ioc, G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL, 
       write_channel_to_buffer, (gpointer)output);
-	g_io_channel_unref (ioc);
+	g_io_channel_unref(ioc);
 }
 
 /* The callback for writing data from the IO channel to the buffer */
@@ -92,6 +98,101 @@ gpointer buffer) {
         gtk_text_buffer_get_end_iter((GtkTextBuffer *)buffer, &iter);
         gtk_text_buffer_insert((GtkTextBuffer *)buffer, &iter, scratch,
           chars_read);
+    }
+    
+    if (cond & (G_IO_ERR | G_IO_HUP | G_IO_NVAL))
+        return FALSE;
+    return TRUE;
+}
+
+/* Runs a command (in argv[0]) with working directory wd, pipes the output
+to a GtkTextBuffer, and also to a hook function */
+GPid run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output,
+  IOHookFunc *callback, gpointer data, gboolean get_out, gboolean get_err) {
+    GError *err = NULL;
+    GPid child_pid;
+    gint stdout_fd, stderr_fd;
+    
+    if (!g_spawn_async_with_pipes(
+      wd,           /* working directory */
+      argv,         /* command and arguments */
+      NULL,         /* do not change environment */
+      (GSpawnFlags) G_SPAWN_SEARCH_PATH   /* look for command in $PATH  */
+      | G_SPAWN_DO_NOT_REAP_CHILD,  /* we'll check the exit status ourself */
+      NULL,         /* child setup function */
+      NULL,         /* child setup func data argument */
+      &child_pid,   /* where to store the child's PID */
+      NULL,         /* default stdin = /dev/null */
+      output? &stdout_fd : NULL,   /* where to put stdout file descriptor */
+      output? &stderr_fd : NULL,   /* where to put stderr file descriptor */
+      &err)) {
+        error_dialog(NULL, err, "Could not spawn process: ");
+        return (GPid)0;
+    }
+    
+    /* Now use GIOChannels to monitor stdout and stderr */
+    if(output != NULL) {
+        if(get_out)
+            set_up_io_channel_hook(stdout_fd, output, callback, data);
+        else
+            set_up_io_channel(stdout_fd, output);
+        if(get_err)
+            set_up_io_channel_hook(stderr_fd, output, callback, data);
+        else
+            set_up_io_channel(stderr_fd, output);
+    }
+    
+    return child_pid;
+}
+
+/* Free the hook data */
+static void free_hook_data(gpointer data) {
+    g_free(data);
+}
+
+/* Set up an IO channel from a file descriptor to a GtkTextBuffer */
+void set_up_io_channel_hook(gint fd, GtkTextBuffer *output,
+  IOHookFunc *callback, gpointer data) {
+    GIOChannel *ioc = g_io_channel_unix_new(fd);
+    g_io_channel_set_encoding(ioc, NULL, NULL); /* enc. NULL = binary data? */
+    g_io_channel_set_buffered(ioc, FALSE);
+    g_io_channel_set_close_on_unref(ioc, TRUE);
+    
+    IOHookData *hook_data = g_new(IOHookData, 1);
+    hook_data->output = output;
+    hook_data->callback = callback;
+    hook_data->data = data;
+    
+    g_io_add_watch_full(ioc, G_PRIORITY_DEFAULT_IDLE,
+      G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL, 
+      write_channel_hook, (gpointer)hook_data, free_hook_data);
+	g_io_channel_unref(ioc);
+}
+
+/* The callback for writing data from the IO channel to the buffer */
+gboolean write_channel_hook(GIOChannel *ioc, GIOCondition cond,
+gpointer data) {
+    GtkTextBuffer *textbuffer = ((IOHookData *)data)->output;
+    IOHookFunc *callback = ((IOHookData *)data)->callback;
+    gpointer funcdata = ((IOHookData *)data)->data;
+    /* data for us to read? */
+    if(cond & (G_IO_IN | G_IO_PRI)) {
+        GIOStatus result;
+        gchar scratch[BUFSIZE];
+        gsize chars_read = 0;
+        
+        memset(scratch, 0, BUFSIZE); /* clear the buffer */
+        result = g_io_channel_read_chars(ioc, scratch, BUFSIZE, &chars_read,
+          NULL);
+        
+        if (chars_read <= 0 || result != G_IO_STATUS_NORMAL)
+            return FALSE;
+        
+        GtkTextIter iter;
+        gtk_text_buffer_get_end_iter(textbuffer, &iter);
+        gtk_text_buffer_insert(textbuffer, &iter, scratch, chars_read);
+        
+        (*callback)(funcdata, scratch);
     }
     
     if (cond & (G_IO_ERR | G_IO_HUP | G_IO_NVAL))

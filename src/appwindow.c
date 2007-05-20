@@ -108,9 +108,25 @@ void display_status_message(GtkWidget *thiswidget, const gchar *message) {
       "main_appbar")), message);
 }
 
+/* Pulses the progress bar */
 void display_status_busy(GtkWidget *thiswidget) {
     gtk_progress_bar_pulse(gnome_appbar_get_progress(GNOME_APPBAR(lookup_widget(
       thiswidget, "main_appbar"))));
+}
+
+/* Displays a percentage in the progress indicator */
+void display_status_percentage(GtkWidget *thiswidget, gdouble fraction) {
+    gtk_progress_bar_set_fraction(gnome_appbar_get_progress(
+      GNOME_APPBAR(lookup_widget(thiswidget, "main_appbar"))),
+      fraction);
+}
+
+/* Clears all status indicators */
+void clear_status(GtkWidget *thiswidget) {
+    GnomeAppBar *bar = GNOME_APPBAR(lookup_widget(thiswidget, "main_appbar"));
+    gtk_progress_bar_set_fraction(gnome_appbar_get_progress(bar), 0.0);
+    gtk_progress_bar_set_text(gnome_appbar_get_progress(bar), "");
+    gnome_appbar_set_status(bar, "");
 }
 
 /* Create the Open Recent submenu */

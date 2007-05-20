@@ -107,30 +107,30 @@ game_create (gchar *widget_name, gchar *string1, gchar *string2,
 /* Run the story in the VteTerminal widget */
 void run_project(struct story *thestory) {
     int right = choose_notebook(thestory->window, TAB_GAME);
-    gtk_notebook_set_current_page(get_notebook(thestory->window, right),
-      TAB_GAME);
     VteTerminal *term = VTE_TERMINAL(lookup_widget(thestory->window, right?
       "game_r" : "game_l"));
-    
-    
     vte_terminal_reset(term, TRUE, TRUE);
     
     /* Build the command line */
     gchar **args;
+    gchar *filename;
     if(thestory->story_format == FORMAT_GLULX) {
         args = g_new(gchar *,4);
         args[0] = get_datafile_path_va("Interpreters", "dumb-glulxe", NULL);
         args[1] = g_strdup("-w57");
-        args[2] = g_strdup("output.ulx");
+        filename = g_strdup("output.ulx");
+        args[2] = g_build_filename(thestory->filename, "Build", filename, NULL);
         args[3] = NULL;
     } else {
         args = g_new(gchar *,5);
         args[0] = g_strdup("frotz");
         args[1] = g_strdup("-w");
         args[2] = g_strdup("57");
-        args[3] = g_strconcat("output.", get_story_extension(thestory), NULL);
+        filename = g_strconcat("output.", get_story_extension(thestory), NULL);
+        args[3] = g_build_filename(thestory->filename, "Build", filename, NULL);
         args[4] = NULL;
     }
+    g_free(filename);
     gchar *dir = g_build_filename(thestory->filename, "Build", NULL);
 
     /* Save the PID so we can kill it later, and save the signal handlers so we
@@ -148,7 +148,9 @@ void run_project(struct story *thestory) {
     gtk_widget_set_sensitive(lookup_widget(thestory->window, "stop"), TRUE);
     gtk_widget_set_sensitive(lookup_widget(thestory->window, "stop_toolbutton"),
       TRUE);
-    /* Set the focus to the terminal widget */
+    /* Display and set the focus to the terminal widget */
+    gtk_notebook_set_current_page(get_notebook(thestory->window, right),
+      TAB_GAME);
     gtk_widget_grab_focus(
       lookup_widget(thestory->window, right? "game_r" : "game_l"));
     

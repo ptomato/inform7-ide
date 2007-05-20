@@ -71,6 +71,8 @@ int get_current_notebook(GtkWidget *thiswidget);
 int choose_notebook(GtkWidget *thiswidget, int newtab);
 void display_status_message(GtkWidget *thiswidget, const gchar *message);
 void display_status_busy(GtkWidget *thiswidget);
+void display_status_percentage(GtkWidget *thiswidget, gdouble fraction);
+void clear_status(GtkWidget *thiswidget);
 GtkWidget *create_open_recent_submenu();
 GtkWidget *create_open_extension_submenu();
 

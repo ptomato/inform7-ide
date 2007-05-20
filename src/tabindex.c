@@ -143,11 +143,18 @@ static gboolean check_and_load_idle(gpointer thestory) {
         }
         g_free(filename);
         counter = TAB_INDEX_FIRST; /* next time, load the first tab */
+        clear_status(widget);
         return FALSE; /* quit the cycle */
     }
     
     g_free(filename);
-    counter++; /* next time, load the next tab */        
+    
+    /* Update the status bar */
+    display_status_percentage(widget,
+      (gdouble)counter / (gdouble)TAB_INDEX_LAST);
+    display_status_message(widget, "Reloading index...");
+    
+    counter++; /* next time, load the next tab */
     return TRUE; /* make sure there is a next time */
 }
 
