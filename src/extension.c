@@ -55,7 +55,8 @@ void delete_ext(struct extension *oldext) {
 
     if(oldext->filename != NULL)
         free(oldext->filename);
-    gnome_vfs_monitor_cancel(oldext->monitor);
+    if(oldext->monitor)
+        gnome_vfs_monitor_cancel(oldext->monitor);
     gtk_widget_destroy(oldext->window);
     g_free(oldext);
     

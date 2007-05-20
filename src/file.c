@@ -330,7 +330,8 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     gchar *filename, *text;
     struct story *thestory = get_story(thiswidget);
 
-    gnome_vfs_monitor_cancel(thestory->monitor);
+    if(thestory->monitor)
+        gnome_vfs_monitor_cancel(thestory->monitor);
     
     /* Create the project directory if it does not already exist */
     if(g_mkdir_with_parents(directory, 0777) 
@@ -618,7 +619,8 @@ void save_extension(GtkWidget *thiswidget) {
     struct extension *ext = get_ext(thiswidget);
 
     /* Stop file monitoring */
-    gnome_vfs_monitor_cancel(ext->monitor);
+    if(ext->monitor)
+        gnome_vfs_monitor_cancel(ext->monitor);
     
     /* Save the text */
     GtkTextIter start, end;
