@@ -1,6 +1,5 @@
 docsectionsdir = $(pkgdatadir)/Documentation/Sections
 docsections_DATA = \
-cblorb_failed.png cblorb_succeeded.png \
 doc100.html doc101.html doc102.html doc103.html doc104.html doc105.html \
 doc106.html doc107.html doc108.html doc109.html doc10.html doc110.html \
 doc111.html doc112.html doc113.html doc114.html doc115.html doc116.html \
@@ -48,7 +47,8 @@ doc333.html doc334.html doc335.html doc336.html doc337.html doc338.html \
 doc339.html doc33.html doc340.html doc341.html doc342.html doc343.html \
 doc344.html doc345.html doc346.html doc347.html doc348.html doc349.html \
 doc34.html doc350.html doc351.html doc352.html doc353.html doc354.html \
-doc355.html doc356.html doc357.html doc35.html doc36.html doc37.html \
+doc355.html doc356.html doc357.html doc358.html doc359.html doc35.html \
+doc360.html doc361.html doc36.html doc37.html \
 doc38.html doc39.html doc3.html doc40.html doc41.html doc42.html doc43.html \
 doc44.html doc45.html doc46.html doc47.html doc48.html doc49.html doc4.html \
 doc50.html doc51.html doc52.html doc53.html doc54.html doc55.html doc56.html \
@@ -94,22 +94,22 @@ ex281.html ex282.html ex283.html ex284.html ex285.html ex286.html ex287.html \
 ex288.html ex289.html ex28.html ex290.html ex291.html ex292.html ex293.html \
 ex294.html ex295.html ex296.html ex297.html ex298.html ex299.html ex29.html \
 ex2.html ex300.html ex301.html ex302.html ex303.html ex304.html ex305.html \
-ex306.html ex307.html ex30.html ex31.html ex32.html ex33.html ex34.html \
-ex35.html ex36.html ex37.html ex38.html ex39.html ex3.html ex40.html \
-ex41.html ex42.html ex43.html ex44.html ex45.html ex46.html ex47.html \
-ex48.html ex49.html ex4.html ex50.html ex51.html ex52.html ex53.html \
-ex54.html ex55.html ex56.html ex57.html ex58.html ex59.html ex5.html \
-ex60.html ex61.html ex62.html ex63.html ex64.html ex65.html ex66.html \
-ex67.html ex68.html ex69.html ex6.html ex70.html ex71.html ex72.html \
-ex73.html ex74.html ex75.html ex76.html ex77.html ex78.html ex79.html \
-ex7.html ex80.html ex81.html ex82.html ex83.html ex84.html ex85.html \
-ex86.html ex87.html ex88.html ex89.html ex8.html ex90.html ex91.html \
-ex92.html ex93.html ex94.html ex95.html ex96.html ex97.html ex98.html \
-ex99.html ex9.html GoodCblorb.html rte.png \
-RTP_P10.html RTP_P11.html RTP_P12.html \
-RTP_P13.html RTP_P14.html RTP_P15.html RTP_P16.html RTP_P17.html RTP_P18.html \
-RTP_P19.html RTP_P1.html RTP_P20.html RTP_P21.html RTP_P22.html RTP_P23.html \
-RTP_P24.html RTP_P25.html RTP_P26.html RTP_P27.html RTP_P28.html RTP_P29.html \
-RTP_P2.html RTP_P30.html RTP_P31.html RTP_P3.html RTP_P4.html RTP_P5.html \
-RTP_P6.html RTP_P7.html RTP_P8.html RTP_P9.html
+ex306.html ex307.html ex308.html ex30.html ex31.html ex32.html ex33.html \
+ex34.html ex35.html ex36.html ex37.html ex38.html ex39.html ex3.html \
+ex40.html ex41.html ex42.html ex43.html ex44.html ex45.html ex46.html \
+ex47.html ex48.html ex49.html ex4.html ex50.html ex51.html ex52.html \
+ex53.html ex54.html ex55.html ex56.html ex57.html ex58.html ex59.html \
+ex5.html ex60.html ex61.html ex62.html ex63.html ex64.html ex65.html \
+ex66.html ex67.html ex68.html ex69.html ex6.html ex70.html ex71.html \
+ex72.html ex73.html ex74.html ex75.html ex76.html ex77.html ex78.html \
+ex79.html ex7.html ex80.html ex81.html ex82.html ex83.html ex84.html \
+ex85.html ex86.html ex87.html ex88.html ex89.html ex8.html ex90.html \
+ex91.html ex92.html ex93.html ex94.html ex95.html ex96.html ex97.html \
+ex98.html ex99.html ex9.html GoodCblorb.html RTP_P10.html RTP_P11.html \
+RTP_P12.html RTP_P13.html RTP_P14.html RTP_P15.html RTP_P16.html RTP_P17.html \
+RTP_P18.html RTP_P19.html RTP_P1.html RTP_P20.html RTP_P21.html RTP_P22.html \
+RTP_P23.html RTP_P24.html RTP_P25.html RTP_P26.html RTP_P27.html RTP_P28.html \
+RTP_P29.html RTP_P2.html RTP_P30.html RTP_P31.html RTP_P32.html RTP_P33.html \
+RTP_P3.html RTP_P4.html RTP_P5.html RTP_P6.html RTP_P7.html RTP_P8.html \
+RTP_P9.html
 EXTRA_DIST = $(docsections_DATA)

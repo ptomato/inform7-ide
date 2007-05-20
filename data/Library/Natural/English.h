@@ -699,6 +699,8 @@ Constant COMMA__TX      = ", ";
               ENGLISH_BIT+RECURSE_BIT+PARTINV_BIT+TERSE_BIT+CONCEAL_BIT+WORKFLAG_BIT);
             if (x1 ~= location) "."; else " here.";
         7:  "You see nothing unexpected in that direction.";
+        8:  if (x1 has supporter) print " (on "; else print " (in ";
+        	print (the) x1, ")";
     }
   LookUnder: switch (n) {
         1:  "But it's dark.";

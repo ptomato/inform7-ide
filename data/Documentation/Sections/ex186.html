@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5.4. Text with lists</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.2. New commands for old grammar</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,90 +9,113 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Tiny Garden" -->
-<!-- SEARCH SECTION "Ex 52" -->
-<!-- SEARCH SORT "Ex 005-004-052" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc69.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap5.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 5: Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc71.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>5.4. Text with lists</b></font></td></tr></table>
+<!-- SEARCH TITLE "Alpaca Farm" -->
+<!-- SEARCH SECTION "Ex 226" -->
+<!-- SEARCH SORT "Ex 016-002-226" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc240.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc242.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.2. New commands for old grammar</b></font></td></tr></table>
 <p>
-<p>The useful substitution &quot;[list of <i>description</i>]&quot; prints out, as an English sentence, a list of all the objects which match the given description. For instance,
+<p>In the photography example, we are providing entirely new grammar for an action  not ordinarily built in to Inform. But we often want simply to provide alternative grammar for existing actions, or even to put new interpretations on commands that Inform already recognises. For instance:
 <p>
-<blockquote><font color="#000080">&quot;The places you can go are [list of rooms].&quot;
+<blockquote><font color="#000080">Understand &quot;deposit [something] in [an open container]&quot; as inserting it into.
 </font></blockquote><p>
 <p>
-<p>Any description can be given and, as we shall see, descriptions can be very flexible indeed:
+<p>The inserting action is built in to Inform, but the command &quot;deposit&quot; is not, so this is created as new. It is occasionally useful to put a twist on this:
 <p>
-<blockquote><font color="#000080">&quot;Mr Darcy glares proudly at you. He is wearing [list of things worn by Darcy] and carrying [list of things carried by Darcy].&quot;
+<blockquote><font color="#000080">Understand &quot;fill [an open container] with [something]&quot; as inserting it into (with nouns reversed).
 </font></blockquote><p>
 <p>
-<p>And, if this were from a dramatisation of the novel by Miss Fielding rather than Miss Austen, we might find:
+<p>The clause &quot;(with nouns reversed)&quot; tells Inform to exchange the two nouns parsed, which is necessary because the inserting action expects the noun to be the item and the second noun to be the container, not vice versa.
 <p>
-<blockquote><font color="#000080">Mr Darcy glares proudly at you. He is wearing a pair of Newcastle United boxer shorts and carrying a self-help book.
+<p>The following example:
+<p>
+<blockquote><font color="#000080">Understand &quot;access [something]&quot; as opening.
 </font></blockquote><p>
 <p>
-<p>If the description matches nothing - for instance, if Darcy has empty hands - then &quot;nothing&quot; is printed. A more insidious problem is that the list may end up either singular or plural. We might be expecting that the example above will produce something like:
+<p>might look as if it makes &quot;access&quot; behave just like &quot;open&quot; when the player types it, but that's not so: &quot;open&quot; can also be used in constructions like &quot;open the door with the brass key&quot;, in which case it is understood as the unlocking action. We could add another line to make &quot;access&quot; behave this way too, but if what we really want is to make &quot;access&quot; behave just like &quot;open&quot;, it's easier simply to say so:
 <p>
-<blockquote><font color="#000080">The places you can go are Old Bailey, Bridget's Flat and TV Centre.
+<blockquote><font color="#000080">Understand the command &quot;access&quot; as &quot;open&quot;.
 </font></blockquote><p>
 <p>
-<p>But if there is only one room, then the result would be:
+<p>This is very useful when adding a new command which needs synonyms:
 <p>
-<blockquote><font color="#000080">The places you can go are Bridget's Flat.
+<blockquote><font color="#000080">Understand the commands &quot;snap&quot; and &quot;picture&quot; as &quot;photograph&quot;.
 </font></blockquote><p>
 <p>
-<p>which is wrong. We can get around this with careful wording and a slightly different substitution:
-<p>
-<blockquote><font color="#000080">&quot;Near here [is/are list of rooms].&quot;
-</font></blockquote><p>
-<p>
-<p>which uses &quot;is&quot; or &quot;are&quot; as appropriate. Lastly, we can also make the items listed take the definite article by writing:
-<p>
-<blockquote><font color="#000080">&quot;Mr Darcy impatiently bundles [the list of things carried by Darcy] into your hands and stomps out of the room.&quot;
-</font></blockquote><p>
-<p>
-<p>which might result in
-<p>
-<blockquote><font color="#000080">Mr Darcy impatiently bundles the self-help book and the Christmas card into your hands and stomps out of the room.
-</font></blockquote><p>
+<p>We can check the current stock of commands by looking at the table in the Actions index: for instance, before making &quot;snap&quot; synonymous with &quot;photograph&quot;, it might be wise to check that it is not already defined as a command for breaking something.
 <p>
 <p><hr><p>
-<a name="e7"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex7.html#e7 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>50</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex7.html#e7 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Control Center</font></b></a><br>Objects which automatically include a description of their component parts whenever they are examined.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e186"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc70.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>51</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc70.html#e186 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Tiny Garden</font></b></a><br>A lawn made up of several rooms, with part of the description written automatically.<p></td></tr></table>
+<a name="e186"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc241.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>225</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc241.html#e186 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Alpaca Farm</font></b></a><br>A generic USE action which behaves sensibly with a range of different objects, expanding on the EMPLOY example above.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Sometimes we want to make a list of something too complicated to express in a say list... phrase. When this happens, we can instead mark all the items we want to mention as &quot;marked for listing&quot;.
+<p>This example takes the ordering of grammar lines to its logical extreme, sorting the player's input into different categories depending on the kind and condition of the objects mentioned.
 <p>
-<p>In this case, we have a lawn area made up of four rooms. We want each room to automatically describe the directions leading to the other parts of the lawn. To do this, we will first determine which directions are relevant and mark those for listing, then list them.
-<p>
-<blockquote><font color="#000080">&quot;Tiny Garden&quot;
+<blockquote><font color="#000080">&quot;Alpaca Farm&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Herb Garden is a room. &quot;Along this side of the house run your great-aunt's herb beds.&quot;
+<blockquote><font color="#000080">Understand &quot;use [an edible thing]&quot; as eating.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A Grassy Room is a kind of room. The printed name of a Grassy Room is usually &quot;Lawn&quot;. The description of a Grassy Room is &quot;The grass underfoot is thick and green. The lawn extends to [grassy directions] from here.&quot;
+<blockquote><font color="#000080">Understand &quot;use [a wearable thing]&quot; as wearing.
 </font></blockquote><p>
 <p>
-<p>The following phrase goes through all the directions in the compass and marks the ones that are interesting to us at the moment. We will learn more about &quot;the room (some direction) from...&quot; in Chapter 5, and repeating in Chapter 10.
-<p>
-<blockquote><font color="#000080">To say grassy directions:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with that way running through directions
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the room that way from the location is a grassy room,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now that way is marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[a list of directions which are marked for listing]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every direction is not marked for listing.
+<blockquote><font color="#000080">Understand &quot;use [a closed openable container]&quot; as opening. Understand &quot;use [an open openable container]&quot; as closing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Lawn1 is west of the Herb Garden. It contains a picnic table and a wicker basket. Lawn2 is south of Lawn1 and southeast of Lawn4. Lawn3 is southwest of Lawn1, west of Lawn2, and south of Lawn4. Lawn4 is west of Lawn1. Lawn4 contains a birdbath. The birdbath is fixed in place.
+<blockquote><font color="#000080">Understand &quot;use [something preferably held] on [a locked lockable thing]&quot; as unlocking it with (with nouns reversed). Understand &quot;use [something preferably held] on [an unlocked lockable thing]&quot; as locking it with (with nouns reversed).
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Lawn1, Lawn2, Lawn3, and Lawn4 are Grassy Rooms.
+<blockquote><font color="#000080">Understand &quot;use [a switched off device]&quot; as switching on.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;w / s / w / n&quot;.
+<blockquote><font color="#000080">Understand &quot;use [something]&quot; as using. Using is an action applying to one thing. Carry out using: say &quot;You will have to be more specific about your intentions.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc70.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;use [a door]&quot; as opening. Understand &quot;use [an open door]&quot; as entering.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Llama Pen is a room. North of the Pen is the gate. The gate is a door. North of the gate is the Rocky Path. The brown llama is an animal in the Llama Pen.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Appearance is a kind of value. The appearances are muddy, scruffy, fluffy, and dapper. The brown llama has an appearance. The brown llama is muddy. Before printing the name of the brown llama, say &quot;[appearance] &quot;. Before printing the name of the brown llama while grooming: say &quot;now-[if appearance of the brown llama is less than dapper]merely-[end if]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A grooming tool is a kind of thing. Understand &quot;use [a grooming tool] on [something]&quot; as grooming it with (with nouns reversed). Grooming it with is an action applying to two things. Understand &quot;groom [something] with [something]&quot; as grooming it with.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out grooming it with:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the appearance of the noun is less than dapper, change the appearance of the noun to the appearance after the appearance of the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report grooming it with:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You attend diligently to the appearance and hygiene of [the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of using a grooming tool in the presence of the brown llama:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try grooming the brown llama with the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries some nail nippers, a slicker brush, and an apple. The apple is edible. The brush and the nippers are grooming tools. The player wears a sombrero.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the nail nippers is &quot;Ten inches long, to give you the necessary leverage to cut tough llama toenails. It still helps to soften them up by making the llama stand in a bucket of water first, though.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the slicker brush is &quot;Fine, angled soft bristles set into a broad back, perfect for removing mud from the coat of a long-woolled llama.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The industrial-strength blower is a fixed in place device in the Llama Pen. &quot;Attached to the nearest wall, on its own movable boom, is an industrial-strength blower for doing llama hair.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;use [switched off blower]&quot; as switching on. Understand &quot;use [switched on blower] on [brown llama]&quot; as grooming it with (with nouns reversed). Instead of using the blower in the presence of the brown llama, try grooming the brown llama with the blower.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;use gate / use blower / use nippers / use brush / use apple / remove sombrero / use sombrero&quot;.
+</font></blockquote><p>
+<p>
+<p>Whether we actually want a USE action is a subject of some theoretical debate in the IF community. On the one hand, it helps avoid guess-the-verb problems where the player cannot figure out what term to use in order to express a fairly simple idea. On the other, it encourages the player to think that all items have one and exactly one use, rather than getting him to consider the range of possibilities that arise from having a complex vocabulary.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc241.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc69.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc71.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e203"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex203.html#e203 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>226</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex203.html#e203 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Anchorite</font></b></a><br>By default, Inform understands GET OFF, GET UP, or GET OUT when the player is sitting or standing on an enterable object. We might also want to add GET DOWN and DOWN as exit commands, though:<p></td></tr></table>
+<a name="e27"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex27.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>227</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex27.html#e27 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloak of Darkness</font></b></a><br>Implementation of "Cloak of Darkness", a simple example game that for years has been used to demonstrate the features of IF languages.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc240.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc242.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.11. Indirect relations</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.9. Defining new assertion verbs</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,40 +9,43 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Indirect relations" -->
-<!-- SEARCH SECTION "13.11" -->
-<!-- SEARCH SORT "013-011-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc199.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc201.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.11. Indirect relations</b></font></td></tr></table>
+<!-- SEARCH TITLE "Defining new assertion verbs" -->
+<!-- SEARCH SECTION "13.9" -->
+<!-- SEARCH SORT "013-009-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc199.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc201.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.9. Defining new assertion verbs</b></font></td></tr></table>
 <p>
-<p>We have already seen, in the chapter on Descriptions which is a forerunner of this one, that Inform provides not only &quot;adjacent&quot; as a way of seeing if one room is directly connected to another, but also &quot;the best route from A to B&quot;, which allows us to see if any sequence of moves connects them.
+<p>Here is an example definition of a new verb:
 <p>
-<p>Something similar - in fact, simpler - is allowed for any relation. Suppose we would like to go sledging: we can go downhill, but not up. Some quite distant places may be reachable, while others close by may not be, even if lower than us, because they would involve climbing again at some point. The following would implement this:
-<p>
-<blockquote><font color="#000080">Overlooking relates various rooms to various rooms.
+<blockquote><font color="#000080">The verb to sport (he sports, they sport, he sported, it is sported, he is sporting) implies the wearing relation.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The verb to overlook (it overlooks, they overlook, it overlooked, it is overlooked, it is overlooking) implies the overlooking relation.
+<p>Once this is done, we can write the assertion
+<p>
+<blockquote><font color="#000080">Mr Wickham sports a Tory rosette.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Garden overlooks the Shrubbery. The Folly overlooks the Garden. The Shrubbery overlooks the Sundial Plot. The Old Ice House overlooks the Garden.
+<p>which will do the the same thing as
+<p>
+<blockquote><font color="#000080">Mr Wickham wears a Tory rosette.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After looking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;This wintry vantage point overlooks [the list of rooms overlooked by the location].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the way be the next step via the overlooking relation from the location to the Sundial Plot;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the way is a room, say &quot;To sledge downhill to the Sundial, aim for [the way].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;It is not possible to sledge downhill to the Sundial.&quot;
+<p>because both verbs have the same relation as their meaning.
+<p>
+<p>Note that we have to spell out many parts of the verb:
+<p>
+<blockquote><font color="#000080">to sport - infinitive
+<br>he sports - present singular
+<br>they sport - present plural
+<br>he sported - past
+<br>it is sported - past participle
+<br>he is sporting - present participle
 </font></blockquote><p>
 <p>
-<p>Another example would be the &quot;six degrees of separation&quot; game, where it is claimed that any two people on Earth are connected by a sequence of up to six acquaintances. In an Inform implementation, we might talk about &quot;the next step via the friendship relation from George Bush to Saddam Hussein&quot;, for instance, a phrase likely to evaluate to Donald Rumsfeld, and then
+<p>Although it looks as if Inform could easily generate these given the infinitive &quot;to sport&quot; alone, by adding an &quot;-s&quot; here or an &quot;-ed&quot; there, English can be a very irregular language. Since only a few verbs will be defined in any single project it seems best to be explicit. (If we do miss out any of the parts of the verb, the result will be that the usages missed out will not be understood by Inform. Sometimes that's a good thing, as some verbs have seldom-used present participles, for instance - &quot;he is liking me&quot;, for instance, is grammatical but odd.)
 <p>
-<blockquote><font color="#000080">the number of steps via the friendship relation from George Bush to Saddam Hussein
-</font></blockquote><p>
-<p>
-<p>would be... but that would be telling.
-<p>
-<p>We can calculate the number of steps like this for any of the relations we have defined so far: it works exactly analogously to &quot;the number of moves from A to B&quot;, which reads the map. The same conventions apply: the result is 0 if the two things are the same, and -1 if there is no way to get from one to the other. (For &quot;any of the relations... so far&quot;, not &quot;for any relation&quot;: we are not able to calculate such things for relations which express conditions, as we shall see in the next section.)
+<p>The Phrasebook index contains all the verbs associated with assertions, in the &quot;table of verbs&quot; section. When we add new verbs to our source, those will appear in the Phrasebook as well.
 <p>
 <p><hr><p>
-<a name="e107"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex107.html#e107 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>190</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex107.html#e107 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Problem of Edith</font></b></a><br>A conversation in which the main character tries to build logical connections between what the player is saying now and what went immediately before.<p></td></tr></table>
+<a name="e273"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex273.html#e273 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>185</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex273.html#e273 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Unthinkable Alliances</font></b></a><br>People are to be grouped into alliances. To kiss someone is to join his or her faction, which may make a grand alliance; to strike them is to give notice of quitting, and to become a lone wolf.<p></td></tr></table>
+<a name="e184"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex184.html#e184 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>186</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex184.html#e184 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Unexamined Life</font></b></a><br>An adaptive hint system that tracks what the player needs to have seen or to possess in order to solve a given puzzle, and doles out suggestions accordingly. Handles changes in the game state with remarkable flexibility, and allows the player to decide how explicit a nudge he wants at any given moment.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc199.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc201.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

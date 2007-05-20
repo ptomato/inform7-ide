@@ -203,9 +203,11 @@ after_app_window_realize               (GtkWidget       *widget,
 {
     /* Create some submenus and attach them */
     GtkWidget *menu;
+#if !defined(SUCKY_GNOME)
     if((menu = create_open_recent_submenu()))
         gtk_menu_item_set_submenu(
           GTK_MENU_ITEM(lookup_widget(widget, "open_recent")), menu);
+#endif
     if((menu = create_open_extension_submenu()))
         gtk_menu_item_set_submenu(
           GTK_MENU_ITEM(lookup_widget(widget, "open_extension")), menu);

@@ -74,7 +74,6 @@ void update_window_list() {
           gtk_window_get_title(GTK_WINDOW((GtkWidget *)(iter->data))));
         item.user_data = (gpointer)(iter->data);
         memcpy(newitems + count, &item, sizeof(GnomeUIInfo));
-        g_free(item.label);
     }
     memcpy(newitems + count, &end_marker, sizeof(GnomeUIInfo));
     
@@ -89,6 +88,9 @@ void update_window_list() {
           "Window/<Separator>", newitems);
     }
     
+    for(count = 0; count < num_items; count++) {
+        g_free((gchar *)(newitems[count].label));
+    }
     g_free(newitems);
     g_slist_free(windowlist);
     g_list_free(toplevels);

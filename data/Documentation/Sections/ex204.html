@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.12. Phrase options</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.27. Implicitly taking something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,178 +9,77 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Equipment List" -->
-<!-- SEARCH SECTION "Ex 145" -->
-<!-- SEARCH SORT "Ex 011-012-145" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc163.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc165.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.12. Phrase options</b></font></td></tr></table>
+<!-- SEARCH TITLE "Lollipop Guild" -->
+<!-- SEARCH SECTION "Ex 280" -->
+<!-- SEARCH SORT "Ex 017-027-280" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc283.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc285.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.27. Implicitly taking something</b></font></td></tr></table>
 <p>
-<p>There are often several slightly different ways to perform a given task but which have substantially the same definition. In the following example:
+<p><b>1. When it happens.</b> When an action is tried which requires the actor (normally the player, of course) to be carrying something, but which is not in fact carried by that person. For instance, if the player types WEAR OVERCOAT in reference to a Moroccan overcoat currently draped over a chair.
 <p>
-<blockquote><font color="#000080">To go hiking, into the woods or up the mountain:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if into the woods then say &quot;Watch out for badgers.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if up the mountain then say &quot;Better take your compass.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You go hiking.&quot;
+<p><b>2. The default behaviour.</b> To print text such as &quot;(first taking the Moroccan overcoat)&quot; and then silently try taking the object in question (the overcoat). If the take succeeds, the silence means that nothing else is printed: if it fails, it will say why.
+<p>
+<p>No matter what rules are written for this activity, it is impossible to use it to allow the action to go ahead even without the item. The activity allows us to change how, or if, an implicit take will happen, but not to change the consequences of failure. (To do that, we would need a procedural rule to &quot;ignore the carrying requirements rule&quot;, but this kind of unstitching of the action machinery needs to be done with caution.)
+<p>
+<p><b>3. Examples.</b> (a) Forbidding implicit takes for certain dangerous items. (This seems especially fair if taking such items might cause death: the player will not wish to be killed on the strength only of our guess as to what he might be intending to do.)
+<p>
+<blockquote><font color="#000080">Rule for implicitly taking the curare:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ordinarily you'd pick up the curare in order to be able to do that, but this seems like a good moment for caution.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>...a phrase has been set up which can be used in three ways:
+<p>(b) Changing the way the implicit action is reported for the player:
 <p>
-<blockquote><font color="#000080">go hiking;
-<br>go hiking, into the woods;
-<br>go hiking, up the mountain;
+<blockquote><font color="#000080">Rule for implicitly taking something (called target):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries the target, say &quot;You appropriate [the target] first, of course. [run paragraph on]&quot;
 </font></blockquote><p>
 <p>
-<p>Note that commas must be used to divide these &quot;phrase options&quot; from the rest of the text of the phrase. Within the definition of the phrase, the option's name is a valid condition, and
+<p>(c) Combining implicit takes when the noun and second noun must both be carried:
 <p>
-<blockquote><font color="#000080">if up the mountain then ...
+<blockquote><font color="#000080">Rule for implicitly taking the noun when the second noun is a thing and the second noun is not carried by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the second noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking both [the noun] and [the second noun])[line break]&quot;
 </font></blockquote><p>
 <p>
-<p>is true if the phrase was called with &quot;up the mountain&quot; specified and false otherwise, in the obvious way. A more substantial example from the standard rules is given by the Inform list-writer, which produces lists of things to specifications we choose. For instance:
+<p>(d) Making another character reply amusingly:
 <p>
-<blockquote><font color="#000080">list the contents of Marley Wood, as a sentence, with newlines
-<br>and including all contents;
+<blockquote><font color="#000080">Rule for implicitly taking something which is carried by the player when the person asked is Clark:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'I don't see how I'm supposed to do that when you're holding [the noun],' remarks Clark sulkily.&quot; instead.
 </font></blockquote><p>
-<p>
-<p>Note that this phrase is allowed to have multiple options specified, whereas &quot;go hiking&quot; above was not: this is because it was defined thus:
-<p>
-<blockquote><font color="#000080">To list the contents of (something - an object), with newlines, indented, as a sentence, including contents, including all contents, giving inventory information, giving brief inventory information, using the definite article, listing marked items only, prefacing with is/are, not listing concealed items, suppressing all articles and/or with extra indentation: ...
-</font></blockquote><p>
-<p>
-<p>The significant difference is the word &quot;and/or&quot; instead of &quot;or&quot;, which signals that more than one option can apply at a time.
-<p>
-<p>(As it happens, not all of the above options are equally useful: &quot;not listing concealed items&quot;, for instance, is probably helpful only to people creating projects which mingle Inform 6 and Inform 7 material. &quot;Concealed&quot; is a concept no longer in use.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e204"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc164.html#e204 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>144</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc164.html#e204 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Equipment List</font></b></a><br>Overview of all the phrase options associated with listing, and examples of how to change the inventory list into some other standard formats.<p></td></tr></table>
+<a name="e204"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc284.html#e204 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>279</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc284.html#e204 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Lollipop Guild</font></b></a><br>Overriding the rules to allow the player to eat something without first taking it.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Most of the phrase options above are relatively self-explanatory; a few are less so. Here is an overview:
+<p>As mentioned in this section, the &quot;implicitly taking&quot; activity does not allow us to skip an implicit take entirely. In order to do this, we need to borrow from the chapter on Rulebooks and use a procedural rule. (As we will see, procedural rules allow us to modify how actions are carried out in specific circumstances.)
 <p>
-<p>&quot;With newlines&quot; tells Inform to put a new line before each listed object. Indented tells it to indent contents of objects, when listing these.
-<p>
-<p>&quot;Giving inventory information&quot; means to append information such as (closed) or (being worn) to objects.
-<p>
-<p>&quot;As a sentence&quot; means to put &quot;and&quot; before the last object and commas between them; this is usually not used in conjunction with newline listing. &quot;As a sentence&quot; obeys whatever conventions about the use of the serial comma we may have established with the &quot;Use serial comma&quot; option.
-<p>
-<p>&quot;Including contents&quot; means to list the contents of open or transparent containers and all supporters, whereas including all contents means to list the contents of all containers, even opaque closed ones.
-<p>
-<p>&quot;Tersely&quot;, perhaps unexpectedly, puts parentheses around objects listed as the contents of other objects.
-<p>
-<p>&quot;Giving brief inventory information&quot; omits most of the inventory tags, such as &quot;(open)&quot; and &quot;(worn)&quot;, but does list &quot;(closed)&quot; for closed containers which might not otherwise be obviously openable.
-<p>
-<p>&quot;Using the definite article&quot; means prefixing objects with &quot;the&quot;, if applicable, rather than &quot;a&quot;.
-<p>
-<p>&quot;Listing marked items only&quot; means including only objects that have already been declared &quot;marked for listing&quot;.
-<p>
-<p>&quot;Prefacing with is-are&quot; means that Inform will write &quot;is&quot; before the list if it contains only one item, and &quot;are&quot; if the list contains more than one.
-<p>
-<p>&quot;Not listing concealed items&quot; means to omit from the list anything which is scenery.
-<p>
-<p>Finally, &quot;with extra indentation&quot; means that the whole list should be indented slightly, in emulation of the default inventory listing.
-<p>
-<p>With this information, we can try rewriting the inventory behavior to emulate the standard or to explore alternate versions:
-<p>
-<blockquote><font color="#000080">&quot;Equipment List&quot;
+<blockquote><font color="#000080"> &quot;Lollipop Guild&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Watery Room is a room. The player carries a snorkel and a waterproof sack. The waterproof sack contains an undersea map, a diving guide, a cup, and 500 Argentine pesos. The cup contains a worm. The player wears a swimsuit and a pair of flippers. The sack is openable and open.
+<blockquote><font color="#000080">Candyland is a room. &quot;A fizzing, popping wonderland of sugary delights -- from which you are unable to escape.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Inventory listing style is a kind of value. The inventory listing styles are tall, wide, curt, minimal, divided tall, and divided wide. Current inventory listing style is an inventory listing style that varies.
+<blockquote><font color="#000080">The giant lollipop is a fixed in place edible thing in Candyland. &quot;Growing right next to the path, on a trunk of white paper, is a giant lollipop colored green and red and white.&quot; The description of the lollipop is &quot;If you were very blind, like Aunt Myrtle, you might mistake it for a young sapling just planted: the lollipop is just that leafy shade of green, with swirls of white and red that might be branches or flowers.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;inventory [inventory listing style]&quot; as requesting styled inventory. Requesting styled inventory is an action applying to an inventory listing style. It is an action out of world.
+<blockquote><font color="#000080">The player carries a licorice gumdrop. The gumdrop is edible. The description of the gumdrop is &quot;It is the size of a footstool and is very convenient when you can't reach tall objects.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out requesting styled inventory:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change current inventory listing style to the inventory listing style understood.
+<blockquote><font color="#000080">Procedural rule while eating the lollipop: ignore the carrying requirements rule.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report requesting styled inventory:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Inventory listing is now set to [current inventory listing style].&quot;
+<blockquote><font color="#000080">Report eating something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You consume [the noun] with gusto.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>We begin by emulating the standard inventory listing style:
-<p>
-<blockquote><font color="#000080">Instead of taking inventory when current inventory listing style is tall:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things enclosed by the player is 0, say &quot;You are empty-handed.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are carrying: [line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, with newlines, indented, giving inventory information, including contents, with extra indentation.
+<blockquote><font color="#000080">Test me with &quot;take lollipop / eat lollipop / drop gumdrop/ eat gumdrop / look&quot;.
 </font></blockquote><p>
 <p>
-<p>Here we offer the alternative of listing everything together as a paragraph:
+<p>Note that because of the restrictions on our procedural rule, the player still takes the gumdrop before eating it. If we wanted to extend the rule and allow the player to eat anything he wanted at any time, we might instead write
 <p>
-<blockquote><font color="#000080">Instead of taking inventory when current inventory listing style is wide:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things enclosed by the player is 0, say &quot;You are empty-handed.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are carrying &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, giving inventory information, as a sentence, including contents;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot;
+<blockquote><font color="#000080">Procedural rule while eating something: ignore the carrying requirements rule.
 </font></blockquote><p>
-<p>
-<p>This may be unsatisfactory, however. Items that are inside other items are not set off from those merely carried by the player. One way around this is to use terse listing, giving such descriptions as &quot;a waterproof sack (in which are an undersea map, a diving guide, a cup (in which is a worm) and a 500 Argentine pesos)&quot; as opposed to the more confusing &quot; a waterproof sack (open), inside which are an undersea map, a diving guide, a cup, inside which is a worm and a 500 Argentine pesos&quot;.
-<p>
-<blockquote><font color="#000080">Instead of taking inventory when current inventory listing style is curt:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things enclosed by the player is 0, say &quot;You are empty-handed.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are carrying &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, tersely, giving brief inventory information, as a sentence, including contents;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot;
-</font></blockquote><p>
-<p>
-<p>If, using the above style, we close the sack, we will still get &quot;(closed)&quot; after the sack's listing. The following minimalist listing style abolishes even that nicety:
-<p>
-<blockquote><font color="#000080">Instead of taking inventory when current inventory listing style is minimal:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things enclosed by the player is 0, say &quot;You are empty-handed.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are carrying &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, tersely, as a sentence, including contents;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot;
-</font></blockquote><p>
-<p>
-<p>If we want to list worn things separately from carried things, we have occasion to put &quot;listing marked items only&quot; to work:
-<p>
-<blockquote><font color="#000080">Instead of taking inventory when the current inventory listing style is divided wide:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things enclosed by the player is 0, say &quot;You are empty-handed.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are wearing &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now all things enclosed by the player are unmarked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now all things worn by the player are marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if no things are marked for listing begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;nothing&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, as a sentence, listing marked items only;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.[paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are carrying &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now all things carried by the player are marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now all things worn by the player are unmarked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if no things are marked for listing begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;nothing[paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, as a sentence, tersely, giving brief inventory information, listing marked items only;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.[paragraph break]&quot;.
-</font></blockquote><p>
-<p>
-<p>And similarly for a tall divided inventory:
-<p>
-<blockquote><font color="#000080">Instead of taking inventory when the current inventory listing style is divided tall:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things enclosed by the player is 0, say &quot;You are empty-handed.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries something
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now all things enclosed by the player are unmarked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now all things carried by the player are marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are carrying: [line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, with newlines, indented, giving inventory information, including contents, with extra indentation, listing marked items only;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player wears something
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now all things enclosed by the player are unmarked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now all things worn by the player are marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are wearing: [line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, with newlines, indented, including contents, with extra indentation, listing marked items only;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;i / inventory wide / i / inventory curt / i / close sack / i / open sack / inventory minimal / i / close sack / i / open sack / inventory divided wide / i / inventory divided tall / i&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc164.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc284.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc163.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc165.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc283.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc285.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

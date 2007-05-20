@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.9. Defining new assertion verbs</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.20. Possessions and clothing</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,74 +9,47 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Unthinkable Alliances" -->
-<!-- SEARCH SECTION "Ex 185" -->
-<!-- SEARCH SORT "Ex 013-009-185" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc197.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc199.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.9. Defining new assertion verbs</b></font></td></tr></table>
+<!-- SEARCH TITLE "Disappointment Bay 10" -->
+<!-- SEARCH SECTION "Ex 29" -->
+<!-- SEARCH SORT "Ex 003-020-029" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc45.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc47.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.20. Possessions and clothing</b></font></td></tr></table>
 <p>
-<p>Here is an example definition of a new verb:
+<p>We have seen how to place objects in rooms, and in containers or on supporters. But what about people? Perhaps it could be said that they &quot;contain&quot; the fillings in their teeth, or &quot;support&quot; a top hat, but this is not very natural. Inform therefore never speaks of things being &quot;in&quot; or &quot;on&quot; people. Instead, they have two sorts of possessions: the things they carry, and the things they wear. (Body parts, such as arms and legs, are different again: see &quot;parts&quot; below for a clue to how to do these.) Thus:
 <p>
-<blockquote><font color="#000080">The verb to sport (he sports, they sport, he sported, it is sported, he is sporting) implies the wearing relation.
+<blockquote><font color="#000080">Mr Darcy wears a top hat. Mr Darcy carries a silver sword.
 </font></blockquote><p>
 <p>
-<p>Once this is done, we can write the assertion
+<p>In fact, Inform deduces from this not only who owns the hat and the sword, but also that Darcy has the kind &quot;person&quot;, because only people can wear or carry.
 <p>
-<blockquote><font color="#000080">Mr Wickham sports a Tory rosette.
+<p>As all the assertion verbs do, &quot;to wear&quot; and &quot;to carry&quot; have participles which Inform knows about. So we could equally well write:
+<p>
+<blockquote><font color="#000080">The scarlet coat is worn by Mr Wickham. The duelling pistol is carried by Mr Wickham.
 </font></blockquote><p>
 <p>
-<p>which will do the the same thing as
+<p>If we do not specify who does the wearing, or carrying, then this is assumed to be the player. Thus:
 <p>
-<blockquote><font color="#000080">Mr Wickham wears a Tory rosette.
+<blockquote><font color="#000080">A brass lantern and a rusty iron key are carried. The mosquito-repellent hat is worn.
 </font></blockquote><p>
 <p>
-<p>because both verbs have the same relation as their meaning.
+<p>It would make no sense to &quot;wear&quot; the key, for instance, so Inform needs to distinguish between what is clothing and what is not. It does this with an either/or property called &quot;wearable&quot;: if something has this property then the player will be allowed to wear it, provided it can first be picked up. Anything which is worn by somebody at the start of play is assumed to be wearable (unless we say otherwise). But if nobody is initially wearing the item in question, then we have to be explicit:
 <p>
-<p>Note that we have to spell out many parts of the verb:
-<p>
-<blockquote><font color="#000080">to sport - infinitive
-<br>he sports - present singular
-<br>they sport - present plural
-<br>he sported - past
-<br>it is sported - past participle
-<br>he is sporting - present participle
+<blockquote><font color="#000080">The player carries a scarlet gown. The gown is wearable.
 </font></blockquote><p>
 <p>
-<p>Although it looks as if Inform could easily generate these given the infinitive &quot;to sport&quot; alone, by adding an &quot;-s&quot; here or an &quot;-ed&quot; there, English can be a very irregular language. Since only a few verbs will be defined in any single project it seems best to be explicit. (If we do miss out any of the parts of the verb, the result will be that the usages missed out will not be understood by Inform. Sometimes that's a good thing, as some verbs have seldom-used present participles, for instance - &quot;he is liking me&quot;, for instance, is grammatical but odd.)
-<p>
-<p>The Phrasebook index contains all the verbs associated with assertions, in the &quot;table of verbs&quot; section. When we add new verbs to our source, those will appear in the Phrasebook as well.
+<p>(When we come to asking questions about the current situation, we will need to remember that &quot;to carry&quot; and &quot;to wear&quot; are different. Thus &quot;if Lancelot carries the plate armour&quot; will not be true if he is wearing it rather than carrying it under his arm. As we will later see, we can instead vaguely say &quot;if Lancelot has the plate armour&quot; to mean either carrying or wearing.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e272"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc198.html#e272 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>184</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc198.html#e272 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Unthinkable Alliances</font></b></a><br>People are to be grouped into alliances. To kiss someone is to join his or her faction, which may make a grand alliance; to strike them is to give notice of quitting, and to become a lone wolf.<p></td></tr></table>
+<a name="e272"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc46.html#e272 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>28</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc46.html#e272 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Disappointment Bay 10</font></b></a><br>Disappointment Bay: things for the player and the characters to wear and carry.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The following is best tested by experimentally kissing and/or attacking, and typing RELATIONS after every change to see the effect.
+<p>At this point we can dress both the Captain and the player with some appropriate props:
 <p>
-<blockquote><font color="#000080">&quot;Unthinkable Alliances&quot;
+<blockquote><font color="#000080">The captain wears a baseball cap. The description of the cap is &quot;It says, THE WORST DAY FISHING IS BETTER THAN THE BEST DAY WORKING.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Unthinkable Solutions is a room. Sophie, Daisy, Ryan and Owen are in Unthinkable Solutions.
+<blockquote><font color="#000080">The player is carrying a backpack and a bottle of water. The player is wearing a pair of sunglasses. The description of the sunglasses is &quot;The light off the water and the ice does get pretty bright sometimes.&quot;
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Alliance relates people to each other in groups. The verb to help (he helps, they help, he helped, he is helped) implies the alliance relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Sophie helps Ryan. Daisy helps Ryan. Owen helps the player.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of kissing someone (called the blessed one):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Smack!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player helps the blessed one.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of attacking someone (called the vilified one):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Smack!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player does not help the vilified one.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;relations / kiss sophie / relations / hit ryan / relations&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc198.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc46.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e183"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex183.html#e183 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>185</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex183.html#e183 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Unexamined Life</font></b></a><br>An adaptive hint system that tracks what the player needs to have seen or to possess in order to solve a given puzzle, and doles out suggestions accordingly. Handles changes in the game state with remarkable flexibility, and allows the player to decide how explicit a nudge he wants at any given moment.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc197.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc199.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc45.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc47.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

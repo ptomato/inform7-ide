@@ -23,6 +23,7 @@ Global inhibit_dr = 0;
 	activities_ostack-->activities_sp = o;
 	activities_stack-->(activities_sp++) = A;
 	FixInhibitFlag();
+	MStack_CreateAVVars(A);
 	if (Activity_atb_rulebooks->A) { x = action; action = action_to_be; }
 	o = FollowRulebookSelfed(Activity_before_rulebooks-->A, o);
 	if (Activity_atb_rulebooks->A) action = x;
@@ -44,6 +45,7 @@ Global inhibit_dr = 0;
 		if (Activity_atb_rulebooks->A) action = x;
 		activities_sp--; FixInhibitFlag();
 !		print "Ended^";
+		MStack_DestroyAVVars(A);
 		return rv;
 	}
 	.BadEnd; return RunTimeProblem(RTP_CANTABANDON);
@@ -51,7 +53,10 @@ Global inhibit_dr = 0;
 [ AbandonActivity A o;
 	if (activities_sp == 0) jump BadEnd;
 	if (activities_stack-->(activities_sp-1) == A) {
-		activities_sp--; FixInhibitFlag(); return; }
+		activities_sp--; FixInhibitFlag();
+		MStack_DestroyAVVars(A);
+		return;
+	}
 	.BadEnd; return RunTimeProblem(RTP_CANTEND);
 ];
 [ CarryOutActivity A o rv;

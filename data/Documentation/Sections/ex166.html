@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.3. Before rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.7. Multiple beginnings and repeats</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,95 +9,260 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Sand" -->
-<!-- SEARCH SECTION "Ex 72" -->
-<!-- SEARCH SORT "Ex 007-003-072" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc91.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc93.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.3. Before rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Pine 3" -->
+<!-- SEARCH SECTION "Ex 133" -->
+<!-- SEARCH SORT "Ex 010-007-133" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc148.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap10.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 10: Scenes</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc150.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.7. Multiple beginnings and repeats</b></font></td></tr></table>
 <p>
-<p>Despite what was said in the previous section, instead rules do not quite bypass all of the usual rules. Inform knows that certain actions require light: for instance,
+<p>It is quite allowed for a scene to be linked to several other scenes, and this is useful if several alternate strands of plot are being brought together in a common resolution scene:
 <p>
-<blockquote><font color="#000080">examining the napkin; looking; looking under the dining table
+<blockquote><font color="#000080">Bittersweet Ending begins when Stranger's Rejection ends.
+<br>Bittersweet Ending begins when Stranger's Acceptance ends.
 </font></blockquote><p>
 <p>
-<p>and if it is dark then none of these actions will be allowed, and any instead rules about them will not even be reached. Similarly, Inform knows that most actions require physical access to their objects: so &quot;taking the napkin&quot; would be blocked if the napkin were, say, inside a closed glass bottle, whereas &quot;examining the napkin&quot; would not. So an instead rule can only take effect if the action has already passed these basic reasonability tests.
+<p>and we can also have the same scene beginning when a condition holds. In general, it will begin the first time it gets any chance to do so. More surprisingly, it will begin again as soon after it ends as it can. All scenes repeat themselves, if given the chance.
 <p>
-<p>&quot;Before&quot; rules genuinely precede checking of any kind. They also differ from instead rules in that they do not automatically stop the action in its tracks. Rather, they are provided as an opportunity to ensure that something else is done first. For example:
+<p>This is intentional, and can be useful. Suppose the train calls not once only, but every twenty minutes. We could set this up with two scenes linked back to back like so:
 <p>
-<blockquote><font color="#000080">Before taking the napkin, say &quot;(first unfolding its delicate origami swan)&quot;.
+<blockquote><font color="#000080">Train Wait begins when play begins.
+<br>Train Stop begins when Train Wait ends.
+<br>Train Wait begins when Train Stop ends.
 </font></blockquote><p>
-<p>
-<p>whence
-<p>
-<blockquote><font color="#000080">&gt;GET NAPKIN
-<br>(first unfolding its delicate origami swan)
-<br>Taken.
-</font></blockquote><p>
-<p>
-<p>We have seen that instead rules automatically stop actions, whereas before rules automatically allow them to continue. We sometimes want to change this. The magic word &quot;instead&quot; can therefore be tacked on to any instruction in a before rule, and will have the effect of immediately stopping the action at that instruction. Thus the following two rules are (almost) equivalent:
-<p>
-<blockquote><font color="#000080">Before removing the key, instead say &quot;It seems to be soldered to the keyhole.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of removing the key, say &quot;It seems to be soldered to the keyhole.&quot;
-</font></blockquote><p>
-<p>
-<p>Two special phrases can also be used: &quot;stop the action&quot; and &quot;continue the action&quot;. Yet a third way to achieve the same effect, then, would be:
-<p>
-<blockquote><font color="#000080">Before removing the key: say &quot;It seems to be soldered to the keyhole.&quot;; stop the action.
-</font></blockquote><p>
-<p>
-<p>And to round off the discussion, these are also (almost) equivalent:
-<p>
-<blockquote><font color="#000080">Before taking the napkin, say &quot;(first unfolding its delicate origami swan)&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of taking the napkin: say &quot;(first unfolding its delicate origami swan)&quot;; continue the action.
-</font></blockquote><p>
-<p>
-<p>As a general principle, it is good style to use instead rules whenever blocking actions, and before rules only when it is genuinely necessary to do something first but then to continue: in fact, it is good style to use &quot;stop the action&quot; or &quot;continue the action&quot; as little as possible.
 <p>
 <p><hr><p>
-<a name="e73"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex73.html#e73 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>70</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex73.html#e73 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Democratic Process</font></b></a><br>Make PUT and INSERT commands automatically take objects if the player is not holding them.<p></td></tr></table>
+<a name="e181"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex181.html#e181 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>131</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex181.html#e181 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Exit Strategy</font></b></a><br>A scene that begins exactly one time, and some discussion of the scene change machinery.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e166"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc92.html#e166 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>71</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc92.html#e166 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Sand</font></b></a><br>Extend PUT and INSERT handling to cases where multiple objects are intended at once.<p></td></tr></table>
+<a name="e166"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc149.html#e166 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>132</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc149.html#e166 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Pine 3</font></b></a><br>Pine: Allowing the player to visit aspects of the past in memory and describe these events to the princess, as a break from the marriage-proposal scene.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The above example does not quite work when we want the player to be allowed to take multiple objects at once before putting them somewhere: we also need to add a couple of &quot;understand&quot; rules borrowed from many chapters later. While the reasons may not be immediately clear, we include the demonstration here for the sake of thoroughness:
-<p>
-<blockquote><font color="#000080">&quot;Sand&quot;
+<blockquote><font color="#000080">&quot;Pine&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before inserting something which is not carried by the player into something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is in the second noun, say &quot;Already done.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking [the noun]) &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not holding the noun, stop the action.
+<blockquote><font color="#000080">Part 1 - The Set-up
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before putting something which is not carried by the player on something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is on the second noun, say &quot;Already done.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking [the noun])[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not holding the noun, stop the action.
+<p>This is mostly a repeat of what we have already seen, but for the sake of producing a playable scenario, we include it. The new material appears at Part 2.
+<p>
+<blockquote><font color="#000080">A person can be asleep or awake. A person can be active or passive.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;put [things] in [something]&quot; as inserting it into. Understand &quot;put [things] on [something]&quot; as putting it on.
+<blockquote><font color="#000080">The Spinning Tower is a room. &quot;A remote corner of the old castle, reserved for spinning and weaving tasks.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Closet is a room.
+<blockquote><font color="#000080">Sleeping Beauty is an asleep woman in the Spinning Tower. &quot;[if asleep]Sleeping Beauty lies here, oblivious to your presence[otherwise]Sleeping Beauty stands beside you, looking [attitude][end if].&quot; The description is &quot;She is even more magnificent than the rumors suggested.&quot; Understand &quot;woman&quot; or &quot;girl&quot; or &quot;princess&quot; or &quot;lady&quot; as Sleeping Beauty.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A lentil is a kind of thing. A black-eyed pea is a kind of thing. The closet contains 3 lentils. The Closet contains 14 black-eyed peas. The round tin is a container in the closet. The round tin contains 17 lentils. The square tin is a container in the Closet. The square tin contains 20 black-eyed peas.
+<blockquote><font color="#000080">Discovery is a scene. Discovery begins when play begins. Discovery ends when Sleeping Beauty is awake. Marriage Proposal is a scene. Marriage Proposal begins when Discovery ends.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Sorting is a scene. Sorting begins when play begins. Sorting ends when all the lentils are in the round tin and all the peas are in the square tin. When Sorting ends, end the game in victory.
+<blockquote><font color="#000080">When Discovery ends: say &quot;Throughout the palace you can hear the other sounds of stirring and movement as the spell of centuries is broken.&quot;; now Beauty is passive.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins: say &quot;Thanks to your cruel stepmother, you're not going anywhere until the lentils and peas are sorted.&quot;
+<blockquote><font color="#000080">Instead of waking an awake person: say &quot;Redundant.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;put peas in square tin / put lentils in round tin&quot;.
+<blockquote><font color="#000080">Instead of waking an asleep person: say &quot;Yes, but how?&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc92.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Instead of attacking an asleep person:
+<br>now the noun is awake;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] sits bolt upright. 'Hey! Ow!' So much for that true love's kiss nonsense.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of kissing an asleep person:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is awake;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] slowly stirs to wakefulness!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of throwing water at an asleep person:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the second noun is awake;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You pour out [the noun] on [the second noun].
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">[The second noun] wakes, shuddering. 'Agh! I had a terrible dream about drowning and then-- Hey!'&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries a jug of water. Understand &quot;pour [something] on [something]&quot; or &quot;splash [something] at/on [something]&quot; as throwing it at.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Conversation
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">quip</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;dream/dreams/nightmare/nightmares/sleep&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Sleep well?' you ask solicitously.</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080"><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">'Not really,' she replies, edging away from you. So much for that angle.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Ghastly nightmares,' she remarks. You nod politely.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'So,' you say. 'This is a little weird since we just met, but, um. Would you like to get married?'</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080"><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">She looks at you nervously. 'Do I have to?'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'I, er,' she says. 'I hope I'm not supposed to marry you or something.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'I was told I was going to marry you and inherit the kingdom,' you say, apologetically. 'Would that be very bad?' This could be awkward, considering your family circumstances -- you did promise your mother that everything would be better, after this --</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">'Oh, it's not you -- I'm seeing someone,' she says, smiling quickly.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080"><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">You try to think how to point out that it's been a hundred years since she last saw her boyfriend.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Do you think I could go look for someone? I'm seeing him, you see, and I think I've been... sick... for a while, so he might be worried.'</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">You try to think how to point out that it's been a hundred years since she last saw her boyfriend. And try not to think how awkward things would be in your family if she refuses to marry you.&quot;
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'You've been up here for a hundred years,' you say. An unpleasant thought occurs to you. 'Was your young man in the castle somewhere?'</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080"><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">She shakes her head mutely.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;She goes to the window and looks out at the now-fading thicket of briar. 'That took a while to grow,' she observes. 'I've been up here longer than I thought.'</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">You shrug, uncomfortable.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking an awake beauty about a topic listed in the Table of Conversation:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Beauty is passive;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of telling an awake beauty about something: try asking the noun about it.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking an asleep person about something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] snores.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Marriage Proposal ends when the number of filled rows in the Table of Conversation is 0.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn during Marriage Proposal:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Beauty is active and Beauty is visible
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Conversation
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[quip entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn: now Beauty is active.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When Marriage Proposal ends: end the game saying &quot;This is going to take some explaining.&quot;
+</font></blockquote><p>
+<p>
+<p>So far we haven't much of a chance to affect matters and make them better. Suppose we'd like to add an element to the conversation where we're allowed to tell Beauty about past events -- and explore them a bit; and if the first retelling doesn't go quite as planned, we're allowed to revisit these scenes to hit them with a bit more emphasis.
+<p>
+<blockquote><font color="#000080">Part 2 - Flashbacks
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking an awake beauty about a topic listed in the Table of Flashback Material:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Beauty is passive;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A fact is a kind of thing. The family circumstances is a fact. A fact can be known or unknown. A fact can be current or past.
+</font></blockquote><p>
+<p>
+<p>Once known, a fact remains known permanently -- this could be useful if we wanted to make some rules about how Beauty acts when she knows different information. By contrast, a fact is only &quot;current&quot; if it is the last thing discussed. Since a player can mention a fact over and over, he can make it &quot;current&quot; again and again, and thus reactivate the flashback.
+<p>
+<blockquote><font color="#000080">Table of Flashback Material
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;poor/poverty/family/money/mother/circumstances&quot; or &quot;family circumstances&quot; or &quot;my family/mother&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[if family circumstances is unknown]'I wish you'd give some thought to marrying me. You see,' you say, your jaw tensing. 'I wouldn't ask if it weren't for my [family circumstances]...'[otherwise]'I don't think you fully understand the [family circumstances],' you say.[end if]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080"> After printing the name of a fact (called target): now the target is current; now the target is known.
+</font></blockquote><p>
+<p>
+<p>This &quot;After printing the name...&quot; rule will be explained later in the chapter on activities; for now, it is enough to know that whenever family circumstances is mentioned in the table of flashback material, this rule will automatically be called. Now the terms under which the flashback happens:
+<p>
+<blockquote><font color="#000080">Poverty flashback is a scene. Poverty flashback begins when family circumstances is current. When poverty flashback begins: strip the player; move the player to the Woodcutter's Shack.
+</font></blockquote><p>
+<p>
+<p>If, of course, we want a flashback NOT to repeat, we can build into the qualification for beginning a restriction that the scene must not have already occurred. We could have written &quot;begins when poverty flashback has not happened and...&quot;, in which case the scene would be triggered only once. This is in fact what we did in the &quot;Space Patrol&quot; example. Now for an appropriately manipulative tale of woe:
+<p>
+<blockquote><font color="#000080">The Woodcutter's Shack is a room. &quot;Your family lives in a shack in the forest. There are holes in the roof, and in the winter the snow comes in -- rain, too, for that matter. The walls aren't very well-boarded, and don't keep out the wind, and even though you live in the middle of dense woods, you can never gather enough fuel to keep this place fully heated. And then there's the stench. Pigs wander freely in and out, and your three youngest brothers play on the floor.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Pigs are an animal in the shack. The pigs are scenery. The description is &quot;They really are very grubby, dirty animals, but what's worse than that, the value of pigs has declined a lot over the last few decades. This is hard to explain to someone who has been out of touch with the world for a while, but keeping pigs for meat is a dubious prospect when there's less and less for them to forage on.&quot; Instead of smelling the pigs: say &quot;They smell the way animals do, when they live among their own refuse.&quot;; increase the pity of Beauty by 2.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The brothers are a man. The description of brothers is &quot;Hans, Franz, and Lukas. Twins and then the baby. So young, and growing up fatherless; and soon to be orphaned entirely, if your mother's health does not improve.&quot; Understand &quot;brother&quot; or &quot;twin&quot; or &quot;twins&quot; or &quot;baby&quot; or &quot;franz&quot; or &quot;hans&quot; or &quot;lukas&quot; as the brothers.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The untidy bed is scenery in the Shack. Mother is a woman on the untidy bed. The description of mother is &quot;She is wasting away of a slow disease, her skin stretched tautly over bone. She hasn't been the same since your father left.&quot; On the bed is a folded letter.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the letter is &quot;Many times read over and creased, the letter explains how your father has gone away with a wealthy countess and will not return. Your mother was not able to read it herself, of course, and had to have it explained to her by the parish priest. Now she keeps it by the bed and crumples it in her fits of delirium.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of kissing or touching Mother for the first time:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You place a gentle kiss on her feverish brow. She looks up at you, her oldest -- yes, never mind that bit -- with a look of sincere trust and admiration.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">'You'll find a way through this for us,' she says, squeezing your fingers. 'I know you will.'&quot;; increase the pity of Beauty by 3.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of kissing Mother: say &quot;You have no more heart-rending memories of affection to recount; that one incident will have to serve, for rhetorical purposes.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of waiting in the Shack: say &quot;The wind blows sharply through the walls.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of attacking someone in the Shack:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Though sometimes the conditions of your life make you grouchy and impatient, you would never dream of striking a member of your own family. But from time to time you do feel the temptation.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Beauty has a number called pity. After examining something in the Woodcutter's Shack, increase the pity of Beauty by 1. After examining mother, increase the pity of Beauty by 2. After examining the letter, increase the pity of Beauty by 3.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Poverty flashback ends when waiting or the time since poverty flashback began is five minutes.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When Poverty flashback ends:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now family circumstances is past;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;...you finish describing the miserable circumstances of your home life, and allow your attention to return to the present.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;restore the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Beauty is passive;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Beauty is sympathetic, say &quot;'Oh dear!' she says. 'What a dreadful life!' She wrings her hands. 'No wonder you are eager to improve your lot...! But --' Her brow clears, a new thought occurring. 'You needn't marry me, you know! We could arrange it differently! I am certain that my father would give you a large reward, instead, and then I would not be separated from my current boyfriend!'&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;She makes a disgusted face, but she doesn't seem nearly so heart-wrung as you had hoped to make her. Tough audience, these modern princesses.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: Beauty is sympathetic if the pity of Beauty is greater than 4.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say attitude:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Beauty is sympathetic, say &quot;distressed on your behalf&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;a little confused&quot;.
+</font></blockquote><p>
+<p>
+<p>And the following is the same as in the Space Patrol example as well: we need a systematic way to remove the player's possessions, then put everything back when the flashback is over:
+<p>
+<blockquote><font color="#000080">Saved location is a room that varies. Locker is a container. Wardrobe is a container.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To strip the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp; now every thing carried by the player is in the locker;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing worn by the player is in the wardrobe;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change saved location to location.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To restore the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing carried by the player is in the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing in the locker is carried by the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing in the wardrobe is worn by the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to saved location.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x beauty / wake beauty / pour water on beauty / ask beauty about sleep / tell beauty about poverty / smell pigs / x mother / x letter / kiss mother / ask beauty about marriage / z / z&quot;.
+</font></blockquote><p>
+<p>
+<p>Because we haven't changed the endings of the &quot;Marriage Proposal&quot; scene, there is still only one way for this scenario to work out; but at least now the player has the opportunity to alter Beauty's attitude a bit (or not) before the game is done.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc149.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc91.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc93.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc148.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc150.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

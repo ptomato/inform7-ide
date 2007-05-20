@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.18. Constructing the status line</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.6. The preamble of a rule</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,85 +9,150 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Ways Out" -->
-<!-- SEARCH SECTION "Ex 262" -->
-<!-- SEARCH SORT "Ex 017-018-262" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc272.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc274.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.18. Constructing the status line</b></font></td></tr></table>
+<!-- SEARCH TITLE "Backus-Naur form for rules" -->
+<!-- SEARCH SECTION "Ex 290" -->
+<!-- SEARCH SORT "Ex 018-006-290" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc295.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc297.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.6. The preamble of a rule</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> Just before input is accepted from the keyboard, Inform constructs a &quot;status line&quot; at the top of the window which is normally displayed in reverse colours (white on black instead of black on white, say).
+<p>In general, a rule looks like this:
 <p>
-<p><b>2. The default behaviour.</b> Makes the status line up out of two pieces, the &quot;left hand status line&quot; and the &quot;right hand status line&quot;. Since these can freely be changed, note that the status line is already very customisable without using rules applied to this activity.
-<p>
-<p><b>3. Examples.</b> (a) The most useful thing about this activity is that it allows us to vary descriptions in the status line. This is especially helpful to abbreviate unduly long room names, which might not otherwise fit:
-<p>
-<blockquote><font color="#000080">The Temple Of A Thousand Mightily Peeved Deities is a room. Rule for printing the name of the Temple while constructing the status line: say &quot;Temple&quot;.
+<blockquote><font color="#000080">preamble : list of one or more phrases divided by semicolons
 </font></blockquote><p>
 <p>
-<p>(b) Again, it's usually not necessary to apply activity rules to this, but occasionally amusing effects are possible if we do:
+<p>though in a few common cases (where the preamble begins with Before, After, Instead of, Every turn, or When, and there is only one phrase in the list) the colon can be replaced with a comma. Three kinds of declaration are special, and these we can tell apart by the first word:
 <p>
-<blockquote><font color="#000080">The blindfold is wearable and initially carried. Rule for constructing the status line while the blindfold is worn: do nothing.
+<blockquote><font color="#000080">To ... - a new phrase: see the chapter on Phrases
+<br>At ... - something due to happen at a given time: see Time
+<br>Definition: ... - a new adjective: see Descriptions
 </font></blockquote><p>
+<p>
+<p>All other declarations (that is, starting with any other word) create rules fit for going into rulebooks. The preamble can either just be a name, which is required to end with the word &quot;rule&quot;, or it can give circumstances and have no name, or it can do both:
+<p>
+<blockquote><font color="#000080">This is the ...name of rule...
+<br>...circumstances...
+<br>...circumstances... (this is the ...name of rule...)
+</font></blockquote><p>
+<p>
+<p>The circumstances should be a sequence of the following ingredients, each of which is optional except the name of the rulebook:
+<p>
+<blockquote><font color="#000080">first <i>or</i> last
+<br><i>followed by</i> ...rulebook name...
+<br><i>followed by</i> about <i>or</i> for <i>or</i> of <i>or</i> on <i>or</i> rule
+<br><i>followed by</i> ...what to apply to...
+<br><i>followed by</i> while <i>or</i> when ...condition...
+<br><i>followed by</i> during ...a scene...
+</font></blockquote><p>
+<p>
+<p>The word &quot;first&quot; or &quot;last&quot;, if present, is significant: it tells Inform exactly where the new rule should be placed into its rulebook, and so overrides the normal practice of placing the rule according to how specific it is.
+<p>
+<p>On the other hand, the use of any of the words &quot;about&quot;, &quot;for&quot;, etc., is purely to make the grammar easier to follow for: Inform does not make any direct use of these words (except perhaps that it may help to avoid ambiguities by separating the rulebook name from what is being applied to). Thus in the rule
+<p>
+<blockquote><font color="#000080">Instead of kissing Clark: ...
+</font></blockquote><p>
+<p>
+<p>the word &quot;instead&quot; is the rulebook's name, while &quot;of&quot; is technically optional. &quot;Instead about kissing Clark: ...&quot; would work just as well, but would make the source text harder to read.
+<p>
+<p>In this whole list of possible ingredients, only the rulebook name is compulsory. We could define a rule called simply &quot;Instead: ...&quot; if we wanted - though its universal applicability would make it pretty disruptive, with every action stopped in its tracks.
 <p>
 <p><hr><p>
+<a name="e68"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex68.html#e68 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>288</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex68.html#e68 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Replacing standard action report rules</font></b></a><br>Replacing the standard action report rules to reflect our own design.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e267"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc273.html#e267 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>261</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc273.html#e267 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Ways Out</font></b></a><br>A status line that lists the available exits from the current location.<p></td></tr></table>
+<a name="e267"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc296.html#e267 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>289</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc296.html#e267 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Backus-Naur form for rules</font></b></a><br>The full grammar Inform uses to parse rule definitions, in a standard computer-science notation.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>A not-uncommon device in games with large maps is a list of available exits printed in the status bar. We might do this so:
+<p>Backus-Naur form, or BNF, is a standard notation used by computer scientists to specify more or less precisely what the valid programs are for a given programming language. It tends to provide a good description for a language such as C or Pascal, where contextual rules are limited, but the authors of Inform are doubtful that it is such a good tool for a natural-language system. For those who are interested, though, the following gives a formal specification for Inform's rules.
 <p>
-<blockquote><font color="#000080">&quot;Ways Out&quot;
+<blockquote><font color="#000080">&lt;rule&gt; ::=
+<br>&nbsp;&nbsp;&nbsp;&nbsp;Definition : A/an &lt;kind&gt; is &lt;new adjectival name&gt; if/unless &lt;definition&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| &lt;preamble&gt; : &lt;phrases&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| &lt;preamble&gt; , &lt;phrase&gt;    (* only allowed for a few cases: see below)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change left hand status line to &quot;Exits: [exit list]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change right hand status line to &quot;[location]&quot;.
+<blockquote><font color="#000080">&lt;definition&gt; ::=
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;condition&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| its/his/her/their &lt;value property name&gt; is/are &lt;value&gt; or less/more
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| : &lt;phrases&gt;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say exit list:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let place be location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with way running through directions
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let place be the room way from the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if place is a room, say &quot; [way]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">&lt;preamble&gt; ::=
+<br>&nbsp;&nbsp;&nbsp;&nbsp;To &lt;phrase template&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| To decide if/whether &lt;phrase template&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| To decide which/what &lt;kind of value&gt; is &lt;phrase template&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| This is the &lt;rule name&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| [[A] Rule for] &lt;circumstances&gt; [(this is the &lt;rule name&gt;)]
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">&lt;circumstances&gt; ::=
+<br>&nbsp;&nbsp;&nbsp;&nbsp;At &lt;time&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| When &lt;event name&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| [&lt;placement&gt;] &lt;rulebook reference&gt; [while/when &lt;condition&gt;] [during &lt;scene name&gt;]
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">&lt;rulebook reference&gt; ::=
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;rulebook name&gt; [about/for/of/on/rule] [&lt;action pattern&gt;]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| &lt;object-based-rulebook name&gt; [about/for/of/on/rule] [&lt;description&gt;]
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">&lt;placement&gt; ::=
+<br>&nbsp;&nbsp;&nbsp;&nbsp;a/an
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| [the] first
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| [the] last
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">&lt;phrases&gt; ::=
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;phrase&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;| &lt;phrases&gt; ; &lt;phrase&gt;
 </font></blockquote><p>
 <p>
 <p>
-<p>We may find that printing out full directions makes the status line unpleasantly crowded. Fortunately, it isn't hard to provide a set of abbreviations to use in this context:
+<p>The following examples show how Inform breaks down some typical rules using the system above:
 <p>
-<blockquote><font color="#000080">Rule for printing the name of a direction (called the way) while constructing the status line:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row with a heading of the way in the Table of Abbreviation;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[shortcut entry]&quot;.
+<blockquote><font color="#000080">&lt;rule&gt; = At 2:09 PM: award 2 points; say &quot;Progress!&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;preamble&gt; = At 2:09 PM
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circumstances&gt; = At 2:09 PM
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;At
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;time&gt; = 2:09 PM
+<br>&nbsp;&nbsp;&nbsp;&nbsp;:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;phrases&gt; = award 2 points; say &quot;Progress!&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;phrase&gt; = award 2 points
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;phrase&gt; = say &quot;Progress&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Abbreviation
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">heading</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">shortcut</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">north</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;N&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">northeast</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;NE&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">northwest</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;NW&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">east</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;E&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">southeast</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;SE&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">south</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;S&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">southwest</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;SW&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">west</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;W&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">up</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;U&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">down</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;D&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">inside</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;IN&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">outside</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;OUT&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">&lt;rule&gt; = Instead of eating the ostrich during Formal Dinner (this is the cuisine rule), say &quot;It's greasy!&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;preamble&gt; = Instead of eating the ostrich during Formal Dinner (this is the cuisine rule)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circumstances&gt; = Instead of eating the ostrich during Formal Dinner
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;rulebook reference&gt; = Instead of eating the ostrich
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;rulebook name&gt; = Instead
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;action pattern&gt; = eating the ostrich
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;during
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;scene name&gt; = Formal Dinner
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;rule name&gt; = cuisine rule
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;phrases&gt; = say &quot;It's greasy!&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;phrase&gt; = say &quot;It's greasy!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Dome is a room. North of Dome is North Chapel. South of the Dome is South Chapel. West of the Dome is Western End. Quiet Corner is northwest of the Dome, north of Western End, and west of North Chapel. Loud Corner is east of North Chapel, northeast of Dome, and north of Eastern End. Eastern End is north of Dim Corner and east of Dome. Dim Corner is southeast of Dome and east of South Chapel. Ruined Corner is southwest of Dome, west of South Chapel, and south of Western End.
+<blockquote><font color="#000080">&lt;rule&gt; = After printing the name of a container: say &quot;!&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;preamble&gt; = After printing the name of a container
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;circumstances&gt; = After printing the name of a container
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;rulebook reference&gt; = After printing the name of a container
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;object-based-rulebook name&gt; = After printing the name
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;of
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;description&gt; = a container
+<br>&nbsp;&nbsp;&nbsp;&nbsp;:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;phrases&gt; = say &quot;!&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;phrase&gt; = say &quot;!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The church door is east of Eastern End and west of the Courtyard. The church door is a door.
-</font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;w / n / e / e / s / e&quot;.
-</font></blockquote><p>
-<p>
-<p>Everywhere else, the names of directions will still be printed out in full in the usual way.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc273.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>(*) The colon dividing a rule preamble from its definition can be replaced by a comma only if the preamble begins with the words &quot;Instead of&quot;, &quot;Before&quot;, &quot;After&quot;, &quot;Every turn&quot; or &quot;When&quot;, and if the definition consists only of a single phrase.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc296.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e187"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex187.html#e187 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>262</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex187.html#e187 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Guided Tour</font></b></a><br>A status line that lists the available exits from the current location, changing the names of these exits depending on whether the room has been visited or not.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc272.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc274.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc295.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc297.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -113,6 +113,7 @@ Global I7_action_deciding_rule;
 Global I7_concealed_item;
 Global I7_TProp;
 Global I7_TSign;
+Global I7_suppress_scope_loops;
 
 Constant I7_EMPTY_TEXT "";
 
@@ -216,6 +217,8 @@ Global cobj_flag = 0;
 {-routine:I7_Kind_Name}
 {-routine:I7_RulebookOutcomePrintingRule}
 
+{-call:compile_property_numberspace_forcer}
+
 {-log:Compiling the object tree}
 
 ! --- Object tree ---
@@ -273,6 +276,7 @@ Global parameter_object;
 Array EMPTY_RULEBOOK -> $ff $ff $ff $ff; ! 4 bytes needed in case of Glulx
 {-array:rulebooks_array}
 {-call:compile_rulebooks}
+{-segment:MStack.i6}
 
 {-segment:RTP.i6}
 {-segment:Printing.i6}
@@ -491,6 +495,7 @@ Constant I7_BOXES = {-value:extent_of_runtime_quotations_array};
 
 {-callv:write_ifiction_and_blurb}
 
+{-open-index}
 {-index:Kinds}
 	{-callv:index_page_Kinds}
 {-index:World}
@@ -511,15 +516,16 @@ Constant I7_BOXES = {-value:extent_of_runtime_quotations_array};
 {-index:Scenes}
 	{-callv:index_page_Scenes}
 {-callv:complete_index}
+{-close-index}
 
 {-callv:complete_problems_report} 
 
 {-callv:report_pairs_observed}
 {-callv:report_pairs_allowed}
 
-{-callv:debug_memory_statistics}
+{! -callv:debug_memory_statistics}
 {! -callv:debug_parser_statistics}
-{-callv:debug_verbs}
+{! -callv:debug_verbs}
 
 {-callv:free_memory}
 

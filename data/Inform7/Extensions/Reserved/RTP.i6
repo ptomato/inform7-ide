@@ -35,6 +35,8 @@ Constant RTP_NOTINAROOM 28;
 Constant RTP_BADTOPIC 29;
 Constant RTP_ROUTELESS 30;
 Constant RTP_PROPOFNOTHING 31;
+Constant RTP_DECIDEONWRONGKIND 32;
+Constant RTP_DECIDEONNOTHING 33;
 
 [ RunTimeProblem n obj obj2 ln obj3 i c;
 	! if (I7_enable_rte == false) return;
@@ -133,6 +135,10 @@ Constant RTP_PROPOFNOTHING 31;
 				relation.^";
 		RTP_PROPOFNOTHING:
 			print "Attempt to use a property of the 'nothing' non-object.^";
+		RTP_DECIDEONWRONGKIND:
+			print "Attempt to 'decide on V' where V is the wrong kind of object.^";
+		RTP_DECIDEONNOTHING:
+			print "Attempt to 'decide on nothing'.^";
 		}
 	print "^";
 ];
@@ -147,6 +153,15 @@ Constant RTP_PROPOFNOTHING 31;
 [ I7_Rem A B;
 	if (B == 0) { RunTimeProblem(RTP_DIVZERO); rfalse; }
 	return A%B;
+];
+
+! Checked return values:
+
+[ I7_VerifyK V K;
+	if (V ofclass K) return V;
+	if (v == nothing) RunTimeProblem(RTP_DECIDEONNOTHING);
+	else RunTimeProblem(RTP_DECIDEONWRONGKIND);
+	return V;
 ];
 
 ! Protected Z-machine property and attribute access:

@@ -21,6 +21,13 @@ vehicle.
 Definition: Something is vehicular if it is a vehicle or it is a
 rideable animal or it is a rideable vehicle.
 
+Rule for setting action variables for going (this is the allow rideables to be
+	going vehicles rule):
+	if the actor is carried by a rideable animal (called the steed),
+		now the vehicle gone by is the steed;
+	if the actor is on a rideable vehicle (called the conveyance),
+		now the vehicle gone by is the conveyance.
+
 Mounting is an action applying to one thing.
 
 Before entering a rideable animal (called the steed), try mounting the
@@ -46,16 +53,15 @@ Check mounting:
 		say "You are already riding [the conveyance]." instead;
 	if the noun is not a rideable animal and the noun is not a rideable
 	vehicle, say "[The noun] cannot be ridden." instead;
-	abide by the determine common ancestor for entering rule;
 	abide by the can't enter something carried rule;
 	abide by the implicitly pass through other barriers rule.
 	
 Carry out mounting (this is the standard mounting rule):
-	consider the standard entering rule.
+	move the actor to the noun at object tree level.
 
 Report mounting (this is the standard report mounting rule):
 	say "You mount [the noun].";
-	consider the describe contents entered into rule.
+	describe the locale of the noun.
 	
 Check someone trying mounting (this is the no person mounting a mounted animal rule): 
 	if the person asked is carried by a rideable animal (called the steed), 
@@ -69,12 +75,11 @@ Check someone trying mounting (this is the no person mounting an unrideable thin
 		stop the action.
 
 Check someone trying mounting (this is the person entering rule):
-	abide by the determine common ancestor for entering rule; 
 	abide by the can't enter something carried rule; 
 	abide by the implicitly pass through other barriers rule. 
 	
 Carry out someone trying mounting (this is the standard person mounting rule): 
-	consider the standard entering rule. 
+	move the actor to the noun at object tree level. 
 	
 Report someone trying mounting (this is the standard report person mounting rule): 
 	say "[The person asked] mount[s] [the noun]." instead. 
@@ -104,11 +109,12 @@ Carry out dismounting (this is the standard dismounting rule):
 		change the noun to the steed;
 	if the player is on a rideable vehicle (called the conveyance),
 		change the noun to the conveyance;
-	consider the standard exiting rule.
+	let the former exterior be the holder of the noun;
+	move the actor to the former exterior at object tree level.
 
 Report dismounting (this is the standard report dismounting rule):
-	say "You dismount [the noun].";
-	consider the describe room emerged into rule.
+	say "You dismount [the noun].[line break][run paragraph on]";
+	produce a room description with going spacing conventions.
 
 Check someone trying dismounting (this is the no person dismounting when not mounted rule): 
 	if the person asked is not carried by a rideable animal and the person asked is not on a rideable vehicle, 
@@ -119,7 +125,8 @@ Carry out someone trying dismounting (this is the standard person dismounting ru
 		change the noun to the steed; 
 	if the person asked is on a rideable vehicle (called the conveyance), 
 		change the noun to the conveyance; 
-	consider the standard exiting rule. 
+	let the former exterior be the holder of the noun;
+	move the actor to the former exterior at object tree level.
 	
 Report someone trying dismounting (this is the standard report person dismounting rule): 
 	say "[The person asked] dismount[s] [the noun]."

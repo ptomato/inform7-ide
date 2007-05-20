@@ -1,0 +1,120 @@
+! MStack.i6 segment
+! Providing a second in-memory stack for temporary variables attached to
+! rulebooks, activities, actions and the like
+
+Constant MAX_MSTACK_FRAME = 2 + {-value:max_frame_size_needed};
+Constant MSTACK_CAPACITY = 20;
+Constant MSTACK_SIZE = MSTACK_CAPACITY*MAX_MSTACK_FRAME;
+
+Array MStack --> MSTACK_SIZE;
+Global MStack_Top = 0;
+
+[ Mstack_Create_Frame creator id extent;
+	if (creator == 0) rfalse;
+	extent = creator.call(MStack_Top+2);
+	if (extent == 0) rfalse;
+	if (MStack_Top + MAX_MSTACK_FRAME >= MSTACK_SIZE + 2) {
+		print "Variable stack exhausted^";
+		Mstack_Backtrace();
+		rfalse;
+	}
+	MStack_Top++;
+	MStack-->MStack_Top = id;
+	MStack_Top++;
+	MStack_Top = MStack_Top + extent;
+	MStack-->MStack_Top = -(extent+2);
+	! Mstack_Backtrace();
+	rtrue;
+];
+
+Global MStack_Frame_Extent = 0;
+
+[ Mstack_Backtrace pos k;
+	print "Mstack backtrace: size ", MStack_Top+1, " words^";
+	pos = MStack_Top;
+	while (MStack-->pos ~= 0) {
+		MStack_Frame_Extent = MStack-->pos;
+		pos = pos + MStack_Frame_Extent;
+		MStack_Frame_Extent = (-2) - MStack_Frame_Extent;
+		print "Block at ", pos+2,
+			" owner ID ", MStack-->(pos+1), " size ", MStack_Frame_Extent, "^";
+		for (k=0: k<MStack_Frame_Extent: k++) print MStack-->(pos+2+k), " ";
+		print "^";
+	}
+];
+
+[ Mstack_Seek_Frame id pos;
+	pos = MStack_Top;
+	while (MStack-->pos ~= 0) {
+		MStack_Frame_Extent = MStack-->pos;
+		pos = pos + MStack_Frame_Extent;
+		MStack_Frame_Extent = (-2) - MStack_Frame_Extent;
+		if (MStack-->(pos+1) == id) return pos+2;
+	}
+	MStack_Frame_Extent = 0;
+	return 0; ! Not found
+];
+
+[ Mstack_Destroy_Frame id pos;
+	pos = Mstack_Seek_Frame(id);
+	if (pos == 0) rfalse; ! Not found: do nothing
+	MStack_Top = pos - 2; ! Clear mstack down to just below this frame
+	rtrue;
+];
+
+[ MstVO id off pos;
+	pos = Mstack_Seek_Frame(id);
+	if (pos == 0) {
+		print "Variable unavailable: ", id, "/", off, "^";
+		rfalse;
+	}
+	if ((off<0) || (off >= MStack_Frame_Extent)) {
+		print "Variable stack offset wrong: ", id, "/", off, " at ", pos, "^";
+		rfalse;
+	}
+	return pos+off;
+];
+
+[ MstVON id off pos;
+	pos = Mstack_Seek_Frame(id);
+	if (pos == 0) {
+		return 0; ! because word 0 is 0 == nothing in I6 terms
+	}
+	if ((off<0) || (off >= MStack_Frame_Extent)) {
+		print "Variable stack offset wrong: ", id, "/", off, " at ", pos, "^";
+		rfalse;
+	}
+	return pos+off;
+];
+
+! Blocks can be attached to rulebooks (id = allocation id) or to activities
+! (id = 10000 + allocation id) or to actions (20000 + allocation id)
+
+{-array:rulebook_var_creators}
+{-array:activity_var_creators}
+
+[ MStack_CreateRBVars rb cr;
+	cr = rulebook_var_creators-->rb;
+	if (cr == 0) return;
+	Mstack_Create_Frame(cr, rb);
+];
+
+[ MStack_DestroyRBVars rb cr;
+	cr = rulebook_var_creators-->rb;
+	if (cr == 0) return;
+	Mstack_Destroy_Frame(rb);
+];
+
+[ MStack_CreateAVVars av cr;
+	cr = activity_var_creators-->av;
+	if (cr == 0) return;
+	Mstack_Create_Frame(cr, av + 10000);
+];
+
+[ MStack_DestroyAVVars av cr;
+	cr = activity_var_creators-->av;
+	if (cr == 0) return;
+	Mstack_Destroy_Frame(av + 10000);
+];
+
+! End of MStack.i6 segment

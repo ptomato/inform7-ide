@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.27. Printing a parser error</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.25. Supplying a missing noun/second noun</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,55 +9,36 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Printing a parser error" -->
-<!-- SEARCH SECTION "17.27" -->
-<!-- SEARCH SORT "017-027-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc281.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc283.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.27. Printing a parser error</b></font></td></tr></table>
+<!-- SEARCH TITLE "Supplying a missing noun/second noun" -->
+<!-- SEARCH SECTION "17.25" -->
+<!-- SEARCH SORT "017-025-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc281.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc283.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.25. Supplying a missing noun/second noun</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> The parser is the part of the run-time software, included in all works produced by Inform, which tries to match the player's command against the grammar provided by the work. When it is unable to make a valid match, the parser prints an error to the player: for instance,
+<p><b>1. When it happens.</b> (Two different activities here, but identical except for applying to different nouns.) Suppose that, because of an instruction to Understand something even though it would be lacking a noun - say, 'Understand &quot;take&quot; as taking.' - an incomplete action is generated, one which is required to have a noun, but doesn't. &quot;Supplying a missing noun&quot; takes place to remedy the problem. It can either:
 <p>
-<blockquote><font color="#000080">> BIFURCATE TREE
-<br>That's not a verb I recognise.
+<p>(i) Set a noun, printing text like &quot;(presumably the black bag)&quot; if it wants, in which case the action goes forward, though it is still subject to the full rules on accessibility exactly as any other action would be; or
+<p>
+<p>(ii) Make no choice, in which case no action takes place and the player's command is rejected. If the activity printed nothing, Inform will produce a generic reply to the player that &quot;You must supply a noun.&quot;.
+<p>
+<p><b>2. The default behaviour.</b> In the default grammar for Inform, only three such half-finished actions are ever Understood. One is &quot;going&quot; with no direction, for which this activity simply prints a refusal. The other two are the two undirected senses, &quot;smelling&quot; and &quot;listening&quot;. In each case, the &quot;supplying a missing noun&quot; activity sets the noun to the current location: so, for instance, typing the bare command &quot;listen&quot; might generate the action &quot;listening to the Shoreline&quot;.
+<p>
+<p><b>3. Examples.</b> (a) This is the definition Inform uses to make &quot;listen&quot; work as outlined above:
+<p>
+<blockquote><font color="#000080">Rule for supplying a missing noun while listening (this is the ambient sound rule): change the noun to the location.
 </font></blockquote><p>
 <p>
-<p>There are some 18 possible messages, and we can distinguish them using the following conditions:
+<p>(b) It can be elegant to allow second nouns to be dropped with habitual actions, or where the choice is obvious:
 <p>
-<blockquote><font color="#000080">if the parser error is didn't understand...
-<br>if the parser error is only understood as far as...
-<br>if the parser error is didn't understand that number...
-<br>if the parser error is can't see any such thing...
-<br>if the parser error is said too little...
-<br>if the parser error is aren't holding that...
-<br>if the parser error is can't use multiple objects...
-<br>if the parser error is can only use multiple objects...
-<br>if the parser error is not sure what it refers to...
-<br>if the parser error is excepted something not included...
-<br>if the parser error is can only do that to something animate...
-<br>if the parser error is not a verb I recognise...
-<br>if the parser error is not something you need to refer to...
-<br>if the parser error is can't see it at the moment...
-<br>if the parser error is didn't understand the way that finished...
-<br>if the parser error is not enough of those available...
-<br>if the parser error is nothing to do...
-<br>if the parser error is I beg your pardon...
+<blockquote><font color="#000080">Understand &quot;unlock [something]&quot; as unlocking it with.
 </font></blockquote><p>
 <p>
-<p><b>2. The default behaviour.</b> Prints the message in question.
-<p>
-<p><b>3. Examples.</b> (a) Perhaps for newcomers:
-<p>
-<blockquote><font color="#000080">After printing a parser error:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;If you are new to interactive fiction, you may like to try typing HELP.&quot;
+<blockquote><font color="#000080">Rule for supplying a missing second noun while unlocking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the skeleton key is carried, change the second noun to the skeleton key;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You will have to specify what to unlock [the noun] with.&quot;
 </font></blockquote><p>
 <p>
-<p>(b) Or to give the parser a certain amount of character:
+<p>Note that, in order for our activity to succeed, we do need to supply a grammar line allowing the player to try &quot;unlocking it with&quot; using only one noun. Otherwise, the command &quot;unlock something&quot; will still produce the question &quot;What do you want to unlock the door with?&quot;
 <p>
-<blockquote><font color="#000080">Rule for printing a parser error when parser error is I beg your pardon:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;What's that? Speak up, speak up.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for printing a parser error:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That's a rum thing to say, and no mistake.&quot; instead.
-</font></blockquote><p>
-<p>
+<p><hr><p>
+<a name="e157"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex157.html#e157 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>274</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex157.html#e157 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Minimal Movement</font></b></a><br>Supplying a default direction for "go", so that "leave", "go", etc., are always interpreted as "out".<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc281.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc283.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -47,10 +47,12 @@
 Global trace_actions = 0;
 [ ActionsOnSub; trace_actions = 1; "Actions listing on."; ];
 [ ActionsOffSub; trace_actions = 0; "Actions listing off."; ];
-[ ActionPrimitive sa sn mf mt mb mth rv p1 p2 p3 p4 p5;
-	sa = action; sn = noun; mf = move_from; mt = move_to;
-	mb = move_by; mth = move_through;
+[ ActionPrimitive sa sn rv p1 p2 p3 p4 p5 frame_id; ! 
+	sa = action; sn = noun;
 	self = noun;
+
+	MStack_CreateRBVars(APROC_RB);
+
 	if ((keep_silent == false) && (multiflag == false)) I7_DivideParagraph();
 	I7_action_deciding_rule = 0;
 
@@ -58,45 +60,21 @@ Global trace_actions = 0;
 		inp2 = 1; second = consult_from + 256*consult_words;
 		parsed_number = 100*consult_from + consult_words;
 	}
-!  DB_Action(actor, false, action, noun, second);
-!  print "Actor = ", (the) actor, "^";
-!  print noun, "/", second, ";", inp1, "/", inp2, "^";
-	if (I7_VerifyNouns()) return;
-!  print noun, "/", second, ";", inp1, "/", inp2, "^";
-	if ((action == ##Go) && (noun)) {
-		move_from = Room_Of(actor); move_to = nothing;
-		move_by = nothing; move_through = nothing;
-		if ((parent(actor) has container) && (parent(actor) has enterable))
-			move_by = parent(actor);
-		if ((parent(actor) has supporter) && (parent(actor) has enterable))
-			move_by = parent(actor);
-		if (noun in compass) {
-			move_to = move_from.(noun.door_dir);
-		} else {
-			if (noun has door) move_to = noun;
-		}
-		if ((move_to ~= nothing) && (move_to has door)) {
-			move_through = move_to;
-			p1 = location; location = Room_Of(actor);
-			move_to = move_to.door_to();
-			location = p1;
-		}
-		#IFDEF DEBUG;
-		if ((debug_flag & 2 ~= 0)) {
-			print "[Go with move_from = ";
-			if (move_from) print (the) move_from; else print "nowhere";
-			print ", move_to = ";
-			if (move_to) print (the) move_to; else print "nowhere";
-			print ", move_by = ";
-			if (move_by) print (the) move_by; else print "nothing";
-			print ", move_through = ";
-			if (move_through) print (the) move_through; else print "nothing";
-			print ", move_pushing = ";
-			if (move_pushing) print (the) move_pushing; else print "nothing";
-			print "]^";
-		}
-		#ENDIF;
+
+	frame_id = -1;
+	p1 = FindAction(action);
+	if ((p1) && (ActionData-->(p1+9))) {
+		frame_id = ActionData-->(p1+10);
+		Mstack_Create_Frame(ActionData-->(p1+9), frame_id);
 	}
+	if (I7_VerifyNouns()) {
+		if ((p1) && (ActionData-->(p1+9)))
+			Mstack_Destroy_Frame(frame_id);
+		MStack_DestroyRBVars(APROC_RB);
+		return;
+	}
+
+	ProcessRulebook(SETACTIONVARS_RB);
 
 	#IFDEF DEBUG;
 	if ((trace_actions) && (FindAction(-1))) {
@@ -134,8 +112,9 @@ Global trace_actions = 0;
 		if (action == ##Go) SetActionBitmap(location, ##Enter);
 	}
 	EndActionProcessing();
-	move_from = mf; move_to = mt; action = sa; noun = sn;
-	move_by = mb; move_through = mth;
+	if (frame_id ~= -1) Mstack_Destroy_Frame(frame_id);
+	MStack_DestroyRBVars(APROC_RB);
+	action = sa; noun = sn;
 	TrackActions(1);
 	if ((keep_silent == false) && (multiflag == false)) I7_DivideParagraph();
 	if (rv == RS_SUCCEEDS) rtrue;
@@ -160,7 +139,7 @@ Global trace_actions = 0;
 	t = 1;
 	while (t <= ActionData-->0) {
 		if (fa == ActionData-->t) return t;
-		t = t+9;
+		t = t+11;
 	}
 	rfalse;
 ];
@@ -187,7 +166,7 @@ Global trace_actions = 0;
 			if (keep_silent) print " - silently";
 			return;
 		}
-		t = t+9;
+		t = t+11;
 	}
 ];
 [ I7_TryAction req by ac n s;

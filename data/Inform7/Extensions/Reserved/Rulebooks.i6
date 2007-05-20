@@ -20,6 +20,7 @@ Constant GENERIC_REPORT_RB		= 26;
 Constant PERSUADE_RB			= 27;
 Constant UNABLE_RB				= 28;
 Constant VISIBLE_RB				= 29;
+Constant SETACTIONVARS_RB		= 31;
 
 ! (ii) We maintain a "rule change stack" to keep track of any temporary
 ! abolition or modification of rules otherwise used in the rulebooks.
@@ -136,7 +137,7 @@ Constant RS_NOSKIPS			= 16;
 Global debugging_rules = false;
 
 [ ProcessRulebook rulebook par bits rv
-	x frame_base substituted_rule usage original_deadflag;
+	x frame_base substituted_rule usage original_deadflag ssrb;
 ! if ((rulebook >= 0) && (rulebook < HIGHEST_RULEBOOK_NO)) {
 !	print "Rulebook ", rulebook, "^";
 ! }
@@ -190,6 +191,8 @@ Global debugging_rules = false;
 	! (A routine defined in the I7 code generator)
 	process_rulebook_count = process_rulebook_count + debugging_rules;
 	if ((substituted_rule >= 0) && (substituted_rule < HIGHEST_RULEBOOK_NO)) {
+		ssrb = substituted_rule;
+		if (ssrb ~= APROC_RB) MStack_CreateRBVars(ssrb);
 		substituted_rule = rulebooks_array-->substituted_rule;
 		for (x=0, rv=0:
 			(substituted_rule-->x~=I6_NULL) && (original_deadflag == deadflag):
@@ -199,6 +202,7 @@ Global debugging_rules = false;
 			    && (bits & RS_USERESULT_BIT)) break;
 			rv = 0;
 		}
+		if (ssrb ~= APROC_RB) MStack_DestroyRBVars(ssrb);
 	} else {
 		if ((say__p) && (bits & RS_NOSKIPS == 0)) I7_DivideParagraph();
 		rv = indirect(substituted_rule);

@@ -153,30 +153,75 @@ Global touch_persona;
 [ I7_parent o; if (o==0) return 0; return parent(o); ];
 
 [ I7_WhetherIn obj;
-		if (obj ofclass K9_region) return I7_In(real_location, obj);
-		if (obj ofclass K1_room) {
-		  if (obj == real_location) rtrue;
-		  rfalse;
-		}
-		RunTimeProblem(RTP_NOTINAROOM, obj);
+	if (obj has enterable) {
+		if (I7_IndirectlyContains(obj, player)) rtrue;
 		rfalse;
+	}
+	if (obj ofclass K9_region) return I7_In(real_location, obj);
+	if (obj ofclass K1_room) {
+		if (obj == real_location) rtrue;
+		rfalse;
+	}
+	RunTimeProblem(RTP_NOTINAROOM, obj);
+	rfalse;
 ];
 [ I7_PlayerTo X opt sa;
 	sa = actor; actor = player; PlayerTo(X, opt); actor = sa;
+];
+[ I7_RoomOf p;
+	while(p) {
+		if (p ofclass K1_room) return p;
+		if (parent(p)) { p = parent(p); continue; }
+		if (p.component_parent) { p = p.component_parent; continue; }
+		return nothing;
+	}
+	return nothing;
+];
+[ I7_ReckonLight R S df;
+	df = OffersLight(S);
+	if (df~=0) { location=S; real_location=S; lightflag=1; }
+	else
+	{   if (R == thedark)
+		{   DarkToDark();
+			if (deadflag~=0) rtrue;
+		}
+		real_location=S;
+		location=thedark; lightflag=0;
+	}
+	rfalse;
+];
+[ I7_NoticeHeld x;
+#IFNDEF MANUAL_PRONOUNS;
+	objectloop(x in player) PronounNotice(x);
+#ENDIF;
+	x = 0; ! To prevent a "not used" error
+	rfalse;
+];
+[ I7_RoomDescriptionForGoing;
+	if (say__pc & PARA_COMPLETED == 0) new_line;
+	LookSub_P(1);
+];
+[ I7_SurreptitiousMove F T; ! Used _only_ in one going rule: breaks world model rules
+	if (F == player) move F to T; else I7_Move(F, T, 0, 0, 1);
+	if (actor == player) location = T;
 ];
 [ I7_Move F T opt ln going_mode was;
 	if (F == nothing) return RunTimeProblem(RTP_CANTMOVENOTHING);
 	if (F ofclass K7_backdrop) {
 		if (T ofclass K9_region) {
 			give F ~absent; F.found_in = T.regional_found_in;
-			if (I7_In(Room_Of(player), T)) move F to Room_Of(player); else remove F;
+			if (I7_In(I7_RoomOf(player), T)) move F to I7_RoomOf(player); else remove F;
 			return; }
 		return RunTimeProblem(RTP_BACKDROP, F, T, ln);
 	}
 	if (T ofclass K9_region) {
 		return RunTimeProblem(RTP_NOTBACKDROP, F, T, ln);
 	}
-	give F ~worn; I7_DetachPart(F, nothing);
+	if (F has worn) {
+		give F ~worn;
+		if (F in T) return;
+	}
+	I7_DetachPart(F, nothing);
 !	print "F is ", (the) F, " T is ", (the) T, "^";
 	if (F == player) {
 		I7_PlayerTo(T, opt);
@@ -200,7 +245,7 @@ Global touch_persona;
 ];
 [ I7_Wear F T opt;
 	if (F == false) rfalse;
-	I7_Move(F, T, opt);
+	if (F notin T) I7_Move(F, T, opt);
 	give F worn;
 ];
 [ I7_DetachPart P From Daddy O;
@@ -291,8 +336,12 @@ Global touch_persona;
 	}
 	rfalse;
 ];
-[ I7_CanSee A B;
+[ I7_CanSee A B erf;
 	if (location == thedark) rfalse;
+	if (I7_suppress_scope_loops) {
+		if (erf) print "CanSee(", (the) A, ", ", (the) B, ")^";
+		rtrue;
+	}
 	return TestScope(B, A);
 ];
 [ I7_CanTouch A B;
@@ -325,6 +374,32 @@ Global touch_persona;
 		}	
 	}
 	return nothing;
+];
+[ I7_RoomOrDoorFrom obj dir use_doors in_direction sl through_door;
+	if ((obj ofclass K1_room) && (dir in compass)) {
+		if (obj provides (dir.door_dir)) {
+			in_direction = obj.(dir.door_dir);
+			if (in_direction ofclass K1_room) return in_direction;
+			if (in_direction ofclass K4_door) return in_direction;
+		}	
+	}
+	return nothing;
+];
+[ I7_OtherSide dr from sl rv;
+	if (dr ofclass K4_door) {
+		sl = location; location = I7_RoomOf(from);
+		rv = dr.door_to();
+		location = sl;
+	}
+	return rv;
+];
+[ I7_DirectionFrom dr from sl rv;
+	if (dr ofclass K4_door) {
+		sl = location; location = I7_RoomOf(from);
+		rv = dr.door_dir();
+		location = sl;
+	}
+	return rv;
 ];
 [ I7_ChangeExit r1 dir r2 pr;
 	pr = dir.door_dir;
@@ -414,6 +489,57 @@ Global touch_persona;
 			ScopeWithin_O(obj,0,scope_reason);
 		}
 	advance_warning = saw;
+];
+
+Global allow_abbreviated_look = 0;
+
+[ LookSub_P allow_abbrev oact p1 frame_id; allow_abbreviated_look = allow_abbrev;
+	oact = action; action = ##Look;
+	p1 = FindAction(##Look);
+	if ((p1) && (ActionData-->(p1+9))) {
+		frame_id = ActionData-->(p1+10);
+		Mstack_Create_Frame(ActionData-->(p1+9), frame_id);
+		ProcessRulebook(SETACTIONVARS_RB);
+		(MStack-->MstVO(frame_id, 0)) = oact;
+	}
+	LookSub();
+	if (frame_id) Mstack_Destroy_Frame(frame_id);
+	allow_abbreviated_look = 0;
+	action = oact;
+];
+[ I7_Calculate_VC;
+	if (actor ~= player) rfalse;
+	if (parent(actor)==0) return RunTimeError(10);
+	visibility_levels = 0;
+	.MovedByInitial;
+	if (location == thedark) { visibility_ceiling = thedark; NoteArrival(); }
+	else
+	{   visibility_levels = FindVisibilityLevels();
+		if (visibility_ceiling == location)
+		{   NoteArrival();
+			if (visibility_ceiling ~= location) jump MovedByInitial;
+		}
+	} rfalse;
+];
+[ I7_RoomDescPara vc;
+	if (lookmode<3 && vc==location)
+	{   if ((allow_abbreviated_look~=1) || (lookmode==2) || (location hasnt visited))
+		{   if (location.describe~=NULL) {
+			    RunRoutines(location,describe);
+			    say__p = 1;
+			} else {
+			    if (location.description==0) RunTimeError(11,location);
+			    else {
+					  if (location == thedark)
+						  I7_PrintProp(thedark,description);
+					  else {
+						  if (I7_PrintProp(location,description)) say__p = 1;
+						  else say__p = 0;
+					  }
+			    }
+			}
+		}
+	}
 ];
 
 ! End of WorldModel.i6

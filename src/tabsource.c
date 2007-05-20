@@ -250,18 +250,17 @@ gboolean do_extra_highlighting(gpointer data) {
             while((pos = gtk_text_iter_get_char(&iter)) != '\"' && pos != '\0'){
                 if(pos == '[') {
                     start = iter;
-                    gtk_text_iter_forward_char(&iter);
                 } else if(pos == ']') {
                     /* don't highlight if the ] was unmatched */
                     if(gtk_text_iter_compare(&start, &stringstart) > 0
                       && gtk_text_iter_compare(&start, &end) >= 0) {
-                        gtk_text_iter_forward_char(&iter);
                         end = iter;
+                        gtk_text_iter_forward_char(&end);
                         gtk_text_buffer_apply_tag_by_name(GTK_TEXT_BUFFER(data),
                           "string-markup", &start, &end);
                     }
-                } else
-                    gtk_text_iter_forward_char(&iter);
+                }
+                gtk_text_iter_forward_char(&iter);
             }
             /* If there was an unmatched [ in the string */
             if(gtk_text_iter_compare(&start, &end) > 0) {

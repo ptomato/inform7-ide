@@ -1794,7 +1794,7 @@ create_welcome_dialog (void)
   gtk_widget_show (vbox14);
   gtk_container_add (GTK_CONTAINER (welcome_dialog), vbox14);
 
-  label4 = gtk_label_new (_("Welcome to Inform 7, a design system\nfor interactive fiction based on natural\nlanguage.\n\nTo begin writing, please click one of the\nthree buttons below.\n\nInform 7 was created by Graham Nelson,\nwith the help of Emily Short and many\nothers. The GNOME front-end was written\nby P.F. Chimento.\n\nThis is Public Beta build 4S08."));
+  label4 = gtk_label_new (_("Welcome to Inform 7, a design system\nfor interactive fiction based on natural\nlanguage.\n\nTo begin writing, please click one of the\nthree buttons below.\n\nInform 7 was created by Graham Nelson,\nwith the help of Emily Short and many\nothers. The GNOME front-end was written\nby P.F. Chimento.\n\nThis is Public Beta build 4U65."));
   gtk_widget_show (label4);
   gtk_box_pack_start (GTK_BOX (vbox14), label4, FALSE, FALSE, 0);
   gtk_label_set_line_wrap (GTK_LABEL (label4), TRUE);

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.4. Listing rules explicitly</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.1. On rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,49 +9,52 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Listing rules explicitly" -->
-<!-- SEARCH SECTION "18.4" -->
-<!-- SEARCH SORT "018-004-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc290.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc292.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.4. Listing rules explicitly</b></font></td></tr></table>
+<!-- SEARCH TITLE "On rules" -->
+<!-- SEARCH SECTION "18.1" -->
+<!-- SEARCH SORT "018-001-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc290.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc292.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.1. On rules</b></font></td></tr></table>
 <p>
-<p>If rules can manage perfectly well without, why bother to have names for rules?
+<p>When we open the casing and look inside the machinery of Inform, what we see are rules and rulebooks. We seldom need to know how this machinery works, but every once in a while we want to replace components, or even install new mechanisms of our own. And as we shall see, creating new rulebooks can be a neat way to tackle complicated simulations full of exceptions and special cases.
 <p>
-<p>The answer is that although Inform contains an elaborate mechanism for placing rules into the correct rulebook at the correct position, and this happens automatically, Inform will sometimes get it wrong. It will use a rule we do not want, or place them in an order which does not suit us. To put this right, we can give explicit instructions which take precedence over Inform's normal practice. This is done with the &quot;to list&quot; verb, as in the following examples.
+<p>So far we have seen many rules, and the term &quot;rulebook&quot; has frequently but vaguely been used. Here is a summary of the rulebooks seen so far:
 <p>
-<p>1. The simplest usage is to place a named rule, which currently has no home, in any rulebook of our choice. (This looks redundant, but just occasionally we want the same rule to appear in two different rulebooks.)
-<p>
-<blockquote><font color="#000080">The blossom rule is listed in the every turn rules.
+<blockquote><font color="#000080">before
+<br>instead
+<br>after
+<br>check taking, carry out taking, report taking
+<br><i>and three similar rulebooks for each of the 90 or so actions</i>
+<br>persuasion
+<br>unsuccessful attempt
+<br>reaching inside
+<br>reaching outside
+<br>visibility
+<br>does the player mean
 </font></blockquote><p>
 <p>
-<p>A rule can only occur once in any single rulebook.
-<p>
-<p>2. We can also specify that the rule needs to appear before, or after, some other named rule in the same rulebook:
-<p>
-<blockquote><font color="#000080">The collapsing bridge rule is listed before the moving doorways rule in the instead rules.
+<blockquote><font color="#000080">when play begins
+<br>when play ends
+<br>every turn
+<br>when Confrontation Scene begins
+<br>when Confrontation Scene ends
+<br><i>and two similar rulebooks for each scene we create, if any</i>
 </font></blockquote><p>
 <p>
-<p>Instead of being placed in specificity order in the whole &quot;instead&quot; rulebook, the &quot;collapsing bridge&quot; rule would now be placed in specificity order only in the first half of the &quot;instead&quot; rulebook - the rules from the start up to (but not including) the &quot;moving doorways&quot; rule.
-<p>
-<p>&quot;Listed&quot; sentences are obeyed by Inform in sequence, so if later ones issue instructions contradicting earlier ones, it's the later ones which win out. Thus if we say &quot;A is listed before B in X&quot; and then &quot;B is listed before A in X&quot;, the result is that B comes before A.
-<p>
-<p>3. We can specify that a rule needs to appear first or last in a given rulebook:
-<p>
-<blockquote><font color="#000080">The collapsing bridge rule is listed first in the instead rules.
+<blockquote><font color="#000080">before printing the name of
+<br>for printing the name of
+<br>after printing the name of
+<br><i>and three similar rulebooks for each of the 20 or so activities</i>
 </font></blockquote><p>
 <p>
-<p>Again, if we make several such instructions about the same rulebook then the most recent one wins: &quot;A is listed first in X. B is listed first in X. C is listed first in X.&quot; causes rulebook X to begin C, B, A.
+<p>Which makes around 340 rulebooks before we even start to write - and one more is going to turn up later in this chapter:
 <p>
-<p>4. We can also substitute one rule for another:
-<p>
-<blockquote><font color="#000080">My darkness rule is listed instead of the can't act in the dark rule in the visibility rules.
+<blockquote><font color="#000080">procedural
 </font></blockquote><p>
 <p>
-<p>5. And we can strike down existing rules, either specifically or in all their applications:
+<p>All the same, not everything in Inform belongs to a rulebook - timed events, newly-created phrases, and definitions may look vaguely as if they define rules, but they do not, so the following are not rulebooks:
 <p>
-<blockquote><font color="#000080">The can't act in the dark rule is not listed in the visibility rules.
-<br>The can't remove from people rule is not listed in any rulebook.
+<blockquote><font color="#000080">At 11:10 PM: ...
+<br>To dislodge the shelf: ...
+<br>Definition: ...
 </font></blockquote><p>
-<p>
-<p>This does not actually destroy the rules in question: they could still, for instance, be put into another rulebook, or even be applied explicitly, as we shall see. But unless we take deliberate action to the contrary, un-listing a rule amounts to abolishing it forever. This is a little drastic, and we will see subtler ways to change the standard behaviour later in the chapter.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc290.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc292.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

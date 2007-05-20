@@ -200,6 +200,7 @@ Global real_location;               ! When in darkness, location = thedark
 Global visibility_ceiling;          ! Highest object in tree visible from the player's point of view
                                     ! (usually the room, sometimes darkness, sometimes a closed
                                     ! non-transparent container).
+Global visibility_levels;
 
 Global lookmode = 1;                ! 1=standard, 2=verbose, 3=brief room descs
 Global print_player_flag;           ! If set, print something like "(as Fred)" in room descriptions,
@@ -3247,6 +3248,15 @@ Global parsetoken_nesting = 0;
 	.RECONSTRUCT_INPUT;
 
 	#Ifdef NI_BUILD_COUNT;
+	num_words = WordCount();
+    wn = 1;
+    #Ifdef LanguageToInformese;
+    LanguageToInformese();
+    #IfV5;
+    ! Re-tokenise:
+    Tokenise__(buffer,parse);
+    #Endif; ! V5
+    #Endif; ! LanguageToInformese
 	FollowRulebookSelfed(Activity_after_rulebooks-->COMMAND_ACT);
 	#Endif;
 
