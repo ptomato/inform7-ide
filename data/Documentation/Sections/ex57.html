@@ -47,7 +47,15 @@ color:white;
 <p>
 <p>If there's some reason the player needs to be at a specific place and time, we might want to allow him to wait a number of minutes at once.
 <p>
-<blockquote><font color="#000080">&quot;Nine AM Appointment&quot;
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode375(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Nine AM Appointment"\n\nWaiting more is an action applying to one number.\n\nUnderstand "wait [number] minutes/turns" or "wait [number]" as waiting more.\n\nCarry out waiting more:\n\tlet duration be the number understood - 1;\n\trepeat with X running from 1 to duration\n\tbegin;\n\t\tfollow the turn sequence rules;\n\tend repeat.\n\n[The one nuance here is that after our wait command occurs, the turn sequence rules will occur one more time. So we need to subtract one from the parsed number to make it to the right number of minutes.]\n\nReport waiting more:\n\tsay "It is now [time of day + 1 minute]."\n\n[And if we want to ensure that the player doesn\'t (accidentally or intentionally) put the interpreter through a really long loop, we could put an upper limit on his patience:]\n\nCheck waiting more:\n\tif the number understood > 59, say "You really haven\'t got that kind of patience." instead.\n\nThe Specialist\'s Office is a room. The secretary is a woman in the Office. Instead of asking the secretary about "[appointment]", say "\'Hang on just five more minutes,\' she says, in a distracted manner."\n\nUnderstand "appointment" or "specialist" or "doctor" as "[appointment]".\n\nAt 9:45 AM: say "The secretary glances at you and gives a reassuring smile."\n\nTest me with "ask secretary about appointment / wait five minutes / g / g / wait 60 minutes / wait 30 minutes".\n');
+}
+</script>
+<a href="javascript:pasteCode375()"><img border=0 src=../doc_images/paste.png></a> &quot;Nine AM Appointment&quot;
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">Waiting more is an action applying to one number.

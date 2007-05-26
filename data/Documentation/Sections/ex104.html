@@ -33,7 +33,15 @@ color:white;
 <p>
 <p>If we make a new kind of value, we can also take random values from it, as in the following miniature world:
 <p>
-<blockquote><font color="#000080">&quot;Weathering&quot;
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode21(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Weathering"\n\nA cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.\n\nThe Mount Pisgah Station is a room. "The rocky peak of Mt. Pisgah (altitude 872m) is graced only by an automatic weather station. The clouds, close enough almost to touch, are [a random cloud pattern]. Temperature: [a random number from 7 to 17] degrees, barometric pressure: [950 + a random number from 0 to 15] millibars."\n\n');
+}
+</script>
+<a href="javascript:pasteCode21()"><img border=0 src=../doc_images/paste.png></a> &quot;Weathering&quot;
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">A cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.
@@ -46,7 +54,15 @@ color:white;
 <p>
 <p>Testing IF which makes random choices can be rather frustrating, because a problem showing up on one attempt may not show up on another. To ease testing, the following sentence will &quot;fix&quot; the process of generating these random numbers so that they are not random at all - the same sequence of random numbers will be produced on each run.
 <p>
-<blockquote><font color="#000080">When play begins, seed the random-number generator with 1234.
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode22(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('When play begins, seed the random-number generator with 1234.\n\n');
+}
+</script>
+<a href="javascript:pasteCode22()"><img border=0 src=../doc_images/paste.png></a> When play begins, seed the random-number generator with 1234.
 </font></blockquote><p>
 <p>
 <p>The seed value &quot;1234&quot; can be anything positive; a different sequence of random numbers will be produced for each different seed value. A seed value of 0 restores the RNG to properly random behaviour again.
@@ -58,7 +74,15 @@ color:white;
 <p>
 <p>Suppose we have an urban space we want to populate with random passers-by. These should have a range of characteristics and not always be described in the same way; and once the player has noticed one, he should be able to look at her further, until another pedestrian crosses his path.
 <p>
-<blockquote><font color="#000080">&quot;Uptown Girls&quot;
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode200(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Uptown Girls"\n\nRiverside Drive is a room. "There\'s a pleasant late-afternoon view of the Hudson, and a snap in the air, and you would rather be here than anywhere."\n\nInstead of going a direction, say "Oh, you know where you\'re going; no need to deviate from the usual path."\n\nInstead of waiting, say "You stroll along enjoying the November crispness."\n\n[It gets a little annoying to have a random event occurring every single turn of play, so let\'s introduce some randomness to determine how often the message appears:]\n\nEvery turn when a random chance of 1 in 3 succeeds:\n\treset passerby;\n\tchoose a random row in the Table of Atmospheric Events;\n\tsay "[event entry][paragraph break]"\n\nTable of Atmospheric Events\nevent\n"Slowly [a passerby] strolls by, turning to look at you as she passes."\n"Some [passerby] nearly bumps into you."\n"You dodge to avoid [a passerby]."\n"You weave around [a passerby], who has stalled to look into a window."\n"There\'s a ruckus as one of the ubiquitous taxis nearly collides with [a passerby] crossing the street."\n"[The passerby] beside you waves to a friend across the street."\n"To your left, [a passerby] drops her purse, and swears as she retrieves it."\n\nHair color is a kind of value. A person has hair color. the hair colors are red-headed, brunette, blonde.\n\nHeight is a kind of value. A person has height. The heights are tall, medium-height, short.\n\nGrooming is a kind of value. A person has grooming. The groomings are messy and tidy.\n\nTo reset passerby:\n\tchange the hair color of the passerby to a random hair color;\n\tchange the height of the passerby to a random height;\n\tchange the grooming of the passerby to a random grooming.\n\nThe passerby is a woman in Riverside Drive. The passerby is scenery. Understand "woman" or "lady" as the passerby. The printed name of the passerby is "[if a random chance of 1 in 2 succeeds]woman[otherwise]lady[end if]".\n\n[At this point we borrow some techniques from later to describe the woman with a random combination of characteristics, and to let the player refer to her by those traits:]\n\nBefore printing the name of the passerby:\n\tif a random chance of 1 in 4 succeeds, say "[height] ";\n\tif a random chance of 1 in 4 succeeds, say "[grooming] ";\n\tif a random chance of 1 in 4 succeeds, say "[hair color] ".\n\nUnderstand the hair color property as describing the passerby. Understand the height property as describing the passerby. Understand the grooming property as describing the passerby.\n\n[If we also wanted each of those combinations to mean some more specifically-described woman:]\n\nInstead of examining a passerby:\n\trepeat through Table of Passerby Descriptions\n\tbegin;\n\t\tif hair entry is the hair color of the passerby and height entry is the height of the passerby and grooming entry is the grooming of the passerby, say "[description entry][paragraph break]";\n\tend repeat.\n\nTable of Passerby Descriptions\nhair\theight\tgrooming\tdescription\nred-headed\ttall\tmessy\t"An older woman with long red hippie-hair poking out of a ponytail in straggles, and bent to hide how tall she is."\nred-headed\tmedium-height\tmessy\t"A shaggy red-head with shingled hair."\nred-headed\tshort\tmessy\t"Almost an urchin, and very young, with ginger hair and a smudged nose and far too many freckles."\nred-headed\ttall\ttidy\t"A precise career woman with henna-red hair."\nred-headed\tmedium-height\ttidy\t"Her hair is red in the way that lollipops and fire trucks are red: not by nature but by art. The rest of her clothing is pretty ordinary, though."\nred-headed\tshort\ttidy\t"Thin and small in every sense, with chin-length red-hair. Even high heels do not bring her head much above your shoulder."\nbrunette\ttall\tmessy\t"A Juno-esque woman with dark hair, wearing something resembling a tent."\nbrunette\tmedium-height\tmessy\t"An unremarkable woman with dark brown hair and the aura of needing a wash."\nbrunette\tshort\tmessy\t"There are mustard stains on the t-shirt of this short brown-haired woman. Estimated age ca. 40. Possibly homeless."\nbrunette\ttall\ttidy\t"A leggy brunette in business attire."\nbrunette\tmedium-height\ttidy\t"Medium-height, brown-haired, generally nondescript."\nbrunette\tshort\ttidy \t"A neat little dark-haired girl."\nblonde\ttall\tmessy\t"A tall blonde of about thirteen who looks as though she has not yet figured out how to get her wardrobe to catch up with her rate of growth. Her t-shirt and her pants are too short."\nblonde\tmedium-height\tmessy\t"Black leather pants and the wall-o-hair look."\nblonde\tshort\tmessy\t"One of those shocking platinum blonde types, with a tiger-patterned skirt. Reeally trashy."\nblonde\ttall\ttidy\t"Elfin and severe, with perfectly straight hair falling to the middle of the back."\nblonde\tmedium-height\ttidy\t"A rounded, Marilyn-esque blonde."\nblonde\tshort\ttidy\t "Pin-precise in a blue-and-white striped suit and a boyish haircut."\n\nTest me with "z / z / x passerby / z / z / x passerby".\n');
+}
+</script>
+<a href="javascript:pasteCode200()"><img border=0 src=../doc_images/paste.png></a> &quot;Uptown Girls&quot;
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">Riverside Drive is a room. &quot;There's a pleasant late-afternoon view of the Hudson, and a snap in the air, and you would rather be here than anywhere.&quot;

@@ -16,15 +16,23 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
  
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <gnome.h>
 #include <glib/gstdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
 #ifdef OSSP_UUID
-#  include <ossp/uuid.h> /* For Debian-like systems */
+#  include <ossp/uuid.h> /* For systems with uuid from e2fsprogs */
 #else
-#  include <uuid.h>
+#  ifdef E2FS_UUID
+#    include <uuid/uuid.h> /* For systems with OSSP uuid */
+#  else
+#    include <uuid.h> /* For Fedora 5 and earlier, OSSP uuid */
+#  endif
 #endif
 
 #include "support.h"
@@ -111,6 +119,20 @@ static void prepare_ni_compiler(struct story *thestory) {
     /* Create the UUID file if needed */
     gchar *uuid_file = g_build_filename(thestory->filename, "uuid.txt", NULL);
     if(!g_file_test(uuid_file, G_FILE_TEST_EXISTS)) {
+#ifdef E2FS_UUID /* code for uuid from e2fsprogs */
+        uuid_t uuid;
+        gchar uuid_string[37];
+        
+        uuid_generate_time(uuid);
+        uuid_unparse(uuid, uuid_string);
+        
+        if(!g_file_set_contents(uuid_file, uuid_string, -1, &err)) {
+            error_dialog(GTK_WINDOW(thestory->window), err,
+              "Error creating UUID file: ");
+            g_free(uuid_file);
+            return;
+        }
+#else /* code for ossp-uuid */
         gchar *uuid_string = NULL; /* a new buffer is allocated if NULL */
         uuid_t *uuid;
         
@@ -133,6 +155,7 @@ static void prepare_ni_compiler(struct story *thestory) {
             return;
         }
         free(uuid_string);
+#endif /* UUID conditional */
     }
     g_free(uuid_file);
     

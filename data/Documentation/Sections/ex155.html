@@ -25,7 +25,15 @@ color:white;
 <p>
 <p>(b) The following responds politely but firmly if the player tries to type &quot;please look&quot;, say, instead of just &quot;look&quot;:
 <p>
-<blockquote><font color="#000080">After reading a command:
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode72(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "Please do not say please.";\n\t\treject the player\'s command;\n\tend if.\n\n');
+}
+</script>
+<a href="javascript:pasteCode72()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
 <br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Please do not say please.&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
@@ -51,7 +59,15 @@ color:white;
 <p>
 <p>(c) An improved version takes commands like &quot;please drop the coin&quot; and strips &quot;please&quot; from them, but then allows them to proceed normally:
 <p>
-<blockquote><font color="#000080">After reading a command:
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode73(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "(Quelle politesse! But no need to say please.)";\n\t\tcut the matched text;\n\tend if.\n\n');
+}
+</script>
+<a href="javascript:pasteCode73()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
 <br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(Quelle politesse! But no need to say please.)&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cut the matched text;
@@ -68,7 +84,15 @@ color:white;
 <p>
 <p>(d) To make the word &quot;grab&quot; an abbreviation for &quot;take all&quot;:
 <p>
-<blockquote><font color="#000080">After reading a command:
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode74(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('After reading a command:\n\tif the player\'s command matches "grab", replace the player\'s command with "take all".\n\n');
+}
+</script>
+<a href="javascript:pasteCode74()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
 <br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command matches &quot;grab&quot;, replace the player's command with &quot;take all&quot;.
 </font></blockquote><p>
 <p>
@@ -81,7 +105,15 @@ color:white;
 <p>
 <p>Suppose we want to understand shipboard directions, but only when the player is aboard a vessel. It might be tempting to do only:
 <p>
-<blockquote><font color="#000080">&quot;Fore&quot;
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode367(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Fore"\n\nUnderstand "fore" or "f" as north when the location is in the Ship. Understand "aft" or "a" as south when the location is in the Ship. Understand "port" or "p" as west when the location is in the Ship. Understand "starboard" or "sb" as east when the location is in the Ship.\n\n[but then we get "that\'s not a verb I understand" when the player tries ship directions on land, and that\'s obviously wrong.]\n\n[Similarly, we don\'t want to use "understand... as a mistake" with this set of things because we are correcting the name of a noun, not the phrasing of a verb.]\n\n[So we might choose to catch and correct mistakes at the reading a command stage:]\n\nUnderstand "fore" or "f" or "aft" or "port" or "p" or "starboard" or "sb" as "[shipboard direction]". Understand "a" or "go a" as "[going aft]".\n\nAfter reading a command:\n\tif the location is not in the Ship and the player\'s command includes "[shipboard direction]"\n\tbegin;\n\t\tsay "You\'re not at sea now, sailor.";\n\t\treject the player\'s command;\n\tend if;\n\tif the location is not in the Ship and the player\'s command matches "[going aft]"\n\tbegin;\n\t\tsay "You\'re not at sea now, sailor.";\n\t\treject the player\'s command;\n\tend if.\n\nBow is a room. South of Bow is By Foremast. South of By Foremast is By Mainmast. South of By Mainmast is By Mizzenmast. South of By Mizzenmast is By Jiggermast. South of By Jiggermast is Stern.\n\nThe Ship is a region. Bow, By Foremast, By Mainmast, By Mizzenmast, By Jiggermast, and Stern are in Ship.\n\nThe Dock is west of By Mainmast.\n\nTest me with "aft / port / a / p / starboard".\n\n');
+}
+</script>
+<a href="javascript:pasteCode367()"><img border=0 src=../doc_images/paste.png></a> &quot;Fore&quot;
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">Understand &quot;fore&quot; or &quot;f&quot; as north when the location is in the Ship. Understand &quot;aft&quot; or &quot;a&quot; as south when the location is in the Ship. Understand &quot;port&quot; or &quot;p&quot; as west when the location is in the Ship. Understand &quot;starboard&quot; or &quot;sb&quot; as east when the location is in the Ship.

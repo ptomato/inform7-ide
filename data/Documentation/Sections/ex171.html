@@ -25,7 +25,15 @@ color:white;
 <p>
 <p>(b) The following responds politely but firmly if the player tries to type &quot;please look&quot;, say, instead of just &quot;look&quot;:
 <p>
-<blockquote><font color="#000080">After reading a command:
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode72(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "Please do not say please.";\n\t\treject the player\'s command;\n\tend if.\n\n');
+}
+</script>
+<a href="javascript:pasteCode72()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
 <br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Please do not say please.&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
@@ -51,7 +59,15 @@ color:white;
 <p>
 <p>(c) An improved version takes commands like &quot;please drop the coin&quot; and strips &quot;please&quot; from them, but then allows them to proceed normally:
 <p>
-<blockquote><font color="#000080">After reading a command:
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode73(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "(Quelle politesse! But no need to say please.)";\n\t\tcut the matched text;\n\tend if.\n\n');
+}
+</script>
+<a href="javascript:pasteCode73()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
 <br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(Quelle politesse! But no need to say please.)&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cut the matched text;
@@ -68,7 +84,15 @@ color:white;
 <p>
 <p>(d) To make the word &quot;grab&quot; an abbreviation for &quot;take all&quot;:
 <p>
-<blockquote><font color="#000080">After reading a command:
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode74(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('After reading a command:\n\tif the player\'s command matches "grab", replace the player\'s command with "take all".\n\n');
+}
+</script>
+<a href="javascript:pasteCode74()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
 <br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command matches &quot;grab&quot;, replace the player's command with &quot;take all&quot;.
 </font></blockquote><p>
 <p>
@@ -85,7 +109,15 @@ color:white;
 <p>
 <p>Another trick is that adverbs complicate understanding commands, because they can occur anywhere: one might type >GO WEST CAREFULLY or >CAREFULLY GO WEST, and ideally the game should understand both. After reading a command is the best point to do this sort of thing, because we can find adverbs, interpret them, and remove them from the command stream. So:
 <p>
-<blockquote><font color="#000080">&quot;Cloves&quot;
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode369(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Cloves"\n\nManner is a kind of value. The manners are insouciantly, sheepishly, and defiantly.\n\n[Now we have, automatically, a value called manner understood to be used whenever parsing manners, and we can use this even during the "after reading a command" stage, so:]\n\nAfter reading a command:\n\tif the player\'s command includes "[manner]"\n\tbegin;\n\t\tcut the matched text;\n\totherwise;\n\t\tsay "But how, my dear boy, how? You simply can\'t do something without a pose. Thus far you have mastered doing things defiantly, sheepishly, or insouciantly.";\n\t\treject the player\'s command;\n\tend if.\n\nWhen play begins: change the left hand status line to "Behaving [manner understood]"; change the right hand status line to "[location]"; change the manner understood to insouciantly.\n\nThe Poseur Club is a room. "Lady Mary is laid out on a sofa, her wrists bandaged importantly[if the manner understood is insouciantly] -- and she looks all the more depressed by your indifference to her state[end if]; Salvatore is at the gaming table, clutching his hair with both hands[if the manner understood is defiantly] -- though he looks up long enough to snarl in response to that expression of yours[end if]; Frackenbush is muttering lines from another of his works in progress, as though poetry has nearly made him mad[if the manner understood is sheepishly]. But he spares you a reassuring smile. He\'s not a bad fellow, Frackenbush[end if].\n\nThe usual people, in short."\n\nInstead of doing something other than waiting or looking:\n\tsay "Dear. No. That would smack of effort."\n\nInstead of waiting when the manner understood is sheepishly:\n\tsay "You scuff your foot against the ground for a moment, and allow a seemly blush to creep over your cheek. It\'s quite effective, you are sure, though you can\'t look up and see how it is going."\n\nInstead of waiting when the manner understood is insouciantly:\n\tsay "Thrusting your hands into your pockets, you whistle a jaunty tune.\n\n\'Do shut up,\' says a Melancholy Poseur from over by the window."\n\nInstead of waiting when the manner understood is defiantly:\n\tsay "You raise your chin and give a pointed glance around the room as though to say that you are waiting for someone; you are unembarrassed about waiting for her; you have by no means been stood up; and the first person to comment will receive a poke in the eye."\n\nBefore looking when the manner understood is sheepishly:\n\tsay "You gaze up from under your brows..."\n\nBefore looking when the manner understood is defiantly:\n\tsay "You cast a withering gaze over the room."\n\nBefore looking when the manner understood is insouciantly:\n\tif turn count > 1,\n\t\tsay "You turn an eye to your surroundings, looking faintly-- just faintly-- amused."\n\nTest me with "wait / wait insouciantly / sheepishly look / defiantly look / look insouciantly".\n\n');
+}
+</script>
+<a href="javascript:pasteCode369()"><img border=0 src=../doc_images/paste.png></a> &quot;Cloves&quot;
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">Manner is a kind of value. The manners are insouciantly, sheepishly, and defiantly.

@@ -49,7 +49,15 @@ color:white;
 <p>
 <p>Suppose we want the player to be able to go after characters who are moving around the map. The trick, of course, is that once characters are gone they are no longer visible to &quot;follow [person]&quot;, so we need &quot;follow [any person]&quot; to find them.
 <p>
-<blockquote><font color="#000080">&quot;Actaeon&quot;
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode326(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Actaeon"\n\nA person has a room called last location.\n\nUnderstand "follow [any person]" as following. Understand the commands "chase" and "pursue" as "follow".\n\nFollowing is an action applying to one visible thing.\n\nCheck following:\n\tif the noun is the player, say "Wherever you go, there you are." instead;\n\tif the noun is visible, say "[The noun] is right here." instead;\n\tif the last location of the noun is not the location, say "It\'s not clear where [the noun] has gone." instead.\n\n[Here again the best route comes in handy:]\n\nCarry out following:\n\tlet the destination be the location of the noun;\n\tif the destination is not a room, say "[The noun] isn\'t anywhere you can follow." instead;\n\tlet aim be the best route from the location to the destination;\n\tsay "(heading [aim])[line break]";\n\ttry going aim.\n\nCorinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.\n\nArtemis is a woman in Corinth.\n\n[We do also have to make sure that whenever we move a person from room to room, we record where they were moved from; otherwise, our clever restrictions about whom the player can pursue will not work properly.]\n\nTo move (pawn - a person) tidily to (target - a room):\n\tchange the last location of the pawn to the holder of the pawn;\n\tmove the pawn to the target.\n\nEvery turn:\n\tlet current location be the location of Artemis;\n\tlet next location be a random room which is adjacent to the current location;\n\tif Artemis is visible, say "Artemis heads to [the next location].";\n\tmove Artemis tidily to next location;\n\tif Artemis is visible, say "Artemis arrives from [the current location]."\n\nTest me with "wait / follow artemis / follow artemis / follow artemis".\n');
+}
+</script>
+<a href="javascript:pasteCode326()"><img border=0 src=../doc_images/paste.png></a> &quot;Actaeon&quot;
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">A person has a room called last location.
