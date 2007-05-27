@@ -37,7 +37,7 @@ void check_config_file() {
         config_file_set_string("User", "Name", "");
     }
     if(!gconf_client_dir_exists(client, GCONF_BASE_PATH "/Settings", &err)) {
-        /* LastProject should stay empty, it is set elsewhere */
+        /* LastProject & FrotzWidth should stay empty, they're set elsewhere */
         config_file_set_bool("Settings", "SpellCheck", FALSE);
         config_file_set_bool("Settings", "InspectorVisible", FALSE);
         config_file_set_int("Settings", "InspectorPosX", 0);

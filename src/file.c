@@ -101,7 +101,7 @@ static void project_changed(GnomeVFSMonitorHandle *handle,
                 return;
             }
     
-            /* Write the source to the source buffer, clearing the undo history */
+            /* Write the source to the source buffer & clear the undo history */
             gtk_source_buffer_begin_not_undoable_action(thestory->buffer);
             gtk_text_buffer_set_text(
               GTK_TEXT_BUFFER(thestory->buffer), text, -1);
@@ -239,7 +239,7 @@ struct story *open_project(gchar *directory) {
         recent_data->description = g_filename_display_basename(directory);
         recent_data->mime_type = g_strdup("text/x-natural-inform");
         recent_data->app_name = g_strdup("GNOME Inform 7");
-        recent_data->app_exec = g_strdup("gnome-inform7 \f");
+        recent_data->app_exec = g_strdup("gnome-inform7 %f");
         /* We use the groups "inform7_project" and "inform7_extension" to
         determine how to open a file from the recent manager */
         recent_data->groups = g_new(gchar *, 2);
@@ -367,6 +367,36 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     }
     g_free(text);
 
+    /* Update the list of recently used files */
+#if !defined(SUCKY_GNOME)
+    GtkRecentManager *manager = gtk_recent_manager_get_default();
+    /* Add story.ni as the actual file to open, in case any other application
+    wants to open it, and set the display name to the project directory */
+    gchar *file_uri;
+    if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
+        /* fail discreetly */
+        g_warning("Cannot convert project filename to URI: %s", err->message);
+        g_error_free(err);
+    } else {
+        GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
+        recent_data->display_name = g_filename_display_basename(directory);
+        recent_data->description = g_filename_display_basename(directory);
+        recent_data->mime_type = g_strdup("text/x-natural-inform");
+        recent_data->app_name = g_strdup("GNOME Inform 7");
+        recent_data->app_exec = g_strdup("gnome-inform7 %f");
+        /* We use the groups "inform7_project" and "inform7_extension" to
+        determine how to open a file from the recent manager */
+        recent_data->groups = g_new(gchar *, 2);
+        recent_data->groups[0] = g_strdup("inform7_project");
+        recent_data->groups[1] = NULL;
+        recent_data->is_private = FALSE;
+        gtk_recent_manager_add_full(manager, file_uri, recent_data);
+        g_strfreev(recent_data->groups);
+        g_free(recent_data);
+    }
+    g_free(file_uri);
+#endif
+    
     /* Start file monitoring again */
     thestory->monitor = monitor_file(filename, project_changed,
       (gpointer)thestory);
@@ -618,6 +648,34 @@ void save_extension(GtkWidget *thiswidget) {
     gchar *text;
     struct extension *ext = get_ext(thiswidget);
 
+    /* Update the list of recently used files */
+#if !defined(SUCKY_GNOME)
+    GtkRecentManager *manager = gtk_recent_manager_get_default();
+    gchar *file_uri;
+    if((file_uri = g_filename_to_uri(ext->filename, NULL, &err)) == NULL) {
+        /* fail discreetly */
+        g_warning("Cannot convert extension filename to URI: %s", err->message);
+        g_error_free(err);
+    } else {
+        GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
+        recent_data->display_name = g_filename_display_basename(ext->filename);
+        recent_data->description = g_filename_display_basename(ext->filename);
+        recent_data->mime_type = g_strdup("text/x-natural-inform");
+        recent_data->app_name = g_strdup("GNOME Inform 7");
+        recent_data->app_exec = g_strdup("gnome-inform7");
+        /* We use the groups "inform7_project" and "inform7_extension" to
+        determine how to open a file from the recent manager */
+        recent_data->groups = g_new(gchar *, 2);
+        recent_data->groups[0] = g_strdup("inform7_extension");
+        recent_data->groups[1] = NULL;
+        recent_data->is_private = FALSE;
+        gtk_recent_manager_add_full(manager, file_uri, recent_data);
+        g_strfreev(recent_data->groups);
+        g_free(recent_data);
+        g_free(file_uri);
+    }
+#endif
+    
     /* Stop file monitoring */
     if(ext->monitor)
         gnome_vfs_monitor_cancel(ext->monitor);

@@ -24,6 +24,7 @@
 
 gchar *get_extension_path(const gchar *author, const gchar *extname);
 gboolean check_external_binaries();
+gboolean check_frotz_capabilities();
 gchar *get_datafile_path(const gchar *filename);
 gchar *get_datafile_path_va(const gchar *path1, ...);
 gboolean check_datafile(const gchar *filename);

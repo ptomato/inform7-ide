@@ -26,6 +26,7 @@
 #include "support.h"
 
 #include "appwindow.h"
+#include "configfile.h"
 #include "datafile.h"
 #include "prefs.h"
 #include "skein.h"
@@ -96,6 +97,9 @@ game_create (gchar *widget_name, gchar *string1, gchar *string2,
                 gint int1, gint int2)
 {
     VteTerminal *term = VTE_TERMINAL(vte_terminal_new());
+    /* Set the terminal size to something that will approximately fit into the
+    default size of the window; this is ugly ugly ugly, but only temporary */
+    vte_terminal_set_size(term, 55, 33);
     vte_terminal_set_audible_bell(term, FALSE);
     vte_terminal_set_allow_bold(term, TRUE);
     vte_terminal_set_scroll_on_keystroke(term, TRUE);
@@ -112,24 +116,33 @@ void run_project(struct story *thestory) {
     vte_terminal_reset(term, TRUE, TRUE);
     
     /* Build the command line */
-    gchar **args;
+    gchar **args; 
     gchar *filename;
     if(thestory->story_format == FORMAT_GLULX) {
-        args = g_new(gchar *,4);
+        args = g_new(gchar *, 3);
         args[0] = get_datafile_path_va("Interpreters", "dumb-glulxe", NULL);
-        args[1] = g_strdup("-w57");
         filename = g_strdup("output.ulx");
-        args[2] = g_build_filename(thestory->filename, "Build", filename, NULL);
-        args[3] = NULL;
+        args[1] = g_build_filename(thestory->filename, "Build", filename, NULL);
+        args[2] = NULL;
     } else {
-        args = g_new(gchar *,5);
-        args[0] = g_strdup("frotz");
-        args[1] = g_strdup("-w");
-        args[2] = g_strdup("57");
         filename = g_strconcat("output.", get_story_extension(thestory), NULL);
-        args[3] = g_build_filename(thestory->filename, "Build", filename, NULL);
-        args[4] = NULL;
+        if(config_file_get_bool("Settings", "FrotzWidth")) {
+            args = g_new(gchar *, 5);
+            args[0] = g_strdup("frotz");
+            args[1] = g_strdup("-w");
+            args[2] = g_strdup("55");
+            args[3] = g_build_filename(thestory->filename, "Build", filename,
+              NULL);
+            args[4] = NULL;
+        } else {
+            args = g_new(gchar *, 3);
+            args[0] = g_strdup("frotz");
+            args[1] = g_build_filename(thestory->filename, "Build", filename,
+              NULL);
+            args[2] = NULL;
+        }
     }
+    
     g_free(filename);
     gchar *dir = g_build_filename(thestory->filename, "Build", NULL);
 
@@ -143,6 +156,8 @@ void run_project(struct story *thestory) {
       (gpointer)thestory);
     thestory->handler_commit = g_signal_connect((gpointer)term, "commit",
       G_CALLBACK(catch_input), (gpointer)thestory);
+    g_strfreev(args);
+    g_free(dir);
     
     /* Now the "Stop" option works */
     gtk_widget_set_sensitive(lookup_widget(thestory->window, "stop"), TRUE);
@@ -153,9 +168,6 @@ void run_project(struct story *thestory) {
       TAB_GAME);
     gtk_widget_grab_focus(
       lookup_widget(thestory->window, right? "game_r" : "game_l"));
-    
-    g_strfreev(args);
-    g_free(dir);
     
     /* Feed the commands up to the current pointer in the skein into the
     terminal */

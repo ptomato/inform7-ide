@@ -25,6 +25,7 @@ VPATH = @srcdir@
 
 prefix = @prefix@
 exec_prefix = @exec_prefix@
+datarootdir = @datarootdir@
 datadir = @datadir@
 libdir = @libdir@
 localedir = $(libdir)/locale
@@ -40,6 +41,7 @@ CC = @CC@
 GENCAT = @GENCAT@
 GMSGFMT = @GMSGFMT@
 MSGFMT = @MSGFMT@
+MSGFMT_OPTS = @MSGFMT_OPTS@
 XGETTEXT = @XGETTEXT@
 MSGMERGE = msgmerge
 
@@ -78,7 +80,7 @@ INSTOBJEXT = @INSTOBJEXT@
 
 .po.gmo:
 	file=$(srcdir)/`echo $* | sed 's,.*/,,'`.gmo \
-	  && rm -f $$file && $(GMSGFMT) -c -o $$file $<
+	  && rm -f $$file && $(GMSGFMT) $(MSGFMT_OPTS) -o $$file $<
 
 .po.cat:
 	sed -f ../intl/po2msg.sed < $< > $*.msg \
