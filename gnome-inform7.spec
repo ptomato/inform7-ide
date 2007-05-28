@@ -1,7 +1,7 @@
 #
 # Spec file for GNOME Inform 7
 #
-%define  ver     0.2
+%define  ver     0.3
 %define  rel     1
 %define  prefix  /usr
 
@@ -56,5 +56,7 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/gnome-inform7/*
 
 %changelog
+* Sun May 27 2007 P.F. Chimento <philip.chimento@gmail.com>
+- Updated to version 0.3.
 * Mon Apr 9 2007 P.F. Chimento <philip.chimento@gmail.com>
 - Updated to version 0.2.

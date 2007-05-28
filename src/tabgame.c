@@ -114,6 +114,9 @@ void run_project(struct story *thestory) {
     VteTerminal *term = VTE_TERMINAL(lookup_widget(thestory->window, right?
       "game_r" : "game_l"));
     vte_terminal_reset(term, TRUE, TRUE);
+    /* Set the terminal size to something that will approximately fit into the
+    default size of the window; this is ugly ugly ugly, but only temporary */
+    vte_terminal_set_size(term, 55, 33);
     
     /* Build the command line */
     gchar **args; 

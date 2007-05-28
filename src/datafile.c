@@ -44,7 +44,7 @@ gboolean check_external_binaries() {
     if(!g_find_program_in_path("frotz")) {
         error_dialog(NULL, NULL, "The 'frotz' binary was not found in your "
           "path. You must have the Frotz interpreter installed in order to use "
-          "GnomeInform 7.");
+          "GNOME Inform 7.");
         return FALSE;
     }
     return TRUE;
