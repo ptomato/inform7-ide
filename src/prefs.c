@@ -60,12 +60,13 @@ static void populate_extension_lists(GtkWidget *thiswidget) {
         if(!strcmp(dir_entry, "Reserved"))
             continue;
         gchar *dirname = get_extension_path(dir_entry, NULL);
-        if(g_file_test(dirname, G_FILE_TEST_IS_SYMLINK)) {
+        if(g_file_test(dirname, G_FILE_TEST_IS_SYMLINK)
+          || !g_file_test(dirname, G_FILE_TEST_IS_DIR)) {
             g_free(dirname);
             continue;
         }
         g_free(dirname);
-        /* Read each extension dir, but skip "Reserved" and symlinks */
+        /* Read each extension dir, but skip "Reserved", symlinks and nondirs*/
         gtk_tree_store_append(store, &parent_iter, NULL);
         gtk_tree_store_set(store, &parent_iter, 0, dir_entry, -1);
         gchar *author_dir = get_extension_path(dir_entry, NULL);

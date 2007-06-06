@@ -163,12 +163,13 @@ GtkWidget *create_open_extension_submenu() {
         if(!strcmp(dir_entry, "Reserved"))
             continue;
         gchar *dirname = get_extension_path(dir_entry, NULL);
-        if(g_file_test(dirname, G_FILE_TEST_IS_SYMLINK)) {
+        if(g_file_test(dirname, G_FILE_TEST_IS_SYMLINK)
+          || !g_file_test(dirname, G_FILE_TEST_IS_DIR)) {
             g_free(dirname);
             continue;
         }
         g_free(dirname);
-        /* Read each extension dir, but skip "Reserved" and symlinks*/
+        /* Read each extension dir, but skip "Reserved", symlinks, and nondirs*/
         GtkWidget *authoritem = gtk_menu_item_new_with_label(dir_entry);
         GtkWidget *authormenu = gtk_menu_new();
         gtk_menu_item_set_submenu(GTK_MENU_ITEM(authoritem), authormenu);
