@@ -2,7 +2,7 @@
 # Spec file for GNOME Inform 7
 #
 %define  ver     0.3
-%define  rel     2
+%define  rel     2.fc7
 %define  prefix  /usr
 
 Summary: An IDE for the Inform 7 interactive fiction programming language
@@ -56,6 +56,8 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/gnome-inform7/*
 
 %changelog
+* Sat Jun 16 2007 P.F. Chimento <philip.chimento@gmail.com>
+- Repackaged for Fedora 7.
 * Sat Jun 2 2007 P.F. Chimento <philip.chimento@gmail.com>
 - Repackaged to release 2.
 * Sun May 27 2007 P.F. Chimento <philip.chimento@gmail.com>

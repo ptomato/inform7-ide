@@ -26,6 +26,22 @@
 #include "story.h"
 #include "welcomedialog.h"
 
+/* Returns the label widget from a GtkButton or NULL if not found */
+static GtkWidget *gtk_button_get_label_widget(GtkWidget *button) {
+    GtkBin *alignment = GTK_BIN(gtk_bin_get_child(GTK_BIN(button)));
+    GtkContainer *hbox = GTK_CONTAINER(gtk_bin_get_child(alignment));
+    GList *boxchildren = gtk_container_get_children(hbox);
+    GList *iter = boxchildren;
+    GtkWidget *label = NULL;
+    for( ; iter != NULL; iter = g_list_next(iter))
+        if(GTK_IS_LABEL(iter->data)) {
+            label = iter->data;
+            break;
+        }
+    g_list_free(boxchildren);
+    return label;
+}
+
 void
 after_welcome_dialog_realize           (GtkWidget       *widget,
                                         gpointer         user_data)
@@ -37,6 +53,22 @@ after_welcome_dialog_realize           (GtkWidget       *widget,
       GNOME_FILE_DOMAIN_APP_PIXMAP, "gnome-inform7/welcome-background.png",
       TRUE, NULL);
     gtk_widget_modify_style(widget, newstyle);
+    
+    /* Set the font size to 14 pixels for the widgets in this window */
+    PangoFontDescription *font = pango_font_description_new();
+    pango_font_description_set_absolute_size(font, 14 * PANGO_SCALE);
+    gtk_widget_modify_font(lookup_widget(widget, "welcome_label"), font);
+    gtk_widget_modify_font(
+      gtk_button_get_label_widget(lookup_widget(widget, "welcome_new_button")),
+      font);
+    gtk_widget_modify_font(
+      gtk_button_get_label_widget(
+      lookup_widget(widget, "welcome_reopen_button")),
+      font);
+    gtk_widget_modify_font(
+      gtk_button_get_label_widget(lookup_widget(widget, "welcome_open_button")),
+      font);
+    pango_font_description_free(font);
     
     /* If there is no "last project", make the reopen button inactive */
 #if !defined(SUCKY_GNOME)

@@ -10,28 +10,31 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
-pkg_modules="gtk+-2.0 libgnomeui-2.0 libgtkhtml-3.8 gtksourceview-1.0 gtkspell-2.0 vte" 
+pkg_modules="gtk+-2.0 >= 2.8.0 libgnomeui-2.0 gtksourceview-1.0 gtkspell-2.0 vte" 
 PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
 
 dnl Check for the correct UUID library header location
-PKG_CHECK_MODULES(OSSP_UUID, ossp-uuid, [
-	FOUND_UUID=yes
-	AC_CHECK_HEADER(ossp/uuid.h,
+PKG_CHECK_MODULES(UUID, ossp-uuid,
+	[AC_CHECK_HEADER(ossp/uuid.h,
 		AC_DEFINE([OSSP_UUID], [], [Define if the OSSP UUID header is <ossp/uuid.h>]),
 		[])],
-	[AC_MSG_NOTICE([ossp-uuid not found])])
+	[PKG_CHECK_MODULES(UUID, uuid,
+		[AC_DEFINE([E2FS_UUID], [], [Define if uuid header is from e2fs])],
+		[AC_MSG_ERROR([Either ossp-uuid or e2fsprogs uuid required.])])]
+	)
 
-PKG_CHECK_MODULES(E2FS_UUID, uuid, [
-	FOUND_UUID=yes
-	AC_DEFINE([E2FS_UUID], [], [Define if uuid header is from e2fs])],
-	[AC_MSG_NOTICE([uuid from e2fsprogs not found])])
+dnl Check for GtkHTML 3.8 or 3.14
+PKG_CHECK_MODULES(GTKHTML, libgtkhtml-3.14,
+	[AC_DEFINE([GTK_HTML_314], [], [Define if using GtkHTML 3.14 API])],
+	[
+		AC_MSG_NOTICE([GtkHTML 3.14 not found])
+		PKG_CHECK_MODULES(GTKHTML, libgtkhtml-3.8,
+			[AC_DEFINE([GTK_HTML_38], [], [Define if using GtkHTML 3.8 API])],
+    		[AC_MSG_ERROR([GtkHTML 3.8 or higher is required.])])
+	])
 
-if test "$FOUND_UUID" != yes; then
-	AC_MSG_ERROR([Either ossp-uuid or uuid from e2fsprogs is required.])
-fi
-
-PACKAGE_CFLAGS="$PACKAGE_CFLAGS $OSSP_UUID_CFLAGS $E2FS_UUID_CFLAGS"
-PACKAGE_LIBS="$PACKAGE_LIBS $OSSP_UUID_LIBS $E2FS_UUID_LIBS"
+PACKAGE_CFLAGS="$PACKAGE_CFLAGS $UUID_CFLAGS $GTKHTML_CFLAGS"
+PACKAGE_LIBS="$PACKAGE_LIBS $UUID_LIBS $GTKHTML_LIBS"
 AC_SUBST(PACKAGE_CFLAGS)
 AC_SUBST(PACKAGE_LIBS)
 

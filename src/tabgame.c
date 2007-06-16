@@ -33,6 +33,8 @@
 #include "story.h"
 #include "tabgame.h"
 
+#define FROTZ_NAME "frotz"
+
 /* Callback for when the child process is finished */
 static void on_interpreter_exit(VteTerminal *terminal, gpointer thestory) {
     gchar *msg = g_strdup("[The game has finished.]\n\r");
@@ -131,7 +133,7 @@ void run_project(struct story *thestory) {
         filename = g_strconcat("output.", get_story_extension(thestory), NULL);
         if(config_file_get_bool("Settings", "FrotzWidth")) {
             args = g_new(gchar *, 5);
-            args[0] = g_strdup("frotz");
+            args[0] = g_strdup(FROTZ_NAME);
             args[1] = g_strdup("-w");
             args[2] = g_strdup("55");
             args[3] = g_build_filename(thestory->filename, "Build", filename,
@@ -139,7 +141,7 @@ void run_project(struct story *thestory) {
             args[4] = NULL;
         } else {
             args = g_new(gchar *, 3);
-            args[0] = g_strdup("frotz");
+            args[0] = g_strdup(FROTZ_NAME);
             args[1] = g_build_filename(thestory->filename, "Build", filename,
               NULL);
             args[2] = NULL;

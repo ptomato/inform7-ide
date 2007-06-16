@@ -266,7 +266,8 @@ static void finish_ni_compiler(GPid pid, gint status, gpointer data) {
         g_free(filename);
         
         /* Refresh the I6 code */
-        filename = g_build_filename(thestory->filename, "Build", "auto.inf", NULL);
+        filename = g_build_filename(thestory->filename, "Build", "auto.inf",
+          NULL);
         if(g_file_get_contents(filename, &text, NULL, NULL))
             gtk_text_buffer_set_text(gtk_text_view_get_buffer(GTK_TEXT_VIEW(
               lookup_widget(thestory->window, "inform6_l"))), text, -1);
@@ -713,10 +714,18 @@ static void finish_release(struct story *thestory) {
     /* Copy the finished file to the release location */
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
         filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-        gchar *oldfile = g_build_filename(thestory->filename, "story.zblorb",
-          NULL);
-        /* the Linux cBlorb compiler calls its output "story.zblorb" even if
-        it's a .gblorb file */
+        
+        /* Determine the name of the compiler output file */
+        gchar *oldfile;
+        if(thestory->make_blorb)
+            oldfile = g_build_filename(thestory->filename, "story.zblorb",
+              NULL);
+            /* the Linux cBlorb compiler calls its output "story.zblorb" even if
+            it's a .gblorb file */
+        else
+            oldfile = g_build_filename(thestory->filename,"Build",
+              g_strconcat("output.", get_story_extension(thestory), NULL),
+              NULL);
        
         if(g_rename(oldfile, filename)) {
             error_dialog(NULL, NULL, "Error copying file '%s' to '%s': ",

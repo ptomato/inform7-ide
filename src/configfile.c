@@ -57,12 +57,12 @@ void check_config_file() {
         config_file_set_int("Tabs", "TabWidth", 0);
     }
     if(!gconf_client_dir_exists(client, GCONF_BASE_PATH "/Inspectors", &err)) {
-        config_file_set_bool("Inspectors", "ProjectFiles", TRUE);
+        config_file_set_bool("Inspectors", "ProjectFiles", FALSE);
         config_file_set_bool("Inspectors", "Notes", TRUE);
         config_file_set_bool("Inspectors", "Headings", TRUE);
-        config_file_set_bool("Inspectors", "Skein", TRUE);
-        config_file_set_bool("Inspectors", "Watchpoints", TRUE);
-        config_file_set_bool("Inspectors", "Breakpoints", TRUE);
+        config_file_set_bool("Inspectors", "Skein", FALSE);
+        config_file_set_bool("Inspectors", "Watchpoints", FALSE);
+        config_file_set_bool("Inspectors", "Breakpoints", FALSE);
         config_file_set_bool("Inspectors", "Search", TRUE);
     }
     if(!gconf_client_dir_exists(client, GCONF_BASE_PATH "/Syntax", &err)) {

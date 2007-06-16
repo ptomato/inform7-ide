@@ -701,6 +701,7 @@ create_app_window (void)
   gtk_widget_show (compiler_output_l);
   gtk_container_add (GTK_CONTAINER (scrolledwindow2), compiler_output_l);
   gtk_text_view_set_editable (GTK_TEXT_VIEW (compiler_output_l), FALSE);
+  gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (compiler_output_l), GTK_WRAP_CHAR);
   gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (compiler_output_l), FALSE);
 
   label16 = gtk_label_new (_("Progress"));
@@ -1067,6 +1068,7 @@ create_app_window (void)
   gtk_widget_show (compiler_output_r);
   gtk_container_add (GTK_CONTAINER (scrolledwindow5), compiler_output_r);
   gtk_text_view_set_editable (GTK_TEXT_VIEW (compiler_output_r), FALSE);
+  gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (compiler_output_r), GTK_WRAP_CHAR);
   gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (compiler_output_r), FALSE);
 
   label27 = gtk_label_new (_("Progress"));
@@ -1762,7 +1764,7 @@ create_welcome_dialog (void)
 {
   GtkWidget *welcome_dialog;
   GtkWidget *vbox14;
-  GtkWidget *label4;
+  GtkWidget *welcome_label;
   GtkWidget *alignment7;
   GtkWidget *vbuttonbox1;
   GtkWidget *welcome_new_button;
@@ -1794,12 +1796,12 @@ create_welcome_dialog (void)
   gtk_widget_show (vbox14);
   gtk_container_add (GTK_CONTAINER (welcome_dialog), vbox14);
 
-  label4 = gtk_label_new (_("Welcome to Inform 7, a design system\nfor interactive fiction based on natural\nlanguage.\n\nTo begin writing, please click one of the\nthree buttons below.\n\nInform 7 was created by Graham Nelson,\nwith the help of Emily Short and many\nothers. The GNOME front-end was written\nby P.F. Chimento.\n\nThis is Public Beta build 4U65."));
-  gtk_widget_show (label4);
-  gtk_box_pack_start (GTK_BOX (vbox14), label4, FALSE, FALSE, 0);
-  gtk_label_set_line_wrap (GTK_LABEL (label4), TRUE);
-  gtk_misc_set_alignment (GTK_MISC (label4), 0.07, 0.5);
-  gtk_misc_set_padding (GTK_MISC (label4), 0, 12);
+  welcome_label = gtk_label_new (_("Welcome to Inform 7, a design system\nfor interactive fiction based on natural\nlanguage.\n\nTo begin writing, please click one of the\nthree buttons below.\n\nInform 7 was created by Graham Nelson,\nwith the help of Emily Short and many\nothers. The GNOME front-end was written\nby P.F. Chimento.\n\nThis is Public Beta build 4U65."));
+  gtk_widget_show (welcome_label);
+  gtk_box_pack_start (GTK_BOX (vbox14), welcome_label, FALSE, FALSE, 0);
+  gtk_label_set_line_wrap (GTK_LABEL (welcome_label), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (welcome_label), 0.07, 0.5);
+  gtk_misc_set_padding (GTK_MISC (welcome_label), 0, 12);
 
   alignment7 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment7);
@@ -1893,7 +1895,7 @@ create_welcome_dialog (void)
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (welcome_dialog, welcome_dialog, "welcome_dialog");
   GLADE_HOOKUP_OBJECT (welcome_dialog, vbox14, "vbox14");
-  GLADE_HOOKUP_OBJECT (welcome_dialog, label4, "label4");
+  GLADE_HOOKUP_OBJECT (welcome_dialog, welcome_label, "welcome_label");
   GLADE_HOOKUP_OBJECT (welcome_dialog, alignment7, "alignment7");
   GLADE_HOOKUP_OBJECT (welcome_dialog, vbuttonbox1, "vbuttonbox1");
   GLADE_HOOKUP_OBJECT (welcome_dialog, welcome_new_button, "welcome_new_button");
