@@ -8,10 +8,12 @@ AM_CONFIG_HEADER(config.h)
 AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
+AM_PROG_CC_C_O
 AC_HEADER_STDC
+AC_PROG_RANLIB
 
 pkg_modules="gtk+-2.0 >= 2.8.0 libgnomeui-2.0 gtksourceview-1.0 gtkspell-2.0 vte" 
-PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
+PKG_CHECK_MODULES(GNOMEINFORM7, [$pkg_modules])
 
 dnl Check for the correct UUID library header location
 PKG_CHECK_MODULES(UUID, ossp-uuid,
@@ -33,10 +35,15 @@ PKG_CHECK_MODULES(GTKHTML, libgtkhtml-3.14,
     		[AC_MSG_ERROR([GtkHTML 3.8 or higher is required.])])
 	])
 
-PACKAGE_CFLAGS="$PACKAGE_CFLAGS $UUID_CFLAGS $GTKHTML_CFLAGS"
-PACKAGE_LIBS="$PACKAGE_LIBS $UUID_LIBS $GTKHTML_LIBS"
-AC_SUBST(PACKAGE_CFLAGS)
-AC_SUBST(PACKAGE_LIBS)
+PKG_CHECK_MODULES(GTKTERP, [gtk+-2.0 >= 2.8.0 freetype2 sdl libpng dbus-glib-1])
+GTKTERP_LIBS="$GTKTERP_LIBS -lSDL_mixer -ljpeg"
+AC_SUBST(GTKTERP_CFLAGS)
+AC_SUBST(GTKTERP_LIBS)
+
+GNOMEINFORM7_CFLAGS="$GNOMEINFORM7_CFLAGS $UUID_CFLAGS $GTKHTML_CFLAGS"
+GNOMEINFORM7_LIBS="$GNOMEINFORM7_LIBS $UUID_LIBS $GTKHTML_LIBS"
+AC_SUBST(GNOMEINFORM7_CFLAGS)
+AC_SUBST(GNOMEINFORM7_LIBS)
 
 dnl Add user c-flags
 CFLAGS=$CFLAGS
@@ -52,6 +59,10 @@ AM_GLIB_GNU_GETTEXT
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/gtkterp/Makefile
+src/gtkterp/frotz/Makefile
+src/gtkterp/glulxe/Makefile
+src/gtkterp/garglk/Makefile
 po/Makefile.in
 data/Makefile
 data/Compilers/Makefile

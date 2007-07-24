@@ -1,15 +1,18 @@
 ## Process this file with automake to produce Makefile.in
 
+SUBDIRS = gtkterp
+
 INCLUDES = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	@PACKAGE_CFLAGS@
+	@GNOMEINFORM7_CFLAGS@
 
 AM_CFLAGS = -Wall -O0 -g
 
 bin_PROGRAMS = gnome-inform7
 
 gnome_inform7_SOURCES = \
+	gtkterp/gtkterp.h \
 	main.c \
 	support.c support.h \
 	interface.c interface.h \
@@ -42,6 +45,6 @@ gnome_inform7_SOURCES = \
     spawn.c spawn.h \
     widgets.c widgets.h
 
-gnome_inform7_LDADD = @PACKAGE_LIBS@ $(INTLLIBS)
+gnome_inform7_LDADD = @GNOMEINFORM7_LIBS@ $(INTLLIBS) $(GTKTERPLIBS) gtkterp/libgtkterp.a
 
-gnome_inform7_LDFLAGS =
+gnome_inform7_LDFLAGS = -L.

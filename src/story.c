@@ -59,10 +59,8 @@ struct story *new_story() {
     /* Do the default settings */
     newstory->story_format = FORMAT_Z5;
     newstory->make_blorb = FALSE;
-    newstory->interp_running = FALSE;
-    newstory->interp_process = 0;
-    newstory->handler_child_exit = 0;
-    newstory->handler_commit = 0;
+    newstory->handler_finished = 0;
+    newstory->handler_input = 0;
     newstory->action = COMPILE_NONE;
     
     /* Create an empty skein */

@@ -51,49 +51,6 @@ gboolean check_external_binaries() {
 }
 
 
-/* Check to see if frotz accepts the -h and -w switches */
-gboolean check_frotz_capabilities() {
-    GError *err = NULL;
-    GPid child_pid;
-    gint stdout_fd;
-    
-    gchar **args = g_new(gchar *, 2);
-    args[0] = g_strdup("frotz");
-    args[1] = NULL;
-    
-    if(!g_spawn_async_with_pipes(NULL, args, NULL,
-      G_SPAWN_SEARCH_PATH, NULL, NULL, &child_pid, NULL,
-      &stdout_fd, NULL, &err)) {
-        error_dialog(NULL, err, "Could not spawn process: ");
-        return FALSE;
-    }
-    
-    /* Kill the program and read its output (in case it waits for a key
-    press to exit */
-    kill(child_pid, SIGTERM);
-    GIOChannel *out = g_io_channel_unix_new(stdout_fd);
-    gchar *text;
-    GIOStatus status;
-    while((status = g_io_channel_read_to_end(out, &text, NULL, &err)) == 
-      G_IO_STATUS_AGAIN)
-        ;
-    g_io_channel_shutdown(out, TRUE, NULL);
-    g_io_channel_unref(out);
-    if(status == G_IO_STATUS_ERROR) {
-        error_dialog(NULL, err, "Could not read IO channel: ");
-        return FALSE;
-    }
-    
-    /* Check the help message */
-    if(strstr(text, "screen width") || strstr(text, "-w #")) {
-        g_free(text);
-        return TRUE;
-    } else {
-        g_free(text);
-        return FALSE;
-    }
-}
-
 
 /* Returns the path to filename in the application data directory. */
 gchar *get_datafile_path(const gchar *filename) {

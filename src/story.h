@@ -65,10 +65,8 @@ struct story {
     gboolean make_blorb;
     
     /* Which interpreter is running it */
-    gboolean interp_running;
-    pid_t interp_process;
-    gulong handler_child_exit;
-    gulong handler_commit;
+    gulong handler_finished;
+    gulong handler_input;
     
     /* Compile actions */
     int action;

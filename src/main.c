@@ -83,9 +83,6 @@ main (int argc, char *argv[])
     if(!check_external_binaries())
         return -1;
     
-    /* Check whether frotz accepts command line switches */
-    config_file_set_bool("Settings", "FrotzWidth", check_frotz_capabilities());
-    
     /* Index the extensions in the background */
     run_census(FALSE);
     
