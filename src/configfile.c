@@ -42,6 +42,11 @@ void check_config_file() {
         config_file_set_bool("Settings", "InspectorVisible", FALSE);
         config_file_set_int("Settings", "InspectorPosX", 0);
         config_file_set_int("Settings", "InspectorPosY", 0);
+        config_file_set_int("Settings", "AppWindowWidth", 800);
+        config_file_set_int("Settings", "AppWindowHeight", 600);
+        config_file_set_int("Settings", "SliderPosition", 50);
+        config_file_set_int("Settings", "ExtWindowWidth", 400);
+        config_file_set_int("Settings", "ExtWindowHeight", 600);
     }
     if(!gconf_client_dir_exists(client, GCONF_BASE_PATH "/Fonts", &err)) {
         config_file_set_int("Fonts", "FontSet", FONT_SET_STANDARD);

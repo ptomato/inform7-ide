@@ -21,6 +21,7 @@
 #include "interface.h"
 #include "support.h"
 
+#include "configfile.h"
 #include "datafile.h"
 #include "file.h"
 #include "story.h"
@@ -71,7 +72,7 @@ after_welcome_dialog_realize           (GtkWidget       *widget,
     pango_font_description_free(font);
     
     /* If there is no "last project", make the reopen button inactive */
-#if !defined(SUCKY_GNOME)
+#ifndef SUCKY_GNOME
     GtkRecentManager *manager = gtk_recent_manager_get_default();
     GList *recent = gtk_recent_manager_get_items(manager);
     GList *iter;
@@ -90,7 +91,13 @@ after_welcome_dialog_realize           (GtkWidget       *widget,
         gtk_recent_info_unref((GtkRecentInfo *)(iter->data));
     }
     g_list_free(recent);
-#endif
+#else
+    gchar *filename = config_file_get_string("Settings", "LastProject");
+    if(filename)
+        gtk_widget_set_sensitive(
+              lookup_widget(widget, "welcome_reopen_button"), TRUE);
+    g_free(filename);
+#endif /* SUCKY_GNOME */
 }
 
 void
@@ -146,7 +153,7 @@ void
 on_welcome_reopen_button_clicked       (GtkButton       *button,
                                         gpointer         user_data)
 {
-#if !defined(SUCKY_GNOME)
+#ifndef SUCKY_GNOME
     GtkRecentManager *manager = gtk_recent_manager_get_default();
     GList *recent = gtk_recent_manager_get_items(manager);
     GList *iter;
@@ -176,24 +183,30 @@ on_welcome_reopen_button_clicked       (GtkButton       *button,
         }
         gtk_recent_info_unref(info);
     }
-    g_return_if_fail(projectname); /* Button not sensitive if no last project */
     /* free the list */
     for(iter = recent; iter != NULL; iter = g_list_next(iter)) {
         gtk_recent_info_unref((GtkRecentInfo *)(iter->data));
     }
     g_list_free(recent);
+
+    g_return_if_fail(projectname); /* Button not sensitive if no last project */
+    
+    gchar *trash = g_path_get_dirname(projectname); /* Remove "story.ni" */
+    gchar *projectdir = g_path_get_dirname(trash); /* Remove "Source" */
+    g_free(trash);
+    g_free(projectname);
+    /* Do not free the string from gtk_recent_info_get_uri */
+#else
+    gchar *projectdir = config_file_get_string("Settings", "LastProject");
+    g_return_if_fail(projectdir);
+#endif /* SUCKY_GNOME */
     
     /* Hide the welcome dialog when opening the new story */
     gtk_widget_hide(gtk_widget_get_toplevel(GTK_WIDGET(button)));
     
     struct story *thestory;
-    gchar *trash = g_path_get_dirname(projectname); /* Remove "story.ni" */
-    gchar *projectdir = g_path_get_dirname(trash); /* Remove "Source" */
     thestory = open_project(projectdir);
     g_free(projectdir);
-    g_free(trash);
-    g_free(projectname);
-    /* Do not free the string from gtk_recent_info_get_uri */
     
     if(thestory == NULL) {
         /* Take us back to the welcome dialog */
@@ -202,5 +215,4 @@ on_welcome_reopen_button_clicked       (GtkButton       *button,
     }
     gtk_widget_show(thestory->window);
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
-#endif
 }

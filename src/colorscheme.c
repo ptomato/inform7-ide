@@ -148,8 +148,7 @@ void set_highlight_styles(GtkSourceLanguage *language) {
     gtk_source_tag_style_free(style);
 
     style = gtk_source_tag_style_new();
-    style->mask = GTK_SOURCE_TAG_STYLE_USE_FOREGROUND;
-    style->foreground = get_scheme_color(CLR_TEXT);
+    style->mask = 0;
     style->bold = (styling != FONT_STYLING_NONE);
     style->italic = (styling != FONT_STYLING_NONE);
     gtk_source_language_set_tag_style(language, "Heading", style);

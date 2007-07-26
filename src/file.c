@@ -224,7 +224,7 @@ struct story *open_project(gchar *directory) {
     }
     
     /* Update the list of recently used files */
-#if !defined(SUCKY_GNOME)
+#ifndef SUCKY_GNOME
     GtkRecentManager *manager = gtk_recent_manager_get_default();
     /* Add story.ni as the actual file to open, in case any other application
     wants to open it, and set the display name to the project directory */
@@ -251,7 +251,9 @@ struct story *open_project(gchar *directory) {
         g_free(recent_data);
     }
     g_free(file_uri);
-#endif
+#else
+    config_file_set_string("Settings", "LastProject", directory);
+#endif /* SUCKY_GNOME */
     
     /* Watch for changes to the source file */
     thestory->monitor = monitor_file(filename, project_changed,
@@ -368,7 +370,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     g_free(text);
 
     /* Update the list of recently used files */
-#if !defined(SUCKY_GNOME)
+#ifndef SUCKY_GNOME
     GtkRecentManager *manager = gtk_recent_manager_get_default();
     /* Add story.ni as the actual file to open, in case any other application
     wants to open it, and set the display name to the project directory */
@@ -395,7 +397,9 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
         g_free(recent_data);
     }
     g_free(file_uri);
-#endif
+#else
+    config_file_set_string("Settings", "LastProject", directory);
+#endif /* SUCKY_GNOME */
     
     /* Start file monitoring again */
     thestory->monitor = monitor_file(filename, project_changed,
@@ -463,7 +467,6 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(thestory->buffer), FALSE);
     gtk_text_buffer_set_modified(thestory->notes, FALSE);
-    config_file_set_string("Settings", "LastProject", directory);
 }
 
 /* A version of verify_save for the extension editing window */
@@ -610,7 +613,7 @@ struct extension *open_extension(gchar *filename) {
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ext->buffer), FALSE);
     
     /* Update the list of recently used files */
-#if !defined(SUCKY_GNOME)
+#ifndef SUCKY_GNOME
     GtkRecentManager *manager = gtk_recent_manager_get_default();
     gchar *file_uri;
     if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
@@ -649,7 +652,7 @@ void save_extension(GtkWidget *thiswidget) {
     struct extension *ext = get_ext(thiswidget);
 
     /* Update the list of recently used files */
-#if !defined(SUCKY_GNOME)
+#ifndef SUCKY_GNOME
     GtkRecentManager *manager = gtk_recent_manager_get_default();
     gchar *file_uri;
     if((file_uri = g_filename_to_uri(ext->filename, NULL, &err)) == NULL) {

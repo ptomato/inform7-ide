@@ -131,18 +131,18 @@ void clear_status(GtkWidget *thiswidget) {
 
 /* Create the Open Recent submenu */
 GtkWidget *create_open_recent_submenu() {
-#if !defined(SUCKY_GNOME)
+#ifndef SUCKY_GNOME
     GtkWidget *recent_menu = gtk_recent_chooser_menu_new();
     gtk_recent_chooser_set_limit(GTK_RECENT_CHOOSER(recent_menu), -1);
     GtkRecentFilter *filter = gtk_recent_filter_new();
     gtk_recent_filter_add_application(filter, "GNOME Inform 7");
     gtk_recent_chooser_set_filter(GTK_RECENT_CHOOSER(recent_menu), filter);
-    g_signal_connect(recent_menu, "item-activated",
-      G_CALLBACK(on_open_recent_activate), NULL);
+    g_signal_connect(recent_menu, "item-activated", 
+                     G_CALLBACK(on_open_recent_activate), NULL);
     return recent_menu;
 #else
-    return NULL;    /* Will this crash? */
-#endif
+    return NULL;
+#endif /* SUCKY_GNOME */
 }
 
 /* Create the Open Extension submenu and return it*/
@@ -218,13 +218,22 @@ void
 after_app_window_realize               (GtkWidget       *widget,
                                         gpointer         user_data)
 {
+    /* Set the last saved window size and slider position */
+    gtk_window_resize(GTK_WINDOW(widget), 
+                      config_file_get_int("Settings", "AppWindowWidth"),
+                      config_file_get_int("Settings", "AppWindowHeight"));
+    gtk_paned_set_position(GTK_PANED(lookup_widget(widget, "facingpages")),
+                           config_file_get_int("Settings", "SliderPosition"));
+    
     /* Create some submenus and attach them */
     GtkWidget *menu;
-#if !defined(SUCKY_GNOME)
+#ifndef SUCKY_GNOME
     if((menu = create_open_recent_submenu()))
         gtk_menu_item_set_submenu(
           GTK_MENU_ITEM(lookup_widget(widget, "open_recent")), menu);
-#endif
+#else
+    gtk_widget_hide(lookup_widget(widget, "open_recent"));
+#endif /* SUCKY_GNOME */
     if((menu = create_open_extension_submenu()))
         gtk_menu_item_set_submenu(
           GTK_MENU_ITEM(lookup_widget(widget, "open_extension")), menu);
@@ -264,14 +273,6 @@ after_app_window_realize               (GtkWidget       *widget,
     else
         gtk_widget_set_sensitive(lookup_widget(widget, "check_spelling"),FALSE);
 
-    /* Set the slider position of the panes at 50% */
-    gint slider_pos;
-    g_object_get(GTK_PANED(lookup_widget(widget, "facingpages")), 
-      "max-position", &slider_pos, NULL);
-    slider_pos *= 0.5;
-    gtk_paned_set_position(GTK_PANED(lookup_widget(widget, "facingpages")),
-      slider_pos);
-    
     /* Add extra pages in "Errors" if the user has them turned on */
     if(config_file_get_bool("Debugging", "ShowLog"))
         add_debug_tabs(widget);
@@ -344,7 +345,7 @@ on_open_activate                       (GtkMenuItem     *menuitem,
     gtk_widget_destroy(dialog);
 }
 
-#if !defined(SUCKY_GNOME)
+#ifndef SUCKY_GNOME
 void
 on_open_recent_activate                (GtkRecentChooser  *chooser,
                                         gpointer         user_data)
@@ -382,7 +383,7 @@ on_open_recent_activate                (GtkFileChooser  *chooser,
                                         gpointer         user_data)
 {
 }
-#endif
+#endif /* SUCKY_GNOME */
 
 void
 on_install_extension_activate          (GtkMenuItem     *menuitem,
@@ -1278,6 +1279,20 @@ on_help_toolbutton_clicked             (GtkToolButton   *toolbutton,
       "inform_help")), user_data);
 }
 
+/* Save window size and slider position */
+static void
+save_app_window_size(GtkWindow *window)
+{
+    gint w, h;
+    gtk_window_get_size(window, &w, &h);
+    config_file_set_int("Settings", "AppWindowWidth", w);
+    config_file_set_int("Settings", "AppWindowHeight", h);
+    config_file_set_int("Settings", "SliderPosition",
+                        gtk_paned_get_position(
+                        GTK_PANED(lookup_widget(GTK_WIDGET(window),
+                        "facingpages"))));
+}
+
 gboolean
 on_app_window_delete_event             (GtkWidget       *widget,
                                         GdkEvent        *event,
@@ -1296,6 +1311,7 @@ on_app_window_delete_event             (GtkWidget       *widget,
                 return TRUE;
         }
 
+        save_app_window_size(GTK_WINDOW(widget));
         delete_story(thestory);
 
         if(get_num_app_windows() == 0) {
@@ -1341,5 +1357,7 @@ on_app_window_destroy                  (GtkObject       *object,
             "save")), NULL);
         g_free(filename);
     }
+    
+    save_app_window_size(GTK_WINDOW(object));
     delete_story(thestory);
 }

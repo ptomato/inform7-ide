@@ -40,11 +40,20 @@ void
 after_ext_window_realize               (GtkWidget       *widget,
                                         gpointer         user_data)
 {
+    /* Set the last saved window size and slider position */
+    gtk_window_resize(GTK_WINDOW(widget), 
+                      config_file_get_int("Settings", "ExtWindowWidth"),
+                      config_file_get_int("Settings", "ExtWindowHeight"));
+    
     /* Create some submenus and attach them */
     GtkWidget *menu;
+#ifndef SUCKY_GNOME
     if((menu = create_open_recent_submenu()))
         gtk_menu_item_set_submenu(
           GTK_MENU_ITEM(lookup_widget(widget, "xopen_recent")), menu);
+#else
+    gtk_widget_hide(lookup_widget(widget, "xopen_recent"));
+#endif /* SUCKY_GNOME */
     if((menu = create_open_extension_submenu()))
         gtk_menu_item_set_submenu(
           GTK_MENU_ITEM(lookup_widget(widget, "xopen_extension")), menu);
@@ -284,6 +293,16 @@ on_xcheck_spelling_activate            (GtkMenuItem     *menuitem,
         gtkspell_recheck_all(spellchecker);
 }
 
+/* Save window size */
+static void
+save_ext_window_size(GtkWindow *window)
+{
+    gint w, h;
+    gtk_window_get_size(window, &w, &h);
+    config_file_set_int("Settings", "ExtWindowWidth", w);
+    config_file_set_int("Settings", "ExtWindowHeight", h);
+}
+
 gboolean
 on_ext_window_delete_event             (GtkWidget       *widget,
                                         GdkEvent        *event,
@@ -301,6 +320,7 @@ on_ext_window_delete_event             (GtkWidget       *widget,
                 return TRUE;
         }
 
+        save_ext_window_size(GTK_WINDOW(widget));
         delete_ext(ext);
 
         if(get_num_app_windows() == 0) {
@@ -346,6 +366,8 @@ on_ext_window_destroy                  (GtkObject       *object,
             "save")), NULL);
         g_free(filename);
     }
+    
+    save_ext_window_size(GTK_WINDOW(object));
     delete_ext(ext);
 }
 

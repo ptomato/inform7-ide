@@ -19,6 +19,12 @@
 #ifndef EXT_WINDOW_H
 #define EXT_WINDOW_H
 
+#include <gnome.h>
+
+#if !GTK_CHECK_VERSION(2,10,0)
+# define SUCKY_GNOME 1
+#endif
+
 void
 after_ext_window_realize               (GtkWidget       *widget,
                                         gpointer         user_data);

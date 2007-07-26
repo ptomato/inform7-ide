@@ -93,13 +93,13 @@ void
 on_open_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
-#if !defined(SUCKY_GNOME)
+#ifndef SUCKY_GNOME
 void
 on_open_recent_activate                (GtkRecentChooser *chooser,
                                         gpointer         user_data);
 #else
 void
-on_open_recent_activate                (GtkFileChooser  *chooser,
+on_open_recent_activate                (GtkFileChooser  *menuitem,
                                         gpointer         user_data);
 #endif
 
