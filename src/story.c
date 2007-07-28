@@ -67,6 +67,37 @@ struct story *new_story() {
     newstory->theskein = create_skein();
     newstory->skein_ptr = get_start_pointer(newstory->theskein);
 
+    /* Initialize the navigation history */
+    int foo;
+    for(foo = 0; foo < 2; foo++) {
+        newstory->back[foo] = g_queue_new();
+        newstory->forward[foo] = g_queue_new();
+        newstory->current[foo] = NULL;
+        newstory->handler_notebook_change[foo] =
+            g_signal_handler_find(lookup_widget(newstory->window, foo == 0?
+                                                "notebook_l" : "notebook_r"),
+                                  G_SIGNAL_MATCH_ID,
+                                  g_signal_lookup("switch-page",
+                                                  GTK_TYPE_NOTEBOOK),
+                                  0, NULL, NULL, NULL);
+        newstory->handler_errors_change[foo] =
+            g_signal_handler_find(lookup_widget(newstory->window, foo == 0?
+                                                "errors_notebook_l" :
+                                                "errors_notebook_r"),
+                                  G_SIGNAL_MATCH_ID,
+                                  g_signal_lookup("switch-page",
+                                                  GTK_TYPE_NOTEBOOK),
+                                  0, NULL, NULL, NULL);
+        newstory->handler_index_change[foo] =
+            g_signal_handler_find(lookup_widget(newstory->window, foo == 0?
+                                                "index_notebook_l" :
+                                                "index_notebook_r"),
+                                  G_SIGNAL_MATCH_ID,
+                                  g_signal_lookup("switch-page",
+                                                  GTK_TYPE_NOTEBOOK),
+                                  0, NULL, NULL, NULL);
+    }
+    
     storylist = g_slist_append(storylist, (gpointer)newstory);
     update_window_list();
     

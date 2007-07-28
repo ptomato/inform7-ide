@@ -609,7 +609,7 @@ create_app_window (void)
   GtkWidget *docs_back_r;
   GtkWidget *docs_forward_r;
   GtkWidget *separatortoolitem11;
-  GtkWidget *game_contents_r;
+  GtkWidget *docs_contents_r;
   GtkWidget *scrolledwindow47;
   GtkWidget *docs_r;
   GtkWidget *label41;
@@ -756,6 +756,7 @@ create_app_window (void)
   source_back_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (source_back_l);
   gtk_container_add (GTK_CONTAINER (toolbar2), source_back_l);
+  gtk_widget_set_sensitive (source_back_l, FALSE);
   gtk_tool_item_set_is_important (GTK_TOOL_ITEM (source_back_l), TRUE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
@@ -763,6 +764,7 @@ create_app_window (void)
   source_forward_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (source_forward_l);
   gtk_container_add (GTK_CONTAINER (toolbar2), source_forward_l);
+  gtk_widget_set_sensitive (source_forward_l, FALSE);
   gtk_tool_item_set_is_important (GTK_TOOL_ITEM (source_forward_l), TRUE);
 
   separatortoolitem4 = (GtkWidget*) gtk_separator_tool_item_new ();
@@ -811,12 +813,14 @@ create_app_window (void)
   errors_back_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (errors_back_l);
   gtk_container_add (GTK_CONTAINER (toolbar4), errors_back_l);
+  gtk_widget_set_sensitive (errors_back_l, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   errors_forward_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (errors_forward_l);
   gtk_container_add (GTK_CONTAINER (toolbar4), errors_forward_l);
+  gtk_widget_set_sensitive (errors_forward_l, FALSE);
 
   errors_notebook_l = gtk_notebook_new ();
   gtk_widget_show (errors_notebook_l);
@@ -906,12 +910,14 @@ create_app_window (void)
   index_back_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (index_back_l);
   gtk_container_add (GTK_CONTAINER (toolbar6), index_back_l);
+  gtk_widget_set_sensitive (index_back_l, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   index_forward_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (index_forward_l);
   gtk_container_add (GTK_CONTAINER (toolbar6), index_forward_l);
+  gtk_widget_set_sensitive (index_forward_l, FALSE);
 
   index_notebook_l = gtk_notebook_new ();
   gtk_widget_show (index_notebook_l);
@@ -1044,12 +1050,14 @@ create_app_window (void)
   skein_back_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (skein_back_l);
   gtk_container_add (GTK_CONTAINER (toolbar8), skein_back_l);
+  gtk_widget_set_sensitive (skein_back_l, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   skein_forward_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (skein_forward_l);
   gtk_container_add (GTK_CONTAINER (toolbar8), skein_forward_l);
+  gtk_widget_set_sensitive (skein_forward_l, FALSE);
 
   separatortoolitem6 = (GtkWidget*) gtk_separator_tool_item_new ();
   gtk_widget_show (separatortoolitem6);
@@ -1113,12 +1121,14 @@ create_app_window (void)
   transcript_back_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (transcript_back_l);
   gtk_container_add (GTK_CONTAINER (toolbar10), transcript_back_l);
+  gtk_widget_set_sensitive (transcript_back_l, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   transcript_forward_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (transcript_forward_l);
   gtk_container_add (GTK_CONTAINER (toolbar10), transcript_forward_l);
+  gtk_widget_set_sensitive (transcript_forward_l, FALSE);
 
   separatortoolitem8 = (GtkWidget*) gtk_separator_tool_item_new ();
   gtk_widget_show (separatortoolitem8);
@@ -1173,12 +1183,14 @@ create_app_window (void)
   game_back_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (game_back_l);
   gtk_container_add (GTK_CONTAINER (toolbar12), game_back_l);
+  gtk_widget_set_sensitive (game_back_l, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   game_forward_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (game_forward_l);
   gtk_container_add (GTK_CONTAINER (toolbar12), game_forward_l);
+  gtk_widget_set_sensitive (game_forward_l, FALSE);
 
   game_l = game_create ("game_l", "", "", 0, 0);
   gtk_widget_show (game_l);
@@ -1206,12 +1218,14 @@ create_app_window (void)
   docs_back_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (docs_back_l);
   gtk_container_add (GTK_CONTAINER (toolbar14), docs_back_l);
+  gtk_widget_set_sensitive (docs_back_l, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   docs_forward_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (docs_forward_l);
   gtk_container_add (GTK_CONTAINER (toolbar14), docs_forward_l);
+  gtk_widget_set_sensitive (docs_forward_l, FALSE);
 
   separatortoolitem10 = (GtkWidget*) gtk_separator_tool_item_new ();
   gtk_widget_show (separatortoolitem10);
@@ -1257,12 +1271,14 @@ create_app_window (void)
   settings_back_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (settings_back_l);
   gtk_container_add (GTK_CONTAINER (toolbar16), settings_back_l);
+  gtk_widget_set_sensitive (settings_back_l, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   settings_forward_l = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (settings_forward_l);
   gtk_container_add (GTK_CONTAINER (toolbar16), settings_forward_l);
+  gtk_widget_set_sensitive (settings_forward_l, FALSE);
 
   frame1 = gtk_frame_new (NULL);
   gtk_widget_show (frame1);
@@ -1343,6 +1359,7 @@ create_app_window (void)
   source_back_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (source_back_r);
   gtk_container_add (GTK_CONTAINER (toolbar3), source_back_r);
+  gtk_widget_set_sensitive (source_back_r, FALSE);
   gtk_tool_item_set_is_important (GTK_TOOL_ITEM (source_back_r), TRUE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
@@ -1350,6 +1367,7 @@ create_app_window (void)
   source_forward_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (source_forward_r);
   gtk_container_add (GTK_CONTAINER (toolbar3), source_forward_r);
+  gtk_widget_set_sensitive (source_forward_r, FALSE);
   gtk_tool_item_set_is_important (GTK_TOOL_ITEM (source_forward_r), TRUE);
 
   separatortoolitem5 = (GtkWidget*) gtk_separator_tool_item_new ();
@@ -1398,12 +1416,14 @@ create_app_window (void)
   errors_back_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (errors_back_r);
   gtk_container_add (GTK_CONTAINER (toolbar5), errors_back_r);
+  gtk_widget_set_sensitive (errors_back_r, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   errors_forward_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (errors_forward_r);
   gtk_container_add (GTK_CONTAINER (toolbar5), errors_forward_r);
+  gtk_widget_set_sensitive (errors_forward_r, FALSE);
 
   errors_notebook_r = gtk_notebook_new ();
   gtk_widget_show (errors_notebook_r);
@@ -1493,12 +1513,14 @@ create_app_window (void)
   index_back_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (index_back_r);
   gtk_container_add (GTK_CONTAINER (toolbar7), index_back_r);
+  gtk_widget_set_sensitive (index_back_r, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   index_forward_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (index_forward_r);
   gtk_container_add (GTK_CONTAINER (toolbar7), index_forward_r);
+  gtk_widget_set_sensitive (index_forward_r, FALSE);
 
   index_notebook_r = gtk_notebook_new ();
   gtk_widget_show (index_notebook_r);
@@ -1631,12 +1653,14 @@ create_app_window (void)
   skein_back_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (skein_back_r);
   gtk_container_add (GTK_CONTAINER (toolbar9), skein_back_r);
+  gtk_widget_set_sensitive (skein_back_r, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   skein_forward_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (skein_forward_r);
   gtk_container_add (GTK_CONTAINER (toolbar9), skein_forward_r);
+  gtk_widget_set_sensitive (skein_forward_r, FALSE);
 
   separatortoolitem7 = (GtkWidget*) gtk_separator_tool_item_new ();
   gtk_widget_show (separatortoolitem7);
@@ -1700,12 +1724,14 @@ create_app_window (void)
   transcript_back_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (transcript_back_r);
   gtk_container_add (GTK_CONTAINER (toolbar11), transcript_back_r);
+  gtk_widget_set_sensitive (transcript_back_r, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   transcript_forward_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (transcript_forward_r);
   gtk_container_add (GTK_CONTAINER (toolbar11), transcript_forward_r);
+  gtk_widget_set_sensitive (transcript_forward_r, FALSE);
 
   separatortoolitem9 = (GtkWidget*) gtk_separator_tool_item_new ();
   gtk_widget_show (separatortoolitem9);
@@ -1760,12 +1786,14 @@ create_app_window (void)
   game_back_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (game_back_r);
   gtk_container_add (GTK_CONTAINER (toolbar13), game_back_r);
+  gtk_widget_set_sensitive (game_back_r, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   game_forward_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (game_forward_r);
   gtk_container_add (GTK_CONTAINER (toolbar13), game_forward_r);
+  gtk_widget_set_sensitive (game_forward_r, FALSE);
 
   game_r = game_create ("game_r", "", "", 0, 0);
   gtk_widget_show (game_r);
@@ -1793,12 +1821,14 @@ create_app_window (void)
   docs_back_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (docs_back_r);
   gtk_container_add (GTK_CONTAINER (toolbar15), docs_back_r);
+  gtk_widget_set_sensitive (docs_back_r, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   docs_forward_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (docs_forward_r);
   gtk_container_add (GTK_CONTAINER (toolbar15), docs_forward_r);
+  gtk_widget_set_sensitive (docs_forward_r, FALSE);
 
   separatortoolitem11 = (GtkWidget*) gtk_separator_tool_item_new ();
   gtk_widget_show (separatortoolitem11);
@@ -1808,10 +1838,10 @@ create_app_window (void)
 
   tmp_image = gtk_image_new_from_stock ("gtk-index", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  game_contents_r = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Contents"));
-  gtk_widget_show (game_contents_r);
-  gtk_container_add (GTK_CONTAINER (toolbar15), game_contents_r);
-  gtk_tool_item_set_is_important (GTK_TOOL_ITEM (game_contents_r), TRUE);
+  docs_contents_r = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Contents"));
+  gtk_widget_show (docs_contents_r);
+  gtk_container_add (GTK_CONTAINER (toolbar15), docs_contents_r);
+  gtk_tool_item_set_is_important (GTK_TOOL_ITEM (docs_contents_r), TRUE);
 
   scrolledwindow47 = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (scrolledwindow47);
@@ -1845,12 +1875,14 @@ create_app_window (void)
   settings_back_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (settings_back_r);
   gtk_container_add (GTK_CONTAINER (toolbar17), settings_back_r);
+  gtk_widget_set_sensitive (settings_back_r, FALSE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-go-forward", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   settings_forward_r = (GtkWidget*) gtk_tool_button_new (tmp_image, "");
   gtk_widget_show (settings_forward_r);
   gtk_container_add (GTK_CONTAINER (toolbar17), settings_forward_r);
+  gtk_widget_set_sensitive (settings_forward_r, FALSE);
 
   frame2 = gtk_frame_new (NULL);
   gtk_widget_show (frame2);
@@ -1947,6 +1979,69 @@ create_app_window (void)
   g_signal_connect ((gpointer) help_toolbutton, "clicked",
                     G_CALLBACK (on_help_toolbutton_clicked),
                     NULL);
+  g_signal_connect_after ((gpointer) notebook_l, "switch_page",
+                          G_CALLBACK (after_notebook_l_switch_page),
+                          NULL);
+  g_signal_connect ((gpointer) source_back_l, "clicked",
+                    G_CALLBACK (on_back_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) source_forward_l, "clicked",
+                    G_CALLBACK (on_forward_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) source_headings_l, "show_menu",
+                    G_CALLBACK (on_source_headings_show_menu),
+                    NULL);
+  g_signal_connect ((gpointer) errors_back_l, "clicked",
+                    G_CALLBACK (on_back_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) errors_forward_l, "clicked",
+                    G_CALLBACK (on_forward_l_clicked),
+                    NULL);
+  g_signal_connect_after ((gpointer) errors_notebook_l, "switch_page",
+                          G_CALLBACK (after_errors_notebook_l_switch_page),
+                          NULL);
+  g_signal_connect ((gpointer) index_back_l, "clicked",
+                    G_CALLBACK (on_back_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) index_forward_l, "clicked",
+                    G_CALLBACK (on_forward_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) index_notebook_l, "switch_page",
+                    G_CALLBACK (after_index_notebook_l_switch_page),
+                    NULL);
+  g_signal_connect ((gpointer) skein_back_l, "clicked",
+                    G_CALLBACK (on_back_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) skein_forward_l, "clicked",
+                    G_CALLBACK (on_forward_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) transcript_back_l, "clicked",
+                    G_CALLBACK (on_back_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) transcript_forward_l, "clicked",
+                    G_CALLBACK (on_forward_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) game_back_l, "clicked",
+                    G_CALLBACK (on_back_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) game_forward_l, "clicked",
+                    G_CALLBACK (on_forward_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) docs_back_l, "clicked",
+                    G_CALLBACK (on_back_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) docs_forward_l, "clicked",
+                    G_CALLBACK (on_forward_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) docs_contents_l, "clicked",
+                    G_CALLBACK (on_docs_contents_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) settings_back_l, "clicked",
+                    G_CALLBACK (on_back_l_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) settings_forward_l, "clicked",
+                    G_CALLBACK (on_forward_l_clicked),
+                    NULL);
   g_signal_connect ((gpointer) z5_button_l, "toggled",
                     G_CALLBACK (on_z5_button_toggled),
                     NULL);
@@ -1961,6 +2056,69 @@ create_app_window (void)
                     NULL);
   g_signal_connect ((gpointer) blorb_button_l, "toggled",
                     G_CALLBACK (on_blorb_button_toggled),
+                    NULL);
+  g_signal_connect_after ((gpointer) notebook_r, "switch_page",
+                          G_CALLBACK (after_notebook_r_switch_page),
+                          NULL);
+  g_signal_connect ((gpointer) source_back_r, "clicked",
+                    G_CALLBACK (on_back_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) source_forward_r, "clicked",
+                    G_CALLBACK (on_forward_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) source_headings_r, "show_menu",
+                    G_CALLBACK (on_source_headings_show_menu),
+                    NULL);
+  g_signal_connect ((gpointer) errors_back_r, "clicked",
+                    G_CALLBACK (on_back_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) errors_forward_r, "clicked",
+                    G_CALLBACK (on_forward_r_clicked),
+                    NULL);
+  g_signal_connect_after ((gpointer) errors_notebook_r, "switch_page",
+                          G_CALLBACK (after_errors_notebook_r_switch_page),
+                          NULL);
+  g_signal_connect ((gpointer) index_back_r, "clicked",
+                    G_CALLBACK (on_back_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) index_forward_r, "clicked",
+                    G_CALLBACK (on_forward_r_clicked),
+                    NULL);
+  g_signal_connect_after ((gpointer) index_notebook_r, "switch_page",
+                          G_CALLBACK (after_index_notebook_r_switch_page),
+                          NULL);
+  g_signal_connect ((gpointer) skein_back_r, "clicked",
+                    G_CALLBACK (on_back_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) skein_forward_r, "clicked",
+                    G_CALLBACK (on_forward_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) transcript_back_r, "clicked",
+                    G_CALLBACK (on_back_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) transcript_forward_r, "clicked",
+                    G_CALLBACK (on_forward_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) game_back_r, "clicked",
+                    G_CALLBACK (on_back_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) game_forward_r, "clicked",
+                    G_CALLBACK (on_forward_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) docs_back_r, "clicked",
+                    G_CALLBACK (on_back_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) docs_forward_r, "clicked",
+                    G_CALLBACK (on_forward_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) docs_contents_r, "clicked",
+                    G_CALLBACK (on_docs_contents_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) settings_back_r, "clicked",
+                    G_CALLBACK (on_back_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) settings_forward_r, "clicked",
+                    G_CALLBACK (on_forward_r_clicked),
                     NULL);
   g_signal_connect ((gpointer) z5_button_r, "toggled",
                     G_CALLBACK (on_z5_button_toggled),
@@ -2265,7 +2423,7 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, docs_back_r, "docs_back_r");
   GLADE_HOOKUP_OBJECT (app_window, docs_forward_r, "docs_forward_r");
   GLADE_HOOKUP_OBJECT (app_window, separatortoolitem11, "separatortoolitem11");
-  GLADE_HOOKUP_OBJECT (app_window, game_contents_r, "game_contents_r");
+  GLADE_HOOKUP_OBJECT (app_window, docs_contents_r, "docs_contents_r");
   GLADE_HOOKUP_OBJECT (app_window, scrolledwindow47, "scrolledwindow47");
   GLADE_HOOKUP_OBJECT (app_window, docs_r, "docs_r");
   GLADE_HOOKUP_OBJECT (app_window, label41, "label41");

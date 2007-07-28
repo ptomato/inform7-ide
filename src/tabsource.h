@@ -29,7 +29,7 @@ source_create (gchar *widget_name, gchar *string1, gchar *string2,
 GtkTextTag *create_string_markup_tag();
 GtkSourceBuffer *create_natural_inform_source_buffer();
 void paste_code (GtkSourceBuffer *buffer, gchar *code);
-void jump_to_line(GtkWidget *widget, gint line);
+void jump_to_line(GtkWidget *widget, guint line);
 gboolean do_extra_highlighting(gpointer data);
 void renumber_sections(GtkTextBuffer *buffer);
 #endif

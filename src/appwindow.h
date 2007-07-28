@@ -64,7 +64,12 @@ enum {
 };
 
 /* For choose_notebook and suchlike */
-enum { LEFT = 0, RIGHT };
+#ifndef LEFT
+# define LEFT 0
+#endif
+#ifndef RIGHT
+# define RIGHT 1
+#endif
 
 GtkNotebook *get_notebook(GtkWidget *thiswidget, int right);
 int get_current_notebook(GtkWidget *thiswidget);
@@ -329,6 +334,70 @@ on_docs_search_focus                   (GtkWidget       *widget,
                                         gpointer         user_data);
 void
 on_help_toolbutton_clicked             (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_back_l_clicked                      (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_forward_l_clicked                   (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_back_r_clicked                      (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_forward_r_clicked                   (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+after_notebook_l_switch_page           (GtkNotebook     *notebook,
+                                        GtkNotebookPage *page,
+                                        guint            page_num,
+                                        gpointer         user_data);
+
+void
+after_errors_notebook_l_switch_page    (GtkNotebook     *notebook,
+                                        GtkNotebookPage *page,
+                                        guint            page_num,
+                                        gpointer         user_data);
+
+void
+after_index_notebook_l_switch_page     (GtkNotebook     *notebook,
+                                        GtkNotebookPage *page,
+                                        guint            page_num,
+                                        gpointer         user_data);
+
+void
+after_notebook_r_switch_page           (GtkNotebook     *notebook,
+                                        GtkNotebookPage *page,
+                                        guint            page_num,
+                                        gpointer         user_data);
+
+void
+after_errors_notebook_r_switch_page    (GtkNotebook     *notebook,
+                                        GtkNotebookPage *page,
+                                        guint            page_num,
+                                        gpointer         user_data);
+
+void
+after_index_notebook_r_switch_page     (GtkNotebook     *notebook,
+                                        GtkNotebookPage *page,
+                                        guint            page_num,
+                                        gpointer         user_data);
+
+void
+on_docs_contents_l_clicked             (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_docs_contents_r_clicked             (GtkToolButton   *toolbutton,
+                                        gpointer         user_data);
+
+void
+on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
                                         gpointer         user_data);
 
 gboolean

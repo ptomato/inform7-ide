@@ -43,8 +43,11 @@ gnome_inform7_SOURCES = \
     taberrors.c taberrors.h \
     datafile.c datafile.h \
     spawn.c spawn.h \
-    widgets.c widgets.h
+    widgets.c widgets.h \
+    history.c history.h 
 
 gnome_inform7_LDADD = @GNOMEINFORM7_LIBS@ $(INTLLIBS) $(GTKTERPLIBS) gtkterp/libgtkterp.a
 
 gnome_inform7_LDFLAGS = -L.
+
+

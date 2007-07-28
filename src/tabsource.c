@@ -197,10 +197,10 @@ void paste_code(GtkSourceBuffer *buffer, gchar *code) {
 }
 
 /* Scroll the source views to the specified line of the source */
-void jump_to_line(GtkWidget *widget, gint line) {
+void jump_to_line(GtkWidget *widget, guint line) {
     struct story *thestory = get_story(widget);
     GtkTextIter cursor, line_end;
-    
+
     int right = choose_notebook(widget, TAB_SOURCE);
     gtk_notebook_set_current_page(get_notebook(widget, right), TAB_SOURCE);
     GtkWidget *view = lookup_widget(thestory->window, 

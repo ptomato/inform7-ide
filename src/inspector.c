@@ -267,14 +267,14 @@ gboolean reindex_headings(gpointer data) {
                 gint lineno = gtk_text_iter_get_line(&pos) + 1;
                 /* Line numbers counted from 0 */
                 
-                if(g_str_has_prefix(lcase, "volume")) {
+                if(g_str_has_prefix(lcase, "volume ")) {
                     gtk_tree_store_append(tree, &volume, NULL);
                     volume_used = TRUE;
                     gtk_tree_store_set(tree, &volume,
                       HEADING_TITLE, text,
                       HEADING_LINE, lineno,
                       -1);
-                } else if(g_str_has_prefix(lcase, "book")) {
+                } else if(g_str_has_prefix(lcase, "book ")) {
                     gtk_tree_store_append(tree, &book,
                       volume_used? &volume : NULL);
                     book_used = TRUE;
@@ -282,7 +282,7 @@ gboolean reindex_headings(gpointer data) {
                       HEADING_TITLE, text,
                       HEADING_LINE, lineno,
                       -1);
-                } else if(g_str_has_prefix(lcase, "part")) {
+                } else if(g_str_has_prefix(lcase, "part ")) {
                     gtk_tree_store_append(tree, &part,
                       book_used? &book :
                       volume_used? &volume : NULL);
@@ -291,7 +291,7 @@ gboolean reindex_headings(gpointer data) {
                       HEADING_TITLE, text,
                       HEADING_LINE, lineno,
                       -1);
-                } else if(g_str_has_prefix(lcase, "chapter")) {
+                } else if(g_str_has_prefix(lcase, "chapter ")) {
                     gtk_tree_store_append(tree, &chapter,
                       part_used? &part :
                       book_used? &book :
@@ -301,7 +301,7 @@ gboolean reindex_headings(gpointer data) {
                       HEADING_TITLE, text,
                       HEADING_LINE, lineno,
                       -1);
-                } else if(g_str_has_prefix(lcase, "section")) {
+                } else if(g_str_has_prefix(lcase, "section ")) {
                     gtk_tree_store_append(tree, &section,
                       chapter_used? &chapter :
                       part_used? &part :

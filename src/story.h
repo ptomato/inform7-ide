@@ -47,6 +47,14 @@ enum {
     COMPILE_RELEASE
 };
 
+struct history {
+    int tab;
+    int subtab;
+    char *page;
+};
+
+typedef struct history History;
+
 struct story {
     /* The toplevel window in which this story is being edited */
     GtkWidget *window;
@@ -74,6 +82,14 @@ struct story {
     /* Skein */
     skein theskein;
     skein_pointer skein_ptr;
+    
+    /* History navigation */
+    GQueue *back[2];
+    GQueue *forward[2];
+    History *current[2];
+    gulong handler_notebook_change[2];
+    gulong handler_errors_change[2];
+    gulong handler_index_change[2];
 };
 
 struct story *new_story();
