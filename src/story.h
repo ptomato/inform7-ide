@@ -51,6 +51,7 @@ struct history {
     int tab;
     int subtab;
     char *page;
+    char *anchor;
 };
 
 typedef struct history History;

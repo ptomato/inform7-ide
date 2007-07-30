@@ -118,6 +118,33 @@ void delete_story(struct story *oldstory) {
     destroy_skein(oldstory->theskein);
     if(oldstory->monitor)
         gnome_vfs_monitor_cancel(oldstory->monitor);
+    
+    int side;
+    for(side = 0; side < 2; side++) {
+        History *foo;
+        while((foo = g_queue_pop_head(oldstory->back[side])) != NULL) {
+            if(foo->page)
+                g_free(foo->page);
+            if(foo->anchor)
+                g_free(foo->anchor);
+            g_free(foo);
+        }
+        g_queue_free(oldstory->back[side]);
+        while((foo = g_queue_pop_head(oldstory->forward[side])) != NULL) {
+            if(foo->page)
+                g_free(foo->page);
+            if(foo->anchor)
+                g_free(foo->anchor);
+            g_free(foo);
+        }
+        g_queue_free(oldstory->forward[side]);
+        if(oldstory->current[side]->page)
+            g_free(oldstory->current[side]->page);
+        if(oldstory->current[side]->anchor)
+            g_free(oldstory->current[side]->anchor);
+        g_free(oldstory->current[side]);
+    }
+    
     g_free(oldstory);
     
     update_window_list();

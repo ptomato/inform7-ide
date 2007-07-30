@@ -1,4 +1,4 @@
-SUBDIRS = Compilers Documentation Inform7 Interpreters Library map_icons \
+SUBDIRS = Compilers Documentation Inform7 Library map_icons \
 scene_icons
 
 pkgdata_DATA = cblorb_failed.png cblorb_succeeded.png crash.png inform.lang \

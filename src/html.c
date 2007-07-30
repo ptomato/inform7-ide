@@ -25,6 +25,7 @@
 #include "appwindow.h"
 #include "datafile.h"
 #include "error.h"
+#include "history.h"
 #include "html.h"
 #include "prefs.h"
 #include "story.h"
@@ -226,10 +227,18 @@ GtkHTMLStream *handle, gpointer data) {
 /* This function is called when the user clicks on a link. It handles the
 different protocols used by the Inform help browser and, if necessary,
 eventually passes control to on_url_requested */
-static void on_link_clicked(GtkHTML *html, const gchar *requested_url,
-  gpointer data) {
+static void
+on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data)
+{
     g_return_if_fail(html != NULL);
     g_return_if_fail(requested_url != NULL);
+    
+    struct story *thestory = get_story(GTK_WIDGET(html));
+    int side = -1;
+    if(GTK_WIDGET(html) == lookup_widget(GTK_WIDGET(html), "docs_l"))
+        side = LEFT;
+    else if(GTK_WIDGET(html) == lookup_widget(GTK_WIDGET(html), "docs_r"))
+        side = RIGHT;
     
     GError *err = NULL;
     gchar *anchor;
@@ -243,6 +252,21 @@ static void on_link_clicked(GtkHTML *html, const gchar *requested_url,
         if(!strcmp(url, gtk_html_get_base(html))) {
             /* if we are only jumping to an anchor on the same page */
             gtk_html_jump_to_anchor(html, anchor);
+            if(side != -1) {
+                gchar *last_url;
+                if(thestory->current[side]->page)
+                    last_url = g_strdup(thestory->current[side]->page);
+                else {
+                    last_url = history_get_last_docpage(thestory, side);
+                    gchar *old_anchor;
+                    if((old_anchor = strchr(last_url, '#')))
+                        *old_anchor = '\0';
+                }
+                gchar *history_url = g_strconcat(last_url, "#", anchor, NULL);
+                history_push_docpage(thestory, side, history_url);
+                g_free(history_url);
+                g_free(last_url);
+            }
             g_free(url);
             return;
         }
@@ -341,6 +365,11 @@ static void on_link_clicked(GtkHTML *html, const gchar *requested_url,
         return;
     }
 
+    /* This is the actual filename of the page we are loading, store it in the
+    history */
+    if(side != -1)
+        history_push_docpage(thestory, side, real_url);
+    
     GtkHTMLStream *handle = gtk_html_begin(html);
     gchar *newbase = get_base_name(real_url);
     gtk_html_set_base(html, newbase);

@@ -282,7 +282,6 @@ after_app_window_realize               (GtkWidget       *widget,
     gchar *htmlfile = get_datafile_path_va("Documentation", "index.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(widget, "docs_l")), htmlfile);
     html_load_file(GTK_HTML(lookup_widget(widget, "docs_r")), htmlfile);
-    g_free(htmlfile);
     
     /* Turn the left page to "Source"  and the right page to "Documentation" */
     struct story *thestory = get_story(widget);
@@ -297,6 +296,8 @@ after_app_window_realize               (GtkWidget       *widget,
       TAB_DOCUMENTATION);
     thestory->current[RIGHT] = g_new0(History, 1);
     thestory->current[RIGHT]->tab = TAB_DOCUMENTATION;
+    thestory->current[RIGHT]->page = g_strdup(htmlfile);
+    g_free(htmlfile);
     history_unblock_handlers(thestory, RIGHT);
     
     /* Create empty menus for the Headings buttons so they become active */
@@ -1148,6 +1149,7 @@ on_inform_help_activate                (GtkMenuItem     *menuitem,
     gchar *file = get_datafile_path_va("Documentation", "index.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(menuitem),
       (panel == LEFT)? "docs_l" : "docs_r")), file);
+    history_push_docpage(get_story(GTK_WIDGET(menuitem)), panel, file);
     g_free(file);
 
     gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), panel),
@@ -1164,6 +1166,7 @@ on_gnome_notes_activate                (GtkMenuItem     *menuitem,
       NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(menuitem),
       (panel == LEFT)? "docs_l" : "docs_r")), file);
+    history_push_docpage(get_story(GTK_WIDGET(menuitem)), panel, file);
     g_free(file);
 
     gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), panel),
@@ -1180,6 +1183,7 @@ on_license_activate                    (GtkMenuItem     *menuitem,
       "license.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(menuitem),
       (panel == LEFT)? "docs_l" : "docs_r")), file);
+    history_push_docpage(get_story(GTK_WIDGET(menuitem)), panel, file);
     g_free(file);
 
     gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), panel),
@@ -1196,6 +1200,7 @@ on_help_extensions_activate            (GtkMenuItem     *menuitem,
       "Extensions.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(menuitem),
       (panel == LEFT)? "docs_l" : "docs_r")), file);
+    history_push_docpage(get_story(GTK_WIDGET(menuitem)), panel, file);
     g_free(file);
 
     gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), panel),
@@ -1211,6 +1216,7 @@ on_recipe_book_activate                (GtkMenuItem     *menuitem,
     gchar *file = get_datafile_path_va("Documentation", "recipes.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(menuitem),
       (panel == LEFT)? "docs_l" : "docs_r")), file);
+    history_push_docpage(get_story(GTK_WIDGET(menuitem)), panel, file);
     g_free(file);
 
     gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(menuitem), panel),
@@ -1332,26 +1338,29 @@ after_notebook_l_switch_page           (GtkNotebook     *notebook,
                                         guint            page_num,
                                         gpointer         user_data)
 {
+    struct story *thestory = get_story(GTK_WIDGET(notebook));
     switch(page_num) {
         case TAB_ERRORS:
-            history_push_subtab(get_story(GTK_WIDGET(notebook)), LEFT, page_num,
+            history_push_subtab(thestory, LEFT, page_num,
                                 gtk_notebook_get_current_page(GTK_NOTEBOOK(
                                 lookup_widget(GTK_WIDGET(notebook),
                                 "errors_notebook_l"))));
             break;
         case TAB_INDEX:
-            history_push_subtab(get_story(GTK_WIDGET(notebook)), LEFT, page_num,
+            history_push_subtab(thestory, LEFT, page_num,
                                 gtk_notebook_get_current_page(GTK_NOTEBOOK(
                                 lookup_widget(GTK_WIDGET(notebook),
                                 "index_notebook_l"))));
             break;
-        /*
         case TAB_DOCUMENTATION:
-            history_push_docpage(get_story(GTK_WIDGET(notebook)), LEFT, ...)
+            /* If we're switching to the documentation tab, then we have no URL
+            to push. In that case we must be displaying the last one from the
+            history. */
+            history_push_docpage(thestory, LEFT,
+                                 history_get_last_docpage(thestory, LEFT));
             break;
-            */
         default:
-            history_push_tab(get_story(GTK_WIDGET(notebook)), LEFT, page_num);
+            history_push_tab(thestory, LEFT, page_num);
     }
 }
 
@@ -1388,26 +1397,29 @@ after_notebook_r_switch_page           (GtkNotebook     *notebook,
                                         guint            page_num,
                                         gpointer         user_data)
 {
+    struct story *thestory = get_story(GTK_WIDGET(notebook));
     switch(page_num) {
         case TAB_ERRORS:
-            history_push_subtab(get_story(GTK_WIDGET(notebook)), RIGHT,page_num,
+            history_push_subtab(thestory, RIGHT, page_num,
                                 gtk_notebook_get_current_page(GTK_NOTEBOOK(
                                 lookup_widget(GTK_WIDGET(notebook),
                                 "errors_notebook_r"))));
             break;
         case TAB_INDEX:
-            history_push_subtab(get_story(GTK_WIDGET(notebook)), RIGHT,page_num,
+            history_push_subtab(thestory, RIGHT, page_num,
                                 gtk_notebook_get_current_page(GTK_NOTEBOOK(
                                 lookup_widget(GTK_WIDGET(notebook),
                                 "index_notebook_r"))));
             break;
-        /*
         case TAB_DOCUMENTATION:
-            history_push_docpage(thestory, get_story(GTK_WIDGET(notebook)), ...)
+            /* If we're switching to the documentation tab, then we have no URL
+            to push. In that case we must be displaying the last one from the
+            history. */
+            history_push_docpage(thestory, RIGHT,
+                                 history_get_last_docpage(thestory, RIGHT));
             break;
-            */
         default:
-            history_push_tab(get_story(GTK_WIDGET(notebook)), RIGHT, page_num);
+            history_push_tab(thestory, RIGHT, page_num);
     }
 }
 
@@ -1445,6 +1457,7 @@ on_docs_contents_l_clicked             (GtkToolButton   *toolbutton,
     gchar *file = get_datafile_path_va("Documentation", "index.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(toolbutton), "docs_l")),
                    file);
+    history_push_docpage(get_story(GTK_WIDGET(toolbutton)), LEFT, file);
     g_free(file);
 
     gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(toolbutton), LEFT), 
@@ -1459,6 +1472,7 @@ on_docs_contents_r_clicked             (GtkToolButton   *toolbutton,
     gchar *file = get_datafile_path_va("Documentation", "index.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(toolbutton), "docs_r")),
                    file);
+    history_push_docpage(get_story(GTK_WIDGET(toolbutton)), RIGHT, file);
     g_free(file);
 
     gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(toolbutton), RIGHT), 
@@ -1468,7 +1482,10 @@ on_docs_contents_r_clicked             (GtkToolButton   *toolbutton,
 static void
 on_headings_menu_item_activate(GtkMenuItem *menuitem, gpointer lineno)
 {
-    jump_to_line(GTK_WIDGET(menuitem), GPOINTER_TO_UINT(lineno));
+    /* Only jump to the line if the menu item doesn't have a submenu; otherwise,
+    it will jump when the user hovers over the item, opening the submenu */
+    if(!gtk_menu_item_get_submenu(menuitem))
+        jump_to_line(GTK_WIDGET(menuitem), GPOINTER_TO_UINT(lineno));
 }
 
 void

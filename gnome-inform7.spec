@@ -1,8 +1,8 @@
 #
 # Spec file for GNOME Inform 7
 #
-%define  ver     0.3
-%define  rel     2.fc7
+%define  ver     0.4
+%define  rel     1.fc7
 %define  prefix  /usr
 
 Summary: An IDE for the Inform 7 interactive fiction programming language
@@ -15,7 +15,6 @@ Source: gnome-inform7-%{ver}.tar.gz
 URL: http://www.inform-fiction.org/
 Packager: P.F. Chimento <philip.chimento@gmail.com>
 BuildRoot: %{_tmppath}/%{name}-root
-Requires: frotz
 
 %description
 GNOME Inform 7 is a port of the Mac OS X and Windows versions of the integrated
