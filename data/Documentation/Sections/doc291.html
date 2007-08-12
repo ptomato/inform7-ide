@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.1. On rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.31. Printing the player's obituary</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,52 +9,41 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "On rules" -->
-<!-- SEARCH SECTION "18.1" -->
-<!-- SEARCH SORT "018-001-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc290.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc292.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.1. On rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Printing the player's obituary" -->
+<!-- SEARCH SECTION "17.31" -->
+<!-- SEARCH SORT "017-031-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc290.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc292.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.31. Printing the player's obituary</b></font></td></tr></table>
 <p>
-<p>When we open the casing and look inside the machinery of Inform, what we see are rules and rulebooks. We seldom need to know how this machinery works, but every once in a while we want to replace components, or even install new mechanisms of our own. And as we shall see, creating new rulebooks can be a neat way to tackle complicated simulations full of exceptions and special cases.
+<p><b>1. When it happens.</b> The obituary is the text &quot;*** You have died ***&quot; or similar, usually followed by the final score.
 <p>
-<p>So far we have seen many rules, and the term &quot;rulebook&quot; has frequently but vaguely been used. Here is a summary of the rulebooks seen so far:
+<p><b>2. The default behaviour.</b> Printing the aforementioned text, then the final score, and reducing the status line to a largely blank state.
 <p>
-<blockquote><font color="#000080">before
-<br>instead
-<br>after
-<br>check taking, carry out taking, report taking
-<br><i>and three similar rulebooks for each of the 90 or so actions</i>
-<br>persuasion
-<br>unsuccessful attempt
-<br>reaching inside
-<br>reaching outside
-<br>visibility
-<br>does the player mean
+<p><b>3. Examples.</b> (a) For a work with no meaningful score, it would be odd to wind up with a final reckoning of 0, so:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode81(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Procedural rule: ignore the print final score rule.\n\n');
+}
+</script>
+<a href="javascript:pasteCode81()"><img border=0 src=../doc_images/paste.png></a> Procedural rule: ignore the print final score rule.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">when play begins
-<br>when play ends
-<br>every turn
-<br>when Confrontation Scene begins
-<br>when Confrontation Scene ends
-<br><i>and two similar rulebooks for each scene we create, if any</i>
+<p>(b) Or we could add to the verdict:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode82(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('After printing the player\'s obituary: say "And you visited [number of visited rooms] place[s]."\n\n');
+}
+</script>
+<a href="javascript:pasteCode82()"><img border=0 src=../doc_images/paste.png></a> After printing the player's obituary: say &quot;And you visited [number of visited rooms] place[s].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">before printing the name of
-<br>for printing the name of
-<br>after printing the name of
-<br><i>and three similar rulebooks for each of the 20 or so activities</i>
-</font></blockquote><p>
-<p>
-<p>Which makes around 340 rulebooks before we even start to write - and one more is going to turn up later in this chapter:
-<p>
-<blockquote><font color="#000080">procedural
-</font></blockquote><p>
-<p>
-<p>All the same, not everything in Inform belongs to a rulebook - timed events, newly-created phrases, and definitions may look vaguely as if they define rules, but they do not, so the following are not rulebooks:
-<p>
-<blockquote><font color="#000080">At 11:10 PM: ...
-<br>To dislodge the shelf: ...
-<br>Definition: ...
-</font></blockquote><p>
-<p>
+<p><hr><p>
+<a name="e95"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex95.html#e95 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>297</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex95.html#e95 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Battle of Ridgefield</font></b></a><br>Completely replacing the endgame text and stopping the game without giving the player a chance to restart or restore.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc290.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc292.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

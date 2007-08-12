@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.18. Changing reachability</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.5. The text token</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,105 +9,92 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Magneto's Revenge" -->
-<!-- SEARCH SECTION "Ex 178" -->
-<!-- SEARCH SORT "Ex 012-018-178" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc188.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc190.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.18. Changing reachability</b></font></td></tr></table>
+<!-- SEARCH TITLE "Ish." -->
+<!-- SEARCH SECTION "Ex 238" -->
+<!-- SEARCH SORT "Ex 016-005-238" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc244.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc246.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.5. The text token</b></font></td></tr></table>
 <p>
-<p>The question of what the player can, and cannot, reach to touch is important in interactive fiction. It contains some of the subtlest ideas in the model world, though they often go unnoticed. For instance, if a key is on a shelf which is part of a closed box, can we reach for the key? This comes down to whether the shelf, described only as &quot;part of&quot; the box, is on the inside or the outside: and in fact, because it cannot know which is the case, Inform allows either. So in general it is best to regard &quot;parts&quot; as being exterior parts, but to avoid having parts on containers that might in the course of play be closed up with the player inside.
+<p>Most actions involve items: taking a vase, perhaps. As we shall see, they might also involve values, or a mixture of the two: turning a dial to 17 would involve both a thing (the dial) and a number (17). A few of Inform's built-in actions, however, can act on any text at all. For instance, asking the Sybil about the Persian army would involve a thing (the Sybil) and some text (&quot;Persian army&quot;). Inform does not try to understand automatically what that text might mean, or to relate it to any items, places or values it knows about: instead, Inform leaves that to the specific story to work out for itself, since the answer is bound to depend on the context. (In the chapter on Tables, we saw ways to compile tables of responses to particular topics of conversation.)
 <p>
-<p>We can, if we wish, change the principles of what can be touched by writing new reaching inside or reaching outside rules. Returning to the example of the conical flask:
+<p>The token for &quot;accept any text here&quot; is just &quot;[text]&quot;. For instance, if we create an action with:
 <p>
-<blockquote><font color="#000080">A rule for reaching inside the flask: say &quot;Your hand passes through the glass as if it were not there, chilling you to the bone.&quot;; allow access.
+<blockquote><font color="#000080">Getting help about is an action applying to one topic.
 </font></blockquote><p>
 <p>
-<p>(Or this could equally be called &quot;a reaching inside rule for the flask&quot;.) More generally, we could give the usual flexible description of what the rule applies to:
+<p>We can then provide grammar for this action like so:
 <p>
-<blockquote><font color="#000080">A rule for reaching inside open containers: say &quot;Your hands seem enigmatically too large for [the container in question].&quot;; deny access.
+<blockquote><font color="#000080">Understand &quot;help on [text]&quot; as getting help about.
 </font></blockquote><p>
 <p>
-<p>The &quot;container in question&quot; is the one to which the rule is being applied. Note that a reaching inside rule can &quot;deny access&quot; (stopping with fail), or &quot;allow access&quot; (stopping with success), or neither, in which case the decision is left up to any subsequent rules in the rulebook to make. If none of them decide, access is allowed.
-<p>
-<p>If it seems possible that these rules will be employed by people other than the player, then we need to write them a little more carefully, and in particular we need to ensure that they print nothing for other people. In the first case below, anybody can reach through the glass; in the second case, only the player cannot reach into open containers.
-<p>
-<blockquote><font color="#000080">A rule for reaching inside the flask:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person reaching is the player, say &quot;Your hand passes through the glass as if it were not there, chilling you to the bone.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;allow access.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A rule for reaching inside open containers:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person reaching is the player begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your hands seem enigmatically too large for [the container in question].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deny access.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>The &quot;person reaching&quot; is, as its name suggests, the person trying to reach through the barrier in question.
+<p>When text like this is successfully matched, it is placed in a value called &quot;the topic understood&quot;. (The term &quot;topic&quot; is used traditionally, really: most of the times one needs this feature, it's for a topic of conversation, or a topic being looked up in a book.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e183"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc189.html#e183 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>177</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc189.html#e183 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Magneto's Revenge</font></b></a><br>Kitty Pryde of the X-Men is able to reach through solid objects, so we might implement her with special powers that the player does not have...<p></td></tr></table>
+<a name="e183"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc245.html#e183 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>238</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc245.html#e183 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Ish.</font></b></a><br>A (very) simple HELP command, using tokens to accept and interpret the player's  text whatever it might be.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode269(code) {
+function pasteCode330(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Magneto\'s Revenge"\n\nThe School for Gifted Youngsters is a room. Kitty Pryde is a woman in the School for Gifted Youngsters. "Kitty Pryde waits for you to say why you summoned her out of class." The description is "You see nothing special about Kitty Pryde. But that is only because she has learned to conceal her mutant powers: in fact she has the alternative name Shadowcat, and the ability to phase through solid objects."\n\nThe glass box is a container in the School for Gifted Youngsters. It is closed, openable, and transparent. In the box is a quantity of poisonous gas. In the box is a message from Magneto.\n\nInstead of examining the message when the player is not carrying the message:\n\tsay "You\'d need to be holding it before you could read it."\n\nInstead of opening the glass box: say "You\'re deterred by the swirling bottle-green mist within."\n\nCheck someone taking the gas (this is the gaseous object rule): rule fails.\n\nUnsuccessful attempt by someone taking the gas: say "The gas isn\'t something one can pick up in one\'s bare hands."\n\nEvery turn: if the player can touch the gas\n\tbegin;\n\t\tsay "The gas has reached your lungs!";\n\t\tend the game in death;\n\tend if.\n\nA rule for reaching inside something:\n\tif the person reaching is Kitty, allow access.\n\nPersuasion rule for asking someone to try doing something: persuasion succeeds.\n\nTest me with "get message / kitty, get message / open box / kitty, open box".\n\n');
+    myProject.pasteCode('"Ish."\n\nIchiro\'s Dubious Sushi Hut is a room.  "Despite the allure of the dusty plastic sushi models in the window, you\'re beginning to have second thoughts about the selection of this particular restaurant for your rendezvous with Agent Fowler.  There are no other patrons, for one thing. Afternoon sunlight filters lazily through the window and illuminates a number of empty glass-topped tables, at each of which is a chopstick dispenser (in form of cute ceramic cat) and a pitcher of soy sauce (sticky).\n\nThe sushi bar itself is what gives the most pause, however. Behind it sits an angry-looking Japanese woman, aggressively eating a Quarter Pounder with Cheese."\n\n[We can, when necessary, accept any text at all as a token:]\n\nUnderstand "help [text]" or "help about [text]" as getting help about. Understand the commands "instructions" or "hint" or "hints" or "menu" or "info" or "about" as "help".\n\nGetting help about is an action applying to one topic.\n\n[After that, we can use "the topic understood" to refer to the text we read:]\n\nCarry out getting help about:\n\tif the topic understood is a topic listed in the Table of Standard Help\n\tbegin;\n\t\tsay "[explanation entry][paragraph break]";\n\totherwise;\n\t\tsay "You\'re out of ideas.";\n\tend if.\n\nTable of Standard Help\ntopic\ttitle\tsummary\texplanation\n"sushi"\t"sushi"\t"Really it\'s just vinegary rice"\t"Popular misconception says that sushi inevitably entails raw fish, but it is in fact just rice with rice vinegar on it.  It\'s just that the really good kinds have raw fish in."\n"cucumber roll" or "cucumber"\t"Cucumber roll"\t"Sushi for people who are afraid of sushi"\t"It is just rice and slivers of cucumber in the middle, and as long as you don\'t go too crazy with the wasabi, all should be well."\n"california roll" or "california"\t"California roll"\t"Travesty of the sushi concept"\t"It\'s. Fake. Crab."\n"monkfish liver"\t"monkfish liver"\t"Expert eaters only"\t"The odds of Ichiro\'s having this unusual delicacy is near zero."\n"microdot"\t"microdot"\t"What you came here to deliver"\t"There\'ll be time enough for that later. If Fowler ever turns up. Where is she, anyway?"\n\n[Since the player may not know what all the help options are, we might as well let him get an overview, as well.]\n\nUnderstand "help" as summoning help.  Summoning help is an action applying to nothing.\n\nCarry out summoning help:\n\tsay "Help is available about the following topics.  Typing HELP followed by the name of a topic will give further information.[paragraph break]";\n\trepeat through the Table of Standard Help\n\tbegin;\n\t\tsay "  [title entry]: [summary entry][line break]";\n\tend repeat.\n\nTest me with "help / help about microdot / help cucumber / help california roll".\n');
 }
 </script>
-<a href="javascript:pasteCode269()"><img border=0 src=../doc_images/paste.png></a> &quot;Magneto's Revenge&quot;
+<a href="javascript:pasteCode330()"><img border=0 src=../doc_images/paste.png></a> &quot;Ish.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The School for Gifted Youngsters is a room. Kitty Pryde is a woman in the School for Gifted Youngsters. &quot;Kitty Pryde waits for you to say why you summoned her out of class.&quot; The description is &quot;You see nothing special about Kitty Pryde. But that is only because she has learned to conceal her mutant powers: in fact she has the alternative name Shadowcat, and the ability to phase through solid objects.&quot;
+<blockquote><font color="#000080">Ichiro's Dubious Sushi Hut is a room.  &quot;Despite the allure of the dusty plastic sushi models in the window, you're beginning to have second thoughts about the selection of this particular restaurant for your rendezvous with Agent Fowler.  There are no other patrons, for one thing. Afternoon sunlight filters lazily through the window and illuminates a number of empty glass-topped tables, at each of which is a chopstick dispenser (in form of cute ceramic cat) and a pitcher of soy sauce (sticky).
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The glass box is a container in the School for Gifted Youngsters. It is closed, openable, and transparent. In the box is a quantity of poisonous gas. In the box is a message from Magneto.
+<blockquote><font color="#000080">The sushi bar itself is what gives the most pause, however. Behind it sits an angry-looking Japanese woman, aggressively eating a Quarter Pounder with Cheese.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining the message when the player is not carrying the message:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'd need to be holding it before you could read it.&quot;
+<p>We can, when necessary, accept any text at all as a token:
+<p>
+<blockquote><font color="#000080">Understand &quot;help [text]&quot; or &quot;help about [text]&quot; as getting help about. Understand the commands &quot;instructions&quot; or &quot;hint&quot; or &quot;hints&quot; or &quot;menu&quot; or &quot;info&quot; or &quot;about&quot; as &quot;help&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of opening the glass box: say &quot;You're deterred by the swirling bottle-green mist within.&quot;
+<blockquote><font color="#000080">Getting help about is an action applying to one topic.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check someone taking the gas (this is the gaseous object rule): rule fails.
-</font></blockquote><p>
+<p>After that, we can use &quot;the topic understood&quot; to refer to the text we read:
 <p>
-<blockquote><font color="#000080">Unsuccessful attempt by someone taking the gas: say &quot;The gas isn't something one can pick up in one's bare hands.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn: if the player can touch the gas
+<blockquote><font color="#000080">Carry out getting help about:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the topic understood is a topic listed in the Table of Standard Help
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The gas has reached your lungs!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in death;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[explanation entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're out of ideas.&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A rule for reaching inside something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person reaching is Kitty, allow access.
+<blockquote><font color="#000080">Table of Standard Help
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">title</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">summary</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">explanation</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;sushi&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;sushi&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Really it's just vinegary rice&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Popular misconception says that sushi inevitably entails raw fish, but it is in fact just rice with rice vinegar on it.  It's just that the really good kinds have raw fish in.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cucumber roll&quot; or &quot;cucumber&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Cucumber roll&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Sushi for people who are afraid of sushi&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;It is just rice and slivers of cucumber in the middle, and as long as you don't go too crazy with the wasabi, all should be well.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;california roll&quot; or &quot;california&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;California roll&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Travesty of the sushi concept&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;It's. Fake. Crab.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;monkfish liver&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;monkfish liver&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Expert eaters only&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;The odds of Ichiro's having this unusual delicacy is near zero.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;microdot&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;microdot&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;What you came here to deliver&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;There'll be time enough for that later. If Fowler ever turns up. Where is she, anyway?&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Persuasion rule for asking someone to try doing something: persuasion succeeds.
+<p>Since the player may not know what all the help options are, we might as well let him get an overview, as well.
+<p>
+<blockquote><font color="#000080">Understand &quot;help&quot; as summoning help.  Summoning help is an action applying to nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;get message / kitty, get message / open box / kitty, open box&quot;.
+<blockquote><font color="#000080">Carry out summoning help:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Help is available about the following topics.  Typing HELP followed by the name of a topic will give further information.[paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Standard Help
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [title entry]: [summary entry][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>Now the player can get Kitty to take the message without releasing the poisonous gas:
-<p>
-<blockquote><font color="#000080">Kitty Pride waits for you to tell her why you summoned her out of class.
+<blockquote><font color="#000080">Test me with &quot;help / help about microdot / help cucumber / help california roll&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">You can also see a glass box (closed) (in which are some poisonous gas and a message from Magneto) here.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">>kitty, get message
-<br>Kitty Pryde picks up a message from Magneto.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc189.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc245.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e29"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex29.html#e29 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>178</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex29.html#e29 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Dinner is Served</font></b></a><br>A window between two locations. When the window is open, the player can reach through into the other location; when it isn't, access is barred.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc188.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc190.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e59"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex59.html#e59 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>239</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex59.html#e59 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Nameless</font></b></a><br>ASKing someone about an object rather than about a topic.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc244.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc246.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

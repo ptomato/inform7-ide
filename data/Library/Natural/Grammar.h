@@ -100,10 +100,12 @@ Verb meta 'showobj'
     * multi                                     -> Showobj;
 Verb meta 'showverb'
     * special                                   -> Showverb;
+#ifndef NI_BUILD_COUNT;
 Verb meta 'timers' 'daemons'
     *                                           -> TimersOn
     * 'on'                                      -> TimersOn
     * 'off'                                     -> TimersOff;
+#endif;
 Verb meta 'trace'
     *                                           -> TraceOn
     * number                                    -> TraceLevel

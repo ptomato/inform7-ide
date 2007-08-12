@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.11. Implications</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.5. Version numbering</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,39 +9,50 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Implications" -->
-<!-- SEARCH SECTION "21.11" -->
-<!-- SEARCH SORT "021-011-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc349.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc351.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.11. Implications</b></font></td></tr></table>
+<!-- SEARCH TITLE "Version numbering" -->
+<!-- SEARCH SECTION "21.5" -->
+<!-- SEARCH SORT "021-005-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc349.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc351.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.5. Version numbering</b></font></td></tr></table>
 <p>
-<p>Extensions often need to define new kinds or properties, which we want to make as helpful as possible for the user. In particular, we want them not to require additional work for the author just to obtain the effect which seems only natural.
+<p>As we have seen, extensions are referred to by name and author, but they can also (optionally) be referred to by version. For instance:
 <p>
-<p>For example, consider Inform's built-in &quot;locked&quot; property. If a door is locked, then it cannot be opened, which seems fair enough. But if the player tries to unlock the door, he might then find the following response:
-<p>
-<blockquote><font color="#000080">That doesn't seem to be something you can unlock.
+<blockquote><font color="#000080">Include version 2 of the Ducking Action by Graham Nelson.
 </font></blockquote><p>
 <p>
-<p>Which does not seem right. In real life, almost all locked items have outwardly exposed locks which it is perfectly sensible to try to unlock, given a key. The problem is that our door has the &quot;locked&quot; property, but not the &quot;lockable&quot; one.
-<p>
-<p>The Standard Rules solve this problem by including the following line:
-<p>
-<blockquote><font color="#000080">Something locked is usually lockable.
+<blockquote><font color="#000080">Version 1/040426 of the Ducking Action by Graham Nelson begins here.
 </font></blockquote><p>
 <p>
-<p>This ensures that any door said by the author only to be &quot;locked&quot; will be &quot;lockable&quot; as well, and adds a small but worthwhile touch of realism.
+<p>A version number must be a whole number 1, 2, ... (version 0 is not allowed, and nor are decimal points), optionally followed by a slash '/' and then a six-figure date, in the form YYMMDD: so 040426 means 26 April 2004.
 <p>
-<p>Such a sentence is called an &quot;implication&quot;, as it is in the form &quot;Condition A implies Condition B&quot;. Note that the two conditions must consist of either/or properties with or without kinds attached. Thus:
+<p>A request to include version 2 of something implicitly means &quot;version 2 or later&quot;, and similarly &quot;version 2/040426&quot; means version 2 with a date of 26 April 2004 or later, or else any version higher than 2. If Inform loads the extension but finds that its version is not good enough, an error is issued.
 <p>
-<blockquote><font color="#000080">A room in the Open Desert is usually lighted.
+<p>Where no version number is quoted, the rule is that an unspecified version predates any numbered version. This means that the line
+<p>
+<blockquote><font color="#000080">Include the Ducking Action by Graham Nelson.
 </font></blockquote><p>
 <p>
-<p>will not work because &quot;a room in the Open Desert&quot; is a more complicated grammatical construction than, say, &quot;lighted&quot; or &quot;a lighted room&quot;: it contains a relative clause. Inform can only deal with simple implications.
+<p>will be happy with any version of the extension at all, whether numbered or not; but
 <p>
-<p>Inform never overrides certainties with mere implications, and is cautious about allowing them to build overly long chains of argument. This is to prevent the following kind of difficulty:
-<p>
-<blockquote><font color="#000080">An open door is usually closed. A closed door is usually open.
+<blockquote><font color="#000080">Include version 2 of the Ducking Action by Graham Nelson.
 </font></blockquote><p>
 <p>
-<p>Implications have not been mentioned up to now since they are only really needed by extensions, but also because they can be tricky, with unforeseen consequences. We should handle them with care.
+<p>will only accept the extension if it has a version number attached (and with that number being 2 or higher).
+<p>
+<p>During play of any game compiled by Inform 7, typing VERSION lists various serial numbers of the pieces of software used to make it. The list concludes with names, authors and version numbers of any extensions used. So every author whose work contributes to a game automatically gets a modest credit within it. The same list can be printed, at the discretion of the designer, using the textual substitution:
+<p>
+<blockquote><font color="#000080">say &quot;[list of extension credits]&quot;
+</font></blockquote><p>
+<p>
+<p>If we want our extension to go uncredited - perhaps if it is a low-level enabling sort of thing, for instance - we can place the following sentence inside the definition of the extension:
+<p>
+<blockquote><font color="#000080">Use authorial modesty.
+</font></blockquote><p>
+<p>
+<p>The same sentence placed in the body of a source text causes all extensions by the same author as the main source text to go uncredited. In other words, if Isaac Miggins writes a source text and includes, say, Unlikely Events by Isaac Miggins, then this extension will go uncredited in the VERSION command.
+<p>
+<p>A complete list, undiluted by modesty, can always be obtained using:
+<p>
+<blockquote><font color="#000080">say &quot;[complete list of extension credits]&quot;
+</font></blockquote><p>
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc349.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc351.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

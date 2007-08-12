@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.1. Descriptions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.7. Adjacent rooms and routes through the map</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,78 +9,98 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Slightly Wrong" -->
-<!-- SEARCH SECTION "Ex 4" -->
-<!-- SEARCH SORT "Ex 003-001-004" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc26.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc28.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.1. Descriptions</b></font></td></tr></table>
+<!-- SEARCH TITLE "Hotel Stechelberg" -->
+<!-- SEARCH SECTION "Ex 65" -->
+<!-- SEARCH SORT "Ex 006-007-065" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc85.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc87.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.7. Adjacent rooms and routes through the map</b></font></td></tr></table>
 <p>
-<p>At its simplest, the interactive fiction will be simulating a physical world to explore. The forerunner of today's IF is generally agreed to be a computer simulation by Will Crowther of the exploration of a cave system in the Mammoth and Flint Ridge chain of caves in Kentucky, a part of which might be described in Inform thus:
+<p>Another useful adjective built into Inform is &quot;adjacent&quot;. Two rooms are said to be adjacent if there is a map connection between them which does not pass through some barrier such as a door. This is easily tested:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode4(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Cave Entrance"\n\nThe Cobble Crawl is a room. "You are crawling over cobbles in a low passage. There is a dim light at the east end of the passage."\n\nA wicker cage is here. "There is a small wicker cage discarded nearby."\n\nThe Debris Room is west of the Crawl. "You are in a debris room filled with stuff washed in from the surface. A low wide passage with cobbles becomes plugged with mud and debris here, but an awkward canyon leads upward and west. A note on the wall says, \'Magic word XYZZY\'."\n\nThe black rod is here. "A three foot black rod with a rusty star on one end lies nearby."\n\nAbove the Debris Room is the Sloping E/W Canyon. West of the Canyon is the Orange River Chamber.\n\n');
-}
-</script>
-<a href="javascript:pasteCode4()"><img border=0 src=../doc_images/paste.png></a> &quot;Cave Entrance&quot;
+<blockquote><font color="#000080">if the Hallway is adjacent to the Study ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Cobble Crawl is a room. &quot;You are crawling over cobbles in a low passage. There is a dim light at the east end of the passage.&quot;
+<p>We usually want to know about the places adjacent to the current scene of the action, so that is what the adjective &quot;adjacent&quot; means when applied to rooms. For instance:
+<p>
+<blockquote><font color="#000080">if somebody is in an adjacent room, ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A wicker cage is here. &quot;There is a small wicker cage discarded nearby.&quot;
+<p>As with the case of &quot;visible&quot;, the adjective is a cut-down version of the more general relationship. This often happens: &quot;worn&quot; and &quot;carried&quot;, for instance, imply &quot;by the player&quot; unless something else is specified.
+<p>
+<p>If we want to ask a more direct question, we can obtain specific map connections like so:
+<p>
+<blockquote><font color="#000080">say &quot;You look north into [the room north from the Garden].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Debris Room is west of the Crawl. &quot;You are in a debris room filled with stuff washed in from the surface. A low wide passage with cobbles becomes plugged with mud and debris here, but an awkward canyon leads upward and west. A note on the wall says, 'Magic word XYZZY'.&quot;
+<p>since &quot;the room D from A&quot; produces the room which lies in direction D from room A. We need to be a little careful here. What if there is no map connection this way? In that case, &quot;the room ... from ...&quot; produces the special value &quot;nothing&quot;. Thus:
+<p>
+<blockquote><font color="#000080">if the room north from the Garden is nothing, say &quot;The grass leads nowhere.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The black rod is here. &quot;A three foot black rod with a rusty star on one end lies nearby.&quot;
+<p>While on the subject of navigating the map, the phrase &quot;the best route from A to B&quot; gives a direction to take in order to get from A to B by the shortest number of movements between rooms - if there is any way through at all. For example, here is a lure:
+<p>
+<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Above the Debris Room is the Sloping E/W Canyon. West of the Canyon is the Orange River Chamber.
+<p>Best routes are ordinarily forbidden to go through doors, but if the suffix &quot;using doors&quot; is added as an option then any open or openable and unlocked door may be used on the way; and if &quot;using even locked doors&quot; is given, then any door at all will do. Since magnetism is no respecter of property, that seems right here:
+<p>
+<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room, using even locked doors].&quot;
 </font></blockquote><p>
 <p>
-<p>Here we sketch in four of Crowther's locations, and two objects: just enough to be able to walk around the caves and pick up the rod and the cage. The text in quotation marks will appear verbatim as paragraphs shown to the player as the caves are explored. The first paragraph, as we have seen, is the title of the work. The other quotations describe the places and objects introduced.
+<p>The phrase &quot;the best route from A to B&quot; gives the direction to take next, if we are at A and want to end up at B. Suppose this is east. We can find out where we go next by looking up &quot;the room east from A&quot;: similarly for any other direction, of course. (This can see through any doors, locked or not.)
 <p>
-<p>If we play this game, we find that we can type TAKE CAGE or TAKE WICKER CAGE, for instance, but not TAKE SMALL CAGE. Inform saw that we called this &quot;a wicker cage&quot; when it first appeared in the source text, and assumed that the player would call it that, too. (Whereas it didn't look inside the descriptive text to allow for TAKE SMALL CAGE or TAKE DISCARDED CAGE or TAKE NEARBY CAGE.) A small limitation here is that probably only the first 9 letters of each word are read from the player's command. This is plenty for handling the wicker cage and the black rod, but it might be embarrassing at a meeting of the Justice League to find that KISS SUPERHERO and KISS SUPERHEROINE read as if they are the same command.
+<p>We can also stipulate that only certain rooms may be used for the journey, as in the following example:
 <p>
-<p>So we have already found that Inform has made some assumptions about what we want, and imposed some limitations on how much computational effort to go to when the work of IF is finally played. If Inform guesses what we need wrongly, we need to know more advanced features of the language in order to overcome these problems. (We shall see how to change the way the player's commands are read in the chapter on Understanding.) This is often how Inform works: make the standard way of doing things as simple as possible to describe, but allow almost any behaviour to be altered by more elaborate source text.
+<blockquote><font color="#000080">best route from the Drawbridge to the Keep through visited rooms
+</font></blockquote><p>
+<p>
+<p>The condition - in this case, that &quot;visited rooms&quot; must be used - also applies to both ends of the journey. (Also, saying something like &quot;...through containers&quot; would mean there is never a route, since it is only rooms which appear on the map.)
+<p>
+<p>Lastly, we can find out how long the journey would be:
+<p>
+<blockquote><font color="#000080">The description of the proximity gadget is &quot;You are now [number of moves from the location to the Sundial] moves from the Sundial.&quot;;
+</font></blockquote><p>
+<p>
+<p>This number is, of course, 0 if the location is already the Sundial. If there is no way at all to get to the Sundial, the number is -1.
 <p>
 <p><hr><p>
-<a name="e44"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex44.html#e44 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>2</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex44.html#e44 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Verbosity</font></b></a><br>Making rooms give full descriptions each time we enter, even if we have visited before.<p></td></tr></table>
+<a name="e11"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex11.html#e11 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>63</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex11.html#e11 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mistress of Animals</font></b></a><br>A person who moves randomly between rooms of the map.<p></td></tr></table>
+<a name="e212"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex212.html#e212 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>64</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex212.html#e212 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> All Roads Lead to Mars</font></b></a><br>Layout where the player is allowed to wander any direction he likes, and the map will arrange itself in order so that he finds the correct "next" location.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e254"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc27.html#e254 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>3</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc27.html#e254 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Slightly Wrong</font></b></a><br>A room whose description changes slightly after our first visit there.<p></td></tr></table>
+<a name="e254"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc86.html#e254 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>65</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc86.html#e254 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Hotel Stechelberg</font></b></a><br>Signposts such as those provided on hiking paths in the Swiss Alps, which show the correct direction and hiking time to all other locations.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>A fairly common effect in interactive fiction is a room which is described differently on the first visit than on subsequent visits. We can produce this effect as follows:
+<p>The following rule appends a paragraph to every room description. We need not worry about doors (despite the pass in the Bernese Oberland known figuratively as the &quot;Little Door&quot;).
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode89(code) {
+function pasteCode155(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Slightly Wrong"\n\nAwning is a room. "A tan awning is stretched on tent poles over the dig-site, providing a little shade to the workers here; you are at the bottom of a square twenty feet on a side, marked out with pegs and lines of string. Uncovered in the south face of this square is an awkward opening into the earth."\n\nSlightly Wrong Chamber is south of the Awning. "[if unvisited]When you first step into the room, you are bothered by the sense that something is not quite right: perhaps the lighting, perhaps the angle of the walls. [end if]A mural on the far wall depicts a woman with a staff, tipped with a pine-cone. She appears to be watching you."\n\nTest me with "look / s / look".\n\n');
+    myProject.pasteCode('After looking:\n\tsay "Yellow arms on the signpost point:-[line break]";\n\trepeat with destination running through rooms begin;\n\t\tlet the way be the best route from the location to the destination;\n\t\tif the way is a direction, say "  [way] for [the destination]: [number of moves from the location to the destination] Std.";\n\tend repeat.\n\n');
 }
 </script>
-<a href="javascript:pasteCode89()"><img border=0 src=../doc_images/paste.png></a> &quot;Slightly Wrong&quot;
+<a href="javascript:pasteCode155()"><img border=0 src=../doc_images/paste.png></a> After looking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Yellow arms on the signpost point:-[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with destination running through rooms begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location to the destination;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the way is a direction, say &quot;  [way] for [the destination]: [number of moves from the location to the destination] Std.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Awning is a room. &quot;A tan awning is stretched on tent poles over the dig-site, providing a little shade to the workers here; you are at the bottom of a square twenty feet on a side, marked out with pegs and lines of string. Uncovered in the south face of this square is an awkward opening into the earth.&quot;
+<p>The result might be:
+<p>
+<blockquote><font color="#000080">Hotel Stechelberg
+<br>The wooden hiking inn at the end of the road, with flowerboxes, canton flags, outdoor tables and a triangular paddock for the cows contesting the annual Miss Stechelberg competition. Otto and Marianne do cheerful innkeeper things, while the sun blazes from a gentian-blue sky.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Slightly Wrong Chamber is south of the Awning. &quot;[if unvisited]When you first step into the room, you are bothered by the sense that something is not quite right: perhaps the lighting, perhaps the angle of the walls. [end if]A mural on the far wall depicts a woman with a staff, tipped with a pine-cone. She appears to be watching you.&quot;
+<blockquote><font color="#000080">Yellow arms on the signpost point:-
+<br>&nbsp;&nbsp;&nbsp;&nbsp;north for Lauterbrunnen: 2 Std.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;west for Sefinental: 2 Std.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;west for Schilthorn: 6 Std.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;southeast for Trachsellauenen: 1 Std.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;southeast for Oberhornsee: 3 Std.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;look / s / look&quot;.
-</font></blockquote><p>
-<p>
-<p>Note the &quot;[if unvisited]...&quot; in the description of the Slightly Wrong Chamber. A room is considered to be &quot;unvisited&quot; until after the player has seen its description for the first time.
-<p>
-<p>The bracketed text creates a special rule for printing; we will learn more about these in the sections on text with variations and text with substitutions.
-<p>
-<p>Some further fine print: we might write our condition as &quot;if unvisited&quot;, &quot;if the location is unvisited&quot;, or &quot;if the Chamber is unvisited&quot; -- all of these constructions would be acceptable, but in the absence of more specifics, the condition is understood to apply to the object whose description it is.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc27.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc86.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc26.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc28.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e13"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex13.html#e13 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>66</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex13.html#e13 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A View of Green Hills</font></b></a><br>A LOOK [direction] command which allows the player to see descriptions of the nearby landscape.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc85.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc87.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

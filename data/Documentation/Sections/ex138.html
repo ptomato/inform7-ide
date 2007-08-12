@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.7. New value properties</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.11. Values that vary</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,83 +9,97 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Straw Boater" -->
-<!-- SEARCH SECTION "Ex 46" -->
-<!-- SEARCH SORT "Ex 004-007-046" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc59.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc61.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.7. New value properties</b></font></td></tr></table>
+<!-- SEARCH TITLE "Real Adventurers Need No Help" -->
+<!-- SEARCH SECTION "Ex 49" -->
+<!-- SEARCH SORT "Ex 004-011-049" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc63.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc65.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.11. Values that vary</b></font></td></tr></table>
 <p>
-<p>Moving on to properties which contain values, such as the &quot;matching key&quot; property of a door or a container, we need to use a different formulation.
+<p>Sometimes a value important to the simulated world will not naturally belong to any thing or room, and should not be kept in a property. For example:
 <p>
-<blockquote><font color="#000080">A dead end has some text called river sound. The river sound of a dead end is usually &quot;a faint whispering of running water&quot;. The Tortuous Alcove has river sound &quot;a gurgle of running water&quot;.
+<blockquote><font color="#000080">The prevailing wind is a direction that varies. The prevailing wind is southwest.
 </font></blockquote><p>
 <p>
-<p>The property &quot;river sound&quot; is now applicable only to dead ends, and we would not be allowed to talk about it in any other context. As can be seen, it holds a piece of text. If we tried the following:
+<p>Or &quot;which varies&quot; would also be allowed, as would the more traditional computing term &quot;variable&quot;:
 <p>
-<blockquote><font color="#000080">The river sound of the Tortuous Alcove is 7.
+<blockquote><font color="#000080">The target is a number variable. The target is 23.
 </font></blockquote><p>
 <p>
-<p>...then Inform would object, because the number 7 is the wrong kind of value to go into the &quot;river sound&quot; property. If we need a numerical property, we can try this instead:
+<p>In fact, we have seen a value that varies already: &quot;location&quot;, which holds the room in which the game is presently taking place.
 <p>
-<blockquote><font color="#000080">A dead end has a number called the difficulty rating. The Tortuous Alcove has difficulty rating 7.
+<p>It's important to tell Inform what kind of value goes into the variable, as this will ensure that the wrong kind of value is never accidentally put into it. But just as for properties, we do not need to say explicitly what the initial value is: and if we do not, Inform will use the default value for its kind. (See the table in the Kinds index.)
+<p>
+<p>We can have variables of any of the kinds of value, including new ones, but should watch out for a potential error. If we write:
+<p>
+<blockquote><font color="#000080">The receptacle is a container that varies.
 </font></blockquote><p>
 <p>
-<p>Suppose that we were to add:
+<p>in a design which has no containers at all, Inform will object, because it will be unable to put any initial value into the receptacle variable. A similar complaint will be made if we write:
 <p>
-<blockquote><font color="#000080">The Exquisitely Narrow Defile is a dead end.
+<blockquote><font color="#000080">Colour is a kind of value. The fashionable shade is a colour that varies.
 </font></blockquote><p>
 <p>
-<p>The Defile must have a river sound, of course, because we said that every dead end would have one. But we haven't specified it. What Inform does is to start off the property holding the &quot;default value&quot; for this kind of value: that is, it sees that the river sound has to be &quot;some text&quot;, and it fills in the default value for text: which is the empty text, consisting of no words at all, and written &quot;&quot;. Similarly, its difficulty rating is set to 0. (A table of the kinds which can be used for properties, and their default values, can be found in the Kinds index.)
+<p>without ever having defined any colours. Something else we are not permitted is:
+<p>
+<blockquote><font color="#000080">The receptacle is an open container that varies.
+</font></blockquote><p>
+<p>
+<p>because the openness of a given container may change during play, so that the value in the variable might suddenly become invalid even though the variable itself had not changed.
 <p>
 <p><hr><p>
-<a name="e121"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex121.html#e121 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>44</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex121.html#e121 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Would you...?</font></b></a><br>Adding new properties to objects, and checking for their presence.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e138"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc60.html#e138 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>45</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc60.html#e138 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Straw Boater</font></b></a><br>Using text properties that apply only to some things and are not defined for others.<p></td></tr></table>
+<a name="e138"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc64.html#e138 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>49</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc64.html#e138 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Real Adventurers Need No Help</font></b></a><br>Allowing the player to turn off all access to hints for the duration of a game, in order to avoid the temptation to rely on them overmuch.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Sometimes we like to give properties to kinds of thing, but not fill them in in all cases. For instance, we might have vehicles that optionally make noise, and those might have a &quot;movement sound&quot;.
-<p>
-<p>All properties have a default value, which we can find by looking in the Kinds tab of the index. This is what the property will be set to automatically, if we do not change it ourselves. In the case of a text property, that is &quot;&quot;; so for instance we might use our movement sound thus:
+<p>Suppose we have an action called &quot;asking for help&quot; that gives the player some hints on request. We've also made it possible to turn this feature off, if the player would like to discourage himself from using the hints too much. Now we need a value that varies to keep track of whether hints are currently permitted or currently not permitted. So we might write:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode136(code) {
+function pasteCode140(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Straw Boater"\n\nBoathouse is a room. "A boathouse circa 1915, which -- though in poor repair -- still suggests Sunday afternoon jaunts taken by women in white gowns and men in straw hats."\n\nNorth of the Boathouse is the Shallow Water. The description of Shallow Water is "Just south is the boathouse, and beyond it are trees and the marble terrace of the house above. The water deepens to the north."\n\nNorth of Shallow Water is Deep Water. The description of Deep Water is "From here the boathouse has dwindled invisibly to the south, and you have a broad panorama of the shoreline, all the way down to the Skeleton Point Lighthouse in the southeast."\n\nA vehicle has some text called the movement sound. The sailboat and the motorboat are vehicles in the Boathouse. The movement sound of the motorboat is "VRRRROOOMMMM..." Understand "boat" as the sailboat. Understand "boat" as the motorboat.\n\n[Note that we haven\'t given the sailboat any movement sound at all.]\n\nAfter going somewhere by a vehicle (called cart):\n\tif the movement sound of the cart is not "", say "[the movement sound of the cart][paragraph break]";\n\tcontinue the action.\n\nInstead of exiting when the player is in a vehicle and the location is not the Boathouse:\n\tsay "You\'re not dressed for a swim."\n\nInstead of going somewhere when the player is not in a vehicle:\n\tsay "You\'d rather not try to make this journey by swimming alone."\n\nTest me with "n / get in sailboat / n / get out / s / get in motorboat / n / n".\n');
+    myProject.pasteCode('"Real Adventurers Need No Help"\n\nA permission is a kind of value. The permissions are allowed and denied.\n\nHint usage is a permission that varies. Hint usage is allowed.\n\n[And under the right circumstances, we change hint usage to denied:]\n\nCheck asking for help for the first time:\n\tsay "Sometimes the temptation to rely on hints becomes overwhelming, and you may prefer to turn off hints now. If you do so, your further requests for guidance will be unavailing. Turn off hints? >";\n\tif player consents\n\tbegin;\n\t\tchange hint usage to denied;\n\t\tsay "[line break]Truly, a real adventurer does not need hints." instead;\n\tend if.\n\n[Then we can refer back to this value later to decide whether we want to display the hint menu or not:]\n\nCheck asking for help:\n\tif hint usage is denied, say "You have chosen to eschew hints in this game. Be strong! Persevere!" instead.\n\nAsking for help is an action out of world. Understand "help" or "hint" or "hints" as asking for help.\n\nThe Realm of Terribly Unjust Puzzles is a room.\n\nCarry out asking for help:\n\tsay "Fine, since you\'re weak enough to ask: here is a complete walkthrough: GET EGG. PEEL EGG. SMELL EGG. DIVIDE YOLK INTO THREE PORTIONS. GIVE THE SMALLEST PORTION OF YOLK TO THE GOLDEN GOOSE. ASK THE GOOSE ABOUT WHETHER THE SWAN IS TO BE TRUSTED. GIVE THE LARGEST PORTION OF YOLK TO THE SWAN. DANCE CONGA. EAT MEDIUM PORTION. STAND ON HEAD. WEST."\n\nTest me with "hint".\n\n');
 }
 </script>
-<a href="javascript:pasteCode136()"><img border=0 src=../doc_images/paste.png></a> &quot;Straw Boater&quot;
+<a href="javascript:pasteCode140()"><img border=0 src=../doc_images/paste.png></a> &quot;Real Adventurers Need No Help&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Boathouse is a room. &quot;A boathouse circa 1915, which -- though in poor repair -- still suggests Sunday afternoon jaunts taken by women in white gowns and men in straw hats.&quot;
+<blockquote><font color="#000080">A permission is a kind of value. The permissions are allowed and denied.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">North of the Boathouse is the Shallow Water. The description of Shallow Water is &quot;Just south is the boathouse, and beyond it are trees and the marble terrace of the house above. The water deepens to the north.&quot;
+<blockquote><font color="#000080">Hint usage is a permission that varies. Hint usage is allowed.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">North of Shallow Water is Deep Water. The description of Deep Water is &quot;From here the boathouse has dwindled invisibly to the south, and you have a broad panorama of the shoreline, all the way down to the Skeleton Point Lighthouse in the southeast.&quot;
+<p>And under the right circumstances, we change hint usage to denied:
+<p>
+<blockquote><font color="#000080">Check asking for help for the first time:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Sometimes the temptation to rely on hints becomes overwhelming, and you may prefer to turn off hints now. If you do so, your further requests for guidance will be unavailing. Turn off hints? >&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if player consents
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change hint usage to denied;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break]Truly, a real adventurer does not need hints.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A vehicle has some text called the movement sound. The sailboat and the motorboat are vehicles in the Boathouse. The movement sound of the motorboat is &quot;VRRRROOOMMMM...&quot; Understand &quot;boat&quot; as the sailboat. Understand &quot;boat&quot; as the motorboat.
+<p>Then we can refer back to this value later to decide whether we want to display the hint menu or not:
+<p>
+<blockquote><font color="#000080">Check asking for help:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if hint usage is denied, say &quot;You have chosen to eschew hints in this game. Be strong! Persevere!&quot; instead.
 </font></blockquote><p>
 <p>
-<p>Note that we haven't given the sailboat any movement sound at all.
-<p>
-<blockquote><font color="#000080">After going somewhere by a vehicle (called cart):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the movement sound of the cart is not &quot;&quot;, say &quot;[the movement sound of the cart][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+<blockquote><font color="#000080">Asking for help is an action out of world. Understand &quot;help&quot; or &quot;hint&quot; or &quot;hints&quot; as asking for help.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of exiting when the player is in a vehicle and the location is not the Boathouse:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're not dressed for a swim.&quot;
+<blockquote><font color="#000080">The Realm of Terribly Unjust Puzzles is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going somewhere when the player is not in a vehicle:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'd rather not try to make this journey by swimming alone.&quot;
+<blockquote><font color="#000080">Carry out asking for help:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Fine, since you're weak enough to ask: here is a complete walkthrough: GET EGG. PEEL EGG. SMELL EGG. DIVIDE YOLK INTO THREE PORTIONS. GIVE THE SMALLEST PORTION OF YOLK TO THE GOLDEN GOOSE. ASK THE GOOSE ABOUT WHETHER THE SWAN IS TO BE TRUSTED. GIVE THE LARGEST PORTION OF YOLK TO THE SWAN. DANCE CONGA. EAT MEDIUM PORTION. STAND ON HEAD. WEST.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;n / get in sailboat / n / get out / s / get in motorboat / n / n&quot;.
+<blockquote><font color="#000080">Test me with &quot;hint&quot;.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc60.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<p>Note that it would probably be kinder to offer the player some intermediate level of help, in the actual event.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc64.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc61.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc63.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc65.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

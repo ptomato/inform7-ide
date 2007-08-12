@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.18. Precedence</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.17. Does the player mean...</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,47 +9,71 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Precedence" -->
-<!-- SEARCH SECTION "16.18" -->
-<!-- SEARCH SORT "016-018-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc256.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc258.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.18. Precedence</b></font></td></tr></table>
+<!-- SEARCH TITLE "Does the player mean..." -->
+<!-- SEARCH SECTION "16.17" -->
+<!-- SEARCH SORT "016-017-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc256.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc258.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.17. Does the player mean...</b></font></td></tr></table>
 <p>
-<p>When several different lines of grammar are supplied to meet the same circumstances, it makes a big difference what order they are tried in. For instance, suppose we have:
+<p>When the player types an ambiguous reference, we need to work out what is meant. Consider the following source text:
 <p>
-<blockquote><font color="#000080">Understand &quot;photograph [a door]&quot; as photographing.
+<blockquote><font color="#000080">The Champs du Mars is a room. The great Eiffel Tower is here. &quot;The great Tower stands high over you.&quot; The souvenir model Eiffel Tower is here. &quot;Comparatively tiny is the souvenir version.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;photograph [an open door]&quot; as photographing.
+<p>Now suppose the player types GET TOWER. The response will be:
+<p>
+<blockquote><font color="#000080">Which do you mean, the great Eiffel Tower or the souvenir model Eiffel Tower?
 </font></blockquote><p>
 <p>
-<p>The second line is more specific than the first, so Inform takes these grammar lines the other way around: it checks for &quot;open door&quot; before it checks for &quot;door&quot;. That didn't matter here, since both lines came out with the same result (the action of photographing), but it matters very much in the next example:
+<p>Which is a silly question, exposing our work of IF as something artificial. It's obvious to the author of the source text, and to the player, that the souvenir must be what is meant: but this is not obvious to the computer program running the game. Works of IF gain a subtle feeling of quality from being able to understand ambiguous references of the kind above, and Inform provides us with a way to do this by giving the parser clues in the form of &quot;Does the player mean...&quot; rules. For instance, if we add:
 <p>
-<blockquote><font color="#000080">Understand &quot;employ [a door]&quot; as opening.
+<blockquote><font color="#000080">Does the player mean taking the great Eiffel Tower: it is very unlikely.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;employ [an open door]&quot; as entering.
+<p>then the response to GET TOWER will now be:
+<p>
+<blockquote><font color="#000080">(the souvenir model Eiffel Tower)
+<br>Taken.
 </font></blockquote><p>
 <p>
-<p>More subtle is a line already seen:
+<p>&quot;Does the player mean...&quot; rules look at the actions which are possible interpretations of what the player typed, and grade them according to how likely they seem. (Note that these rules are only ever used to handle ambiguities: if the player unambiguously types GET GREAT EIFFEL TOWER, that will be the action.) Rules in this rulebook can either decide nothing, or come up with one of the following verdicts:
 <p>
-<blockquote><font color="#000080">Understand &quot;on/in/inside&quot; or &quot;on top of&quot; as &quot;[within]&quot;.
+<blockquote><font color="#000080">it is very likely
+<br>it is likely
+<br>it is possible
+<br>it is unlikely
+<br>it is very unlikely
 </font></blockquote><p>
 <p>
-<p>Here Inform puts &quot;on top of&quot; before &quot;on/in/inside&quot;, since otherwise only the &quot;on&quot; of &quot;on top of&quot; will be recognised.
+<p>If there are no &quot;does the player mean&quot; rules, or the rules make no decision on a given possible action, it will be ranked as &quot;it is possible&quot;.
 <p>
-<p>Mistakes always take precedence over non-mistakes: this is intended to make sure that
+<p>Notice that we can also make rules about actions that apply to two objects, so for instance:
 <p>
-<blockquote><font color="#000080">Understand &quot;take umbrage&quot; as a mistake (&quot;Nobody takes umbrage in this game, mister.&quot;).
+<blockquote><font color="#000080">Does the player mean throwing the can of shoe polish at the shoe polish vending machine: it is likely.
 </font></blockquote><p>
 <p>
-<p>will take precedence over
+<p>which nicely clarifies THROW POLISH AT POLISH, but does not comment on the likelihood of throwing the can at other things or of throwing other things at the vending machine. Moreover, the (suspected) identity of the first item will be known when the rule is consulted; thus
 <p>
-<blockquote><font color="#000080">Understand &quot;take [something]&quot; as taking.
+<blockquote><font color="#000080">Does the player mean tying the noun to the noun: it is very unlikely.
 </font></blockquote><p>
 <p>
-<p>even if there is, in fact, a character called Mr Nimbus Umbrage so that the command could conceivably make sense.
+<p>will tell Inform to prefer not to tie something to itself if other interpretations are available.
+<p>
+<p>We may use these rules to affect all sorts of interaction with a specific object or kind of object, as in
+<p>
+<blockquote><font color="#000080">Does the player mean doing something with the cursed dagger of Thog: it is very unlikely.
+<br>Does the player mean doing something with the cursed dagger of Thog when the player is hypnotized: it is likely.
+</font></blockquote><p>
+<p>
+<p>...and so on.
+<p>
+<p>A final caveat. There are a handful of cases where this mechanism will not in fact help Inform to choose its way out of an ambiguous command: these occur where the grammar in question makes the first noun depend on the second, when the (little-used) &quot;[other things]&quot; or &quot;[things inside]&quot; tokens are being used. The Standard Rules has these only for the actions inserting it into, putting it on, and removing it from. But it does mean that rules like so:
+<p>
+<blockquote><font color="#000080">Does the player mean inserting the D battery into a battery compartment:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;it is very likely.
+</font></blockquote><p>
+<p>
+<p>will break the impasse only where the first noun is ambiguous, not the second.
 <p>
 <p><hr><p>
-<a name="e225"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex225.html#e225 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>248</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex225.html#e225 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Some Assembly Required</font></b></a><br>Building different styles of shirt from component sleeves and collars.<p></td></tr></table>
-<a name="e92"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex92.html#e92 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>249</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex92.html#e92 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lakeside Living</font></b></a><br>Similar to "Lemonade", but with bodies of liquid that can never be depleted, and some adjustments to the "fill" command so that it will automatically attempt to fill from a large liquid source if possible.<p></td></tr></table>
+<a name="e220"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex220.html#e220 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>258</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex220.html#e220 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Masochism Deli</font></b></a><br>Multiple potatoes, with rules to make the player drop the hot potato first and pick it up last.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc256.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc258.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

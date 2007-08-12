@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.2. New commands for old grammar</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.14. New conditions, new adjectives</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,74 +9,170 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Anchorite" -->
-<!-- SEARCH SECTION "Ex 227" -->
-<!-- SEARCH SORT "Ex 016-002-227" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc240.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc242.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.2. New commands for old grammar</b></font></td></tr></table>
+<!-- SEARCH TITLE "Owen's Law" -->
+<!-- SEARCH SECTION "Ex 151" -->
+<!-- SEARCH SORT "Ex 011-014-151" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc165.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc167.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.14. New conditions, new adjectives</b></font></td></tr></table>
 <p>
-<p>In the photography example, we are providing entirely new grammar for an action  not ordinarily built in to Inform. But we often want simply to provide alternative grammar for existing actions, or even to put new interpretations on commands that Inform already recognises. For instance:
+<p>We can create new conditions by defining a phrase with &quot;to decide whether&quot; (or equivalently &quot;to decide if&quot;):
 <p>
-<blockquote><font color="#000080">Understand &quot;deposit [something] in [an open container]&quot; as inserting it into.
+<blockquote><font color="#000080">To decide whether danger lurks:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if in darkness then decide yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the Control Room has been visited then decide no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide yes.
 </font></blockquote><p>
 <p>
-<p>The inserting action is built in to Inform, but the command &quot;deposit&quot; is not, so this is created as new. It is occasionally useful to put a twist on this:
+<p>As can be seen, such a phrase must always resolve itself with &quot;yes&quot; or &quot;no&quot;: the first to be reached will be the answer. For instance, if the player is indeed in darkness, the decision is &quot;yes&quot; because the &quot;decide yes&quot; stops the process right there. We can now write, for instance,
 <p>
-<blockquote><font color="#000080">Understand &quot;fill [an open container] with [something]&quot; as inserting it into (with nouns reversed).
+<blockquote><font color="#000080">if danger lurks then ...
 </font></blockquote><p>
 <p>
-<p>The clause &quot;(with nouns reversed)&quot; tells Inform to exchange the two nouns parsed, which is necessary because the inserting action expects the noun to be the item and the second noun to be the container, not vice versa.
+<p>In fact, &quot;danger lurks&quot; is now a condition as good as any other, and can be used wherever a condition would be given. Rules can apply only &quot;when danger lurks&quot;, for instance.
 <p>
-<p>The following example:
-<p>
-<blockquote><font color="#000080">Understand &quot;access [something]&quot; as opening.
-</font></blockquote><p>
-<p>
-<p>might look as if it makes &quot;access&quot; behave just like &quot;open&quot; when the player types it, but that's not so: &quot;open&quot; can also be used in constructions like &quot;open the door with the brass key&quot;, in which case it is understood as the unlocking action. We could add another line to make &quot;access&quot; behave this way too, but if what we really want is to make &quot;access&quot; behave just like &quot;open&quot;, it's easier simply to say so:
-<p>
-<blockquote><font color="#000080">Understand the command &quot;access&quot; as &quot;open&quot;.
-</font></blockquote><p>
-<p>
-<p>This is very useful when adding a new command which needs synonyms:
-<p>
-<blockquote><font color="#000080">Understand the commands &quot;snap&quot; and &quot;picture&quot; as &quot;photograph&quot;.
-</font></blockquote><p>
-<p>
-<p>We can check the current stock of commands by looking at the table in the Actions index: for instance, before making &quot;snap&quot; synonymous with &quot;photograph&quot;, it might be wise to check that it is not already defined as a command for breaking something.
-<p>
-<p><hr><p>
-<a name="e186"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex186.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>225</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex186.html#e186 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alpaca Farm</font></b></a><br>A generic USE action which behaves sensibly with a range of different objects, expanding on the EMPLOY example above.<p></td></tr></table>
-<!-- EXAMPLE START -->
-<a name="e204"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc241.html#e204 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>226</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc241.html#e204 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Anchorite</font></b></a><br>By default, Inform understands GET OFF, GET UP, or GET OUT when the player is sitting or standing on an enterable object. We might also want to add GET DOWN and DOWN as exit commands, though:<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>With GET DOWN, we can replace the whole command, which will not interfere with the normal function of the TAKE verb, or allow the player to attempt to GET any other directions:
+<p>We can also supply definitions of adjectives like this. So far, new adjectives have been defined like so:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode317(code) {
+function pasteCode30(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Anchorite"\n\nThe Solitary Place is a room. "A glittering, shimmering desert without either locusts or honey." The pillar is an enterable supporter in the Solitary Place. "The broken pillar is short enough to climb and sit on." The description of the pillar is "Once it was a monument: a long frieze of battles and lion-hunts spirals up the side, in honor of an earthly king." The player is on the pillar.\n\nUnderstand "get down" as exiting.\n\n[This doesn\'t cover the case where the player just types "DOWN", and we don\'t want to preempt the normal operation of the GO action here. So instead of writing a new understand instruction, we might catch this one at the action-processing level:]\n\nInstead of going down when the player is on a supporter:\n\ttry exiting.\n\nTest me with "down / enter pillar / get down / down / get down".\n');
+    myProject.pasteCode('Definition: a supporter is occupied if it is described and something is on it.\n\n');
 }
 </script>
-<a href="javascript:pasteCode317()"><img border=0 src=../doc_images/paste.png></a> &quot;Anchorite&quot;
+<a href="javascript:pasteCode30()"><img border=0 src=../doc_images/paste.png></a> Definition: a supporter is occupied if it is described and something is on it.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Solitary Place is a room. &quot;A glittering, shimmering desert without either locusts or honey.&quot; The pillar is an enterable supporter in the Solitary Place. &quot;The broken pillar is short enough to climb and sit on.&quot; The description of the pillar is &quot;Once it was a monument: a long frieze of battles and lion-hunts spirals up the side, in honor of an earthly king.&quot; The player is on the pillar.
+<p>If we want to give a definition which involves more complex logic, we can use a special form allowing us to make arbitrary decisions. In this longer format, the same definition would look like so:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode31(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Definition: a supporter is occupied:\n\tif it is undescribed then decide no;\n\tif something is on it then decide yes;\n\tdecide no.\n\n');
+}
+</script>
+<a href="javascript:pasteCode31()"><img border=0 src=../doc_images/paste.png></a> Definition: a supporter is occupied:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is undescribed then decide no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if something is on it then decide yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide no.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;get down&quot; as exiting.
+<p>Here &quot;it&quot; refers to the supporter in question. Note that there are now two colons in this sentence, one after &quot;Definition&quot;, the other after the clause being defined. But that apart, it's a phrase like any other: it must end in &quot;yes&quot; or &quot;no&quot; just as the &quot;danger lurks&quot; example must.
+<p>
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e204"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc166.html#e204 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>151</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc166.html#e204 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Owen's Law</font></b></a><br>OUT always means "move to an outdoors room, or else to a room with more exits than this one has"; IN always means the opposite.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>Suppose we want the game to interpret &quot;GO OUT&quot; as &quot;move towards an outdoors room, or towards a room with more exits than the current room&quot;, while &quot;GO IN&quot; means &quot;move toward a room with fewer exits, or towards an indoors room&quot;. Thus going in repeatedly within a building would lead towards dead-ends, while going out repeatedly would lead towards the center of the building and then towards an exit to the outside world.
+<p>
+<p>We start by encoding these rules as definitions:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode246(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Owen\'s Law"\n\nA room can be indoors or outdoors. A room is usually indoors.\n\nDefinition: a room is outward:\n\tif it is not adjacent then no;\n\tif it is indoors and the location is outdoors then no;\n\tif it is outdoors and the location is indoors then yes;\n\tif the number of rooms adjacent to it is greater than the number of rooms adjacent to the location then yes;\n\totherwise no.\n\nDefinition: a room is inward:\n\tif it is not adjacent then no;\n\tif it is outdoors and the location is indoors then no;\n\tif it is indoors and the location is outdoors then yes;\n\tif the number of rooms adjacent to it is less than the number of rooms adjacent to the location then yes;\n\totherwise no.\n\nInstead of going nowhere when the noun is outside: try exiting.\n\nInstead of exiting when the player is in a room:\n\tif at least one room is outward\n\tbegin;\n\t\tlet the destination be a random outward room;\n\t\tlet the way be the best route from the location to\t the destination;\n\t\tsay "(that is, [way])[command clarification break]";\n\t\ttry going the way instead;\n\totherwise;\n\t\tsay "It\'s not entirely obvious which way you mean. ";\n\t\tcarry out the listing available exits activity;\n\tend if.\n\nInstead of going inside when the room inside from the location is not a room and at least one room is inward:\n\tif more than one room is inward\n\tbegin;\n\t\tcarry out the listing available exits activity;\n\totherwise;\n\t\tlet the destination be a random inward room;\n\t\tlet the way be the best route from the location to the destination;\n\t\tsay "(that is, [way])[command clarification break]";\n\t\ttry going the way instead;\n\tend if.\n\nInstead of going nowhere:\n\tcarry out the listing available exits activity.\n\n[This "listing available exits" is a refinement borrowed from a future chapter, which allows us to specify special listing and printing rules:]\n\nListing available exits is an activity.\n\nRule for listing available exits:\n\tif going inside and an adjacent room is inward\n\tbegin;\n\t\tsay "From here \'in\' could reasonably mean [a list of adjacent inward rooms].";\n\t\trule succeeds;\n\tend if;\n\tif exiting and an adjacent room is outward\n\tbegin;\n\t\tsay "From here \'out\' could reasonably mean [a list of outward adjacent rooms].";\n\t\trule succeeds;\n\tend if;\n\tsay "From here you can go [a list of adjacent rooms].";\n\nBefore printing the name of a room (called the target) while listing available exits:\n\tlet aim be the best route from the location to the target;\n\tsay "[aim] to the ".\n\nRule for printing the name of an unvisited room which is not the location:\n\tsay "unknown location".\n\nDune is an outdoors room. "Hundreds of feet of dune stretch west to the beach, crisscrossed with dune-buggy tracks and the footprints of birds. To the east is a low-lying, boxy concrete installation."\n\nOcean Shores Military Installation is east of the Dune. It is an outdoors room. "The World War II emplacements, built in case of Japanese invasion, have never been destroyed, though with all the weapons and furnishings gone it is difficult to make much sense of the original structure. A doorway leads west into concrete-lined darkness; a rusty but reliable ladder ascends to a walkway overlooking the sea."\n\nWalkway is above Ocean Shores Military Installation. "From here you have a long view of the dunes and the Pacific Ocean, complete with the rotting hull of a long-stranded vessel."\n\nDark Echoing Room is inside from Ocean Shores Military Installation. Dank Dripping Room is east of Dark Echoing Room. Narrow Room is south of Dark Echoing Room. Small Sealed Chamber is north of Dark Echoing Room. Room Smelling of Animal Urine is north of Dank Dripping Room. The description of a room is usually "It is dark in here, and feels unsafe."\n\nTest me with "e / u / d / in / s / out / n / out / e / in / out / out / out".\n');
+}
+</script>
+<a href="javascript:pasteCode246()"><img border=0 src=../doc_images/paste.png></a> &quot;Owen's Law&quot;
 </font></blockquote><p>
 <p>
-<p>This doesn't cover the case where the player just types &quot;DOWN&quot;, and we don't want to preempt the normal operation of the GO action here. So instead of writing a new understand instruction, we might catch this one at the action-processing level:
-<p>
-<blockquote><font color="#000080">Instead of going down when the player is on a supporter:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try exiting.
+<blockquote><font color="#000080">A room can be indoors or outdoors. A room is usually indoors.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;down / enter pillar / get down / down / get down&quot;.
+<blockquote><font color="#000080">Definition: a room is outward:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is not adjacent then no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is indoors and the location is outdoors then no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is outdoors and the location is indoors then yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of rooms adjacent to it is greater than the number of rooms adjacent to the location then yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise no.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc241.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Definition: a room is inward:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is not adjacent then no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is outdoors and the location is indoors then no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is indoors and the location is outdoors then yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of rooms adjacent to it is less than the number of rooms adjacent to the location then yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going nowhere when the noun is outside: try exiting.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of exiting when the player is in a room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if at least one room is outward
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the destination be a random outward room;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location to	 the destination;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(that is, [way])[command clarification break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try going the way instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It's not entirely obvious which way you mean. &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;carry out the listing available exits activity;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going inside when the room inside from the location is not a room and at least one room is inward:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if more than one room is inward
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;carry out the listing available exits activity;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the destination be a random inward room;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location to the destination;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(that is, [way])[command clarification break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try going the way instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going nowhere:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;carry out the listing available exits activity.
+</font></blockquote><p>
+<p>
+<p>This &quot;listing available exits&quot; is a refinement borrowed from a future chapter, which allows us to specify special listing and printing rules:
+<p>
+<blockquote><font color="#000080">Listing available exits is an activity.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for listing available exits:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if going inside and an adjacent room is inward
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;From here 'in' could reasonably mean [a list of adjacent inward rooms].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if exiting and an adjacent room is outward
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;From here 'out' could reasonably mean [a list of outward adjacent rooms].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;From here you can go [a list of adjacent rooms].&quot;;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before printing the name of a room (called the target) while listing available exits:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let aim be the best route from the location to the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[aim] to the &quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for printing the name of an unvisited room which is not the location:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;unknown location&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Dune is an outdoors room. &quot;Hundreds of feet of dune stretch west to the beach, crisscrossed with dune-buggy tracks and the footprints of birds. To the east is a low-lying, boxy concrete installation.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Ocean Shores Military Installation is east of the Dune. It is an outdoors room. &quot;The World War II emplacements, built in case of Japanese invasion, have never been destroyed, though with all the weapons and furnishings gone it is difficult to make much sense of the original structure. A doorway leads west into concrete-lined darkness; a rusty but reliable ladder ascends to a walkway overlooking the sea.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Walkway is above Ocean Shores Military Installation. &quot;From here you have a long view of the dunes and the Pacific Ocean, complete with the rotting hull of a long-stranded vessel.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Dark Echoing Room is inside from Ocean Shores Military Installation. Dank Dripping Room is east of Dark Echoing Room. Narrow Room is south of Dark Echoing Room. Small Sealed Chamber is north of Dark Echoing Room. Room Smelling of Animal Urine is north of Dank Dripping Room. The description of a room is usually &quot;It is dark in here, and feels unsafe.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;e / u / d / in / s / out / n / out / e / in / out / out / out&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc166.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e27"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex27.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>227</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex27.html#e27 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloak of Darkness</font></b></a><br>Implementation of "Cloak of Darkness", a simple example game that for years has been used to demonstrate the features of IF languages.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc240.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc242.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc165.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc167.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

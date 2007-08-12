@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.5. Every turn</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.7. New actions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,184 +9,235 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Text Foosball" -->
-<!-- SEARCH SECTION "Ex 113" -->
-<!-- SEARCH SORT "Ex 009-005-113" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc130.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc132.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.5. Every turn</b></font></td></tr></table>
+<!-- SEARCH TITLE "Frizz" -->
+<!-- SEARCH SECTION "Ex 164" -->
+<!-- SEARCH SORT "Ex 012-007-164" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc177.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc179.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.7. New actions</b></font></td></tr></table>
 <p>
-<p>The passage of time in interactive fiction is broken up into a succession of turns, in each of which the player types a request and is given a response. Usually each such request triggers one action, but sometimes a whole sequence are fired off, as when the player types &quot;get all&quot; in a cluttered room.
+<p>It is not often that we need to create new actions, but a large work of interactive fiction with no novelty actions is a flavourless dish. Here we shall create an action for photographing things.
 <p>
-<p>One of the last things to happen in each turn is that Inform will apply any rules which have been set to occur &quot;every turn&quot;, like so:
-<p>
-<blockquote><font color="#000080">Every turn, say &quot;The summer breeze shakes the apple-blossom.&quot;
+<blockquote><font color="#000080">The Ruins is a room. &quot;You find this clearing in the rainforest oddly familiar.&quot; The camera is in the Ruins. &quot;Your elephantine camera hangs from a convenient branch.&quot;
 </font></blockquote><p>
 <p>
-<p>This is equivalent to writing:
-<p>
-<blockquote><font color="#000080">An every turn rule: say &quot;The summer breeze shakes the apple-blossom.&quot;
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
 </font></blockquote><p>
 <p>
-<p>Note that the text about blossom, which will quickly become tiresome, is said at the end of every turn, not at the beginning, and in particular not before the player's first opportunity to type a command.
+<p>In theory that text is already sufficient to make the new action, but what we have so far is rudimentary to say the least. The two qualifications give Inform the useful information that we cannot photograph in the dark, and that we need to be photographing something - not, as in the case of waiting or taking inventory, acting without reference to any particular thing external to ourselves.
 <p>
-<p>As usual when defining rules, we can add stipulations: any condition can be attached using &quot;when&quot;.
+<p>The word &quot;visible&quot; here tells Inform that we do not need to be able to touch the thing in question: a line of sight is good enough. These two stipulations were necessary because the default arrangement is that any object must be in touching range, and that most actions can be performed in darkness. (Also, note that if you invent an action which needs to apply to directions like &quot;north&quot; or &quot;south&quot;, you need to make this apply to visible things, because the object used inside Inform to represent the idea of &quot;north&quot; can be seen but not touched. So for understanding purposes, &quot;visible thing&quot; is understood as meaning any visible thing or direction: it's more general than &quot;thing&quot;, not more specific.) Occasionally, when writing general rules about actions, it can be useful to find out what the current action's requirements are: the following conditions do what they suggest.
 <p>
-<blockquote><font color="#000080">Every turn when in the Orchard, say &quot;The summer breeze shakes the apple-blossom.&quot;
+<blockquote><font color="#000080">if the action requires a touchable noun...
+<br>if the action requires a touchable second noun...
+<br>if the action requires light...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when the player can see the rotting fish, say &quot;Your nose twitches involuntarily.&quot;
+<p>For instance, if we are currently examining something, then the first condition will be untrue, because that requires only a visible noun.
+<p>
+<p>As further examples, here we create &quot;blinking&quot; and &quot;scraping X with Y&quot;. Note the use of &quot;it&quot; to indicate that the name of an object should go here.
+<p>
+<blockquote><font color="#000080">Blinking is an action applying to nothing. Scraping it with is an action applying to two things.
 </font></blockquote><p>
+<p>
+<p>The photographing action now exists, but with two provisos: (a) it never happens, because Inform does not know what commands by the player should cause it, and (b) even if it were to happen, nothing would follow, because Inform does not know what to do. (There are no check, carry out or report rules yet.)
+<p>
+<p>The first problem is easily overcome:
+<p>
+<blockquote><font color="#000080">Understand &quot;photograph [something]&quot; as photographing.
+</font></blockquote><p>
+<p>
+<p>We will return to the whole subject of parsing, as this process of understanding the player's commands is called, later. But this gives the gist of it.
 <p>
 <p><hr><p>
-<a name="e79"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex79.html#e79 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>111</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex79.html#e79 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Witnessed 1</font></b></a><br>A kind of battery which can be put into different devices, and which will lose power after extended use.<p></td></tr></table>
+<a name="e79"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex79.html#e79 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>163</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex79.html#e79 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">DIAGNOSE command</font></b></a><br>A DIAGNOSE command which allows the player to check on the health of someone.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e125"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc131.html#e125 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>112</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc131.html#e125 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Text Foosball</font></b></a><br>A game of foosball which relies heavily on every-turn rules.<p></td></tr></table>
+<a name="e125"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc178.html#e125 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>164</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc178.html#e125 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Frizz</font></b></a><br>Liquid flows within containers and soaks objects that are not waterproof; any contact with a wet object can dampen our gloves.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want a game of foosball in which our opponent acts every turn, but does different things depending on where the ball currently lies. We can put together a sequence of every-turn rules to account for this, as follows:
+<p>Suppose we have some items that get wet in contact with other damp things; in particular, if we touch anything wet while wearing a pair of gloves, the gloves too get damp. This requires that we be systematic about detecting all cases where contact occurs. So:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode207(code) {
+function pasteCode259(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Text Foosball"\n\nThe Lounge is a room. "The Lounge is appointed with everything necessary to rest and relaxation: a vending machine, a potted palm, a stack of Entertainment Weekly issues from 1993, and -- your pride and joy -- a foosball game."\n\nThe foosball game is scenery in the Lounge. Understand "table" or "football" or "foozball" or "fussball" or "soccer" as the foosball game. The game is a supporter. On the game is a small white ball. The ball can be still, approaching, receding, or unreachable. The description of the ball is "Currently [small white ball condition]."\n\nAfter printing the name of the small white ball, say " ([small white ball condition])".\n\nWhen play begins:\n\tchange left hand status line to "You: [score]";\n\tchange right hand status line to "Joey: [Joey\'s score]".\n\nSome tiny men on sticks are part of the game. Understand "handles" as the men. The description is "Okay, a couple of the tiny men have had their feet broken off, and the table surface itself is a bit warped, and the ball resembles a quail egg in respect of shape and color. This makes for a game of unusual randomness, but skill is overrated."\n\nInstead of attacking or pulling or pushing the game when the ball is unreachable:\n\tsay "You give the table a good shove, and the ball moves ever-so-slightly.";\n\tnow the ball is still.\n\nInstead of taking the white ball:\n\tsay "You\'d forfeit the game if you did that."\n\nInstead of turning the tiny men when the ball is unreachable:\n\tsay "The ball has somehow gotten to a mystical point on the table where it cannot be reached, no matter what. Close inspection reveals that this point has been marked in chalk with a tiny X. Not that that does any good."\n\nInstead of turning the tiny men when the ball is approaching:\n\tif a random chance of 2 in 3 succeeds\n\tbegin;\n\t\tif a random chance of 1 in 2 succeeds, now the ball is receding;\n\t\totherwise now the ball is still;\n\t\tsay "[if the ball is still]Thunk. [otherwise]Thwack! [end if]You keep the ball from reaching its goal! Now it is [small white ball condition].";\n\totherwise;\n\t\tlet Joey score;\n\tend if.\n\nTo let Joey score:\n\tnow the ball is still;\n\tchange Joey\'s score to Joey\'s score + 1;\n\tsay "The ball rolls neatly into your goal, despite your efforts. ";\n\tif Joey\'s score < score, say "You put the ball back in the center with a snap. No reason to worry yet; you\'re still ahead. Joey looks determined, though.";\n\totherwise say "After allowing a moment or two for Joey\'s gloating to pass, you replace it at the center."\n\nInstead of turning the tiny men when a random chance of 1 in 13 succeeds:\n\tif the ball is unreachable, continue the action;\n\tnow the ball is unreachable;\n\tsay "You hit the ball off-center and it rolls sluggishly into a little dip in the surface of the foosball table. ";\n\tif Joey\'s score > 7, say "\'You did that on purpose!\' Joey exclaims indignantly.";\n\totherwise say "You and Joey exchange glances. This is never good."\n\nInstead of turning the tiny men:\n\tsay "You madly rotate the tiny men on sticks! ";\n\tif a random chance of 1 in 2 succeeds\n\tbegin;\n\t\tsay "Hoorah! You hit the ball!";\n\t\tnow the ball is receding;\n\totherwise;\n\t\tsay "Somehow you fail to bring your monopodal player into contact with the ball.";\n    end if.\n\nJoey is a man in the Lounge. "Joey is hunkered over the foosball handles on his side of the table." Joey can be active or inactive.\n\nJoey\'s score is a number that varies.\n\nEvery turn: now Joey is active.\n\nEvery turn when the ball is approaching and Joey is active:\n\tlet total be Joey\'s score + score;\n\tif total > 9, make no decision;\n\tnow Joey is inactive;\n\tlet Joey score;\n\trule succeeds.\n\nEvery turn when the ball is unreachable and Joey is active:\n\tlet total be Joey\'s score + score;\n\tif total > 9, make no decision;\n\tnow Joey is inactive;\n\tsay "Joey glares angrily at the stuck ball."\n\nEvery turn when the ball is receding and Joey is active:\n\tlet total be Joey\'s score + score;\n\tif total > 9, make no decision;\n\tif the ball is unreachable, make no decision;\n\tnow Joey is inactive;\n\tif a random chance of 1 in 2 succeeds\n\tbegin;\n\t\tif a random chance of 1 in 2 succeeds, now the ball is still;\n\t\totherwise now the ball is approaching;\n\t\tsay "Joey connects with your shot. Now the ball is [small white ball condition]!";\n\totherwise;\n\t\tnow the ball is still;\n\t\tsay "Joey tries to block, but misses! Back it goes in the center, where it is [small white ball condition].";\n\t\tchange score to score + 1;\n\tend if.\n\nEvery turn when the ball is still and Joey is active:\n\tlet total be Joey\'s score + score;\n\tif total > 9, make no decision;\n\tif the ball is unreachable, make no decision;\n\tnow Joey is inactive;\n\tif a random chance of 1 in 2 succeeds\n\tbegin;\n\t\tnow the ball is approaching;\n\t\tsay "Joey hits the ball solidly down towards your goal. Now it is [small white ball condition].";\n\totherwise;\n\t\tsay "Joey fails to hit the ball in your direction. It remains [small white ball condition].";\n\tend if.\n\nEvery turn:\n\tlet total be Joey\'s score + score;\n\tif total > 9\n\tbegin;\n\t\tif Joey\'s score > score, end the game saying "Rats! Joey wins!";\n\t\tif Joey\'s score < score, end the game saying "Victory is yours!";\n\t\tif Joey\'s score is score, end the game saying "A perfect tie.";\n\tend if.\n');
+    myProject.pasteCode('"Frizz"\n\nA thing can be waterproof or porous. A container is usually waterproof. An animal is usually waterproof.\n\nA thing can be sodden or dry.\n\nA container can be waterfilled or empty.\n\nBefore printing the name of a sodden thing: say "sodden ". Understand the sodden property as describing a thing.\n\nThe player wears a pair of woolly gloves. Instead of wearing a sodden thing: say "You dubiously contemplate [the noun], and decide it\'s best to wear dry clothing."\n\nEvery turn:\n\tfollow the liquid distribution rules.\n\nThe liquid distribution rules is a rulebook.\n\nA liquid distribution rule:\n\trepeat with item running through containers\n\tbegin;\n\t\tif the item is open and the item is empty and the item is in a waterfilled container\n\t\tbegin;\n\t\t\tnow the item is waterfilled;\n\t\t\tif the player can see the item, say "[The item] fills up with water, of course.";\n\t\tend if;\n\tend repeat.\n\nA liquid distribution rule:\n\trepeat with item running through things in a waterfilled container\n\tbegin;\n\t\tif the item is porous and the item is dry\n\t\tbegin;\n\t\t\tif the player can see the item, say "[The item] soaks through.";\n\t\t\tnow the item is sodden;\n\t\tend if;\n\tend repeat.\n\nA liquid distribution rule:\n\trepeat with item running through sodden things in the airing cupboard\n\tbegin;\n\t\tif the item is not The Last Man, now the item is dry;\n\tend repeat.\n\nThe last liquid distribution rule:\n\tif the player carries a dry copy of The Last Man, end the game in victory.\n\nInstead of examining a waterfilled container:\n\tsay "[The noun] is full of water[if the noun contains something visible]; it also contains [the list of things in the noun][end if]."\n\nInstead of examining a container:\n\tsay "Dry inside[if the noun contains something visible], and containing [a list of things in the noun]."\n\nA book is a kind of thing. Instead of examining a sodden book, say "[The noun] is too soaked to read, thanks to someone\'s carelessness." Understand "book" as a book.\n\nThe copy of The Last Man is a book. The description of The Last Man is "Mary Shelley\'s very own original copy, loaned to you under the strictest of agreements[if the pond encloses the copy]. How it came to be in its present position is a long story, and not important at the moment: the critical thing is not to blame oneself - who could have anticipated the cricket bat, anyway? - but to fix it immediately, before anything worse occurs[end if]." The The Last Man is in the ziploc bag. The ziploc bag is waterproof and empty. It is openable, transparent, and closed.\n\nThe Back Garden is a room. The Back Garden contains a pond. The pond is a waterfilled container. In the pond is the ziploc bag. A carp is in the pond. The carp is an animal. Instead of taking the carp, say "You\'re not fast enough."\n\nRule for writing a paragraph about the pond:\n\tif the pond encloses the Last Man\n\tbegin;\n\t\tsay "It is a beautiful day just at the end of spring and beginning of summer. The sun shines, the trees blossom, the world conspires in Edenic cheerfulness. You can take in none of it. Your eye is on [the Last Man].";\n\totherwise;\n\t\tsay "The pond[if something is in the pond] (containing [the list of things in the pond])[end if] remains a figure of menace in an otherwise lushly verdant landscape.";\n\tend if.\n\nBefore printing the name of the Last Man when the Last Man is enclosed by the Pond: if the Last Man is dry, say "delicate, valuable ".\n\nAfter printing the name of something (called the target) while writing a paragraph about something:\n\tif the Last Man is enclosed by the Pond\n\tbegin;\n\t\tif the target is in something (called the parent), say " - which is in [the parent]";\n\tend if.\n\nThe Kitchen is west of the Back Garden. "Not in any sense your province: Mrs Peaswell gets agitated if anyone besides herself so much as boils a kettle. In general it is best to sneak through, disturbing as little as possible and preserving the cosy domestic fiction that academics cannot cook.\n\nThe nearby stairwell leads up to the second floor."\n\nThe Stairwell is above the Kitchen. "Halfway up and halfway down." The airing cupboard is a container in the Stairwell. "An airing cupboard here contains the heating system, and is the ideal place for restoring wet items to a dry state." The airing cupboard is fixed in place.\n\nThis is the dry glove rule:\n\tif we get wet\n\tbegin;\n\t\tif the player wears the gloves and the gloves are dry\n\t\tbegin;\n\t\t\tnow the gloves are sodden;\n\t\t\tsay "(soaking your gloves in the process)";\n\t\tend if;\n\tend if;\n\tcontinue the action;\n\nThis is the wet glove rule:\n\tif the player wears the sodden gloves\n\tbegin;\n\t\tif the The Last Man must be touched and the Last Man is not sodden\n\t\tbegin;\n\t\t\tsay "(soaking the parched pages of The Last Man with the rude touch of your sodden gloves)";\n\t\t\tnow the The Last Man is sodden;\n\t\tend if;\n\t\tcontinue the action;\n\tend if.\n\nThe wet glove rule is listed first in the carry out taking rulebook. The wet glove rule is listed first in the carry out touching rulebook. The wet glove rule is listed first in the carry out pushing rulebook. The wet glove rule is listed first in the carry out pulling rulebook. The wet glove rule is listed first in the carry out turning rulebook. The wet glove rule is listed first in the carry out dropping rulebook. The wet glove rule is listed first in the carry out wearing rulebook.\n\nThe dry glove rule is listed first in the carry out taking rulebook. The dry glove rule is listed first in the carry out touching rulebook. The dry glove rule is listed first in the carry out pushing rulebook. The dry glove rule is listed first in the carry out pulling rulebook. The dry glove rule is listed first in the carry out turning rulebook. The dry glove rule is listed first in the carry out dropping rulebook. The dry glove rule is listed first in the carry out wearing rulebook.\n\nBefore doing something when the player does not wear the gloves:\n\tif The Last Man must be touched\n\tbegin;\n\t\tif The Last Man is dry, say "[The The Last Man] is too precious to endanger when you are not wearing gloves." instead;\n\t\totherwise say "You hesitate instinctively, then recollect that you can hardly harm [The The Last Man] any more than it has already been harmed...";\n\tend if.\n\nTo decide whether we get wet:\n\tif the noun is not a thing, no;\n\tif the noun dampens us, yes;\n\tif the second noun is not a thing, no;\n\tif the second noun dampens us, yes;\n\tno.\n\nTo decide whether (item - a thing) dampens us:\n\tif the item is not liquiferous, no;\n\tif item must be touched, yes;\n\tno.\n\nTo decide whether (item - a thing) must be touched:\n\tif the item is the noun and the action requires a touchable noun, yes;\n\tif the item is the second noun and the action requires a touchable second noun, yes;\n\tno.\n\nDefinition: a thing is liquiferous:\n\tif it is sodden, yes;\n\tif it is in a waterfilled container, yes;\n\tno.\n\nTest me with "x book / x bag / get bag / take off gloves / w / u / put gloves in cupboard / z / open bag / touch book / push book / turn book / get gloves / wear gloves / get book".\n\nTest disaster with "open bag".\n\nTest mishandling with "get bag / open bag / get book".\n');
 }
 </script>
-<a href="javascript:pasteCode207()"><img border=0 src=../doc_images/paste.png></a> &quot;Text Foosball&quot;
+<a href="javascript:pasteCode259()"><img border=0 src=../doc_images/paste.png></a> &quot;Frizz&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Lounge is a room. &quot;The Lounge is appointed with everything necessary to rest and relaxation: a vending machine, a potted palm, a stack of Entertainment Weekly issues from 1993, and -- your pride and joy -- a foosball game.&quot;
+<blockquote><font color="#000080">A thing can be waterproof or porous. A container is usually waterproof. An animal is usually waterproof.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The foosball game is scenery in the Lounge. Understand &quot;table&quot; or &quot;football&quot; or &quot;foozball&quot; or &quot;fussball&quot; or &quot;soccer&quot; as the foosball game. The game is a supporter. On the game is a small white ball. The ball can be still, approaching, receding, or unreachable. The description of the ball is &quot;Currently [small white ball condition].&quot;
+<blockquote><font color="#000080">A thing can be sodden or dry.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After printing the name of the small white ball, say &quot; ([small white ball condition])&quot;.
+<blockquote><font color="#000080">A container can be waterfilled or empty.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change left hand status line to &quot;You: [score]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change right hand status line to &quot;Joey: [Joey's score]&quot;.
+<blockquote><font color="#000080">Before printing the name of a sodden thing: say &quot;sodden &quot;. Understand the sodden property as describing a thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Some tiny men on sticks are part of the game. Understand &quot;handles&quot; as the men. The description is &quot;Okay, a couple of the tiny men have had their feet broken off, and the table surface itself is a bit warped, and the ball resembles a quail egg in respect of shape and color. This makes for a game of unusual randomness, but skill is overrated.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of attacking or pulling or pushing the game when the ball is unreachable:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You give the table a good shove, and the ball moves ever-so-slightly.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the ball is still.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of taking the white ball:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'd forfeit the game if you did that.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of turning the tiny men when the ball is unreachable:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The ball has somehow gotten to a mystical point on the table where it cannot be reached, no matter what. Close inspection reveals that this point has been marked in chalk with a tiny X. Not that that does any good.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of turning the tiny men when the ball is approaching:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 2 in 3 succeeds
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds, now the ball is receding;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the ball is still;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[if the ball is still]Thunk. [otherwise]Thwack! [end if]You keep the ball from reaching its goal! Now it is [small white ball condition].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let Joey score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To let Joey score:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the ball is still;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change Joey's score to Joey's score + 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The ball rolls neatly into your goal, despite your efforts. &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score < score, say &quot;You put the ball back in the center with a snap. No reason to worry yet; you're still ahead. Joey looks determined, though.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;After allowing a moment or two for Joey's gloating to pass, you replace it at the center.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of turning the tiny men when a random chance of 1 in 13 succeeds:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the ball is unreachable, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the ball is unreachable;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You hit the ball off-center and it rolls sluggishly into a little dip in the surface of the foosball table. &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score > 7, say &quot;'You did that on purpose!' Joey exclaims indignantly.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You and Joey exchange glances. This is never good.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of turning the tiny men:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You madly rotate the tiny men on sticks! &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Hoorah! You hit the ball!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the ball is receding;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Somehow you fail to bring your monopodal player into contact with the ball.&quot;;
-<br>    end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Joey is a man in the Lounge. &quot;Joey is hunkered over the foosball handles on his side of the table.&quot; Joey can be active or inactive.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Joey's score is a number that varies.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn: now Joey is active.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the ball is approaching and Joey is active:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Joey is inactive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let Joey score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the ball is unreachable and Joey is active:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Joey is inactive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey glares angrily at the stuck ball.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the ball is receding and Joey is active:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the ball is unreachable, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Joey is inactive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds, now the ball is still;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the ball is approaching;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey connects with your shot. Now the ball is [small white ball condition]!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the ball is still;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey tries to block, but misses! Back it goes in the center, where it is [small white ball condition].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change score to score + 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the ball is still and Joey is active:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the ball is unreachable, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Joey is inactive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a random chance of 1 in 2 succeeds
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the ball is approaching;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey hits the ball solidly down towards your goal. Now it is [small white ball condition].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Joey fails to hit the ball in your direction. It remains [small white ball condition].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">The player wears a pair of woolly gloves. Instead of wearing a sodden thing: say &quot;You dubiously contemplate [the noun], and decide it's best to wear dry clothing.&quot;
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let total be Joey's score + score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if total > 9
+<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the liquid distribution rules.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The liquid distribution rules is a rulebook.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A liquid distribution rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through containers
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score > score, end the game saying &quot;Rats! Joey wins!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score < score, end the game saying &quot;Victory is yours!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Joey's score is score, end the game saying &quot;A perfect tie.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is open and the item is empty and the item is in a waterfilled container
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the item is waterfilled;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player can see the item, say &quot;[The item] fills up with water, of course.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A liquid distribution rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things in a waterfilled container
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is porous and the item is dry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player can see the item, say &quot;[The item] soaks through.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the item is sodden;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A liquid distribution rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through sodden things in the airing cupboard
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is not The Last Man, now the item is dry;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The last liquid distribution rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries a dry copy of The Last Man, end the game in victory.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining a waterfilled container:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is full of water[if the noun contains something visible]; it also contains [the list of things in the noun][end if].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining a container:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Dry inside[if the noun contains something visible], and containing [a list of things in the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A book is a kind of thing. Instead of examining a sodden book, say &quot;[The noun] is too soaked to read, thanks to someone's carelessness.&quot; Understand &quot;book&quot; as a book.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The copy of The Last Man is a book. The description of The Last Man is &quot;Mary Shelley's very own original copy, loaned to you under the strictest of agreements[if the pond encloses the copy]. How it came to be in its present position is a long story, and not important at the moment: the critical thing is not to blame oneself - who could have anticipated the cricket bat, anyway? - but to fix it immediately, before anything worse occurs[end if].&quot; The The Last Man is in the ziploc bag. The ziploc bag is waterproof and empty. It is openable, transparent, and closed.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Back Garden is a room. The Back Garden contains a pond. The pond is a waterfilled container. In the pond is the ziploc bag. A carp is in the pond. The carp is an animal. Instead of taking the carp, say &quot;You're not fast enough.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for writing a paragraph about the pond:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the pond encloses the Last Man
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is a beautiful day just at the end of spring and beginning of summer. The sun shines, the trees blossom, the world conspires in Edenic cheerfulness. You can take in none of it. Your eye is on [the Last Man].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The pond[if something is in the pond] (containing [the list of things in the pond])[end if] remains a figure of menace in an otherwise lushly verdant landscape.&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc131.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Before printing the name of the Last Man when the Last Man is enclosed by the Pond: if the Last Man is dry, say &quot;delicate, valuable &quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After printing the name of something (called the target) while writing a paragraph about something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the Last Man is enclosed by the Pond
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the target is in something (called the parent), say &quot; - which is in [the parent]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Kitchen is west of the Back Garden. &quot;Not in any sense your province: Mrs Peaswell gets agitated if anyone besides herself so much as boils a kettle. In general it is best to sneak through, disturbing as little as possible and preserving the cosy domestic fiction that academics cannot cook.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The nearby stairwell leads up to the second floor.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Stairwell is above the Kitchen. &quot;Halfway up and halfway down.&quot; The airing cupboard is a container in the Stairwell. &quot;An airing cupboard here contains the heating system, and is the ideal place for restoring wet items to a dry state.&quot; The airing cupboard is fixed in place.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">This is the dry glove rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if we get wet
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player wears the gloves and the gloves are dry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the gloves are sodden;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(soaking your gloves in the process)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">This is the wet glove rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player wears the sodden gloves
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the The Last Man must be touched and the Last Man is not sodden
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(soaking the parched pages of The Last Man with the rude touch of your sodden gloves)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the The Last Man is sodden;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The wet glove rule is listed first in the carry out taking rulebook. The wet glove rule is listed first in the carry out touching rulebook. The wet glove rule is listed first in the carry out pushing rulebook. The wet glove rule is listed first in the carry out pulling rulebook. The wet glove rule is listed first in the carry out turning rulebook. The wet glove rule is listed first in the carry out dropping rulebook. The wet glove rule is listed first in the carry out wearing rulebook.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The dry glove rule is listed first in the carry out taking rulebook. The dry glove rule is listed first in the carry out touching rulebook. The dry glove rule is listed first in the carry out pushing rulebook. The dry glove rule is listed first in the carry out pulling rulebook. The dry glove rule is listed first in the carry out turning rulebook. The dry glove rule is listed first in the carry out dropping rulebook. The dry glove rule is listed first in the carry out wearing rulebook.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before doing something when the player does not wear the gloves:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if The Last Man must be touched
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if The Last Man is dry, say &quot;[The The Last Man] is too precious to endanger when you are not wearing gloves.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You hesitate instinctively, then recollect that you can hardly harm [The The Last Man] any more than it has already been harmed...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide whether we get wet:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a thing, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun dampens us, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not a thing, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun dampens us, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide whether (item - a thing) dampens us:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is not liquiferous, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if item must be touched, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide whether (item - a thing) must be touched:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is the noun and the action requires a touchable noun, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is the second noun and the action requires a touchable second noun, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is liquiferous:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is sodden, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is in a waterfilled container, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x book / x bag / get bag / take off gloves / w / u / put gloves in cupboard / z / open bag / touch book / push book / turn book / get gloves / wear gloves / get book&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test disaster with &quot;open bag&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test mishandling with &quot;get bag / open bag / get book&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc178.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc130.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc132.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc177.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc179.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

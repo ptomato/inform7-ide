@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.7. New value properties</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.6. To be able to see and touch</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,80 +9,102 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Would you...?" -->
-<!-- SEARCH SECTION "Ex 45" -->
-<!-- SEARCH SORT "Ex 004-007-045" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc59.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc61.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.7. New value properties</b></font></td></tr></table>
+<!-- SEARCH TITLE "Lean and Hungry" -->
+<!-- SEARCH SECTION "Ex 62" -->
+<!-- SEARCH SORT "Ex 006-006-062" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc84.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc86.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.6. To be able to see and touch</b></font></td></tr></table>
 <p>
-<p>Moving on to properties which contain values, such as the &quot;matching key&quot; property of a door or a container, we need to use a different formulation.
+<p>Two of the adjectives built into Inform are:
 <p>
-<blockquote><font color="#000080">A dead end has some text called river sound. The river sound of a dead end is usually &quot;a faint whispering of running water&quot;. The Tortuous Alcove has river sound &quot;a gurgle of running water&quot;.
+<blockquote><font color="#000080">&quot;visible&quot; - the player can see this
+<br>&quot;touchable&quot; - the player can touch this
 </font></blockquote><p>
 <p>
-<p>The property &quot;river sound&quot; is now applicable only to dead ends, and we would not be allowed to talk about it in any other context. As can be seen, it holds a piece of text. If we tried the following:
+<p>So we can write descriptions such as &quot;someone visible&quot; or &quot;a touchable container&quot;. We also have adjectives &quot;invisible&quot; and &quot;untouchable&quot;, as might be expected. The visibility adjectives are particularly useful because the following is likely to go wrong:
 <p>
-<blockquote><font color="#000080">The river sound of the Tortuous Alcove is 7.
+<blockquote><font color="#000080">if Helen is in a dark room, ...
 </font></blockquote><p>
 <p>
-<p>...then Inform would object, because the number 7 is the wrong kind of value to go into the &quot;river sound&quot; property. If we need a numerical property, we can try this instead:
+<p>This tests whether the room is dark, of itself; Helen may in fact be able to see by means of a torch, but the room is still &quot;dark&quot;.
 <p>
-<blockquote><font color="#000080">A dead end has a number called the difficulty rating. The Tortuous Alcove has difficulty rating 7.
+<p>We can also talk about what other people can see and touch:
+<p>
+<blockquote><font color="#000080">something able to be seen by Helen
+<br>something which can be seen by Helen
 </font></blockquote><p>
 <p>
-<p>Suppose that we were to add:
+<p>are synonymous. Similarly for touch; and we can write such conditions as
 <p>
-<blockquote><font color="#000080">The Exquisitely Narrow Defile is a dead end.
+<blockquote><font color="#000080">if Helen is unable to see Agamemnon, ...
+<br>if Cressida can see Troilus, ...
 </font></blockquote><p>
 <p>
-<p>The Defile must have a river sound, of course, because we said that every dead end would have one. But we haven't specified it. What Inform does is to start off the property holding the &quot;default value&quot; for this kind of value: that is, it sees that the river sound has to be &quot;some text&quot;, and it fills in the default value for text: which is the empty text, consisting of no words at all, and written &quot;&quot;. Similarly, its difficulty rating is set to 0. (A table of the kinds which can be used for properties, and their default values, can be found in the Kinds index.)
+<p>Note that it is essential to establish who does the seeing and touching: so &quot;something which can be seen&quot; will not be allowed, whereas &quot;something which can be seen by Helen&quot; will.
 <p>
-<p><hr><p>
+<p>In fact, inside Inform the adjective &quot;invisible&quot; (for instance) has the following straightforward definition:
+<p>
+<blockquote><font color="#000080">Definition: Something is invisible if the player cannot see it.
+</font></blockquote><p>
+<p>
+<p>The exact definitions of visibility and touchability are complicated, because there are so many ways in which vision and touch can be obstructed, but the gist is that they behave as one would expect. Note that in darkness, nothing is visible, and that nobody can see from one room to another. In general anything invisible is also untouchable, but there are a few exceptions to do with being in the dark. Lastly, the player's own body (usually called &quot;yourself&quot; during play) is both visible (in light) and touchable.
+<p>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width=&quot;100%&quot;><tr><TD width=38px valign=top><img border=&quot;0&quot; src=../doc_images/beta.png id=&quot;betaoval&quot; style=&quot;height:31px; width=40px&quot;></td><td valign=top><font size=2>One day &quot;something which Helen can see&quot; will be allowed, I hope, but for the moment &quot;who&quot; and &quot;which&quot; must be directly followed by the verb.
+<p>
+<p></font></td></tr></table><hr><p>
 <!-- EXAMPLE START -->
-<a name="e121"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc60.html#e121 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>44</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc60.html#e121 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Would you...?</font></b></a><br>Adding new properties to objects, and checking for their presence.<p></td></tr></table>
+<a name="e121"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc85.html#e121 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>62</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc85.html#e121 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Lean and Hungry</font></b></a><br>A thief who will identify and take any valuable thing lying around that he is able to touch.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>For instance, if we want to give some objects a flavor:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode135(code) {
+function pasteCode152(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Would you...?"\n\nThe House is a room. The mouse is an animal in the House.\n\nThe player carries some green eggs and a ham.\n\nA food is a kind of thing that is edible. Food has some text called flavor. The flavor of food is usually "Tolerable."\n\n[Things are, in general, not edible by default, so we have to make them edible specifically in order to allow them to be eaten by the player. Here we\'ve defined food to be edible by default, and we have given it a standard piece of flavor text.]\n\nThe ham and the green eggs are food. The flavor of the green eggs is "Delicious!"\n\nAfter eating something:\n\tif the noun provides the property flavor, say "[the flavor of the noun][paragraph break]";\n\totherwise say "It\'s [noun]-flavored."\n\n[Note that we use "if the noun has a flavor..." to make sure that the property exists before attempting to use it. Otherwise, there is the risk that we will try to print a property that does not exist, resulting in errors in the game.]\n\n[We will only get the "It\'s [noun]-flavored." response if we successfully eat something that is not a food and does not have flavor text. To test this feature, let\'s suppose something that isn\'t exactly food but can theoretically be chewed on:]\n\nThe player carries some paper. The paper is edible.\n\nTest me with "eat ham / eat green eggs / eat paper".\n');
+    myProject.pasteCode('"Lean and Hungry"\n\nSubstance is a kind of value. The substances are silver, gold, and lead. Everything has a substance. A thing is usually lead.\n\nDefinition: a thing is valuable if it is not lead.\n\nThe Limestone Cave is a room. "Not very big, and it doesn\'t go back far, but you\'d hoped to find some shelter here. Outside it is raining exceptionally hard."\n\nThe sinister gentleman is a man in the Cave. "Leaning against the wall is a sinister gentleman in a threadbare waistcoat." The description is "He looks as though he might once have been quite well off."\n\nAfter examining the gentleman:\n\tsay "[The noun] smiles back at you in an unnerving fashion."\n\n[Now we make the rule that governs the gentleman\'s behavior. Here we\'re going to invoke the rules that allow characters besides the player to do actions. More about this can be found in the Advanced Actions chapter:]\n\nEvery turn:\n\tif the sinister gentleman can touch something valuable (called the treasure) which is not carried by a person\n\tbegin;\n\t\ttry the gentleman taking the treasure;\n\tend if.\n\nReport the gentleman taking something:\n\t\tsay "[The gentleman] slyly acquires [the noun] and tucks it into his pocket." instead.\n\n[That "not carried by a person" prevents the gentleman from stealing from the player (or, less plausibly, from himself). If we did want him to pick pockets, we could just have said "which is not carried by the gentleman".]\n\nThe player is carrying a coin, a bust of Abraham Lincoln, a bottle of sherry, a small pistol, and a wad of Confederate cash. The coin is gold. The pistol is silver.\n\nA locket is in the Cave. The locket is gold. "A broken gold locket lies on the ground, a token of your late Mama."\n\nTest me with "get locket / i / drop locket / z / drop cash / z / x gentleman / drop all / z / z / look".\n');
 }
 </script>
-<a href="javascript:pasteCode135()"><img border=0 src=../doc_images/paste.png></a> &quot;Would you...?&quot;
+<a href="javascript:pasteCode152()"><img border=0 src=../doc_images/paste.png></a> &quot;Lean and Hungry&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The House is a room. The mouse is an animal in the House.
+<blockquote><font color="#000080">Substance is a kind of value. The substances are silver, gold, and lead. Everything has a substance. A thing is usually lead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries some green eggs and a ham.
+<blockquote><font color="#000080">Definition: a thing is valuable if it is not lead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A food is a kind of thing that is edible. Food has some text called flavor. The flavor of food is usually &quot;Tolerable.&quot;
+<blockquote><font color="#000080">The Limestone Cave is a room. &quot;Not very big, and it doesn't go back far, but you'd hoped to find some shelter here. Outside it is raining exceptionally hard.&quot;
 </font></blockquote><p>
 <p>
-<p>Things are, in general, not edible by default, so we have to make them edible specifically in order to allow them to be eaten by the player. Here we've defined food to be edible by default, and we have given it a standard piece of flavor text.
-<p>
-<blockquote><font color="#000080">The ham and the green eggs are food. The flavor of the green eggs is &quot;Delicious!&quot;
+<blockquote><font color="#000080">The sinister gentleman is a man in the Cave. &quot;Leaning against the wall is a sinister gentleman in a threadbare waistcoat.&quot; The description is &quot;He looks as though he might once have been quite well off.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After eating something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun provides the property flavor, say &quot;[the flavor of the noun][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;It's [noun]-flavored.&quot;
+<blockquote><font color="#000080">After examining the gentleman:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] smiles back at you in an unnerving fashion.&quot;
 </font></blockquote><p>
 <p>
-<p>Note that we use &quot;if the noun has a flavor...&quot; to make sure that the property exists before attempting to use it. Otherwise, there is the risk that we will try to print a property that does not exist, resulting in errors in the game.
+<p>Now we make the rule that governs the gentleman's behavior. Here we're going to invoke the rules that allow characters besides the player to do actions. More about this can be found in the Advanced Actions chapter:
 <p>
-<p>We will only get the &quot;It's [noun]-flavored.&quot; response if we successfully eat something that is not a food and does not have flavor text. To test this feature, let's suppose something that isn't exactly food but can theoretically be chewed on:
-<p>
-<blockquote><font color="#000080">The player carries some paper. The paper is edible.
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the sinister gentleman can touch something valuable (called the treasure) which is not carried by a person
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try the gentleman taking the treasure;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;eat ham / eat green eggs / eat paper&quot;.
+<blockquote><font color="#000080">Report the gentleman taking something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The gentleman] slyly acquires [the noun] and tucks it into his pocket.&quot; instead.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc60.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<p>That &quot;not carried by a person&quot; prevents the gentleman from stealing from the player (or, less plausibly, from himself). If we did want him to pick pockets, we could just have said &quot;which is not carried by the gentleman&quot;.
+<p>
+<blockquote><font color="#000080">The player is carrying a coin, a bust of Abraham Lincoln, a bottle of sherry, a small pistol, and a wad of Confederate cash. The coin is gold. The pistol is silver.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A locket is in the Cave. The locket is gold. &quot;A broken gold locket lies on the ground, a token of your late Mama.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get locket / i / drop locket / z / drop cash / z / x gentleman / drop all / z / z / look&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc85.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e138"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex138.html#e138 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>45</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex138.html#e138 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Straw Boater</font></b></a><br>Using text properties that apply only to some things and are not defined for others.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc61.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc84.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc86.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -2331,7 +2331,7 @@ Global I7_wlf_sp;
 ];
 
 #ifdef NI_BUILD_COUNT;
-[ Locale descin text1 text2 o o2 k p j f2 flag ssp;
+[ Locale descin text1 text2 o o2 k p j f2 flag ssp o3;
     I7_Locale(descin, text1, text2);
     objectloop (o ofclass Object) give o ~workflag;
 #ifnot;
@@ -2344,6 +2344,8 @@ Global I7_wlf_sp;
     #endif;
     objectloop (o in descin)
         if (o hasnt concealed && NotSupportingThePlayer(o)) {
+!        	print "Mention list (at ", o, "):^";
+!        	objectloop (o3 has I7_mentioned) print o3, " is mentioned.^";
             #ifdef NI_BUILD_COUNT;
             say__p = ssp;
             #endif;
@@ -2394,7 +2396,14 @@ Global I7_wlf_sp;
                             #ifnot;
                             new_line;
                             #endif; ! NI_BUILD_COUNT
+!        	print "Mention list (before por on ", o, "):^";
+!        	objectloop (o3 has I7_mentioned) print o3, " is mentioned.^";
+
                             PrintOrRun(o, p);
+
+ !       	print "Mention list (after por on ", o, "):^";
+ !       	objectloop (o3 has I7_mentioned) print o3, " is mentioned.^";
+
                             flag = 1;
                             give o ~workflag; k--;
                             if (o has supporter && child(o) ~= 0) SayWhatsOn(o);

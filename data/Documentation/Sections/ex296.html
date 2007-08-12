@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.9. The parts of a number specification</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.15. Out of world actions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,120 +9,42 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Zqlran Era 8" -->
-<!-- SEARCH SECTION "Ex 200" -->
-<!-- SEARCH SORT "Ex 014-009-200" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc214.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc216.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.9. The parts of a number specification</b></font></td></tr></table>
+<!-- SEARCH TITLE "Spellbreaker" -->
+<!-- SEARCH SECTION "Ex 179" -->
+<!-- SEARCH SORT "Ex 012-015-179" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc185.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc187.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.15. Out of world actions</b></font></td></tr></table>
 <p>
-<p>We often need to break up a number specification into its pieces. For instance, suppose we want to know the dollars part of $1.99? We can do this by naming the parts:
+<p>The actions seen so far are all impulses causing the protagonist inside the fictional world to do something, or at least try to. But when the player types &quot;quit&quot; or &quot;save&quot;, that is not a request for anything to happen in the fictional world: it is an instruction to the program simulating that world. In fact, just the same, such requests are treated as actions, but of a special category called &quot;out of world&quot; actions. They do not cause time to pass by, so the turn counter does not advance, nor does this command cycle count as a turn at all; and they are altogether exempt from &quot;Before&quot;, &quot;Instead&quot; and &quot;After&quot; rules. Only the player is allowed to try them.
 <p>
-<blockquote><font color="#000080">A monetary value is a kind of value. $1.99 specifies a monetary value with parts dollars and cents.
+<p>We can also create new out-of-world actions. Suppose we want a dialogue like so:
+<p>
+<blockquote><font color="#000080">>ROOMS
+<br>You have been to 1 out of 8 rooms.
 </font></blockquote><p>
 <p>
-<p>We can now find the relevant parts like so. Suppose that &quot;sum&quot; is a monetary value. Then:
+<p>Here is a complete implementation:
 <p>
-<blockquote><font color="#000080">dollars part of sum
-<br>cents part of sum
+<blockquote><font color="#000080">Requesting the room tally is an action out of world.
+<br>Report requesting the room tally: say &quot;You have been to [number of visited rooms] out of [number of rooms] room[s].&quot;
+<br>Understand &quot;rooms&quot; as requesting the room tally.
 </font></blockquote><p>
 <p>
-<p>are both numbers, so for instance we can
-<p>
-<blockquote><font color="#000080">say &quot;Looks like around [dollars part of sum in words] dollar[s].&quot;
-</font></blockquote><p>
-<p>
-<p>We can also go the other way:
-<p>
-<blockquote><font color="#000080">monetary value with dollars part 4 cents part 72
-</font></blockquote><p>
-<p>
-<p>produces the monetary value $4.72. (Note the lack of commas or &quot;and&quot;s, and that the parts have to be given in the right order.) This is really intended to be useful when we manipulate such values in unusual ways:
-<p>
-<blockquote><font color="#000080">An aspect ratio is a kind of value. 16:20 specifies an aspect ratio with parts width and height.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide which aspect ratio is the wider version of (AR - an aspect ratio):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let W be the width part of AR multiplied by 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let H be the height part of AR;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the wider ratio be the aspect ratio with width part W height part H;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the wider ratio.
-</font></blockquote><p>
-<p>
-<p>Declaring the parts of a number specification individually also enables us to tack one or more options onto any of the parts:
-<p>
-<blockquote><font color="#000080">A monetary value is a kind of value. $1.99 specifies a monetary value with parts dollars and cents (optional, preamble optional).
-</font></blockquote><p>
-<p>
-<p>This declares that the &quot;cents&quot; part is optional - it will be 0 if not specified - and that if omitted, the non-numeric &quot;preamble&quot; before it should also be omitted. Thus &quot;$3&quot; is now valid and equivalent to &quot;$3.00&quot;: indeed it will be the preferred form when Inform prints out a monetary value which is an exact number of dollars. If we had said that &quot;cents&quot; was optional, but not said that the preamble was optional, then &quot;$3.&quot; would have been the form - which is less satisfactory.
-<p>
-<p>There is only one other option: &quot;without leading zeros&quot;, as in the following.
-<p>
-<blockquote><font color="#000080">An aspect ratio is a kind of value. 16:20 specifies an aspect ratio with parts width and height (without leading zeros).
-</font></blockquote><p>
-<p>
-<p>This ensures that when the ratio 4:3 is printed, it will be printed as &quot;4:3&quot; and not &quot;4:03&quot; as would otherwise happen.
+<p>It is important not to use &quot;out of world&quot; actions for anything affecting what goes on in the fictional world, or realism will collapse, and action-processing may also fail to work in the usual way. &quot;Out of world&quot; actions should be reserved for providing commands like ROOMS, which monitor events rather than participate in them.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e296"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc215.html#e296 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>199</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc215.html#e296 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Zqlran Era 8</font></b></a><br>Creating an alternative system of time for our game, using new units.<p></td></tr></table>
+<a name="e296"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc186.html#e296 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>179</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc186.html#e296 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Spellbreaker</font></b></a><br>P. David Lebling's classic "Spellbreaker" (1986) includes a room where the game cannot be saved: here is an Inform implementation.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose that our game takes place on an alien planet that does not follow Earth time. On this planet, we want to track time with different units. We also want time to advance in those units, and we want to be able to set a schedule of timed events.
+<p>The answer is easy, but there is a trap:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode288(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Zqlran Era 8"\n\nThe Barren Lavender Surface of Zql is a room. "It is late twilight on Zql. Overhead, two crescent moons, both green, mark the sluggish passage of time. A cold wind is blowing over the pale purplish ground cover, but it does not penetrate your airtight suit."\n\nA Zqlran date is a kind of value. 14-88 specifies a Zqlran date with parts zqls and frbs. Current zqlran date is a zqlran date that varies. The current zqlran date is 8-22. Previous zqlran date is a zqlran date that varies. The previous zqlran date is 8-20.\n\nWhen play begins:\n\tchange left hand status line to "[current zqlran date], or [current zqlran date in words]".\n\nTo say (Zqlra - a Zqlran date) in words:\n\tsay "[zqls part of Zqlra] Z, [frbs part of Zqlra] f."\n\n[Inform automatically supplies a way to say a new unit, which will look similar to the format in which we defined that unit in the first place. But we can (as shown here) create our own alternative say phrases to express the units in other ways as well.]\n\n[Next, we need to meddle with time advancement so that time is tracked in Zqlran date rather than in minutes. This requires borrowing a trick from a later chapter, to replace Inform\'s built-in time handling with an alternative time handling rule of our own:]\n\nThe Zqlran time rule is listed instead of the advance time rule in the turn sequence rules.\n\nThis is the Zqlran time rule:\n\tincrease turn count by 1;\n\tchange the previous zqlran date to current zqlran date;\n\tchange the current zqlran date to current zqlran date + 0-02;\n\trepeat through the Table of Zql Schedule\n\tbegin;\n\t\tif era entry is greater than previous zqlran date and era entry is not greater than current zqlran date\n\t\tbegin;\n\t\t\tsay event entry;\n\t\t\tsay paragraph break;\n\t\t\tblank out the whole row;\n\t\tend if;\n\tend repeat.\n\nTable of Zql Schedule\nera\tevent\n8-24\t"A wisp-thin cloud blows rapidly across the face of Nepenthe, the lesser of the two green moons."\n8-28\t"The cloud across Nepenthe clears."\n\n');
-}
-</script>
-<a href="javascript:pasteCode288()"><img border=0 src=../doc_images/paste.png></a> &quot;Zqlran Era 8&quot;
+<blockquote><font color="#000080">Check saving the game when in the Vault: say &quot;That spell does not work here.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Barren Lavender Surface of Zql is a room. &quot;It is late twilight on Zql. Overhead, two crescent moons, both green, mark the sluggish passage of time. A cold wind is blowing over the pale purplish ground cover, but it does not penetrate your airtight suit.&quot;
-</font></blockquote><p>
+<p>The trap is that &quot;Before saving the game...&quot;, which might have been our first guess, does not work: because out of world actions are exempt from Before, Instead and After rules.
 <p>
-<blockquote><font color="#000080">A Zqlran date is a kind of value. 14-88 specifies a Zqlran date with parts zqls and frbs. Current zqlran date is a zqlran date that varies. The current zqlran date is 8-22. Previous zqlran date is a zqlran date that varies. The previous zqlran date is 8-20.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change left hand status line to &quot;[current zqlran date], or [current zqlran date in words]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say (Zqlra - a Zqlran date) in words:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[zqls part of Zqlra] Z, [frbs part of Zqlra] f.&quot;
-</font></blockquote><p>
-<p>
-<p>Inform automatically supplies a way to say a new unit, which will look similar to the format in which we defined that unit in the first place. But we can (as shown here) create our own alternative say phrases to express the units in other ways as well.
-<p>
-<p>Next, we need to meddle with time advancement so that time is tracked in Zqlran date rather than in minutes. This requires borrowing a trick from a later chapter, to replace Inform's built-in time handling with an alternative time handling rule of our own:
-<p>
-<blockquote><font color="#000080">The Zqlran time rule is listed instead of the advance time rule in the turn sequence rules.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">This is the Zqlran time rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;increase turn count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the previous zqlran date to current zqlran date;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the current zqlran date to current zqlran date + 0-02;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Zql Schedule
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if era entry is greater than previous zqlran date and era entry is not greater than current zqlran date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say event entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Zql Schedule
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">era</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">event</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">8-24</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;A wisp-thin cloud blows rapidly across the face of Nepenthe, the lesser of the two green moons.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">8-28</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;The cloud across Nepenthe clears.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<p>Note that we could if we wished use a different device for scheduling events: this one simply prints text at scheduled eras, but we might also (for instance) make the event entry be a rule for Inform to follow, and tell Inform to carry out that rule at the scheduled time.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc215.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>&quot;Spellbreaker&quot; pulls this unpleasant, but in context witty, stunt as part of a situation which is engineered to force the player to reason through a weighing-objects puzzle using the perfect strategy rather than by guesswork. The illusion that the situation is fair - not rigged against the player, that is - would collapse if the player could save the game and keep retrying possibilities in the light of knowledge gained from earlier attempts. The moral of this story is that any attempt to use in-world situations to influence out-of-world commands should be <i>extremely uncommon</i>.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc186.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc214.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc216.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e160"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex160.html#e160 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>180</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex160.html#e160 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">A point for never saving the game</font></b></a><br>In some of the late 1970s "cave crawl" adventure games, an elaborate scoring system might still leave the player perplexed as to why an apparently perfect play-through resulted in a score which was still one point short of the supposed maximum. Why only 349 out of 350? The answer varied, but sometimes the last point was earned by never saving the game - in other words by playing it right through with nothing to guard against mistakes (except perhaps UNDO for the last command), and in one long session.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc185.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc187.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

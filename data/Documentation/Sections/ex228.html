@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.16. Vehicles and pushable things</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.3. Before rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,95 +9,103 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Hover" -->
-<!-- SEARCH SECTION "Ex 27" -->
-<!-- SEARCH SORT "Ex 003-016-027" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc41.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc43.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.16. Vehicles and pushable things</b></font></td></tr></table>
+<!-- SEARCH TITLE "Sand" -->
+<!-- SEARCH SECTION "Ex 72" -->
+<!-- SEARCH SORT "Ex 007-003-072" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc91.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc93.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.3. Before rules</b></font></td></tr></table>
 <p>
-<p>Next in the tour of standard kinds is the &quot;vehicle&quot;. This behaves like (indeed, is) an enterable container, except that it will not be portable unless this is specified.
+<p>Despite what was said in the previous section, instead rules do not quite bypass all of the usual rules. Inform knows that certain actions require light: for instance,
 <p>
-<blockquote><font color="#000080">In the Garage is a vehicle called the red sports car.
+<blockquote><font color="#000080">examining the napkin; looking; looking under the dining table
 </font></blockquote><p>
 <p>
-<p>The player can enter the sports car and then move around riding inside it, by typing directions exactly as if on foot: and the game will print names of rooms with &quot;(in the red sports car)&quot; appended, lest this be forgotten.
+<p>and if it is dark then none of these actions will be allowed, and any instead rules about them will not even be reached. Similarly, Inform knows that most actions require physical access to their objects: so &quot;taking the napkin&quot; would be blocked if the napkin were, say, inside a closed glass bottle, whereas &quot;examining the napkin&quot; would not. So an instead rule can only take effect if the action has already passed these basic reasonability tests.
 <p>
-<p>We have already seen that some things are portable, others fixed in place. In fact we can also make a third sort of thing: those which, although not portable, can be pushed from one room to another with commands like &quot;push the wheelbarrow north&quot;. At a pinch, we might just be willing to allow:
+<p>&quot;Before&quot; rules genuinely precede checking of any kind. They also differ from instead rules in that they do not automatically stop the action in its tracks. Rather, they are provided as an opportunity to ensure that something else is done first. For example:
 <p>
-<blockquote><font color="#000080">The red sports car is pushable between rooms.
+<blockquote><font color="#000080">Before taking the napkin, say &quot;(first unfolding its delicate origami swan)&quot;.
 </font></blockquote><p>
 <p>
-<p>But of course this is a property which almost any thing can have, not just a vehicle. (Only &quot;almost&quot; because Inform will not allow a door to be pushable between rooms, in the interests of realism rather than surrealism.)
+<p>whence
 <p>
-<p>If we need vehicles which the passenger sits on top of, like a horse or a tractor, the standard &quot;vehicle&quot; kind will not be ideal. However, by loading one of the extensions which comes ready-installed:
-<p>
-<blockquote><font color="#000080">Include Rideable Vehicles by Graham Nelson.
+<blockquote><font color="#000080">&gt;GET NAPKIN
+<br>(first unfolding its delicate origami swan)
+<br>Taken.
 </font></blockquote><p>
 <p>
-<p>...we are provided with two more kinds, &quot;rideable vehicle&quot; and &quot;rideable animal&quot;, just right for the tractor and the horse respectively. (As with all extensions, the documentation can be seen by clicking Go on some source which contains the above line, and then turning to the Contents index.)
+<p>We have seen that instead rules automatically stop actions, whereas before rules automatically allow them to continue. We sometimes want to change this. The magic word &quot;instead&quot; can therefore be tacked on to any instruction in a before rule, and will have the effect of immediately stopping the action at that instruction. Thus the following two rules are (almost) equivalent:
+<p>
+<blockquote><font color="#000080">Before removing the key, instead say &quot;It seems to be soldered to the keyhole.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of removing the key, say &quot;It seems to be soldered to the keyhole.&quot;
+</font></blockquote><p>
+<p>
+<p>Two special phrases can also be used: &quot;stop the action&quot; and &quot;continue the action&quot;. Yet a third way to achieve the same effect, then, would be:
+<p>
+<blockquote><font color="#000080">Before removing the key: say &quot;It seems to be soldered to the keyhole.&quot;; stop the action.
+</font></blockquote><p>
+<p>
+<p>And to round off the discussion, these are also (almost) equivalent:
+<p>
+<blockquote><font color="#000080">Before taking the napkin, say &quot;(first unfolding its delicate origami swan)&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of taking the napkin: say &quot;(first unfolding its delicate origami swan)&quot;; continue the action.
+</font></blockquote><p>
+<p>
+<p>As a general principle, it is good style to use instead rules whenever blocking actions, and before rules only when it is genuinely necessary to do something first but then to continue: in fact, it is good style to use &quot;stop the action&quot; or &quot;continue the action&quot; as little as possible.
 <p>
 <p><hr><p>
-<a name="e147"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex147.html#e147 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>24</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex147.html#e147 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Peugeot</font></b></a><br>A journey from one room to another that requires the player to be on a vehicle.<p></td></tr></table>
-<a name="e233"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex233.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>25</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex233.html#e233 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Disappointment Bay 8</font></b></a><br>Disappointment Bay: a pushable chest of ice for the boat.<p></td></tr></table>
+<a name="e227"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex227.html#e227 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>71</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex227.html#e227 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Democratic Process</font></b></a><br>Make PUT and INSERT commands automatically take objects if the player is not holding them.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e228"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc42.html#e228 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>26</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc42.html#e228 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Hover</font></b></a><br>Letting the player see a modified room description when he's viewing the place from inside a vehicle.<p></td></tr></table>
+<a name="e228"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc92.html#e228 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>72</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc92.html#e228 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Sand</font></b></a><br>Extend PUT and INSERT handling to cases where multiple objects are intended at once.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want the player to see a modified room description when he's viewing the place from inside a vehicle. There are several conceivable ways of doing this; the example here shows a rather advanced way, but is very flexible and will let us write all sorts of special cases.
+<p>The above example does not quite work when we want the player to be allowed to take multiple objects at once before putting them somewhere: we also need to add a couple of &quot;understand&quot; rules borrowed from many chapters later. While the reasons may not be immediately clear, we include the demonstration here for the sake of thoroughness:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode111(code) {
+function pasteCode162(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Hover"\n\nUse full-length room descriptions.\n\nEmerald City is a room. "All the buildings are spires and none of them have doors." The Vast Desert is west of Emerald City. "[if the player is in a vehicle]Outside, a[otherwise]A[end if] trackless waste stretches as far as the eye can see in every direction."\n\nThe hover-bubble is a vehicle in the Emerald City. "Your hover-bubble awaits." The description is "The hover-bubble is a clear globe-shaped vehicle capable of transporting you anywhere you could walk, but faster."  Understand "bubble" as the hover-bubble. The hover-bubble contains a chocolate wrapper and a parking ticket.\n\n[Here\'s the tricky part, which relies on material from the chapters on Activities and Rulebooks:]\n\nThe container interior rule is listed before the room description body text rule in the carry out looking rules.\n\nThis is the container interior rule:\n\tif the actor is the player and the player is in an enterable thing (called current cage), carry out the describing the interior activity with the current cage.\n\nDescribing the interior of something is an activity.\n\n[Now we\'ve done that, we can write a "rule for describing the interior" of something, which will print whatever we like:]\n\nRule for describing the interior of the hover-bubble:\n\tsay "The hover-bubble is transparent, but tints everything outside very faintly lavender.";\n\n[In fact, as a special refinement, we could even say:]\n\nRule for describing the interior of the hover-bubble when the hover-bubble contains more than one thing:\n\tsay "The hover-bubble is transparent, but tints everything outside very faintly lavender. Beside you you can see [a list of other things in the hover-bubble].";\n\nDefinition: a thing is other if it is not the player.\n\nRule for listing nondescript items of the hover-bubble when the player is in the hover-bubble: do nothing.\n\nTest me with "get in bubble / look / west / take all / look / get out / east".\n\n');
+    myProject.pasteCode('"Sand"\n\nBefore inserting something which is not carried by the player into something:\n\tif the noun is in the second noun, say "Already done." instead;\n\tsay "(first taking [the noun]) ";\n\tsilently try taking the noun;\n\tif the player is not holding the noun, stop the action.\n\nBefore putting something which is not carried by the player on something:\n\tif the noun is on the second noun, say "Already done." instead;\n\tsay "(first taking [the noun])[line break]";\n\tsilently try taking the noun;\n\tif the player is not holding the noun, stop the action.\n\nUnderstand "put [things] in [something]" as inserting it into. Understand "put [things] on [something]" as putting it on.\n\nThe Closet is a room.\n\nA lentil is a kind of thing. A black-eyed pea is a kind of thing. The closet contains 3 lentils. The Closet contains 14 black-eyed peas. The round tin is a container in the closet. The round tin contains 17 lentils. The square tin is a container in the Closet. The square tin contains 20 black-eyed peas.\n\nSorting is a scene. Sorting begins when play begins. Sorting ends when all the lentils are in the round tin and all the peas are in the square tin. When Sorting ends, end the game in victory.\n\nWhen play begins: say "Thanks to your cruel stepmother, you\'re not going anywhere until the lentils and peas are sorted."\n\nTest me with "put peas in square tin / put lentils in round tin".\n');
 }
 </script>
-<a href="javascript:pasteCode111()"><img border=0 src=../doc_images/paste.png></a> &quot;Hover&quot;
+<a href="javascript:pasteCode162()"><img border=0 src=../doc_images/paste.png></a> &quot;Sand&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Use full-length room descriptions.
+<blockquote><font color="#000080">Before inserting something which is not carried by the player into something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is in the second noun, say &quot;Already done.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking [the noun]) &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not holding the noun, stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Emerald City is a room. &quot;All the buildings are spires and none of them have doors.&quot; The Vast Desert is west of Emerald City. &quot;[if the player is in a vehicle]Outside, a[otherwise]A[end if] trackless waste stretches as far as the eye can see in every direction.&quot;
+<blockquote><font color="#000080">Before putting something which is not carried by the player on something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is on the second noun, say &quot;Already done.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking [the noun])[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not holding the noun, stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The hover-bubble is a vehicle in the Emerald City. &quot;Your hover-bubble awaits.&quot; The description is &quot;The hover-bubble is a clear globe-shaped vehicle capable of transporting you anywhere you could walk, but faster.&quot;  Understand &quot;bubble&quot; as the hover-bubble. The hover-bubble contains a chocolate wrapper and a parking ticket.
+<blockquote><font color="#000080">Understand &quot;put [things] in [something]&quot; as inserting it into. Understand &quot;put [things] on [something]&quot; as putting it on.
 </font></blockquote><p>
 <p>
-<p>Here's the tricky part, which relies on material from the chapters on Activities and Rulebooks:
-<p>
-<blockquote><font color="#000080">The container interior rule is listed before the room description body text rule in the carry out looking rules.
+<blockquote><font color="#000080">The Closet is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">This is the container interior rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the actor is the player and the player is in an enterable thing (called current cage), carry out the describing the interior activity with the current cage.
+<blockquote><font color="#000080">A lentil is a kind of thing. A black-eyed pea is a kind of thing. The closet contains 3 lentils. The Closet contains 14 black-eyed peas. The round tin is a container in the closet. The round tin contains 17 lentils. The square tin is a container in the Closet. The square tin contains 20 black-eyed peas.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Describing the interior of something is an activity.
+<blockquote><font color="#000080">Sorting is a scene. Sorting begins when play begins. Sorting ends when all the lentils are in the round tin and all the peas are in the square tin. When Sorting ends, end the game in victory.
 </font></blockquote><p>
 <p>
-<p>Now we've done that, we can write a &quot;rule for describing the interior&quot; of something, which will print whatever we like:
-<p>
-<blockquote><font color="#000080">Rule for describing the interior of the hover-bubble:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The hover-bubble is transparent, but tints everything outside very faintly lavender.&quot;;
+<blockquote><font color="#000080">When play begins: say &quot;Thanks to your cruel stepmother, you're not going anywhere until the lentils and peas are sorted.&quot;
 </font></blockquote><p>
 <p>
-<p>In fact, as a special refinement, we could even say:
-<p>
-<blockquote><font color="#000080">Rule for describing the interior of the hover-bubble when the hover-bubble contains more than one thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The hover-bubble is transparent, but tints everything outside very faintly lavender. Beside you you can see [a list of other things in the hover-bubble].&quot;;
+<blockquote><font color="#000080">Test me with &quot;put peas in square tin / put lentils in round tin&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a thing is other if it is not the player.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for listing nondescript items of the hover-bubble when the player is in the hover-bubble: do nothing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;get in bubble / look / west / take all / look / get out / east&quot;.
-</font></blockquote><p>
-<p>
-<p>And now anything that's beside us in the vehicle will be described during that first paragraph, rather than later on.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc42.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc92.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc41.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc43.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc91.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc93.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

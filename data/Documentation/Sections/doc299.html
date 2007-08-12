@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.9. Rulebook variables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.5. Sorting and indexing of rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,31 +9,19 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Rulebook variables" -->
-<!-- SEARCH SECTION "18.9" -->
-<!-- SEARCH SORT "018-009-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc298.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc300.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.9. Rulebook variables</b></font></td></tr></table>
+<!-- SEARCH TITLE "Sorting and indexing of rules" -->
+<!-- SEARCH SECTION "18.5" -->
+<!-- SEARCH SORT "018-005-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc298.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc300.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.5. Sorting and indexing of rules</b></font></td></tr></table>
 <p>
-<p>When a rulebook is intended to perform some complicated task or calculation, it is sometimes useful for earlier rules to be able to leave information which will help later ones.
+<p>The Rules page of the index for a project offers a view of the rulebooks and their contents, with two major exceptions: built-in rules for specific actions are left to the Actions page, and any rules for scene endings or beginnings are left to the Scenes page.
 <p>
-<p>For instance, suppose we want a rulebook which is intended to print out the player's current aptitude. We will suppose that this is a number from 0 upwards: the higher, the apter. The player gets bonus aptitude marks for achievements, but marks deducted for accidents, and so on. Moreover, we want to design this system so that it's easy to add further rules. The natural solution is to have a number which varies (or 'variable') acting as the running aptitude total: it should start at 0 and be altered up or down by subsequent rules. First, we should make the rulebook, and then add a variable:
+<p>As we have seen, we need to know the name of a rule before we can change its rulebook listing or alter its applicability. The Rules and Actions index pages show the names of the built-in rules, which are not worth memorising. (Typing can be saved by selecting a rule's name, using Copy and then using Paste to insert the name into the source text.)
 <p>
-<blockquote><font color="#000080">Aptitude is a rulebook. The aptitude rulebook has a number called the aptitude mark.
-</font></blockquote><p>
+<p>In the Rules index, each rulebook is named (in italic type) and then followed by a list of the rules within it, one on each line: if nothing follows, then the rulebook is currently empty. The rules are given in order, and icons are used which indicate which rules are more specific than which others: for instance, a green-tipped arrow running downwards indicates that the rule below is more specific than the rule above. Hovering the mouse over such an icon should bring up a &quot;tooltip&quot; which explains Inform's reasoning:
 <p>
-<p>The new value 'aptitude mark' is shared by the rules of the rulebook: nobody else can see it. It is created at the start of the rulebook being followed, and destroyed at the end. (If the rulebook should be followed a second time inside of itself, a new copy is created which does not disturb the old one.) So, in this case, 'aptitude mark' is started as 0 (since it is a number) each time the aptitude rules run. We can then write whatever rules we please to modify it:
+<p><img border=0 src=../doc_images/rulesorting.png>
 <p>
-<blockquote><font color="#000080">An aptitude rule: if the player is in darkness then decrease the aptitude mark by 3.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">An aptitude rule: if we have taken the idol then increase the aptitude mark by 10.
-</font></blockquote><p>
-<p>
-<p>And we had better do something with the result:
-<p>
-<blockquote><font color="#000080">The last aptitude rule: say &quot;Your aptitude rating is [aptitude mark].&quot;
-</font></blockquote><p>
-<p>
-<p>A rulebook can have any number of variables like this. They behave much like &quot;let&quot; values except that they last for a whole rulebook, not an individual rule or To phrase definition. (Well, strictly speaking they are accessible not just to the rules which belong to the rulebook, but also to any rules which previously belonged to the rulebook but were kicked out by means of an explicit rule-listing sentence. This is good because otherwise they will suddenly cause problem messages when unlisted.)
+<p>As this suggests, Inform performs its automatic sorting using a precise collection of Laws (the term &quot;rules&quot; would be ambiguous here, so we call these guidelines Laws instead), and the tooltip shows which Law was applied. It is bad style to write source text which absolutely depends on detailed points of these Laws, but they are documented at the end of this chapter for those who do wish to see the full details.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc298.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc300.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

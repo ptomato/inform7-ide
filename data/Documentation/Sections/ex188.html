@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.19. Constructing the status line</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.7. Understanding any, understanding rooms</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,107 +9,109 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Guided Tour" -->
-<!-- SEARCH SECTION "Ex 264" -->
-<!-- SEARCH SORT "Ex 017-019-264" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc275.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc277.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.19. Constructing the status line</b></font></td></tr></table>
+<!-- SEARCH TITLE "One of Those Mornings" -->
+<!-- SEARCH SECTION "Ex 242" -->
+<!-- SEARCH SORT "Ex 016-007-242" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc246.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc248.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.7. Understanding any, understanding rooms</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> Just before input is accepted from the keyboard, Inform constructs a &quot;status line&quot; at the top of the window which is normally displayed in reverse colours (white on black instead of black on white, say).
+<p>Ordinarily, if we write
 <p>
-<p><b>2. The default behaviour.</b> Makes the status line up out of two pieces, the &quot;left hand status line&quot; and the &quot;right hand status line&quot;. Since these can freely be changed, note that the status line is already very customisable without using rules applied to this activity.
-<p>
-<p><b>3. Examples.</b> (a) The most useful thing about this activity is that it allows us to vary descriptions in the status line. This is especially helpful to abbreviate unduly long room names, which might not otherwise fit:
-<p>
-<blockquote><font color="#000080">The Temple Of A Thousand Mightily Peeved Deities is a room. Rule for printing the name of the Temple while constructing the status line: say &quot;Temple&quot;.
+<blockquote><font color="#000080">Understand &quot;manipulate [something]&quot;.
 </font></blockquote><p>
 <p>
-<p>(b) Again, it's usually not necessary to apply activity rules to this, but occasionally amusing effects are possible if we do:
+<p>then the &quot;[something]&quot; will only match what is within reach or sight: this is the concept of &quot;scope&quot;, which is what prevents a player from spookily acting on objects from a distance. The parser itself prevents the manipulation rules from ever being invoked on such distant items, which is as it should be.
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode66(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('The blindfold is wearable and initially carried. Rule for constructing the status line while the blindfold is worn: do nothing.\n\n');
-}
-</script>
-<a href="javascript:pasteCode66()"><img border=0 src=../doc_images/paste.png></a> The blindfold is wearable and initially carried. Rule for constructing the status line while the blindfold is worn: do nothing.
+<p>Sometimes, though, we positively want to allow this possibility. If we use the special word &quot;any&quot;, as in
+<p>
+<blockquote><font color="#000080">Understand &quot;manipulate [any door]&quot;.
 </font></blockquote><p>
+<p>
+<p>then any door, anywhere in the model world, can be allowed in the player's command. (Of course, the manipulation rules may not do what the player hopes: all that has happened is that the command is now possible to type.) The &quot;any&quot; can be followed by any description of items or rooms, and the latter opens up new possibilities, since rooms are ordinarily never allowed to be named in the player's commands.
+<p>
+<p>For example, the following gives the player the ability to walk between rooms without giving explicit directions of movement.
+<p>
+<blockquote><font color="#000080">Going by name is an action applying to one thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out going by name: say &quot;You walk to [the noun].&quot;; move the player to the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;go to [any adjacent visited room]&quot; as going by name.
+</font></blockquote><p>
+<p>
+<p>(This is really only a sketch: in a finished work, &quot;go to&quot; would produce helpful errors if non-adjacent but visited rooms were named, and we might also worry about rules applying to movement, because the method above will circumvent them.)
 <p>
 <p><hr><p>
-<a name="e268"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex268.html#e268 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>262</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex268.html#e268 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ways Out</font></b></a><br>A status line that lists the available exits from the current location.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e188"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc276.html#e188 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>263</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc276.html#e188 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Guided Tour</font></b></a><br>A status line that lists the available exits from the current location, changing the names of these exits depending on whether the room has been visited or not.<p></td></tr></table>
+<a name="e188"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc247.html#e188 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>242</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc247.html#e188 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> One of Those Mornings</font></b></a><br>A FIND command that allows the player to find a lost object anywhere<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>It may sometimes be helpful to prompt the player with a list of exits printed up in the status line. For instance, here is a status line that will print the names of nearby rooms, as well as all the doors the player can see:
+<p>Suppose that, contrary to the usual rules of interactive fiction, we want to allow the player to discover the locations of things he hasn't actually seen yet:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode354(code) {
+function pasteCode334(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Guided Tour"\n\nWhen play begins:\n\tchange left hand status line to "Nearby: [if a room is adjacent][the list of adjacent rooms][end if][if a room is adjacent and a door is visible] and [end if][if a door is visible][the list of visible doors][end if]";\n\tchange right hand status line to "".\n\n[Of course, we may not want to tell the player what glories are to be found in locations he hasn\'t yet explored.]\n\nRule for printing the name of an unvisited room (called the target) while constructing the status line:\n\tlet aim be the best route from the location to the target;\n\tsay "something [aim]".\n\n[Even when we have seen a room, we might still want a reminder about how to get there:]\n\nAfter printing the name of a visited room (called the target) while constructing the status line:\n\tlet aim be the best route from the location to the target;\n\tsay " ([aim])".\n\n[We may also find that printing out full directions makes the status line unpleasantly crowded. Fortunately, it isn\'t hard to provide a set of abbreviations to use in this context:]\n\nRule for printing the name of a direction (called the aim) while constructing the status line:\n\tchoose row with a heading of the aim in the Table of Abbreviation;\n\tsay "[shortcut entry]".\n\nTable of Abbreviation\nheading\tshortcut\nnorth\t"N"\nnortheast\t"NE"\nnorthwest\t"NW"\neast\t"E"\nsoutheast\t"SE"\nsouth\t"S"\nsouthwest\t"SW"\nwest\t"W"\nup\t"U"\ndown\t"D"\ninside\t"in"\noutside\t"out"\n\n[Everywhere else, the names of directions will still be printed out in full in the usual way. And now we give it a little map to work with:]\n\nDome is a room. North of Dome is North Chapel. South of the Dome is South Chapel. West of the Dome is Western End. Quiet Corner is northwest of the Dome, north of Western End, and west of North Chapel. Loud Corner is east of North Chapel, northeast of Dome, and north of Eastern End. Eastern End is north of Dim Corner and east of Dome. Dim Corner is southeast of Dome and east of South Chapel. Ruined Corner is southwest of Dome, west of South Chapel, and south of Western End.\n\nThe church door is east of Eastern End and west of the Courtyard. The church door is a door.\n\nTest me with "n / w / s".\n\n');
+    myProject.pasteCode('"One of Those Mornings"\n\nUnderstand "find [any thing]" as finding.\n\nFinding is an action applying to one visible thing.\n\nCarry out finding:\n\tif the player is carrying the noun\n\tbegin;\n\t\tsay "You\'re holding [the noun]!";\n\totherwise;\n\t\tsay "You left [the noun] [if the noun is on a supporter]on[otherwise]in[end if] [the holder of the noun].";\n\tend if.\n\n[The holder of the noun can be a room, a supporter, or a container: the phrase is not picky. We would want to be a little more careful if it were ever possible for an item to have been "removed from play" in our game, since then the holder could be nothing, and that would have odd results. In this particular example, though, that will not arise.]\n\n[And that\'s it, as far as the find command goes. The rest is local color.]\n\nThe Exhibition Room is a room. It contains a closed locked lockable transparent openable container called the display case. The display case contains a priceless pearl. The display case is scenery. The description of the Exhibition Room is "By far the finest thing in the room is a priceless pearl in a glass display case. It should of course be yours[if key is not visible], if only you can remember where you hid the key[end if]."\n\nThe silver key unlocks the display case.\n\nA jade vase, a teak chest, a bronze teakettle, and a child\'s burial casket are openable closed containers in the Exhibition Room.\n\nAfter taking the pearl:\n\tsay "The pearl rolls into your hand, gleaming in the oblique light; your fortune is made.";\n\tend the game in victory.\n\n[If we want to have the key found in different places when the game is replayed:]\n\nWhen play begins:\n\tlet the space be a random container which is not the display case;\n\tmove the silver key to the space.\n\nEvery turn:\n\tsay "Your watch ticks with maddening loudness."\n\nThe time of day is 1:02 AM.\n\nAt 1:08 AM: say "The security guard arrives to find you fumbling about with keys. Curses."; end the game in death.\n\nTest me with "find pearl / find teakettle / get teakettle / find teakettle / find key".\n');
 }
 </script>
-<a href="javascript:pasteCode354()"><img border=0 src=../doc_images/paste.png></a> &quot;Guided Tour&quot;
+<a href="javascript:pasteCode334()"><img border=0 src=../doc_images/paste.png></a> &quot;One of Those Mornings&quot;
 </font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;find [any thing]&quot; as finding.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Finding is an action applying to one visible thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out finding:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is carrying the noun
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're holding [the noun]!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You left [the noun] [if the noun is on a supporter]on[otherwise]in[end if] [the holder of the noun].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<p>The holder of the noun can be a room, a supporter, or a container: the phrase is not picky. We would want to be a little more careful if it were ever possible for an item to have been &quot;removed from play&quot; in our game, since then the holder could be nothing, and that would have odd results. In this particular example, though, that will not arise.
+<p>
+<p>And that's it, as far as the find command goes. The rest is local color.
+<p>
+<blockquote><font color="#000080">The Exhibition Room is a room. It contains a closed locked lockable transparent openable container called the display case. The display case contains a priceless pearl. The display case is scenery. The description of the Exhibition Room is &quot;By far the finest thing in the room is a priceless pearl in a glass display case. It should of course be yours[if key is not visible], if only you can remember where you hid the key[end if].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The silver key unlocks the display case.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A jade vase, a teak chest, a bronze teakettle, and a child's burial casket are openable closed containers in the Exhibition Room.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After taking the pearl:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The pearl rolls into your hand, gleaming in the oblique light; your fortune is made.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
+</font></blockquote><p>
+<p>
+<p>If we want to have the key found in different places when the game is replayed:
 <p>
 <blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change left hand status line to &quot;Nearby: [if a room is adjacent][the list of adjacent rooms][end if][if a room is adjacent and a door is visible] and [end if][if a door is visible][the list of visible doors][end if]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change right hand status line to &quot;&quot;.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the space be a random container which is not the display case;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the silver key to the space.
 </font></blockquote><p>
 <p>
-<p>Of course, we may not want to tell the player what glories are to be found in locations he hasn't yet explored.
-<p>
-<blockquote><font color="#000080">Rule for printing the name of an unvisited room (called the target) while constructing the status line:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let aim be the best route from the location to the target;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;something [aim]&quot;.
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your watch ticks with maddening loudness.&quot;
 </font></blockquote><p>
 <p>
-<p>Even when we have seen a room, we might still want a reminder about how to get there:
-<p>
-<blockquote><font color="#000080">After printing the name of a visited room (called the target) while constructing the status line:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let aim be the best route from the location to the target;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot; ([aim])&quot;.
+<blockquote><font color="#000080">The time of day is 1:02 AM.
 </font></blockquote><p>
 <p>
-<p>We may also find that printing out full directions makes the status line unpleasantly crowded. Fortunately, it isn't hard to provide a set of abbreviations to use in this context:
-<p>
-<blockquote><font color="#000080">Rule for printing the name of a direction (called the aim) while constructing the status line:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row with a heading of the aim in the Table of Abbreviation;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[shortcut entry]&quot;.
+<blockquote><font color="#000080">At 1:08 AM: say &quot;The security guard arrives to find you fumbling about with keys. Curses.&quot;; end the game in death.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Abbreviation
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">heading</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">shortcut</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">north</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;N&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">northeast</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;NE&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">northwest</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;NW&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">east</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;E&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">southeast</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;SE&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">south</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;S&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">southwest</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;SW&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">west</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;W&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">up</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;U&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">down</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;D&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">inside</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;in&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">outside</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;out&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">Test me with &quot;find pearl / find teakettle / get teakettle / find teakettle / find key&quot;.
 </font></blockquote><p>
-<p>
-<p>Everywhere else, the names of directions will still be printed out in full in the usual way. And now we give it a little map to work with:
-<p>
-<blockquote><font color="#000080">Dome is a room. North of Dome is North Chapel. South of the Dome is South Chapel. West of the Dome is Western End. Quiet Corner is northwest of the Dome, north of Western End, and west of North Chapel. Loud Corner is east of North Chapel, northeast of Dome, and north of Eastern End. Eastern End is north of Dim Corner and east of Dome. Dim Corner is southeast of Dome and east of South Chapel. Ruined Corner is southwest of Dome, west of South Chapel, and south of Western End.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The church door is east of Eastern End and west of the Courtyard. The church door is a door.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;n / w / s&quot;.
-</font></blockquote><p>
-<p>
-<p>Note that while this looks fine in some places, other locations exceed the limits of what the status-line can hold: if any given room is going to have a large number of exits, this kind of listing will almost certainly not fit. So apply cautiously.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc276.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc247.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc275.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc277.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e109"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex109.html#e109 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>243</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex109.html#e109 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Actaeon</font></b></a><br>A FOLLOW command allowing the player to pursue a person who has just left the room.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc246.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc248.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

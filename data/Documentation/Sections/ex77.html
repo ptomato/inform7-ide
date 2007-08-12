@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.3. Overriding existing commands</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.11. Phrases which use descriptions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,62 +9,80 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "The Trouble with Printing" -->
-<!-- SEARCH SECTION "Ex 229" -->
-<!-- SEARCH SORT "Ex 016-003-229" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc241.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc243.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.3. Overriding existing commands</b></font></td></tr></table>
+<!-- SEARCH TITLE "Inventory Despair" -->
+<!-- SEARCH SECTION "Ex 147" -->
+<!-- SEARCH SORT "Ex 011-011-147" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc162.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc164.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.11. Phrases which use descriptions</b></font></td></tr></table>
 <p>
-<p>Suppose we are devising specialist commands for a game of whist, and we want &quot;discard&quot; as one of them. Looking at the table of commands in the Action index, we find that, inconveniently enough, &quot;discard&quot; already has a meaning: it is synonymous with &quot;drop&quot;, and while that might be sensible most of the time, it is perfectly wrong now. We need a way to free up &quot;discard&quot; for our own use. We can do that by:
+<p>In the chapter on Descriptions, we saw that a description can be any source text which describes one or more objects: it might be as simple as &quot;the Corn Market&quot;, or as complicated as &quot;open containers which are in dark rooms&quot;. (More or less the only restriction is that it must be unambiguous as to what counts and what does not: &quot;three containers&quot; is ambiguous as a description because it does not say which three.)
 <p>
-<blockquote><font color="#000080">Understand the command &quot;discard&quot; as something new.
+<p>In the last section, we saw that it is possible to repeat phrases with a temporary name running through all the things matching a description. Other tricks with descriptions have also turned up: in fact, if D is a description, then
+<p>
+<blockquote><font color="#000080">say &quot;You gaze mournfully at [the list of D].&quot;;
+<br>let the tally be the number of D;
+<br>let the surprise prize be a random D;
+<br>repeat with item running through D begin; ...; end repeat;
 </font></blockquote><p>
 <p>
-<p>This cuts it loose, so to speak, and ready to be given new meanings. If we check the Actions index again, we find no mention of &quot;discard&quot; - it is now a blank slate - but &quot;drop&quot; is still exactly as it was. We could now say something like:
+<p>are all standard things to do. These examples make it look as if it must be possible to define phrases which act on descriptions, and in fact it is. For instance:
 <p>
-<blockquote><font color="#000080">Understand &quot;discard [something]&quot; as discarding.
+<blockquote><font color="#000080">To enumerate (collection - a description):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with the item running through the collection
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;-- [The item].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>(If we had declared that &quot;drop&quot; was something new, the whole thing would have happened in reverse, with &quot;discard&quot; retaining all of the original grammar. Inform does not distinguish between a command and its synonym.)
+<p>This makes &quot;enumerate lighted rooms&quot; run off a list of lighted rooms in a textual format different from the standard one produced by &quot;say the list of lighted rooms&quot;. Inside the definition, &quot;collection&quot; can be used wherever a description might be used: here, for instance, we use it as the range for the repeat loop.
 <p>
-<p>The &quot;... as something new&quot; sentence works even for a command which did not exist anyway, for instance with:
-<p>
-<blockquote><font color="#000080">Understand the command &quot;zylqix&quot; as something new.
-</font></blockquote><p>
-<p>
-<p>Of course this does nothing - but it is intentional that it generates no problem messages: it means that the sentence can be used to force a command to be fresh and untouched by previous definitions, which might be useful when working with extensions by other people.
+<p>Purely as a convenience, we can also write &quot;member of&quot; or &quot;members of&quot; in this context. For instance, in the enumerate definition, it would have been just as good to write &quot;...running through the members of the collection...&quot; in the repeat. (Similarly, we could write &quot;number of members of the collection&quot; or &quot;a random member of the collection&quot;, which looks grammatically tidier than writing &quot;number of the collection&quot; or &quot;random of the collection&quot; - though in fact both of these do work.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e77"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc242.html#e77 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>228</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc242.html#e77 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Trouble with Printing</font></b></a><br>Making a READ command, distinct from EXAMINE, for legible objects.<p></td></tr></table>
+<a name="e77"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc163.html#e77 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>147</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc163.html#e77 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Inventory Despair</font></b></a><br>A phrase that chooses and names the least-recently selected item from the collection given, allowing the text to cycle semi-randomly through a group of objects.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode319(code) {
+function pasteCode243(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"The Trouble with Printing"\n\nA thing has some text called printing. The printing of a thing is usually "blank".\n\nUnderstand the command "read" as something new. Understand "read [something]" as reading. Reading is an action applying to one thing, requiring light. Check reading: if the printing of the noun is "blank", say "Nothing is written on [the noun]." instead. Carry out reading: say "You read: [printing of the noun][line break]". Report reading: do nothing.\n\nThe Archive is a room.\n\nBerkeley\'s report is a thing in the Archive. The description is "A report from Governor Sir William Berkeley of Virginia, in 1671, in answer to the queries sent by the Commissioners of Plantations the year previous. Of this report the better part is burned and only a tail fragment remains." The printing of Berkeley\'s report is "I thank God, [italic type]there are no free schools[roman type] nor [italic type]printing[roman type], and I hope we shall not have these hundred years; for [italic type]learning[roman type] has brought disobedience, and heresy, and sects into the world, and [italic type]printing[roman type] has divulged them..."\n\nTest me with "examine report / read report".\n\n');
+    myProject.pasteCode('"Curare"\n\nA thing has a number called the last use. The last use of a thing is usually 0.\n\nDefinition: a thing is old if its last use is 12 or less.\n\n[The actual number chosen in this definition is pretty much irrelevant: the main thing is that we want to establish relative values. The lower the "last use" number of an item, the older that item should be understood to be, as we see here:]\n\nTo decide which thing is cyclically random (collection - a description):\n\tlet choice be the oldest member of the collection;\n\tchange the last use of the choice to the turn count;\n\tdecide on choice.\n\n[This phrase will select, from the collection of objects passed to it, the one that has been mentioned least recently. This means that if we consult it repeatedly about the same collection, it will begin to cycle predictably; but if new items are added to the collection, it will mention these first before returning to the previous cycle. Now we can use this:]\n\nAfter taking inventory:\n\tsay "You stare morosely at [the cyclically random thing carried by the player], wondering what you\'re ever going to find to do with it."\n\n[We could have said "You stare morosely at [the oldest thing carried by the player]" here, but doing so would not have set the "last use" property correctly, so we would not get the cycling behavior that we\'re looking for.]\n\nThe Evidence Room is a room. Some shelves are scenery supporters in the Evidence Room. A box is a kind of container which is open and not openable. On the shelves is a box.  It contains a deformed bullet and a driver\'s license.\n\nThe player carries a steel fish hook, a Chinese passport, a tube of synthetic curare, and an envelope full of Euros.\n\nTest me with "i / i / i / i / i / i / get all from box / i / i / i".\n');
 }
 </script>
-<a href="javascript:pasteCode319()"><img border=0 src=../doc_images/paste.png></a> &quot;The Trouble with Printing&quot;
+<a href="javascript:pasteCode243()"><img border=0 src=../doc_images/paste.png></a> &quot;Curare&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing has some text called printing. The printing of a thing is usually &quot;blank&quot;.
+<blockquote><font color="#000080">A thing has a number called the last use. The last use of a thing is usually 0.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand the command &quot;read&quot; as something new. Understand &quot;read [something]&quot; as reading. Reading is an action applying to one thing, requiring light. Check reading: if the printing of the noun is &quot;blank&quot;, say &quot;Nothing is written on [the noun].&quot; instead. Carry out reading: say &quot;You read: [printing of the noun][line break]&quot;. Report reading: do nothing.
+<blockquote><font color="#000080">Definition: a thing is old if its last use is 12 or less.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Archive is a room.
+<p>The actual number chosen in this definition is pretty much irrelevant: the main thing is that we want to establish relative values. The lower the &quot;last use&quot; number of an item, the older that item should be understood to be, as we see here:
+<p>
+<blockquote><font color="#000080">To decide which thing is cyclically random (collection - a description):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let choice be the oldest member of the collection;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last use of the choice to the turn count;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on choice.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Berkeley's report is a thing in the Archive. The description is &quot;A report from Governor Sir William Berkeley of Virginia, in 1671, in answer to the queries sent by the Commissioners of Plantations the year previous. Of this report the better part is burned and only a tail fragment remains.&quot; The printing of Berkeley's report is &quot;I thank God, [italic type]there are no free schools[roman type] nor [italic type]printing[roman type], and I hope we shall not have these hundred years; for [italic type]learning[roman type] has brought disobedience, and heresy, and sects into the world, and [italic type]printing[roman type] has divulged them...&quot;
+<p>This phrase will select, from the collection of objects passed to it, the one that has been mentioned least recently. This means that if we consult it repeatedly about the same collection, it will begin to cycle predictably; but if new items are added to the collection, it will mention these first before returning to the previous cycle. Now we can use this:
+<p>
+<blockquote><font color="#000080">After taking inventory:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You stare morosely at [the cyclically random thing carried by the player], wondering what you're ever going to find to do with it.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;examine report / read report&quot;.
+<p>We could have said &quot;You stare morosely at [the oldest thing carried by the player]&quot; here, but doing so would not have set the &quot;last use&quot; property correctly, so we would not get the cycling behavior that we're looking for.
+<p>
+<blockquote><font color="#000080">The Evidence Room is a room. Some shelves are scenery supporters in the Evidence Room. A box is a kind of container which is open and not openable. On the shelves is a box.  It contains a deformed bullet and a driver's license.
 </font></blockquote><p>
 <p>
-<p>Since we defined reading as an action requiring light, we could further distinguish reading and examining (if we wanted) by writing some different visibility rules for it.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc242.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">The player carries a steel fish hook, a Chinese passport, a tube of synthetic curare, and an envelope full of Euros.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;i / i / i / i / i / i / get all from box / i / i / i&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc163.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc241.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc243.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc162.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc164.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

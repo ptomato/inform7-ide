@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.15. Out of world actions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.14. Going by, going through, going with</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,49 +9,84 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "A point for never saving the game" -->
-<!-- SEARCH SECTION "Ex 176" -->
-<!-- SEARCH SORT "Ex 012-015-176" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc185.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc187.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.15. Out of world actions</b></font></td></tr></table>
+<!-- SEARCH TITLE "No Relation" -->
+<!-- SEARCH SECTION "Ex 90" -->
+<!-- SEARCH SORT "Ex 007-014-090" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc102.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc104.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.14. Going by, going through, going with</b></font></td></tr></table>
 <p>
-<p>The actions seen so far are all impulses causing the protagonist inside the fictional world to do something, or at least try to. But when the player types &quot;quit&quot; or &quot;save&quot;, that is not a request for anything to happen in the fictional world: it is an instruction to the program simulating that world. In fact, just the same, such requests are treated as actions, but of a special category called &quot;out of world&quot; actions. They do not cause time to pass by, so the turn counter does not advance, nor does this command cycle count as a turn at all; and they are altogether exempt from &quot;Before&quot;, &quot;Instead&quot; and &quot;After&quot; rules. Only the player is allowed to try them.
+<p>Adding to the previous example game, we apply rules which depend on travelling by a particular vehicle:
 <p>
-<p>We can also create new out-of-world actions. Suppose we want a dialogue like so:
-<p>
-<blockquote><font color="#000080">>ROOMS
-<br>You have been to 1 out of 8 rooms.
+<blockquote><font color="#000080">The book trolley is in the Musicology Section. &quot;The book trolley, a sort of motorised tractor for trundling around through the stacks, is parked here.&quot; The trolley is a vehicle. Instead of going nowhere by the trolley, say &quot;Don't go crashing the trolley into walls.&quot;
 </font></blockquote><p>
 <p>
-<p>Here is a complete implementation:
-<p>
-<blockquote><font color="#000080">Requesting the room tally is an action out of world.
-<br>Report requesting the room tally: say &quot;You have been to [number of visited rooms] out of [number of rooms] room[s].&quot;
-<br>Understand &quot;rooms&quot; as requesting the room tally.
+<blockquote><font color="#000080">Instead of going to the Front Stacks by the trolley, say &quot;The Front Stacks are far too confined for the trolley to manoeuvre into them.&quot;
 </font></blockquote><p>
 <p>
-<p>It is important not to use &quot;out of world&quot; actions for anything affecting what goes on in the fictional world, or realism will collapse, and action-processing may also fail to work in the usual way. &quot;Out of world&quot; actions should be reserved for providing commands like ROOMS, which monitor events rather than participate in them.
+<p>And, lastly, rules which apply to movements through particular doors:
+<p>
+<blockquote><font color="#000080">The green baize door is east of the Catalogue Room and west of the Clerk's Office. The green baize door is an open door.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before going through the green baize door, say &quot;Through you go...&quot; After going through the green baize door: try looking; say &quot;...and here you are.&quot;
+</font></blockquote><p>
+<p>
+<p>(Note that these apply whether the action is &quot;going east&quot; or &quot;entering the green baize door&quot;, each having the same effect.) The last rule is worth a second look: the normal way that a &quot;going&quot; action is reported is to produce the room description of the new location. So if an &quot;after&quot; rule stops the action before we get to reporting, we have to produce any room description by hand (hence the &quot;try looking&quot; to cause the looking action). Alternatively, we could simply say something and let the normal course of events take place:
+<p>
+<blockquote><font color="#000080">After going through the green baize door: say &quot;...and here you are:&quot;; continue the action.
+</font></blockquote><p>
+<p>
+<p>Finally, going is an action which can also happen while the player is pushing something from one room to another, and we can describe this like so:
+<p>
+<blockquote><font color="#000080">Instead of going from the Office with the trolley, say &quot;But it looks perfectly placed here. Why push any further?&quot;
+</font></blockquote><p>
 <p>
 <p><hr><p>
-<a name="e286"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex286.html#e286 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>174</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex286.html#e286 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Spellbreaker</font></b></a><br>P. David Lebling's classic "Spellbreaker" (1986) includes a room where the game cannot be saved: here is an Inform implementation.<p></td></tr></table>
+<a name="e181"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex181.html#e181 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>89</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex181.html#e181 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mattress King</font></b></a><br>Adding extra phrasing to the action to PUSH something in a direction.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e47"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc186.html#e47 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>175</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc186.html#e47 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">A point for never saving the game</font></b></a><br>In some of the late 1970s "cave crawl" adventure games, an elaborate scoring system might still leave the player perplexed as to why an apparently perfect play-through resulted in a score which was still one point short of the supposed maximum. Why only 349 out of 350? The answer varied, but sometimes the last point was earned by never saving the game - in other words by playing it right through with nothing to guard against mistakes (except perhaps UNDO for the last command), and in one long session.<p></td></tr></table>
+<a name="e47"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc103.html#e47 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>90</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc103.html#e47 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> No Relation</font></b></a><br>A car which must be turned on before it can be driven, and can only go to roads.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Here is one way to score this point with Inform:
+<p>We need to designate certain rooms as roads. Since the status of being a road will not change during play, we do this with a kind:
 <p>
-<blockquote><font color="#000080">Check saving the game for the first time: award -1 point.
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode183(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"No Relation"\n\nA road is a kind of room. Definition: a room is offroad if it is not a road.\n\nInstead of going by a vehicle (called the auto) to somewhere offroad:\n\tsay "You can\'t drive [the auto] off-road."\n\nTrafalgar Square is a road. "The Square is overlooked by a pillared statue of Admiral Lord Horatio Nelson (no relation), naval hero and convenience to pigeons since 1812."\n\nThe National Gallery is north of Trafalgar Square. The Strand is east of Trafalgar Square. The Strand is a road.\n\nThe car is a vehicle in Trafalgar Square. The ignition is a device. The ignition is part of the car. Instead of going by the car when the ignition is switched off: say "The ignition is off at the moment." Instead of switching on the car, try switching on the ignition. Instead of switching off the car, try switching off the ignition.\n\nTest me with "get in car / n / e / turn on car / n / e / get out / w / n / s / e / get in car / turn off car / w / turn on ignition / w".\n\n');
+}
+</script>
+<a href="javascript:pasteCode183()"><img border=0 src=../doc_images/paste.png></a> &quot;No Relation&quot;
 </font></blockquote><p>
 <p>
-<p>That has the right effect, but it just isn't sneaky enough. Instead let us quietly keep track of how many times the player saves:
-<p>
-<blockquote><font color="#000080">Check saving the game: change the number of saves to the number of saves plus 1.
-<br>When play ends: if the number of saves is 0, award 1 point.
+<blockquote><font color="#000080">A road is a kind of room. Definition: a room is offroad if it is not a road.
 </font></blockquote><p>
 <p>
-<p>Sneakier, certainly, but now we could get the bonus even if the game ends earlier on, so finally:
-<p>
-<blockquote><font color="#000080">When play ends: if the number of saves is 0 and the score is 349, award 1 point.
+<blockquote><font color="#000080">Instead of going by a vehicle (called the auto) to somewhere offroad:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't drive [the auto] off-road.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc186.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Trafalgar Square is a road. &quot;The Square is overlooked by a pillared statue of Admiral Lord Horatio Nelson (no relation), naval hero and convenience to pigeons since 1812.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The National Gallery is north of Trafalgar Square. The Strand is east of Trafalgar Square. The Strand is a road.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The car is a vehicle in Trafalgar Square. The ignition is a device. The ignition is part of the car. Instead of going by the car when the ignition is switched off: say &quot;The ignition is off at the moment.&quot; Instead of switching on the car, try switching on the ignition. Instead of switching off the car, try switching off the ignition.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get in car / n / e / turn on car / n / e / get out / w / n / s / e / get in car / turn off car / w / turn on ignition / w&quot;.
+</font></blockquote><p>
+<p>
+<p>(In the course of the writing of Inform 7, much of Trafalgar Square was pedestrianised, making this example already out of date.)
+<p>
+<p>A further technical note: notice &quot;going by a vehicle&quot; in the above rule, rather than &quot;going by something&quot;. A rule such as &quot;Instead of going by something...&quot; will be matched whenever the player tries to go some direction while in an enterable object, whether or not that object is actually capable of movement. This is sometimes useful, but in this case we want the warning to apply only when the player is in a vehicle; if we added Trafalgar Square's statue bases to the scenario, we would not want
+<p>
+<blockquote><font color="#000080">You can't drive the pedestal off-road.
+</font></blockquote><p>
+<p>
+<p>So we restrict the rule to &quot;Instead of going by a vehicle...&quot;
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc103.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc185.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc187.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e217"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex217.html#e217 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>91</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex217.html#e217 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> One Short Plank</font></b></a><br>A plank bridge which breaks if the player is carrying something when he goes across it. Pushing anything over the bridge is forbidden outright.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc102.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc104.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

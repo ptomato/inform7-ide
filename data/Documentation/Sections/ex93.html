@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.12. Check rules for actions by other people</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.5. New activities</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,108 +9,137 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Barter Barter" -->
-<!-- SEARCH SECTION "Ex 172" -->
-<!-- SEARCH SORT "Ex 012-012-172" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc182.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc184.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.12. Check rules for actions by other people</b></font></td></tr></table>
+<!-- SEARCH TITLE "AARP-Gnosis" -->
+<!-- SEARCH SECTION "Ex 264" -->
+<!-- SEARCH SORT "Ex 017-005-264" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc264.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc266.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.5. New activities</b></font></td></tr></table>
 <p>
-<p>If we want to impose the restriction about carrying the camera on other people, we need a rule like the following:
+<p>Activities are all about influencing the standard mechanisms which Inform uses, so it might at first seem that there is no need to create new activities: but on further reflection, quite a lot of the writing of interactive fiction involves creating new and systematic ways to do things, and as soon as we have a general rule, we will want to have exceptions. Inform therefore allows us to create our own activities, giving us ways to influence the operation of our own mechanisms.
 <p>
-<blockquote><font color="#000080">Check someone photographing: if the person asked does not carry the camera, stop the action.
+<p>There are two kinds of activity: those which relate to a specific thing or room, and those which do not. The following creates one of each kind:
+<p>
+<blockquote><font color="#000080">Analysing something is an activity.
+<br>Assaying is an activity.
 </font></blockquote><p>
 <p>
-<p>Implicitly, that &quot;someone&quot; excludes the player. Note that we say nothing in this rule, stopping the action without a word: after all, Clark might well be out of sight when trying this. If he is within sight, then we read:
+<p>Here &quot;analysing something&quot; relates to a specific item: Inform knows this because it looks for the clue &quot;something&quot; (or &quot;of something&quot;) after the activity's name, which in the first case above is simply &quot;analysing&quot;.
 <p>
-<blockquote><font color="#000080">>clark, photograph me
-<br>Clark Gable is unable to do that.
+<p>Creating an activity is like creating an action: it automatically makes new rulebooks - &quot;before analysing&quot;, &quot;for analysing&quot; and &quot;after analysing&quot; - but they start out empty, so the activity does nothing yet. Moreover, it never happens. We can make an activity happen at any time by writing phrases like so:
+<p>
+<blockquote><font color="#000080">carry out the analysing activity with the pitchblende;
+<br>carry out the assaying activity;
 </font></blockquote><p>
 <p>
-<p>We saw before that Inform's built-in rules all have handy names (the &quot;can't drop what's already dropped rule&quot;, and such), and that these are useful when writing better &quot;unable to...&quot; messages. So for a deluxe version, we end up with:
+<p>To make the activity do something useful, we need to put a rule into its &quot;for&quot; rulebook:
 <p>
-<blockquote><font color="#000080">Check someone trying photographing (this is the other people can't photograph without the camera rule): if the person asked does not carry the camera, stop the action.
+<blockquote><font color="#000080">The last for assaying rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Professionally, you cast an eye around mineral deposits nearby, noticing [list of rocks in the location].&quot;
 </font></blockquote><p>
 <p>
-<p>And now, with ACTIONS on, we find that:
+<p>&quot;The last&quot; is a technicality about rulebooks (see the next chapter) which, put briefly, guarantees that this rule comes last among all possible &quot;for assaying&quot; rules. This is good form because the whole point of an activity is to make it easy for further rules to interfere - so we deliberately hang back to last place, giving precedence to anybody else who wants it.
 <p>
-<blockquote><font color="#000080">>clark, photograph me
-<br>[asking Clark Gable to try photographing yourself]
-<br>[(1) Clark Gable photographing yourself]
-<br>[(1) Clark Gable photographing yourself - failed the other people can't photograph without the camera rule]
-<br>Clark Gable is unable to do that.
-<br>[asking Clark Gable to try photographing yourself - succeeded]
+<p>It may look rather pretentious to dress up the footling little &quot;assaying&quot; example as an activity, but it gains us more than might first appear. Every new activity created provides a context which other activities can observe. We could, for instance, define
+<p>
+<blockquote><font color="#000080">Rule for printing the name of a rock while assaying: ...
 </font></blockquote><p>
 <p>
-<p>which means that we could have, say,
-<p>
-<blockquote><font color="#000080">Unsuccessful attempt by Clark photographing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the other people can't photograph without the camera rule, say &quot;Clark is too suave to be embarrassed. 'Frankly, my dear, I don't have a camera.'&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Clark tries, and fails, to take a photograph.&quot;
-</font></blockquote><p>
+<p>so that during assays more technical names are used.
 <p>
 <p><hr><p>
-<a name="e249"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex249.html#e249 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>170</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex249.html#e249 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Get Axe</font></b></a><br>Changing the check rules to try automatically leaving a container before attempting to take it. (And arranging things so that other people will do likewise.)<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e93"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc183.html#e93 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>171</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc183.html#e93 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Barter Barter</font></b></a><br>Allowing characters other than the player to give objects to one another, accounting for the possibility that some items may not be desired by the intended recipients.<p></td></tr></table>
+<a name="e93"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc265.html#e93 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>264</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc265.html#e93 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> AARP-Gnosis</font></b></a><br>An Encyclopedia set which treats volumes in the same place as a single object, but can also be split up.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>By default, if we make no modifications, telling one player to give something to another will fail, even if persuasion succeeds. This is because the default behavior of the GIVE command is interrupted by the &quot;block giving rule&quot; -- since in many cases we do not want people to exchange objects freely.
-<p>
-<p>However, suppose that we do want characters to be able to exchange articles freely: we allow persuasion to succeed and turn off the &quot;block giving rule&quot;.
+<p>Suppose we have a complete Encyclopedia in our game. The player is allowed to pick up the whole set (there must not be too many volumes), but also to do things with individual volumes, and indeed to scatter these volumes all over the place. Putting a volume back in the same place as the rest of the Encyclopedia should, however, restore it to the collective. We will start out by defining general rules for collectives like this:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode265(code) {
+function pasteCode356(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Barter Barter"\n\nThe block giving rule is not listed in the check giving it to rules.\n\nA persuasion rule for asking people to try giving: persuasion succeeds.\n\nThe Trading Post is a room.\n\nMeriwether Lewis is a man in the Trading Post. He carries a fluffy handmade quilt and a bag of beans. The beans are edible.\n\nWilliam Clark is a man in the Trading Post. He carries leather slippers, a journal, and a loaf of bread. The bread is edible. The slippers are wearable.\n\nInstead of examining someone:\n\tsay "[The noun] is carrying [the list of things carried by the noun]."\n\n[And now we might want to implement a way to keep track of whether the recipient character wants what\'s being offered:]\n\nCheck someone trying giving something to someone (this is the sneering refusal rule):\n\tif the second noun dislikes the noun, stop the action.\n\nUnsuccessful attempt by someone trying doing something:\n\tif the reason the action failed is the sneering refusal rule, say "\'Would you care for [the noun]?\' [the person asked] asks solicitously of [the second noun].\n\nBut [the second noun] refuses [the noun] disdainfully.";\n\totherwise say "[The person asked] just appears bewildered by this improbable instruction."\n\nDistaste relates one person to various things. The verb to dislike (he dislikes, they dislike, he disliked, it is disliked, he is disliking) implies the distaste relation.\n\nClark dislikes the beans. Lewis dislikes the bread.\n\n[Since we\'ve defined this as a relation, we could change what the characters like and dislike during the course of the game, freely; for instance, characters might grow hungry and suddenly like all the edible articles.]\n\nTest me with "x lewis / x clark / clark, give the slippers to lewis / clark, give the bread to lewis".\n');
+    myProject.pasteCode('"AARP-Gnosis"\n\nFitting relates various things to one thing (called the home). The verb to fit (it fits, they fit, it is fitted) implies the fitting relation. Definition: a thing is missing if it is not part of the home of it.\n\nA collective is a kind of thing.\n\nBefore doing something to something which is part of a collective:\n\tlet space be the holder of the home of the noun;\n\tmove the noun to the space.\n\nInstead of examining a collective:\n\tsay "[The noun] consists of [the list of things which are part of the noun]."\n\n[Now the real work begins. One reason to make this an activity is that we might easily want to override it for specific objects; for instance, the generic collecting activity here would not deal properly with collectives of clothing where some items might be worn and others not. In that case, we would want to write another, more specific "collecting" activity to handle the complexities of fashion.]\n\nCollecting something is an activity.\n\nEvery turn:\n\trepeat with item running through collectives\n\tbegin;\n\t\tcarry out the collecting activity with the item;\n\tend repeat.\n\nBefore collecting a thing (called the item):\n\tlet space be the holder of the item;\n\tif space is not a thing and space is not a room\n\tbegin;\n\t\tif something (called the other space) contains at least two things which fit the item, move item to the other space;\n\t\tif a room (called the other space) contains at least two things which fit the item, move item to the other space;\n\t\tif someone (called the owner) carries at least two things which fit the item, move item to the owner;\n\tend if.\n\nRule for collecting a thing (called the item):\n\tlet space be the holder of the item;\n\tif space is a thing or space is a room\n\tbegin;\n\t\trepeat with component running through things held by the space\n\t\tbegin;\n\t\t\tif the component fits the item, now the component is part of the item;\n\t\tend repeat;\n\t\tif the number of things which are part of the item is 0, remove the item from play;\n\t\tif the number of things which are part of the item is 1\n\t\tbegin;\n\t\t\tlet the last thing be a random thing which is part of the item;\n\t\t\tmove the last thing to the space;\n\t\t\tremove the item from play;\n\t\tend if;\n\tend if.\n\n[And now for a cheerful scenario:]\n\nThe Boise Memorial Library is a room. "A concrete box of a room, roughly eight feet by fourteen, which contains all the fallout shelter has to offer by way of entertainment. Someone with a grim sense of humor has tacked a READ! literacy poster to the door, as though there were anything else to do while you await the calming of the Geiger counters." The shelf is a supporter in the Library. "A battered utility shelf stands against the south wall."\n\nThe New Idahoan Encyclopedia Set is a collective. Volume A-Aalto fits the Encyclopedia. It is part of the Set. Volume AAM-Aardvark fits the Encyclopedia. It is part of the Set. Volume Aarhus-Aaron fits the Encyclopedia. It is part of the Set. Volume AARP-Gnosis fits the Encyclopedia. It is part of the Set. Volume Gnu-Zygote fits the Encyclopedia. It is part of the Set. The Set is on the shelf.\n\n[Let\'s have the Encyclopedia describe itself differently depending on whether it\'s all in one place:]\n\nAfter printing the name of the Set when something missing fits the Set:\n\tsay " (missing [a list of missing things which fit the Set])"\n\nBefore printing the name of the Set when the number of missing things which fit the set is 0:\n\tsay "complete ";\n\nTest me with "get aarhus-aaron / look / inventory / get aam-aardvark / look / get gnu-zygote / look / get aarp-gnosis / look / inventory / drop set / look / get set / get a-aalto / inventory".\n');
 }
 </script>
-<a href="javascript:pasteCode265()"><img border=0 src=../doc_images/paste.png></a> &quot;Barter Barter&quot;
+<a href="javascript:pasteCode356()"><img border=0 src=../doc_images/paste.png></a> &quot;AARP-Gnosis&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The block giving rule is not listed in the check giving it to rules.
+<blockquote><font color="#000080">Fitting relates various things to one thing (called the home). The verb to fit (it fits, they fit, it is fitted) implies the fitting relation. Definition: a thing is missing if it is not part of the home of it.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A persuasion rule for asking people to try giving: persuasion succeeds.
+<blockquote><font color="#000080">A collective is a kind of thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Trading Post is a room.
+<blockquote><font color="#000080">Before doing something to something which is part of a collective:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let space be the holder of the home of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the space.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Meriwether Lewis is a man in the Trading Post. He carries a fluffy handmade quilt and a bag of beans. The beans are edible.
+<blockquote><font color="#000080">Instead of examining a collective:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] consists of [the list of things which are part of the noun].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">William Clark is a man in the Trading Post. He carries leather slippers, a journal, and a loaf of bread. The bread is edible. The slippers are wearable.
+<p>Now the real work begins. One reason to make this an activity is that we might easily want to override it for specific objects; for instance, the generic collecting activity here would not deal properly with collectives of clothing where some items might be worn and others not. In that case, we would want to write another, more specific &quot;collecting&quot; activity to handle the complexities of fashion.
+<p>
+<blockquote><font color="#000080">Collecting something is an activity.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is carrying [the list of things carried by the noun].&quot;
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through collectives
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;carry out the collecting activity with the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>And now we might want to implement a way to keep track of whether the recipient character wants what's being offered:
-<p>
-<blockquote><font color="#000080">Check someone trying giving something to someone (this is the sneering refusal rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun dislikes the noun, stop the action.
+<blockquote><font color="#000080">Before collecting a thing (called the item):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let space be the holder of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if space is not a thing and space is not a room
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if something (called the other space) contains at least two things which fit the item, move item to the other space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a room (called the other space) contains at least two things which fit the item, move item to the other space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if someone (called the owner) carries at least two things which fit the item, move item to the owner;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Unsuccessful attempt by someone trying doing something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the sneering refusal rule, say &quot;'Would you care for [the noun]?' [the person asked] asks solicitously of [the second noun].
+<blockquote><font color="#000080">Rule for collecting a thing (called the item):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let space be the holder of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if space is a thing or space is a room
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with component running through things held by the space
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the component fits the item, now the component is part of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the number of things which are part of the item is 0, remove the item from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the number of things which are part of the item is 1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the last thing be a random thing which is part of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the last thing to the space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the item from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">But [the second noun] refuses [the noun] disdainfully.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The person asked] just appears bewildered by this improbable instruction.&quot;
+<p>And now for a cheerful scenario:
+<p>
+<blockquote><font color="#000080">The Boise Memorial Library is a room. &quot;A concrete box of a room, roughly eight feet by fourteen, which contains all the fallout shelter has to offer by way of entertainment. Someone with a grim sense of humor has tacked a READ! literacy poster to the door, as though there were anything else to do while you await the calming of the Geiger counters.&quot; The shelf is a supporter in the Library. &quot;A battered utility shelf stands against the south wall.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Distaste relates one person to various things. The verb to dislike (he dislikes, they dislike, he disliked, it is disliked, he is disliking) implies the distaste relation.
+<blockquote><font color="#000080">The New Idahoan Encyclopedia Set is a collective. Volume A-Aalto fits the Encyclopedia. It is part of the Set. Volume AAM-Aardvark fits the Encyclopedia. It is part of the Set. Volume Aarhus-Aaron fits the Encyclopedia. It is part of the Set. Volume AARP-Gnosis fits the Encyclopedia. It is part of the Set. Volume Gnu-Zygote fits the Encyclopedia. It is part of the Set. The Set is on the shelf.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Clark dislikes the beans. Lewis dislikes the bread.
+<p>Let's have the Encyclopedia describe itself differently depending on whether it's all in one place:
+<p>
+<blockquote><font color="#000080">After printing the name of the Set when something missing fits the Set:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot; (missing [a list of missing things which fit the Set])&quot;
 </font></blockquote><p>
 <p>
-<p>Since we've defined this as a relation, we could change what the characters like and dislike during the course of the game, freely; for instance, characters might grow hungry and suddenly like all the edible articles.
-<p>
-<blockquote><font color="#000080">Test me with &quot;x lewis / x clark / clark, give the slippers to lewis / clark, give the bread to lewis&quot;.
+<blockquote><font color="#000080">Before printing the name of the Set when the number of missing things which fit the set is 0:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;complete &quot;;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc183.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get aarhus-aaron / look / inventory / get aam-aardvark / look / get gnu-zygote / look / get aarp-gnosis / look / inventory / drop set / look / get set / get a-aalto / inventory&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc265.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc182.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc184.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e2"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex2.html#e2 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>265</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex2.html#e2 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Aftershock</font></b></a><br>Modifying the rules for examining a device so that all devices have some specific behavior when switched on, which is described at various times.<p></td></tr></table>
+<a name="e75"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex75.html#e75 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>266</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex75.html#e75 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Crusoe</font></b></a><br>Adding a "printing the description of something" activity.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc264.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc266.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

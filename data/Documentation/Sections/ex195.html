@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.13. Defining phrases in Inform 6</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.7. Multiple beginnings and repeats</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,111 +9,99 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Odins" -->
-<!-- SEARCH SECTION "Ex 308" -->
-<!-- SEARCH SORT "Ex 021-013-308" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc351.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc353.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.13. Defining phrases in Inform 6</b></font></td></tr></table>
+<!-- SEARCH TITLE "Night and Day" -->
+<!-- SEARCH SECTION "Ex 134" -->
+<!-- SEARCH SORT "Ex 010-007-134" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc148.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap10.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 10: Scenes</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc150.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.7. Multiple beginnings and repeats</b></font></td></tr></table>
 <p>
-<p>The phrases described in this documentation, such as &quot;end the game in death&quot;, are all defined in the Standard Rules, and are for the most part defined not in terms of other I7 phrases but instead reduced to equivalents in I6. For instance:
+<p>It is quite allowed for a scene to be linked to several other scenes, and this is useful if several alternate strands of plot are being brought together in a common resolution scene:
 <p>
-<blockquote><font color="#000080">To end the game in death: (- deadflag=1; -).
+<blockquote><font color="#000080">Bittersweet Ending begins when Stranger's Rejection ends.
+<br>Bittersweet Ending begins when Stranger's Acceptance ends.
 </font></blockquote><p>
 <p>
-<p>The notation &quot;(-&quot; and &quot;-)&quot; indicates that what comes in between is I6 code. The minus sign is supposed to be a mnemonic for the decrease from 7 to 6: later we shall use &quot;(+&quot; and &quot;+)&quot; to go back up the other way, from 6 to 7.
+<p>and we can also have the same scene beginning when a condition holds. In general, it will begin the first time it gets any chance to do so.
 <p>
-<p>When a phrase is defined as containing only a single command, and that command is defined using I6 - as here - it is compiled in-line. This means that the phrase &quot;end the game in death&quot; will always be translated as &quot;deadflag=1;&quot;, rather than being translated into a call to a suitable function whose only statement is &quot;deadflag=1;&quot;.
+<p>All scenes are ordinarily set up so that they can happen only once. But sometimes we want them to repeat. Suppose the train calls not once only, but every twenty minutes. We could set this up with two scenes linked back to back like so:
 <p>
-<p>This is an easy case since the wording never varies. More typical examples would be:
-<p>
-<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
-<br>To sort (T - table-name) in (TC - table-column) order:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
+<blockquote><font color="#000080">Train Stop is a recurring scene. Train Wait is a recurring scene.
+<br>Train Wait begins when play begins.
+<br>Train Stop begins when Train Wait ends.
+<br>Train Wait begins when Train Stop ends.
 </font></blockquote><p>
 <p>
-<p>When the braced name of one of the variables in the phrase preamble appears, this is compiled to the corresponding I6 expression at the relevant position in the I6 code. So, for instance,
-<p>
-<blockquote><font color="#000080">say the capacity of the basket
-</font></blockquote><p>
-<p>
-<p>might be compiled to
-<p>
-<blockquote><font color="#000080">print O17_basket.capacity;
-</font></blockquote><p>
-<p>
-<p>because &quot;{something}&quot; is expanded to &quot;capacity of the basket&quot; (I7 code) and then translated to &quot;O17_basket.capacity&quot; (I6 code), which is then spliced into the original I6 definition &quot;print {something};&quot;.
-<p>
-<p>Braces &quot;{&quot; are of course significant in I6. A real brace can be obtained by making the character following it a space, and then I7 will not attempt to read it as a request for substitution.
-<p>
-<p>Finally, note that while a normal I7 phrase definition can give a kind as what must be matched, e.g.,
-<p>
-<blockquote><font color="#000080">To release wild tigers into (arena - a room): ...
-</font></blockquote><p>
-<p>
-<p>it is in general a bad idea, and will result in inefficient code, for an phrase defined using I6 to do this. Instead, if possible, match against &quot;object&quot;, where any room, region, thing or direction will be a valid match:
-<p>
-<blockquote><font color="#000080">To release wild tigers into (arena - an object): ...
-</font></blockquote><p>
+<p>The difference here is that these scenes have been declared as &quot;recurring&quot;. In all other respects they are the same as any other scene.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e195"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc352.html#e195 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>307</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc352.html#e195 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Odins</font></b></a><br>Making [is-are] and [it-they] say tokens that will choose appropriately based on the last object mentioned.<p></td></tr></table>
+<a name="e195"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc149.html#e195 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>134</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc149.html#e195 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Night and Day</font></b></a><br>Cycling through a sequence of scenes to represent day and night following one another during a game.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The faithful reader may recall this example from early in the documentation. It was always a bit flawed, though, because it didn't account very well for the possibility that our game might contain some intrinsically plural items. Here we define a &quot;to say is-are&quot; ability, checking the appropriate property within Inform 6.
+<p>Suppose we want to have a sequence of nights and days in our game, with one scene to govern each daylight condition.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode401(code) {
+function pasteCode230(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Odins"\n\nThe House of a Mortal Farmer is a room. "Having two separate rooms, this house bespeaks considerable wealth and success at agriculture."\n\nThe Bedroom is inside from the House.\n\nA chair is a kind of supporter. A chair is always enterable.\n\nIn the House are a table, two chairs, a basket, and a hearth. On the table is a loaf of bread. Some shoes are on the table.\n\nThe description of a thing is usually "You give [the noun] a glance, but [it-they] [is-are] plainly beneath your attention."\n\nThe infant is a man in the basket. The description of the infant is "So strong and fat that you wonder whether one of your fellow gods is acquainted with the mistress of the house-- but it\'s no concern of yours, of course."\n\nThe last mentioned thing is a thing that varies.\n\nAfter printing the name of something (called the target):\n\tchange the last mentioned thing to the target.\n\nTo decide whether (item - a thing) acts plural:\n\t(- ({item} has pluralname) -);\n\nTo say is-are:\n\tif the last mentioned thing acts plural, say "are";\n\totherwise say "is".\n\nTo say it-they:\n\tif the last mentioned thing acts plural, say "they";\n\totherwise say "it".\n\nTest me with "x chair / x basket / x infant / x shoes".\n');
+    myProject.pasteCode('"Night and Day"\n\nThe sun is a backdrop. It is everywhere. The description is "Currently out of sight."\n\nNight is a recurring scene. Night begins when play begins. Night begins when Dusk ends. Night ends when the time since Night began is 3 minutes.\n\n[Notice that our two conditions for the beginning of Night are not in conflict: it will be night-time when the game begins, and then night will also recur every time the Dusk scene ends.]\n\nWhen Night begins:\n\tsay "The sun falls below the horizon and the temperature drops abruptly to well below zero.";\n\tchange the description of the sun to "Currently out of sight."\n\nDawn is a recurring scene. Dawn begins when Night ends. Dawn ends when the time since Dawn began is 1 minute.\n\nWhen Dawn begins:\n\tsay "The sun appears on the horizon.";\n\tchange the description of the sun to "It is tiny and weak.".\n\nDay is a recurring scene. Day begins when Dawn ends. Day ends when the time since Day began is 3 minutes.\n\nWhen Day begins:\n\tsay "The sun is now properly up."\n\nDusk is a recurring scene. Dusk begins when Day ends. Dusk ends when the time since Dusk began is 1 minute.\n\nWhen Dusk begins:\n\tsay "The sun has passed across the sky and is on the verge of setting."\n\nCratered Landscape is a room. "The ground here is [if Night is happening]dim silver, with the craters visible as darker splotches[otherwise]the color of dried blood; here and there it is also rippled by impact craters[end if]. The horizon curves visibly."\n\nTest me with "z / z / z / look / x sun / z / z / z / z / z / z / z".\n\n');
 }
 </script>
-<a href="javascript:pasteCode401()"><img border=0 src=../doc_images/paste.png></a> &quot;Odins&quot;
+<a href="javascript:pasteCode230()"><img border=0 src=../doc_images/paste.png></a> &quot;Night and Day&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The House of a Mortal Farmer is a room. &quot;Having two separate rooms, this house bespeaks considerable wealth and success at agriculture.&quot;
+<blockquote><font color="#000080">The sun is a backdrop. It is everywhere. The description is &quot;Currently out of sight.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Bedroom is inside from the House.
+<blockquote><font color="#000080">Night is a recurring scene. Night begins when play begins. Night begins when Dusk ends. Night ends when the time since Night began is 3 minutes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A chair is a kind of supporter. A chair is always enterable.
+<p>Notice that our two conditions for the beginning of Night are not in conflict: it will be night-time when the game begins, and then night will also recur every time the Dusk scene ends.
+<p>
+<blockquote><font color="#000080">When Night begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The sun falls below the horizon and the temperature drops abruptly to well below zero.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the description of the sun to &quot;Currently out of sight.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">In the House are a table, two chairs, a basket, and a hearth. On the table is a loaf of bread. Some shoes are on the table.
+<blockquote><font color="#000080">Dawn is a recurring scene. Dawn begins when Night ends. Dawn ends when the time since Dawn began is 1 minute.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of a thing is usually &quot;You give [the noun] a glance, but [it-they] [is-are] plainly beneath your attention.&quot;
+<blockquote><font color="#000080">When Dawn begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The sun appears on the horizon.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the description of the sun to &quot;It is tiny and weak.&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The infant is a man in the basket. The description of the infant is &quot;So strong and fat that you wonder whether one of your fellow gods is acquainted with the mistress of the house-- but it's no concern of yours, of course.&quot;
+<blockquote><font color="#000080">Day is a recurring scene. Day begins when Dawn ends. Day ends when the time since Day began is 3 minutes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The last mentioned thing is a thing that varies.
+<blockquote><font color="#000080">When Day begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The sun is now properly up.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After printing the name of something (called the target):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last mentioned thing to the target.
+<blockquote><font color="#000080">Dusk is a recurring scene. Dusk begins when Day ends. Dusk ends when the time since Dusk began is 1 minute.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To decide whether (item - a thing) acts plural:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- ({item} has pluralname) -);
+<blockquote><font color="#000080">When Dusk begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The sun has passed across the sky and is on the verge of setting.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say is-are:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last mentioned thing acts plural, say &quot;are&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;is&quot;.
+<blockquote><font color="#000080">Cratered Landscape is a room. &quot;The ground here is [if Night is happening]dim silver, with the craters visible as darker splotches[otherwise]the color of dried blood; here and there it is also rippled by impact craters[end if]. The horizon curves visibly.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say it-they:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last mentioned thing acts plural, say &quot;they&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;it&quot;.
+<blockquote><font color="#000080">Test me with &quot;z / z / z / look / x sun / z / z / z / z / z / z / z&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;x chair / x basket / x infant / x shoes&quot;.
+<p>If we run this example and then have a look at the scenes index, we'll see that the cycle is listed through thus:
+<p>
+<blockquote><font color="#000080">Night (recurring)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;Dawn (recurring)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Day (recurring)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dusk (recurring)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Night
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc352.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<p>with the second &quot;Night&quot; in italics, to indicate that it is a repetition of the same scene that has already been listed above.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc149.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e160"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex160.html#e160 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>308</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex160.html#e160 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Pink or Blue</font></b></a><br>Asking the player to select a gender to begin play.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc351.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc353.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e215"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex215.html#e215 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>135</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex215.html#e215 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Pine 3</font></b></a><br>Pine: Allowing the player to visit aspects of the past in memory and describe these events to the princess, as a break from the marriage-proposal scene.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc148.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc150.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

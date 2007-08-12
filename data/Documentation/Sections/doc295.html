@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.5. Sorting and indexing of rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.1. On rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,19 +9,52 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Sorting and indexing of rules" -->
-<!-- SEARCH SECTION "18.5" -->
-<!-- SEARCH SORT "018-005-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc294.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc296.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.5. Sorting and indexing of rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "On rules" -->
+<!-- SEARCH SECTION "18.1" -->
+<!-- SEARCH SORT "018-001-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc294.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc296.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.1. On rules</b></font></td></tr></table>
 <p>
-<p>The Rules page of the index for a project offers a view of the rulebooks and their contents, with two major exceptions: built-in rules for specific actions are left to the Actions page, and any rules for scene endings or beginnings are left to the Scenes page.
+<p>When we open the casing and look inside the machinery of Inform, what we see are rules and rulebooks. We seldom need to know how this machinery works, but every once in a while we want to replace components, or even install new mechanisms of our own. And as we shall see, creating new rulebooks can be a neat way to tackle complicated simulations full of exceptions and special cases.
 <p>
-<p>As we have seen, we need to know the name of a rule before we can change its rulebook listing or alter its applicability. The Rules and Actions index pages show the names of the built-in rules, which are not worth memorising. (Typing can be saved by selecting a rule's name, using Copy and then using Paste to insert the name into the source text.)
+<p>So far we have seen many rules, and the term &quot;rulebook&quot; has frequently but vaguely been used. Here is a summary of the rulebooks seen so far:
 <p>
-<p>In the Rules index, each rulebook is named (in italic type) and then followed by a list of the rules within it, one on each line: if nothing follows, then the rulebook is currently empty. The rules are given in order, and icons are used which indicate which rules are more specific than which others: for instance, a green-tipped arrow running downwards indicates that the rule below is more specific than the rule above. Hovering the mouse over such an icon should bring up a &quot;tooltip&quot; which explains Inform's reasoning:
+<blockquote><font color="#000080">before
+<br>instead
+<br>after
+<br>check taking, carry out taking, report taking
+<br><i>and three similar rulebooks for each of the 90 or so actions</i>
+<br>persuasion
+<br>unsuccessful attempt
+<br>reaching inside
+<br>reaching outside
+<br>visibility
+<br>does the player mean
+</font></blockquote><p>
 <p>
-<p><img border=0 src=../doc_images/rulesorting.png>
+<blockquote><font color="#000080">when play begins
+<br>when play ends
+<br>every turn
+<br>when Confrontation Scene begins
+<br>when Confrontation Scene ends
+<br><i>and two similar rulebooks for each scene we create, if any</i>
+</font></blockquote><p>
 <p>
-<p>As this suggests, Inform performs its automatic sorting using a precise collection of Laws (the term &quot;rules&quot; would be ambiguous here, so we call these guidelines Laws instead), and the tooltip shows which Law was applied. It is bad style to write source text which absolutely depends on detailed points of these Laws, but they are documented at the end of this chapter for those who do wish to see the full details.
+<blockquote><font color="#000080">before printing the name of
+<br>for printing the name of
+<br>after printing the name of
+<br><i>and three similar rulebooks for each of the 20 or so activities</i>
+</font></blockquote><p>
+<p>
+<p>Which makes around 340 rulebooks before we even start to write - and one more is going to turn up later in this chapter:
+<p>
+<blockquote><font color="#000080">procedural
+</font></blockquote><p>
+<p>
+<p>All the same, not everything in Inform belongs to a rulebook - timed events, newly-created phrases, and definitions may look vaguely as if they define rules, but they do not, so the following are not rulebooks:
+<p>
+<blockquote><font color="#000080">At 11:10 PM: ...
+<br>To dislodge the shelf: ...
+<br>Definition: ...
+</font></blockquote><p>
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc294.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc296.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

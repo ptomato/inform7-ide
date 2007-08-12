@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.10. Action variables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.11. Printing the plural name of something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,158 +9,140 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Croft" -->
-<!-- SEARCH SECTION "Ex 167" -->
-<!-- SEARCH SORT "Ex 012-010-167" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc180.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc182.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.10. Action variables</b></font></td></tr></table>
+<!-- SEARCH TITLE "Hudsucker Industries" -->
+<!-- SEARCH SECTION "Ex 270" -->
+<!-- SEARCH SORT "Ex 017-011-270" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc270.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc272.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.11. Printing the plural name of something</b></font></td></tr></table>
 <p>
-<p>For some complex situations, it can be useful to keep track of a few values throughout the processing of the action. This is not an everyday occurrence: in the Standard Rules, for instance, only two or three out of 90 actions need to do this. But suppose we want to write a more deluxe version of our &quot;photographing&quot; action. This time, rather than having a single thing called the &quot;camera&quot;, we will provide a whole range of possible cameras, varying in quality:
+<p><b>1. When it happens.</b> Only when a group of identical items is present in the same place, and are being described jointly with text like &quot;You can see five gold rings here.&quot; The action happens after &quot;five&quot; and before &quot;here.&quot;
 <p>
-<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light. Understand &quot;photograph [something]&quot; as photographing.
-</font></blockquote><p>
+<p><b>2. The default behaviour.</b> The plural name - in this case &quot;gold rings&quot; - is printed out.
 <p>
-<blockquote><font color="#000080">The Studio is a room. Sally is a woman in the Studio. A foam-lined tote bag is in the Studio.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A camera is a kind of thing. A camera has a number called picture quality. The digital SLR camera is a camera in the tote bag. The player carries a camera called the instant one-shot camera. The picture quality of the SLR camera is 10. The picture quality of the one-shot is 2. Definition: a camera is sharp if its picture quality is 5 or more.
-</font></blockquote><p>
-<p>
-<p>And we will want the photographing action to have the player use the best-quality camera which comes to hand. We will give the action a variable called the 'camera photographed with', thus:
-<p>
-<blockquote><font color="#000080">The photographing action has an object called the camera photographed with.
-</font></blockquote><p>
-<p>
-<p>This value is created when the action begins, and disappears when the action ends. (If the action should happen a second time before the first time was completed, a second copy of the value is created, leaving the original undisturbed.) When the action begins, the value starts out as something neutral - so if it is a number, it starts out as 0, if a text, it starts out as the blank text &quot;&quot;, and so on. Here it is an object, so it starts out as nothing - the value meaning no object at all. But of course we want to give it a value ourselves. We can do that using the &quot;setting action variables&quot; rulebook. For instance:
-<p>
-<blockquote><font color="#000080">Setting action variables for photographing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the camera photographed with is the sharpest camera which is carried by the actor.
-</font></blockquote><p>
-<p>
-<p>The &quot;setting action variables&quot; rulebook is run through before even the before rules, and it has no power to stop or change the action. Its rules should say nothing and do nothing other than to set rulebook variables like this one. Note that it is intended to work for any actor, not only the player: so rather than referring to the player as the performed of the action, we need to write &quot;the actor&quot;, as in the example above. (See subsequent sections for more on actors.)
-<p>
-<p>We can now write rules such as:
-<p>
-<blockquote><font color="#000080">A check photographing rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the camera photographed with is nothing then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
-</font></blockquote><p>
-<p>
-<p>Only rules to do with the photographing action - before, instead, after, check, carry out, or report rules, and so on - are allowed to see the 'camera photographed with' value: it's the private property of the action.
-<p>
-<p>A further elaboration allows us to make rules about photographing neater to write. If we create our variable like so:
-<p>
-<blockquote><font color="#000080">The photographing action has an object called the camera photographed with (matched as &quot;using&quot;).
-</font></blockquote><p>
-<p>
-<p>...then we are now allowed to add an optional 'using ...' clause onto a description of the action. For instance, we could write rules such as
-<p>
-<blockquote><font color="#000080">Instead of photographing something using the one-shot camera:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;But you promised to give this to Sally's nephew.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check photographing something using the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That would require some sort of contraption with mirrors.&quot; instead.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Report photographing something using a sharp camera:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You feel cool and important as the shutter clicks.&quot;
-</font></blockquote><p>
-<p>
-<p>(This is the method used by the Standard Rules to attach optional clauses such as 'to', 'with' and 'through' to the going action.)
+<p><b>3. Examples.</b> See below.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e142"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc181.html#e142 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>166</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc181.html#e142 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Croft</font></b></a><br>Adding special reporting and handling for objects dropped when the player is on a supporter, and special entering rules for moving from one supporter to another.<p></td></tr></table>
+<a name="e142"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc271.html#e142 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>270</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc271.html#e142 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Hudsucker Industries</font></b></a><br>Letters which are described differently as a group, depending on whether the player has read none, some, or all of them, and on whether they are alike or unlike.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose that we have a design in which the player spends lots of time on enterable supporters, and in which we want to report certain actions -- dropping things onto those supporters, or leaping from one to another -- in a new way. We might begin by adding some action variables to help us keep track of the situation:
+<p>In this scenario, the player starts with a bag full of unsorted letters. These can be polite or rude, but he won't know which until he has examined them. What's more, he is allowed to sort the letters, in which case a group of letters will be shown as (for instance) &quot;two polite letters&quot;; but a group of mixed letters, even if they have all been read, will be called &quot;unsorted letters&quot;.
+<p>
+<p>Further, the player should be allowed to refer to sorted letters by tone, but not unsorted letters.
+<p>
+<p>To do this, we'll need printing the name... and printing the plural name..., as well as some special understanding rules.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode260(code) {
+function pasteCode362(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode(' "Croft"\n\nThe dropping action has an object called the container dropped into (matched as "into").\n\nThe dropping action has an object called the supporter dropped onto (matched as "onto").\n\nRule for setting action variables for dropping:\n\tif the actor is in a container (called C), now the container dropped into is C;\n\tif the actor is on a supporter (called C), now the supporter dropped onto is C.\n\nReport dropping a heavy thing onto a metallic thing:\n\tsay "You drop [the noun], and [the supporter dropped onto] clangs protestingly." instead.\n\nReport someone dropping a heavy thing onto a metallic thing:\n\tsay "[The actor] drops [the noun] onto [the supporter dropped onto], which clangs protestingly." instead.\n\nA thing can be heavy or light. A thing can be metallic or ordinary. A thing is usually ordinary. A thing is usually light.\n\nThe Ancient Cambodian Temple is a room. "A vast space built for ancient and forgotten rituals. The stone floor crawls with vermin. Well above the floor, and separated by some feet, are twin platforms built into the wall: the one carved of jointed wood, the other of sheets of graven bronze."\n\nA platform is a kind of supporter. A platform is always enterable. A platform is usually scenery.\n\nThe bronze platform is a metallic platform in the Temple. Lara is a woman. She is on the bronze platform. She wears safari pants and a tank top. She carries a gun and a map. The gun is heavy.\n\nThe wood platform is an ordinary platform in the Temple. The player is on the wood platform. The player carries a rope, an Ancient Cambodian/English Phrasebook, a pickaxe, and a precious idol. The idol and the pickaxe are heavy.\n\nPersuasion rule: persuasion succeeds.\n\nThe entering action has an object called the place left (matched as "from").\n\tCheck entering a platform from a platform:\n\t\tif actor is the player, say "You leap into midair to cross the distance...";\n\totherwise say "[The actor] leaps gracefully across the distance...";\n\tmove the actor to the holder of the noun, without printing a room description.\n\n[Because this rule occurs before the "implicitly pass through other barriers rule", that rule will not occur when we move from platform to platform; we\'ll use our own custom rule instead.]\n\nRule for setting action variables for entering:\n\tnow the place left is the holder of the actor.\n\nReport entering a platform from a platform:\n\tsay "You land in a cat-like crouch on [the noun]." instead.\n\nReport Lara entering a platform from a platform:\n\tsay "Lara lands soundlessly on [the noun][if the noun supports the player] beside you[end if]." instead.\n\nReport entering a platform from the location:\n\tsay "You jump, catch the edge of [the noun] in your hands, and -- exerting considerable upper-body strength -- pull yourself up onto it." instead.\n\nReport Lara entering a platform from a location:\n\tsay "Lara jumps, catches the edge of [the noun], and is standing upright on it, all in less time than it takes to tell."\n\nInstead of examining a person who is not the player:\n\tsay "[The noun] carries [list of things carried by the noun] and wears [list of things worn by the noun]."\n\nInstead of climbing a platform, try entering the noun.\n\nTest me with "Lara, drop map / lara, drop gun / drop idol / enter bronze platform / drop pickaxe / get off / climb wood".\n');
+    myProject.pasteCode('"Hudsucker Industries"\n\nTone is a kind of value. The tones are effusive, affectionate, polite, curt, and flamingly rude.\n\nA letter is a kind of thing. The description of a letter is usually "On inspection, it turns out to be quite [tone]." A letter has a tone. The tone of a letter is usually polite.\n\nA letter can be read or unread. A letter is usually unread. Carry out examining a letter: now the noun is read.\n\nBefore printing the name of a read letter: say "[tone] ".\n\nBefore printing the name of an ungrouped letter: say "random ".\n\nBefore printing the plural name of a letter (called the subject):\n\tif the subject is grouped\n\tbegin;\n\t\tsay "[tone] ";\n\totherwise if the number of unread letters which are next to the subject is 0;\n\t\tsay "unsorted ";\n\tend if.\n\nAfter printing the plural name of a letter (called the subject):\n\tif the number of read letters which are next to the subject is 0, say " (all unread, at the moment)" instead;\n\tif the number of unread letters which are next to the subject is greater than 0, say " (some as yet unread)" instead.\n\nProximity relates a thing (called X) to a thing (called Y) when the holder of X is the holder of Y. The verb to be next to implies the proximity relation.\n\nDefinition: a letter is grouped:\n\tif it is unread, no;\n\tif the number of unread letters next to it is greater than 0, no;\n\trepeat with item running through letters which are next to it\n\tbegin;\n\t\tif the tone of item is not the tone of it, no;\n\tend repeat;\n\tyes.\n\nDefinition: a letter is ungrouped if it is not grouped.\n\nThe Mailroom is a room. "Usually a thrumming hive of bee-like workers, but you got in early to get a jump on the day\'s work."\n\nThe satchel is carried by the player. Two flamingly rude letters are in the satchel. Five polite letters are in the satchel.\n\nThe mail wall are fixed in place in the mailroom. "Before you is a wall of mailboxes, including [a list of mailboxes which are part of the mail wall]."\n\nThe plural of mailbox is mailboxes. A mailbox is a kind of container. The CEO box is a mailbox. The Hold box is a mailbox. The Trash box is a mailbox.\n\n[Now, there\'s a good bit of interaction to streamline. We intend that the player will be taking letters from the satchel, reading them, and putting them (perhaps grouped) into boxes. Our interaction rules should assist in this process as much as possible. To start with, the player will be most likely to examine letters he hasn\'t read yet:]\n\nDoes the player mean examining a letter (called the subject):\n\tif we have examined the subject, it is very unlikely;\n\tit is very likely.\n\n[The rules about taking are more subtle: the player is more likely to want to take an ungrouped letter than a grouped one; he is more likely to want one from the satchel than not; and he is most unlikely to want to take a letter (grouped or ungrouped) that he is already holding.]\n\nDoes the player mean taking a letter (called subject) which is grouped:\n\tif the player carries the subject, it is very unlikely;\n\tif the subject is in the satchel, it is possible;\n\tit is unlikely.\n\nDoes the player mean taking a letter (called subject) which is ungrouped:\n\tif the player carries the subject, it is very unlikely;\n\tif the subject is in the satchel, it is very likely;\n\tit is possible.\n\n[And finally, we will assume by default that anything other than examining or taking is most likely to apply to a letter he\'s already identified:]\n\nDoes the player mean doing something other than examining or taking with a letter (called the subject):\n\tif we have examined the subject, it is likely;\n\tit is unlikely.\n\n[And we would also like to understand properties under the same circumstances as printing -- a letter will be identifiable as "polite" if it\'s already been read and it is either by itself or in a sorted stack of polite letters, but otherwise not. What\'s more, to make it possible to disambiguate commands in the other direction, we\'ll call any unsorted letter "random", to represent that the player doesn\'t know what it is.]\n\nUnderstand the tone property as referring to a letter when the item described is grouped. Understand "random" as a letter when the item described is ungrouped.\n\nWhen play begins: now every mailbox is part of the mail wall;\n\trepeat with switch count running from 1 to 5\n\tbegin;\n\t\tmove a random letter to the satchel;\n\tend repeat.\n\nTest me with "inventory / examine letter / get letter / i / put letter in ceo box / inventory / get letter / x letter / g / g / i / x letter / g / g / i / put letter in hold box / get letter / g / g / i".\n\n');
 }
 </script>
-<a href="javascript:pasteCode260()"><img border=0 src=../doc_images/paste.png></a>  &quot;Croft&quot;
+<a href="javascript:pasteCode362()"><img border=0 src=../doc_images/paste.png></a> &quot;Hudsucker Industries&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The dropping action has an object called the container dropped into (matched as &quot;into&quot;).
+<blockquote><font color="#000080">Tone is a kind of value. The tones are effusive, affectionate, polite, curt, and flamingly rude.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The dropping action has an object called the supporter dropped onto (matched as &quot;onto&quot;).
+<blockquote><font color="#000080">A letter is a kind of thing. The description of a letter is usually &quot;On inspection, it turns out to be quite [tone].&quot; A letter has a tone. The tone of a letter is usually polite.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for setting action variables for dropping:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the actor is in a container (called C), now the container dropped into is C;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the actor is on a supporter (called C), now the supporter dropped onto is C.
+<blockquote><font color="#000080">A letter can be read or unread. A letter is usually unread. Carry out examining a letter: now the noun is read.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report dropping a heavy thing onto a metallic thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You drop [the noun], and [the supporter dropped onto] clangs protestingly.&quot; instead.
+<blockquote><font color="#000080">Before printing the name of a read letter: say &quot;[tone] &quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report someone dropping a heavy thing onto a metallic thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The actor] drops [the noun] onto [the supporter dropped onto], which clangs protestingly.&quot; instead.
+<blockquote><font color="#000080">Before printing the name of an ungrouped letter: say &quot;random &quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be heavy or light. A thing can be metallic or ordinary. A thing is usually ordinary. A thing is usually light.
+<blockquote><font color="#000080">Before printing the plural name of a letter (called the subject):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the subject is grouped
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[tone] &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if the number of unread letters which are next to the subject is 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;unsorted &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Ancient Cambodian Temple is a room. &quot;A vast space built for ancient and forgotten rituals. The stone floor crawls with vermin. Well above the floor, and separated by some feet, are twin platforms built into the wall: the one carved of jointed wood, the other of sheets of graven bronze.&quot;
+<blockquote><font color="#000080">After printing the plural name of a letter (called the subject):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of read letters which are next to the subject is 0, say &quot; (all unread, at the moment)&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of unread letters which are next to the subject is greater than 0, say &quot; (some as yet unread)&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A platform is a kind of supporter. A platform is always enterable. A platform is usually scenery.
+<blockquote><font color="#000080">Proximity relates a thing (called X) to a thing (called Y) when the holder of X is the holder of Y. The verb to be next to implies the proximity relation.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The bronze platform is a metallic platform in the Temple. Lara is a woman. She is on the bronze platform. She wears safari pants and a tank top. She carries a gun and a map. The gun is heavy.
+<blockquote><font color="#000080">Definition: a letter is grouped:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is unread, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of unread letters next to it is greater than 0, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through letters which are next to it
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the tone of item is not the tone of it, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;yes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The wood platform is an ordinary platform in the Temple. The player is on the wood platform. The player carries a rope, an Ancient Cambodian/English Phrasebook, a pickaxe, and a precious idol. The idol and the pickaxe are heavy.
+<blockquote><font color="#000080">Definition: a letter is ungrouped if it is not grouped.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Persuasion rule: persuasion succeeds.
+<blockquote><font color="#000080">The Mailroom is a room. &quot;Usually a thrumming hive of bee-like workers, but you got in early to get a jump on the day's work.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The entering action has an object called the place left (matched as &quot;from&quot;).
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Check entering a platform from a platform:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if actor is the player, say &quot;You leap into midair to cross the distance...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The actor] leaps gracefully across the distance...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the actor to the holder of the noun, without printing a room description.
+<blockquote><font color="#000080">The satchel is carried by the player. Two flamingly rude letters are in the satchel. Five polite letters are in the satchel.
 </font></blockquote><p>
 <p>
-<p>Because this rule occurs before the &quot;implicitly pass through other barriers rule&quot;, that rule will not occur when we move from platform to platform; we'll use our own custom rule instead.
-<p>
-<blockquote><font color="#000080">Rule for setting action variables for entering:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the place left is the holder of the actor.
+<blockquote><font color="#000080">The mail wall are fixed in place in the mailroom. &quot;Before you is a wall of mailboxes, including [a list of mailboxes which are part of the mail wall].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report entering a platform from a platform:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You land in a cat-like crouch on [the noun].&quot; instead.
+<blockquote><font color="#000080">The plural of mailbox is mailboxes. A mailbox is a kind of container. The CEO box is a mailbox. The Hold box is a mailbox. The Trash box is a mailbox.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report Lara entering a platform from a platform:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lara lands soundlessly on [the noun][if the noun supports the player] beside you[end if].&quot; instead.
+<p>Now, there's a good bit of interaction to streamline. We intend that the player will be taking letters from the satchel, reading them, and putting them (perhaps grouped) into boxes. Our interaction rules should assist in this process as much as possible. To start with, the player will be most likely to examine letters he hasn't read yet:
+<p>
+<blockquote><font color="#000080">Does the player mean examining a letter (called the subject):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if we have examined the subject, it is very unlikely;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;it is very likely.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report entering a platform from the location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You jump, catch the edge of [the noun] in your hands, and -- exerting considerable upper-body strength -- pull yourself up onto it.&quot; instead.
+<p>The rules about taking are more subtle: the player is more likely to want to take an ungrouped letter than a grouped one; he is more likely to want one from the satchel than not; and he is most unlikely to want to take a letter (grouped or ungrouped) that he is already holding.
+<p>
+<blockquote><font color="#000080">Does the player mean taking a letter (called subject) which is grouped:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries the subject, it is very unlikely;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the subject is in the satchel, it is possible;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;it is unlikely.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report Lara entering a platform from a location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lara jumps, catches the edge of [the noun], and is standing upright on it, all in less time than it takes to tell.&quot;
+<blockquote><font color="#000080">Does the player mean taking a letter (called subject) which is ungrouped:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries the subject, it is very unlikely;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the subject is in the satchel, it is very likely;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;it is possible.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining a person who is not the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] carries [list of things carried by the noun] and wears [list of things worn by the noun].&quot;
+<p>And finally, we will assume by default that anything other than examining or taking is most likely to apply to a letter he's already identified:
+<p>
+<blockquote><font color="#000080">Does the player mean doing something other than examining or taking with a letter (called the subject):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if we have examined the subject, it is likely;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;it is unlikely.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of climbing a platform, try entering the noun.
+<p>And we would also like to understand properties under the same circumstances as printing -- a letter will be identifiable as &quot;polite&quot; if it's already been read and it is either by itself or in a sorted stack of polite letters, but otherwise not. What's more, to make it possible to disambiguate commands in the other direction, we'll call any unsorted letter &quot;random&quot;, to represent that the player doesn't know what it is.
+<p>
+<blockquote><font color="#000080">Understand the tone property as referring to a letter when the item described is grouped. Understand &quot;random&quot; as a letter when the item described is ungrouped.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;Lara, drop map / lara, drop gun / drop idol / enter bronze platform / drop pickaxe / get off / climb wood&quot;.
+<blockquote><font color="#000080">When play begins: now every mailbox is part of the mail wall;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with switch count running from 1 to 5
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move a random letter to the satchel;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc181.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;inventory / examine letter / get letter / i / put letter in ceo box / inventory / get letter / x letter / g / g / i / x letter / g / g / i / put letter in hold box / get letter / g / g / i&quot;.
+</font></blockquote><p>
+<p>
+<p>That last &quot;repeat&quot; is merely a device to shuffle the order of items in the satchel so that the player will not always encounter the letters in a neatly presorted order, despite our defining them that way. (Of course, that means that the test produced by TEST ME cannot be very exciting...)
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc271.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc180.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc182.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc270.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc272.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

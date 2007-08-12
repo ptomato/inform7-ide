@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.17. Two rulebooks used internally</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.24. Concealment</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,79 +9,132 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Electrified" -->
-<!-- SEARCH SECTION "Ex 303" -->
-<!-- SEARCH SORT "Ex 018-017-303" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc306.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc308.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.17. Two rulebooks used internally</b></font></td></tr></table>
+<!-- SEARCH TITLE "Search and Seizure" -->
+<!-- SEARCH SECTION "Ex 33" -->
+<!-- SEARCH SORT "Ex 003-024-033" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc49.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc51.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.24. Concealment</b></font></td></tr></table>
 <p>
-<p>Rulebooks handle almost all of the important tasks which an Inform work of IF must carry out in order to keep play going. We have seen them used in clarifying the player's command, supplying missing ingredients, processing the action to see what should happen, responding, and so on: by this point in the documentation, it must look as if Inform uses rulebooks for everything.
+<p>Though realism can become tiresome in interactive fiction, there are times when we cannot go along with Inform's normal assumption that all of a person's possessions are visible to everybody else. People are not like containers, which either show all of their holdings or not, according to whether they are open or transparent. If a man is carrying a fishing rod and a wallet, one will be on open show, the other not. Some clothing is outwardly visible, but not all.
 <p>
-<p>This is nearly true. There is not actually a super-rulebook controlling everything. (Such a super-rulebook would need to repeat itself and never finish, something a rulebook is not allowed to do.) Instead, what happens during play looks like so:
+<p>Whether or not something is concealed is not like the either/or properties we have seen so far - such as being &quot;open&quot; or &quot;closed&quot; - because it is not really a property of the thing itself, but depends on the habitual behaviour of its current owner. To talk about behaviour we have to use sentences of a kind not seen so far, and which will not fully be explained for some chapters to come.
+<p>But straightforward cases are easy to write, if only by imitating the following examples.
 <p>
-<blockquote><font color="#000080">1. Following the &quot;when play begins&quot; rulebook.
-<br>2. Repeating:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;2(a). Reading and parsing a command into an action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;2(b). Following the &quot;action processing&quot; rulebook;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;2(c). Following the &quot;turn sequence&quot; rulebook.
-<br>until the game has finished.
-<br>3. Following the &quot;when play ends&quot; rulebook.
+<p>Here we make the Cloaked Villain invariably conceal anything she is holding or wearing:
+<p>
+<blockquote><font color="#000080">Rule for deciding the concealed possessions of the Cloaked Villain: yes.
 </font></blockquote><p>
 <p>
-<p>The command parser occasionally calls on the services of activity rulebooks to help it, but otherwise gets on with its job in ways that we do not &quot;see&quot; as Inform 7 users. The rest of what happens involves rulebooks, and in particular two important beneath-the-surface rulebooks: action processing and the turn sequence.
+<p>At which point we think about it more carefully, and then rewrite:
 <p>
-<p>The <b>action processing rules</b> are used whenever an action must be tried, by whoever tries it. This usually happens in response to player commands, but not always: it might happen because of a &quot;try...&quot;, and it can certainly interrupt an existing action.
+<blockquote><font color="#000080">Rule for deciding the concealed possessions of the Cloaked Villain: if the particular possession is the sable cloak, no; otherwise yes.
+</font></blockquote><p>
 <p>
-<p>The <b>turn sequence rules</b> are used at the end of each turn, and include housekeeping as well as timekeeping. They consult the &quot;every turn&quot; rulebook, and advance the time of day, among other useful tasks.
-<p>
-<p>In general, we should only modify the operation of these two crucial rulebooks as a last resort. Play can evidently fall to pieces if they cease to work normally.
-<p>
-<p><hr><p>
-<!-- EXAMPLE START -->
-<a name="e134"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc307.html#e134 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>302</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc307.html#e134 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Electrified</font></b></a><br>Adding a rule before the basic accessibility rule that will prevent the player from touching electrified objects under the wrong circumstances.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Suppose we want to prevent the player from touching anything electrified -- not just as a response to TOUCH OBJECT, but at any time when the action would require contact with the object in question.
+<p>Parts are treated exactly as if clothes or items being held, and the following will make the face and inscription on a coin invisible unless the player is holding it - the idea being that they are too small to be seen from farther away.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode396(code) {
+function pasteCode9(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Electrified"\n\nA thing can be safe or electrified. A thing is usually safe.\n\nThe Open Field is a room. "At this end of the field is a wire fence separating farm country from the government testing grounds beyond." The wire fence is an electrified thing in Open Field. It is scenery. The description of the wire fence is "Built into the fence is [a list of things which are part of the fence]." The scary box is an electrified container. It is part of wire fence. In the scary box is an alluring prize.\n\nThe player carries a flashlight, a grappling hook, a very thick rubber glove, and a length of rope. The glove is wearable.\n\nThis is the electrocution-wisdom rule:\n\tif the player wears the very thick rubber glove, make no decision;\n\tif the action requires a touchable noun and the noun is electrified, say "You fear touching [the noun]." instead;\n\tif the action requires a touchable second noun and the second noun is electrified, say "You fear touching [the second noun]." instead.\n\nThe electrocution-wisdom rule is listed before the basic accessibility rule in the action-processing rules.\n\nBefore touching the scary box:\n\tsay "You can\'t help noticing a bright red sticker on the surface of the box." [This rule will fire even if we are not wearing the glove, because Before rules occur before basic accessibility.]\n\nInstead of opening the scary box:\n\tsay "The scary box seems to be super-glued shut." [This one won\'t, because Instead rules occur after basic accessibility.]\n\nTest me with "touch fence / touch box / open box / wear glove / open box".\n');
+    myProject.pasteCode('The coin is in the Roman Villa. The face and inscription are parts of the coin. Rule for deciding the concealed possessions of the coin: if the coin is carried, no; otherwise yes.\n\n');
 }
 </script>
-<a href="javascript:pasteCode396()"><img border=0 src=../doc_images/paste.png></a> &quot;Electrified&quot;
+<a href="javascript:pasteCode9()"><img border=0 src=../doc_images/paste.png></a> The coin is in the Roman Villa. The face and inscription are parts of the coin. Rule for deciding the concealed possessions of the coin: if the coin is carried, no; otherwise yes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be safe or electrified. A thing is usually safe.
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e134"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc50.html#e134 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>33</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc50.html#e134 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Search and Seizure</font></b></a><br>A smuggler who has items, some of which are hidden.<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>Suppose we want a character who carries hidden objects, but only while he is wearing his jacket. If we deprive him of this, his other possessions become known. Furthermore, if we ever search him, his possessions also become known, and can thereafter be mentioned by us.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode120(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Search and Seizure"\n\nSize is a kind of value. The sizes are small, medium, and large. A thing has a size. A thing is usually small.\n\nA thing can be licit or contraband. A thing is usually licit.\n\nA thing can be discovered or secret. A thing is usually secret.\n\n[Now, we want the character to be able to hide small things if he has some sort of concealing garment on. We also want to be able to see anything that the player has already found once, perhaps by using the >SEARCH PERSON command. So:]\n\nRule for deciding the concealed possessions of someone (called the suspect):\n\tif the particular possession is discovered, no;\n\tif the suspect wears something and the particular possession is small, yes;\n\totherwise no.\n\n[The following rule, borrowed from a later chapter, assures that any items that are ever mentioned to the player will be treated as known from then on:]\n\nBefore printing the name of something (called discovery): now the discovery is discovered.\n\nThe Customs House is a room. The smuggler is a man in the Customs House. The smuggler wears a leather jacket. He carries a bottle of Altairan rum, some raspberries, and a laser pistol. The pistol is large. The jacket is large. The rum and the raspberries are contraband. The description of the smuggler is "He has a bestubbled chin and a sinister eye."\n\nThe tourist is a woman in the customs house. The description is "The type who walks off home with a dozen contraband items in her pocket not because she means to steal things but because she\'s too stupid to understand that the law applies to herself." She wears a tight-fitting dress. The dress is large. The tourist carries a grapevine and an archaeological artifact. The grapevine is large and contraband. The artifact is contraband.\n\nReport examining someone: say "[The noun] is [if the noun is wearing something]wearing [a list of unconcealed things worn by the noun] and [end if]carrying [a list of unconcealed things carried by the noun]."\n\nReport examining someone who is concealing something contraband:\n\tsay "[The noun] looks nervous. You can just tell."\n\nReport examining someone who is carrying an unconcealed contraband thing:\n\tsay "Your eye goes at once to [the list of unconcealed contraband things carried by the noun] which [the noun] is unable to hide";\n\tif an unconcealed licit thing is had by the noun, say ", though [if the noun is female]s[end if]he also has [a list of unconcealed licit things had by the noun]";\n\tsay "." instead.\n\n[Notice that we can talk about what the smuggler wears, what he carries, and what he "has": things the smuggler has can be either worn or carried, so the phrase is useful if we don\'t care to make that distinction.]\n\nInstead of searching someone:\n\tsay "[The noun] is revealed to be carrying [a list of things carried by the noun]."\n\nInstead of confiscating the dress:\n\tsay "You are not allowed to perform strip-searches in the public customs area."\n\nUnderstand "confiscate [something]" as confiscating.\n\nConfiscating is an action applying to one thing.\n\nCheck confiscating:\n\tif the noun is had by someone who is not the player, do nothing;\n\totherwise say "You can only confiscate other people\'s possessions." instead.\n\nCarry out confiscating:\n\tnow the noun is carried by the player.\n\nReport confiscating:\n\tsay "Through the authority vested in you by the power of the Sovereign of Centauri Proxima, you make [the noun] your own."\n\nTest me with "x smuggler / search smuggler / x smuggler / confiscate jacket / x smuggler / confiscate rum / confiscate pistol / x smuggler / confiscate raspberries / x smuggler".\n\nTest more with "x tourist / confiscate dress / confiscate grapevine / x tourist / search tourist / confiscate artifact / x tourist".\n');
+}
+</script>
+<a href="javascript:pasteCode120()"><img border=0 src=../doc_images/paste.png></a> &quot;Search and Seizure&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Open Field is a room. &quot;At this end of the field is a wire fence separating farm country from the government testing grounds beyond.&quot; The wire fence is an electrified thing in Open Field. It is scenery. The description of the wire fence is &quot;Built into the fence is [a list of things which are part of the fence].&quot; The scary box is an electrified container. It is part of wire fence. In the scary box is an alluring prize.
+<blockquote><font color="#000080">Size is a kind of value. The sizes are small, medium, and large. A thing has a size. A thing is usually small.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries a flashlight, a grappling hook, a very thick rubber glove, and a length of rope. The glove is wearable.
+<blockquote><font color="#000080">A thing can be licit or contraband. A thing is usually licit.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">This is the electrocution-wisdom rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player wears the very thick rubber glove, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the action requires a touchable noun and the noun is electrified, say &quot;You fear touching [the noun].&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the action requires a touchable second noun and the second noun is electrified, say &quot;You fear touching [the second noun].&quot; instead.
+<blockquote><font color="#000080">A thing can be discovered or secret. A thing is usually secret.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The electrocution-wisdom rule is listed before the basic accessibility rule in the action-processing rules.
+<p>Now, we want the character to be able to hide small things if he has some sort of concealing garment on. We also want to be able to see anything that the player has already found once, perhaps by using the >SEARCH PERSON command. So:
+<p>
+<blockquote><font color="#000080">Rule for deciding the concealed possessions of someone (called the suspect):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the particular possession is discovered, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the suspect wears something and the particular possession is small, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise no.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before touching the scary box:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't help noticing a bright red sticker on the surface of the box.&quot; [This rule will fire even if we are not wearing the glove, because Before rules occur before basic accessibility.]
+<p>The following rule, borrowed from a later chapter, assures that any items that are ever mentioned to the player will be treated as known from then on:
+<p>
+<blockquote><font color="#000080">Before printing the name of something (called discovery): now the discovery is discovered.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of opening the scary box:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The scary box seems to be super-glued shut.&quot; [This one won't, because Instead rules occur after basic accessibility.]
+<blockquote><font color="#000080">The Customs House is a room. The smuggler is a man in the Customs House. The smuggler wears a leather jacket. He carries a bottle of Altairan rum, some raspberries, and a laser pistol. The pistol is large. The jacket is large. The rum and the raspberries are contraband. The description of the smuggler is &quot;He has a bestubbled chin and a sinister eye.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;touch fence / touch box / open box / wear glove / open box&quot;.
+<blockquote><font color="#000080">The tourist is a woman in the customs house. The description is &quot;The type who walks off home with a dozen contraband items in her pocket not because she means to steal things but because she's too stupid to understand that the law applies to herself.&quot; She wears a tight-fitting dress. The dress is large. The tourist carries a grapevine and an archaeological artifact. The grapevine is large and contraband. The artifact is contraband.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc307.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Report examining someone: say &quot;[The noun] is [if the noun is wearing something]wearing [a list of unconcealed things worn by the noun] and [end if]carrying [a list of unconcealed things carried by the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report examining someone who is concealing something contraband:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] looks nervous. You can just tell.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report examining someone who is carrying an unconcealed contraband thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your eye goes at once to [the list of unconcealed contraband things carried by the noun] which [the noun] is unable to hide&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if an unconcealed licit thing is had by the noun, say &quot;, though [if the noun is female]s[end if]he also has [a list of unconcealed licit things had by the noun]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot; instead.
+</font></blockquote><p>
+<p>
+<p>Notice that we can talk about what the smuggler wears, what he carries, and what he &quot;has&quot;: things the smuggler has can be either worn or carried, so the phrase is useful if we don't care to make that distinction.
+<p>
+<blockquote><font color="#000080">Instead of searching someone:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is revealed to be carrying [a list of things carried by the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of confiscating the dress:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are not allowed to perform strip-searches in the public customs area.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;confiscate [something]&quot; as confiscating.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Confiscating is an action applying to one thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check confiscating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is had by someone who is not the player, do nothing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You can only confiscate other people's possessions.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out confiscating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is carried by the player.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report confiscating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Through the authority vested in you by the power of the Sovereign of Centauri Proxima, you make [the noun] your own.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x smuggler / search smuggler / x smuggler / confiscate jacket / x smuggler / confiscate rum / confiscate pistol / x smuggler / confiscate raspberries / x smuggler&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test more with &quot;x tourist / confiscate dress / confiscate grapevine / x tourist / search tourist / confiscate artifact / x tourist&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc50.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e163"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex163.html#e163 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>303</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex163.html#e163 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Instant EXAMINE and LOOK</font></b></a><br>A set of actions which do not take any game time at all.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc306.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc308.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc49.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc51.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

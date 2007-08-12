@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.9. Check, carry out, report</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.5. The text token</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,104 +9,122 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Removal" -->
-<!-- SEARCH SECTION "Ex 165" -->
-<!-- SEARCH SORT "Ex 012-009-165" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc179.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc181.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.9. Check, carry out, report</b></font></td></tr></table>
+<!-- SEARCH TITLE "Nameless" -->
+<!-- SEARCH SECTION "Ex 239" -->
+<!-- SEARCH SORT "Ex 016-005-239" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc244.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc246.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.5. The text token</b></font></td></tr></table>
 <p>
-<p>The normal behaviour of an action is specified by its three associated rulebooks - check, carry out and report. In the case of our &quot;photographing&quot; example, these rulebooks will be:
+<p>Most actions involve items: taking a vase, perhaps. As we shall see, they might also involve values, or a mixture of the two: turning a dial to 17 would involve both a thing (the dial) and a number (17). A few of Inform's built-in actions, however, can act on any text at all. For instance, asking the Sybil about the Persian army would involve a thing (the Sybil) and some text (&quot;Persian army&quot;). Inform does not try to understand automatically what that text might mean, or to relate it to any items, places or values it knows about: instead, Inform leaves that to the specific story to work out for itself, since the answer is bound to depend on the context. (In the chapter on Tables, we saw ways to compile tables of responses to particular topics of conversation.)
 <p>
-<blockquote><font color="#000080"><b>Check photographing</b>. Here, for instance, we need to verify that the player has the camera. If any of our checks fail, we should say why and stop the action. If they succeed, we say nothing.
+<p>The token for &quot;accept any text here&quot; is just &quot;[text]&quot;. For instance, if we create an action with:
+<p>
+<blockquote><font color="#000080">Getting help about is an action applying to one topic.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080"><b>Carry out photographing</b>. At this stage no further checking is needed (or allowed): the action now definitively takes place. At this point we might, for instance, deduct one from the number of exposures left on the film in the camera, or award the player points for capturing something interesting for posterity. But we should say nothing.
+<p>We can then provide grammar for this action like so:
+<p>
+<blockquote><font color="#000080">Understand &quot;help on [text]&quot; as getting help about.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080"><b>Report photographing</b>. At this stage no further activity is needed (or allowed): whatever effect the action had, it has happened and is now over. All we can do is to say what has taken place.
-</font></blockquote><p>
-<p>
-<p>So far we have not really gone into the business of what rulebooks are, and we don't do so here either - suffice to say that we can now create whatever rules we need:
-<p>
-<blockquote><font color="#000080">A check photographing rule: if the camera is not carried then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
-</font></blockquote><p>
-<p>
-<p>In fact, writing &quot;a check photographing rule&quot; is over-formal. We can more simply label our rules like so:
-<p>
-<blockquote><font color="#000080">Check photographing: if we have photographed the noun then say &quot;You've already snapped [the noun].&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report photographing: say &quot;Click!&quot;
-</font></blockquote><p>
-<p>
-<p>For the sake of brevity, photography has no interesting consequence (no points to be won, no film to use up), so there are no carry out rules here. Note the way we used the word &quot;instead&quot; once again to stop actions in their tracks.
-<p>
-<p>We can continue to add rules at any point, and a classic thing that happens when testing a new work is that the designer realises there is a case which has not been thought of:
-<p>
-<blockquote><font color="#000080">Check photographing: if the noun is the camera then say &quot;That would require some sort of contraption with mirrors.&quot; instead.
-</font></blockquote><p>
+<p>When text like this is successfully matched, it is placed in a value called &quot;the topic understood&quot;. (The term &quot;topic&quot; is used traditionally, really: most of the times one needs this feature, it's for a topic of conversation, or a topic being looked up in a book.)
 <p>
 <p><hr><p>
-<a name="e148"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex148.html#e148 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>162</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex148.html#e148 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Waxwork</font></b></a><br>Containers and supporters that report their contents when you EXAMINE them.<p></td></tr></table>
-<a name="e304"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex304.html#e304 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>163</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex304.html#e304 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Dark Ages Revisited</font></b></a><br>An electric light kind of device which becomes lit when switched on and dark when switched off.<p></td></tr></table>
+<a name="e183"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex183.html#e183 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>238</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex183.html#e183 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ish.</font></b></a><br>A (very) simple HELP command, using tokens to accept and interpret the player's  text whatever it might be.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e59"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc180.html#e59 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>164</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc180.html#e59 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Removal</font></b></a><br>TAKE expanded to give responses such as "You take the book from the shelf." or "You pick up the toy from the ground."<p></td></tr></table>
+<a name="e59"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc245.html#e59 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>239</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc245.html#e59 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Nameless</font></b></a><br>ASKing someone about an object rather than about a topic.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>It is sometimes useful to add rules to the check and carry out rulebooks to record information that will be useful later in processing the action. For instance, suppose that we want to change the reporting of &quot;take&quot; so that the player is always told something like &quot;You take the book from the shelf.&quot; or &quot;You pick up the toy from the ground.&quot; In order to generate these reports, we will need to know where the object started, even though by the time we are printing the output, the object will have moved.
-<p>
-<p>One possibility is to record a previous location during the &quot;carry out&quot; phase of the action, and then refer to it later during the report phase, so:
+<p>By default, ASK SOMEONE ABOUT... applies only to a text token. We might want also to offer the player the option of asking characters about pieces of physical evidence. This example implements an ASK PERSON ABOUT THING command that is mostly synonymous with SHOW, with the added nuance that the player can ask about things that are not currently visible, as long as he has encountered them at some time in the past.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode258(code) {
+function pasteCode331(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Removal"\n\nThe Pharmacy is a room. A desk and a trash can are in the Pharmacy. The pill-counter, a prescription, and a computer are on the desk. The computer is fixed in place. The pill-counter contains some Vicodin. The trash can contains an empty box.\n\nPrevious locale is an object that varies.\n\n[The previous locale could in theory be either a thing or a room, so we make it "an object" -- that is, the most generic possible kind, to which both things and rooms belong. Now we record what the previous locale is at the beginning of each taking action:]\n\nFirst carry out taking rule:\n\tchange the previous locale to the holder of the noun.\n\n[Saying that this is the first carry out taking rule means that it will be used before any other carry out rules, no matter how specific. This means that we will always capture the locale before moving the object in question. For more about the sequencing of rules, and specifying "first" and "last" rules, see Chapter 17.]\n\nReport taking something:\n\tif the previous locale is the location, say "You pick up [the noun] from the ground.";\n\totherwise say "You take [the noun] from [the previous locale].";\n\tstop the action.\n\nTest me with "get all".\n\n');
+    myProject.pasteCode('"Nameless"\n\nThe Black Chamber is a room. "Despite its menacing name, it is quite an ordinary room, underlying the post office above. Here letters are brought each day, unsealed, transcribed, resealed, and sent again on their way; their contents then analyzed and recorded."\n\nThe Nameless Advisor is a woman in the Black Chamber. "A woman whose name has never been disclosed to you sits at the window, writing numbers on a sheet of paper." The Advisor carries a sheet of paper. Understand "woman" as the nameless advisor.\n\nThe player carries a letter from the emperor. The description of the letter is "Though its origin is obvious, its meaning is secret: the letters are an inexplicable jumble."\n\n[Now we create our new action, "interrogating it about". We write the grammar lines so that we can show any object in sight to someone, but also ask someone about any object that we have ever interacted with in the game, whether it is currently visible or not.]\n\nA thing can be known or unknown. The Nameless Advisor is known.\n\nUnderstand "ask [someone] about [any known thing]" as interrogating it about. interrogating it about is an action applying to two visible things.\n\n[Now we replace and redirect the showing action. This gets rid of the requirement in the default library that the player be holding anything he shows to another character:]\n\nUnderstand the commands "show" and "display" and "present" as something new.\n\nUnderstand "show [something] to [someone]" or "display [something] to [someone]" or "present [something] to [someone]" as interrogating it about (with nouns reversed). Understand "show [someone] [something]" as interrogating it about.\n\n[This bit keeps track of what the player has seen, for the purposes of "any known thing":]\n\nBefore printing the name of something (called the target): now the target is known.\n\n[Here we define what happens by default when we interrogate someone about something; we use the same response we get to asking someone about something that isn\'t otherwise interesting:]\n\nCarry out interrogating someone about something:\n\tsay "There is no reply."\n\n[Now redirect all asking to a topic table, and all interrogating to an object table:]\n\nInstead of asking Nameless Advisor about a topic listed in the Table of Nameless Advisor Topics:\n\tsay "[reply entry][paragraph break]".\n\nInstead of interrogating Nameless Advisor about an item listed in the Table of Nameless Advisor Items:\n\tsay "[reply entry][paragraph break]".\n\nTable of Nameless Advisor Items\nitem\treply\nletter\t"\'It is enciphered,\' she remarks[if the advisor can see the letter], glancing over the contents[otherwise], after you have offered a detailed description[end if]. \'A substitution cipher of some complexity, I believe.\'"\nAdvisor\t"She listens to your inquiries about her identity and parentage with a placid smile, but does not answer."\n\nTable of Nameless Advisor Topics\ntopic\treply\n"cipher"\t"\'I know many dozens of ciphers,\' she replies, smiling in a disquieting way."\n"substitution cipher"\t"\'One letter is allowed to stand for another,\' she explains, folding her hands together patiently. The backs of both hands are tattooed with silvery stars."\n\n[And just so that we can test what happens when asking someone about something out of sight:]\n\nThe safe box is a container in the Chamber. It is fixed in place. It is openable and closed.\n\n[...and something unknown:]\n\nThe poisonous apple is a thing.\n\nTest me with "test sight / test knowledge".\n\nTest sight with "i / x letter / ask Nameless Advisor about cipher / show cipher to Nameless Advisor / ask Nameless Advisor about the letter / show the letter to Nameless Advisor / show Nameless Advisor the letter".\n\nTest knowledge with "open safe box / put letter in safe box / close safe box / ask Nameless Advisor about the letter / show the letter to Nameless Advisor / ask Nameless Advisor about the apple".\n');
 }
 </script>
-<a href="javascript:pasteCode258()"><img border=0 src=../doc_images/paste.png></a> &quot;Removal&quot;
+<a href="javascript:pasteCode331()"><img border=0 src=../doc_images/paste.png></a> &quot;Nameless&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Pharmacy is a room. A desk and a trash can are in the Pharmacy. The pill-counter, a prescription, and a computer are on the desk. The computer is fixed in place. The pill-counter contains some Vicodin. The trash can contains an empty box.
+<blockquote><font color="#000080">The Black Chamber is a room. &quot;Despite its menacing name, it is quite an ordinary room, underlying the post office above. Here letters are brought each day, unsealed, transcribed, resealed, and sent again on their way; their contents then analyzed and recorded.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Previous locale is an object that varies.
+<blockquote><font color="#000080">The Nameless Advisor is a woman in the Black Chamber. &quot;A woman whose name has never been disclosed to you sits at the window, writing numbers on a sheet of paper.&quot; The Advisor carries a sheet of paper. Understand &quot;woman&quot; as the nameless advisor.
 </font></blockquote><p>
 <p>
-<p>The previous locale could in theory be either a thing or a room, so we make it &quot;an object&quot; -- that is, the most generic possible kind, to which both things and rooms belong. Now we record what the previous locale is at the beginning of each taking action:
-<p>
-<blockquote><font color="#000080">First carry out taking rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the previous locale to the holder of the noun.
+<blockquote><font color="#000080">The player carries a letter from the emperor. The description of the letter is &quot;Though its origin is obvious, its meaning is secret: the letters are an inexplicable jumble.&quot;
 </font></blockquote><p>
 <p>
-<p>Saying that this is the first carry out taking rule means that it will be used before any other carry out rules, no matter how specific. This means that we will always capture the locale before moving the object in question. For more about the sequencing of rules, and specifying &quot;first&quot; and &quot;last&quot; rules, see Chapter 17.
+<p>Now we create our new action, &quot;interrogating it about&quot;. We write the grammar lines so that we can show any object in sight to someone, but also ask someone about any object that we have ever interacted with in the game, whether it is currently visible or not.
 <p>
-<blockquote><font color="#000080">Report taking something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the previous locale is the location, say &quot;You pick up [the noun] from the ground.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You take [the noun] from [the previous locale].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+<blockquote><font color="#000080">A thing can be known or unknown. The Nameless Advisor is known.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;get all&quot;.
+<blockquote><font color="#000080">Understand &quot;ask [someone] about [any known thing]&quot; as interrogating it about. interrogating it about is an action applying to two visible things.
 </font></blockquote><p>
 <p>
-<p>We &quot;stop the action&quot; here because the report rules are followed in order, and unless we specifically stop, Inform will go on to the default report taking rule, giving us output like
+<p>Now we replace and redirect the showing action. This gets rid of the requirement in the default library that the player be holding anything he shows to another character:
 <p>
-<blockquote><font color="#000080">You take the box from the freezer.
+<blockquote><font color="#000080">Understand the commands &quot;show&quot; and &quot;display&quot; and &quot;present&quot; as something new.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Taken.
+<blockquote><font color="#000080">Understand &quot;show [something] to [someone]&quot; or &quot;display [something] to [someone]&quot; or &quot;present [something] to [someone]&quot; as interrogating it about (with nouns reversed). Understand &quot;show [someone] [something]&quot; as interrogating it about.
 </font></blockquote><p>
 <p>
-<p>This is obviously undesirable. We could also say
+<p>This bit keeps track of what the player has seen, for the purposes of &quot;any known thing&quot;:
 <p>
-<blockquote><font color="#000080">Report taking something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the previous locale is the location, say &quot;You pick up [the noun] from the ground.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You take [the noun] from [the previous locale].&quot; instead.
+<blockquote><font color="#000080">Before printing the name of something (called the target): now the target is known.
 </font></blockquote><p>
 <p>
-<p>Including &quot;instead&quot; at the end of a say phrase stops the action after the phrase is printed.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc180.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>Here we define what happens by default when we interrogate someone about something; we use the same response we get to asking someone about something that isn't otherwise interesting:
+<p>
+<blockquote><font color="#000080">Carry out interrogating someone about something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There is no reply.&quot;
+</font></blockquote><p>
+<p>
+<p>Now redirect all asking to a topic table, and all interrogating to an object table:
+<p>
+<blockquote><font color="#000080">Instead of asking Nameless Advisor about a topic listed in the Table of Nameless Advisor Topics:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of interrogating Nameless Advisor about an item listed in the Table of Nameless Advisor Items:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Nameless Advisor Items
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">item</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">letter</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'It is enciphered,' she remarks[if the advisor can see the letter], glancing over the contents[otherwise], after you have offered a detailed description[end if]. 'A substitution cipher of some complexity, I believe.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">Advisor</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;She listens to your inquiries about her identity and parentage with a placid smile, but does not answer.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Nameless Advisor Topics
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cipher&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'I know many dozens of ciphers,' she replies, smiling in a disquieting way.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;substitution cipher&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'One letter is allowed to stand for another,' she explains, folding her hands together patiently. The backs of both hands are tattooed with silvery stars.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<p>And just so that we can test what happens when asking someone about something out of sight:
+<p>
+<blockquote><font color="#000080">The safe box is a container in the Chamber. It is fixed in place. It is openable and closed.
+</font></blockquote><p>
+<p>
+<p>...and something unknown:
+<p>
+<blockquote><font color="#000080">The poisonous apple is a thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;test sight / test knowledge&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test sight with &quot;i / x letter / ask Nameless Advisor about cipher / show cipher to Nameless Advisor / ask Nameless Advisor about the letter / show the letter to Nameless Advisor / show Nameless Advisor the letter&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test knowledge with &quot;open safe box / put letter in safe box / close safe box / ask Nameless Advisor about the letter / show the letter to Nameless Advisor / ask Nameless Advisor about the apple&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc245.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e126"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex126.html#e126 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>165</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex126.html#e126 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Paddington</font></b></a><br>A CUT [something] WITH [something] command which acts differently on different types of objects.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc179.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc181.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc244.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc246.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

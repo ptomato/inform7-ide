@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.12. Using Inform 6 within Inform 7</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.6. Extensions and story file formats</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,19 +9,38 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Using Inform 6 within Inform 7" -->
-<!-- SEARCH SECTION "21.12" -->
-<!-- SEARCH SORT "021-012-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc350.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc352.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.12. Using Inform 6 within Inform 7</b></font></td></tr></table>
+<!-- SEARCH TITLE "Extensions and story file formats" -->
+<!-- SEARCH SECTION "21.6" -->
+<!-- SEARCH SORT "021-006-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc350.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc352.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.6. Extensions and story file formats</b></font></td></tr></table>
 <p>
-<p>To return to what was said on the first page of this documentation: Inform 7 (or I7), the current version, is not at all like Inform 6 (or I6). Internally, however, I7 works by translating the source text into an I6 program, so that in a practical sense the current version of Inform actually contains its predecessor.
+<p>Inform compiles to several different story file formats, and in each case uses only a small part of their abilities - especially when it comes to fancy tricks with the keyboard or screen. So people may well want to write extensions which provide access to some of these tricks (like &quot;Basic Screen Effects&quot;, included in the standard Inform distribution, but more so). Unfortunately, these tricks are very likely to fail to compile - or fail to work - on some of the possible story file formats, so the resulting extension would probably go wrong (and mysteriously wrong) for users who have chosen a different format.
 <p>
-<p>The final sections of this chapter show how I6 code can be mixed directly in with I7. The remaining pages will therefore make little or no sense to those who do not already use I6. But for those who do know I6 already, it would be all too easy to write highly hybridised code, constantly mixing I6 and I7. The authors of Inform hope that this will not happen: for almost all purposes, I7 is much more powerful than I6, and fails - when it has to fail - in a way more helpful to the user. Ideally, all I6 content would be confined to extensions (and this may be mandated in future releases of Inform), and even writers of extensions are asked to pare down their usage of I6 to the minimum necessary.
+<p>Inform therefore provides a way for extensions to declare the formats they are compatible with. All that is required is to add a proviso in brackets after the title is declared:
 <p>
-<p>The methods for incorporating I6 code into I7 have been designed with this in mind, that is, to encourage people to use I6 in as self-contained a way as possible: in particular to isolate the relatively few functions which need to be written in I6, and to give them natural language expression.
+<blockquote><font color="#000080">Version 2 of Basic Screen Effects (for Z-Machine version 5 or 8 only) by Emily Short begins here.
+</font></blockquote><p>
 <p>
-<p>Finally, anyone hacking with I7 for a while is likely to become curious about the Standard Rules file, and to look at the text on which the Inform world model is founded. The file is, of course, no secret, but it can be misleading. For one thing, it appears to have great freedom to set up the world model as it pleases, but in fact the I7 compiler may well crash unless certain things are done just so in the Standard Rules: they depend on each other.
+<p>Other examples might be &quot;(for Glulx only)&quot;, or &quot;(for Z-machine only)&quot; - which means any version of the Z-machine, even version 6. If no such proviso is given, the extension is assumed to be compatible with every story file format.
 <p>
-<p>Moreover, the Standard Rules use a number of syntaxes which are not documented in this chapter: these are constantly being altered, and it would not be safe to imitate them. Any I6-related syntax which is not documented in this chapter may be removed or changed in effect at any time without warning, for instance in an update of Inform to fix bugs.
+<p>Extensions are also able to include material which is only used on some story file formats and not others - in principle, this might allow the same facilities to be provided to the author whatever story file format is used, but to achieve these effects differently depending on the current Settings. The convention here is exactly like &quot;not for release&quot;: if a heading or subheading in the source text contains a bracketed proviso, then the material under that heading (and under its dependent subheadings) will be ignored if the current story file format does not match. For example:
 <p>
+<blockquote><font color="#000080">Section 2.3G (for Glulx only)
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To reveal the explosion:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;[...the Glulx way...]
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Section 2.3Z (for Z-machine only)
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To reveal the explosion:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;[...the Z-machine way...]
+</font></blockquote><p>
+<p>
+<p>would ensure that &quot;reveal the explosion&quot; works nicely whichever story file format is used.
+<p>
+<p><hr><p>
+<a name="e284"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex284.html#e284 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>325</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex284.html#e284 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Tilt 3</font></b></a><br>Displaying the card suits from our deck of cards with red and black colored unicode symbols.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc350.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc352.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

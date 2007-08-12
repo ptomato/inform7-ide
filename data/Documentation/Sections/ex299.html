@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.3. Plural assertions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.25. The location of something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,103 +9,82 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Get Me to the Church on Time" -->
-<!-- SEARCH SECTION "Ex 38" -->
-<!-- SEARCH SORT "Ex 004-003-038" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc55.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc57.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.3. Plural assertions</b></font></td></tr></table>
+<!-- SEARCH TITLE "Van Helsing" -->
+<!-- SEARCH SECTION "Ex 34" -->
+<!-- SEARCH SORT "Ex 003-025-034" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc50.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc52.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.25. The location of something</b></font></td></tr></table>
 <p>
-<p>As the following examples show, sentences can make several assertions at once by using the plural. Suppose we have defined a kind called &quot;high-up fixture&quot;, for instance like so:
+<p>The model world created by Inform is partitioned into rooms. This means that everything which exists in the model world, exists in one of the rooms. If we write a sentence such as
 <p>
-<blockquote><font color="#000080">A high-up fixture is a kind of thing. A high-up fixture is usually fixed in place.
+<blockquote><font color="#000080">Professor Wilderspin is a man.
 </font></blockquote><p>
 <p>
-<p>Then the following sentence creates two such objects and puts them in their place:
+<p>and say nothing more about Wilderspin, then he does not physically exist at the start of the game: he is said to be &quot;out of play&quot;, and stays that way until we move him into one of the rooms. A better metaphor might be that he is waiting in the wings, ready to come onto the stage.
 <p>
-<blockquote><font color="#000080">The high shelf and the skylight window are high-up fixtures in the Lumber Room.
+<p>Every thing is either out of play, or can be found in one of the rooms, and the property &quot;location of X&quot; gives us the room in question. The following condition tests, in effect, whether Wilderspin is in play:
+<p>
+<blockquote><font color="#000080">if the location of Wilderspin is a room, ...
 </font></blockquote><p>
 <p>
-<p>since it is equivalent to saying:
+<p>The &quot;location of the player&quot; is simply called the &quot;location&quot;, and as the player is always in play, this is always a room. If the player stands in Biblioll College and wears a waistcoat, inside which is a fob watch, then &quot;location of the fob watch&quot; is Biblioll College.
 <p>
-<blockquote><font color="#000080">The high shelf is a high-up fixture. The skylight window is a high-up fixture. The high shelf is in the Lumber Room. The skylight window is in the Lumber Room.
+<p>In general, a thing cannot be in two rooms at once, but there are two exceptions: (two-sided) doors, present on both sides, and backdrops. The &quot;location of&quot; a door is its front side, whether it is one-sided or two-sided; but a backdrop is deemed to have no location, in the sense above. (Objects which are not things at all, such as rooms and directions, also have no location.)
+<p>
+<p>The idea of indirect containment is useful enough to have a name: Inform calls it &quot;enclosure&quot;. A thing encloses whatever is a part of itself, or inside itself, or on top of itself, and it also encloses anything that they enclose. And when something moves around, anything it encloses will move with it. In the example above, Biblioll College (a room) and the player (a person) both enclose the fob watch and the waistcoat. (The small print: a door is enclosed by the rooms on both sides; a backdrop is never enclosed.)
+<p>
+<p>Enclosure is only useful when being used as a question. So the following is fine:
+<p>
+<blockquote><font color="#000080">if the player encloses the fob watch, ...
 </font></blockquote><p>
 <p>
-<p>Such plurals are allowed in almost any context, and we could even define two kinds at once:
+<p>But these will produce problem messages:
 <p>
-<blockquote><font color="#000080">Bucket and basket are kinds of container.
+<blockquote><font color="#000080">The player encloses the fob watch. The location of the trilobite is the Museum.
 </font></blockquote><p>
 <p>
-<p>Inform constructs plurals by a fairly primitive rule, and English is so irregular a language that a more complicated rule would probably not be very much better. We sometimes need to intervene:
+<p>because they are too vague. Inform needs to know exactly where the fob watch and the trilobite will begin the game, whereas these sentences leave room for doubt about who or what is actually holding them.
 <p>
-<blockquote><font color="#000080">An ox is a kind of animal. The plural of ox is oxen.
-</font></blockquote><p>
-<p>
-<p>We are allowed to define more than one plural for the same singular text, and for the names of things, rooms or kinds, all alternative versions will be used interchangeably. (For instance, Inform defines both &quot;people&quot; and &quot;persons&quot; as plurals of &quot;person&quot;.)
-<p>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width=&quot;100%&quot;><tr><TD width=38px valign=top><img border=&quot;0&quot; src=../doc_images/beta.png id=&quot;betaoval&quot; style=&quot;height:31px; width=40px&quot;></td><td valign=top><font size=2>For the time being, please avoid syllepsis such as &quot;Darcy is wearing a hat and carrying a fishing rod.&quot;, where the &quot;and&quot; couples together prepositions (or verbs) rather than nouns.
-<p>
-<p></font></td></tr></table><hr><p>
+<p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e299"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc56.html#e299 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>37</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc56.html#e299 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Get Me to the Church on Time</font></b></a><br>Using kinds of clothing to prevent the player from wearing several pairs of trousers at the same time.<p></td></tr></table>
+<a name="e299"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc51.html#e299 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>34</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc51.html#e299 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Van Helsing</font></b></a><br>A character who approaches the player, then follows him from room to room.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Inform's default handling of wearable things does not make any rules about what can be worn together. Suppose, however, we have a game in which there are a large number of different garments, and we want to keep the player from wearing (say) more than one pair of pants at once:
+<p>Suppose we want to write a character who tries to be in the same room as the player. We will do this by testing every turn whether the character's location and the player's location are the same; if the answer is no, the character will look for a path to the player's location, then try to move along that path. (We will learn more about finding paths and giving characters instructions later.)
+<p>
+<p>The result will be that if the player ever moves to another location, the character will automatically pursue him.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode125(code) {
+function pasteCode121(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Get Me to the Church on Time"\n\nA pair of pants and a shirt are kinds of thing. A pair of pants and a shirt are usually wearable.\n\nSome golf pants are a pair of pants. The description is "Checked in red and green, with tiny frolicking gophers every few inches."\n\nSome tuxedo trousers are a pair of pants. The description is "Black, pressed, and slimming."\n\nThe frilly shirt is a shirt. The description of the frilly shirt is "She insisted."\n\nThe polo shirt is a shirt. The description is "Turquoise and bright yellow, the colors selected by your golfing buddies."\n\nThe player wears the golf pants and the polo shirt. The player carries the tuxedo trousers and the frilly shirt.\n\nThe Wedding Chapel Dressing Room is a room. "The bride\'s dressing room is a lavish suite with closets, hangers, dressmaker\'s dummies, boxes of straight pins and sewing notions, combs, lotions, brushes, and hair fixatives, plus room for  fifteen female attendants and a photographer. Before they shoved you out of the room you even got a glimpse of a small reference library including \'1001 French Braids\' and \'Corset-Lacing For Beginners.\'\n\nThis is the groom\'s dressing room. You get a framed photograph of Elvis, a dusty mirror, and the floor space of an average toilet stall."\n\nThe dusty mirror and the photograph of Elvis are scenery in the Dressing Room. The description of the mirror is "You can\'t really get more than a silhouette impression of yourself." The description of Elvis is "He reminds you that you\'d better get out there before the organist switches to Hound Dog."\n\n[And now the rule itself, borrowed from a later chapter:]\n\nInstead of wearing a pair of pants when the player is wearing a pair of pants (called the wrong trousers):\n\tsay "You\'ll have to take off [the wrong trousers] first."\n\nInstead of wearing a shirt when the player is wearing a shirt (called the wrong top):\n\tsay "You\'ll have to take off [the wrong top] first."\n\nWhen play begins:\n\tsay "From the other side of the door, you hear the organist move on from his instrumental interpretation of \'I Wanna Hold Your Hand\' to a somewhat more spirited rendition of \'Help! I Need Somebody!\'. Okay, okay, but you\'ve been rushing things along since the 16th fairway, and you can\'t be more than a half-hour late... Surely that mother of hers can\'t blame you for that?"\n\nTest me with "i / x trousers / wear trousers / x golf pants / take off golf pants / wear trousers / x frilly shirt / x polo shirt / wear frilly shirt / doff polo shirt / wear frilly shirt".\n\n');
+    myProject.pasteCode('"Van Helsing"\n\nThe Drawbridge is a room. North of the Drawbridge is the Immensely Enormous Entry Hall. West of the Entry Hall is the Vast Dining Area. North of the Vast Dining Area is the Colossal Kitchen. The Spooky Guano-filled Attic is above the Entry Hall.\n\nCount Dracula is a man in the Attic.\n\n[In the following condition, we could also have written "if the location of Count Dracula is not the location", because "location" by itself is always understood to be the player\'s location. But it seemed better for clarity to write it this way:]\n\nEvery turn:\n\tif the location of Count Dracula is not the location of the player\n\tbegin;\n\t\tlet the way be the best route from the location of Count Dracula to the location of the player, using doors;\n\t\ttry Count Dracula going the way;\n\totherwise;\n\t\tsay "\'Muhahaha,\' says Count Dracula.";\n\tend if.\n\nTest me with "z / z / n / w / e / u / z / d".\n\n');
 }
 </script>
-<a href="javascript:pasteCode125()"><img border=0 src=../doc_images/paste.png></a> &quot;Get Me to the Church on Time&quot;
+<a href="javascript:pasteCode121()"><img border=0 src=../doc_images/paste.png></a> &quot;Van Helsing&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A pair of pants and a shirt are kinds of thing. A pair of pants and a shirt are usually wearable.
+<blockquote><font color="#000080">The Drawbridge is a room. North of the Drawbridge is the Immensely Enormous Entry Hall. West of the Entry Hall is the Vast Dining Area. North of the Vast Dining Area is the Colossal Kitchen. The Spooky Guano-filled Attic is above the Entry Hall.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Some golf pants are a pair of pants. The description is &quot;Checked in red and green, with tiny frolicking gophers every few inches.&quot;
+<blockquote><font color="#000080">Count Dracula is a man in the Attic.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Some tuxedo trousers are a pair of pants. The description is &quot;Black, pressed, and slimming.&quot;
+<p>In the following condition, we could also have written &quot;if the location of Count Dracula is not the location&quot;, because &quot;location&quot; by itself is always understood to be the player's location. But it seemed better for clarity to write it this way:
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location of Count Dracula is not the location of the player
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location of Count Dracula to the location of the player, using doors;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try Count Dracula going the way;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Muhahaha,' says Count Dracula.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The frilly shirt is a shirt. The description of the frilly shirt is &quot;She insisted.&quot;
+<blockquote><font color="#000080">Test me with &quot;z / z / n / w / e / u / z / d&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The polo shirt is a shirt. The description is &quot;Turquoise and bright yellow, the colors selected by your golfing buddies.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player wears the golf pants and the polo shirt. The player carries the tuxedo trousers and the frilly shirt.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Wedding Chapel Dressing Room is a room. &quot;The bride's dressing room is a lavish suite with closets, hangers, dressmaker's dummies, boxes of straight pins and sewing notions, combs, lotions, brushes, and hair fixatives, plus room for  fifteen female attendants and a photographer. Before they shoved you out of the room you even got a glimpse of a small reference library including '1001 French Braids' and 'Corset-Lacing For Beginners.'
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">This is the groom's dressing room. You get a framed photograph of Elvis, a dusty mirror, and the floor space of an average toilet stall.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The dusty mirror and the photograph of Elvis are scenery in the Dressing Room. The description of the mirror is &quot;You can't really get more than a silhouette impression of yourself.&quot; The description of Elvis is &quot;He reminds you that you'd better get out there before the organist switches to Hound Dog.&quot;
-</font></blockquote><p>
-<p>
-<p>And now the rule itself, borrowed from a later chapter:
-<p>
-<blockquote><font color="#000080">Instead of wearing a pair of pants when the player is wearing a pair of pants (called the wrong trousers):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'll have to take off [the wrong trousers] first.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of wearing a shirt when the player is wearing a shirt (called the wrong top):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'll have to take off [the wrong top] first.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;From the other side of the door, you hear the organist move on from his instrumental interpretation of 'I Wanna Hold Your Hand' to a somewhat more spirited rendition of 'Help! I Need Somebody!'. Okay, okay, but you've been rushing things along since the 16th fairway, and you can't be more than a half-hour late... Surely that mother of hers can't blame you for that?&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;i / x trousers / wear trousers / x golf pants / take off golf pants / wear trousers / x frilly shirt / x polo shirt / wear frilly shirt / doff polo shirt / wear frilly shirt&quot;.
-</font></blockquote><p>
-<p>
-<p>If we wanted to, we could make similar kinds for hats, shoes, and so on, and have a simple but effective system of clothing. A more complicated treatment might keep track of layering and describe the player's outfit differently depending on which clothes were outermost -- an example for a later chapter.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc56.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc51.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc55.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc57.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc50.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc52.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

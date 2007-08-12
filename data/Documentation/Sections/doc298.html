@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.8. Action- vs object-based-rulebooks</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.4. Listing rules explicitly</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,111 +9,49 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Action- vs object-based-rulebooks" -->
-<!-- SEARCH SECTION "18.8" -->
-<!-- SEARCH SORT "018-008-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc297.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc299.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.8. Action- vs object-based-rulebooks</b></font></td></tr></table>
+<!-- SEARCH TITLE "Listing rules explicitly" -->
+<!-- SEARCH SECTION "18.4" -->
+<!-- SEARCH SORT "018-004-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc297.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc299.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.4. Listing rules explicitly</b></font></td></tr></table>
 <p>
-<p>The example of the appraisal rules, earlier in the chapter, was a rulebook whose rules were not tied to any specific action or item. We simply created rules for this rulebook by writing &quot;An appraisal rule: ...&quot; But most Inform rules do apply to either actions (&quot;Instead of drinking the wine: ...&quot;) or items (&quot;Rule for reaching inside the flask: ...&quot;); and these two sorts of rule belong to two sorts of rulebooks. For instance, the Before, Instead and After rulebooks are based on actions, while the rulebooks associated with activities (as used by rules like &quot;Rule for printing the name of: ...&quot;) are based on items. (As it turns out, the appraisal rulebook was action-based: it simply happened that we never specified any requirements on the action.)
+<p>If rules can manage perfectly well without, why bother to have names for rules?
 <p>
-<p>We have seen that the preamble for a rule can be quite complicated, but when we strip away the optional ways to limit its applicability, give it a name, and so forth, we are left with
+<p>The answer is that although Inform contains an elaborate mechanism for placing rules into the correct rulebook at the correct position, and this happens automatically, Inform will sometimes get it wrong. It will use a rule we do not want, or place them in an order which does not suit us. To put this right, we can give explicit instructions which take precedence over Inform's normal practice. This is done with the &quot;to list&quot; verb, as in the following examples.
 <p>
-<blockquote><font color="#000080">...rulebook name... [about/for/of/on/rule] [...what to apply to...]
+<p>1. The simplest usage is to place a named rule, which currently has no home, in any rulebook of our choice. (This looks redundant, but just occasionally we want the same rule to appear in two different rulebooks.)
+<p>
+<blockquote><font color="#000080">The blossom rule is listed in the every turn rules.
 </font></blockquote><p>
 <p>
-<p>where the square-bracketed parts are optional. If the rulebook is object-based, the &quot;...what to apply to...&quot; should be a description, like &quot;a container&quot;; if action-based, it should be an action, like &quot;examining an open door&quot;.
+<p>A rule can only occur once in any single rulebook.
 <p>
-<p><b>1. Action-based rulebooks.</b> We have already mentioned before, after and instead. Other action-based rulebooks include the check, carry out, and report rules; general rulebooks such as every turn rules, the procedural rules, the visibility rules, the turn sequence rules; and rules specially for dealing with the actions of other characters, such as the persuasion and unsuccessful attempt rules. So the following would all be valid:
+<p>2. We can also specify that the rule needs to appear before, or after, some other named rule in the same rulebook:
 <p>
-<blockquote><font color="#000080">An every turn rule on kissing Clark:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lois glares in your direction.&quot;
+<blockquote><font color="#000080">The collapsing bridge rule is listed before the moving doorways rule in the instead rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Procedural rule about someone taking the hat:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;ignore the can't take people's possessions rule.
+<p>Instead of being placed in specificity order in the whole &quot;instead&quot; rulebook, the &quot;collapsing bridge&quot; rule would now be placed in specificity order only in the first half of the &quot;instead&quot; rulebook - the rules from the start up to (but not including) the &quot;moving doorways&quot; rule.
+<p>
+<p>&quot;Listed&quot; sentences are obeyed by Inform in sequence, so if later ones issue instructions contradicting earlier ones, it's the later ones which win out. Thus if we say &quot;A is listed before B in X&quot; and then &quot;B is listed before A in X&quot;, the result is that B comes before A.
+<p>
+<p>3. We can specify that a rule needs to appear first or last in a given rulebook:
+<p>
+<blockquote><font color="#000080">The collapsing bridge rule is listed first in the instead rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Visibility rule for looking under something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is carrying a lit thing (called lamp)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You shine [the lamp] under [the noun]...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;there is sufficient light;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;there is insufficient light.
+<p>Again, if we make several such instructions about the same rulebook then the most recent one wins: &quot;A is listed first in X. B is listed first in X. C is listed first in X.&quot; causes rulebook X to begin C, B, A.
+<p>
+<p>4. We can also substitute one rule for another:
+<p>
+<blockquote><font color="#000080">My darkness rule is listed instead of the can't act in the dark rule in the visibility rules.
 </font></blockquote><p>
 <p>
-<p>...all of which will take place on the occasions when these rulebooks would ordinarily be used, but take effect only if the action is the one specified.
+<p>5. And we can strike down existing rules, either specifically or in all their applications:
 <p>
-<p>The persuasion rules are dependent on the current action, but, since they will only be consulted when we ask someone to do something, it is only useful to write rules like
-<p>
-<blockquote><font color="#000080">Persuasion rule for asking Kent to try going: ...
-<br>Persuasion rule: ...
+<blockquote><font color="#000080">The can't act in the dark rule is not listed in the visibility rules.
+<br>The can't remove from people rule is not listed in any rulebook.
 </font></blockquote><p>
 <p>
-<p>and not
+<p>This does not actually destroy the rules in question: they could still, for instance, be put into another rulebook, or even be applied explicitly, as we shall see. But unless we take deliberate action to the contrary, un-listing a rule amounts to abolishing it forever. This is a little drastic, and we will see subtler ways to change the standard behaviour later in the chapter.
 <p>
-<blockquote><font color="#000080">Persuasion rule for taking the blue egg-cup: ...
-</font></blockquote><p>
-<p>
-<p>Theoretically, the when play begins and when play ends rules could be written as things such as &quot;When play begins rule for looking: ...&quot;, but this is not useful in any way: actions are not happening then, so such rules would never take effect.
-<p>
-<p>Because action-based rulebooks tend to be the more useful of the two types of rulebook under most circumstances, this is the kind of rule created by default if we say:
-<p>
-<blockquote><font color="#000080">The judgment rules are a rulebook.
-</font></blockquote><p>
-<p>
-<p>Having done this, we would now be allowed to write
-<p>
-<blockquote><font color="#000080">A judgment rule for listening to the music:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh, Mozart is really too tedious to endure.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A judgment rule about Kent Taylor kissing the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Well, he's no Clark Gable, let's put it that way.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Judgment rule on eating Kraft dinner:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Bright orange and in no way related to real cheeses.&quot;
-</font></blockquote><p>
-<p>
-<p><b>2. Object-parametrized rulebooks.</b> Each activity creates three of these. For instance:
-<p>
-<blockquote><font color="#000080">Rule for printing the name of ...something...
-</font></blockquote><p>
-<p>
-<p>and equivalently, though less elegantly,
-<p>
-<blockquote><font color="#000080">Rule for printing the name ...something...
-<br>Rule for printing the name for ...something...
-</font></blockquote><p>
-<p>
-<p>Each activity also generates a before and after rulebook, as we've also seen. The reaching inside and reaching outside rules are also object-based rulebooks.
-<p>
-<p>We may make new object-based rulebooks in the process of making new activities, of course, but sometimes a whole new activity is overkill, since an activity produces three rulebooks (before, for, after). We can instead create a simple rulebook so:
-<p>
-<blockquote><font color="#000080">The flotation rules are an object-based-rulebook.
-</font></blockquote><p>
-<p>
-<p>Having done this, we would be allowed to write
-<p>
-<blockquote><font color="#000080">A flotation rule for the cork: rule succeeds.
-<br>A flotation rule for an inflated thing: rule succeeds.
-<br>A flotation rule: rule fails.
-</font></blockquote><p>
-<p>
-<p>And we might use the flotation rules in a circumstance like this:
-<p>
-<blockquote><font color="#000080">After inserting something into the well:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;consider the flotation rules for the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the rule succeeded
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] bobs on the surface.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] sinks out of sight.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p><hr><p>
-<a name="e262"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex262.html#e262 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>291</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex262.html#e262 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Flotation</font></b></a><br>Objects that can sink or float in a well, depending on their own properties and the state of the surrounding environment.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc297.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc299.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.13. Going from, going to</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.5. Assemblies and body parts</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,108 +9,129 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Bumping into Walls" -->
-<!-- SEARCH SECTION "Ex 88" -->
-<!-- SEARCH SORT "Ex 007-013-088" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc101.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc103.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.13. Going from, going to</b></font></td></tr></table>
+<!-- SEARCH TITLE "Model Shop" -->
+<!-- SEARCH SECTION "Ex 41" -->
+<!-- SEARCH SORT "Ex 004-005-041" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc57.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc59.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.5. Assemblies and body parts</b></font></td></tr></table>
 <p>
-<p>Going is an action defined like any other: it is the one which happens when the player tries to go from one location to another. But it is unlike other actions because it happens in two locations, not just one, and has other complications such as vehicles and doors to contend with. To make it easier to write legible and flexible rules, &quot;going&quot; is allowed to be described in a number of special ways not open to other actions, as demonstrated by the following example game:
+<p>In the previous chapter, we saw that it was possible to make sub-parts of things. For instance,
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode16(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Going Going"\n\nThe Catalogue Room is east of the Front Stacks. South of the Catalogue Room is the Musicology Section.\n\nInstead of going nowhere from the Front Stacks, say "Bookcases obstruct almost all passages out of here."\n\nInstead of going nowhere, say "You really can\'t wander around at random in the Library."\n\nBefore going to the Catalogue Room, say "You emerge back into the Catalogue Room."\n\n');
-}
-</script>
-<a href="javascript:pasteCode16()"><img border=0 src=../doc_images/paste.png></a> &quot;Going Going&quot;
+<blockquote><font color="#000080">The white door is in the Drawing Room. The handle is part of the white door.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Catalogue Room is east of the Front Stacks. South of the Catalogue Room is the Musicology Section.
+<p>creates a door with an attached handle. But what if we want to say that not just this door, but every door, should have a handle? To do this we first need to create a kind called &quot;handle&quot;, since there will clearly need to be many handles. The solution is:
+<p>
+<blockquote><font color="#000080">A handle is a kind of thing. A handle is part of every door.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going nowhere from the Front Stacks, say &quot;Bookcases obstruct almost all passages out of here.&quot;
+<p>&quot;Every&quot; is a loaded word and best used sparingly. A sentence like &quot;A handle is part of every handle&quot; would, if taken literally, mean that a handle takes forever to make and is never finished. Inform will reject this, but the moral is clear: we should think about what we are doing with &quot;every&quot;. Another restriction is it is not safe to meddle with the three fundamental kinds &quot;room&quot;, &quot;container&quot; or &quot;supporter&quot; by making them into assemblies, but in fact this one can be got around quite easily, like so -
+<p>
+<blockquote><font color="#000080">A silver coin is a kind of thing. A banking room is a kind of room. Five silver coins are in every banking room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going nowhere, say &quot;You really can't wander around at random in the Library.&quot;
+<p>The effect of sentences like these is to make what we might call &quot;assemblies&quot; instead of single things. When a banking room is created, so are five more silver coins; when a door is created, so is another handle. Such sentences act not only on items created later on in the source text, but also on all those created so far.
+<p>
+<p>This is especially useful for body parts. If we would like to explore Voltaire's suggestion that history would have been very different if only Cleopatra's nose had been shorter, we will need noses:
+<p>
+<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before going to the Catalogue Room, say &quot;You emerge back into the Catalogue Room.&quot;
+<p>Something to bear in mind, though, is that in play the following may well happen:
+<p>
+<blockquote><font color="#000080">>examine nose
+<br>Which do you mean, your nose, Antony's nose or Cleopatra's nose?
 </font></blockquote><p>
 <p>
-<p>Note that &quot;going nowhere&quot; means trying a map connection which is blank, and if no rules intervene then &quot;You can't go that way&quot; is normally printed. Unless &quot;nowhere&quot; is specified, descriptions of going apply only when there is a map connection. So &quot;going from the Musicology Section&quot; would not match if the player were trying to go east from there, since there is no map connection to the east. Similarly, &quot;going somewhere&quot; excludes blank connections.
+<p>...because the player, being also a &quot;person&quot;, is as susceptible to the invention of noses as anyone else.
 <p>
-<p>The places gone &quot;from&quot; or &quot;to&quot; can be specific named regions instead of rooms. This is convenient when there are several different ways into or out of an area of map but a common rule needs to apply to all: so, for example,
+<p>Note that Inform names the otherwise nameless noses after their owners. It will always do this unless there are multiple indistinguishable things being created, as in the &quot;five silver coins are in every banking room&quot; example: those will all just be called &quot;silver coin&quot;.
 <p>
-<blockquote><font color="#000080">Before going from the Cultivated Land to the Wilderness, ...
-<br>Before going nowhere from the Wilderness, say &quot;Tangled brush forces you back.&quot;
+<p>Something to watch out for is that if we write:
+<p>
+<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person. Antony and Cleopatra are people.
 </font></blockquote><p>
 <p>
-<p>Note that it must be &quot;going nowhere from the Wilderness&quot;, not &quot;...in the Wilderness&quot;. (Note also the caveat that the regions must be named: &quot;going from a region&quot;, or something similarly nonspecific, will not work.)
+<p>then we can begin talking about &quot;Antony's nose&quot; and &quot;Cleopatra's nose&quot;: but it is not safe to discuss these before the sentence &quot;A nose is part of every person&quot; which creates them. Another pitfall is that if we then write:
 <p>
-<p>An important point about &quot;going... from&quot; is that, as mentioned in general terms above, it requires that there is actually a map connection that way: whereas &quot;going... in&quot; does not. Suppose there is no map connection north from the Wilderness. Then:
-<p>
-<blockquote><font color="#000080">Instead of going north from the Wilderness, say &quot;You'll never read this.&quot;
-<br>Instead of going north in the Wilderness, say &quot;Oh, it's too cold.&quot;
+<blockquote><font color="#000080">Marcus Tullius Cicero is a person.
 </font></blockquote><p>
 <p>
-<p>The first of these never happens, because it is logically impossible to go north from the Wilderness: but the second does happen. (Technically, this is because &quot;going north&quot; is the action, and &quot;in the Wilderness&quot; a separate condition tacked onto the rule.) This distinction is often useful - it allows us to write rules which apply only to feasible movements.
-<p>
-<p>This may be a good place to mention a small restriction on the ways we can specify an action for a rule to apply to, and how it can be overcome. The restriction is that the action should only involve constant quantities, so that the following does not work:
-<p>
-<blockquote><font color="#000080">The Dome is a room. The Hutch is north of the Dome. The rabbit is in the Hutch. Before going to the location of the rabbit, say &quot;You pick up a scent!&quot;
-</font></blockquote><p>
-<p>
-<p>because &quot;the location of the rabbit&quot; is a quantity which changes in play (the player can pick up the rabbit and take him to the Dome, for instance). However, we can get around this restriction by defining a suitable adjective, like so:
-<p>
-<blockquote><font color="#000080">The Dome is a room. The Hutch is north of the Dome. The rabbit is in the Hutch. Definition: a room is rabbit-infested if it is the location of the rabbit. Before going to a rabbit-infested room, say &quot;You pick up a scent!&quot;
-</font></blockquote><p>
+<p>then although &quot;Marcus Tullius Cicero's nose&quot; and &quot;Cicero's nose&quot; are both valid names for the consular nose, &quot;Marcus's nose&quot; is not.
 <p>
 <p><hr><p>
-<a name="e114"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex114.html#e114 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>83</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex114.html#e114 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Veronica</font></b></a><br>An effect that occurs only when the player leaves a region entirely.<p></td></tr></table>
-<a name="e280"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex280.html#e280 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>84</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex280.html#e280 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A&E</font></b></a><br>Using regions to block access to an entire area when the player does not carry a pass, regardless of which entrance he uses.<p></td></tr></table>
-<a name="e90"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex90.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>85</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex90.html#e90 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hagia Sophia</font></b></a><br>If the player tries to go a valid direction while on a supporter, make him stand up first; if he tries to go a nonexistent one, print a special refusal.<p></td></tr></table>
-<a name="e120"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex120.html#e120 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>86</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex120.html#e120 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Polarity</font></b></a><br>A "go back" command that keeps track of the direction from which the player came, and sends him back.<p></td></tr></table>
+<a name="e222"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex222.html#e222 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>40</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex222.html#e222 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Being Prepared</font></b></a><br>A kind for jackets, which always includes a container called a pocket.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e69"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc102.html#e69 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>87</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc102.html#e69 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bumping into Walls</font></b></a><br>Offering the player a list of valid directions if he tries to go in a direction that leads nowhere.<p></td></tr></table>
+<a name="e69"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc58.html#e69 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>41</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc58.html#e69 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Model Shop</font></b></a><br>An "on/off button" which controls whatever device it is part of.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Suppose we're particularly mechanically-minded and would like a game in which all of our mechanical devices have buttons to turn them on and off.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode180(code) {
+function pasteCode132(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Bumping into Walls"\n\n[First we add an instruction to determine which ways lead to other rooms.]\n\nDefinition: a direction is viable if the room it from the location is a room.\n\n[Now we build in the instruction for what Inform should say if the player tries to head in a direction that leads nowhere:]\n\nInstead of going nowhere:\n\tlet count of exits be the number of viable directions;\n\tif the count of exits is 0, say "You appear to be trapped in here." instead;\n\tif the count of exits is 1, say "From here, the only way out is to [a list of viable directions].";\n\totherwise say "From here, the viable exits are to [a list of viable directions]."\n\n[There is no theoretical reason why we have to define "count of exits" here: we could, if we wanted, just say "if the number of viable directions is 0", "if the number of viable directions is 1", and so on. However, each calculation of a "viable direction" takes a bit of computing power, so there is some slight savings in not requiring the game to count viable directions more than once in this routine.]\n\nDome is a room. North of Dome is North Chapel. South of the Dome is South Chapel. West of the Dome is Western End. Quiet Corner is northwest of the Dome, north of Western End, and west of North Chapel. Loud Corner is east of North Chapel, northeast of Dome, and north of Eastern End. Eastern End is north of Dim Corner and east of Dome. Dim Corner is southeast of Dome and east of South Chapel. Ruined Corner is southwest of Dome, west of South Chapel, and south of Western End.\n\nThe church door is east of Eastern End and west of the Courtyard. The church door is a door.\n\nTest me with "d / n / n / e / n / s / u / open door / e / n".\n');
+    myProject.pasteCode('"Model Shop"\n\nAn on/off button is a kind of thing.\n\nInstead of pushing an on/off button which is part of a switched off device (called the machine):\n\ttry switching on the machine.\n\n[Here we are making a rule about how our hypothetical buttons will interact with the machines to which they belong. Instead of pushing... is a rule that pertains to actions, and we will learn more about these in the chapter on actions. "...which is part of a switched off device" provides a specific circumstance - this is only to apply to buttons that are stuck to a machines that can be turned on or off. "(called the machine)" tells Inform that if it finds such a device, it should thereafter refer to it as "the machine." (The called syntax is explained further in the chapter on Change.)]\n\n[A set of three more rules will complete our instructions about using buttons to control devices:]\n\nInstead of pushing an on/off button which is part of a switched on device (called the machine):\n\ttry switching off the machine.\n\nInstead of switching on a button which is part of a device (called the machine):\n\ttry switching on the machine.\n\nInstead of switching off a button which is part of a device (called the machine):\n\ttry switching off the machine.\n\n[Then we hand out buttons with a free hand:]\n\nOne on/off button is part of every device.\n\nThe Model Shop is a room. A model train is a fixed in place device in the Model Shop. A toy elephant is a device in the Model Shop.\n\nEvery turn when the model train is switched on:\n\tsay "The model train circles your feet, blowing small puffs of steam."\n\nEvery turn when the toy elephant is switched on:\n\tsay "The toy elephant waves its trunk at you."\n\nTest me with "push model train\'s button / push elephant\'s button / g / switch off model train\'s button".\n\n[And now the game will have a model train\'s button and a toy elephant\'s button.]\n\n[It may be that we want (as an added nuance) to add other names for these items. While we would want an assembly to create objects such as "Lucy\'s hand" and not "Lucy hand", it is entirely reasonable to want to talk about the model train button or the elephant button. We could define these additional names like so:]\n\nUnderstand "elephant button" or "button on elephant" as the elephant\'s button.\n\nUnderstand "model train" or "model" or "train" as "[train]". Understand "[train] button" or  "button on [train]" as the model train\'s button.\n\n');
 }
 </script>
-<a href="javascript:pasteCode180()"><img border=0 src=../doc_images/paste.png></a> &quot;Bumping into Walls&quot;
+<a href="javascript:pasteCode132()"><img border=0 src=../doc_images/paste.png></a> &quot;Model Shop&quot;
 </font></blockquote><p>
 <p>
-<p>First we add an instruction to determine which ways lead to other rooms.
-<p>
-<blockquote><font color="#000080">Definition: a direction is viable if the room it from the location is a room.
+<blockquote><font color="#000080">An on/off button is a kind of thing.
 </font></blockquote><p>
 <p>
-<p>Now we build in the instruction for what Inform should say if the player tries to head in a direction that leads nowhere:
-<p>
-<blockquote><font color="#000080">Instead of going nowhere:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let count of exits be the number of viable directions;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the count of exits is 0, say &quot;You appear to be trapped in here.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the count of exits is 1, say &quot;From here, the only way out is to [a list of viable directions].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;From here, the viable exits are to [a list of viable directions].&quot;
+<blockquote><font color="#000080">Instead of pushing an on/off button which is part of a switched off device (called the machine):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try switching on the machine.
 </font></blockquote><p>
 <p>
-<p>There is no theoretical reason why we have to define &quot;count of exits&quot; here: we could, if we wanted, just say &quot;if the number of viable directions is 0&quot;, &quot;if the number of viable directions is 1&quot;, and so on. However, each calculation of a &quot;viable direction&quot; takes a bit of computing power, so there is some slight savings in not requiring the game to count viable directions more than once in this routine.
+<p>Here we are making a rule about how our hypothetical buttons will interact with the machines to which they belong. Instead of pushing... is a rule that pertains to actions, and we will learn more about these in the chapter on actions. &quot;...which is part of a switched off device&quot; provides a specific circumstance - this is only to apply to buttons that are stuck to a machines that can be turned on or off. &quot;(called the machine)&quot; tells Inform that if it finds such a device, it should thereafter refer to it as &quot;the machine.&quot; (The called syntax is explained further in the chapter on Change.)
 <p>
-<blockquote><font color="#000080">Dome is a room. North of Dome is North Chapel. South of the Dome is South Chapel. West of the Dome is Western End. Quiet Corner is northwest of the Dome, north of Western End, and west of North Chapel. Loud Corner is east of North Chapel, northeast of Dome, and north of Eastern End. Eastern End is north of Dim Corner and east of Dome. Dim Corner is southeast of Dome and east of South Chapel. Ruined Corner is southwest of Dome, west of South Chapel, and south of Western End.
+<p>A set of three more rules will complete our instructions about using buttons to control devices:
+<p>
+<blockquote><font color="#000080">Instead of pushing an on/off button which is part of a switched on device (called the machine):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try switching off the machine.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The church door is east of Eastern End and west of the Courtyard. The church door is a door.
+<blockquote><font color="#000080">Instead of switching on a button which is part of a device (called the machine):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try switching on the machine.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;d / n / n / e / n / s / u / open door / e / n&quot;.
+<blockquote><font color="#000080">Instead of switching off a button which is part of a device (called the machine):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try switching off the machine.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc102.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<p>Then we hand out buttons with a free hand:
+<p>
+<blockquote><font color="#000080">One on/off button is part of every device.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Model Shop is a room. A model train is a fixed in place device in the Model Shop. A toy elephant is a device in the Model Shop.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the model train is switched on:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The model train circles your feet, blowing small puffs of steam.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the toy elephant is switched on:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The toy elephant waves its trunk at you.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;push model train's button / push elephant's button / g / switch off model train's button&quot;.
+</font></blockquote><p>
+<p>
+<p>And now the game will have a model train's button and a toy elephant's button.
+<p>
+<p>It may be that we want (as an added nuance) to add other names for these items. While we would want an assembly to create objects such as &quot;Lucy's hand&quot; and not &quot;Lucy hand&quot;, it is entirely reasonable to want to talk about the model train button or the elephant button. We could define these additional names like so:
+<p>
+<blockquote><font color="#000080">Understand &quot;elephant button&quot; or &quot;button on elephant&quot; as the elephant's button.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;model train&quot; or &quot;model&quot; or &quot;train&quot; as &quot;[train]&quot;. Understand &quot;[train] button&quot; or  &quot;button on [train]&quot; as the model train's button.
+</font></blockquote><p>
+<p>
+<p>In the second case, we are defining [train] to mean any of the three phrases &quot;train&quot;, &quot;model&quot;, and &quot;model train&quot;; so &quot;[train] button&quot; will match &quot;model train button&quot; or &quot;train button&quot; or &quot;model button&quot; equally well. See the chapter on Understanding for more on how to create alternative phrasings for the player to use.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc58.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc101.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc103.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e247"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex247.html#e247 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>42</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex247.html#e247 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Night Before</font></b></a><br>Instructing Inform to prefer different interpretations of EXAMINE NOSE, depending on whether the player is alone, in company, or with Rudolph the Red-nosed Reindeer.<p></td></tr></table>
+<a name="e55"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex55.html#e55 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>43</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex55.html#e55 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> U-Stor-It</font></b></a><br>A "chest" kind which consists of a container which has a lid as a supporter.<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc57.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

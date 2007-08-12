@@ -850,27 +850,42 @@ Constant imagealign_MarginRight $05;
 ! End of infglk.h inclusion
 
 #IFDEF TARGET_GLULX;
-Array I7_FigureFlags->({-value:NUMBER_CREATED(blorb_figure)}+4);
+Array I7_FigureFlags->({-value:NUMBER_CREATED(blorb_figure)}+{-value:NUMBER_CREATED(blorb_sound)}+4);
 #ENDIF;
 
-[ I7_DisplayFigure resource_ID one_time;
+[ I7_DisplayFigure resource_ID one_time sfx;
 #IFDEF TARGET_ZCODE;
 ! Do nothing if on the V5 or V8 Z-machine, but still compile and run
 #IFTRUE #version_number == 6;
-	print "V6: picture ", resource_ID, " here.^";
-	@draw_picture resource_ID;
+	if (sfx) print "V6: sound "; else print "V6: picture ";
+	print resource_ID, " here.^";
+	if (sfx == false) {
+		@draw_picture resource_ID;
+	}
 #ENDIF; ! Z-machine version 6
 #IFNOT; ! Glulx, then:
 	if (one_time) {
 		if (I7_FigureFlags->resource_ID) return;
 	}
 	I7_FigureFlags->resource_ID = true;
-	if (glk_gestalt(gestalt_Graphics, 0)) {
-		glk_image_draw(gg_mainwin, resource_ID, imagealign_InlineCenter, 0);
+	if (sfx) {
+		if (glk_gestalt(gestalt_Sound, 0)) {
+			glk_schannel_play(gg_foregroundchan, resource_ID);
+		} else {
+			print "[Sound effect number ", resource_ID, " here.]^";
+		}
 	} else {
-		print "[Picture number ", resource_ID, " here.]^";
+		if (glk_gestalt(gestalt_Graphics, 0)) {
+			glk_image_draw(gg_mainwin, resource_ID, imagealign_InlineCenter, 0);
+		} else {
+			print "[Picture number ", resource_ID, " here.]^";
+		}
 	}
 #ENDIF; ! TARGET_
+];
+
+[ I7_PlaySound resource_ID one_time;
+	I7_DisplayFigure(resource_ID, one_time, true);
 ];
 
 ! End of Figures.i6

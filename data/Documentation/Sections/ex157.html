@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.25. Supplying a missing noun/second noun</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.3. Overriding existing commands</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,76 +9,198 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Minimal Movement" -->
-<!-- SEARCH SECTION "Ex 275" -->
-<!-- SEARCH SORT "Ex 017-025-275" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc281.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc283.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.25. Supplying a missing noun/second noun</b></font></td></tr></table>
+<!-- SEARCH TITLE "Lanista 2" -->
+<!-- SEARCH SECTION "Ex 236" -->
+<!-- SEARCH SORT "Ex 016-003-236" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc242.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc244.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.3. Overriding existing commands</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> (Two different activities here, but identical except for applying to different nouns.) Suppose that, because of an instruction to Understand something even though it would be lacking a noun - say, 'Understand &quot;take&quot; as taking.' - an incomplete action is generated, one which is required to have a noun, but doesn't. &quot;Supplying a missing noun&quot; takes place to remedy the problem. It can either:
+<p>Suppose we are devising specialist commands for a game of whist, and we want &quot;discard&quot; as one of them. Looking at the table of commands in the Action index, we find that, inconveniently enough, &quot;discard&quot; already has a meaning: it is synonymous with &quot;drop&quot;, and while that might be sensible most of the time, it is perfectly wrong now. We need a way to free up &quot;discard&quot; for our own use. We can do that by:
 <p>
-<p>(i) Set a noun, printing text like &quot;(presumably the black bag)&quot; if it wants, in which case the action goes forward, though it is still subject to the full rules on accessibility exactly as any other action would be; or
-<p>
-<p>(ii) Make no choice, in which case no action takes place and the player's command is rejected. If the activity printed nothing, Inform will produce a generic reply to the player that &quot;You must supply a noun.&quot;.
-<p>
-<p><b>2. The default behaviour.</b> In the default grammar for Inform, only three such half-finished actions are ever Understood. One is &quot;going&quot; with no direction, for which this activity simply prints a refusal. The other two are the two undirected senses, &quot;smelling&quot; and &quot;listening&quot;. In each case, the &quot;supplying a missing noun&quot; activity sets the noun to the current location: so, for instance, typing the bare command &quot;listen&quot; might generate the action &quot;listening to the Shoreline&quot;.
-<p>
-<p><b>3. Examples.</b> (a) This is the definition Inform uses to make &quot;listen&quot; work as outlined above:
-<p>
-<blockquote><font color="#000080">Rule for supplying a missing noun while listening (this is the ambient sound rule): change the noun to the location.
+<blockquote><font color="#000080">Understand the command &quot;discard&quot; as something new.
 </font></blockquote><p>
 <p>
-<p>(b) It can be elegant to allow second nouns to be dropped with habitual actions, or where the choice is obvious:
+<p>This cuts it loose, so to speak, and ready to be given new meanings. If we check the Actions index again, we find no mention of &quot;discard&quot; - it is now a blank slate - but &quot;drop&quot; is still exactly as it was. We could now say something like:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode71(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('Understand "unlock [something]" as unlocking it with.\n\nRule for supplying a missing second noun while unlocking:\n\tif the skeleton key is carried, change the second noun to the skeleton key;\n\totherwise say "You will have to specify what to unlock [the noun] with."\n\n');
-}
-</script>
-<a href="javascript:pasteCode71()"><img border=0 src=../doc_images/paste.png></a> Understand &quot;unlock [something]&quot; as unlocking it with.
+<blockquote><font color="#000080">Understand &quot;discard [something]&quot; as discarding.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for supplying a missing second noun while unlocking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the skeleton key is carried, change the second noun to the skeleton key;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You will have to specify what to unlock [the noun] with.&quot;
+<p>(If we had declared that &quot;drop&quot; was something new, the whole thing would have happened in reverse, with &quot;discard&quot; retaining all of the original grammar. Inform does not distinguish between a command and its synonym.)
+<p>
+<p>The &quot;... as something new&quot; sentence works even for a command which did not exist anyway, for instance with:
+<p>
+<blockquote><font color="#000080">Understand the command &quot;zylqix&quot; as something new.
 </font></blockquote><p>
 <p>
-<p>Note that, in order for our activity to succeed, we do need to supply a grammar line allowing the player to try &quot;unlocking it with&quot; using only one noun. Otherwise, the command &quot;unlock something&quot; will still produce the question &quot;What do you want to unlock the door with?&quot;
+<p>Of course this does nothing - but it is intentional that it generates no problem messages: it means that the sentence can be used to force a command to be fresh and untouched by previous definitions, which might be useful when working with extensions by other people.
 <p>
 <p><hr><p>
+<a name="e235"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex235.html#e235 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>235</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex235.html#e235 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Trouble with Printing</font></b></a><br>Making a READ command, distinct from EXAMINE, for legible objects.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e157"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc282.html#e157 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>274</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc282.html#e157 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Minimal Movement</font></b></a><br>Supplying a default direction for "go", so that "leave", "go", etc., are always interpreted as "out".<p></td></tr></table>
+<a name="e157"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc243.html#e157 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>236</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc243.html#e157 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Lanista 2</font></b></a><br>Randomized combat in which the damage done depends on what weapons the characters are wielding, and in which an ATTACK IT WITH action is created to replace regular attacking. Also folds a new DIAGNOSE command into the system.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Sometimes it would be nice to respond a little more sensitively to a vague command such as &quot;leave&quot; -- converting it, perhaps, to a &quot;go out&quot; command.
+<p>Back in the chapter on randomization, we explored a way to create a randomized combat system. That system didn't allow for multiple weapons, though. Here we explore how to create an ATTACK IT WITH action that will let the player choose between weapons with different maximum powers.
+<p>
+<p>We're also going to rewrite that original &quot;instead of attacking:&quot; rule into an attacking it with action that can be performed equally by the player or by any of the player's enemies.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode366(code) {
+function pasteCode328(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Minimal Movement"\n\nThe Doll-like House is a room. The Postage-Stamp-Sized Garden is outside from the House.\n\nRule for supplying a missing noun while going:\n\tchange noun to outside.\n\n[This particular situation is very slightly complicated by the existing rules about vague movement, but fortunately we can easily turn those off.]\n\nThe block vaguely going rule is not listed in the for supplying a missing noun rules.\n\nTest me with "go".\n');
+    myProject.pasteCode('"Lanista, Part Two"\n\nThe Arena is a room. "Sand, blood, iron. These festivals are normally held on hot days, but the sun has gone behind a cloud and fat drops of rain now and then spatter the arena floor." The gladiator is a man in the Arena. "A bare-chested Scythian gladiator faces you, wielding [a list of weapons carried by the gladiator]."\n\nSection 1 - Hit Points\n\nA person has a number called maximum hit points. A person has a number called current hit points.\n\nThe maximum hit points of the player is 35. The maximum hit points of the gladiator is 25.\n\n[In our simpler version of this example we set the current hit points by hand, but in a game with many characters this would get dull and repetitive, so here we\'ll use a "when play begins" to set all current hit point values automatically to maximum:]\n\nWhen play begins:\n\trepeat with victim running through people\n\tbegin;\n\t\tnow the current hit points of the victim is the maximum hit points of the victim;\n\tend repeat.\n\nDefinition: a person is dead if his current hit points are less than 0.\n\nSection 2 - Diagnosis\n\nDiagnosing is an action applying to one visible thing. Understand "diagnose [something]" as diagnosing.\n\nCheck diagnosing:\n\tif the noun is not a person, say "Only people can have diagnoses." instead.\n\nCarry out diagnosing:\n\tsay "[if the noun is the player]You have[otherwise][The noun] has[end if] [current hit points of the noun] out of a possible [maximum hit points of the noun] hit points remaining."\n\nSection 3 - Weapons\n\nA weapon is a kind of thing. A weapon has a number called the maximum damage. The maximum damage of a weapon is usually 4.\n\nThe gladiator carries a weapon called a trident. The maximum damage of the trident is 5. The gladiator carries a weapon called a net. The maximum damage of the net is 1.\n\nThe player carries a weapon called a mace. The maximum damage of the mace is 3.\n\nSection 4 - Attacking it with\n\n[In our new system, we want to specify what is being used for an attack. This means that we need to create a new "attacking it with" action, and also that we should disable the existing "attacking..." command.]\n\n[Here\'s why: If we leave the default attack command in place, Inform will continue to accept commands like >ATTACK GLADIATOR, but reply foolishly with the default "Violence is not the answer..." response.]\n\n[A somewhat better approach would be to change the reply of >ATTACK GLADIATOR to say something like "You must specify a weapon to attack with." But this is still less than ideal, because it means that the player has to then rewrite his entire command. If, on the other hand, we take out >ATTACK GLADIATOR entirely]\n\n[This is a little bit of work because ATTACK has a lot of synonyms in the default library, but if we look through the actions index we can find them all:]\n\nUnderstand the commands "attack" and "punch" and "destroy" and "kill" and "murder" and "hit" and "thump" and "break" and "smash" and "torture" and "wreck" as something new.\n\n[Now we make our new command:]\n\nAttacking it with is an action applying to one visible thing and one carried thing. Understand "attack [someone] with [something preferably held]" as attacking it with.\n\n[Note that we\'ve specified "one carried thing", because we want the player to pick up a weapon to use if necessary. And now we assign all the old attack vocabulary to apply to the new command:]\n\nUnderstand the commands "punch" and "destroy" and "kill" and "murder" and "hit" and "thump" and "break" and "smash" and "torture" and "wreck" as "attack".\n\n[This may seem counter-intuitive, but order of source code matters here: we first get rid of the old, default vocabulary, then define our new action, then make the vocabulary apply to that new action. Inform will now understand >HIT GLADIATOR WITH TRIDENT, >BREAK GLADIATOR WITH TRIDENT, and so on.]\n\n[Our new action is also a perfect place to use an action variable: we\'re going to need to choose an amount of damage done and refer to that several times in our action rules. So let\'s set that up first:]\n\nThe attacking it with action has a number called the damage inflicted.\n\nSetting action variables for attacking something with something:\n\tif the second noun is a weapon\n\tbegin;\n\t\tlet the maximum attack be the maximum damage of the second noun;\n\t\tchange the damage inflicted to a random number between 1 and the maximum attack;\n\tend if.\n\nCheck an actor attacking something with something (this is the can\'t attack with something that isn\'t a weapon rule):\n\tif the second noun is not a weapon\n\tbegin;\n\t\tif the actor is the player, say "[The second noun] does not qualify as a weapon.";\n\t\tstop the action;\n\tend if.\n\nCheck an actor attacking something with something (this is the can\'t attack a non-person rule):\n\tif the noun is not a person\n\tbegin;\n\t\tif the actor is the player, say "[The noun] has no life to lose.";\n\t\tstop the action;\n\tend if.\n\nCarry out an actor attacking something with something (this is the standard attacking it with a weapon rule):\n\tdecrease the current hit points of the noun by the damage inflicted;\n\tif the noun is dead, remove the noun from play.\n\n[Though our checks and carry-out rules are similar regardless of who is acting, we\'re going to want actions to be described differently for different actors, so we\'ll use separate "report attacking" and "report someone attacking" rules. We\'ll also make some special cases for when the character has died as a result of the attack:]\n\nReport attacking a dead person with something (this is the death-report priority rule):\n\tsay "You attack with [the second noun], killing [the noun]!" instead.\n\nReport attacking someone with something (this is the normal attacking report rule):\n\tsay "You attack [the noun] with [the second noun], causing [damage inflicted] point[s] of damage!" instead.\n\nReport someone attacking the player with something when the player is dead (this is the player\'s-death priority rule):\n\tsay "[The actor] attacks you with [the second noun], finishing you off!";\n\tend the game in death;\n\tstop the action\n\nReport someone attacking the player with something (this is the standard report someone attacking the player with rule):\n\tsay "[The actor] attacks you with [the second noun], causing [damage inflicted] point[s] of damage!" instead.\n\nReport someone attacking something with something (this is the standard report attacking it with rule):\n\tsay "[The actor] attacks [the noun] with [the second noun], causing [damage inflicted] point[s] of damage!" instead.\n\nWhen play begins:\n\tchange the left hand status line to "You: [current hit points of player]";\n\tchange the right hand status line to "Gladiator: [current hit points of gladiator]"\n\nEvery turn (this is the gladiator-attack rule):\n\tif the gladiator is not dead, try the gladiator attacking the player with a random weapon which is carried by the gladiator.\n\nTest me with "hit gladiator with mace / kill gladiator / drop mace / attack gladiator / attack gladiator with mace / g / g".\n\n');
 }
 </script>
-<a href="javascript:pasteCode366()"><img border=0 src=../doc_images/paste.png></a> &quot;Minimal Movement&quot;
+<a href="javascript:pasteCode328()"><img border=0 src=../doc_images/paste.png></a> &quot;Lanista, Part Two&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Doll-like House is a room. The Postage-Stamp-Sized Garden is outside from the House.
+<blockquote><font color="#000080">The Arena is a room. &quot;Sand, blood, iron. These festivals are normally held on hot days, but the sun has gone behind a cloud and fat drops of rain now and then spatter the arena floor.&quot; The gladiator is a man in the Arena. &quot;A bare-chested Scythian gladiator faces you, wielding [a list of weapons carried by the gladiator].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for supplying a missing noun while going:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change noun to outside.
+<blockquote><font color="#000080">Section 1 - Hit Points
 </font></blockquote><p>
 <p>
-<p>This particular situation is very slightly complicated by the existing rules about vague movement, but fortunately we can easily turn those off.
-<p>
-<blockquote><font color="#000080">The block vaguely going rule is not listed in the for supplying a missing noun rules.
+<blockquote><font color="#000080">A person has a number called maximum hit points. A person has a number called current hit points.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;go&quot;.
+<blockquote><font color="#000080">The maximum hit points of the player is 35. The maximum hit points of the gladiator is 25.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc282.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<p>In our simpler version of this example we set the current hit points by hand, but in a game with many characters this would get dull and repetitive, so here we'll use a &quot;when play begins&quot; to set all current hit point values automatically to maximum:
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with victim running through people
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the current hit points of the victim is the maximum hit points of the victim;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a person is dead if his current hit points are less than 0.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Section 2 - Diagnosis
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Diagnosing is an action applying to one visible thing. Understand &quot;diagnose [something]&quot; as diagnosing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check diagnosing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a person, say &quot;Only people can have diagnoses.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out diagnosing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[if the noun is the player]You have[otherwise][The noun] has[end if] [current hit points of the noun] out of a possible [maximum hit points of the noun] hit points remaining.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Section 3 - Weapons
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A weapon is a kind of thing. A weapon has a number called the maximum damage. The maximum damage of a weapon is usually 4.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The gladiator carries a weapon called a trident. The maximum damage of the trident is 5. The gladiator carries a weapon called a net. The maximum damage of the net is 1.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries a weapon called a mace. The maximum damage of the mace is 3.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Section 4 - Attacking it with
+</font></blockquote><p>
+<p>
+<p>In our new system, we want to specify what is being used for an attack. This means that we need to create a new &quot;attacking it with&quot; action, and also that we should disable the existing &quot;attacking...&quot; command.
+<p>
+<p>Here's why: If we leave the default attack command in place, Inform will continue to accept commands like >ATTACK GLADIATOR, but reply foolishly with the default &quot;Violence is not the answer...&quot; response.
+<p>
+<p>A somewhat better approach would be to change the reply of >ATTACK GLADIATOR to say something like &quot;You must specify a weapon to attack with.&quot; But this is still less than ideal, because it means that the player has to then rewrite his entire command. If, on the other hand, we take out >ATTACK GLADIATOR entirely
+<p>
+<p>This is a little bit of work because ATTACK has a lot of synonyms in the default library, but if we look through the actions index we can find them all:
+<p>
+<blockquote><font color="#000080">Understand the commands &quot;attack&quot; and &quot;punch&quot; and &quot;destroy&quot; and &quot;kill&quot; and &quot;murder&quot; and &quot;hit&quot; and &quot;thump&quot; and &quot;break&quot; and &quot;smash&quot; and &quot;torture&quot; and &quot;wreck&quot; as something new.
+</font></blockquote><p>
+<p>
+<p>Now we make our new command:
+<p>
+<blockquote><font color="#000080">Attacking it with is an action applying to one visible thing and one carried thing. Understand &quot;attack [someone] with [something preferably held]&quot; as attacking it with.
+</font></blockquote><p>
+<p>
+<p>Note that we've specified &quot;one carried thing&quot;, because we want the player to pick up a weapon to use if necessary. And now we assign all the old attack vocabulary to apply to the new command:
+<p>
+<blockquote><font color="#000080">Understand the commands &quot;punch&quot; and &quot;destroy&quot; and &quot;kill&quot; and &quot;murder&quot; and &quot;hit&quot; and &quot;thump&quot; and &quot;break&quot; and &quot;smash&quot; and &quot;torture&quot; and &quot;wreck&quot; as &quot;attack&quot;.
+</font></blockquote><p>
+<p>
+<p>This may seem counter-intuitive, but order of source code matters here: we first get rid of the old, default vocabulary, then define our new action, then make the vocabulary apply to that new action. Inform will now understand >HIT GLADIATOR WITH TRIDENT, >BREAK GLADIATOR WITH TRIDENT, and so on.
+<p>
+<p>Our new action is also a perfect place to use an action variable: we're going to need to choose an amount of damage done and refer to that several times in our action rules. So let's set that up first:
+<p>
+<blockquote><font color="#000080">The attacking it with action has a number called the damage inflicted.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Setting action variables for attacking something with something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is a weapon
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the maximum attack be the maximum damage of the second noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the damage inflicted to a random number between 1 and the maximum attack;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check an actor attacking something with something (this is the can't attack with something that isn't a weapon rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not a weapon
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the actor is the player, say &quot;[The second noun] does not qualify as a weapon.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check an actor attacking something with something (this is the can't attack a non-person rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a person
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the actor is the player, say &quot;[The noun] has no life to lose.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out an actor attacking something with something (this is the standard attacking it with a weapon rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decrease the current hit points of the noun by the damage inflicted;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is dead, remove the noun from play.
+</font></blockquote><p>
+<p>
+<p>Though our checks and carry-out rules are similar regardless of who is acting, we're going to want actions to be described differently for different actors, so we'll use separate &quot;report attacking&quot; and &quot;report someone attacking&quot; rules. We'll also make some special cases for when the character has died as a result of the attack:
+<p>
+<blockquote><font color="#000080">Report attacking a dead person with something (this is the death-report priority rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You attack with [the second noun], killing [the noun]!&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report attacking someone with something (this is the normal attacking report rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You attack [the noun] with [the second noun], causing [damage inflicted] point[s] of damage!&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report someone attacking the player with something when the player is dead (this is the player's-death priority rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The actor] attacks you with [the second noun], finishing you off!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in death;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report someone attacking the player with something (this is the standard report someone attacking the player with rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The actor] attacks you with [the second noun], causing [damage inflicted] point[s] of damage!&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report someone attacking something with something (this is the standard report attacking it with rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The actor] attacks [the noun] with [the second noun], causing [damage inflicted] point[s] of damage!&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the left hand status line to &quot;You: [current hit points of player]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot;Gladiator: [current hit points of gladiator]&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn (this is the gladiator-attack rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the gladiator is not dead, try the gladiator attacking the player with a random weapon which is carried by the gladiator.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;hit gladiator with mace / kill gladiator / drop mace / attack gladiator / attack gladiator with mace / g / g&quot;.
+</font></blockquote><p>
+<p>
+<p>Those devoted to role-playing will note that our form of randomization is still pretty naive: most RPG systems use multiple dice in order to create more interesting probability curves. For a system that simulates actual dice-rolling, see the full &quot;Reliques of Tolti-Aph&quot; game.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc243.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc281.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc283.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc242.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc244.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

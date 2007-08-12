@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.4. Listing rules explicitly</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.34. Review of Chapter 17: Activities</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,49 +9,96 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Listing rules explicitly" -->
-<!-- SEARCH SECTION "18.4" -->
-<!-- SEARCH SORT "018-004-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc293.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc295.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.4. Listing rules explicitly</b></font></td></tr></table>
+<!-- SEARCH TITLE "Review of Chapter 17: Activities" -->
+<!-- SEARCH SECTION "17.34" -->
+<!-- SEARCH SORT "017-034-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc293.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc295.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.34. Review of Chapter 17: Activities</b></font></td></tr></table>
 <p>
-<p>If rules can manage perfectly well without, why bother to have names for rules?
+<p>1. <b>An activity</b> is a process that can apply either to one thing or to nothing; every activity allows us to write &quot;before...&quot;, &quot;rule for...&quot;, and &quot;after...&quot; rules.
 <p>
-<p>The answer is that although Inform contains an elaborate mechanism for placing rules into the correct rulebook at the correct position, and this happens automatically, Inform will sometimes get it wrong. It will use a rule we do not want, or place them in an order which does not suit us. To put this right, we can give explicit instructions which take precedence over Inform's normal practice. This is done with the &quot;to list&quot; verb, as in the following examples.
+<p>In practice, new activities tend to be most useful when
 <p>
-<p>1. The simplest usage is to place a named rule, which currently has no home, in any rulebook of our choice. (This looks redundant, but just occasionally we want the same rule to appear in two different rulebooks.)
+<p>a. we are creating an extension or source that we expect other authors to use, and we want to provide an easy hook by which they can customize our output.
 <p>
-<blockquote><font color="#000080">The blossom rule is listed in the every turn rules.
+<p>b. we expect to write a lot of special cases to apply to a given situation, and we want the flexibility of rule definitions to describe these special cases.
+<p>
+<p>c. we want to define contexts within the game for use by other activities: for instance, we can write a rule such as
+<p>
+<blockquote><font color="#000080">Rule for printing the name of the spoon while asking which do you mean:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;enormous silver spoon&quot;
 </font></blockquote><p>
 <p>
-<p>A rule can only occur once in any single rulebook.
+<p>where the existence of the &quot;asking which do you mean&quot; activity makes it easy for us to tell Inform when to use this special name.
 <p>
-<p>2. We can also specify that the rule needs to appear before, or after, some other named rule in the same rulebook:
+<p>2. <b>Creating new activities</b>:
 <p>
-<blockquote><font color="#000080">The collapsing bridge rule is listed before the moving doorways rule in the instead rules.
+<blockquote><font color="#000080">Analysing something is an activity.
+<br>Assaying is an activity.
 </font></blockquote><p>
 <p>
-<p>Instead of being placed in specificity order in the whole &quot;instead&quot; rulebook, the &quot;collapsing bridge&quot; rule would now be placed in specificity order only in the first half of the &quot;instead&quot; rulebook - the rules from the start up to (but not including) the &quot;moving doorways&quot; rule.
-<p>
-<p>&quot;Listed&quot; sentences are obeyed by Inform in sequence, so if later ones issue instructions contradicting earlier ones, it's the later ones which win out. Thus if we say &quot;A is listed before B in X&quot; and then &quot;B is listed before A in X&quot;, the result is that B comes before A.
-<p>
-<p>3. We can specify that a rule needs to appear first or last in a given rulebook:
-<p>
-<blockquote><font color="#000080">The collapsing bridge rule is listed first in the instead rules.
+<blockquote><font color="#000080">Analysing something is an activity.
+<br>The analysing activity has a text called first impression.
+<br>Before analysing: now the first impression is &quot;unremarkable&quot;.
+<br>Rule for analysing someone: now the first impression is &quot;living tissue&quot;.
+<br>After analysing something (called the sample):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your professional opinion of [the sample] is that it is [first impression].&quot;
 </font></blockquote><p>
 <p>
-<p>Again, if we make several such instructions about the same rulebook then the most recent one wins: &quot;A is listed first in X. B is listed first in X. C is listed first in X.&quot; causes rulebook X to begin C, B, A.
-<p>
-<p>4. We can also substitute one rule for another:
-<p>
-<blockquote><font color="#000080">My darkness rule is listed instead of the can't act in the dark rule in the visibility rules.
+<blockquote><font color="#000080">Instead of examining something (called the sample):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;carry out the analysing activity with the sample.
 </font></blockquote><p>
 <p>
-<p>5. And we can strike down existing rules, either specifically or in all their applications:
+<p>We can then invoke our created activities with phrases such as
 <p>
-<blockquote><font color="#000080">The can't act in the dark rule is not listed in the visibility rules.
-<br>The can't remove from people rule is not listed in any rulebook.
+<blockquote><font color="#000080">carry out the analysing activity with the pitchblende;
+<br>carry out the assaying activity;
 </font></blockquote><p>
 <p>
-<p>This does not actually destroy the rules in question: they could still, for instance, be put into another rulebook, or even be applied explicitly, as we shall see. But unless we take deliberate action to the contrary, un-listing a rule amounts to abolishing it forever. This is a little drastic, and we will see subtler ways to change the standard behaviour later in the chapter.
+<p>3. Because the library's <b>predefined activities</b> are so numerous and specialized, we don't repeat all the examples here; it's worth looking back at individual sections to review what the specific activities can do.
+<p>
+<p>Printing and output
+<p>
+<blockquote><font color="#000080">Printing the name of something
+<br>Printing the plural name of something
+<br>Constructing the status line
+<br>Listing contents of something
+<br>Grouping together something
+</font></blockquote><p>
+<p>
+<p>Room descriptions
+<p>
+<blockquote><font color="#000080">Deciding the concealed possessions of something
+<br>Writing a paragraph about
+<br>Listing nondescript items of something
+<br>Printing room description details of something
+</font></blockquote><p>
+<p>
+<p>Darkness
+<p>
+<blockquote><font color="#000080">Printing a refusal to act in the dark
+<br>Printing the announcement of darkness
+<br>Printing the name of a dark room
+<br>Printing the description of a dark room
+</font></blockquote><p>
+<p>
+<p>Parsing
+<p>
+<blockquote><font color="#000080">Deciding the scope of something
+<br>Clarifying the parser's choice of something
+<br>Asking which do you mean
+<br>Supplying a missing noun/second noun
+<br>Reading a command
+<br>Implicitly taking something
+<br>Printing a parser error
+<br>Deciding whether all includes
+</font></blockquote><p>
+<p>
+<p>Starting and ending the game
+<p>
+<blockquote><font color="#000080">Printing the banner text
+<br>Printing the player's obituary
+<br>Amusing a victorious player
+<br>Starting the virtual machine
+</font></blockquote><p>
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc293.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc295.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.10. Understanding specified numbers</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.4. Persuasion</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,141 +9,132 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Snip 1" -->
-<!-- SEARCH SECTION "Ex 201" -->
-<!-- SEARCH SORT "Ex 014-010-201" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc215.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc217.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.10. Understanding specified numbers</b></font></td></tr></table>
+<!-- SEARCH TITLE "Police State" -->
+<!-- SEARCH SECTION "Ex 159" -->
+<!-- SEARCH SORT "Ex 012-004-159" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc174.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc176.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.4. Persuasion</b></font></td></tr></table>
 <p>
-<p>It may be worth noting in passing that number specifications, like all other kinds of value, can be understood in typed commands. (See the chapter on Understanding for more on what can go in such square brackets.) For instance:
+<p>&quot;Asking ... to try ...&quot; actions run through their Before and Instead rules like any other actions, but then (if no rule has intervened) something different happens: Inform has to decide whether the person asked consents to try the action or not. By default, the answer is always no, and text like the following will be printed:
+<p>
+<blockquote><font color="#000080">> will, go west
+<br>Will has better things to do.
+</font></blockquote><p>
+<p>
+<p>However, we can intervene to make the answer &quot;yes&quot;, using a special kind of rule which produces a yes/no answer. The following examples show how we can give broad or narrow permission, as we choose:
+<p>
+<blockquote><font color="#000080">Persuasion rule for asking people to try going: persuasion succeeds.
+<br>Persuasion rule for asking Will to try going west: persuasion succeeds.
+</font></blockquote><p>
+<p>
+<p>Such a rule can either declare that &quot;persuasion succeeds&quot;, or that &quot;persuasion fails&quot;, or make no decision and leave it to another rule to say. If it decides that persuasion fails, it is also allowed to say something, describing why: in that event, the standard message (&quot;Will has better things to do.&quot;) is suppressed. For example,
+<p>
+<blockquote><font color="#000080">Persuasion rule for asking Will to try going:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Will looks put out, and mutters under his breath.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;persuasion fails.
+</font></blockquote><p>
+<p>
+<p>The following rule, which is really only suitable for testing, makes everybody infinitely obliging:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode35(code) {
+function pasteCode32(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"America Stands Tall"\n\nThe Oval Office is a room. Josh and Toby are men in the Oval. A height is a kind of value. 5 foot 11 specifies a height. A person has a height. Josh is 5 foot 8. Toby is 5 foot 10.\n\nHeight guessing is an action applying to one thing and one height. Understand "guess [someone] is [height]" as height guessing.\n\nCheck height guessing: if the noun is not a person, say "You can only guess the height of people." instead. Carry out height guessing: if the height of the noun is the height understood, say "Spot on!"; if the height of the noun is greater than the height understood, say "No, [the noun] is taller than that."; if the height of the noun is less than the height understood, say "No, [the noun] is shorter than that."\n\nTest me with "guess josh is 6 foot 3 / guess josh is 5 foot 9 / guess josh is 5 foot 3 / guess josh is 5 foot 8".\n\n');
+    myProject.pasteCode('Persuasion rule for asking people to try doing something: persuasion succeeds.\n\n');
 }
 </script>
-<a href="javascript:pasteCode35()"><img border=0 src=../doc_images/paste.png></a> &quot;America Stands Tall&quot;
+<a href="javascript:pasteCode32()"><img border=0 src=../doc_images/paste.png></a> Persuasion rule for asking people to try doing something: persuasion succeeds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Oval Office is a room. Josh and Toby are men in the Oval. A height is a kind of value. 5 foot 11 specifies a height. A person has a height. Josh is 5 foot 8. Toby is 5 foot 10.
+<p>Supposing that Will does decide to cooperate, a new action is generated:
+<p>
+<blockquote><font color="#000080">Will going west
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Height guessing is an action applying to one thing and one height. Understand &quot;guess [someone] is [height]&quot; as height guessing.
+<p>and this is then subject to all of the usual action machinery. For instance, we could write a rule such as:
+<p>
+<blockquote><font color="#000080">Instead of Will going west, say &quot;He runs out into the waves, but soon returns, rueful.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check height guessing: if the noun is not a person, say &quot;You can only guess the height of people.&quot; instead. Carry out height guessing: if the height of the noun is the height understood, say &quot;Spot on!&quot;; if the height of the noun is greater than the height understood, say &quot;No, [the noun] is taller than that.&quot;; if the height of the noun is less than the height understood, say &quot;No, [the noun] is shorter than that.&quot;
+<p>So in this case the new action (&quot;Will going west&quot;) failed: but the original action, &quot;asking Will to try going west&quot;, is still deemed to have succeeded - after all, Will <i>did</i> try. To put it more formally, &quot;asking X to try A&quot; succeeds if the persuasion rules succeed, and otherwise fails.
+<p>
+<p>Note also that &quot;Instead of...&quot; rules written for other people will be treated by Inform as failures, even if we write something like
+<p>
+<blockquote><font color="#000080">Instead of Will pulling the cord:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The bell rings.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;guess josh is 6 foot 3 / guess josh is 5 foot 9 / guess josh is 5 foot 3 / guess josh is 5 foot 8&quot;.
+<p>and thus may produce unsatisfactory results such as
+<p>
+<blockquote><font color="#000080">>WILL, PULL CORD
+<br>The bell rings.
 </font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Will is unable to do that.
+</font></blockquote><p>
+<p>
+<p>If we wish to write new successful actions for another character, we will need to create appropriate carry out and report rules for them: these will be explained in the sections to follow.
+<p>
+<p>(Finally, note that the mechanism Inform uses to see if we have printed a refusal message of our own, in the event of persuasion rules failing, can be fooled if we write a persuasion rule explicitly ending with a &quot;[paragraph break]&quot; text substitution.)
 <p>
 <p><hr><p>
+<a name="e143"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex143.html#e143 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>158</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex143.html#e143 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Hypnotist of Blois</font></b></a><br>A hypnotist who can make people obedient and then set them free again.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e219"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc216.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>200</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc216.html#e219 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Snip 1</font></b></a><br>A string which can be cut into arbitrary lengths, and then tied back together.<p></td></tr></table>
+<a name="e219"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc175.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>159</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc175.html#e219 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Police State</font></b></a><br>Several friends who obey you; a policeman who doesn't (but who takes a dim view of certain kinds of antics).<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode289(code) {
+function pasteCode254(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Snip!"\n\nLength is a kind of value. 30 inch specifies a length. 20 in specifies a length. 50 inches specifies a length.\n\nA string is a kind of thing. A string has a length. The length of a string is usually 36 inches.\n\nBefore printing the name of a string, say "[length] piece of ". Rule for printing the plural name of a string: say "[length] pieces of string".\n\nUnderstand the command "cut" as something new. Understand "cut [length] from/off [something]" as trimming it by (with nouns reversed). Understand "cut [something] by [length]" as trimming it by. Understand the command "trim" as "cut".\n\nTrimming it by is an action applying to one thing and one length.\n\nCheck trimming it by:\n\tif the length understood is 0 inches, say "You\'re approaching Zeno\'s string at this point." instead;\n\tif the length understood is greater than the length of the noun, say "[The noun] is only [length of the noun] long to start with." instead;\n\tif the length understood is the length of the noun, say "[The noun] is already exactly [length of the noun] long." instead.\n\nCarry out trimming it by:\n\tchange the length of the noun to the length of the noun minus the length understood;\n\tlet the other half be a random string in the string repository;\n\tchange the length of the other half to the length understood;\n\tmove the other half to the player.\n\nReport trimming it by:\n\tsay "You now have [a list of strings carried by the player]."\n\nUnderstand "cut [something] in half" as halving. Halving is an action applying to one thing.\n\nCarry out halving:\n\tlet half measure be the length of the noun divided by 2;\n\tchange the length understood to half measure;\n\ttry trimming the noun by half measure.\n\n[This fudges slightly, since an odd-length string will be divided into uneven halves. Keeping track of fractional inches would complicate matters, though, so let\'s assume for now that this doesn\'t matter.]\n\nThe player carries a string.\n\nThe Scissors Room is a room.\n\nThe string repository contains 35 strings.\n\n[Since our initial string is 36 inches long and it is impossible for the player to divide it into pieces smaller than an inch each, we need a total of 36 items to represent all the string-bits: one that the player carries at the outset, and 35 others. We should bear in mind that it is usually a good idea to use the smallest number of spare objects we can get away with: writing a game that required 1000 strings in the string repository would place silly demands on the resources of the system, so it\'s best to avoid that sort of thing if possible.]\n\n[Now with a bit of fiddling we can also teach Inform to recognize descriptors such as "the shortest string":]\n\nOrdinariness is a kind of value. The ordinarinesses are longest, medium, shortest. A string has an ordinariness. Understand the ordinariness property as referring to a string.\n\nDefinition: a string is small if its length is 2 in or less. Definition: a string is large if its length is 20 in or more.\n\nBefore reading a command:\n\tlet upper measure be the length of the largest visible string;\n\tlet lower measure be the length of the smallest visible string;\n\trepeat with item running through strings\n\tbegin;\n\t\tchange the ordinariness of the item to medium;\n\t\tif the length of the item is the upper measure, change the item to longest;\n\t\tif the length of the item is the lower measure, change the item to shortest;\n\tend repeat.\n\nAfter reading a command:\n\tif the player\'s command includes "shorter", replace the matched text with "shortest";\n\tif the player\'s command includes "longer", replace the matched text with "longest".\n\nInstead of tying a string to a string:\n\tmove the second noun to the string repository;\n\tchange the length of the noun to the length of the noun plus the length of the second noun;\n\tdecrease the length of the noun by 1 inch;\n\tsay "You end up with [a noun], as some is taken up by the knot."\n\nTest me with "trim string by 4 in / cut longer string in half / cut longest string in half / cut shortest string in half / g / g / tie longest string to shortest string / tie longest string to medium string / i".\n\n');
+    myProject.pasteCode('"Police State"\n\nSeventh Avenue is a room. "The bars are all closed now, and there aren\'t any good clubs to go to, so you\'re on your own for open-air entertainment."\n\nPersuasion rule for asking the policeman to try doing something: persuasion fails.\n\nPersuasion rule for asking someone to try doing something: persuasion succeeds.\n\n[Note that the policeman will never get to the second persuasion rule, so he will always refuse to do the player\'s nefarious bidding.]\n\nCharles, Thomas, and Larry are men in Seventh Avenue. Patricia is a woman in Seventh Avenue.\n\n[And here\'s an unnecessary aesthetic touch from a later chapter, which will round up the descriptions of your friends into a single paragraph:]\n\nRule for writing a paragraph about someone who is not the policeman:\n\tlet X be the number of visible people who are not the policeman;\n\tsay "It\'s just [X in words] of you now: [a list of visible people who are not the policeman]. But it sure has been a rip-roaring evening."\n\nThe policeman is a man in Seventh Avenue. "A policeman with a very guarded expression is watching you."\n\nSmelling a person is disorderly conduct. Tasting a person is disorderly conduct. Jumping is disorderly conduct. Singing is disorderly conduct.\n\nInstead of someone trying disorderly conduct in the presence of the policeman:\n\tsay "The policeman arrests [the person asked]!";\n\tremove the person asked from play;\n\tthe rule succeeds.\n\nInstead of disorderly conduct in the presence of the policeman:\n\tend the game saying "The policeman arrests you!"\n\nTest me with "charles, look / charles, jump / look / policeman, sing / thomas, taste policeman / patricia, sing / look / jump".\n\n');
 }
 </script>
-<a href="javascript:pasteCode289()"><img border=0 src=../doc_images/paste.png></a> &quot;Snip!&quot;
+<a href="javascript:pasteCode254()"><img border=0 src=../doc_images/paste.png></a> &quot;Police State&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Length is a kind of value. 30 inch specifies a length. 20 in specifies a length. 50 inches specifies a length.
+<blockquote><font color="#000080">Seventh Avenue is a room. &quot;The bars are all closed now, and there aren't any good clubs to go to, so you're on your own for open-air entertainment.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A string is a kind of thing. A string has a length. The length of a string is usually 36 inches.
+<blockquote><font color="#000080">Persuasion rule for asking the policeman to try doing something: persuasion fails.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before printing the name of a string, say &quot;[length] piece of &quot;. Rule for printing the plural name of a string: say &quot;[length] pieces of string&quot;.
+<blockquote><font color="#000080">Persuasion rule for asking someone to try doing something: persuasion succeeds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand the command &quot;cut&quot; as something new. Understand &quot;cut [length] from/off [something]&quot; as trimming it by (with nouns reversed). Understand &quot;cut [something] by [length]&quot; as trimming it by. Understand the command &quot;trim&quot; as &quot;cut&quot;.
+<p>Note that the policeman will never get to the second persuasion rule, so he will always refuse to do the player's nefarious bidding.
+<p>
+<blockquote><font color="#000080">Charles, Thomas, and Larry are men in Seventh Avenue. Patricia is a woman in Seventh Avenue.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Trimming it by is an action applying to one thing and one length.
+<p>And here's an unnecessary aesthetic touch from a later chapter, which will round up the descriptions of your friends into a single paragraph:
+<p>
+<blockquote><font color="#000080">Rule for writing a paragraph about someone who is not the policeman:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let X be the number of visible people who are not the policeman;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It's just [X in words] of you now: [a list of visible people who are not the policeman]. But it sure has been a rip-roaring evening.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check trimming it by:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the length understood is 0 inches, say &quot;You're approaching Zeno's string at this point.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the length understood is greater than the length of the noun, say &quot;[The noun] is only [length of the noun] long to start with.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the length understood is the length of the noun, say &quot;[The noun] is already exactly [length of the noun] long.&quot; instead.
+<blockquote><font color="#000080">The policeman is a man in Seventh Avenue. &quot;A policeman with a very guarded expression is watching you.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out trimming it by:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the length of the noun to the length of the noun minus the length understood;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the other half be a random string in the string repository;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the length of the other half to the length understood;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the other half to the player.
+<blockquote><font color="#000080">Smelling a person is disorderly conduct. Tasting a person is disorderly conduct. Jumping is disorderly conduct. Singing is disorderly conduct.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report trimming it by:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You now have [a list of strings carried by the player].&quot;
+<blockquote><font color="#000080">Instead of someone trying disorderly conduct in the presence of the policeman:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The policeman arrests [the person asked]!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the person asked from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;the rule succeeds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;cut [something] in half&quot; as halving. Halving is an action applying to one thing.
+<blockquote><font color="#000080">Instead of disorderly conduct in the presence of the policeman:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;The policeman arrests you!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out halving:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let half measure be the length of the noun divided by 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the length understood to half measure;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try trimming the noun by half measure.
+<blockquote><font color="#000080">Test me with &quot;charles, look / charles, jump / look / policeman, sing / thomas, taste policeman / patricia, sing / look / jump&quot;.
 </font></blockquote><p>
 <p>
-<p>This fudges slightly, since an odd-length string will be divided into uneven halves. Keeping track of fractional inches would complicate matters, though, so let's assume for now that this doesn't matter.
-<p>
-<blockquote><font color="#000080">The player carries a string.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Scissors Room is a room.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The string repository contains 35 strings.
-</font></blockquote><p>
-<p>
-<p>Since our initial string is 36 inches long and it is impossible for the player to divide it into pieces smaller than an inch each, we need a total of 36 items to represent all the string-bits: one that the player carries at the outset, and 35 others. We should bear in mind that it is usually a good idea to use the smallest number of spare objects we can get away with: writing a game that required 1000 strings in the string repository would place silly demands on the resources of the system, so it's best to avoid that sort of thing if possible.
-<p>
-<p>Now with a bit of fiddling we can also teach Inform to recognize descriptors such as &quot;the shortest string&quot;:
-<p>
-<blockquote><font color="#000080">Ordinariness is a kind of value. The ordinarinesses are longest, medium, shortest. A string has an ordinariness. Understand the ordinariness property as referring to a string.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a string is small if its length is 2 in or less. Definition: a string is large if its length is 20 in or more.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let upper measure be the length of the largest visible string;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let lower measure be the length of the smallest visible string;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through strings
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the ordinariness of the item to medium;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the length of the item is the upper measure, change the item to longest;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the length of the item is the lower measure, change the item to shortest;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;shorter&quot;, replace the matched text with &quot;shortest&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;longer&quot;, replace the matched text with &quot;longest&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of tying a string to a string:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the second noun to the string repository;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the length of the noun to the length of the noun plus the length of the second noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decrease the length of the noun by 1 inch;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You end up with [a noun], as some is taken up by the knot.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;trim string by 4 in / cut longer string in half / cut longest string in half / cut shortest string in half / g / g / tie longest string to shortest string / tie longest string to medium string / i&quot;.
-</font></blockquote><p>
-<p>
-<p>This is still a little disappointing because we cannot refer to strings by their lengths, as in &quot;the 2 inch string&quot; and so on. This is a bit more challenging, but can be done; we'll return to the problem in a later example.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc216.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>Notice the difference between the two rules about disorderly conduct: the one for other people says 'the rule succeeds' to make sure that the action is counted as a success and not (as normally happens with instead rules) a failure. Most of the time we don't care whether actions are judged successes or failures, but it matters here, because if we type CHARLES, JUMP and the result fails, then text such as 'Charles is unable to.' will be printed - which would get in the way. So we declare the action a success.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc175.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc215.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc217.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc174.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc176.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

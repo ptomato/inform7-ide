@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.4. Standard tokens of grammar</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.2. Rooms and the map</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,74 +9,83 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Shawn's Bad Day" -->
-<!-- SEARCH SECTION "Ex 230" -->
-<!-- SEARCH SORT "Ex 016-004-230" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc242.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc244.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.4. Standard tokens of grammar</b></font></td></tr></table>
+<!-- SEARCH TITLE "Up and Up" -->
+<!-- SEARCH SECTION "Ex 5" -->
+<!-- SEARCH SORT "Ex 003-002-005" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc27.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc29.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.2. Rooms and the map</b></font></td></tr></table>
 <p>
-<p>We have already seen &quot;[something]&quot; and &quot;[someone]&quot;, which are standard examples of &quot;tokens of grammar&quot; - patterns matched by suitable named things. There are several other standard tokens, provided not so much from necessity but to allow the game parser to be more graceful and responsive. &quot;[someone]&quot; matches the same possibilities as &quot;[a person]&quot; would, but the parser handles it a little better in cases of failure. These special tokens are best explained by looking at some of the examples in the standard grammar, which can be browsed in the Index of any game.
+<p>Rooms are joined together at their edges by &quot;map connections&quot;, most of which are pathways in one of the eight cardinal compass directions: north, northeast (written without a hyphen), east, southeast, south, southwest, west, northwest. We also have up and down, suitable for staircases or ladders. In real life, people are seldom conscious of their compass bearing when walking around buildings, but it makes a concise and unconfusing way for the player to say where to go next, so is generally accepted as a convention of the genre.
 <p>
-<blockquote><font color="#000080">Understand &quot;wear [something preferably held]&quot; as wearing.
+<p>Two more directions are provided by Inform: &quot;inside&quot; and &quot;outside&quot;. These are best used when one location is, say, a meadow and the other is a woodcutter's hut in the middle of it; we might then say
+<p>
+<blockquote><font color="#000080">Inside from the Meadow is the woodcutter's hut.
 </font></blockquote><p>
 <p>
-<p>The named item must be held by the player, but the game will automatically pick it up if necessary, minimising nuisance.
+<p>The &quot;from&quot; is important, as it clarifies that we intend to link two different locations, not to create an item - the hut - in a single location - the meadow.
 <p>
-<blockquote><font color="#000080">Understand &quot;take [things]&quot; as taking.
-<br>Understand &quot;drop [things preferably held]&quot; as dropping.
+<p>A problem which sometimes arises when laying out maps is that Inform allows short forms of room names to be used as abbreviations. This is usually a good idea, but has unfortunate results if we write:
+<p>
+<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. The Airport is west of the Airport Road.
 </font></blockquote><p>
 <p>
-<p>&quot;[things]&quot; is like &quot;[something]&quot; but allows a list of items, or a vague plural like &quot;all&quot;, to be typed. The result will be a sequence of actions, one for each item thus described. &quot;[things preferably held]&quot; is the analogous token for &quot;[something preferably held]&quot;.
+<p>...because &quot;Airport&quot; is taken as a reference to &quot;Airport Road&quot;, so Inform makes only two locations, one of which supernaturally leads to itself. We can avoid this by writing:
 <p>
-<blockquote><font color="#000080">Understand &quot;take [things inside] from [something]&quot; as removing.
+<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. A room called the Airport is west of the Airport Road.
 </font></blockquote><p>
 <p>
-<p>&quot;[things inside]&quot; matches only what is inside the second-named thing, and ensures that (for instance) the command &quot;take all from box&quot; does not also try to take the box.
+<p>Using &quot;called&quot; is often a good way to specify something whose name might give rise to confusion otherwise. It always makes something new, and it is also neatly concise, because we can establish something's kind and name in the same sentence. As another example, suppose we want to create a room called &quot;South of the Hut&quot;, to south of the Hut. We can't do so like this:
 <p>
-<blockquote><font color="#000080">Understand &quot;put [other things] in/inside/into [something]&quot; as inserting it into.
+<blockquote><font color="#000080">South of the Hut is a room. South of the Hut is south of the Hut.
 </font></blockquote><p>
 <p>
-<p>Similarly, &quot;[other things]&quot; will allow anything except the second-named thing. (Like &quot;[things inside]&quot; it is really only needed for handling containers.)
+<p>...because Inform will read that first sentence as placing a (nameless) room to the south of a room called &quot;Hut&quot;. Once again &quot;called&quot; can save the day:
+<p>
+<blockquote><font color="#000080">South of the Hut is a room called South of the Hut.
+</font></blockquote><p>
+<p>
+<p>It is best to use &quot;called&quot; in the simplest way possible, and in particular, best not to use &quot;called&quot; twice in the same sentence. Consider:
+<p>
+<blockquote><font color="#000080">The kitchen cabinet contains a container called a mixing bowl and a portable supporter called a platter.
+</font></blockquote><p>
+<p>
+<p>It is unlikely that anyone would want to name something &quot;a mixing bowl and a portable supporter called a platter&quot;, but not impossible, and Inform tends not to be a good judge of what is likely.
 <p>
 <p><hr><p>
+<a name="e244"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex244.html#e244 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>4</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex244.html#e244 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Port Royal 1</font></b></a><br>A partial implementation of Port Royal, Jamaica, set before the earthquake of 1692 demolished large portions of the city.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e291"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc243.html#e291 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>229</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc243.html#e291 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Shawn's Bad Day</font></b></a><br>Allowing the player to EXAMINE ALL.<p></td></tr></table>
+<a name="e291"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc28.html#e291 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>5</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc28.html#e291 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Up and Up</font></b></a><br>Adding a short message as the player approaches a room, before the room description itself appears.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Sometimes when a player moves from one room to another, we want to imply that a considerable amount of time elapses, or that something interesting occurs on the way. In that case, we might want to print more than just the room description itself. Here is how we might define a couple of rooms that are far apart:
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode320(code) {
+function pasteCode91(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Shawn\'s Bad Day"\n\nThe Treasury is a room. The vault is a lockable locked closed openable container in the Treasury. It is fixed in place. "A massive vault fills up one wall." The description is "The vault\'s system includes [a list of things which are part of the vault]."\n\nA little green light, a little blue light, a little red light, a thin black pane of glass, a laser beam, a retinal scanner, a thumbprint ID plate, a dial, and a large lever are part of the vault.\n\nThe security guard is a man in the Treasury. The description is "His name is Shawn, and he doesn\'t look happy."\n\nThe description of the green light is "Off." The description of the blue light is "Tranquilly on." The description of the red light is "Angrily flashing."\n\nUnderstand "examine [things]" as multiply examining.\n\nMultiply examining is an action applying to one thing.\n\nCarry out multiply examining:\n\ttry examining the noun.\n\nTest me with "examine all".\n');
+    myProject.pasteCode('"Up and Up"\n\nThe Plain of the Skull is below the Endless Tower. The description of the Plain of the Skull is "A vast and trackless plain, enlivened only by the bones of those who have previously tried and failed to cross. Above you is the Endless Tower, which rises half-way to the moon."\n\nThe description of the Endless Tower is "From up here the Plain of the Skull seems only a small bald patch: the world is round and most of it is covered with trees. Far off to the southwest is a shimmering surface that might be water; but there are no signs of cities or civilizations, only the lizard-skeletons."\n\n[And now we borrow from the instructions on Actions to create our actual message. "Before..." introduces a rule that occurs when the player tries to do something; in this case, we will make a Before rule for going to the tower.]\n\nBefore going to the Endless Tower:\n\tsay "You climb... and climb... and climb... The sun sets. The moon rises. The wind begins to blow. You continue to climb..."\n\nThe player carries a bit of harness. The description of the harness is "A strip of worked leather and a loop of metal, scavenged from one of the skeletons on the plain. Without it, you might think your entire quest was in vain."\n\nTest me with "look / up".\n');
 }
 </script>
-<a href="javascript:pasteCode320()"><img border=0 src=../doc_images/paste.png></a> &quot;Shawn's Bad Day&quot;
+<a href="javascript:pasteCode91()"><img border=0 src=../doc_images/paste.png></a> &quot;Up and Up&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Treasury is a room. The vault is a lockable locked closed openable container in the Treasury. It is fixed in place. &quot;A massive vault fills up one wall.&quot; The description is &quot;The vault's system includes [a list of things which are part of the vault].&quot;
+<blockquote><font color="#000080">The Plain of the Skull is below the Endless Tower. The description of the Plain of the Skull is &quot;A vast and trackless plain, enlivened only by the bones of those who have previously tried and failed to cross. Above you is the Endless Tower, which rises half-way to the moon.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A little green light, a little blue light, a little red light, a thin black pane of glass, a laser beam, a retinal scanner, a thumbprint ID plate, a dial, and a large lever are part of the vault.
+<blockquote><font color="#000080">The description of the Endless Tower is &quot;From up here the Plain of the Skull seems only a small bald patch: the world is round and most of it is covered with trees. Far off to the southwest is a shimmering surface that might be water; but there are no signs of cities or civilizations, only the lizard-skeletons.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The security guard is a man in the Treasury. The description is &quot;His name is Shawn, and he doesn't look happy.&quot;
+<p>And now we borrow from the instructions on Actions to create our actual message. &quot;Before...&quot; introduces a rule that occurs when the player tries to do something; in this case, we will make a Before rule for going to the tower.
+<p>
+<blockquote><font color="#000080">Before going to the Endless Tower:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You climb... and climb... and climb... The sun sets. The moon rises. The wind begins to blow. You continue to climb...&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the green light is &quot;Off.&quot; The description of the blue light is &quot;Tranquilly on.&quot; The description of the red light is &quot;Angrily flashing.&quot;
+<blockquote><font color="#000080">The player carries a bit of harness. The description of the harness is &quot;A strip of worked leather and a loop of metal, scavenged from one of the skeletons on the plain. Without it, you might think your entire quest was in vain.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;examine [things]&quot; as multiply examining.
+<blockquote><font color="#000080">Test me with &quot;look / up&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Multiply examining is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out multiply examining:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;examine all&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc243.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc28.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc242.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc244.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc27.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc29.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.5. Kinds</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.5. After rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,90 +9,69 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "First Name Basis" -->
-<!-- SEARCH SECTION "Ex 10" -->
-<!-- SEARCH SORT "Ex 003-005-010" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc30.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc32.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.5. Kinds</b></font></td></tr></table>
+<!-- SEARCH TITLE "Morning After" -->
+<!-- SEARCH SECTION "Ex 74" -->
+<!-- SEARCH SORT "Ex 007-005-074" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc93.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc95.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.5. After rules</b></font></td></tr></table>
 <p>
-<p>The following description runs to only 33 words, but makes a surprisingly intricate design. It not only places things within rooms, but also places them very specifically with respect to each other:
+<p>There is pleasantly little to be said about &quot;after&quot; rules. If an action has survived all the rules in its way, and has actually succeeded, then we need to give the player a response which acknowledges this. Inform's normal rules will be sufficient to say something undramatic: for instance, if &quot;taking the napkin&quot; has succeeded then it will reply &quot;Taken.&quot; to the player.
 <p>
-<blockquote><font color="#000080">&quot;Midsummer Day&quot;
+<p>An after rule is an opportunity to say something more interesting:
+<p>
+<blockquote><font color="#000080">After taking the diamonds, say &quot;Taken!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">East of the Garden is the Gazebo. Above is the Treehouse. A billiards table is in the Gazebo. On it is a trophy cup. A starting pistol is in the cup.
-</font></blockquote><p>
+<p>(Well, slightly more interesting.) After rules automatically end the action (as a success), which is what we would want in the above case. Allowing it to continue would simply result in &quot;Taken.&quot; being printed as well. However, should we really need to do something and then carry on:
 <p>
-<p>Inform needs to identify the places and objects being described by the nouns here, and to guess what it can about them. For instance, the pistol can be picked up but not walked inside, whereas the Treehouse is the reverse. (This is obvious to someone who knows what these words mean, less obvious to a computer which does not, but the text contains sufficient clues.) Inform does this by sorting the various nouns into different categories, which are called &quot;kinds&quot;. For instance:
-<p>
-<blockquote><font color="#000080">Garden, Gazebo, Treehouse - <b>room</b>
-<br>billiards table - <b>supporter</b>
-<br>cup - <b>container</b>
-<br>starting pistol - <b>thing</b>
-<br>East, up (implied by &quot;above&quot;) - <b>direction</b>
-</font></blockquote><p>
-<p>
-<p>(A container is something which can contain other things, and a supporter similarly.) For instance Inform knows that if one thing is in another, then the second thing is either a room or a container, and if one thing is on another, the second thing is a supporter. This worked nicely for the design above, but:
-<p>
-<blockquote><font color="#000080">In the Treehouse is a cardboard box.
-</font></blockquote><p>
-<p>
-<p>results in the cardboard box being made only a &quot;thing&quot;: because nothing has been put inside it, there is no reason for Inform - which does not know what a cardboard box looks like - to guess that it is a &quot;container&quot;. So we need to add:
-<p>
-<blockquote><font color="#000080">The box is a container.
-</font></blockquote><p>
-<p>
-<p>It is rather clumsy to have to write two sentences like this, so we would normally write this instead:
-<p>
-<blockquote><font color="#000080">In the Treehouse is a container called the cardboard box.
+<blockquote><font color="#000080">After taking the diamonds: say &quot;(Mr Beebe looks up sharply.) &quot;; continue the action.
 </font></blockquote><p>
 <p>
 <p><hr><p>
-<a name="e87"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex87.html#e87 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>8</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex87.html#e87 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Midsummer Day</font></b></a><br>The above example accumulated into one place, to experiment with.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e97"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc31.html#e97 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>9</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc31.html#e97 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> First Name Basis</font></b></a><br>Allowing the player to use different synonyms to refer to something.<p></td></tr></table>
+<a name="e97"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc94.html#e97 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>74</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc94.html#e97 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Morning After</font></b></a><br>When the player picks something up which he hasn't already examined, the object is described.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Sometimes we create objects that we want the player to be able to call by different names: a television that should also answer to &quot;tv&quot; and &quot;telly&quot;, for instance, or a refrigerator the player might also call &quot;fridge&quot;. In this case, we can use instructions like
-<p>
-<blockquote><font color="#000080">Understand &quot;tv&quot; and &quot;telly&quot; as the television.
-</font></blockquote><p>
-<p>
-<p>to add extra names to the object we've defined.
+<p>Suppose we want to make the player's life slightly easier by examining everything he picks up, if he hasn't already examined it.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode95(code) {
+function pasteCode164(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"First Name Basis"\n\nThe Crew Lounge is a room. "Deliberately spartan: the crew feels weight restrictions here first, so there aren\'t any chairs, just a few thin pads on the ground."\n\nThe holographic projector is a device in the Crew Lounge. "The one major source of entertainment is the holographic projector, a top of the line Misthon 9000, on which you view every beam you can get." Understand "holo" or "holograph" or "Misthon" or "9000" as the projector.\n\nThe description of the projector is "[if switched on]The projector is now playing a documentary about the early politics of the Mars colony.[otherwise]The air above the projector is disappointingly clear.[end if]".\n\n[(This description is for local color; we will learn more about devices, and conditions like "if switched on", later in this chapter.)]\n\n[By default, Inform does not understand the names of an object\'s kind as referring to that object, unless the object has no other name of its own. We can change this, if we like, by defining names that should be applied to everything of a given kind:]\n\nLewis and Harper are men in the Crew Lounge. Understand "man" or "guy" or "chap" or "lad" or "male" as a man.\n\nThe description of Lewis is "A wiry, excitable engineer who just signed aboard last week." The description of Harper is "Harper\'s a good guy: taciturn when sober, affectionate when drunk, but rarely annoying in either state."\n\nTest me with "x holo / x man / lewis / x guy / harper / turn on projector / x holo projector".\n\n');
+    myProject.pasteCode('"Morning After"\n\nA thing can be examined or unexamined.\n\nAfter taking something unexamined:\n\tsay "Taken. [run paragraph on]";\n\ttry examining the noun.\n\nCarry out examining something:\n\tnow the noun is examined.\n\n[Carry out rules are explained in more detail in the chapter on advanced action handling. For now, it may be enough to know that what we put into this carry out rule for examining will happen any time anything is examined, but that it will not interfere with the rest of the predefined behavior of the action. The player will still see the object description and so on, as usual.]\n\nThe Red Door Saloon is a room. "This old place is in pretty bad shape since the mine shut down. Now there\'s not much to see but the pair of deep gouges in the floorboards where they dragged away the Sheriff\'s corpse with the spurs still on."\n\nJed is a man in the Red Door Saloon. "At 8:30 AM the only person around is old Jed, collecting his hangover cure."\n\nThe pistol is a thing in the Red Door Saloon. The description of the pistol is "It ain\'t too accurate, but for two dollars you can\'t expect much."\n\nThe hangover cure is a thing in the Red Door Saloon. The description of the hangover cure is "Two yellow egg-yolks unbroken in a red-brown liquid. Yep."\n\nTest me with "x pistol / get all".\n');
 }
 </script>
-<a href="javascript:pasteCode95()"><img border=0 src=../doc_images/paste.png></a> &quot;First Name Basis&quot;
+<a href="javascript:pasteCode164()"><img border=0 src=../doc_images/paste.png></a> &quot;Morning After&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Crew Lounge is a room. &quot;Deliberately spartan: the crew feels weight restrictions here first, so there aren't any chairs, just a few thin pads on the ground.&quot;
+<blockquote><font color="#000080">A thing can be examined or unexamined.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The holographic projector is a device in the Crew Lounge. &quot;The one major source of entertainment is the holographic projector, a top of the line Misthon 9000, on which you view every beam you can get.&quot; Understand &quot;holo&quot; or &quot;holograph&quot; or &quot;Misthon&quot; or &quot;9000&quot; as the projector.
+<blockquote><font color="#000080">After taking something unexamined:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Taken. [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the projector is &quot;[if switched on]The projector is now playing a documentary about the early politics of the Mars colony.[otherwise]The air above the projector is disappointingly clear.[end if]&quot;.
+<blockquote><font color="#000080">Carry out examining something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is examined.
 </font></blockquote><p>
 <p>
-<p>(This description is for local color; we will learn more about devices, and conditions like &quot;if switched on&quot;, later in this chapter.)
+<p>Carry out rules are explained in more detail in the chapter on advanced action handling. For now, it may be enough to know that what we put into this carry out rule for examining will happen any time anything is examined, but that it will not interfere with the rest of the predefined behavior of the action. The player will still see the object description and so on, as usual.
 <p>
-<p>By default, Inform does not understand the names of an object's kind as referring to that object, unless the object has no other name of its own. We can change this, if we like, by defining names that should be applied to everything of a given kind:
-<p>
-<blockquote><font color="#000080">Lewis and Harper are men in the Crew Lounge. Understand &quot;man&quot; or &quot;guy&quot; or &quot;chap&quot; or &quot;lad&quot; or &quot;male&quot; as a man.
+<blockquote><font color="#000080">The Red Door Saloon is a room. &quot;This old place is in pretty bad shape since the mine shut down. Now there's not much to see but the pair of deep gouges in the floorboards where they dragged away the Sheriff's corpse with the spurs still on.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of Lewis is &quot;A wiry, excitable engineer who just signed aboard last week.&quot; The description of Harper is &quot;Harper's a good guy: taciturn when sober, affectionate when drunk, but rarely annoying in either state.&quot;
+<blockquote><font color="#000080">Jed is a man in the Red Door Saloon. &quot;At 8:30 AM the only person around is old Jed, collecting his hangover cure.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;x holo / x man / lewis / x guy / harper / turn on projector / x holo projector&quot;.
+<blockquote><font color="#000080">The pistol is a thing in the Red Door Saloon. The description of the pistol is &quot;It ain't too accurate, but for two dollars you can't expect much.&quot;
 </font></blockquote><p>
 <p>
-<p>Inform's naming abilities go considerably further, in fact: we can also instruct it to understand words only under certain circumstances, or only when they appear with other words. Fuller details may be found in the chapter on Understanding.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc31.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">The hangover cure is a thing in the Red Door Saloon. The description of the hangover cure is &quot;Two yellow egg-yolks unbroken in a red-brown liquid. Yep.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x pistol / get all&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc94.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc30.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc32.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc93.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc95.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -295,9 +295,11 @@ Array EMPTY_RULEBOOK -> $ff $ff $ff $ff; ! 4 bytes needed in case of Glulx
 ];
 
 [ I7_Match test snippet w1 wlen i j;
-	w1 = snippet/100; wlen = snippet%100;
-	for (i=w1, j=wlen: j>0: i++, j--) {
-		if (((test)(i, 0)) ~= GPR_FAIL) return i*100+wn-i;
+	if (metaclass(test) == Routine) {
+		w1 = snippet/100; wlen = snippet%100;
+		for (i=w1, j=wlen: j>0: i++, j--) {
+			if (((test)(i, 0)) ~= GPR_FAIL) return i*100+wn-i;
+		}
 	}
 	rfalse;
 ];
@@ -414,8 +416,8 @@ Include "Grammar";
 {-call:compile_grammar_conditions}
 
 {-log:Compiling type gprs}
-[ I7_NUMBER_TOKEN wnc wna r n wa wl sign base digit digit_count;
-	wnc = wn;
+[ I7_NUMBER_TOKEN wnc wna r n wa wl sign base digit digit_count original_wn group_wn;
+	wnc = wn; original_wn = wn; group_wn = wn;
 {-call:compile_number_grammar}
 	wn = wnc;
 	r = I7_ParseToken(ELEMENTARY_TT, NUMBER_TOKEN);
@@ -436,7 +438,9 @@ Include "Grammar";
 		digit_count++;
 		switch (base) {
 			2:  if (digit_count == 17) return GPR_FAIL;
-			10: if (digit_count == 6) return GPR_FAIL;
+			10:
+#IFDEF TARGET_ZCODE;
+				if (digit_count == 6) return GPR_FAIL;
 				if (digit_count == 5) {
 					if (n > 3276) return GPR_FAIL;
 					if (n == 3276) {
@@ -444,6 +448,16 @@ Include "Grammar";
 						if (sign == -1 && digit > 8) return GPR_FAIL;
 					}
 				}
+#IFNOT; ! TARGET_GLULX
+				if (digit_count == 11) return GPR_FAIL;
+				if (digit_count == 10) {
+					if (n > 214748364) return GPR_FAIL;
+					if (n == 214748364) {
+						if (sign == 1 && digit > 7) return GPR_FAIL;
+						if (sign == -1 && digit > 8) return GPR_FAIL;
+					}
+				}
+#ENDIF; 
 			16: if (digit_count == 5) return GPR_FAIL;
 		}
 		if (digit >= 0 && digit < base) n = base*n + digit;
@@ -512,6 +526,7 @@ Constant I7_BOXES = {-value:extent_of_runtime_quotations_array};
 	{-callv:index_quantities}
 	{-callv:index_tables}
 	{-callv:index_figures}
+	{-callv:index_sounds}
 	{-callv:index_library_card}
 {-index:Scenes}
 	{-callv:index_page_Scenes}

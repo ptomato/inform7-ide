@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.9. Defining new assertion verbs</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.8. Otherwise</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,82 +9,106 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Unthinkable Alliances" -->
-<!-- SEARCH SECTION "Ex 186" -->
-<!-- SEARCH SORT "Ex 013-009-186" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc199.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc201.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.9. Defining new assertion verbs</b></font></td></tr></table>
+<!-- SEARCH TITLE "Numberless" -->
+<!-- SEARCH SECTION "Ex 144" -->
+<!-- SEARCH SORT "Ex 011-008-144" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc159.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc161.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.8. Otherwise</b></font></td></tr></table>
 <p>
-<p>Here is an example definition of a new verb:
+<p>We often need code which does one thing in one circumstance, and another the rest of the time. We could do this like so:
 <p>
-<blockquote><font color="#000080">The verb to sport (he sports, they sport, he sported, it is sported, he is sporting) implies the wearing relation.
+<blockquote><font color="#000080">if N is 2 begin; ...; end if;
+<br>if N is not 2 begin; ...; end if;
 </font></blockquote><p>
 <p>
-<p>Once this is done, we can write the assertion
+<p>but this is not very elegant, and besides, what if the action we take when N is 2 changes N so that it becomes something else?
 <p>
-<blockquote><font color="#000080">Mr Wickham sports a Tory rosette.
+<p>Instead we use &quot;otherwise&quot;:
+<p>
+<blockquote><font color="#000080">if N is 2 begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
+<br>otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
+<br>end if;
 </font></blockquote><p>
 <p>
-<p>which will do the the same thing as
+<p>Note that there is only one &quot;end if&quot;: the &quot;otherwise&quot; phrase occurs inside the &quot;if ... end if&quot; block of phrases.
 <p>
-<blockquote><font color="#000080">Mr Wickham wears a Tory rosette.
+<p>When there is only a single phrase we can use the shortened form:
+<p>
+<blockquote><font color="#000080">if N is 2 then say &quot;Hooray, N is 2!&quot;;
+<br>otherwise say &quot;Boo, N is not 2...&quot;
 </font></blockquote><p>
 <p>
-<p>because both verbs have the same relation as their meaning.
+<p>Often, though, what we want is to divide up a situation into many cases, and for this the abbreviation &quot;otherwise if&quot; is allowed:
 <p>
-<p>Note that we have to spell out many parts of the verb:
-<p>
-<blockquote><font color="#000080">to sport - infinitive
-<br>he sports - present singular
-<br>they sport - present plural
-<br>he sported - past
-<br>it is sported - past participle
-<br>he is sporting - present participle
+<blockquote><font color="#000080">if N is 1 begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
+<br>otherwise if N is 2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
+<br>otherwise if N is greater than 4;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
+<br>end if;
 </font></blockquote><p>
 <p>
-<p>Although it looks as if Inform could easily generate these given the infinitive &quot;to sport&quot; alone, by adding an &quot;-s&quot; here or an &quot;-ed&quot; there, English can be a very irregular language. Since only a few verbs will be defined in any single project it seems best to be explicit. (If we do miss out any of the parts of the verb, the result will be that the usages missed out will not be understood by Inform. Sometimes that's a good thing, as some verbs have seldom-used present participles, for instance - &quot;he is liking me&quot;, for instance, is grammatical but odd.)
+<p>At most one of the &quot;...&quot; clauses is ever reached - the first which works out. Note that there is only a single &quot;end if&quot;, at the end: it all counts as a single &quot;if&quot; construction.
 <p>
-<p>The Phrasebook index contains all the verbs associated with assertions, in the &quot;table of verbs&quot; section. When we add new verbs to our source, those will appear in the Phrasebook as well.
+<p>(In almost every computer programming language ever devised, including previous versions of Inform, the word &quot;else&quot; is used rather than &quot;otherwise&quot;: for the sake of familiarity, &quot;else&quot; can also be used here. All the same, &quot;otherwise&quot; seems closer to natural English.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e273"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc200.html#e273 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>185</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc200.html#e273 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Unthinkable Alliances</font></b></a><br>People are to be grouped into alliances. To kiss someone is to join his or her faction, which may make a grand alliance; to strike them is to give notice of quitting, and to become a lone wolf.<p></td></tr></table>
+<a name="e273"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc160.html#e273 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>144</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc160.html#e273 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Numberless</font></b></a><br>A simple exercise in printing the names of random numbers, using "otherwise if..." and also a table-based alternative. (Or, in programming terms, how to emulate a switch statement.)<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The following is best tested by experimentally kissing and/or attacking, and typing RELATIONS after every change to see the effect.
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode276(code) {
+function pasteCode240(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Unthinkable Alliances"\n\nUnthinkable Solutions is a room. Sophie, Daisy, Ryan and Owen are in Unthinkable Solutions.\n\nAlliance relates people to each other in groups. The verb to help (he helps, they help, he helped, he is helped) implies the alliance relation.\n\nSophie helps Ryan. Daisy helps Ryan. Owen helps the player.\n\nInstead of kissing someone (called the blessed one):\n\tsay "Smack!";\n\tnow the player helps the blessed one.\n\nInstead of attacking someone (called the vilified one):\n\tsay "Smack!";\n\tnow the player does not help the vilified one.\n\nTest me with "relations / kiss sophie / relations / hit ryan / relations".\n');
+    myProject.pasteCode('"Numberless"\n\nThe Rambling Warren is a room.\n\nWhen play begins:\n\tlet N be a random number between 1 and 5;\n\tif N is 1\n\tbegin;\n\t\tsay "N is one.";\n\totherwise if N is 2;\n\t\tsay "N is two.";\n\totherwise if N is 3;\n\t\tsay "N is three.";\n\totherwise;\n\t\tsay "N is more than the number of your toes.";\n\tend if.\n\n[The final "otherwise" here will fire only if none of the earlier conditions applies; we could leave it out and print nothing in the case that N is 4 or 5.]\n\n[Alternatively, we can use a construction we\'ve seen only briefly before now: a table. The use of tables will be explained more fully in their own chapter, but here we see in brief that we can assign a number of values to one column of a table and then use that table to look up output:]\n\nWhen play begins:\n\tlet X be a random number between 11 and 14;\n\tif X is a number listed in the Table of Switching, say "[output entry][paragraph break]";\n\totherwise say "X is greater than the number of your noses!"\n\nTable of Switching\nnumber\toutput\n11\t"X is eleven!"\n12\t"X is twelve!"\n13\t"X is thirteen!"\n\nTest me with "z".\n\n');
 }
 </script>
-<a href="javascript:pasteCode276()"><img border=0 src=../doc_images/paste.png></a> &quot;Unthinkable Alliances&quot;
+<a href="javascript:pasteCode240()"><img border=0 src=../doc_images/paste.png></a> &quot;Numberless&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Unthinkable Solutions is a room. Sophie, Daisy, Ryan and Owen are in Unthinkable Solutions.
+<blockquote><font color="#000080">The Rambling Warren is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Alliance relates people to each other in groups. The verb to help (he helps, they help, he helped, he is helped) implies the alliance relation.
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be a random number between 1 and 5;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if N is 1
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;N is one.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if N is 2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;N is two.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if N is 3;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;N is three.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;N is more than the number of your toes.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Sophie helps Ryan. Daisy helps Ryan. Owen helps the player.
+<p>The final &quot;otherwise&quot; here will fire only if none of the earlier conditions applies; we could leave it out and print nothing in the case that N is 4 or 5.
+<p>
+<p>Alternatively, we can use a construction we've seen only briefly before now: a table. The use of tables will be explained more fully in their own chapter, but here we see in brief that we can assign a number of values to one column of a table and then use that table to look up output:
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let X be a random number between 11 and 14;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if X is a number listed in the Table of Switching, say &quot;[output entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;X is greater than the number of your noses!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of kissing someone (called the blessed one):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Smack!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player helps the blessed one.
+<blockquote><font color="#000080">Table of Switching
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">number</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">output</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;X is eleven!&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;X is twelve!&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;X is thirteen!&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of attacking someone (called the vilified one):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Smack!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player does not help the vilified one.
+<blockquote><font color="#000080">Test me with &quot;z&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;relations / kiss sophie / relations / hit ryan / relations&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc200.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>As we shall see, things other than text can be stored in tables, so we could also use a table as a way to look up objects or even rules to carry out.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc160.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e184"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex184.html#e184 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>186</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex184.html#e184 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Unexamined Life</font></b></a><br>An adaptive hint system that tracks what the player needs to have seen or to possess in order to solve a given puzzle, and doles out suggestions accordingly. Handles changes in the game state with remarkable flexibility, and allows the player to decide how explicit a nudge he wants at any given moment.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc199.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc201.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc159.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc161.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -131,6 +131,8 @@ Constant GG_SCRIPTSTR_ROCK   302;
 Constant GG_COMMANDWSTR_ROCK 303;
 Constant GG_COMMANDRSTR_ROCK 304;
 Constant GG_SCRIPTFREF_ROCK  401;
+Constant GG_FOREGROUNDCHAN_ROCK 410;
+Constant GG_BACKGROUNDCHAN_ROCK 411;
 Array gg_event --> 4;
 #Ifdef VN_1630;
 Array gg_arguments buffer 28;
@@ -145,6 +147,8 @@ Global gg_scriptstr = 0;
 Global gg_savestr = 0;
 Global gg_commandstr = 0;
 Global gg_command_reading = 0;      ! true if gg_commandstr is being replayed
+Global gg_foregroundchan = 0;
+Global gg_backgroundchan = 0;
 #Endif; ! TARGET_GLULX
 
 Global gg_statuswin_cursize = 0;
@@ -2446,6 +2450,22 @@ Constant UNLIT_BIT  =  32;
     return 0;
 ];
 
+[ ArticleDescriptors  o x flag cto type n;
+    if (wn > num_words) return 0;
+
+    for (flag=true : flag :) {
+        o = NextWordStopped(); flag = false;
+
+       for (x=1 : x<=LanguageDescriptors-->0 : x=x+4)
+            if (o == LanguageDescriptors-->x) {
+                type = LanguageDescriptors-->(x+2);
+                if (type == DEFART_PK or INDEFART_PK) flag = true;
+            }
+    }
+    wn--;
+    return 0;
+];
+
 ! ----------------------------------------------------------------------------
 !  CreatureTest: Will this person do for a "creature" token?
 ! ----------------------------------------------------------------------------
@@ -4464,10 +4484,14 @@ Constant SCORE__DIVISOR = 20;
 !  if it was a match because of inadequate input).
 ! ----------------------------------------------------------------------------
 
-[ TryGivenObject obj threshold k w j;
+[ TryGivenObject obj nomatch threshold k w j;
     #Ifdef DEBUG;
     if (parser_trace >= 5) print "    Trying ", (the) obj, " (", obj, ") at word ", wn, "^";
     #Endif; ! DEBUG
+
+	if (nomatch && obj == 0) return 0;
+
+! if (nomatch) print "*** TryGivenObject *** on ", (the) obj, " at wn = ", wn, "^";
 
     dict_flags_of_noun = 0;
 
@@ -4475,6 +4499,7 @@ Constant SCORE__DIVISOR = 20;
 !  time).
 
     if (wn > num_words) {
+    	if (nomatch) return 0;
         if (indef_mode ~= 0)
             dict_flags_of_noun = $$01110000;  ! Reject "plural" bit
         MakeMatch(obj,0);
@@ -4512,7 +4537,7 @@ Constant SCORE__DIVISOR = 20;
             #Ifdef DEBUG;
             if (parser_trace >= 5) print "    Matched (", k, ")^";
             #Endif; ! DEBUG
-            MakeMatch(obj,k);
+            if (nomatch == false) MakeMatch(obj,k);
             return k;
         }
         if (k == 0) jump NoWordsMatch;
@@ -5588,9 +5613,11 @@ Object  InformLibrary "(Inform Library)"
         rtrue;
       Routine:
 		x = RunRoutines(obj,prop);
-		if ((flag == 0) && (prop == description or initial or inside_description)
+#ifdef NI_BUILD_COUNT;
+			if ((flag == 0) && (prop == description or initial or inside_description)
 			&& x)
 			I7_DivideParagraph();
+#endif;
         rtrue;
     }
 ];
@@ -5803,11 +5830,26 @@ Object  InformLibrary "(Inform Library)"
         if (i has animate) give i transparent;
         i = parent(i);
     }
-    if (player == selfobj) player.short_name = FORMER__TX;
+
+    #ifdef NI_BUILD_COUNT;
+    if (player == selfobj) {
+    	player.saved_short_name = player.short_name;
+    	player.short_name = FORMER__TX;
+    }
+    #ifnot;
+	if (player == selfobj) player.short_name = FORMER__TX;
+	#endif;
 
     player = obj;
 
+    #ifdef NI_BUILD_COUNT;
+    if (player == selfobj) {
+    	player.short_name = player.saved_short_name;
+    }
+    #ifnot;
     if (player == selfobj) player.short_name = NULL;
+    #endif;
+
     give player transparent concealed animate proper;
     i = player; while (parent(i) ~= 0) i = parent(i);
     location = i; real_location = location;
@@ -6534,6 +6576,16 @@ statuswin_current = true;
     glk($002F, gg_mainwin); ! set_window
 
     InitGlkWindow(1);
+
+	res = glk($0004, 8, 0); ! gestalt_Sound
+	if (res) {
+		if (gg_foregroundchan == 0) {
+			gg_foregroundchan = glk($00F2, GG_FOREGROUNDCHAN_ROCK); ! schannel_create
+		}
+		if (gg_backgroundchan == 0) {
+			gg_backgroundchan = glk($00F2, GG_BACKGROUNDCHAN_ROCK); ! schannel_create
+		}
+	}
 ];
 
 [ GGRecoverObjects id;

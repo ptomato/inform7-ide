@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.15. How many turns?</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.25. Supplying a missing noun/second noun</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,71 +9,77 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Annoyotron Jr" -->
-<!-- SEARCH SECTION "Ex 123" -->
-<!-- SEARCH SORT "Ex 009-015-123" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc140.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc142.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.15. How many turns?</b></font></td></tr></table>
+<!-- SEARCH TITLE "Minimal Movement" -->
+<!-- SEARCH SECTION "Ex 291" -->
+<!-- SEARCH SORT "Ex 017-025-291" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc284.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc286.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.25. Supplying a missing noun/second noun</b></font></td></tr></table>
 <p>
-<p>So much for &quot;times&quot; - spells in which a condition is true. We can also test the length of time, in turns of play, that something has been true. Thus:
+<p><b>1. When it happens.</b> (Two different activities here, but identical except for applying to different nouns.) Suppose that, because of an instruction to Understand something even though it would be lacking a noun - say, 'Understand &quot;take&quot; as taking.' - an incomplete action is generated, one which is required to have a noun, but doesn't. &quot;Supplying a missing noun&quot; takes place to remedy the problem. It can either:
 <p>
-<blockquote><font color="#000080">if ... for three turns;
+<p>(i) Set a noun, printing text like &quot;(presumably the black bag)&quot; if it wants, in which case the action goes forward, though it is still subject to the full rules on accessibility exactly as any other action would be; or
+<p>
+<p>(ii) Make no choice, in which case no action takes place and the player's command is rejected. If the activity printed nothing, Inform will produce a generic reply to the player that &quot;You must supply a noun.&quot;.
+<p>
+<p><b>2. The default behaviour.</b> In the default grammar for Inform, only three such half-finished actions are ever Understood. One is &quot;going&quot; with no direction, for which this activity simply prints a refusal. The other two are the two undirected senses, &quot;smelling&quot; and &quot;listening&quot;. In each case, the &quot;supplying a missing noun&quot; activity sets the noun to the current location: so, for instance, typing the bare command &quot;listen&quot; might generate the action &quot;listening to the Shoreline&quot;.
+<p>
+<p><b>3. Examples.</b> (a) This is the definition Inform uses to make &quot;listen&quot; work as outlined above:
+<p>
+<blockquote><font color="#000080">Rule for supplying a missing noun while listening (this is the ambient sound rule): change the noun to the location.
 </font></blockquote><p>
 <p>
-<p>means that the condition holds now, and held at the start of this turn, at the start of last turn, and at the start of the turn before that. In particular:
-<p>
-<blockquote><font color="#000080">if the floppy hat has been worn for three turns ...
-</font></blockquote><p>
-<p>
-<p>will be false if the hat is not currently worn (even if it has been often in the past) and, on the other hand, will be true if the hat has been worn for twenty turns. Here again we can be more specific. These are synonymous:
-<p>
-<blockquote><font color="#000080">if the floppy hat is worn for the third turn ...
-<br>if the floppy hat has been worn for only 3 turns ...
-<br>if the floppy hat has been worn for exactly three turns ...
-</font></blockquote><p>
-<p>
-<p>all requiring that the hat wasn't worn four turns ago. As before, &quot;more than&quot;, &quot;less than&quot;, &quot;at least&quot; and &quot;at most&quot; so forth can also be used - say, &quot;for at least 21 turns&quot;.
-<p>
-<p>A warning: we must be careful when writing something like
-<p>
-<blockquote><font color="#000080">if the noun has been open ...
-</font></blockquote><p>
-<p>
-<p>since this tests whether it has ever been true that the noun of the then action was open: not whether the current noun-object has ever been open.
-<p>
-<p><hr><p>
-<!-- EXAMPLE START -->
-<a name="e297"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc141.html#e297 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>122</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc141.html#e297 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Annoyotron Jr</font></b></a><br>A child who after a certain period in the car starts asking annoying questions.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>(b) It can be elegant to allow second nouns to be dropped with habitual actions, or where the choice is obvious:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode217(code) {
+function pasteCode71(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Annoyotron Jr"\n\nThe Minivan is a room. The Open Road is outside from the Minivan. Pete is a man in the Minivan. "Pete [if the player has been in the Minivan for 3 turns]is starting to look bored[otherwise]is playing with his travel activity book[end if]."\n\nEvery turn:\n\tif the player has been in the Minivan for 5 turns, say "\'Are we there [if saying no]now?\'[otherwise]yet?\' asks Pete.[end if]"\n\nInstead of saying no:\n\tsay "\'Oh,\' says Pete. There is a blessed, momentary silence."\n\nInstead of going to the Open Road:\n\tsay "You leap to your death.";\n\tend the game in death.\n\nTest me with "z / z / look / g / g / g / no / z / z / z / no / z / out".\n');
+    myProject.pasteCode('Understand "unlock [something]" as unlocking it with.\n\nRule for supplying a missing second noun while unlocking:\n\tif the skeleton key is carried, change the second noun to the skeleton key;\n\totherwise say "You will have to specify what to unlock [the noun] with."\n\n');
 }
 </script>
-<a href="javascript:pasteCode217()"><img border=0 src=../doc_images/paste.png></a> &quot;Annoyotron Jr&quot;
+<a href="javascript:pasteCode71()"><img border=0 src=../doc_images/paste.png></a> Understand &quot;unlock [something]&quot; as unlocking it with.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Minivan is a room. The Open Road is outside from the Minivan. Pete is a man in the Minivan. &quot;Pete [if the player has been in the Minivan for 3 turns]is starting to look bored[otherwise]is playing with his travel activity book[end if].&quot;
+<blockquote><font color="#000080">Rule for supplying a missing second noun while unlocking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the skeleton key is carried, change the second noun to the skeleton key;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You will have to specify what to unlock [the noun] with.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player has been in the Minivan for 5 turns, say &quot;'Are we there [if saying no]now?'[otherwise]yet?' asks Pete.[end if]&quot;
+<p>Note that, in order for our activity to succeed, we do need to supply a grammar line allowing the player to try &quot;unlocking it with&quot; using only one noun. Otherwise, the command &quot;unlock something&quot; will still produce the question &quot;What do you want to unlock the door with?&quot;
+<p>
+<p><hr><p>
+<a name="e161"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex161.html#e161 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>290</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex161.html#e161 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Latin Lessons</font></b></a><br>Supplying missing nouns and second nouns for other characters besides the player.<p></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e297"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc285.html#e297 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>291</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc285.html#e297 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Minimal Movement</font></b></a><br>Supplying a default direction for "go", so that "leave", "go", etc., are always interpreted as "out".<p></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>Sometimes it would be nice to respond a little more sensitively to a vague command such as &quot;leave&quot; -- converting it, perhaps, to a &quot;go out&quot; command.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode384(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Minimal Movement"\n\nThe Doll-like House is a room. The Postage-Stamp-Sized Garden is outside from the House.\n\nRule for supplying a missing noun while going:\n\tchange noun to outside.\n\n[This particular situation is very slightly complicated by the existing rules about vague movement, but fortunately we can easily turn those off.]\n\nThe block vaguely going rule is not listed in the for supplying a missing noun rules.\n\nTest me with "go".\n');
+}
+</script>
+<a href="javascript:pasteCode384()"><img border=0 src=../doc_images/paste.png></a> &quot;Minimal Movement&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of saying no:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Oh,' says Pete. There is a blessed, momentary silence.&quot;
+<blockquote><font color="#000080">The Doll-like House is a room. The Postage-Stamp-Sized Garden is outside from the House.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going to the Open Road:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You leap to your death.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in death.
+<blockquote><font color="#000080">Rule for supplying a missing noun while going:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change noun to outside.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;z / z / look / g / g / g / no / z / z / z / no / z / out&quot;.
+<p>This particular situation is very slightly complicated by the existing rules about vague movement, but fortunately we can easily turn those off.
+<p>
+<blockquote><font color="#000080">The block vaguely going rule is not listed in the for supplying a missing noun rules.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc141.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;go&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc285.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc140.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc142.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc284.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc286.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

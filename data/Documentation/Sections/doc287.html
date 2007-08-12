@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.30. Printing the banner text</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.27. Implicitly taking something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,54 +9,44 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Printing the banner text" -->
-<!-- SEARCH SECTION "17.30" -->
-<!-- SEARCH SORT "017-030-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc286.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc288.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.30. Printing the banner text</b></font></td></tr></table>
+<!-- SEARCH TITLE "Implicitly taking something" -->
+<!-- SEARCH SECTION "17.27" -->
+<!-- SEARCH SORT "017-027-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc286.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc288.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.27. Implicitly taking something</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> The banner is the bibliographic masthead text, which typically looks something like this:
+<p><b>1. When it happens.</b> When an action is tried which requires the actor (normally the player, of course) to be carrying something, but which is not in fact carried by that person. For instance, if the player types WEAR OVERCOAT in reference to a Moroccan overcoat currently draped over a chair.
 <p>
-<blockquote><font color="#000080">Relations
-<br>An Interactive Fiction by Emily Short
-<br>Release 1 / Serial number 050630 / Inform 7 build 2U98 (I6/v6.30 lib 6/10N) SD
+<p><b>2. The default behaviour.</b> To print text such as &quot;(first taking the Moroccan overcoat)&quot; and then silently try taking the object in question (the overcoat). If the take succeeds, the silence means that nothing else is printed: if it fails, it will say why.
+<p>
+<p>No matter what rules are written for this activity, it is impossible to use it to allow the action to go ahead even without the item. The activity allows us to change how, or if, an implicit take will happen, but not to change the consequences of failure. (To do that, we would need a procedural rule to &quot;ignore the carrying requirements rule&quot;, but this kind of unstitching of the action machinery needs to be done with caution.)
+<p>
+<p><b>3. Examples.</b> (a) Forbidding implicit takes for certain dangerous items. (This seems especially fair if taking such items might cause death: the player will not wish to be killed on the strength only of our guess as to what he might be intending to do.)
+<p>
+<blockquote><font color="#000080">Rule for implicitly taking the curare:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ordinarily you'd pick up the curare in order to be able to do that, but this seems like a good moment for caution.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>The banner is printed at the start of play, and when the player types &quot;version&quot; at the command line, and when say &quot;[banner text]&quot; occurs.
+<p>(b) Changing the way the implicit action is reported for the player:
 <p>
-<p><b>2. The default behaviour.</b> Prints the text above, giving the title, the genre, the author, the release number, the date of compilation (that's the serial number: YYMMDD), and version numbers of the Inform components used to put the game together.
-<p>
-<p><b>3. Examples.</b> (a) Adding a line to the banner:
-<p>
-<blockquote><font color="#000080">After printing the banner text, say &quot;DRM authentication code: 13S-451-2034u75y65u%%a1248.&quot;
+<blockquote><font color="#000080">Rule for implicitly taking something (called target):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries the target, say &quot;You appropriate [the target] first, of course. [run paragraph on]&quot;
 </font></blockquote><p>
 <p>
-<p>(b) Simplifying the banner:
+<p>(c) Combining implicit takes when the noun and second noun must both be carried:
 <p>
-<blockquote><font color="#000080">Rule for printing the banner text: say &quot;Welcome.&quot; instead.
+<blockquote><font color="#000080">Rule for implicitly taking the noun when the second noun is a thing and the second noun is not carried by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the second noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking both [the noun] and [the second noun])[line break]&quot;
 </font></blockquote><p>
 <p>
-<p>(c) Delaying the banner for later:
+<p>(d) Making another character reply amusingly:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode80(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Bikini Atoll" by Edward Teller\n\nThe Hut and the Tropical Beach are rooms.\n\nThe conch shell is in the Hut. After taking the shell for the first time: say "As you gather the oddly-warm conch shell into your arms, you experience a sudden flash of deja-vu...[banner text]"; move the player to the Tropical Beach.\n\nRule for printing the banner text when the player is not carrying the shell: do nothing.\n\n');
-}
-</script>
-<a href="javascript:pasteCode80()"><img border=0 src=../doc_images/paste.png></a> &quot;Bikini Atoll&quot; by Edward Teller
+<blockquote><font color="#000080">Rule for implicitly taking something which is carried by the player when the person asked is Clark:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'I don't see how I'm supposed to do that when you're holding [the noun],' remarks Clark sulkily.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Hut and the Tropical Beach are rooms.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The conch shell is in the Hut. After taking the shell for the first time: say &quot;As you gather the oddly-warm conch shell into your arms, you experience a sudden flash of deja-vu...[banner text]&quot;; move the player to the Tropical Beach.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for printing the banner text when the player is not carrying the shell: do nothing.
-</font></blockquote><p>
-<p>
-<p>(By tradition, and as a courtesy to all the people who have worked on Inform, authors ensure that the banner is printed some time near the beginning of each game played. So please only defer it, rather than suppress it altogether.)
-<p>
+<p><hr><p>
+<a name="e168"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>296</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex168.html#e168 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lollipop Guild</font></b></a><br>Overriding the rules to allow the player to eat something without first taking it.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc286.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc288.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

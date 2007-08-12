@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.3. Pattern matching</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.2. What sentences are made up from</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,114 +9,112 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Ahem" -->
-<!-- SEARCH SECTION "Ex 136" -->
-<!-- SEARCH SORT "Ex 011-003-136" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc154.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc156.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.3. Pattern matching</b></font></td></tr></table>
+<!-- SEARCH TITLE "Formal syntax of sentences" -->
+<!-- SEARCH SECTION "Ex 186" -->
+<!-- SEARCH SORT "Ex 013-002-186" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc192.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc194.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.2. What sentences are made up from</b></font></td></tr></table>
 <p>
-<p>The following phrases all use different wording from each other:
+<p>A sentence consists of two nouns with a verb between them. Usually, the two nouns are descriptions, as in:
 <p>
-<blockquote><font color="#000080">award 2 points
-<br>award 8 points
-<br>award 30 points
+<blockquote><font color="#000080">Mr Collins is in a lighted room.
 </font></blockquote><p>
 <p>
-<p>but they have the same meaning, with only one detail being different between them. A single definition (internal to Inform, since &quot;award ... points&quot; comes built in) covers these and all similar cases. It is written like so:
+<p>Here &quot;Mr Collins&quot; and &quot;a lighted room&quot; are descriptions, the full rules for which were given in Chapter 5. But there are sentences where one or both of the nouns is a value instead. For instance, in
 <p>
-<blockquote><font color="#000080">To award (some - a number) points: ...
+<blockquote><font color="#000080">if the score is greater than 10, ...
 </font></blockquote><p>
 <p>
-<p>This pattern of words matches the text &quot;award 4 points&quot;, and indeed &quot;award four points&quot;, but not
+<p>the sentence &quot;the score is greater than 10&quot; consists of two values (&quot;the score&quot; and &quot;10&quot;) connected by a verb part (&quot;is greater than&quot;).
 <p>
-<blockquote><font color="#000080">award &quot;blue cheese&quot; points;
-</font></blockquote><p>
-<p>
-<p>which results in the following error:
-<p>
-<blockquote><font color="#000080"><b>Problem.</b> You wrote 'award &quot;blue cheese&quot; points' <img border=0 src=../doc_images/Reveal.png>, but '&quot;blue cheese&quot;' seems to be some text, whereas I was expecting to find a number there.
-</font></blockquote><p>
-<p>
-<p>The number does not need to be a literal constant such as 52, but can be anything which works out to be a number: the name of a number variable, for instance.
-<p>
-<p>The bracketed part of the definition takes the form (name - what it is). The definition only applies if the text supplied agrees with the &quot;what it is&quot; part - for instance, 8 agreed with being a number, but &quot;blue cheese&quot; did not. If the definition does apply, then the name holds whatever value was supplied. For instance:
-<p>
-<blockquote><font color="#000080">To slam shut (box - an open container): say &quot;With great panache, you slam shut [the box].&quot;
-</font></blockquote><p>
-<p>
-<p>The &quot;what it is&quot; will usually be a description of some objects, or the name of a kind of value, but it is also allowed to give a specific value. For instance, we could define:
-<p>
-<blockquote><font color="#000080">To award (some - 13) points: say &quot;You shiver uncontrollably.&quot;
-</font></blockquote><p>
-<p>
-<p>which would withhold this unlucky bounty, applying only to that one case. (As elsewhere in Inform, more specific definitions take priority over more general ones, so &quot;award (some - 13) points&quot; takes priority over &quot;award (some - a number) points&quot;.)
-<p>
-<p>Sometimes it will not be possible to tell if the value supplied meets the requirements until the game is actually playing. If, at run-time, no definition fits some phrase which has to be carried out, a run-time problem message is produced.
-<p>
-<p>Finally, and more straightforwardly, we can specify variations in wording using slashes between alternative words in a &quot;To ...&quot; definition. For instance:
-<p>
-<blockquote><font color="#000080">To award (some - a number) point/points: ...
-</font></blockquote><p>
-<p>
-<p>allows the final word to be either &quot;point&quot; or &quot;points&quot;. Slashes like this can only be used with literal words (not bracketed values) and give alternative forms only of a single word at a time. (If we need more variation than that, we should make more than one definition.)
+<p>This chapter is about getting the most out of sentences by defining new verbs to express ideas not already built in to Inform. Before we can define a new sentence verb, however, we must first look at the meanings of verbs: which Inform calls &quot;relations&quot;.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e128"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc155.html#e128 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>135</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc155.html#e128 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Ahem</font></b></a><br>Writing a phrase, with several variant forms, whose function is to follow a rule several times.<p></td></tr></table>
+<a name="e128"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc193.html#e128 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>186</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc193.html#e128 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Formal syntax of sentences</font></b></a><br>A more formal description of the sentence grammar used by Inform for both assertions and conditions.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>As we see in the example here, it is possible to use slashed variations in more than one place in a phrase, and to offer a number of separate forms. The main rule of thumb to remember is that value inputs for the phrase should always be separated by some text; so
+<p>An entire grammar for the whole mass of Inform would not be linguistically interesting: it contains many convenient wordings which are not really part of a grand pattern. Inform does, however, have a formal notion of a Sentence, a grammatical structure which we shall call S. It is almost true that conditions (&quot;if the flowerpot is on the wall&quot;) have the same grammar as assertions (&quot;The flowerpot is on the wall&quot;) and &quot;now&quot; phrases (&quot;now the flowerpot is on the wall&quot;). All three use the S grammar, so we could define an assertion as &quot;S.&quot;, say that &quot;if S&quot;, &quot;while S&quot;, &quot;when S&quot; and so on are conditions, and say that &quot;now S&quot; defines the &quot;now&quot; declaration.
 <p>
-<blockquote><font color="#000080">To do/follow (chosen rule - a rule) exactly/precisely/just/-- (N - a number) time/times:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;....
+<p>Grammatical sentences do not necessarily make sense, of course. Many perfectly grammatical assertions in fact give rise to problem messages:
+<p>
+<blockquote><font color="#000080">The wicker basket is not in the kitchen. (<i>Unhelpfully negative.</i>)
+<br>The wicker basket has been in the kitchen. (<i>Talks about a time which never existed.</i>)
+<br>The wicker basket is full. (<i>Full of what? Too vague.</i>)
+<br>The wicker basket is the ginger cat. (<i>Demonstrably false.</i>)
 </font></blockquote><p>
 <p>
-<p>would cause a problem when we tried to call it with
+<p>Whereas the first three, at least, would be sensible as conditions. So saying that assertions are &quot;just like&quot; conditions is a little misleading: what they have in common is S, the underlying grammar they each use as a starting-point.
 <p>
-<blockquote><font color="#000080">follow the throat-clearing rule 2 times.
+<p>To define S, we break it up into subsidiary structures. The most important is the Description Phrase (DP), examples of which include &quot;the red basket&quot;, &quot;somewhere lighted&quot; and &quot;an empty open container&quot;. This we will take as read, since the account given at the start of Chapter 5 is quite explicit. Clearly sentences include DPs, but they also include other ingredients. The general pattern used in Inform is very simple:
+<p>
+<blockquote><font color="#000080">1. S = DP + VP
+<br>2. VP = Verb + DP
 </font></blockquote><p>
 <p>
-<p>In general, we probably don't need to make our phrase definitions quite so flexible as this, but it's a good idea to account for &quot;a&quot; vs. &quot;the&quot;, and for the possibility of using singular and plural forms, especially when writing extensions or other source to be shared.
+<p>where VP is another structure, the Verb Phrase. For instance:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode230(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode(' "Ahem"\n\nTo do/follow (chosen rule - a rule) exactly/precisely/just (N - a number) time/times:\n\trepeat with index running from 1 to N\n\tbegin;\n\t\tfollow chosen rule;\n\tend repeat.\n\nThis is the throat-clearing rule:\n\tsay "\'Ahem,\' says [a random visible person who is not the player]."\n\nAfter waiting:\n\tdo the throat-clearing rule just one time.\n\nInstead of listening:\n\tfollow the throat-clearing rule precisely three times.\n\nInstead of smelling:\n\tfollow the throat-clearing rule exactly 2 times.\n\nChateau Marmont is a room. Tom, Jack, Zsa-Zsa, and Wilma-Faye are people in the Chateau. Zsa-Zsa and Wilma-Faye are women.\n\nTest me with "wait / smell / listen".\n');
-}
-</script>
-<a href="javascript:pasteCode230()"><img border=0 src=../doc_images/paste.png></a>  &quot;Ahem&quot;
+<blockquote><font color="#000080">S (The horseman wears a riding helmet)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;= DP (The horseman) + VP (wears a riding helmet)
+<br>VP (wears a riding helmet)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;= Verb (wears) + DP (a riding helmet)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To do/follow (chosen rule - a rule) exactly/precisely/just (N - a number) time/times:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with index running from 1 to N
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;follow chosen rule;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<p>In that example, the Verb was the single word &quot;wears&quot;. More generally, Inform allows a Verb to include adverbs and prepositions, to be negated, and to come in any of four tenses, so the following are all valid examples of Verb in our grammar:
+<p>
+<blockquote><font color="#000080">wore
+<br>carries
+<br>is carried by
+<br>had not been inside
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">This is the throat-clearing rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Ahem,' says [a random visible person who is not the player].&quot;
+<p>Although we are not going through the definition of Description Phrases in detail, it is worth noticing how &quot;which&quot; and &quot;who&quot; behave:
+<p>
+<blockquote><font color="#000080">3a. DP = DP + which + VP
+<br>3b. DP = DP + who + VP
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After waiting:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;do the throat-clearing rule just one time.
+<p>Thus &quot;an open container which is in the Ballroom&quot; can be broken down as:
+<p>
+<blockquote><font color="#000080">DP (an open container) + which + VP (is in the Ballroom)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of listening:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the throat-clearing rule precisely three times.
+<p>To understand compounds like &quot;something in a container&quot;, we have to invent a new grammatical structure for &quot;in a container&quot; and similar: let's call this a Relative Phrase (RP).
+<p>
+<blockquote><font color="#000080">4. DP = DP + RP
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of smelling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the throat-clearing rule exactly 2 times.
+<p>Thus &quot;an open container in the Ballroom&quot; is DP (an open container) + RP (in the Ballroom). Relative Phrases have two different forms:
+<p>
+<blockquote><font color="#000080">5a. RP = Preposition + DP
+<br>5b. RP = Participle + DP
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Chateau Marmont is a room. Tom, Jack, Zsa-Zsa, and Wilma-Faye are people in the Chateau. Zsa-Zsa and Wilma-Faye are women.
+<p>so that &quot;in a container&quot; is an example of 5a. An example of 5b would be
+<p>
+<blockquote><font color="#000080">RP (worn by Mr Darcy) = Participle (worn by) + DP (Mr Darcy)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;wait / smell / listen&quot;.
+<p>That is nearly it, but not quite: we must go back to the &quot;almost&quot; in the statement above that assertions and conditions &quot;almost&quot; have the same grammar S. The difference arises from a curious irregularity in English called subject-verb inversion (see the <i>Oxford English Grammar</i> at 3.22F), whereby assertions can be reversed but not conditions. For instance,
+<p>
+<blockquote><font color="#000080">In the Garden is a sunflower.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc155.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<p>This does not follow the pattern S = DP + VP, because &quot;in the garden&quot; is not a DP: indeed, it is not a noun at all. To make sense of this sentence, Inform reverses it to &quot;A sunflower is in the Garden&quot;, which does indeed follow DP + VP. Hence the final rule:
+<p>
+<blockquote><font color="#000080">6 (assertions only). S = RP + Verb + DP
+</font></blockquote><p>
+<p>
+<p>So the condition &quot;if in the garden is a sunflower...&quot; fails because rule 6 does not apply to the grammar for conditions: while occasional poetic uses of subject-verb inversion do turn up in conditions (&quot;If On A Winter's Night A Traveller&quot;, say), they are rare in ordinary English usage, and illegal in Inform. That completes the S grammar, so to recap:
+<p>
+<blockquote><font color="#000080">1. S = DP + VP
+<br>2. VP = Verb + DP
+<br>3a. DP = DP + which + VP
+<br>3b. DP = DP + who + VP
+<br>4. DP = DP + RP
+<br>5a. RP = Preposition + DP
+<br>5b. RP = Participle + DP
+<br>6 (assertions only). S = RP + Verb + DP
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc193.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e154"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex154.html#e154 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>136</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex154.html#e154 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ferragamo Again</font></b></a><br>Using the same phrase to produce different results with different characters.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc154.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc156.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc192.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc194.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

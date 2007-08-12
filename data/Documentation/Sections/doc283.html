@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.26. Reading a command</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.23. Clarifying the parser's choice of something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,98 +9,23 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Reading a command" -->
-<!-- SEARCH SECTION "17.26" -->
-<!-- SEARCH SORT "017-026-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc282.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc284.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.26. Reading a command</b></font></td></tr></table>
+<!-- SEARCH TITLE "Clarifying the parser's choice of something" -->
+<!-- SEARCH SECTION "17.23" -->
+<!-- SEARCH SORT "017-023-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc282.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc284.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.23. Clarifying the parser's choice of something</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> When reading a command from the keyboard.
+<p><b>1. When it happens.</b> When the player has typed an ambiguous noun reference, and Inform has made a decision about what was meant, and it matters what this decision is. (If the decision is between three identical gold coins, say, then it doesn't matter, and this activity does not take place.)
 <p>
-<p><b>2. The default behaviour.</b> Print the prompt text; wait for the player to type something and press return. Reject an entirely blank line, and treat a command beginning &quot;oops&quot; is considered a correction to the previous one. This is a fairly complicated business, so it is probably best not to change the &quot;for&quot; rules for this activity: &quot;before&quot;, and especially &quot;after&quot;, are another matter.
+<p><b>2. The default behaviour.</b> Text in brackets such as ``(the laminated mahogany box)'' is printed, on its own line.
 <p>
-<p><b>3. Examples.</b> (a) To lead absolute beginners in gently:
+<p><b>3. Examples.</b> (a) In the following, asking to TAKE TOWER results in the parser choosing the souvenir model (because of the &quot;does the player mean...&quot; rule making the alternative unlikely), and then explaining itself by saying &quot;(The little one, obviously.)&quot; instead of &quot;(the souvenir model Eiffel Tower)&quot;.
 <p>
-<blockquote><font color="#000080">Before reading a command while the turn count is 1, say &quot;(This is your chance to say what the protagonist should do next. After the '>', try typing 'take inventory'.)&quot;
+<blockquote><font color="#000080">The Champs du Mars is a room. The great Eiffel Tower is here. &quot;The great Tower stands high over you.&quot; The souvenir model Eiffel Tower is here. &quot;Comparatively tiny is the souvenir version.&quot; The great Eiffel Tower is fixed in place. Does the player mean taking the great Eiffel Tower: it is very unlikely.
 </font></blockquote><p>
 <p>
-<p>(b) The following responds politely but firmly if the player tries to type &quot;please look&quot;, say, instead of just &quot;look&quot;:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode72(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "Please do not say please.";\n\t\treject the player\'s command;\n\tend if.\n\n');
-}
-</script>
-<a href="javascript:pasteCode72()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Please do not say please.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Rule for clarifying the parser's choice of the model tower: say &quot;(The little one, obviously.)&quot;
 </font></blockquote><p>
 <p>
-<p>To explain. Fragments of what the player has typed are called snippets: &quot;the player's command&quot; is the entire thing. We can test if a snippet matches a given pattern like so:
+<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows that the action will be taking, but nothing else. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
 <p>
-<blockquote><font color="#000080">if the player's command matches &quot;room [number]&quot;, ...
-</font></blockquote><p>
-<p>
-<p>This requires an exact match: the weaker condition &quot;includes&quot; only means that the pattern occurs somewhere in the given snippet, so that
-<p>
-<blockquote><font color="#000080">if the player's command includes &quot;please&quot;, ...
-</font></blockquote><p>
-<p>
-<p>matches &quot;please look&quot; or &quot;look please&quot;, etc. Lastly, the phrase
-<p>
-<blockquote><font color="#000080">reject the player's command
-</font></blockquote><p>
-<p>
-<p>tells Inform not to bother analysing the text further, but to go back to the keyboard. (No time passes; no turn elapses; nothing happens in the simulated world.)
-<p>
-<p>(c) An improved version takes commands like &quot;please drop the coin&quot; and strips &quot;please&quot; from them, but then allows them to proceed normally:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode73(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "(Quelle politesse! But no need to say please.)";\n\t\tcut the matched text;\n\tend if.\n\n');
-}
-</script>
-<a href="javascript:pasteCode73()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(Quelle politesse! But no need to say please.)&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cut the matched text;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>&quot;Matched text&quot; is a snippet containing the words which matched against the pattern in the most recent &quot;includes&quot; condition, so in this case it contains just the single word &quot;please&quot;. Two phrases allow snippets to be altered:
-<p>
-<blockquote><font color="#000080">replace (... snippet ...) with (... text ...)
-<br>cut (...snippet ...)
-</font></blockquote><p>
-<p>
-<p>Note that &quot;replace&quot; and &quot;cut&quot; can only be used in &quot;after reading a command&quot; rules: not when an action has been chosen and has gone ahead into its rulebooks. Once the reading a command activity has finished, the command is final.
-<p>
-<p>(d) To make the word &quot;grab&quot; an abbreviation for &quot;take all&quot;:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode74(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:\n\tif the player\'s command matches "grab", replace the player\'s command with "take all".\n\n');
-}
-</script>
-<a href="javascript:pasteCode74()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command matches &quot;grab&quot;, replace the player's command with &quot;take all&quot;.
-</font></blockquote><p>
-<p>
-<p>(&quot;Snippet&quot; is actually a kind of value, so we could say &quot;Ah, you typed '[the player's command]'!&quot; or some such if we liked. But in practice only three snippets are likely to be useful: the two mentioned above, &quot;player's command&quot; and &quot;matched text&quot;, and the &quot;topic understood&quot;, used when matching the &quot;[text]&quot; token in command grammar.)
-<p>
-<p><hr><p>
-<a name="e155"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex155.html#e155 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>275</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex155.html#e155 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fore</font></b></a><br>Understand "fore", "aft", "port", and "starboard", but only when the player is on a vessel.<p></td></tr></table>
-<a name="e133"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex133.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>276</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex133.html#e133 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fragment of a Greek Tragedy</font></b></a><br>Responding to the player's input based on keywords only, and overriding the original parser entirely.<p></td></tr></table>
-<a name="e171"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex171.html#e171 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>277</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex171.html#e171 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloves</font></b></a><br>Accepting adverbs anywhere in a command, registering what the player typed but then cutting them out before interpreting the command.<p></td></tr></table>
-<a name="e51"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex51.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>278</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex51.html#e51 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Complimentary Peanuts</font></b></a><br>A character who responds to keywords in the player's instructions and remarks, even if there are other words included.<p></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc282.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc284.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

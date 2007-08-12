@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.25. The location of something</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.9. Removing things from play</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,82 +9,68 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "Van Helsing" -->
-<!-- SEARCH SECTION "Ex 34" -->
-<!-- SEARCH SORT "Ex 003-025-034" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc50.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc52.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.25. The location of something</b></font></td></tr></table>
+<!-- SEARCH TITLE "Beverage Service" -->
+<!-- SEARCH SECTION "Ex 102" -->
+<!-- SEARCH SORT "Ex 008-009-102" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc116.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc118.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.9. Removing things from play</b></font></td></tr></table>
 <p>
-<p>The model world created by Inform is partitioned into rooms. This means that everything which exists in the model world, exists in one of the rooms. If we write a sentence such as
+<p>Some things will occasionally be in a limbo state called being &quot;off-stage&quot;: like actors or props not needed in Act II, but perhaps to be brought back on-stage later, they wait on the sidelines. Anything created with no apparent location will start the game off-stage, as in the case of the lamp here:
 <p>
-<blockquote><font color="#000080">Professor Wilderspin is a man.
+<blockquote><font color="#000080">Aladdin's Cave is a room. The genie's lamp is a container.
 </font></blockquote><p>
 <p>
-<p>and say nothing more about Wilderspin, then he does not physically exist at the start of the game: he is said to be &quot;out of play&quot;, and stays that way until we move him into one of the rooms. A better metaphor might be that he is waiting in the wings, ready to come onto the stage.
+<p>(Such things are easy to see in the World index because they are listed after all of the rooms and their contents, not belonging inside any room.)
 <p>
-<p>Every thing is either out of play, or can be found in one of the rooms, and the property &quot;location of X&quot; gives us the room in question. The following condition tests, in effect, whether Wilderspin is in play:
+<p>To move something back on-stage, we simply &quot;move&quot; it back onto the stage set, so to speak: back to a room, or into, onto, or made part of something else which is currently on-stage. To remove something, we use the phrase:
 <p>
-<blockquote><font color="#000080">if the location of Wilderspin is a room, ...
+<blockquote><font color="#000080">remove the gold coin from play
 </font></blockquote><p>
 <p>
-<p>The &quot;location of the player&quot; is simply called the &quot;location&quot;, and as the player is always in play, this is always a room. If the player stands in Biblioll College and wears a waistcoat, inside which is a fob watch, then &quot;location of the fob watch&quot; is Biblioll College.
+<p>(We are not permitted to remove rooms, or doors, or the player, from play.) We can test whether something is on-stage or off-stage with:
 <p>
-<p>In general, a thing cannot be in two rooms at once, but there are two exceptions: (two-sided) doors, present on both sides, and backdrops. The &quot;location of&quot; a door is its front side, whether it is one-sided or two-sided; but a backdrop is deemed to have no location, in the sense above. (Objects which are not things at all, such as rooms and directions, also have no location.)
-<p>
-<p>The idea of indirect containment is useful enough to have a name: Inform calls it &quot;enclosure&quot;. A thing encloses whatever is a part of itself, or inside itself, or on top of itself, and it also encloses anything that they enclose. And when something moves around, anything it encloses will move with it. In the example above, Biblioll College (a room) and the player (a person) both enclose the fob watch and the waistcoat. (The small print: a door is enclosed by the rooms on both sides; a backdrop is never enclosed.)
-<p>
-<p>Enclosure is only useful when being used as a question. So the following is fine:
-<p>
-<blockquote><font color="#000080">if the player encloses the fob watch, ...
+<blockquote><font color="#000080">if the gold coin is on-stage, ...
+<br>if the gold coin is off-stage, ...
 </font></blockquote><p>
 <p>
-<p>But these will produce problem messages:
+<p>or could, for instance, write
 <p>
-<blockquote><font color="#000080">The player encloses the fob watch. The location of the trilobite is the Museum.
+<blockquote><font color="#000080">say &quot;Ah, so many absent friends. Who now remembers [list of off-stage people]?&quot;
 </font></blockquote><p>
 <p>
-<p>because they are too vague. Inform needs to know exactly where the fob watch and the trilobite will begin the game, whereas these sentences leave room for doubt about who or what is actually holding them.
+<p>&quot;On-stage&quot; and &quot;off-stage&quot; are adjectives, like &quot;visible&quot; or &quot;touchable&quot;, and they apply only to things. Rooms, directions and regions are the stage itself: so it makes no sense to ask the question of whether they are &quot;on-&quot; or &quot;off-&quot;. Doors are always on-stage; backdrops are on-stage unless they have been explicitly removed using the &quot;remove... from play&quot; phrase.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e25"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc51.html#e25 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>33</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc51.html#e25 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Van Helsing</font></b></a><br>A character who approaches the player, then follows him from room to room.<p></td></tr></table>
+<a name="e25"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc117.html#e25 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>102</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc117.html#e25 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Beverage Service</font></b></a><br>A potion that the player can drink.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to write a character who tries to be in the same room as the player. We will do this by testing every turn whether the character's location and the player's location are the same; if the answer is no, the character will look for a path to the player's location, then try to move along that path. (We will learn more about finding paths and giving characters instructions later.)
-<p>
-<p>The result will be that if the player ever moves to another location, the character will automatically pursue him.
+<p>Some kinds of game objects -- food, for instance -- can only sensibly be used once, and should then be destroyed. The EAT command already implements this, but suppose we also had a category of drinkable potions:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode120(code) {
+function pasteCode196(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Van Helsing"\n\nThe Drawbridge is a room. North of the Drawbridge is the Immensely Enormous Entry Hall. West of the Entry Hall is the Vast Dining Area. North of the Vast Dining Area is the Colossal Kitchen. The Spooky Guano-filled Attic is above the Entry Hall.\n\nCount Dracula is a man in the Attic.\n\n[In the following condition, we could also have written "if the location of Count Dracula is not the location", because "location" by itself is always understood to be the player\'s location. But it seemed better for clarity to write it this way:]\n\nEvery turn:\n\tif the location of Count Dracula is not the location of the player\n\tbegin;\n\t\tlet the way be the best route from the location of Count Dracula to the location of the player, using doors;\n\t\ttry Count Dracula going the way;\n\totherwise;\n\t\tsay "\'Muhahaha,\' says Count Dracula.";\n\tend if.\n\nTest me with "z / z / n / w / e / u / z / d".\n\n');
+    myProject.pasteCode('"Beverage Service"\n\nA potion is a kind of thing. The sparkly blue potion is a potion carried by the player.\n\nLevel 3 is a room.\n\nInstead of drinking a potion:\n\tremove the noun from play;\n\tsay "You quaff [the noun]. It goes down beautifully."\n\nTest me with "drink sparkly / i".\n');
 }
 </script>
-<a href="javascript:pasteCode120()"><img border=0 src=../doc_images/paste.png></a> &quot;Van Helsing&quot;
+<a href="javascript:pasteCode196()"><img border=0 src=../doc_images/paste.png></a> &quot;Beverage Service&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Drawbridge is a room. North of the Drawbridge is the Immensely Enormous Entry Hall. West of the Entry Hall is the Vast Dining Area. North of the Vast Dining Area is the Colossal Kitchen. The Spooky Guano-filled Attic is above the Entry Hall.
+<blockquote><font color="#000080">A potion is a kind of thing. The sparkly blue potion is a potion carried by the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Count Dracula is a man in the Attic.
+<blockquote><font color="#000080">Level 3 is a room.
 </font></blockquote><p>
 <p>
-<p>In the following condition, we could also have written &quot;if the location of Count Dracula is not the location&quot;, because &quot;location&quot; by itself is always understood to be the player's location. But it seemed better for clarity to write it this way:
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location of Count Dracula is not the location of the player
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location of Count Dracula to the location of the player, using doors;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try Count Dracula going the way;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Muhahaha,' says Count Dracula.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Instead of drinking a potion:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You quaff [the noun]. It goes down beautifully.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;z / z / n / w / e / u / z / d&quot;.
+<blockquote><font color="#000080">Test me with &quot;drink sparkly / i&quot;.
 </font></blockquote><p>
-<p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc51.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc117.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc50.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc52.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e260"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex260.html#e260 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>103</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex260.html#e260 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Spring Cleaning</font></b></a><br>A character who sulks over objects that the player has broken (and which are now off-stage).<p></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc116.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc118.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

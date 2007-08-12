@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.11. Making actions work for other people</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.12. Doors</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,78 +9,95 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "The Man of Steel" -->
-<!-- SEARCH SECTION "Ex 168" -->
-<!-- SEARCH SORT "Ex 012-011-168" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc181.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc183.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.11. Making actions work for other people</b></font></td></tr></table>
+<!-- SEARCH TITLE "Garibaldi 1" -->
+<!-- SEARCH SECTION "Ex 19" -->
+<!-- SEARCH SORT "Ex 003-012-019" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc37.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc39.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.12. Doors</b></font></td></tr></table>
 <p>
-<p>The &quot;photographing&quot; action now works very nicely when the player does it. But not when others try. Suppose that neither the player, nor Clark Gable, is holding the camera:
+<p>The map of an interactive fiction is the layout of rooms and the entrances and exits which connect them. So far, these map connections have always run from one room to another, like so:
 <p>
-<blockquote><font color="#000080">>photograph clark
-<br>You can hardly photograph without a camera, now can you?
+<blockquote><font color="#000080">The Painted Room is north of the Undertomb.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">>clark, photograph me
-<br>>
+<p>However, we can also interpose doors between rooms, like so:
+<p>
+<blockquote><font color="#000080">The heavy iron grating is east of the Orchard and west of the Undertomb. The grating is a door.
 </font></blockquote><p>
 <p>
-<p>An uncanny silence. What has happened is that the rules written so far are all implicitly restricted to the player only. This is because when we write -
+<p>The second sentence is needed since otherwise Inform will take &quot;heavy iron grating&quot; to be the name of a third room, whereas what we want is for the grating to be something physically present in both the Orchard and in the Undertomb, and acting as a conduit between them. To this end it needs to be a &quot;door&quot;, a kind we have not so far seen. In the absence of any other instruction, a newly created door will be fixed in place, closed and openable.
 <p>
-<blockquote><font color="#000080">Check photographing: if the camera is not carried then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
+<p>The grating really does come in between the two rooms: the grating is what lies immediately east of the Orchard, not the Undertomb room. So if we wrote the following:
+<p>
+<blockquote><font color="#000080">The Undertomb is east of the Orchard. The heavy iron grating is east of the Orchard and west of the Undertomb. The grating is a door.
 </font></blockquote><p>
 <p>
-<p>the action is &quot;photographing&quot;, not &quot;Clark photographing&quot;. In the next few sections we shall see how to make the rules work nicely for everybody. This is a little bit harder, so it should be noted right away that in many projects there is no need. In a game which has no other characters who succumb to persuasion, for instance, only the player will ever try the action.
+<p>then Inform would say that this is a contradiction: we said the Undertomb was east of the Orchard, but then we said that the grating was east of the Orchard.
+<p>
+<p>Inform's &quot;door&quot; kind can be used for all manner of conduits, so the word door need not be taken literally. In Ursula K. LeGuin's beguiling novel &quot;The Tombs of Atuan&quot;, from which the above rooms are stolen, it is not a grating which interposes, but:
+<p>
+<blockquote><font color="#000080">The red rock stair is east of the Orchard and above the Undertomb. The stair is an open door. The stair is not openable.
+</font></blockquote><p>
+<p>
+<p>In real life, most doors are two-sided, and can be used from either of the rooms which they join, but this is not always convenient for interactive fiction. Here is a one-sided door:
+<p>
+<blockquote><font color="#000080">The blue door is a door. It is south of Notting Hill. Through it is the Flat Landing.
+</font></blockquote><p>
+<p>
+<p>(Note the use of &quot;it&quot; here as an optional abbreviation.) This will make a door visible only on the Notting Hill side; no map connection will be made in the reverse direction, unless we ask for one.
+<p>
+<p>Should we ever need it, the values &quot;front side of ...&quot; and &quot;back side of ...&quot; reveal where a door is placed. (For instance, &quot;front side of the heavy iron grating&quot; is the Orchard.)
 <p>
 <p><hr><p>
+<a name="e40"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex40.html#e40 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>17</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex40.html#e40 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Disenchantment Bay 5</font></b></a><br>Disenchantment Bay: adding the door and the deck to our charter boat.<p></td></tr></table>
+<a name="e19"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex19.html#e19 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>18</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex19.html#e19 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Escape</font></b></a><br>Window that can be climbed through or looked through.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e115"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc182.html#e115 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>167</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc182.html#e115 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Man of Steel</font></b></a><br>An escaping action which means "go to any room you can reach from here", and is only useful to non-player characters.<p></td></tr></table>
+<a name="e115"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc38.html#e115 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>19</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc38.html#e115 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Garibaldi 1</font></b></a><br>Providing a security readout device by which the player can check on the status of all doors in the game.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>It will sometimes be handy to write actions that are only available to the non-player characters and not to the player. To do this, we just define an action which has no &quot;understand&quot;: the player will never be able to specify this command himself, but other characters can try it.
-<p>
-<p>This is particularly useful for creating abstract or general actions for when we want a character to eat something, wear something, or go somewhere, but aren't too particular as to what the object is; as here, where we just want Clark to move away from the kryptonite, regardless of direction:
+<p>Suppose we would like to allow the player to view the status of all the doors functioning in the game; and we want to identify those doors by mentioning which two rooms they connect. The following uses some techniques that will be covered in later chapters, but the basic idea may be obvious:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode261(code) {
+function pasteCode104(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"The Man of Steel"\n\nEscaping is an action applying to nothing.\n\nCarry out someone escaping:\n\tlet space be the holder of the person asked;\n\tlet place be a random room which is adjacent to the space;\n\tlet way be the best route from the space to the place;\n\ttry the person asked going way.\n\nEvery turn:\n\tif Clark Kent can see kryptonite, try Clark Kent escaping.\n\nThe Daily Planet Newsroom is a room.\n\nPerry White\'s Office is west of the Newsroom. In Perry White\'s Office are a desk and a poster of Elvis. On the desk is a lead-lined box. The box is openable. In the box is the green kryptonite crystal.\n\nThe Supply Closet is east of the Newsroom. The Elevator Bank is north of the Newsroom.\n\nClark Kent is a man in the Newsroom. "Clark [if Clark can see the kryptonite]looks a bit ill[otherwise]is here, frowning as he revises his latest article[end if]."\n\nTest me with "west / get box / east / close box / east / west / north / south / west".\n');
+    myProject.pasteCode('"Garibaldi"\n\nThe security readout is a device. The description of the readout is "The screen is blank."\n\nInstead of examining the switched on security readout:\n\tsay "The screen reads: [fixed letter spacing]";\n\tsay line break;\n\trepeat with item running through doors\n\tbegin;\n\t\tsay line break;\n\t\tsay "  [item] ([front side of the item]/[back side of the item]): [if the item is locked]LOCKED[otherwise]UNLOCKED[end if]";\n\tend repeat;\n\tsay variable letter spacing;\n\tsay paragraph break.\n\n[It is more or less arbitrary which room winds up as the "front side" and which as the "back", but in this case it hardly matters.]\n\nThe player carries the security readout.\n\nThe Docking Bay is a room. The inner airlock is a door. It is north of the Docking Bay and south of the Zocalo. The inner airlock is lockable and unlocked.  The outer airlock is lockable and locked. It is a door. It is south of the Docking Bay and north of Space.\n\nThe quarantine seal is a door. It is west of the Zocalo and east of Medlab. Quarantine seal is locked.\n\nThe security pass unlocks the inner airlock. The player carries the security pass.\n\nTest me with "x readout / turn on readout / x readout / lock inner airlock with security pass / x readout".\n');
 }
 </script>
-<a href="javascript:pasteCode261()"><img border=0 src=../doc_images/paste.png></a> &quot;The Man of Steel&quot;
+<a href="javascript:pasteCode104()"><img border=0 src=../doc_images/paste.png></a> &quot;Garibaldi&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Escaping is an action applying to nothing.
+<blockquote><font color="#000080">The security readout is a device. The description of the readout is &quot;The screen is blank.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out someone escaping:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let space be the holder of the person asked;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let place be a random room which is adjacent to the space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from the space to the place;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked going way.
+<blockquote><font color="#000080">Instead of examining the switched on security readout:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The screen reads: [fixed letter spacing]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say line break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through doors
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say line break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [item] ([front side of the item]/[back side of the item]): [if the item is locked]LOCKED[otherwise]UNLOCKED[end if]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say variable letter spacing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Clark Kent can see kryptonite, try Clark Kent escaping.
+<p>It is more or less arbitrary which room winds up as the &quot;front side&quot; and which as the &quot;back&quot;, but in this case it hardly matters.
+<p>
+<blockquote><font color="#000080">The player carries the security readout.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Daily Planet Newsroom is a room.
+<blockquote><font color="#000080">The Docking Bay is a room. The inner airlock is a door. It is north of the Docking Bay and south of the Zocalo. The inner airlock is lockable and unlocked.  The outer airlock is lockable and locked. It is a door. It is south of the Docking Bay and north of Space.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Perry White's Office is west of the Newsroom. In Perry White's Office are a desk and a poster of Elvis. On the desk is a lead-lined box. The box is openable. In the box is the green kryptonite crystal.
+<blockquote><font color="#000080">The quarantine seal is a door. It is west of the Zocalo and east of Medlab. Quarantine seal is locked.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Supply Closet is east of the Newsroom. The Elevator Bank is north of the Newsroom.
+<blockquote><font color="#000080">The security pass unlocks the inner airlock. The player carries the security pass.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Clark Kent is a man in the Newsroom. &quot;Clark [if Clark can see the kryptonite]looks a bit ill[otherwise]is here, frowning as he revises his latest article[end if].&quot;
+<blockquote><font color="#000080">Test me with &quot;x readout / turn on readout / x readout / lock inner airlock with security pass / x readout&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;west / get box / east / close box / east / west / north / south / west&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc182.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc38.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e153"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex153.html#e153 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>168</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex153.html#e153 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Trying Taking Manhattan</font></b></a><br>Replacing the inventory reporting rule with another which does something slightly different.<p></td></tr></table>
-<a name="e279"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex279.html#e279 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>169</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex279.html#e279 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Under Contract</font></b></a><br>Creating a person who accepts most instructions and reacts correctly when a request leads implicitly to inappropriate behavior.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc181.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc183.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc37.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc39.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

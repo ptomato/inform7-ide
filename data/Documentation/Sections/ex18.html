@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.7. Adjacent rooms and routes through the map</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.12. Check rules for actions by other people</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -9,101 +9,108 @@ color:white;
 -->
 </STYLE>
 <body>
-<!-- SEARCH TITLE "All Roads Lead to Mars" -->
-<!-- SEARCH SECTION "Ex 63" -->
-<!-- SEARCH SORT "Ex 006-007-063" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc85.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc87.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.7. Adjacent rooms and routes through the map</b></font></td></tr></table>
+<!-- SEARCH TITLE "Barter Barter" -->
+<!-- SEARCH SECTION "Ex 176" -->
+<!-- SEARCH SORT "Ex 012-012-176" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc182.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc184.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.12. Check rules for actions by other people</b></font></td></tr></table>
 <p>
-<p>Another useful adjective built into Inform is &quot;adjacent&quot;. Two rooms are said to be adjacent if there is a map connection between them which does not pass through some barrier such as a door. This is easily tested:
+<p>If we want to impose the restriction about carrying the camera on other people, we need a rule like the following:
 <p>
-<blockquote><font color="#000080">if the Hallway is adjacent to the Study ...
+<blockquote><font color="#000080">Check someone photographing: if the person asked does not carry the camera, stop the action.
 </font></blockquote><p>
 <p>
-<p>We usually want to know about the places adjacent to the current scene of the action, so that is what the adjective &quot;adjacent&quot; means when applied to rooms. For instance:
+<p>Implicitly, that &quot;someone&quot; excludes the player. Note that we say nothing in this rule, stopping the action without a word: after all, Clark might well be out of sight when trying this. If he is within sight, then we read:
 <p>
-<blockquote><font color="#000080">if somebody is in an adjacent room, ...
+<blockquote><font color="#000080">>clark, photograph me
+<br>Clark Gable is unable to do that.
 </font></blockquote><p>
 <p>
-<p>As with the case of &quot;visible&quot;, the adjective is a cut-down version of the more general relationship. This often happens: &quot;worn&quot; and &quot;carried&quot;, for instance, imply &quot;by the player&quot; unless something else is specified.
+<p>We saw before that Inform's built-in rules all have handy names (the &quot;can't drop what's already dropped rule&quot;, and such), and that these are useful when writing better &quot;unable to...&quot; messages. So for a deluxe version, we end up with:
 <p>
-<p>If we want to ask a more direct question, we can obtain specific map connections like so:
-<p>
-<blockquote><font color="#000080">say &quot;You look north into [the room north from the Garden].&quot;
+<blockquote><font color="#000080">Check someone trying photographing (this is the other people can't photograph without the camera rule): if the person asked does not carry the camera, stop the action.
 </font></blockquote><p>
 <p>
-<p>since &quot;the room D from A&quot; produces the room which lies in direction D from room A. We need to be a little careful here. What if there is no map connection this way? In that case, &quot;the room ... from ...&quot; produces the special value &quot;nothing&quot;. Thus:
+<p>And now, with ACTIONS on, we find that:
 <p>
-<blockquote><font color="#000080">if the room north from the Garden is nothing, say &quot;The grass leads nowhere.&quot;
+<blockquote><font color="#000080">>clark, photograph me
+<br>[asking Clark Gable to try photographing yourself]
+<br>[(1) Clark Gable photographing yourself]
+<br>[(1) Clark Gable photographing yourself - failed the other people can't photograph without the camera rule]
+<br>Clark Gable is unable to do that.
+<br>[asking Clark Gable to try photographing yourself - succeeded]
 </font></blockquote><p>
 <p>
-<p>While on the subject of navigating the map, the phrase &quot;the best route from A to B&quot; gives a direction to take in order to get from A to B by the shortest number of movements between rooms - if there is any way through at all. For example, here is a lure:
+<p>which means that we could have, say,
 <p>
-<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room].&quot;
+<blockquote><font color="#000080">Unsuccessful attempt by Clark photographing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the other people can't photograph without the camera rule, say &quot;Clark is too suave to be embarrassed. 'Frankly, my dear, I don't have a camera.'&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Clark tries, and fails, to take a photograph.&quot;
 </font></blockquote><p>
-<p>
-<p>Best routes are ordinarily forbidden to go through doors, but if the suffix &quot;using doors&quot; is added as an option then any open or openable and unlocked door may be used on the way; and if &quot;using even locked doors&quot; is given, then any door at all will do. Since magnetism is no respecter of property, that seems right here:
-<p>
-<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room, using even locked doors].&quot;
-</font></blockquote><p>
-<p>
-<p>The phrase &quot;the best route from A to B&quot; gives the direction to take next, if we are at A and want to end up at B. Suppose this is east. We can find out where we go next by looking up &quot;the room east from A&quot;: similarly for any other direction, of course. (This can see through any doors, locked or not.)
-<p>
-<p>We can also stipulate that only certain rooms may be used for the journey, as in the following example:
-<p>
-<blockquote><font color="#000080">best route from the Drawbridge to the Keep through visited rooms
-</font></blockquote><p>
-<p>
-<p>The condition - in this case, that &quot;visited rooms&quot; must be used - also applies to both ends of the journey. (Also, saying something like &quot;...through containers&quot; would mean there is never a route, since it is only rooms which appear on the map.)
-<p>
-<p>Lastly, we can find out how long the journey would be:
-<p>
-<blockquote><font color="#000080">The description of the proximity gadget is &quot;You are now [number of moves from the location to the Sundial] moves from the Sundial.&quot;;
-</font></blockquote><p>
-<p>
-<p>This number is, of course, 0 if the location is already the Sundial. If there is no way at all to get to the Sundial, the number is -1.
 <p>
 <p><hr><p>
+<a name="e274"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex274.html#e274 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>175</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex274.html#e274 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Get Axe</font></b></a><br>Changing the check rules to try automatically leaving a container before attempting to take it. (And arranging things so that other people will do likewise.)<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e18"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc86.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>62</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc86.html#e18 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> All Roads Lead to Mars</font></b></a><br>Layout where the player is allowed to wander any direction he likes, and the map will arrange itself in order so that he finds the correct "next" location.<p></td></tr></table>
+<a name="e18"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc183.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>176</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc183.html#e18 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Barter Barter</font></b></a><br>Allowing characters other than the player to give objects to one another, accounting for the possibility that some items may not be desired by the intended recipients.<p></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to allow the player to wander freely in any direction, but ourselves maintain control over the order in which he encounters the rooms. This sort of effect emphasizes the order of the story-telling over any kind of rigorous simulation of space; on multiple play-throughs, the player might not find all the same rooms in the same locations.
+<p>By default, if we make no modifications, telling one player to give something to another will fail, even if persuasion succeeds. This is because the default behavior of the GIVE command is interrupted by the &quot;block giving rule&quot; -- since in many cases we do not want people to exchange objects freely.
+<p>
+<p>However, suppose that we do want characters to be able to exchange articles freely: we allow persuasion to succeed and turn off the &quot;block giving rule&quot;.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode152(code) {
+function pasteCode271(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"All Roads Lead to Mars"\n\nBefore going a direction (called way) when a room (called next location) is not visited:\n\tlet further place be the room the way from the location;\n\tif further place is a room, continue the action;\n\tchange the way exit of the location to the next location;\n\tlet reverse be the opposite of the way;\n\tchange the reverse exit of the next location to the location.\n\nThe Open Plain is a room. "A wide-open grassy expanse, from which you could really go any way at all."\n\nThe Hilly Place is a room. "The grassland gives way to a somewhat more hilly area, though there is still very little to guide you any particular way."\n\nThe Stream is a room. "This is the third place you\'ve been today, and so the stream is welcome. How refreshing!"\n\nTest me with "n / s / e / e".\n\n');
+    myProject.pasteCode('"Barter Barter"\n\nThe block giving rule is not listed in the check giving it to rules.\n\nA persuasion rule for asking people to try giving: persuasion succeeds.\n\nThe Trading Post is a room.\n\nMeriwether Lewis is a man in the Trading Post. He carries a fluffy handmade quilt and a bag of beans. The beans are edible.\n\nWilliam Clark is a man in the Trading Post. He carries leather slippers, a journal, and a loaf of bread. The bread is edible. The slippers are wearable.\n\nInstead of examining someone:\n\tsay "[The noun] is carrying [the list of things carried by the noun]."\n\n[And now we might want to implement a way to keep track of whether the recipient character wants what\'s being offered:]\n\nCheck someone trying giving something to someone (this is the sneering refusal rule):\n\tif the second noun dislikes the noun, stop the action.\n\nUnsuccessful attempt by someone trying doing something:\n\tif the reason the action failed is the sneering refusal rule, say "\'Would you care for [the noun]?\' [the person asked] asks solicitously of [the second noun].\n\nBut [the second noun] refuses [the noun] disdainfully.";\n\totherwise say "[The person asked] just appears bewildered by this improbable instruction."\n\nDistaste relates one person to various things. The verb to dislike (he dislikes, they dislike, he disliked, it is disliked, he is disliking) implies the distaste relation.\n\nClark dislikes the beans. Lewis dislikes the bread.\n\n[Since we\'ve defined this as a relation, we could change what the characters like and dislike during the course of the game, freely; for instance, characters might grow hungry and suddenly like all the edible articles.]\n\nTest me with "x lewis / x clark / clark, give the slippers to lewis / clark, give the bread to lewis".\n');
 }
 </script>
-<a href="javascript:pasteCode152()"><img border=0 src=../doc_images/paste.png></a> &quot;All Roads Lead to Mars&quot;
+<a href="javascript:pasteCode271()"><img border=0 src=../doc_images/paste.png></a> &quot;Barter Barter&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before going a direction (called way) when a room (called next location) is not visited:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let further place be the room the way from the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if further place is a room, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the way exit of the location to the next location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let reverse be the opposite of the way;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the reverse exit of the next location to the location.
+<blockquote><font color="#000080">The block giving rule is not listed in the check giving it to rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Open Plain is a room. &quot;A wide-open grassy expanse, from which you could really go any way at all.&quot;
+<blockquote><font color="#000080">A persuasion rule for asking people to try giving: persuasion succeeds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Hilly Place is a room. &quot;The grassland gives way to a somewhat more hilly area, though there is still very little to guide you any particular way.&quot;
+<blockquote><font color="#000080">The Trading Post is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Stream is a room. &quot;This is the third place you've been today, and so the stream is welcome. How refreshing!&quot;
+<blockquote><font color="#000080">Meriwether Lewis is a man in the Trading Post. He carries a fluffy handmade quilt and a bag of beans. The beans are edible.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;n / s / e / e&quot;.
+<blockquote><font color="#000080">William Clark is a man in the Trading Post. He carries leather slippers, a journal, and a loaf of bread. The bread is edible. The slippers are wearable.
 </font></blockquote><p>
 <p>
-<p>If we wanted still to be able to find routes between places, we could define a relationship of connection between rooms, which we would add to as we went along.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc86.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Instead of examining someone:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is carrying [the list of things carried by the noun].&quot;
+</font></blockquote><p>
+<p>
+<p>And now we might want to implement a way to keep track of whether the recipient character wants what's being offered:
+<p>
+<blockquote><font color="#000080">Check someone trying giving something to someone (this is the sneering refusal rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun dislikes the noun, stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Unsuccessful attempt by someone trying doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the sneering refusal rule, say &quot;'Would you care for [the noun]?' [the person asked] asks solicitously of [the second noun].
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">But [the second noun] refuses [the noun] disdainfully.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The person asked] just appears bewildered by this improbable instruction.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Distaste relates one person to various things. The verb to dislike (he dislikes, they dislike, he disliked, it is disliked, he is disliking) implies the distaste relation.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Clark dislikes the beans. Lewis dislikes the bread.
+</font></blockquote><p>
+<p>
+<p>Since we've defined this as a relation, we could change what the characters like and dislike during the course of the game, freely; for instance, characters might grow hungry and suddenly like all the edible articles.
+<p>
+<blockquote><font color="#000080">Test me with &quot;x lewis / x clark / clark, give the slippers to lewis / clark, give the bread to lewis&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc183.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e250"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex250.html#e250 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>63</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex250.html#e250 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mistress of Animals</font></b></a><br>A person who moves randomly between rooms of the map.<p></td></tr></table>
-<a name="e277"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex277.html#e277 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>64</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex277.html#e277 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hotel Stechelberg</font></b></a><br>Signposts such as those provided on hiking paths in the Swiss Alps, which show the correct direction and hiking time to all other locations.<p></td></tr></table>
-<a name="e146"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex146.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>65</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex146.html#e146 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A View of Green Hills</font></b></a><br>A LOOK [direction] command which allows the player to see descriptions of the nearby landscape.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc85.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc87.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc182.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc184.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
