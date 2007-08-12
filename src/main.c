@@ -79,10 +79,6 @@ main (int argc, char *argv[])
     defaults */
     check_config_file();
     
-    /* Check if the external binaries are in the path */
-    if(!check_external_binaries())
-        return -1;
-    
     /* Index the extensions in the background */
     run_census(FALSE);
     

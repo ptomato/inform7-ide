@@ -21,7 +21,6 @@
 
 #include <gnome.h>
 #include <sys/types.h>
-#include <vte/vte.h>
 
 #include "story.h"
 

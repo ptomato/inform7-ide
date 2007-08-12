@@ -39,19 +39,6 @@ gchar *get_extension_path(const gchar *author, const gchar *extname) {
 }
 
 
-/* Check to see if all the external binaries are in the path */
-gboolean check_external_binaries() {
-    if(!g_find_program_in_path("frotz")) {
-        error_dialog(NULL, NULL, "The 'frotz' binary was not found in your "
-          "path. You must have the Frotz interpreter installed in order to use "
-          "GNOME Inform 7.");
-        return FALSE;
-    }
-    return TRUE;
-}
-
-
-
 /* Returns the path to filename in the application data directory. */
 gchar *get_datafile_path(const gchar *filename) {
     gchar *real_filename = g_build_filename("gnome-inform7", filename, NULL);
