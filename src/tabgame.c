@@ -122,15 +122,18 @@ void run_project(struct story *thestory) {
     
     /* Feed the commands up to the current pointer in the skein into the
     terminal */
-    gtk_terp_set_interactive(terp, FALSE);
     GSList *commands = get_nodes_to_here(thestory->theskein,
       thestory->skein_ptr);
+    /* Start a new branch at the beginning */
+    thestory->theskein = reset_skein(thestory->theskein, &(thestory->skein_ptr));
+    gtk_terp_set_interactive(terp, FALSE);
+    gtk_terp_feed_text(terp, " "); /* bug workaround */
     GSList *iter = g_slist_next(commands);
     while(iter != NULL) {
         gtk_terp_feed_command(terp, ((struct node *)(iter->data))->command);
         iter = g_slist_next(iter);
     }
-    g_slist_free(commands);
+    free_node_list(commands);
     gtk_terp_set_interactive(terp, TRUE);
 }
 

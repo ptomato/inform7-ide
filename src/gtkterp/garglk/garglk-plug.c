@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <string.h>
+#include <ctype.h>
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
@@ -247,7 +248,7 @@ garglk_feed_text(GarglkPlug *plug, gchar *text, GError **error)
     for(pos = 0; pos < strlen(text); pos++) {
         if(text[pos] == '\n')
             gli_input_handle_key(keycode_Return);
-        else if(text[pos] >= 32)
+        else if(isprint(text[pos]))
             gli_input_handle_key(text[pos]);
     }
     return TRUE;

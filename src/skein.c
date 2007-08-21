@@ -31,7 +31,7 @@ static void free_node(gpointer thenode, gpointer data) {
 /* Create a new skein object */
 skein create_skein() {
     GList *newskein = NULL;
-    struct node *newnode = g_malloc(sizeof(struct node));
+    struct node *newnode = g_new0(struct node, 1);
     newnode->command = g_strdup("__START");
     newskein = add_node(newskein, &newskein, newnode);
     return (skein)newskein;
@@ -39,7 +39,7 @@ skein create_skein() {
 
 /* Get a pointer to the start node of the skein */
 skein_pointer get_start_pointer(skein theskein) {
-    return theskein;
+    return (skein_pointer)theskein;
 }
 
 /* Move the pointer back to the beginning */
@@ -62,13 +62,15 @@ skein add_node(skein theskein, skein_pointer *ptr, struct node *thenode) {
 }
 
 /* Get a singly-linked list of the nodes comprising the path from the start node
-to the specified one. Only the list has to be freed, with g_slist_free, not the
-data in the elements! */
+to the specified one. The list must be freed with free_node_list afterward. */
 GSList *get_nodes_to_here(skein theskein, skein_pointer ptr) {
     GSList *path = NULL;
     skein_pointer iter = ptr;
+    struct node *newnode;
     while(iter) {
-        path = g_slist_prepend(path, iter->data);
+        newnode = g_new0(struct node, 1);
+        newnode->command = g_strdup(((struct node *)(iter->data))->command);
+        path = g_slist_prepend(path, (gpointer)newnode);
         iter = g_list_previous(iter);
     }
     return path;
@@ -77,4 +79,10 @@ GSList *get_nodes_to_here(skein theskein, skein_pointer ptr) {
 /* destructor */
 void destroy_skein(skein theskein) {
     g_list_foreach(theskein, (GFunc)free_node, NULL);
+}
+
+/* Free a list of nodes */
+void free_node_list(GSList *nodes) {
+    g_slist_foreach(nodes, (GFunc)free_node, NULL);
+    g_slist_free(nodes);
 }

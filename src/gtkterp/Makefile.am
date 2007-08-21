@@ -4,7 +4,7 @@
 
 SUBDIRS = garglk frotz glulxe 
 
-componentdocdir = ${prefix}/doc/gtkterp
+componentdocdir = ${datadir}/doc/gtkterp
 componentdoc_DATA = \
 	AUTHORS-frotz README-frotz COPYING-frotz TODO-frotz \
 	README-glulxe TODO-garglk \

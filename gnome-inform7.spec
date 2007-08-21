@@ -39,22 +39,40 @@ rm -rf %{buildroot}
 %defattr(-, root, root)
 %doc README AUTHORS COPYING NEWS ChangeLog
 %{_bindir}/gnome-inform7
+%{_bindir}/gtkterp-frotz
+%{_bindir}/gtkterp-glulxe
+%{_docdir}/gtkterp/*
 %{_datadir}/applications/gnome-inform7.desktop
-%{_datadir}/gnome-inform7/*
-%{_datadir}/gnome-inform7/*/*
+%{_datadir}/gnome-inform7/*.png
+%{_datadir}/gnome-inform7/inform.lang
+%{_datadir}/gnome-inform7/naturalinform.lang
+%{_datadir}/gnome-inform7/Compilers/cBlorb
+%{_datadir}/gnome-inform7/Compilers/inform-6.31-biplatform
+%{_datadir}/gnome-inform7/Compilers/ni
+%{_datadir}/gnome-inform7/Documentation/*.html
+%{_datadir}/gnome-inform7/Documentation/manifest.txt
 %{_datadir}/gnome-inform7/Documentation/doc_images/*
-%{_datadir}/gnome-inform7/Documentation/gnome/*
-%{_datadir}/gnome-inform7/Documentation/licenses/*
-%{_datadir}/gnome-inform7/Documentation/Sections/*
+%{_datadir}/gnome-inform7/Documentation/gnome/gnome.html
+%{_datadir}/gnome-inform7/Documentation/licenses/*.html
+%{_datadir}/gnome-inform7/Documentation/Sections/*.html
 %{_datadir}/gnome-inform7/Inform7/Extensions/Emily*/*
+%{_datadir}/gnome-inform7/Inform7/Extensions/emily*
 %{_datadir}/gnome-inform7/Inform7/Extensions/Graham*/*
-%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/*
-%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/*/*
-%{_datadir}/gnome-inform7/Library/Natural/*
+%{_datadir}/gnome-inform7/Inform7/Extensions/graham*
+%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/*.i6
+%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/*.html
+%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/IntroductionToIF.pdf
+%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/Templates/Standard.html
+%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/Templates/Standard-Source.html
+%{_datadir}/gnome-inform7/Library/Natural/*.h
+%{_datadir}/gnome-inform7/map_icons/*.png
+%{_datadir}/gnome-inform7/scene_icons/*.png
 %{_datadir}/pixmaps/Inform.png
 %{_datadir}/pixmaps/gnome-inform7/*
 
 %changelog
+* Sat Aug 18 2007 P.F. Chimento <philip.chimento@gmail.com>
+- Updated to version 0.4.
 * Sat Jun 16 2007 P.F. Chimento <philip.chimento@gmail.com>
 - Repackaged for Fedora 7.
 * Sat Jun 2 2007 P.F. Chimento <philip.chimento@gmail.com>
