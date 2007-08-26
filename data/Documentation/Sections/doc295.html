@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.1. On rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.34. Review of Chapter 17: Activities</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,55 +6,109 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "On rules" -->
-<!-- SEARCH SECTION "18.1" -->
-<!-- SEARCH SORT "018-001-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc294.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc296.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.1. On rules</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Review of Chapter 17: Activities" -->
+<!-- SEARCH SECTION "17.34" -->
+<!-- SEARCH SORT "017-034-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc294.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc296.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.34. Review of Chapter 17: Activities</b></font></td></tr></table>
 <p>
-<p>When we open the casing and look inside the machinery of Inform, what we see are rules and rulebooks. We seldom need to know how this machinery works, but every once in a while we want to replace components, or even install new mechanisms of our own. And as we shall see, creating new rulebooks can be a neat way to tackle complicated simulations full of exceptions and special cases.
+<p>1. <b>An activity</b> is a process that can apply either to one thing or to nothing; every activity allows us to write &quot;before...&quot;, &quot;rule for...&quot;, and &quot;after...&quot; rules.
 <p>
-<p>So far we have seen many rules, and the term &quot;rulebook&quot; has frequently but vaguely been used. Here is a summary of the rulebooks seen so far:
+<p>In practice, new activities tend to be most useful when
 <p>
-<blockquote><font color="#000080">before
-<br>instead
-<br>after
-<br>check taking, carry out taking, report taking
-<br><i>and three similar rulebooks for each of the 90 or so actions</i>
-<br>persuasion
-<br>unsuccessful attempt
-<br>reaching inside
-<br>reaching outside
-<br>visibility
-<br>does the player mean
+<p>a. we are creating an extension or source that we expect other authors to use, and we want to provide an easy hook by which they can customize our output.
+<p>
+<p>b. we expect to write a lot of special cases to apply to a given situation, and we want the flexibility of rule definitions to describe these special cases.
+<p>
+<p>c. we want to define contexts within the game for use by other activities: for instance, we can write a rule such as
+<p>
+<blockquote><font color="#000080">Rule for printing the name of the spoon while asking which do you mean:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;enormous silver spoon&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">when play begins
-<br>when play ends
-<br>every turn
-<br>when Confrontation Scene begins
-<br>when Confrontation Scene ends
-<br><i>and two similar rulebooks for each scene we create, if any</i>
+<p>where the existence of the &quot;asking which do you mean&quot; activity makes it easy for us to tell Inform when to use this special name.
+<p>
+<p>2. <b>Creating new activities</b>:
+<p>
+<blockquote><font color="#000080">Analysing something is an activity.
+<br>Assaying is an activity.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">before printing the name of
-<br>for printing the name of
-<br>after printing the name of
-<br><i>and three similar rulebooks for each of the 20 or so activities</i>
+<blockquote><font color="#000080">Analysing something is an activity.
+<br>The analysing activity has a text called first impression.
+<br>Before analysing: now the first impression is &quot;unremarkable&quot;.
+<br>Rule for analysing someone: now the first impression is &quot;living tissue&quot;.
+<br>After analysing something (called the sample):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your professional opinion of [the sample] is that it is [first impression].&quot;
 </font></blockquote><p>
 <p>
-<p>Which makes around 340 rulebooks before we even start to write - and one more is going to turn up later in this chapter:
-<p>
-<blockquote><font color="#000080">procedural
+<blockquote><font color="#000080">Instead of examining something (called the sample):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;carry out the analysing activity with the sample.
 </font></blockquote><p>
 <p>
-<p>All the same, not everything in Inform belongs to a rulebook - timed events, newly-created phrases, and definitions may look vaguely as if they define rules, but they do not, so the following are not rulebooks:
+<p>We can then invoke our created activities with phrases such as
 <p>
-<blockquote><font color="#000080">At 11:10 PM: ...
-<br>To dislodge the shelf: ...
-<br>Definition: ...
+<blockquote><font color="#000080">carry out the analysing activity with the pitchblende;
+<br>carry out the assaying activity;
+</font></blockquote><p>
+<p>
+<p>3. Because the library's <b>predefined activities</b> are so numerous and specialized, we don't repeat all the examples here; it's worth looking back at individual sections to review what the specific activities can do.
+<p>
+<p>Printing and output
+<p>
+<blockquote><font color="#000080">Printing the name of something
+<br>Printing the plural name of something
+<br>Constructing the status line
+<br>Listing contents of something
+<br>Grouping together something
+</font></blockquote><p>
+<p>
+<p>Room descriptions
+<p>
+<blockquote><font color="#000080">Deciding the concealed possessions of something
+<br>Writing a paragraph about
+<br>Listing nondescript items of something
+<br>Printing room description details of something
+</font></blockquote><p>
+<p>
+<p>Darkness
+<p>
+<blockquote><font color="#000080">Printing a refusal to act in the dark
+<br>Printing the announcement of darkness
+<br>Printing the name of a dark room
+<br>Printing the description of a dark room
+</font></blockquote><p>
+<p>
+<p>Parsing
+<p>
+<blockquote><font color="#000080">Deciding the scope of something
+<br>Clarifying the parser's choice of something
+<br>Asking which do you mean
+<br>Supplying a missing noun/second noun
+<br>Reading a command
+<br>Implicitly taking something
+<br>Printing a parser error
+<br>Deciding whether all includes
+</font></blockquote><p>
+<p>
+<p>Starting and ending the game
+<p>
+<blockquote><font color="#000080">Printing the banner text
+<br>Printing the player's obituary
+<br>Amusing a victorious player
+<br>Starting the virtual machine
 </font></blockquote><p>
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc294.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc296.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

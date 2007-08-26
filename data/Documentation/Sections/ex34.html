@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.7. Properties depend on kind</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.13. Writing, reading and appending text to files</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,76 +6,94 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Disenchantment Bay 1" -->
-<!-- SEARCH SECTION "Ex 11" -->
-<!-- SEARCH SORT "Ex 003-007-011" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc32.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc34.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.7. Properties depend on kind</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Mirror, Mirror" -->
+<!-- SEARCH SECTION "Ex 345" -->
+<!-- SEARCH SORT "Ex 019-013-345" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc326.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc328.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.13. Writing, reading and appending text to files</b></font></td></tr></table>
 <p>
-<p>Properties depend very much on kind. It makes no sense to ask whether a room is transparent or opaque, for instance, so Inform will not allow this either to be specified or queried.
+<p>Text can also be saved to a file, and again all file-handling is automatic:
 <p>
-<p>Another way that kind influences properties can be seen from an earlier example:
-<p>
-<blockquote><font color="#000080">The Gazebo is a room. A billiards table is in the Gazebo. On it is a trophy cup. A starting pistol is in the cup.
+<blockquote><font color="#000080">write &quot;Jackdaws love my big sphinx of quartz.&quot; to the file of Abecedary Wisdom;
+<br>append &quot;Jinxed wizards pluck ivy from the big quilt.&quot; to the file of Abecedary Wisdom;
 </font></blockquote><p>
 <p>
-<p>The cup, the pistol and the table are all allowed to have the &quot;fixed in place&quot; property, but in fact only the table actually has it: the cup and the pistol are created as &quot;portable&quot; instead. This is because Inform knows that most things are portable, but that supporters - such as the table - are usually fixed in place. If this assumption is wrong, we need only add the line:
+<p>The difference between &quot;write&quot; and &quot;append&quot; here is that &quot;write&quot; makes this text the entire contents of the file, whereas &quot;append&quot; adds it the end (creating the file if it did not previously exist).
 <p>
-<blockquote><font color="#000080">The table is portable.
+<p>The quoted text can, of course, contain substitutions, so can be long and complex if need be.
+<p>
+<p>Text from a file is printed back with the text substitution:
+<p>
+<blockquote><font color="#000080">&quot;[text of the File of Abecedary Wisdom]&quot;
+</font></blockquote><p>
+<p>
+<p>To copy one file to another, for instance,
+<p>
+<blockquote><font color="#000080">write &quot;[text of the file of Abecedary Wisdom]&quot; to the file of Secondary Wisdom;
 </font></blockquote><p>
 <p>
 <p><hr><p>
+<a name="e17"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex17.html#e17 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>343</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex17.html#e17 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Fourth Body</font></b></a><br>Notebooks in which the player can record assorted notes throughout play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex17.html#e17 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e125"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex125.html#e125 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>344</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex125.html#e125 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Fifth Body</font></b></a><br>An expansion on the notebook, allowing the player somewhat more room in which to type his recorded remark.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex125.html#e125 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e34"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc33.html#e34 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>11</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc33.html#e34 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Disenchantment Bay 1</font></b></a><br>A running example in this chapter, Disenchantment Bay, involves chartering a boat. This is the first step: creating the cabin.<p></td></tr></table>
+<a name="e34"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc327.html#e34 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>345</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc327.html#e34 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Mirror, Mirror</font></b></a><br>The sorcerer's mirror can, when held up high, form an impression of its surroundings which it then preserves.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex34.html#e34 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>To begin with the title:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode97(code) {
+function pasteCode434(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Disenchantment Bay"\n\n[There are many Disenchantment Bays across the world, named by eighteenth-century ships\' captains - one in Antarctica, another in Tasmania, for instance. The most famous is probably the one where Lewis and Clark\'s expedition broke through to the Pacific. But ours is the one in Alaska, named in 1791 by a Spanish navigator who had hoped it might lead to the fabled Northwest Passage, and all of this history is beside the point since the game is set in the present day.]\n\nThe Cabin is a room.  "The front of the small cabin is entirely occupied with navigational instruments, a radar display, and radios for calling back to shore. Along each side runs a bench with faded blue vinyl cushions, which can be lifted to reveal the storage space underneath. A glass case against the wall contains several fishing rods.\n\nScratched windows offer a view of the surrounding bay, and there is a door south to the deck. A sign taped to one wall announces the menu of tours offered by the Yakutat Charter Boat Company."\n\n[We might want to start with the glass case.]\n\nThe Cabin contains a glass case. In the glass case is a collection of fishing rods.\n\n[Now Inform will have guessed that the case is a container, but its default idea of a container is something like a bucket: permanently open and not able to be opened and shut. We can change that:]\n\nThe case is closed, transparent, and openable.\n\n[We get a similar set of guesses if we write]\n\nThe bench is in the cabin. On the bench are some blue vinyl cushions.\n\n[Using "some" rather than "a" or "the" tells Inform that the cushions are to be referred to as a plural object in the future. And because of the "on the bench..." phrase, Inform will guess that the bench is a supporter and that it is fixed in place and cannot be moved from room to room. We do have to tell it that the bench can be sat on, though:]\n\nThe bench is enterable.\n\n[And now a short script, so that if we type TEST ME, we experiment with the case and bench:]\n\nTest me with "examine case / get rods / open case / get rods / sit on bench / take cushions / get up"\n');
+    myProject.pasteCode('"Mirror, Mirror"\n\nThe Sorcerer\'s Workshop is a room. "The sorcerer\'s den is a dusty, whispering place. A grandfather clock with skeletal hands reads [the time of day in words]. The floorboards are stained where that porridge just wouldn\'t come out."\n\nThe Apprentice\'s Pantry is east of the Workshop. "This is where the aproned apprentice traditionally makes the camomile tea, cleans out the jackdaw cages and furtively examines purloined artefacts."\n\nThe File of Mirror Vision is called "mirror". When play begins: erase the mirror.\n\nThe player carries a magic mirror.\n\nTo erase the mirror: write "The mirror is polished clean, and has no impression upon it." to the File of Mirror Vision.\n\nTo say current room description: try looking.\nTo expose the mirror:\n\tsay "The mirror shines momentarily with a dazzling light.";\n\twrite "The hazy image in the mirror preserves a past sight:[line break][current room description]All is distorted and yet living, as though the past and present are coterminous in the mirror." to the File of Mirror Vision.\n\nUnderstand "hold up [something preferably held]" or "hold [something preferably held] up" as holding aloft. Holding aloft is an action applying to one carried thing. Report holding aloft: say "You hold [the noun] aloft."\n\nInstead of rubbing the mirror: erase the mirror; try examining the mirror. Instead of holding aloft the mirror: expose the mirror.\n\nThe description of the mirror is "[text of the File of Mirror Vision]"\n\nTest me with "look / examine mirror / hold up mirror / z / look / x mirror / rub mirror / east / hold mirror up / west / x mirror".\n');
 }
 </script>
-<a href="javascript:pasteCode97()"><img border=0 src=../doc_images/paste.png></a> &quot;Disenchantment Bay&quot;
+<a href="javascript:pasteCode434()"><img border=0 src=../doc_images/paste.png></a> &quot;Mirror, Mirror&quot;
 </font></blockquote><p>
 <p>
-<p>There are many Disenchantment Bays across the world, named by eighteenth-century ships' captains - one in Antarctica, another in Tasmania, for instance. The most famous is probably the one where Lewis and Clark's expedition broke through to the Pacific. But ours is the one in Alaska, named in 1791 by a Spanish navigator who had hoped it might lead to the fabled Northwest Passage, and all of this history is beside the point since the game is set in the present day.
-<p>
-<blockquote><font color="#000080">The Cabin is a room.  &quot;The front of the small cabin is entirely occupied with navigational instruments, a radar display, and radios for calling back to shore. Along each side runs a bench with faded blue vinyl cushions, which can be lifted to reveal the storage space underneath. A glass case against the wall contains several fishing rods.
+<blockquote><font color="#000080">The Sorcerer's Workshop is a room. &quot;The sorcerer's den is a dusty, whispering place. A grandfather clock with skeletal hands reads [the time of day in words]. The floorboards are stained where that porridge just wouldn't come out.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Scratched windows offer a view of the surrounding bay, and there is a door south to the deck. A sign taped to one wall announces the menu of tours offered by the Yakutat Charter Boat Company.&quot;
+<blockquote><font color="#000080">The Apprentice's Pantry is east of the Workshop. &quot;This is where the aproned apprentice traditionally makes the camomile tea, cleans out the jackdaw cages and furtively examines purloined artefacts.&quot;
 </font></blockquote><p>
 <p>
-<p>We might want to start with the glass case.
-<p>
-<blockquote><font color="#000080">The Cabin contains a glass case. In the glass case is a collection of fishing rods.
+<blockquote><font color="#000080">The File of Mirror Vision is called &quot;mirror&quot;. When play begins: erase the mirror.
 </font></blockquote><p>
 <p>
-<p>Now Inform will have guessed that the case is a container, but its default idea of a container is something like a bucket: permanently open and not able to be opened and shut. We can change that:
-<p>
-<blockquote><font color="#000080">The case is closed, transparent, and openable.
+<blockquote><font color="#000080">The player carries a magic mirror.
 </font></blockquote><p>
 <p>
-<p>We get a similar set of guesses if we write
-<p>
-<blockquote><font color="#000080">The bench is in the cabin. On the bench are some blue vinyl cushions.
+<blockquote><font color="#000080">To erase the mirror: write &quot;The mirror is polished clean, and has no impression upon it.&quot; to the File of Mirror Vision.
 </font></blockquote><p>
 <p>
-<p>Using &quot;some&quot; rather than &quot;a&quot; or &quot;the&quot; tells Inform that the cushions are to be referred to as a plural object in the future. And because of the &quot;on the bench...&quot; phrase, Inform will guess that the bench is a supporter and that it is fixed in place and cannot be moved from room to room. We do have to tell it that the bench can be sat on, though:
-<p>
-<blockquote><font color="#000080">The bench is enterable.
+<blockquote><font color="#000080">To say current room description: try looking.
+<br>To expose the mirror:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The mirror shines momentarily with a dazzling light.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write &quot;The hazy image in the mirror preserves a past sight:[line break][current room description]All is distorted and yet living, as though the past and present are coterminous in the mirror.&quot; to the File of Mirror Vision.
 </font></blockquote><p>
 <p>
-<p>And now a short script, so that if we type TEST ME, we experiment with the case and bench:
-<p>
-<blockquote><font color="#000080">Test me with &quot;examine case / get rods / open case / get rods / sit on bench / take cushions / get up&quot;
+<blockquote><font color="#000080">Understand &quot;hold up [something preferably held]&quot; or &quot;hold [something preferably held] up&quot; as holding aloft. Holding aloft is an action applying to one carried thing. Report holding aloft: say &quot;You hold [the noun] aloft.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc33.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Instead of rubbing the mirror: erase the mirror; try examining the mirror. Instead of holding aloft the mirror: expose the mirror.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the mirror is &quot;[text of the File of Mirror Vision]&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;look / examine mirror / hold up mirror / z / look / x mirror / rub mirror / east / hold mirror up / west / x mirror&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc327.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc32.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc34.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc326.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc328.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

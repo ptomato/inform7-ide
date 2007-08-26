@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5.4. Text with lists</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.2. Instead rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,101 +6,64 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Tiny Garden" -->
-<!-- SEARCH SECTION "Ex 52" -->
-<!-- SEARCH SORT "Ex 005-004-052" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc69.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap5.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 5: Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc71.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>5.4. Text with lists</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Bad Hair Day" -->
+<!-- SEARCH SECTION "Ex 75" -->
+<!-- SEARCH SORT "Ex 007-002-075" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc91.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc93.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.2. Instead rules</b></font></td></tr></table>
 <p>
-<p>The useful substitution &quot;[list of <i>description</i>]&quot; prints out, as an English sentence, a list of all the objects which match the given description. For instance,
+<p>An action is ordinarily handled by running it through Inform's extensive rulebooks of what might be called normal behaviour. An action such as &quot;taking the napkin&quot;, for instance, will be run through numerous checks to see if it is physically reasonable, and then provided all is well, the napkin will be moved into the possession of the player.
 <p>
-<blockquote><font color="#000080">&quot;The places you can go are [list of rooms].&quot;
+<p>Instead, though, we can bypass the rules to do with an action and do something else:
+<p>
+<blockquote><font color="#000080">Instead of eating the napkin: say &quot;Why not wait for the actual dinner to arrive?&quot;
 </font></blockquote><p>
 <p>
-<p>Any description can be given and, as we shall see, descriptions can be very flexible indeed:
+<p>This is an example of a &quot;rule&quot;: a set of circumstances followed by a list of instructions. When those circumstances apply, the instructions are carried out. In the case of an &quot;instead&quot; rule, after this is done the action is immediately ended (and counts as a failure, since the original intention has been thwarted).
 <p>
-<blockquote><font color="#000080">&quot;Mr Darcy glares proudly at you. He is wearing [list of things worn by Darcy] and carrying [list of things carried by Darcy].&quot;
-</font></blockquote><p>
+<p>A friendly alternative can be used when there is only a single instruction, as here: in such rules the colon can be replaced with a comma. Thus:
 <p>
-<p>And, if this were from a dramatisation of the novel by Miss Fielding rather than Miss Austen, we might find:
-<p>
-<blockquote><font color="#000080">Mr Darcy glares proudly at you. He is wearing a pair of Newcastle United boxer shorts and carrying a self-help book.
-</font></blockquote><p>
-<p>
-<p>If the description matches nothing - for instance, if Darcy has empty hands - then &quot;nothing&quot; is printed. A more insidious problem is that the list may end up either singular or plural. We might be expecting that the example above will produce something like:
-<p>
-<blockquote><font color="#000080">The places you can go are Old Bailey, Bridget's Flat and TV Centre.
-</font></blockquote><p>
-<p>
-<p>But if there is only one room, then the result would be:
-<p>
-<blockquote><font color="#000080">The places you can go are Bridget's Flat.
-</font></blockquote><p>
-<p>
-<p>which is wrong. We can get around this with careful wording and a slightly different substitution:
-<p>
-<blockquote><font color="#000080">&quot;Near here [is-are list of rooms].&quot;
-</font></blockquote><p>
-<p>
-<p>which uses &quot;is&quot; or &quot;are&quot; as appropriate. Lastly, we can also make the items listed take the definite article by writing:
-<p>
-<blockquote><font color="#000080">&quot;Mr Darcy impatiently bundles [the list of things carried by Darcy] into your hands and stomps out of the room.&quot;
-</font></blockquote><p>
-<p>
-<p>which might result in
-<p>
-<blockquote><font color="#000080">Mr Darcy impatiently bundles the self-help book and the Christmas card into your hands and stomps out of the room.
+<blockquote><font color="#000080">Instead of eating the napkin, say &quot;Why not wait for the actual dinner to arrive?&quot;
 </font></blockquote><p>
 <p>
 <p><hr><p>
-<a name="e250"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex250.html#e250 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>51</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex250.html#e250 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Control Center</font></b></a><br>Objects which automatically include a description of their component parts whenever they are examined.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e163"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc70.html#e163 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>52</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc70.html#e163 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Tiny Garden</font></b></a><br>A lawn made up of several rooms, with part of the description written automatically.<p></td></tr></table>
+<a name="e163"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc92.html#e163 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>75</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc92.html#e163 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bad Hair Day</font></b></a><br>Change the player's appearance in response to EXAMINE ME.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex163.html#e163 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Sometimes we want to make a list of something too complicated to express in a say list... phrase. When this happens, we can instead mark all the items we want to mention as &quot;marked for listing&quot;.
-<p>
-<p>In this case, we have a lawn area made up of four rooms. We want each room to automatically describe the directions leading to the other parts of the lawn. To do this, we will first determine which directions are relevant and mark those for listing, then list them.
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode143(code) {
+function pasteCode158(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Tiny Garden"\n\nThe Herb Garden is a room. "Along this side of the house run your great-aunt\'s herb beds."\n\nA Grassy Room is a kind of room. The printed name of a Grassy Room is usually "Lawn". The description of a Grassy Room is "The grass underfoot is thick and green. The lawn extends to [grassy directions] from here."\n\n[The following phrase goes through all the directions in the compass and marks the ones that are interesting to us at the moment. We will learn more about "the room (some direction) from..." in Chapter 5, and repeating in Chapter 10.]\n\nTo say grassy directions:\n\trepeat with that way running through directions\n\tbegin;\n\t\tif the room that way from the location is a grassy room,\n\t\t\tnow that way is marked for listing;\n\tend repeat;\n\tsay "[a list of directions which are marked for listing]";\n\tnow every direction is not marked for listing.\n\nLawn1 is west of the Herb Garden. It contains a picnic table and a wicker basket. Lawn2 is south of Lawn1 and southeast of Lawn4. Lawn3 is southwest of Lawn1, west of Lawn2, and south of Lawn4. Lawn4 is west of Lawn1. Lawn4 contains a birdbath. The birdbath is fixed in place.\n\nLawn1, Lawn2, Lawn3, and Lawn4 are Grassy Rooms.\n\nTest me with "w / s / w / n".\n');
+    myProject.pasteCode('"Bad Hair Day"\n\nThe Foyer is a room. "A mirror hangs over the table, tempting you to check your appearance before going in with all the others."\n\nInstead of examining the player:\n\tsay "Oh, stop fussing. You look fine."\n\nTest me with "examine me".\n');
 }
 </script>
-<a href="javascript:pasteCode143()"><img border=0 src=../doc_images/paste.png></a> &quot;Tiny Garden&quot;
+<a href="javascript:pasteCode158()"><img border=0 src=../doc_images/paste.png></a> &quot;Bad Hair Day&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Herb Garden is a room. &quot;Along this side of the house run your great-aunt's herb beds.&quot;
+<blockquote><font color="#000080">The Foyer is a room. &quot;A mirror hangs over the table, tempting you to check your appearance before going in with all the others.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A Grassy Room is a kind of room. The printed name of a Grassy Room is usually &quot;Lawn&quot;. The description of a Grassy Room is &quot;The grass underfoot is thick and green. The lawn extends to [grassy directions] from here.&quot;
+<blockquote><font color="#000080">Instead of examining the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh, stop fussing. You look fine.&quot;
 </font></blockquote><p>
 <p>
-<p>The following phrase goes through all the directions in the compass and marks the ones that are interesting to us at the moment. We will learn more about &quot;the room (some direction) from...&quot; in Chapter 5, and repeating in Chapter 10.
-<p>
-<blockquote><font color="#000080">To say grassy directions:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with that way running through directions
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the room that way from the location is a grassy room,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now that way is marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[a list of directions which are marked for listing]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every direction is not marked for listing.
+<blockquote><font color="#000080">Test me with &quot;examine me&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Lawn1 is west of the Herb Garden. It contains a picnic table and a wicker basket. Lawn2 is south of Lawn1 and southeast of Lawn4. Lawn3 is southwest of Lawn1, west of Lawn2, and south of Lawn4. Lawn4 is west of Lawn1. Lawn4 contains a birdbath. The birdbath is fixed in place.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Lawn1, Lawn2, Lawn3, and Lawn4 are Grassy Rooms.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;w / s / w / n&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc70.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc92.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc69.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc71.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e336"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex336.html#e336 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>76</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex336.html#e336 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Grilling</font></b></a><br>A grill, from which the player is not allowed to take anything lest he burn himself.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex336.html#e336 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc91.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc93.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

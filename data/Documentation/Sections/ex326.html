@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.15. Printing a refusal to act in the dark</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.10. Action variables</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,125 +6,122 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Zorn of Zorna" -->
-<!-- SEARCH SECTION "Ex 273" -->
-<!-- SEARCH SORT "Ex 017-015-273" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc274.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc276.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.15. Printing a refusal to act in the dark</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Removal" -->
+<!-- SEARCH SECTION "Ex 180" -->
+<!-- SEARCH SORT "Ex 012-010-180" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc181.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc183.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.10. Action variables</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> When an action which requires light is tried, and the visibility rules decide that not enough light is present.
+<p>For some complex situations, it can be useful to keep track of a few values throughout the processing of the action. This is not an everyday occurrence: in the Standard Rules, for instance, only two or three out of 90 actions need to do this. But suppose we want to write a more deluxe version of our &quot;photographing&quot; action. This time, rather than having a single thing called the &quot;camera&quot;, we will provide a whole range of possible cameras, varying in quality:
 <p>
-<p><b>2. The default behaviour.</b> To print &quot;It is pitch dark, and you can't see a thing.&quot;
-<p>
-<p><b>3. Examples.</b> (a) This might do for some twilit, penumbral room:
-<p>
-<blockquote><font color="#000080">Rule for printing a refusal to act in the dark: if we are examining something, say &quot;It's not totally dark here, perhaps, but certainly too dim for close-up examination of anything.&quot; instead.
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light. Understand &quot;photograph [something]&quot; as photographing.
 </font></blockquote><p>
 <p>
+<blockquote><font color="#000080">The Studio is a room. Sally is a woman in the Studio. A foam-lined tote bag is in the Studio.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A camera is a kind of thing. A camera has a number called picture quality. The digital SLR camera is a camera in the tote bag. The player carries a camera called the instant one-shot camera. The picture quality of the SLR camera is 10. The picture quality of the one-shot is 2. Definition: a camera is sharp if its picture quality is 5 or more.
+</font></blockquote><p>
+<p>
+<p>And we will want the photographing action to have the player use the best-quality camera which comes to hand. We will give the action a variable called the 'camera photographed with', thus:
+<p>
+<blockquote><font color="#000080">The photographing action has an object called the camera photographed with.
+</font></blockquote><p>
+<p>
+<p>This value is created when the action begins, and disappears when the action ends. (If the action should happen a second time before the first time was completed, a second copy of the value is created, leaving the original undisturbed.) When the action begins, the value starts out as something neutral - so if it is a number, it starts out as 0, if a text, it starts out as the blank text &quot;&quot;, and so on. Here it is an object, so it starts out as nothing - the value meaning no object at all. But of course we want to give it a value ourselves. We can do that using the &quot;setting action variables&quot; rulebook. For instance:
+<p>
+<blockquote><font color="#000080">Setting action variables for photographing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the camera photographed with is the sharpest camera which is carried by the actor.
+</font></blockquote><p>
+<p>
+<p>The &quot;setting action variables&quot; rulebook is run through before even the before rules, and it has no power to stop or change the action. Its rules should say nothing and do nothing other than to set rulebook variables like this one. Note that it is intended to work for any actor, not only the player: so rather than referring to the player as the performer of the action, we need to write &quot;the actor&quot;, as in the example above. (See subsequent sections for more on actors.)
+<p>
+<p>We can now write rules such as:
+<p>
+<blockquote><font color="#000080">A check photographing rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the camera photographed with is nothing then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
+</font></blockquote><p>
+<p>
+<p>Only rules to do with the photographing action - before, instead, after, check, carry out, or report rules, and so on - are allowed to see the 'camera photographed with' value: it's the private property of the action.
+<p>
+<p>A further elaboration allows us to make rules about photographing neater to write. If we create our variable like so:
+<p>
+<blockquote><font color="#000080">The photographing action has an object called the camera photographed with (matched as &quot;using&quot;).
+</font></blockquote><p>
+<p>
+<p>...then we are now allowed to add an optional 'using ...' clause onto a description of the action. For instance, we could write rules such as
+<p>
+<blockquote><font color="#000080">Instead of photographing something using the one-shot camera:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;But you promised to give this to Sally's nephew.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check photographing something using the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That would require some sort of contraption with mirrors.&quot; instead.
+</font></blockquote><p>
+<p>
+<p>
+<blockquote><font color="#000080">Report photographing something using a sharp camera:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You feel cool and important as the shutter clicks.&quot;
+</font></blockquote><p>
+<p>
+<p>(This is the method used by the Standard Rules to attach optional clauses such as 'to', 'with' and 'through' to the going action.)
+<p>
 <p><hr><p>
+<a name="e149"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex149.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>179</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex149.html#e149 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Second Oldest Problem</font></b></a><br>Adapting the going action so that something special can happen when going from a dark room to another dark room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex149.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e326"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc275.html#e326 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>273</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc275.html#e326 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Zorn of Zorna</font></b></a><br>Light levels vary depending on the number of candles the player has lit, and this determines whether or not he is able to examine detailed objects successfully.<p></td></tr></table>
+<a name="e326"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc182.html#e326 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>180</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc182.html#e326 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Removal</font></b></a><br>TAKE expanded to give responses such as "You take the book from the shelf." or "You pick up the toy from the ground."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex326.html#e326 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Suppose that we want to change the reporting of &quot;take&quot; so that the player is always told something like &quot;You take the book from the shelf.&quot; or &quot;You pick up the toy from the ground.&quot; In order to generate these reports, we will need to know where the object started, even though by the time we are printing the output, the object will have moved.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode365(code) {
+function pasteCode269(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Zorn of Zorna"\n\nVisibility rule:\n\tif examining\n\tbegin;\n\t\tif the detail of the noun is fine and the number of visible lit candles is less than 5, there is insufficient light;\n\t\tif the detail of the noun is ordinary and the number of visible lit candles is less than 3, there is insufficient light;\n\tend if;\n\tthere is sufficient light.\n\nDetail is a kind of value. The details are fine, ordinary, and gross. A thing has detail.\n\nA candle is a kind of thing. Before printing the name of a candle while not burning or blowing out: say "[if lit]lit [otherwise]unlit [end if]". A candle is usually lit. Before printing the plural name of a candle while not burning or blowing out: say "[if lit]lit [otherwise]unlit [end if]". A candle is usually lit. Understand the lit property as describing a candle. A candle is usually gross.\n\nInstead of burning a candle: now the noun is lit; say "You light [the noun]."\n\nUnderstand "blow out [something]" or "extinguish [something]" or "put out [something]" as blowing out. Understand the command "snuff" as "extinguish". Blowing out is an action applying to one thing.\n\nUnderstand "burn [unlit candle]" as burning.\n\nInstead of blowing out a candle:\n\tchange the noun to unlit;\n\tsay "You put out [the noun]."\n\n\nRule for printing a refusal to act in the dark:\n\tif we are examining something, say "The details of [the noun] are too fine to make out in the light of only [the number of visible lit candles in words] candle[s]." instead.\n\n\nEvery turn when the Todal is visible:\n\tif the number of visible lit candles is greater than 1\n\tbegin;\n\t\tsay "The brightness of the room wakens the Todal from slumber, and with you unarmed...";\n\t\tend the game in death;\n\totherwise;\n\t\tsay "Todal sleeps fitfully, troubled by even that faint light.";\n\tend if.\n\nA room is usually dark.\n\nThe Palace is a room. "The Duke is out; the way is clear. East is Saralinda\'s Chamber; north, a hallway zigs and zags down to the gate that leads out." A finely-written placard is in the Palace. "A finely-written placard is on the wall next to this exit." The placard is fine. The description of the placard is "You read: \'Beware the Todal: its bite is worse than its gleep.\n\nNo more than one candle!\'"\n\nThe candle-stand is a supporter in the Palace. Understand "stand" as the candle-stand. The description of the candle-stand is "The candle-stand is a tall metal branch for holding lights, but someone has quite practically added casters to the bottom." It is pushable between rooms. Three candles are on the candle-stand. Instead of removing something from the candle-stand: say "[The noun] is fixed quite firmly in place." Instead of taking something which is on the candle-stand: say "[The noun] won\'t come out of the holder." Instead of putting something on the candle-stand: say "[The candle-stand] is full."\n\nSaralinda\'s Chamber is east of the Palace. "Now that Saralinda herself is gone, there is no real radiance in this place." Two unlit candles are in Saralinda\'s Chamber.\n\nA large-print romantic novel is in Saralinda\'s Chamber. The novel is ordinary. The description of the novel is "\'She Was Only The Chimney-Sweep\'s Daughter\', by Marie Swelldon."\n\nThe Zig-Zag Hallway is north of the Palace. "The Hallway goes left, then right, then left again..." Two unlit candles are in the Hallway.\n\nTodal is an animal in the Zig-Zag Hallway.\n\nRule for printing the description of a dark room when the Todal is in the location:\n\ttry listening.\n\nInstead of listening when in darkness and the Todal is in the location:\n\tsay "In the darkness something softly gleeps."\n\nInstead of going north from the Hallway when in darkness:\n\tsay "You stumble and cannot find your way."\n\nNorth of the Hallway is Freedom. Instead of going to Freedom: say "You make it out into the cool night air at last!"; end the game in victory.\n\nTest me with "examine placard / get placard / n / listen / n / s / examine candle-stand / push candle-stand east / examine novel / get unlit candle / light it / light unlit candle / examine placard / push candle-stand west / e / examine novel / w / n / n".\n');
+    myProject.pasteCode('"Removal"\n\nThe Pharmacy is a room. A desk and a trash can are in the Pharmacy. The pill-counter, a prescription, and a computer are on the desk. The computer is fixed in place. The pill-counter contains some Vicodin. The trash can contains an empty box.\n\nThe taking action has an object called previous locale (matched as "from").\n\n[The previous locale could in theory be either a thing or a room, so we make it "an object" -- that is, the most generic possible kind, to which both things and rooms belong. Now we record what the previous locale is at the beginning of each taking action:]\n\nSetting action variables for taking:\n\tnow previous locale is the holder of the noun.\n\nReport taking something from the location:\n\tsay "You pick up [the noun] from the ground." instead.\n\nReport taking something:\n\tsay "You take [the noun] from [the previous locale]." instead.\n\nTest me with "get all".\n');
 }
 </script>
-<a href="javascript:pasteCode365()"><img border=0 src=../doc_images/paste.png></a> &quot;Zorn of Zorna&quot;
+<a href="javascript:pasteCode269()"><img border=0 src=../doc_images/paste.png></a> &quot;Removal&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Visibility rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if examining
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the detail of the noun is fine and the number of visible lit candles is less than 5, there is insufficient light;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the detail of the noun is ordinary and the number of visible lit candles is less than 3, there is insufficient light;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;there is sufficient light.
+<blockquote><font color="#000080">The Pharmacy is a room. A desk and a trash can are in the Pharmacy. The pill-counter, a prescription, and a computer are on the desk. The computer is fixed in place. The pill-counter contains some Vicodin. The trash can contains an empty box.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Detail is a kind of value. The details are fine, ordinary, and gross. A thing has detail.
+<blockquote><font color="#000080">The taking action has an object called previous locale (matched as &quot;from&quot;).
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A candle is a kind of thing. Before printing the name of a candle while not burning or blowing out: say &quot;[if lit]lit [otherwise]unlit [end if]&quot;. A candle is usually lit. Before printing the plural name of a candle while not burning or blowing out: say &quot;[if lit]lit [otherwise]unlit [end if]&quot;. A candle is usually lit. Understand the lit property as describing a candle. A candle is usually gross.
+<p>The previous locale could in theory be either a thing or a room, so we make it &quot;an object&quot; -- that is, the most generic possible kind, to which both things and rooms belong. Now we record what the previous locale is at the beginning of each taking action:
+<p>
+<blockquote><font color="#000080">Setting action variables for taking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now previous locale is the holder of the noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of burning a candle: now the noun is lit; say &quot;You light [the noun].&quot;
+<blockquote><font color="#000080">Report taking something from the location:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You pick up [the noun] from the ground.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;blow out [something]&quot; or &quot;extinguish [something]&quot; or &quot;put out [something]&quot; as blowing out. Understand the command &quot;snuff&quot; as &quot;extinguish&quot;. Blowing out is an action applying to one thing.
+<blockquote><font color="#000080">Report taking something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You take [the noun] from [the previous locale].&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;burn [unlit candle]&quot; as burning.
+<blockquote><font color="#000080">Test me with &quot;get all&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of blowing out a candle:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the noun to unlit;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You put out [the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Rule for printing a refusal to act in the dark:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if we are examining something, say &quot;The details of [the noun] are too fine to make out in the light of only [the number of visible lit candles in words] candle[s].&quot; instead.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Every turn when the Todal is visible:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of visible lit candles is greater than 1
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The brightness of the room wakens the Todal from slumber, and with you unarmed...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in death;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Todal sleeps fitfully, troubled by even that faint light.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A room is usually dark.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Palace is a room. &quot;The Duke is out; the way is clear. East is Saralinda's Chamber; north, a hallway zigs and zags down to the gate that leads out.&quot; A finely-written placard is in the Palace. &quot;A finely-written placard is on the wall next to this exit.&quot; The placard is fine. The description of the placard is &quot;You read: 'Beware the Todal: its bite is worse than its gleep.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">No more than one candle!'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The candle-stand is a supporter in the Palace. Understand &quot;stand&quot; as the candle-stand. The description of the candle-stand is &quot;The candle-stand is a tall metal branch for holding lights, but someone has quite practically added casters to the bottom.&quot; It is pushable between rooms. Three candles are on the candle-stand. Instead of removing something from the candle-stand: say &quot;[The noun] is fixed quite firmly in place.&quot; Instead of taking something which is on the candle-stand: say &quot;[The noun] won't come out of the holder.&quot; Instead of putting something on the candle-stand: say &quot;[The candle-stand] is full.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Saralinda's Chamber is east of the Palace. &quot;Now that Saralinda herself is gone, there is no real radiance in this place.&quot; Two unlit candles are in Saralinda's Chamber.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A large-print romantic novel is in Saralinda's Chamber. The novel is ordinary. The description of the novel is &quot;'She Was Only The Chimney-Sweep's Daughter', by Marie Swelldon.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Zig-Zag Hallway is north of the Palace. &quot;The Hallway goes left, then right, then left again...&quot; Two unlit candles are in the Hallway.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Todal is an animal in the Zig-Zag Hallway.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for printing the description of a dark room when the Todal is in the location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try listening.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of listening when in darkness and the Todal is in the location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;In the darkness something softly gleeps.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going north from the Hallway when in darkness:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You stumble and cannot find your way.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">North of the Hallway is Freedom. Instead of going to Freedom: say &quot;You make it out into the cool night air at last!&quot;; end the game in victory.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;examine placard / get placard / n / listen / n / s / examine candle-stand / push candle-stand east / examine novel / get unlit candle / light it / light unlit candle / examine placard / push candle-stand west / e / examine novel / w / n / n&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc275.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc182.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc274.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc276.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e90"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex90.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>181</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex90.html#e90 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Further Reasons Why All Poets Are Liars</font></b></a><br>The young William Wordsworth, pushing a box about in his room, must struggle to achieve a Romantic point of view.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex90.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e148"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex148.html#e148 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>182</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex148.html#e148 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Puff of Orange Smoke</font></b></a><br>A system in which every character has a body, which is left behind when the person dies; attempts to do something to the body are redirected to the person while the person is alive.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex148.html#e148 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e9"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>183</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex9.html#e9 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Croft</font></b></a><br>Adding special reporting and handling for objects dropped when the player is on a supporter, and special entering rules for moving from one supporter to another.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc181.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc183.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

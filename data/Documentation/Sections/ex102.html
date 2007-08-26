@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.10. Success and failure</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.24. Concealment</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,131 +6,145 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Feline Behavior" -->
-<!-- SEARCH SECTION "Ex 309" -->
-<!-- SEARCH SORT "Ex 018-010-309" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc303.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc305.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.10. Success and failure</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Search and Seizure" -->
+<!-- SEARCH SECTION "Ex 35" -->
+<!-- SEARCH SORT "Ex 003-024-035" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc49.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc51.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.24. Concealment</b></font></td></tr></table>
 <p>
-<p>Though we have blurred over this point so far, each rule must ordinarily end with one of three outcomes: success, failure and neither (&quot;no outcome&quot;).
+<p>Though realism can become tiresome in interactive fiction, there are times when we cannot go along with Inform's normal assumption that all of a person's possessions are visible to everybody else. People are not like containers, which either show all of their holdings or not, according to whether they are open or transparent. If a man is carrying a fishing rod and a wallet, one will be on open show, the other not. Some clothing is outwardly visible, but not all.
 <p>
-<p>When a rulebook is followed, what happens is that each of its rules is followed in turn <b>until one of them ends in success or failure</b> - if ever: it is possible that each rule is tried and each ends with no outcome, so that the rulebook simply runs out of rules to try.
+<p>Whether or not something is concealed is not like the either/or properties we have seen so far - such as being &quot;open&quot; or &quot;closed&quot; - because it is not really a property of the thing itself, but depends on the habitual behaviour of its current owner. To talk about behaviour we have to use sentences of a kind not seen so far, and which will not fully be explained for some chapters to come.
+<p>But straightforward cases are easy to write, if only by imitating the following examples.
 <p>
-<p>For some rulebooks, these are not useful ideas: &quot;every turn&quot; rules, for instance, never produce an outcome, which is why the &quot;every turn&quot; rulebook always runs through all its rules at the end of each turn. But for other rulebooks, such as &quot;check taking&quot;, it's important that a rule which fails will stop the whole rulebook. For instance, we might find that the &quot;can't take yourself rule&quot; produces no outcome (because we aren't trying to do that), and then likewise the &quot;can't take other people rule&quot; (ditto) but that the &quot;can't take component parts rule&quot; prints up a complaint, and fails the action: the rulebook stops, and never goes on to (for instance) the &quot;can't take scenery rule&quot;. This is good, because an impossible action often fails for several reasons at once, and we only want to print up one objection, not a whole list.
+<p>Here we make the Cloaked Villain invariably conceal anything she is holding or wearing:
 <p>
-<p>To follow the working of this mechanism, we need to be able to predict the outcome of any given rule. Sometimes this is easy to spot. For instance, in a rule which works on actions:
-<p>
-<blockquote><font color="#000080">continue the action; <i>means</i> &quot;end this rule with no outcome&quot;
-<br>stop the action; <i>means</i> &quot;end this rule in failure&quot;
-<br>... instead; <i>means</i> &quot;end this rule in failure&quot;
+<blockquote><font color="#000080">Rule for deciding the concealed possessions of the Cloaked Villain: yes.
 </font></blockquote><p>
 <p>
-<p>(&quot;Success&quot; and &quot;failure&quot; are technical terms here: they do not mean that the player has or hasn't got what he wanted.) This is why the rule:
+<p>At which point we think about it more carefully, and then rewrite:
 <p>
-<blockquote><font color="#000080">Before taking something: say &quot;The sentry won't let you!&quot; instead.
+<blockquote><font color="#000080">Rule for deciding the concealed possessions of the Cloaked Villain: if the particular possession is the sable cloak, no; otherwise yes.
 </font></blockquote><p>
 <p>
-<p>ends in failure, and therefore stops the &quot;before&quot; rulebook. Another easy-to-spot case is when a rule makes use of the explicit phrases:
-<p>
-<blockquote><font color="#000080">rule succeeds;
-<br>rule fails;
-</font></blockquote><p>
-<p>
-<p>But what happens if a rule simply doesn't say whether it succeeds, fails or has no outcome? In that case <b>it depends on the rulebook</b>. For almost all rulebooks, a rule which doesn't make a choice has no outcome, as in the following example:
-<p>
-<blockquote><font color="#000080">Before taking something: say &quot;The sentry looks at you anxiously!&quot;
-</font></blockquote><p>
-<p>
-<p>This rule, if it takes effect, ends with no outcome - so the action continues. But other rulebooks have a different convention: the most important is &quot;instead&quot;, where a rule making no explicit choice is deemed to end in failure. For instance:
-<p>
-<blockquote><font color="#000080">Instead of taking something: say &quot;The sentry prods you with his rifle!&quot;
-</font></blockquote><p>
-<p>
-<p>This rule, if it takes effect, ends in failure and therefore stops the action.
-<p>
-<p>We call this the <b>default outcome</b> of a rulebook. The default outcome of &quot;before&quot; (and of almost all rulebooks, in fact) is no outcome; the default outcome of &quot;instead&quot; is failure; the default outcome of &quot;after&quot; is success. The few exceptional cases with default outcome success or failure are marked as such in the Rules index.
-<p>
-<p>When we create a rulebook, it will default to &quot;no outcome&quot;. But we can specify otherwise with sentences like so:
-<p>
-<blockquote><font color="#000080">The cosmic analysis rules are a rulebook. The cosmic analysis rules have default outcome failure.
-</font></blockquote><p>
-<p>
-<p>Finally, note that the default outcome for a rulebook is really the default outcome for any rule in that rulebook: if no rules in the rulebook ever apply, for instance if there aren't any and the rulebook is empty, then the rulebook ends with no outcome at all.
-<p>
-<p><hr><p>
-<!-- EXAMPLE START -->
-<a name="e102"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc304.html#e102 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>309</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc304.html#e102 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Feline Behavior</font></b></a><br>A cat which reacts to whatever items it has handy, returning the result of a rulebook for further processing.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Suppose we have a cat which is supposed to react to (and destroy) the most interesting thing in its environment. There are several ways we could approach this problem, but for the sake of demonstration, let's have it follow a rulebook to figure out which thing it most wants to interact with. We will then return the chosen object as &quot;the result of the rule&quot;.
+<p>Parts are treated exactly as if clothes or items being held, and the following will make the face and inscription on a coin invisible unless the player is holding it - the idea being that they are too small to be seen from farther away.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode401(code) {
+function pasteCode8(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Feline Behavior"\n\nThe Kitchen is a room. The cat is an animal in the Kitchen. In the Kitchen is a bowl, a ball of wool, a newspaper. The bowl contains a quantity of cream.\n\nThe cat is wearing a silver collar. The description of the cat is "It is wearing [a list of things worn by the cat]."\n\nThe player carries a closed openable container called a bag. The bag contains catnip.\n\nThe cat behavior rules is a rulebook.\n\nA cat behavior rule when the cat can touch the catnip:\n\tsay "The cat frolics with the catnip until nothing remains of it.";\n\trule succeeds with result catnip.\n\nA cat behavior rule when the cat can touch the cream:\n\tsay "The cat laps up the cream.";\n\trule succeeds with result cream.\n\nA cat behavior rule when the cat can touch the ball of wool:\n\tsay "The cat makes the ball of wool into a useless tangle which must be discarded.";\n\trule succeeds with result ball.\n\nA cat behavior rule when the cat can touch the newspaper:\n\tsay "The cat bats playfully at the newspaper until all the nasty boring articles are destroyed.";\n\trule succeeds with result newspaper.\n\nA cat behavior rule:\n\tsay "The cat looks miffed at the lack of ready entertainment, and glares at you with yellow eyes as though wondering whether your pants leg is good for claw-sharpening.";\n\trule fails.\n\nEvery turn:\n\tconsider the cat behavior rules;\n\tif rule succeeded\n\tbegin;\n\t\tlet the destroyed object be the result of the rule;\n\t\tremove the destroyed object from play;\n\t\tsay "[line break]Good thing you have no use for [the destroyed object] yourself.[paragraph break]";\n\tend if.\n\nTest me with "z / z / open bag / z / z".\n\n');
+    myProject.pasteCode('The coin is in the Roman Villa. The face and inscription are parts of the coin. Rule for deciding the concealed possessions of the coin: if the coin is carried, no; otherwise yes.\n\n');
 }
 </script>
-<a href="javascript:pasteCode401()"><img border=0 src=../doc_images/paste.png></a> &quot;Feline Behavior&quot;
+<a href="javascript:pasteCode8()"><img border=0 src=../doc_images/paste.png></a> The coin is in the Roman Villa. The face and inscription are parts of the coin. Rule for deciding the concealed possessions of the coin: if the coin is carried, no; otherwise yes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Kitchen is a room. The cat is an animal in the Kitchen. In the Kitchen is a bowl, a ball of wool, a newspaper. The bowl contains a quantity of cream.
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e102"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc50.html#e102 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>35</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc50.html#e102 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Search and Seizure</font></b></a><br>A smuggler who has items, some of which are hidden.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex102.html#e102 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>Suppose we want a character who carries hidden objects, but only while he is wearing his jacket. If we deprive him of this, his other possessions become known. Furthermore, if we ever search him, his possessions also become known, and can thereafter be mentioned by us.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode115(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Search and Seizure"\n\nSize is a kind of value. The sizes are small, medium, and large. A thing has a size. A thing is usually small.\n\nA thing can be licit or contraband. A thing is usually licit.\n\nA thing can be discovered or secret. A thing is usually secret.\n\n[Now, we want the character to be able to hide small things if he has some sort of concealing garment on. We also want to be able to see anything that the player has already found once, perhaps by using the >SEARCH PERSON command. So:]\n\nRule for deciding the concealed possessions of someone (called the suspect):\n\tif the particular possession is discovered, no;\n\tif the suspect wears something and the particular possession is small, yes;\n\totherwise no.\n\n[The following rule, borrowed from a later chapter, assures that any items that are ever mentioned to the player will be treated as known from then on:]\n\nBefore printing the name of something (called discovery): now the discovery is discovered.\n\nThe Customs House is a room. The smuggler is a man in the Customs House. The smuggler wears a leather jacket. He carries a bottle of Altairan rum, some raspberries, and a laser pistol. The pistol is large. The jacket is large. The rum and the raspberries are contraband. The description of the smuggler is "He has a bestubbled chin and a sinister eye."\n\nThe tourist is a woman in the customs house. The description is "The type who walks off home with a dozen contraband items in her pocket not because she means to steal things but because she\'s too stupid to understand that the law applies to herself." She wears a tight-fitting dress. The dress is large. The tourist carries a grapevine and an archaeological artifact. The grapevine is large and contraband. The artifact is contraband.\n\nReport examining someone: say "[The noun] is [if the noun is wearing something]wearing [a list of unconcealed things worn by the noun] and [end if]carrying [a list of unconcealed things carried by the noun]."\n\nReport examining someone who is concealing something contraband:\n\tsay "[The noun] looks nervous. You can just tell."\n\nReport examining someone who is carrying an unconcealed contraband thing:\n\tsay "Your eye goes at once to [the list of unconcealed contraband things carried by the noun] which [the noun] is unable to hide";\n\tif an unconcealed licit thing is had by the noun, say ", though [if the noun is female]s[end if]he also has [a list of unconcealed licit things had by the noun]";\n\tsay "." instead.\n\n[Notice that we can talk about what the smuggler wears, what he carries, and what he "has": things the smuggler has can be either worn or carried, so the phrase is useful if we don\'t care to make that distinction.]\n\nInstead of searching someone:\n\tsay "[The noun] is revealed to be carrying [a list of things carried by the noun]."\n\nInstead of confiscating the dress:\n\tsay "You are not allowed to perform strip-searches in the public customs area."\n\nUnderstand "confiscate [something]" as confiscating.\n\nConfiscating is an action applying to one thing.\n\nCheck confiscating:\n\tif the noun is had by someone who is not the player, do nothing;\n\totherwise say "You can only confiscate other people\'s possessions." instead.\n\nCarry out confiscating:\n\tnow the noun is carried by the player.\n\nReport confiscating:\n\tsay "Through the authority vested in you by the power of the Sovereign of Centauri Proxima, you make [the noun] your own."\n\nTest me with "x smuggler / search smuggler / x smuggler / confiscate jacket / x smuggler / confiscate rum / confiscate pistol / x smuggler / confiscate raspberries / x smuggler".\n\nTest more with "x tourist / confiscate dress / confiscate grapevine / x tourist / search tourist / confiscate artifact / x tourist".\n');
+}
+</script>
+<a href="javascript:pasteCode115()"><img border=0 src=../doc_images/paste.png></a> &quot;Search and Seizure&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The cat is wearing a silver collar. The description of the cat is &quot;It is wearing [a list of things worn by the cat].&quot;
+<blockquote><font color="#000080">Size is a kind of value. The sizes are small, medium, and large. A thing has a size. A thing is usually small.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries a closed openable container called a bag. The bag contains catnip.
+<blockquote><font color="#000080">A thing can be licit or contraband. A thing is usually licit.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The cat behavior rules is a rulebook.
+<blockquote><font color="#000080">A thing can be discovered or secret. A thing is usually secret.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A cat behavior rule when the cat can touch the catnip:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The cat frolics with the catnip until nothing remains of it.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds with result catnip.
+<p>Now, we want the character to be able to hide small things if he has some sort of concealing garment on. We also want to be able to see anything that the player has already found once, perhaps by using the >SEARCH PERSON command. So:
+<p>
+<blockquote><font color="#000080">Rule for deciding the concealed possessions of someone (called the suspect):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the particular possession is discovered, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the suspect wears something and the particular possession is small, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise no.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A cat behavior rule when the cat can touch the cream:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The cat laps up the cream.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds with result cream.
+<p>The following rule, borrowed from a later chapter, assures that any items that are ever mentioned to the player will be treated as known from then on:
+<p>
+<blockquote><font color="#000080">Before printing the name of something (called discovery): now the discovery is discovered.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A cat behavior rule when the cat can touch the ball of wool:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The cat makes the ball of wool into a useless tangle which must be discarded.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds with result ball.
+<blockquote><font color="#000080">The Customs House is a room. The smuggler is a man in the Customs House. The smuggler wears a leather jacket. He carries a bottle of Altairan rum, some raspberries, and a laser pistol. The pistol is large. The jacket is large. The rum and the raspberries are contraband. The description of the smuggler is &quot;He has a bestubbled chin and a sinister eye.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A cat behavior rule when the cat can touch the newspaper:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The cat bats playfully at the newspaper until all the nasty boring articles are destroyed.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds with result newspaper.
+<blockquote><font color="#000080">The tourist is a woman in the customs house. The description is &quot;The type who walks off home with a dozen contraband items in her pocket not because she means to steal things but because she's too stupid to understand that the law applies to herself.&quot; She wears a tight-fitting dress. The dress is large. The tourist carries a grapevine and an archaeological artifact. The grapevine is large and contraband. The artifact is contraband.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A cat behavior rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The cat looks miffed at the lack of ready entertainment, and glares at you with yellow eyes as though wondering whether your pants leg is good for claw-sharpening.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;rule fails.
+<blockquote><font color="#000080">Report examining someone: say &quot;[The noun] is [if the noun is wearing something]wearing [a list of unconcealed things worn by the noun] and [end if]carrying [a list of unconcealed things carried by the noun].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;consider the cat behavior rules;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if rule succeeded
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the destroyed object be the result of the rule;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the destroyed object from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break]Good thing you have no use for [the destroyed object] yourself.[paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Report examining someone who is concealing something contraband:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] looks nervous. You can just tell.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;z / z / open bag / z / z&quot;.
+<blockquote><font color="#000080">Report examining someone who is carrying an unconcealed contraband thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your eye goes at once to [the list of unconcealed contraband things carried by the noun] which [the noun] is unable to hide&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if an unconcealed licit thing is had by the noun, say &quot;, though [if the noun is female]s[end if]he also has [a list of unconcealed licit things had by the noun]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>We include the if rule succeeded... condition here because nothing will be returned if the cat's search failed (as for instance in the result of the final rule).
+<p>Notice that we can talk about what the smuggler wears, what he carries, and what he &quot;has&quot;: things the smuggler has can be either worn or carried, so the phrase is useful if we don't care to make that distinction.
 <p>
-<p>Naturally, if we wanted we could equally well ask &quot;if rule failed...&quot;.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc304.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Instead of searching someone:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is revealed to be carrying [a list of things carried by the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of confiscating the dress:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are not allowed to perform strip-searches in the public customs area.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;confiscate [something]&quot; as confiscating.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Confiscating is an action applying to one thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check confiscating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is had by someone who is not the player, do nothing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You can only confiscate other people's possessions.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out confiscating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is carried by the player.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report confiscating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Through the authority vested in you by the power of the Sovereign of Centauri Proxima, you make [the noun] your own.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x smuggler / search smuggler / x smuggler / confiscate jacket / x smuggler / confiscate rum / confiscate pistol / x smuggler / confiscate raspberries / x smuggler&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test more with &quot;x tourist / confiscate dress / confiscate grapevine / x tourist / search tourist / confiscate artifact / x tourist&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc50.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e280"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex280.html#e280 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>310</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex280.html#e280 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Kyoto</font></b></a><br>Expanding the effects of the THROW something AT something command so that objects do make contact with one another.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc303.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc305.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc49.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc51.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

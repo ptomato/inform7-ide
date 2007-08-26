@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.8. Scenery</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.10. Repeat running through</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,84 +6,144 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Disenchantment Bay 2" -->
-<!-- SEARCH SECTION "Ex 13" -->
-<!-- SEARCH SORT "Ex 003-008-013" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc33.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc35.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.8. Scenery</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Strictly Ballroom" -->
+<!-- SEARCH SECTION "Ex 157" -->
+<!-- SEARCH SORT "Ex 011-010-157" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc162.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc164.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.10. Repeat running through</b></font></td></tr></table>
 <p>
-<p>As we have just seen, making something &quot;fixed in place&quot; will prevent it from being picked up or moved. But it remains substantial enough to be described in its own paragraph of text when the player visits its location. This can be unfortunate if it has also been described already in the body of the main description for that location. For instance, if we wrote:
+<p>Inform is not used very much for numerical work, so the kind of repeat loop described in the previous section is not much used. Inform's natural domain is really the world of things and rooms, so the following kind of repeat is much more useful.
 <p>
-<blockquote><font color="#000080">The Orchard is a room. &quot;Within this quadrille of pear trees, a single gnarled old oak remains as a memory of centuries past.&quot; The gnarled old oak tree is fixed in place in the Orchard.
+<blockquote><font color="#000080">repeat with item running through open containers begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;... phrases ...
+<br>end repeat;
 </font></blockquote><p>
 <p>
-<p>This would end up describing the oak twice, once in the paragraph about the Orchard, then again in a list of things within it:
+<p>Once again we create a new value, &quot;item&quot;, of only temporary validity. This time the phrases are repeated once for each open container presently found in the world. (If there are no containers, or they are all closed, the phrases will not be followed at all.)
 <p>
-<blockquote><font color="#000080"><b>Orchard</b>
-<br>Within this quadrille of pear trees, a single gnarled old oak remains as a memory of centuries past.
+<p>As with counting the &quot;number of ...&quot; objects satisfying some property, we can run through a wide variety of possibilities. For example:
+<p>
+<blockquote><font color="#000080">repeat with dinner guest running through the people in the Dining Room begin; ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">You can see a gnarled old oak tree here.
+<blockquote><font color="#000080">repeat with possession running through things carried begin; ...
 </font></blockquote><p>
 <p>
-<p>We avoid this by making it &quot;scenery&quot; instead of &quot;fixed in place&quot;:
-<p>
-<blockquote><font color="#000080">The gnarled old oak tree is scenery in the Orchard.
-</font></blockquote><p>
-<p>
-<p>Any thing can be scenery, and this does not bar it from playing a part in the game: it simply means that it will be immobile and that it will not be described independently of its room. Being immobile, scenery should not be used for portable objects that are meant to be left out of the room description.
-<p>
-<p>If a supporter is scenery, it may still be mentioned in the room description after all, but only as part of a paragraph about other items, such as
-<p>
-<blockquote><font color="#000080">On the teak table are a candlestick and a copy of the Financial Times.
-</font></blockquote><p>
-<p>
-<p>If the player takes the candlestick and the Times, the teak table will disappear from mention. (Scenery containers do not behave in this way: their contents are assumed to be less immediately visible, and will be mentioned only if the player looks inside them.)
-<p>
-<p><hr><p>
-<a name="e200"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex200.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>12</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex200.html#e200 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Replanting</font></b></a><br>Changing the response when the player tries to take something that is scenery.<p></td></tr></table>
-<!-- EXAMPLE START -->
-<a name="e37"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc34.html#e37 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>13</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc34.html#e37 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Disenchantment Bay 2</font></b></a><br>Disenchantment Bay: creating some of the objects in the cabin's description.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>If we compile our last version of the cabin, we get a room where the glass case and the bench are listed separately from the room description, even though they have already been mentioned once. We can prevent this by making the already-mentioned things scenery:
+<p>The following lists the whereabouts of all men in lighted rooms:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode99(code) {
+function pasteCode26(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Disenchantment Bay"\n\nThe Cabin is a room.  "The front of the small cabin is entirely occupied with navigational instruments, a radar display, and radios for calling back to shore. Along each side runs a bench with faded blue vinyl cushions, which can be lifted to reveal the storage space underneath. A glass case against the wall contains several fishing rods.\n\nScratched windows offer a view of the surrounding bay, and there is a door south to the deck. A sign taped to one wall announces the menu of tours offered by the Yakutat Charter Boat Company."\n\nThe Cabin contains a glass case. In the glass case is a collection of fishing rods. The case is closed, transparent, and openable. The case is scenery.\n\nThe bench is in the cabin. On the bench are some blue vinyl cushions. The bench is enterable and scenery. The cushions are scenery.\n\n[Generally speaking, it is a good idea to recognize the player\'s attempts to interact with any objects mentioned in the room description, so we should also provide]\n\nSome navigational instruments, some scratched windows, a sign, a radar display, and some radios are scenery in the cabin.\n\nTest me with "examine instruments / x windows / x sign / x display / x radios".\n\n');
+    myProject.pasteCode('repeat with suspect running through the men who are in a lighted room (called the scene) begin;\n\tsay "[The suspect] is in [the scene].";\nend repeat.\n\n');
 }
 </script>
-<a href="javascript:pasteCode99()"><img border=0 src=../doc_images/paste.png></a> &quot;Disenchantment Bay&quot;
+<a href="javascript:pasteCode26()"><img border=0 src=../doc_images/paste.png></a> repeat with suspect running through the men who are in a lighted room (called the scene) begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The suspect] is in [the scene].&quot;;
+<br>end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Cabin is a room.  &quot;The front of the small cabin is entirely occupied with navigational instruments, a radar display, and radios for calling back to shore. Along each side runs a bench with faded blue vinyl cushions, which can be lifted to reveal the storage space underneath. A glass case against the wall contains several fishing rods.
+<p>Note the way we are allowed to give a name to the vaguely described place &quot;lighted room&quot;, so that we can refer to it inside the loop. This wasn't really necessary (&quot;holder of the suspect&quot; would have had the same effect) but improved the clarity of the source.
+<p>
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e37"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc163.html#e37 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>157</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc163.html#e37 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Strictly Ballroom</font></b></a><br>People who select partners for dance lessons each turn.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex37.html#e37 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>Many simple repetitions can effectively be done with a &quot;now...&quot; instruction: it is quicker to say
+<p>
+<blockquote><font color="#000080">now every person is angry
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Scratched windows offer a view of the surrounding bay, and there is a door south to the deck. A sign taped to one wall announces the menu of tours offered by the Yakutat Charter Boat Company.&quot;
+<p>than
+<p>
+<blockquote><font color="#000080">repeat with offended party running through people
+<br>begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the offended party to angry;
+<br>end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Cabin contains a glass case. In the glass case is a collection of fishing rods. The case is closed, transparent, and openable. The case is scenery.
+<p>Repeat comes in handy when we have something a bit more complicated to do with each item:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode246(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Strictly Ballroom"\n\nA person can be alert or occupied. A person is usually alert.\n\nDance is a kind of value. The dances are waltzes, polkas, cha-chas, charlestons, fox-trots, tangos, lambadas, and two-steps.\n\nThe current round is a dance that varies.\n\nManner is a kind of value. The manners are swiftly, primly, energetically, suavely, seductively, elegantly, and badly.\n\nEvery turn: change the current round to a random dance.\n\nEvery turn:\n\trepeat with dancer running through people who are not the player\n\tbegin;\n\t\tif dancer is alert\n\t\tbegin;\n\t\t\tchange dancer to occupied;\n\t\t\tlet partner be a random alert person who is not the dancer;\n\t\t\tif partner is a person\n\t\t\tbegin;\n\t\t\t\tchange partner to occupied;\n\t\t\t\tsay "[The dancer] [the current round][if a random chance of 1 in 5 succeeds] [a random manner][end if] with [partner]. ";\n\t\t\totherwise;\n\t\t\t\tsay "[paragraph break][The dancer] is forced to be a wallflower. Poor [dancer]. ";\n\t\t\tend if;\n\t\tend if;\n\tend repeat;\n\tsay paragraph break.\n\n[Notice we did not say "repeat with dancer running through alert people who are not the player...". This is because Inform would draw up a list of alert people at the beginning of the repeat, and not take into account which people became occupied partway through the repetition. If we want to make sure that each person dances only with one other person, we have to continue checking alertness each time we run through the repetition.]\n\n[After all the partners are assigned, we can set up for the next turn by making everyone alert again, and for this we do not need "repeat":]\n\nEvery turn: now every person is alert; now the player is occupied.\n\nBefore doing something to someone: now the noun is occupied.\n\nBefore doing something when the second noun is a person: now the second noun is occupied.\n\nInstead of doing something to someone: say "You successfully distract [the noun]."\n\nThe Pacific Ballroom is a room. "A rather utilitarian space at the moment, since this is a class and not a party." Timmy, Tommy, Joey, George, Mary, Martha, Yvette, McQueen, Linus, and Patricia are people in the Pacific Ballroom.\n\nTest me with "z / ask linus about blanket / z / z".\n');
+}
+</script>
+<a href="javascript:pasteCode246()"><img border=0 src=../doc_images/paste.png></a> &quot;Strictly Ballroom&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The bench is in the cabin. On the bench are some blue vinyl cushions. The bench is enterable and scenery. The cushions are scenery.
+<blockquote><font color="#000080">A person can be alert or occupied. A person is usually alert.
 </font></blockquote><p>
 <p>
-<p>Generally speaking, it is a good idea to recognize the player's attempts to interact with any objects mentioned in the room description, so we should also provide
-<p>
-<blockquote><font color="#000080">Some navigational instruments, some scratched windows, a sign, a radar display, and some radios are scenery in the cabin.
+<blockquote><font color="#000080">Dance is a kind of value. The dances are waltzes, polkas, cha-chas, charlestons, fox-trots, tangos, lambadas, and two-steps.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;examine instruments / x windows / x sign / x display / x radios&quot;.
+<blockquote><font color="#000080">The current round is a dance that varies.
 </font></blockquote><p>
 <p>
-<p>The door and the view will need to be done as well, but they are special cases which we will get to shortly.
+<blockquote><font color="#000080">Manner is a kind of value. The manners are swiftly, primly, energetically, suavely, seductively, elegantly, and badly.
+</font></blockquote><p>
 <p>
-<p>As noted, making something scenery also means that the player will be prevented from picking it up and carrying it away. This is sensible, though: if an object can be removed from the room where it first appears, we should be careful about mentioning it in the main room description; otherwise, it will continue to be described as present even when someone has carried it off.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc34.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Every turn: change the current round to a random dance.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with dancer running through people who are not the player
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if dancer is alert
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change dancer to occupied;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let partner be a random alert person who is not the dancer;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if partner is a person
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change partner to occupied;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The dancer] [the current round][if a random chance of 1 in 5 succeeds] [a random manner][end if] with [partner]. &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[paragraph break][The dancer] is forced to be a wallflower. Poor [dancer]. &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
+</font></blockquote><p>
+<p>
+<p>Notice we did not say &quot;repeat with dancer running through alert people who are not the player...&quot;. This is because Inform would draw up a list of alert people at the beginning of the repeat, and not take into account which people became occupied partway through the repetition. If we want to make sure that each person dances only with one other person, we have to continue checking alertness each time we run through the repetition.
+<p>
+<p>After all the partners are assigned, we can set up for the next turn by making everyone alert again, and for this we do not need &quot;repeat&quot;:
+<p>
+<blockquote><font color="#000080">Every turn: now every person is alert; now the player is occupied.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before doing something to someone: now the noun is occupied.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before doing something when the second noun is a person: now the second noun is occupied.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of doing something to someone: say &quot;You successfully distract [the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Pacific Ballroom is a room. &quot;A rather utilitarian space at the moment, since this is a class and not a party.&quot; Timmy, Tommy, Joey, George, Mary, Martha, Yvette, McQueen, Linus, and Patricia are people in the Pacific Ballroom.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;z / ask linus about blanket / z / z&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc163.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc33.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc35.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc162.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc164.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

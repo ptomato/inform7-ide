@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.6. While</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.5. If</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,31 +6,65 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "While" -->
-<!-- SEARCH SECTION "11.6" -->
-<!-- SEARCH SORT "011-006-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc157.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc159.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.6. While</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "If" -->
+<!-- SEARCH SECTION "11.5" -->
+<!-- SEARCH SORT "011-005-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc157.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc159.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.5. If</b></font></td></tr></table>
 <p>
-<p>The other main control phrase is &quot;while&quot;, which has the form:
+<p>We now run through a few special phrases which control other phrases: causing them to repeat, perhaps, or to be skipped. These phrases are equivalent to the &quot;control structures&quot; of other computer programming languages: no system for interactive fiction can possibly be adequate unless it allows us to carry out arbitrary computations, so the pretence that Inform is not really a programming language must be dropped sooner or later. That time is now.
 <p>
-<blockquote><font color="#000080">while (... condition ...) repeatedly (... another whole phrase ...)
+<p>The phrase:
+<p>
+<blockquote><font color="#000080">if (... condition ...) then (... another whole phrase ...)
 </font></blockquote><p>
 <p>
-<p>which keeps on applying the same phrase as long as the condition holds. If it never holds, even at the start, then the phrase is never applied at all and nothing happens. Just as the word &quot;then&quot; in an &quot;if&quot; can be abbreviated with a comma, so can the word &quot;repeatedly&quot; here.
+<p>causes the phrase after &quot;then&quot; to be followed only if the condition holds. Some people prefer to use a comma, which is treated just the same:
 <p>
-<p>We must be careful not to commit mistakes like the following:
-<p>
-<blockquote><font color="#000080">while eggs is eggs repeatedly say &quot;again and &quot;
+<blockquote><font color="#000080">if (... condition ...), (... another whole phrase ...)
 </font></blockquote><p>
 <p>
-<p>which, as sure as eggs is eggs (which is very sure indeed), writes out
+<p>Because of this conventional use of a comma, it is a good idea to avoid using a comma in the condition itself:
 <p>
-<blockquote><font color="#000080">again and again and again and again and again and ...
+<blockquote><font color="#000080">if opening, closing a door, ...
 </font></blockquote><p>
 <p>
-<p>forever. (Inform won't prevent this: we will find out the hard way when the game is played.) While we would probably never write anything so blatant as that, the mistake is all too easy to commit in disguised form. We should never design a loop, as repetitions like this are called, without worrying about if and when it will finish.
+<p>tends to confuse Inform.
+<p>
+<p>There are many different forms of condition in Inform (and, as we shall see, we can easily add more), but the simplest is:
+<p>
+<blockquote><font color="#000080">(first value) is (second value)
+</font></blockquote><p>
+<p>
+<p>As always, Inform checks that these two values are of kinds which can be compared. The following will produce an objection, for instance:
+<p>
+<blockquote><font color="#000080">if 10 is a door then say &quot;Huzzah!&quot;
+</font></blockquote><p>
+<p>
+<p>since it makes no sense to ask the question, and the only result will be the baffled reply:
+<p>
+<blockquote><font color="#000080"><b>Problem.</b> In the line 'if 10 is a door then say &quot;Huzzah!&quot;' <img border=0 src=../doc_images/Reveal.png>, I can't determine whether or not '10 is a door', because it seems to ask if a number is some sort of door.
+</font></blockquote><p>
+<p>
+<p>This, however, would be fine:
+<p>
+<blockquote><font color="#000080">To comment upon (whatever - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is transparent then say &quot;I see right through this!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is an open door then say &quot;Oh look, an open door!&quot;.
+</font></blockquote><p>
+<p>
+<p>since &quot;whatever&quot; is known to be a thing, and Inform knows that things are indeed sometimes transparent and sometimes open doors.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc157.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc159.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -225,10 +225,6 @@ static void finish_ni_compiler(GPid pid, gint status, gpointer data) {
         case 1:
             loadfile = g_build_filename(thestory->filename, PROBLEMS_FILE,NULL);
             break;
-        case 2:
-            loadfile = get_datafile_path_va("Documentation", "Sections",
-              "Error2.html", NULL);
-            break;
         case 10:
             loadfile = get_datafile_path_va("Documentation", "Sections",
               "Error10.html", NULL);

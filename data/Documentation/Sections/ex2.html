@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.5. New activities</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.14. What are relations for?</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,131 +6,74 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Aftershock" -->
-<!-- SEARCH SECTION "Ex 265" -->
-<!-- SEARCH SORT "Ex 017-005-265" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc264.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc266.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.5. New activities</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Mathematical view of relations" -->
+<!-- SEARCH SECTION "Ex 213" -->
+<!-- SEARCH SORT "Ex 013-014-213" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc205.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc207.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.14. What are relations for?</b></font></td></tr></table>
 <p>
-<p>Activities are all about influencing the standard mechanisms which Inform uses, so it might at first seem that there is no need to create new activities: but on further reflection, quite a lot of the writing of interactive fiction involves creating new and systematic ways to do things, and as soon as we have a general rule, we will want to have exceptions. Inform therefore allows us to create our own activities, giving us ways to influence the operation of our own mechanisms.
+<p>It is easy to say what verbs are for: they are to express relations. But what are relations for?
 <p>
-<p>There are two kinds of activity: those which relate to a specific thing or room, and those which do not. The following creates one of each kind:
+<p>Inform 7's focus on relations between objects is unusual as an approach to interactive fiction; the concept does not exist in most design systems, or rather, it does but is submerged. Traditional design systems do, after all, have the spatial relations of being inside, on top of, and so on. It could well be said that these are the only relationships that inanimate objects ever have. A stone can be on top of a table, and if so then that expresses their entire association.
 <p>
-<blockquote><font color="#000080">Analysing something is an activity.
-<br>Assaying is an activity.
-</font></blockquote><p>
-<p>
-<p>Here &quot;analysing something&quot; relates to a specific item: Inform knows this because it looks for the clue &quot;something&quot; (or &quot;of something&quot;) after the activity's name, which in the first case above is simply &quot;analysing&quot;.
-<p>
-<p>Creating an activity is like creating an action: it automatically makes new rulebooks - &quot;before analysing&quot;, &quot;for analysing&quot; and &quot;after analysing&quot; - but they start out empty, so the activity does nothing yet. Moreover, it never happens. We can make an activity happen at any time by writing phrases like so:
-<p>
-<blockquote><font color="#000080">carry out the analysing activity with the pitchblende;
-<br>carry out the assaying activity;
-</font></blockquote><p>
-<p>
-<p>To make the activity do something useful, we need to put a rule into its &quot;for&quot; rulebook:
-<p>
-<blockquote><font color="#000080">The last for assaying rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Professionally, you cast an eye around mineral deposits nearby, noticing [list of rocks in the location].&quot;
-</font></blockquote><p>
-<p>
-<p>&quot;The last&quot; is a technicality about rulebooks (see the next chapter) which, put briefly, guarantees that this rule comes last among all possible &quot;for assaying&quot; rules. This is good form because the whole point of an activity is to make it easy for further rules to interfere - so we deliberately hang back to last place, giving precedence to anybody else who wants it.
-<p>
-<p>It may look rather pretentious to dress up the footling little &quot;assaying&quot; example as an activity, but it gains us more than might first appear. Every new activity created provides a context which other activities can observe. We could, for instance, define
-<p>
-<blockquote><font color="#000080">Rule for printing the name of a rock while assaying: ...
-</font></blockquote><p>
-<p>
-<p>so that during assays more technical names are used.
+<p>This is because the stone, and the table, have no opinions, emotions, knowledge or memory. If the stone is taken away and then put back, nothing has changed. People, on the other hand, tend to remember having met each other before; they like being in some places, but not others; their behaviour depends on who, or what, is nearby. Being conscious, they have internal states, unlike the stone. Relations are a simple but powerful way to express and talk about such connections, and although they have numerous uses in physical contexts too, they are at their most powerful when helping to make the characters of interactive fiction come alive.
 <p>
 <p><hr><p>
-<a name="e93"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex93.html#e93 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>264</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex93.html#e93 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> AARP-Gnosis</font></b></a><br>An Encyclopedia set which treats volumes in the same place as a single object, but can also be split up.<p></td></tr></table>
+<a name="e320"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex320.html#e320 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>212</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex320.html#e320 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Murder on the Orient Express</font></b></a><br>A number of sleuths (the player among them) find themselves aboard the Orient Express, where a murder has taken place, and one of them is apparently the culprit. Naturally they do not agree on whom, but there is physical evidence which may change their minds...<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex320.html#e320 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e2"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc265.html#e2 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>265</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc265.html#e2 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Aftershock</font></b></a><br>Modifying the rules for examining a device so that all devices have some specific behavior when switched on, which is described at various times.<p></td></tr></table>
+<a name="e2"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc206.html#e2 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>213</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc206.html#e2 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Mathematical view of relations</font></b></a><br>Some notes on relations from a mathematical point of view, provided only to clarify some technicalities for those who are interested.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex2.html#e2 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The built-in behavior of Inform is to print a line after a device is examined, saying whether the item is on or off. This is often inappropriate, and we could simply turn off that behavior in general by instructing Inform to ignore the &quot;examine described devices rule&quot; (see the chapter on rulebooks).
+<p>Inform uses the term &quot;relation&quot; in a broader sense than mathematics. Properly speaking, the term &quot;relation&quot; in its mathematical sense only applies to the case where the domain for the left and right objects are the same: for simplicity's sake, let us talk only about the case where they are.
 <p>
-<p>Perhaps, though, we would like continue to have a short passage about the action of any switched on device; we'd just like a little more control over what it says from time to time. And in that case, we might change the rule to give a new activity control over that portion of the description:
+<p>In mathematics, the properties most often looked for in a relation are that it should be:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode357(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Aftershock"\n\nThe time of day is 3:47 AM. When play begins, change the right hand status line to "[time of day]"\n\nThe Downstairs Hallway is a dark room. "The only room in the house with no furniture and almost nothing on the walls. At times like this you always notice the crack in the plaster, originating near the light fixture and running almost all the way to the wall." A plastic jug of filtered water is in the Downstairs Hallway. The description is "Five gallons, not that that will last you very long, hot as it has been lately." The crack is scenery in the Hallway. The description is "No, the ceiling isn\'t going to fall on you today."\n\nAn electric lamp is a kind of device.  The light fixture is an electric lamp in the Hallway. It is switched on, lit, and scenery. The description is "A plain globe of frosted glass containing the light bulb. Nothing special, and you never think about it except when, as now, you are forced to spend hours in this room."\n\nThe flashlight is an electric lamp carried by the player. The description is "A shiny red flashlight." The portable radio is a device carried by the player. The description is "A small battery-operated radio which you received for free with your subscription to US News & World Report. It has served you well through many earthquakes past."\n\n[Now we need our activity:]\n\nShowing action of something is an activity.\n\nRule for showing action of something (called item):\n\tif the item is switched on, say "[The item] is switched on.";\n\totherwise say "[The item] is switched off."\n\n[Borrowing from the rulebooks chapter, we can replace the standard "examine described devices" rule with something that uses this activity.]\n\nThe new described devices rule is listed instead of the examine described devices rule in the carry out examining rules.\n\nThis is the new described devices rule:\n\tif the noun is a device, carry out the showing action activity with the noun.\n\n[Thus far we have essentially replicated the original behavior. But now we can write increasingly specialized rules to modify what happens:]\n\nRule for showing action of an electric lamp (called item):\n\tif the item is switched on, say "[The item] is lit[if the number of visible lit things is greater than 1], competing with [the list of visible lit things which are not the item][end if].";\n\totherwise say "[The item] is dark."\n\nCarry out switching on an electric lamp: now the noun is lit. Carry out switching off an electric lamp: now the noun is unlit.\n\nRule for showing action of the flashlight:\n\tif the flashlight is switched on, say "A strong, narrow beam of light shines from the flashlight.";\n\totherwise say "It is currently switched off."\n\nRule for showing action of the radio:\n\tif the radio is switched on, say "Through the static, you pick up pieces of discussion: a 6.7 on the Richter scale, epicenter... something about Topanga... but it crackles out again.";\n\totherwise say "The radio is silent. You\'re saving the batteries."\n\n[And there might be other places where we also want to show what a device does when turned on:]\n\nInstead of listening in the presence of the switched on radio:\n\tcarry out the showing action activity with the radio instead.\n\nReport switching on something:\n\tsay "You flip a switch. ";\n\tcarry out the showing action activity with the noun instead.\n\nTest me with "examine light / switch light off / switch flashlight on / switch radio on / examine radio / examine flashlight".\n');
-}
-</script>
-<a href="javascript:pasteCode357()"><img border=0 src=../doc_images/paste.png></a> &quot;Aftershock&quot;
+<p>(a) Reflexive: A <=> A for every A. This is not especially useful for Inform, and seldom appears in practical examples.
+<p>
+<p>(b) Symmetric: A <=> B if and only if B <=> A. Generally, Inform relations are not symmetric, but there are two important cases which are:
+<p>
+<blockquote><font color="#000080">Meeting relates people to each other.
+<br>Marriage relates one person to another.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The time of day is 3:47 AM. When play begins, change the right hand status line to &quot;[time of day]&quot;
+<p>These are automatically symmetric, so that to assert one way round is to assert the other as well.
+<p>
+<p>(c) Transitive: A <=> B and B <=> C means that A <=> C as well. Again, Inform relations are not generally transitive. In many relations, there can be long chains of things, each perhaps related to the one in front and the one behind, so that there is some indirect sense in which the two ends of the chain are connected to each other: but they are not related as such. For instance, a journey across the map might pass through ten rooms, each adjacent to the last and next, but the two ends would not themselves be adjacent. The concept we need is the &quot;transitive closure&quot; of the original relation, defined as the smallest transitive relation including the original. If R is a relation between &quot;things&quot;, then the following:
+<p>
+<blockquote><font color="#000080">TC relates a thing (called A) to a thing (called B) when the number of steps via R from A to B is greater than 0.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Downstairs Hallway is a dark room. &quot;The only room in the house with no furniture and almost nothing on the walls. At times like this you always notice the crack in the plaster, originating near the light fixture and running almost all the way to the wall.&quot; A plastic jug of filtered water is in the Downstairs Hallway. The description is &quot;Five gallons, not that that will last you very long, hot as it has been lately.&quot; The crack is scenery in the Hallway. The description is &quot;No, the ceiling isn't going to fall on you today.&quot;
+<p>is the transitive closure of R. In particular,
+<p>
+<blockquote><font color="#000080">Accessibility relates a room (called A) to a room (called B) when the number of moves from B to A is greater than 0. The verb to be accessible from implies the accessibility relation.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">An electric lamp is a kind of device.  The light fixture is an electric lamp in the Hallway. It is switched on, lit, and scenery. The description is &quot;A plain globe of frosted glass containing the light bulb. Nothing special, and you never think about it except when, as now, you are forced to spend hours in this room.&quot;
+<p>calculates the transitive closure of adjacency. Here, though, the way we normally understand &quot;accessible from&quot; suggests that it would be better to write:
+<p>
+<blockquote><font color="#000080">Accessibility relates a room (called A) to a room (called B) when the number of moves from B to A is at least 0.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The flashlight is an electric lamp carried by the player. The description is &quot;A shiny red flashlight.&quot; The portable radio is a device carried by the player. The description is &quot;A small battery-operated radio which you received for free with your subscription to US News & World Report. It has served you well through many earthquakes past.&quot;
+<p>which is reflexive as well as transitive. The usefulness of Inform's &quot;next step via R from A to B&quot; construction, in a wide variety of settings, reflects the importance of transitivity as an idea.
+<p>
+<p>A relation which has all three properties of being reflexive, symmetric and transitive is called an &quot;equivalence relation&quot;. (If all the map connections are two-way, then the accessibility relation above is symmetric and therefore a full equivalence relation: but if not, it may not be.) Inform has a special construction for making equivalence relations:
+<p>
+<blockquote><font color="#000080">Nationality relates people to each other in groups.
 </font></blockquote><p>
 <p>
-<p>Now we need our activity:
-<p>
-<blockquote><font color="#000080">Showing action of something is an activity.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for showing action of something (called item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is switched on, say &quot;[The item] is switched on.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The item] is switched off.&quot;
-</font></blockquote><p>
-<p>
-<p>Borrowing from the rulebooks chapter, we can replace the standard &quot;examine described devices&quot; rule with something that uses this activity.
-<p>
-<blockquote><font color="#000080">The new described devices rule is listed instead of the examine described devices rule in the carry out examining rules.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">This is the new described devices rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is a device, carry out the showing action activity with the noun.
-</font></blockquote><p>
-<p>
-<p>Thus far we have essentially replicated the original behavior. But now we can write increasingly specialized rules to modify what happens:
-<p>
-<blockquote><font color="#000080">Rule for showing action of an electric lamp (called item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is switched on, say &quot;[The item] is lit[if the number of visible lit things is greater than 1], competing with [the list of visible lit things which are not the item][end if].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The item] is dark.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out switching on an electric lamp: now the noun is lit. Carry out switching off an electric lamp: now the noun is unlit.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for showing action of the flashlight:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the flashlight is switched on, say &quot;A strong, narrow beam of light shines from the flashlight.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;It is currently switched off.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for showing action of the radio:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the radio is switched on, say &quot;Through the static, you pick up pieces of discussion: a 6.7 on the Richter scale, epicenter... something about Topanga... but it crackles out again.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;The radio is silent. You're saving the batteries.&quot;
-</font></blockquote><p>
-<p>
-<p>And there might be other places where we also want to show what a device does when turned on:
-<p>
-<blockquote><font color="#000080">Instead of listening in the presence of the switched on radio:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;carry out the showing action activity with the radio instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report switching on something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You flip a switch. &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;carry out the showing action activity with the noun instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;examine light / switch light off / switch flashlight on / switch radio on / examine radio / examine flashlight&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc265.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>This language - &quot;in groups&quot; - relies on the standard theorem that every equivalence relation on a set naturally defines a partition of that set, and vice versa. The &quot;groups&quot; referred to are what are normally called &quot;equivalence classes&quot;. (Inform does little with these equivalence classes: it might be interesting to do so, in effect forming quotient kinds.)
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc206.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e75"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex75.html#e75 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>266</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex75.html#e75 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Crusoe</font></b></a><br>Adding a "printing the description of something" activity.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc264.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc266.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e228"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex228.html#e228 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>214</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex228.html#e228 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Graph-theory view of relations</font></b></a><br>Some notes on relations from the point of view of graph theory.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex228.html#e228 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc205.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc207.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.12. Arithmetic with units</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.2. Rooms and the map</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,247 +6,151 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Lemonade" -->
-<!-- SEARCH SECTION "Ex 210" -->
-<!-- SEARCH SORT "Ex 014-012-210" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc217.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc219.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.12. Arithmetic with units</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Port Royal 1" -->
+<!-- SEARCH SECTION "Ex 4" -->
+<!-- SEARCH SORT "Ex 003-002-004" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc27.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc29.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.2. Rooms and the map</b></font></td></tr></table>
 <p>
-<p>Inform allows us to perform arithmetic on units only where that would make sense, and it keeps track of the results. For instance,
+<p>Rooms are joined together at their edges by &quot;map connections&quot;, most of which are pathways in one of the eight cardinal compass directions: north, northeast (written without a hyphen), east, southeast, south, southwest, west, northwest. We also have up and down, suitable for staircases or ladders. In real life, people are seldom conscious of their compass bearing when walking around buildings, but it makes a concise and unconfusing way for the player to say where to go next, so is generally accepted as a convention of the genre.
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode36(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('The Weighbridge is a room. "A sign declares that the maximum load is [100kg multiplied by 3]."\n\n');
-}
-</script>
-<a href="javascript:pasteCode36()"><img border=0 src=../doc_images/paste.png></a> The Weighbridge is a room. &quot;A sign declares that the maximum load is [100kg multiplied by 3].&quot;
+<p>Two more directions are provided by Inform: &quot;inside&quot; and &quot;outside&quot;. These are best used when one location is, say, a meadow and the other is a woodcutter's hut in the middle of it; we might then say
+<p>
+<blockquote><font color="#000080">Inside from the Meadow is the woodcutter's hut.
 </font></blockquote><p>
 <p>
-<p>...will produce the text &quot;A sign declares that the maximum load is 300kg.&quot; Here Inform knows that it makes sense to multiply a weight by 3, and that the result will be a weight. Similarly, Inform allows us to add and subtract weights, and several different forms of division are allowed:
+<p>The &quot;from&quot; is important, as it clarifies that we intend to link two different locations, not to create an item - the hut - in a single location - the meadow.
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode37(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('The blackboard is in the Weighbridge. "A blackboard propped against one wall reads: \'122 / 10 is [122 divided by 10] remainder [remainder after dividing 122 by 10]; but 122kg / 10kg is [122kg divided by 10kg] remainder [remainder after dividing 122kg by 10kg]; and 122kg / 10 is [122kg divided by 10] remainder [remainder after dividing 122kg by 10].\'"\n\n');
-}
-</script>
-<a href="javascript:pasteCode37()"><img border=0 src=../doc_images/paste.png></a> The blackboard is in the Weighbridge. &quot;A blackboard propped against one wall reads: '122 / 10 is [122 divided by 10] remainder [remainder after dividing 122 by 10]; but 122kg / 10kg is [122kg divided by 10kg] remainder [remainder after dividing 122kg by 10kg]; and 122kg / 10 is [122kg divided by 10] remainder [remainder after dividing 122kg by 10].'&quot;
+<p>A problem which sometimes arises when laying out maps is that Inform allows short forms of room names to be used as abbreviations. This is usually a good idea, but has unfortunate results if we write:
+<p>
+<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. The Airport is west of the Airport Road.
 </font></blockquote><p>
 <p>
-<p>When we visit the Weighbridge, we find:
+<p>...because &quot;Airport&quot; is taken as a reference to &quot;Airport Road&quot;, so Inform makes only two locations, one of which supernaturally leads to itself. We can avoid this by writing:
 <p>
-<blockquote><font color="#000080">A blackboard propped against one wall reads: &quot;122 / 10 is 12 remainder 2; but 122kg / 10kg is 12 remainder 2kg; and 122kg / 10 is 12kg remainder 2kg.&quot;
+<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. A room called the Airport is west of the Airport Road.
 </font></blockquote><p>
 <p>
-<p>Whereas we are not allowed to divide 122 by 10kg: that would make no sense, since 122 is a number and not made up of kilograms. Inform will produce a problem message if we try.
+<p>Using &quot;called&quot; is often a good way to specify something whose name might give rise to confusion otherwise. It always makes something new, and it is also neatly concise, because we can establish something's kind and name in the same sentence. As another example, suppose we want to create a room called &quot;South of the Hut&quot;, to south of the Hut. We can't do so like this:
+<p>
+<blockquote><font color="#000080">South of the Hut is a room. South of the Hut is south of the Hut.
+</font></blockquote><p>
+<p>
+<p>...because Inform will read that first sentence as placing a (nameless) room to the south of a room called &quot;Hut&quot;. Once again &quot;called&quot; can save the day:
+<p>
+<blockquote><font color="#000080">South of the Hut is a room called South of the Hut.
+</font></blockquote><p>
+<p>
+<p>It is best to use &quot;called&quot; in the simplest way possible, and in particular, best not to use &quot;called&quot; twice in the same sentence. Consider:
+<p>
+<blockquote><font color="#000080">The kitchen cabinet contains a container called a mixing bowl and a portable supporter called a platter.
+</font></blockquote><p>
+<p>
+<p>It is unlikely that anyone would want to name something &quot;a mixing bowl and a portable supporter called a platter&quot;, but not impossible, and Inform tends not to be a good judge of what is likely.
 <p>
 <p><hr><p>
-<a name="e50"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex50.html#e50 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>208</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex50.html#e50 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Frozen Assets</font></b></a><br>A treatment of money which keeps track of how much the player has on him, and a BUY command which lets him go shopping.<p></td></tr></table>
-<a name="e16"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex16.html#e16 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>209</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex16.html#e16 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Money for Nothing</font></b></a><br>An OFFER price FOR command, allowing the player to bargain with a flexible seller.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e165"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc218.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>210</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc218.html#e165 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Lemonade</font></b></a><br>Containers for liquid which keep track of how much liquid they are holding and of what kind, and allow quantities to be moved from one container to another.<p></td></tr></table>
+<a name="e165"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc28.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>4</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc28.html#e165 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Port Royal 1</font></b></a><br>A partial implementation of Port Royal, Jamaica, set before the earthquake of 1692 demolished large portions of the city.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex165.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Liquids, and all substances that can be mixed or broken off in partial amounts, pose a challenge to model in interactive fiction. The following example is a simple one, but adequate for many scenarios.
-<p>
-<p>We start by assuming that all liquids in the game will always appear in containers. The player can pour liquids from one container to another, and the containers keep track of how full they are and describe themselves appropriately. The player can also refer to containers by content.
-<p>
-<p>Mixture, however, is not allowed, nor is it possible to put liquids on other objects, pour them out on the ground, etc. These ideas would require a more complicated set-up.
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode300(code) {
+function pasteCode83(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Lemonade"\n\nA volume is a kind of value. 15.9 fl oz specifies a volume with parts ounces and tenths (optional, preamble optional).\n\nA fluid container is a kind of container. A fluid container has a volume called a fluid capacity. A fluid container has a volume called current volume.\n\nThe fluid capacity of a fluid container is usually 12.0 fl oz. The current volume of a fluid container is usually 0.0 fl oz.\n\nLiquid is a kind of value. The liquids are water, milk, lemonade, and iced tea. A fluid container has a liquid.\n\nInstead of examining a fluid container:\n\tif the noun is empty,\n\t\tsay "You catch just a hint of [the liquid of the noun] at the bottom.";\n\totherwise\n\t\tsay "[The noun] contains [current volume of the noun in rough terms] of [liquid of the noun]."\n\nTo say (amount - a volume) in rough terms:\n\tif the amount is less than 0.5 fl oz\n\tbegin;\n\t\tsay "a swallow or two";\n\totherwise if tenths part of amount is greater than 3 and tenths part of amount is less than 7;\n\t\tlet estimate be ounces part of amount;\n\t\tsay "[estimate in words] or [estimate plus 1 in words] fluid ounces";\n\totherwise;\n\t\tif tenths part of amount is greater than 6, increase amount by 1.0 fl oz;\n\t\tsay "about [ounces part of amount in words] fluid ounce[s]";\n\tend if.\n\nBefore printing the name of a fluid container (called the target) while not drinking:\n\tif the target is empty\n\tbegin;\n\t\tsay "empty ";\n\totherwise;\n\t\tdo nothing;\n\tend if.\n\nAfter printing the name of a fluid container (called the target) while not examining:\n\tif the target is empty\n\tbegin;\n\t\tdo nothing;\n\totherwise;\n\t\tsay " of [liquid of the target]";\n\t\tomit contents in listing;\n\tend if.\n\nInstead of inserting something into a fluid container:\n\tsay "[The second noun] has too narrow a mouth to accept anything but liquids."\n\nDefinition: a fluid container is empty if the current volume of it is 0.0 fl oz. Definition: a fluid container is full if the current volume of it is the fluid capacity of it.\n\nUnderstand "drink from [fluid container]" as drinking.\n\nInstead of drinking a fluid container:\n\tif the noun is empty\n\tbegin;\n\t\tsay "There is no more [liquid of the noun] within." instead;\n\totherwise;\n\t\tdecrease the current volume of the noun by 0.2 fl oz;\n\t\tif the current volume of the noun is less than 0.0 fl oz, change the current volume of the noun to 0.0 fl oz;\n\t\tsay "You take a sip of [the liquid of the noun][if the noun is empty], leaving [the noun] empty[end if].";\n\tend if.\n\n[We have allowed all liquids to be drunk, but it would be possible also to add checking, if we had a game where some liquids were beverages and others were, say, motor oil.]\n\nUnderstand the command "fill" as something new.\n\nUnderstand "pour [fluid container] in/into/on/onto [fluid container]" as pouring it into. Understand "empty [fluid container] into [fluid container]" as pouring it into. Understand "fill [fluid container] with/from [fluid container]" as pouring it into (with nouns reversed).\n\nUnderstand "pour [something] in/into/on/onto [something]" as pouring it into. Understand "empty [something] into [something]" as pouring it into. Understand "fill [something] with/from [something]" as pouring it into (with nouns reversed).\n\nPouring it into is an action applying to two things.\n\nCheck pouring it into:\n\tif the noun is not a fluid container, say "You can\'t pour [the noun]." instead;\n\tif the second noun is not a fluid container, say "You can\'t pour liquids into [the second noun]." instead;\n\tif the noun is the second noun, say "You can hardly pour [the noun] into itself." instead;\n\tif the liquid of the noun is not the liquid of the second noun\n\tbegin;\n\t\tif the second noun is empty, change the liquid of the second noun to the liquid of the noun;\n\t\totherwise say "Mixing [the liquid of the noun] with [the liquid of the second noun] would give unsavory results." instead;\n\tend if;\n\tif the noun is empty, say "No more [liquid of the noun] remains in [the noun]." instead;\n\tif the second noun is full, say "[The second noun] cannot contain any more than it already holds." instead.\n\nCarry out pouring it into:\n\tlet available capacity be the fluid capacity of the second noun minus the current volume of the second noun;\n\tif the available capacity is greater than the current volume of the noun, change the available capacity to the current volume of the noun;\n\tincrease the current volume of the second noun by available capacity;\n\tdecrease the current volume of the noun by available capacity.\n\nReport pouring it into:\n\tsay "[if the noun is empty][The noun] is now empty;[otherwise][The noun] now contains [current volume of the noun in rough terms] of [liquid of the noun]; [end if]";\n\tsay "[the second noun] contains [current volume of the second noun in rough terms] of [liquid of the second noun][if the second noun is full], and is now full[end if]."\n\n[This is probably a drier description than we would actually want in our story, but it does allow us to see that the mechanics of the system are working, so we\'ll stick with this for the example.]\n\n[Now we need a trick from a later chapter, which allows something to be described in terms of a property it has. This way, the story will understand not only "pitcher" and "glass" but also "pitcher of lemonade" and "glass of milk" -- and, indeed, "glass of lemonade", if we empty the glass and refill it with another substance:]\n\nUnderstand the liquid property as describing a fluid container. Understand "of" as a fluid container.\n\n[And now the scenario itself:]\n\nThe Porch is a room. The porch swing is an enterable supporter in the Porch. "An inviting swing hangs here at the end of the porch, allowing you to enjoy the summer with a cool beverage, and watch your neighbor Ted mowing his lawn with the very last manual powerless lawnmower on the block."\n\nThe glass is a fluid container carried by the player. The liquid of the glass is milk. The current volume of the glass is 0.8 fl oz.\n\nThe pitcher is a fluid container in the Porch. The fluid capacity of the pitcher is 32.0 fl oz. The current volume of the pitcher is 20.0 fl oz. The liquid of the pitcher is lemonade.\n\nTed\'s Lawn is outside from the Porch. Ted is a man in Ted\'s Lawn. "Ted has taken off his shirt, but still seems a bit oppressed by the sun." The description of Ted is "He looks hot. In all senses."\n\nAfter deciding the scope of the player: place Ted in scope.\n\nInstead of doing something to Ted when the player is in the Porch: say "You can\'t really interact with Ted from this distance, except in the sense of eyeing him surreptitiously."\n\nInstead of giving an empty fluid container to Ted: say "Yes, taunt the poor man, why don\'t you?"\n\nInstead of giving a fluid container to Ted when the liquid of the noun is milk: say "Ted looks ruefully at the milk. \'Thanks, but I\'m lactose-intolerant,\' he says."\n\nThe block giving rule is not listed in the check giving it to rules.\n\nEvery turn:\n\tif Ted is in the location\n\tbegin;\n\t\tif Ted carries a fluid container (called refreshment), try Ted drinking the refreshment;\n\t\totherwise if a random chance of 1 in 3 succeeds, say "Ted pushes the ineffective mower over some dandelions.";\n\tend if.\n\nInstead of someone drinking a fluid container:\n\tif the noun is empty\n\tbegin;\n\t\ttry the person asked giving the noun to the player;\n\totherwise;\n\t\tdecrease the current volume of the noun by 2.0 fl oz;\n\t\tif the current volume of the noun is less than 0.0 fl oz, change the current volume of the noun to 0.0 fl oz;\n\t\tsay "[The person asked] gulps down some [liquid of the noun].";\n\tend if.\n\nAfter someone giving something to the player:\n\tsay "\'Here,\' says [the person asked], handing [the noun] back to you. \'Thanks, I owe you one.\'";\n\tend the game in victory.\n\nTest me with "x milk / x lemonade / drink lemonade / drink milk / pour lemonade into glass / drink milk / x milk / drink milk / g / i / fill glass with lemonade / drink lemonade / drop glass / drink lemonade / pitcher".\n\nTest Ted with "out / give milk to ted / drink milk / g / g / g / give glass to ted / in / fill glass with lemonade / out / give lemonade to ted / wait / z / z / z ".\n');
+    myProject.pasteCode('"1691"\n\nFort James is a room. "The enclosure of Fort James is a large, roughly hexagonal court walled with heavy stone.  The walls face the entrance to Port Royal Harbour, and the battery of guns is prepared to destroy any enemy ship arriving."\n\n[Unless we arrange otherwise, this will be the first room in the game because it is the first we have defined.]\n\n[For subsequent rooms, we do not have to say explicitly that they are rooms, as long as they are connected to a room on the map. For instance, this will automatically make Thames Street End a room:]\n\nThames Street End is south of Fort James. "The ill-named Thames Street runs from here -- at the point of the peninsula -- all the way east among houses and shops, through the Fish Market, edging by the round front of Fort Carlisle, to the point where the town stops and there is only sandy spit beyond.  Most of that stretch is full of people at all hours.  Imported goods are moved off of ships and taken to distributors; exported goods are brought to be loaded; and there is one public house and brothel for every ten inhabitants.\n\nLime Street, wider and healthier but not as rich, runs directly south, and to the north the road opens up into the courtyard of Fort James."\n\nWater Lane is east of Thames Street End. "Here Thames Street -- never very straight -- goes steeply southeast for a portion before continuing more directly to the east.\n\nWater Lane runs south toward Queen Street, and facing onto it is the New Prison -- which, in the way of these things, is neither.  It did serve in that capacity for a time, and in a measure of the villainy which has been usual in Port Royal from its earliest days, it is nearly the largest building in the town."\n\n[If we have some concern that the room name will be confused with an existing name, we can be more explicit about it using "called":]\n\nEast of Water Lane is a room called Thames Street at the Wherry Bridge.  Thames Street at the Wherry Bridge has the description "To the southwest is the fishmarket; directly across the street is the entrance to a private alley through a brick archway."\n\nThe Fishmarket is southwest of Thames Street at the Wherry Bridge.\n\nThe Private Alley is south of Thames Street at the Wherry Bridge. "You\'re just outside the tavern the Feathers. To the north, under a pretty little archway, is the active mayhem of Thames Street, but the alley narrows down to a dead end a little distance to the south."\n\n[And now we get "inside", which generates a space treated as its own area on the map.]\n\nThe Feathers is inside from the Private Alley.  "Newly built with brick, replacing the older Feathers tavern that used to stand here. It sells wines in quantity, as well as serving them directly, and the goods are always of the best quality. There\'s a room upstairs for those wanting to stay the night." The Feathers Bedroom is above the Feathers.\n\nThames Street by the King\'s House is east of Thames Street at the Wherry Bridge.  "The King\'s House is reserved for the use of the Governor, but he does not live in it, and it is frequently being rented out to some merchant so that the government will at least derive some value from it. It is nearly the least interesting establishment on Thames Street, and the crowd -- which, to the west, is extremely dense -- here thins out a bit."\n\nThames Street before Fort Carlisle is east of Thames Street by the King\'s House. "Here Thames Street, formerly a respectable width, narrows to a footpath in order to edge around the front of Fort Carlisle, underneath the mouths of the cannon.\n\nThere are no buildings on the harbour side of Thames Street at this point, which means that you have an unusually good view of the ships at dock, water beyond, and the Blue Mountains rising on the other side of the harbour."\n\n[We can also invert the order in which we declare things, like this:]\n\nSouth of Thames Street before Fort Carlisle is a room called Fort Carlisle. The description of Fort Carlisle is "Handsomely arrayed with cannons which you could fire at any moment -- though of course there are ships at dock which might be in the way."\n\n[And if we like we can declare a number of rooms for which we will come back and write the descriptions later. There is no obligation for the description to occur at the first definition of the room.]\n\nLime Street is south of Thames Street End.\n\nQueen Street End is south of Lime Street.\n\nQueen Street Middle is east of Queen Street End.\n\n[For efficiency, we can also write multiple sets of connections at once:]\n\nQueen Street East is east of Queen Street Middle and south of Private Alley.\n\nQueen Street at the Prison is east of Queen Street East.\n\n[Clicking Go will translate this description into a sketchy but working simulation of Port Royal, in which we can type movement commands like EAST or SOUTH to explore the streets. Looking at the World tab of the Index, we can also see a schematic map of the simulation as it currently stands. Like the rest of the Index, this is provided entirely for the author\'s benefit, and is not visible to the player. (Though if we do decide that we want players to have access to a printed map while they play, Inform can help: we will return to the layout of Port Royal in the chapter on Publishing.)]\n\n[The following Test command allows us to type TEST ME and explore the map we just devised:]\n\nTest me with "s / e / e / e / e / s / n / w / w / s / in / up / down / out / s / e / w / w / w / n / n / e / e / sw".\n');
 }
 </script>
-<a href="javascript:pasteCode300()"><img border=0 src=../doc_images/paste.png></a> &quot;Lemonade&quot;
+<a href="javascript:pasteCode83()"><img border=0 src=../doc_images/paste.png></a> &quot;1691&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A volume is a kind of value. 15.9 fl oz specifies a volume with parts ounces and tenths (optional, preamble optional).
+<blockquote><font color="#000080">Fort James is a room. &quot;The enclosure of Fort James is a large, roughly hexagonal court walled with heavy stone.  The walls face the entrance to Port Royal Harbour, and the battery of guns is prepared to destroy any enemy ship arriving.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A fluid container is a kind of container. A fluid container has a volume called a fluid capacity. A fluid container has a volume called current volume.
+<p>Unless we arrange otherwise, this will be the first room in the game because it is the first we have defined.
+<p>
+<p>For subsequent rooms, we do not have to say explicitly that they are rooms, as long as they are connected to a room on the map. For instance, this will automatically make Thames Street End a room:
+<p>
+<blockquote><font color="#000080">Thames Street End is south of Fort James. &quot;The ill-named Thames Street runs from here -- at the point of the peninsula -- all the way east among houses and shops, through the Fish Market, edging by the round front of Fort Carlisle, to the point where the town stops and there is only sandy spit beyond.  Most of that stretch is full of people at all hours.  Imported goods are moved off of ships and taken to distributors; exported goods are brought to be loaded; and there is one public house and brothel for every ten inhabitants.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The fluid capacity of a fluid container is usually 12.0 fl oz. The current volume of a fluid container is usually 0.0 fl oz.
+<blockquote><font color="#000080">Lime Street, wider and healthier but not as rich, runs directly south, and to the north the road opens up into the courtyard of Fort James.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Liquid is a kind of value. The liquids are water, milk, lemonade, and iced tea. A fluid container has a liquid.
+<blockquote><font color="#000080">Water Lane is east of Thames Street End. &quot;Here Thames Street -- never very straight -- goes steeply southeast for a portion before continuing more directly to the east.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining a fluid container:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is empty,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You catch just a hint of [the liquid of the noun] at the bottom.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] contains [current volume of the noun in rough terms] of [liquid of the noun].&quot;
+<blockquote><font color="#000080">Water Lane runs south toward Queen Street, and facing onto it is the New Prison -- which, in the way of these things, is neither.  It did serve in that capacity for a time, and in a measure of the villainy which has been usual in Port Royal from its earliest days, it is nearly the largest building in the town.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say (amount - a volume) in rough terms:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the amount is less than 0.5 fl oz
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;a swallow or two&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if tenths part of amount is greater than 3 and tenths part of amount is less than 7;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let estimate be ounces part of amount;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[estimate in words] or [estimate plus 1 in words] fluid ounces&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if tenths part of amount is greater than 6, increase amount by 1.0 fl oz;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;about [ounces part of amount in words] fluid ounce[s]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<p>If we have some concern that the room name will be confused with an existing name, we can be more explicit about it using &quot;called&quot;:
+<p>
+<blockquote><font color="#000080">East of Water Lane is a room called Thames Street at the Wherry Bridge.  Thames Street at the Wherry Bridge has the description &quot;To the southwest is the fishmarket; directly across the street is the entrance to a private alley through a brick archway.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before printing the name of a fluid container (called the target) while not drinking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the target is empty
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;empty &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do nothing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">The Fishmarket is southwest of Thames Street at the Wherry Bridge.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After printing the name of a fluid container (called the target) while not examining:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the target is empty
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do nothing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; of [liquid of the target]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;omit contents in listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">The Private Alley is south of Thames Street at the Wherry Bridge. &quot;You're just outside the tavern the Feathers. To the north, under a pretty little archway, is the active mayhem of Thames Street, but the alley narrows down to a dead end a little distance to the south.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of inserting something into a fluid container:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The second noun] has too narrow a mouth to accept anything but liquids.&quot;
+<p>And now we get &quot;inside&quot;, which generates a space treated as its own area on the map.
+<p>
+<blockquote><font color="#000080">The Feathers is inside from the Private Alley.  &quot;Newly built with brick, replacing the older Feathers tavern that used to stand here. It sells wines in quantity, as well as serving them directly, and the goods are always of the best quality. There's a room upstairs for those wanting to stay the night.&quot; The Feathers Bedroom is above the Feathers.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a fluid container is empty if the current volume of it is 0.0 fl oz. Definition: a fluid container is full if the current volume of it is the fluid capacity of it.
+<blockquote><font color="#000080">Thames Street by the King's House is east of Thames Street at the Wherry Bridge.  &quot;The King's House is reserved for the use of the Governor, but he does not live in it, and it is frequently being rented out to some merchant so that the government will at least derive some value from it. It is nearly the least interesting establishment on Thames Street, and the crowd -- which, to the west, is extremely dense -- here thins out a bit.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;drink from [fluid container]&quot; as drinking.
+<blockquote><font color="#000080">Thames Street before Fort Carlisle is east of Thames Street by the King's House. &quot;Here Thames Street, formerly a respectable width, narrows to a footpath in order to edge around the front of Fort Carlisle, underneath the mouths of the cannon.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of drinking a fluid container:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is empty
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There is no more [liquid of the noun] within.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decrease the current volume of the noun by 0.2 fl oz;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current volume of the noun is less than 0.0 fl oz, change the current volume of the noun to 0.0 fl oz;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You take a sip of [the liquid of the noun][if the noun is empty], leaving [the noun] empty[end if].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">There are no buildings on the harbour side of Thames Street at this point, which means that you have an unusually good view of the ships at dock, water beyond, and the Blue Mountains rising on the other side of the harbour.&quot;
 </font></blockquote><p>
 <p>
-<p>We have allowed all liquids to be drunk, but it would be possible also to add checking, if we had a game where some liquids were beverages and others were, say, motor oil.
+<p>We can also invert the order in which we declare things, like this:
 <p>
-<blockquote><font color="#000080">Understand the command &quot;fill&quot; as something new.
+<blockquote><font color="#000080">South of Thames Street before Fort Carlisle is a room called Fort Carlisle. The description of Fort Carlisle is &quot;Handsomely arrayed with cannons which you could fire at any moment -- though of course there are ships at dock which might be in the way.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;pour [fluid container] in/into/on/onto [fluid container]&quot; as pouring it into. Understand &quot;empty [fluid container] into [fluid container]&quot; as pouring it into. Understand &quot;fill [fluid container] with/from [fluid container]&quot; as pouring it into (with nouns reversed).
+<p>And if we like we can declare a number of rooms for which we will come back and write the descriptions later. There is no obligation for the description to occur at the first definition of the room.
+<p>
+<blockquote><font color="#000080">Lime Street is south of Thames Street End.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;pour [something] in/into/on/onto [something]&quot; as pouring it into. Understand &quot;empty [something] into [something]&quot; as pouring it into. Understand &quot;fill [something] with/from [something]&quot; as pouring it into (with nouns reversed).
+<blockquote><font color="#000080">Queen Street End is south of Lime Street.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Pouring it into is an action applying to two things.
+<blockquote><font color="#000080">Queen Street Middle is east of Queen Street End.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check pouring it into:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a fluid container, say &quot;You can't pour [the noun].&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not a fluid container, say &quot;You can't pour liquids into [the second noun].&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the second noun, say &quot;You can hardly pour [the noun] into itself.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the liquid of the noun is not the liquid of the second noun
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is empty, change the liquid of the second noun to the liquid of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Mixing [the liquid of the noun] with [the liquid of the second noun] would give unsavory results.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is empty, say &quot;No more [liquid of the noun] remains in [the noun].&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is full, say &quot;[The second noun] cannot contain any more than it already holds.&quot; instead.
+<p>For efficiency, we can also write multiple sets of connections at once:
+<p>
+<blockquote><font color="#000080">Queen Street East is east of Queen Street Middle and south of Private Alley.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out pouring it into:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let available capacity be the fluid capacity of the second noun minus the current volume of the second noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the available capacity is greater than the current volume of the noun, change the available capacity to the current volume of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;increase the current volume of the second noun by available capacity;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decrease the current volume of the noun by available capacity.
+<blockquote><font color="#000080">Queen Street at the Prison is east of Queen Street East.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report pouring it into:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[if the noun is empty][The noun] is now empty;[otherwise][The noun] now contains [current volume of the noun in rough terms] of [liquid of the noun]; [end if]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[the second noun] contains [current volume of the second noun in rough terms] of [liquid of the second noun][if the second noun is full], and is now full[end if].&quot;
+<p>Clicking Go will translate this description into a sketchy but working simulation of Port Royal, in which we can type movement commands like EAST or SOUTH to explore the streets. Looking at the World tab of the Index, we can also see a schematic map of the simulation as it currently stands. Like the rest of the Index, this is provided entirely for the author's benefit, and is not visible to the player. (Though if we do decide that we want players to have access to a printed map while they play, Inform can help: we will return to the layout of Port Royal in the chapter on Publishing.)
+<p>
+<p>The following Test command allows us to type TEST ME and explore the map we just devised:
+<p>
+<blockquote><font color="#000080">Test me with &quot;s / e / e / e / e / s / n / w / w / s / in / up / down / out / s / e / w / w / w / n / n / e / e / sw&quot;.
 </font></blockquote><p>
-<p>
-<p>This is probably a drier description than we would actually want in our story, but it does allow us to see that the mechanics of the system are working, so we'll stick with this for the example.
-<p>
-<p>Now we need a trick from a later chapter, which allows something to be described in terms of a property it has. This way, the story will understand not only &quot;pitcher&quot; and &quot;glass&quot; but also &quot;pitcher of lemonade&quot; and &quot;glass of milk&quot; -- and, indeed, &quot;glass of lemonade&quot;, if we empty the glass and refill it with another substance:
-<p>
-<blockquote><font color="#000080">Understand the liquid property as describing a fluid container. Understand &quot;of&quot; as a fluid container.
-</font></blockquote><p>
-<p>
-<p>And now the scenario itself:
-<p>
-<blockquote><font color="#000080">The Porch is a room. The porch swing is an enterable supporter in the Porch. &quot;An inviting swing hangs here at the end of the porch, allowing you to enjoy the summer with a cool beverage, and watch your neighbor Ted mowing his lawn with the very last manual powerless lawnmower on the block.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The glass is a fluid container carried by the player. The liquid of the glass is milk. The current volume of the glass is 0.8 fl oz.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The pitcher is a fluid container in the Porch. The fluid capacity of the pitcher is 32.0 fl oz. The current volume of the pitcher is 20.0 fl oz. The liquid of the pitcher is lemonade.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Ted's Lawn is outside from the Porch. Ted is a man in Ted's Lawn. &quot;Ted has taken off his shirt, but still seems a bit oppressed by the sun.&quot; The description of Ted is &quot;He looks hot. In all senses.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After deciding the scope of the player: place Ted in scope.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of doing something to Ted when the player is in the Porch: say &quot;You can't really interact with Ted from this distance, except in the sense of eyeing him surreptitiously.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of giving an empty fluid container to Ted: say &quot;Yes, taunt the poor man, why don't you?&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of giving a fluid container to Ted when the liquid of the noun is milk: say &quot;Ted looks ruefully at the milk. 'Thanks, but I'm lactose-intolerant,' he says.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The block giving rule is not listed in the check giving it to rules.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Ted is in the location
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Ted carries a fluid container (called refreshment), try Ted drinking the refreshment;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise if a random chance of 1 in 3 succeeds, say &quot;Ted pushes the ineffective mower over some dandelions.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of someone drinking a fluid container:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is empty
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try the person asked giving the noun to the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decrease the current volume of the noun by 2.0 fl oz;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current volume of the noun is less than 0.0 fl oz, change the current volume of the noun to 0.0 fl oz;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The person asked] gulps down some [liquid of the noun].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After someone giving something to the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Here,' says [the person asked], handing [the noun] back to you. 'Thanks, I owe you one.'&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x milk / x lemonade / drink lemonade / drink milk / pour lemonade into glass / drink milk / x milk / drink milk / g / i / fill glass with lemonade / drink lemonade / drop glass / drink lemonade / pitcher&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test Ted with &quot;out / give milk to ted / drink milk / g / g / g / give glass to ted / in / fill glass with lemonade / out / give lemonade to ted / wait / z / z / z &quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc218.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc28.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc217.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc219.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e244"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex244.html#e244 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>5</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex244.html#e244 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Up and Up</font></b></a><br>Adding a short message as the player approaches a room, before the room description itself appears.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex244.html#e244 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc27.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc29.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

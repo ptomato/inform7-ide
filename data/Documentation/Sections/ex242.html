@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.22. Deciding the scope of something</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.23. Segmented substitutions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,117 +6,89 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Rock Garden" -->
-<!-- SEARCH SECTION "Ex 285" -->
-<!-- SEARCH SORT "Ex 017-022-285" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc281.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc283.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.22. Deciding the scope of something</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Chanel Version 1" -->
+<!-- SEARCH SECTION "Ex 355" -->
+<!-- SEARCH SORT "Ex 021-023-355" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc374.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc376.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.23. Segmented substitutions</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> &quot;Scope&quot; is a term of art in interactive fiction programming: it means the collection of things which can be interacted with at any given moment, which depends on who you are and where you are. Commands typed by the player will only be allowed to go forward into actions if the things they refer to are &quot;in scope&quot;. Inform also needs to determine scope at other times, too: for instance, when deciding whether a rule conditional on being &quot;in the presence of&quot; something is valid. It is a bad idea to say anything during this activity.
+<p>A &quot;segmented&quot; substitution is a syntax where text is placed between two or more different text substitutions. Examples include:
 <p>
-<p><b>2. The default behaviour.</b> Is complicated: see the Inform Designer's Manual, 4th edition, page 227. Briefly, the scope for someone consists of everything in the same place as them, unless it is dark.
-<p>
-<p><b>3. Examples.</b> (a) We very rarely want to forbid the player to refer to things close at hand, but often want to allow references to distant ones. For instance, a mirage of something which is not present at all:
-<p>
-<blockquote><font color="#000080">After deciding the scope of the player while in the Shrine: place the holy grail in scope.
+<blockquote><font color="#000080">&quot;This hotel is [if the player is female]just awful[otherwise]basic[end if].&quot;
+<br>&quot;Annie [one of]dances[or]sulks[or]hangs out at Remo's[at random].&quot;
 </font></blockquote><p>
 <p>
-<p>The special phrase &quot;place ... in scope&quot; does what it suggests. Ordinarily if something is placed in scope, then so are its parts and (in the case of a supporter or a transparent or open container) its contents; but we can also &quot;place the box in scope, but not its contents&quot; if we really need to place just the box itself in scope.
+<p>To create such syntaxes, it is not enough just to define how each expands into I6 code: for one thing we may need to know about the later terms in order to expand the earlier ones, which is normally impossible, and for another thing, the individual text substitutions mean nothing in isolation. For instance, Inform produces a problem if the following is tried:
 <p>
-<p>(b) Another useful device is to be able to see, but not touch, another room:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode70(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('The Cloakroom is a room. "This is just a cloakroom, but through a vague, misty mirror-window you can make out the Beyond." After looking in the Cloakroom, say "In the mirror you can see [list of things in the Beyond]."\n\nAfter deciding the scope of the player while in the Cloakroom: place the Beyond in scope.\n\nThe Beyond is a room. Johnny Depp is a man in the Beyond.\n\n');
-}
-</script>
-<a href="javascript:pasteCode70()"><img border=0 src=../doc_images/paste.png></a> The Cloakroom is a room. &quot;This is just a cloakroom, but through a vague, misty mirror-window you can make out the Beyond.&quot; After looking in the Cloakroom, say &quot;In the mirror you can see [list of things in the Beyond].&quot;
+<blockquote><font color="#000080">&quot;The hotel [at random] is on fire.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After deciding the scope of the player while in the Cloakroom: place the Beyond in scope.
+<p>because &quot;[at random]&quot; is only legal when closing a &quot;[one of] ...&quot; construction. But if &quot;[at random]&quot; had been defined as just another text substitution, Inform would not have been able to detect such problems.
+<p>
+<p>Inform therefore allows us to mark text substitutions as being any of three special kinds: beginning, in the middle of, or ending a segmented substitution. There can be any number of alternative forms for each of these three variants. The syntax policed is that
+<p>
+<blockquote><font color="#000080">(a) Any usage must lie entirely within a single say or piece of text.
+<br>(b) It must begin with exactly one of the substitutions marked as &quot;beginning&quot;.
+<br>(c) It can contain any number, including none, of the substitutions marked as &quot;middle&quot; (if there are any).
+<br>(d) It must end with exactly one of the substitutions marked as &quot;ending&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Beyond is a room. Johnny Depp is a man in the Beyond.
+<p>A simple example:
+<p>
+<blockquote><font color="#000080">To say emphasis on -- beginning say_emphasis_on: (- style underline; -).
+<br>To say emphasis off -- ending say_emphasis_on: (- style roman; -).
 </font></blockquote><p>
 <p>
-<p>(This must, however, also be a mirage, as at time of writing Mr Depp is alive and as well as can be expected following the reviews of &quot;Charlie and the Chocolate Factory&quot;.) When a room is placed in scope, this is understood as placing its contents in scope rather than the room-object itself. So &quot;place the Ballroom in scope&quot; allows the player to talk about the dancers, the chamber musicians and so forth, but not to &quot;EXAMINE BALLROOM&quot; as such. (This is sensible because actions like examining apply to things: and a room, unlike a container or a supporter, is not a kind of thing.)
-<p>
-<p>(c) In darkness, the scope of someone is ordinarily restricted to his or her possessions (and body), but we can override that:
-<p>
-<blockquote><font color="#000080">After deciding the scope of the player while in darkness: place the location in scope.
-</font></blockquote><p>
-<p>
-<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows the action it would be taking if the current line of command grammar were to be accepted, but it does not yet know to what objects that command would be applied. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
+<p>This creates &quot;[emphasis on]&quot; and &quot;[emphasis off]&quot; such that they can only be used as a pair. The keyword &quot;say_emphasis_on&quot;, which must be a valid I6 identifier (and hence a single word), is never seen by the user: it is simply an ID token so that Inform can identify the construction to which these belong. (We recommend that anybody creating such constructions should choose an ID token which consists of the construction's name but with underscores in place of spaces: this means that the namespace for ID tokens will only clash if the primary definitions would have clashed in any case.)
 <p>
 <p><hr><p>
-<a name="e129"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex129.html#e129 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>282</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex129.html#e129 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Peeled</font></b></a><br>Two different approaches to adjusting what the player can interact with, compared.<p></td></tr></table>
-<a name="e311"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex311.html#e311 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>283</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex311.html#e311 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Scope for listening different from scope for seeing</font></b></a><br>Using "deciding the scope" to change the content of lists such as "the list of audible things which can be touched by the player".<p></td></tr></table>
-<a name="e22"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex22.html#e22 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>284</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex22.html#e22 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ginger Beer</font></b></a><br>A portable magic telescope which allows the player to view items in another room of his choice.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e242"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc282.html#e242 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>285</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc282.html#e242 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Rock Garden</font></b></a><br>A simple open landscape where the player can see between rooms and will automatically move to touch things in distant rooms.<p></td></tr></table>
+<a name="e242"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc375.html#e242 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>355</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc375.html#e242 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Chanel Version 1</font></b></a><br>Making paired italic and boldface tags like those used by HTML for web pages.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex242.html#e242 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>A map of linked rooms works well for modeling enclosed or indoor space, and somewhat less well for modeling large open spaces, where a person should reasonably be able to see things which are much too far away to touch. With some modifications to scoping, though, we can create an environment where objects in nearby rooms are described and viewable, and where the player will automatically move towards distant items before interacting with them physically.
+<p>HTML uses angled brackets to achieve effects, and places italicised text between &lt;i&gt; and &lt;/i&gt; tags; and similarly boldface between &lt;b&gt; and &lt;/b&gt;. We can mimic this very easily by setting each up as a segmented substitution:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode378(code) {
+function pasteCode444(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Rock Garden"\n\nRock Garden West is west of Rock Garden East. Rock Garden East contains a rake. Rock Garden West contains a bench and a maple leaf. The bench is an enterable supporter.\n\nIntervisibility relates rooms to each other in groups. The verb to be connected with implies the intervisibility relation.\n\nDefinition: a room is inter-visible if it is connected with more than one room.\n\nRock Garden West is connected with Rock Garden East.\n\nAfter deciding the scope of the player when the location is an inter-visible room:\n\trepeat with other place running through rooms which are connected with the location\n\tbegin;\n\t\tif the other place is the location, do nothing;\n\t\totherwise place the other place in scope;\n\tend repeat.\n\nRule for reaching inside a room (called target) which is connected with the location:\n\tlet way be the best route from the location to the target;\n\tif the way is not a direction\n\tbegin;\n\t\tsay "You can\'t get over to [the target] from here.";\n\t\tdeny access;\n\tend if;\n\tsay "(first heading [way])[command clarification break]";\n\ttry going way;\n\tif the player is in the target, allow access;\n\totherwise deny access.\n\nAfter looking when the location is an inter-visible room:\n\trepeat with other place running through rooms which are connected with the location\n\tbegin;\n\t\tif the other place is not the location, describe locale for other place;\n\tend repeat.\n\nTest me with "get rake / drop rake / sit on bench / get rake".\n');
+    myProject.pasteCode('"Chanel Version 1"\n\nTo say i  -- beginning say_i -- running on: (- style underline; -).\nTo say /i  -- ending say_i -- running on: (- style roman; -).\nTo say b -- beginning say_b -- running on: (- style bold; -).\nTo say /b -- ending say_b -- running on: (- style roman; -).\n\nPlace Vendôme is a room. "[i]Fashion fades, only style remains the same[/i] ([b]Coco Chanel[/b]). And this elegant drawing-room, once a milliner\'s shop, is a case in point."\n\nInstead of going nowhere, say "[i]Don\'t spend time beating on a wall, hoping to transform it into a door.[/i] ([b]Coco Chanel[/b]) This one is a wall.".\n\nTest me with "look / e".\n\n');
 }
 </script>
-<a href="javascript:pasteCode378()"><img border=0 src=../doc_images/paste.png></a> &quot;Rock Garden&quot;
+<a href="javascript:pasteCode444()"><img border=0 src=../doc_images/paste.png></a> &quot;Chanel Version 1&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rock Garden West is west of Rock Garden East. Rock Garden East contains a rake. Rock Garden West contains a bench and a maple leaf. The bench is an enterable supporter.
+<blockquote><font color="#000080">To say i  -- beginning say_i -- running on: (- style underline; -).
+<br>To say /i  -- ending say_i -- running on: (- style roman; -).
+<br>To say b -- beginning say_b -- running on: (- style bold; -).
+<br>To say /b -- ending say_b -- running on: (- style roman; -).
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Intervisibility relates rooms to each other in groups. The verb to be connected with implies the intervisibility relation.
+<blockquote><font color="#000080">Place Vendôme is a room. &quot;[i]Fashion fades, only style remains the same[/i] ([b]Coco Chanel[/b]). And this elegant drawing-room, once a milliner's shop, is a case in point.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a room is inter-visible if it is connected with more than one room.
+<blockquote><font color="#000080">Instead of going nowhere, say &quot;[i]Don't spend time beating on a wall, hoping to transform it into a door.[/i] ([b]Coco Chanel[/b]) This one is a wall.&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rock Garden West is connected with Rock Garden East.
+<blockquote><font color="#000080">Test me with &quot;look / e&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After deciding the scope of the player when the location is an inter-visible room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with other place running through rooms which are connected with the location
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the other place is the location, do nothing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise place the other place in scope;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
+<p>We have had to use square instead of angle brackets, but then, &quot;in order to be irreplaceable one must always be different&quot; (Coco Chanel).
 <p>
-<blockquote><font color="#000080">Rule for reaching inside a room (called target) which is connected with the location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from the location to the target;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the way is not a direction
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't get over to [the target] from here.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deny access;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first heading [way])[command clarification break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try going way;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the target, allow access;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise deny access.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After looking when the location is an inter-visible room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with other place running through rooms which are connected with the location
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the other place is not the location, describe locale for other place;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;get rake / drop rake / sit on bench / get rake&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc282.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>(Marking these as substitutions which run on prevents unexpected paragraph breaks if they should appear immediately after the end of a sentence.)
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc375.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e263"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex263.html#e263 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>286</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex263.html#e263 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Stately Gardens</font></b></a><br>An open landscape where the player can see landmarks in nearby areas, with somewhat more complex room descriptions than the previous example, and in which we also account for size differences between things seen at a distance.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc281.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc283.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc374.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc376.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

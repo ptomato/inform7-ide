@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.23. Titling and abbreviation</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.25. To say one of</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,117 +6,139 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Port Royal 5" -->
-<!-- SEARCH SECTION "Ex 323" -->
-<!-- SEARCH SORT "Ex 020-023-323" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc343.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Publishing</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc345.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.23. Titling and abbreviation</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Uncommon Ground" -->
+<!-- SEARCH SECTION "Ex 357" -->
+<!-- SEARCH SORT "Ex 021-025-357" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc376.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.25. To say one of</b></font></td></tr></table>
 <p>
-<p>The main title of the map is the value of &quot;title&quot; for the whole map, so for instance we might write:
+<p>Many of the invocation syntaxes described in the previous section are used in the definition by the Standard Rules of the &quot;[one of] ... [or] ... [purely at random]&quot; construction, so it makes a good example of how they can be used.
 <p>
-<blockquote><font color="#000080">Index map with title set to &quot;Oxford and its Environs&quot;.
+<p>First, this is a segmented substitution with a single possible beginning (&quot;[one of]&quot;), a single possible middle (&quot;[or]&quot;) but a choice of many possible endings. Almost everything is compiled by the invocation of the beginning:
+<p>
+<blockquote><font color="#000080">To say one of -- beginning say_one_of:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-allocate-storage:say_one_of}I7_ST_say_one_of-->{-counter:say_one_of}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;= {-final-segment-marker}(I7_ST_say_one_of-->{-counter:say_one_of}, {-segment-count});
+<br>switch((I7_ST_say_one_of-->{-advance-counter:say_one_of})%({-segment-count}+1) - 1) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;0: -).
+<br>To say or -- continuing say_one_of:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-segment-count}: -).
+<br>To say purely at random -- ending say_one_of with marker I7_SOO_PAR:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-close-brace} -).
 </font></blockquote><p>
 <p>
-<p>The subtitle settings apply to the subtitles used for each of the levels, so for instance
+<p>The 3rd invocation of this (say) might compile the following:
 <p>
-<blockquote><font color="#000080">Index map with subtitle of level -1 set to &quot;Tunnels and Sewers&quot;.
+<blockquote><font color="#000080">I7_ST_say_one_of-->2 = I7_SOO_PAR(I7_ST_say_one_of-->2, 4);
+<br>switch((I7_ST_say_one_of-->2)%5 - 1) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;0: ... first text ...
+<br>&nbsp;&nbsp;&nbsp;&nbsp;1: ... second text ...
+<br>&nbsp;&nbsp;&nbsp;&nbsp;2: ... third text ...
+<br>&nbsp;&nbsp;&nbsp;&nbsp;3: ... fourth text ...
+<br>}
 </font></blockquote><p>
 <p>
-<p>Names of individual rooms can be controlled with:
+<p>First, we notified Inform that it needs to allocate an array (I7_ST_say_one_of) providing storage associated with the counter &quot;say_one_of&quot;. This we used to count off individual invocations of &quot;[one of]&quot;, so that each would have its own word of storage - for the 3rd invocation, I7_ST_say_one_of-->2. We then call a state-changing routine, in this case I7_SOO_PAR, which is allowed to know the previous state and also the number of options available, and which returns the new state. The state is supposed to be the option chosen last time, but that means that there are not 4, but 5 possibilities: 0 for &quot;there was no last time&quot;, then 1 to 4 for the possible outcomes. We reduce the state mod 5 to obtain the decision this time, and subtract 1 because it happens to be convenient to make the switch statement run from 0 to 3 rather than 1 to 4. (The reason we reduce the state mod 5 is to allow the state-changer to squirrel away secret information in the upper bits of the state, if it wants to. Note that subtracting one means that the switch value might be -1, which results in no text being printed: thus if the state-changer chooses 0, it can decide on none of the above.)
 <p>
-<blockquote><font color="#000080">Index map with name of Radcliffe Camera set to &quot;Library&quot;.
+<p>In this design, the marker attached to the choice of ending substitution is the name of the I6 state-changer: here is the I7_SOO_PAR routine.
+<p>
+<blockquote><font color="#000080">[ I7_SOO_PAR oldval count; if (count <= 1) return count; return random(count); ];
 </font></blockquote><p>
 <p>
-<p>(By default, the name of a room is its name in the main IF project, of course.) The smallest writing on the map is normally that used to label unorthodox or unclear exits (in particular, those going from one layer to another): this is what the &quot;annotation&quot; size, font and colour are used for.
+<p>As it happens, this ignores the old value: after all, it is meant to be purely at random, and nothing could be less pure than taking the last outcome into consideration when choosing the next.
 <p>
-<p>For most ways to set up the map, it's a practical necessity to abbreviate names of rooms, or they will spill out all over each other. Inform does this using the &quot;room-name-length&quot; setting. (The &quot;annotation-name-length&quot; is analogous.) For instance, if this setting is 5, then Inform will reduce the text of a name to at most 5 characters. It does this by successively throwing out spaces, lower case vowels, then other lower case letters, punctuation marks and finally upper case letters, always starting at the back of the name and working inwards: the process stops as soon as the name is short enough. For instance, &quot;Reading&quot; is abbreviated to &quot;Redng&quot;, &quot;Shangri-La&quot; to &quot;Shn-La&quot; and &quot;Cloud-Cuckoo-Land&quot; to &quot;C-C-L&quot;. The result can be a little comical, but is surprisingly unambiguous in practice. Abbreviation can effectively be abolished by raising the &quot;room-name-length&quot; to 128 (the highest permitted level), and note that the setting can be changed for individual rooms, so it is possible to have some room names abbreviated and others not, or in different degrees.
+<p>Note that the counter say_one_of is advanced in invocation of the head. It might seem that the tidier design, somehow, would be to advance the counter in the invocation of the tails, but this is not a good idea. In general it is not safe to assume that the counter will have the same value when the tail is invoked that it had when the head was invoked, because segmented say constructions can legally be nested in Inform strings. Because of this, it is best to deal with a counter entirely in a single invocation, either of the beginning or the ending.
+<p>
+<p>Because &quot;[one of] ... [or] ...&quot; is such a useful construction - switching between alternative forms of text, which writers of IF very often do - the above implementation is intentionally left open for new endings to be added, and the examples below show how easily this can be done.
 <p>
 <p><hr><p>
-<a name="e106"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex106.html#e106 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>322</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex106.html#e106 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Baedeker</font></b></a><br>Creating a floorplan of the cathedral using the locations from previous examples.<p></td></tr></table>
+<a name="e115"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex115.html#e115 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>356</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex115.html#e115 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Blink</font></b></a><br>Making a "by atmosphere" token, allowing us to design our own text variations such as "[one of]normal[or]gloomy[or]scary[by atmosphere]".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex115.html#e115 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e174"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc344.html#e174 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>323</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc344.html#e174 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Port Royal 5</font></b></a><br>Port Royal scenario given instructions for an EPS map.<p></td></tr></table>
+<a name="e174"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc377.html#e174 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>357</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc377.html#e174 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Uncommon Ground</font></b></a><br>Making a "by viewpoint" token, allowing us to design our own text variations such as "[one of]ugly[or]rather cute[by viewpoint]" depending on the identity of the player at the moment.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex174.html#e174 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>A slightly more challenging case than the &quot;by atmosphere&quot; example is one in which we want to create text variations depending on the identity of our player character.
+<p>
+<p>What we want to do is build a switch statement in I6, one that looks something like
+<p>
+<blockquote><font color="#000080">switch(player)
+<br>{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;yourself: print &quot;quaint&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;Lolita: print &quot;thrilling&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;default: print &quot;squalid&quot;;
+<br>}
+</font></blockquote><p>
+<p>
+<p>out of I7 that looks like this:
+<p>
+<blockquote><font color="#000080">say &quot;[show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show]&quot;.
+</font></blockquote><p>
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode418(code) {
+function pasteCode446(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"1691"\n\nFort James is a room.\n\nThames Street End is south of Fort James.\n\nLime Street is south of Thames Street End. West of Thames Street End is north of Fisher\'s Row. The description of Fisher\'s Row is "A waterfront street that runs south towards Chocolata Hole, where the small craft are harboured. It also continues north around the tip of the peninsula from here, turning into the east-west Thames Street."\n\nWater Lane is east of Thames Street End.\n\nEast of Water Lane is a room called Thames Street at the Wherry Bridge.  Thames Street at the Wherry Bridge has the description "To the southwest is the fishmarket; directly across the street is the entrance to a private alley through a brick archway."\n\nThe Fishmarket is southwest of Thames Street at the Wherry Bridge.\n\nThe Private Alley is south of Thames Street at the Wherry Bridge.\n\nThames Street by the King\'s House is east of Thames Street at the Wherry Bridge.\n\nThames Street before Fort Carlisle is east of Thames Street by the King\'s House.\n\nSouth of Thames Street before Fort Carlisle is a room called Fort Carlisle. The description of Fort Carlisle is "Handsomely arrayed with cannons which you could fire at any moment -- though of course there are ships at dock which might be in the way."\n\nQueen Street End is south of Lime Street.\n\nQueen Street Middle is east of Queen Street End.\n\nQueen Street East is east of Queen Street Middle and south of Private Alley.\n\nQueen Street at the Prison is east of Queen Street East.\n\nIndex map with an EPS file and\n\tFisher\'s Row mapped southwest of Thames Street End,\n\troom-size set to 50 and room-name-size set to 10,\n\troom-name-length set to 15,\n\troute-thickness set to 2,\n\troom-outline set to off,\n\tmap-outline set to off,\n\troute-colour set to "Chocolate",\n\troom-colour set to "Burly Wood",\n\ttitle set to "Port Royal, 1691",\n\tfont set to "Baskerville",\n\troom-offset of Thames Street by the King\'s House set to 160&-40,\n\troom-offset of Thames Street before Fort Carlisle set to 210&10,\n\troom-offset of Fort Carlisle set to 210&0,\n\troom-offset of Fort James set to -90&-20,\n\troom-offset of Water Lane set to 0&20,\n\troom-offset of Queen Street End set to 5&0.\n\n');
+    myProject.pasteCode('"Uncommon Ground"\n\nThe Mud Village is a room. "You stand at the center of a [show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show] mud village."\n\nLeforge is a man in the Mud Village. Lolita is a woman in the Mud Village.\n\nInstead of waiting:\n\tif the player is Lolita, change the player to Leforge;\n\tif the player is yourself, change the player to Lolita;\n\tsay "You jump bodies. Whoops!"\n\nTo say show to (N - a person) -- beginning say_seen_by:\n\t(-\n\t\tswitch(player)\n\t\t{-open-brace}\n\t\t{N}:\n\t-);\n\nTo say to (N - a person) -- continuing say_seen_by:\n\t(-\n\t\t{N}:\n\t-);\n\nTo say to everyone else -- continuing say_seen_by:\n\t(-\n\t\tdefault:\n\t-)\n\nTo say end show -- ending say_seen_by:\n\t(-\n\t\t{-close-brace}\n\t-)\n\nTest me with "look / z / look / z / look".\n\n');
 }
 </script>
-<a href="javascript:pasteCode418()"><img border=0 src=../doc_images/paste.png></a> &quot;1691&quot;
+<a href="javascript:pasteCode446()"><img border=0 src=../doc_images/paste.png></a> &quot;Uncommon Ground&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Fort James is a room.
+<blockquote><font color="#000080">The Mud Village is a room. &quot;You stand at the center of a [show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show] mud village.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Thames Street End is south of Fort James.
+<blockquote><font color="#000080">Leforge is a man in the Mud Village. Lolita is a woman in the Mud Village.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Lime Street is south of Thames Street End. West of Thames Street End is north of Fisher's Row. The description of Fisher's Row is &quot;A waterfront street that runs south towards Chocolata Hole, where the small craft are harboured. It also continues north around the tip of the peninsula from here, turning into the east-west Thames Street.&quot;
+<blockquote><font color="#000080">Instead of waiting:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is Lolita, change the player to Leforge;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is yourself, change the player to Lolita;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You jump bodies. Whoops!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Water Lane is east of Thames Street End.
+<blockquote><font color="#000080">To say show to (N - a person) -- beginning say_seen_by:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch(player)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{-open-brace}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{N}:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-);
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">East of Water Lane is a room called Thames Street at the Wherry Bridge.  Thames Street at the Wherry Bridge has the description &quot;To the southwest is the fishmarket; directly across the street is the entrance to a private alley through a brick archway.&quot;
+<blockquote><font color="#000080">To say to (N - a person) -- continuing say_seen_by:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{N}:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-);
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Fishmarket is southwest of Thames Street at the Wherry Bridge.
+<blockquote><font color="#000080">To say to everyone else -- continuing say_seen_by:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Private Alley is south of Thames Street at the Wherry Bridge.
+<blockquote><font color="#000080">To say end show -- ending say_seen_by:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{-close-brace}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Thames Street by the King's House is east of Thames Street at the Wherry Bridge.
+<blockquote><font color="#000080">Test me with &quot;look / z / look / z / look&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Thames Street before Fort Carlisle is east of Thames Street by the King's House.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">South of Thames Street before Fort Carlisle is a room called Fort Carlisle. The description of Fort Carlisle is &quot;Handsomely arrayed with cannons which you could fire at any moment -- though of course there are ships at dock which might be in the way.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Queen Street End is south of Lime Street.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Queen Street Middle is east of Queen Street End.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Queen Street East is east of Queen Street Middle and south of Private Alley.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Queen Street at the Prison is east of Queen Street East.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Index map with an EPS file and
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Fisher's Row mapped southwest of Thames Street End,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;room-size set to 50 and room-name-size set to 10,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;room-name-length set to 15,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;route-thickness set to 2,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;room-outline set to off,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;map-outline set to off,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;route-colour set to &quot;Chocolate&quot;,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;room-colour set to &quot;Burly Wood&quot;,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;title set to &quot;Port Royal, 1691&quot;,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;font set to &quot;Baskerville&quot;,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;room-offset of Thames Street by the King's House set to 160&-40,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;room-offset of Thames Street before Fort Carlisle set to 210&10,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;room-offset of Fort Carlisle set to 210&0,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;room-offset of Fort James set to -90&-20,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;room-offset of Water Lane set to 0&20,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;room-offset of Queen Street End set to 5&0.
-</font></blockquote><p>
-<p>
-<p>This sentence has become a long catalogue of specifications. To break it down: we disambiguate the placement of Thames Street End, which otherwise is hard to locate because the directions to and from the room are not symmetrical. Then we apply some general rules about size, font, and color. Finally, we add instructions about offsetting the room locations of a few specific rooms.
-<p>
-<p>This last part is a bit finicky and will not be necessary in many cases, but our goal this time is to create a map diagram that can be superimposed on the real coastal outline of Port Royal at the time. With a bit of editing, the result looks like this:
-<p>
-<p><img border=0 src=../doc_images/portroyal.png>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc344.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>While it would be possible to create id numbers for characters dynamically at the beginning of run-time, the numbers would match the order in which the characters are defined. In a large source it would be easy to create bugs if we moved the definition of a character, so it is probably best to enumerate the characters by hand.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc377.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e175"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex175.html#e175 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>324</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex175.html#e175 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bay Leaves and Honey Wine</font></b></a><br>Creating a map of Greece using the locations from previous examples.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc343.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc345.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc376.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><font color="000000" size="2">End</font></td></tr></table></font></body></html>

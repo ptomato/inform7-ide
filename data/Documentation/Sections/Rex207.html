@@ -1,0 +1,143 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.4. Barter and Exchange</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
+-->
+</STYLE>
+<body bgcolor="#FFFFE0">
+<!-- SEARCH TITLE "Bribery" -->
+<!-- SEARCH SECTION "Ex 322" -->
+<!-- SEARCH SORT "Ex 007-004-322" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc39.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap7.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 7: Other Characters</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc41.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.4. Barter and Exchange</b></font></td></tr></table>
+<p>
+<p>By default, Inform characters are a bit grudging about giving and sharing objects: they react with disinterest when they're shown things and refuse everything they're offered.
+<p>
+<p>If we'd like to change this, we can simply remove the default &quot;block giving&quot; rule, as in
+<p>
+<blockquote><font color="#000080">The block giving rule is not listed in the check giving it to rules.
+</font></blockquote><p>
+<p>
+<p>If we do this, giving items to characters will have the result of moving our possessions to the other person's inventory. Of course, without more customization, the player may not ever be able to persuade the other character to return his possessions. <b>Bribery</b> demonstrates a scenario in which a character will accept gifts if they are interesting to him, and respond with a changed attitude to the player.
+<p>
+<p><b>Barter Barter</b> expands further on this by allowing other characters to trade things with one another.
+<p>
+<a href=Rdoc60.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Money</b></font></a><i> for ways to keep track of cash flow, physical money objects, and price negotiations</i><p><p>
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e207"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc40.html#e207 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>322</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc40.html#e207 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bribery</font></b></a><br>A GIVE command that gets rid of Inform's default refusal message in favor of something a bit more sophisticated.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex207.html#e207 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>If we want to rewrite the functionality of a command that usually ends with a &quot;block...&quot; rule, we will have to begin by turning the blocking off.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode776(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Bribery"\n\nThe block giving rule is not listed in the check giving it to rules.\n\n[As it happens, correct behavior is built into the GIVE command once "block giving" is turned off, so we do not have to write a replacement report or carry-out rule; the object will be transferred to the possession of the caterpillar. But we do want to adjust the action just a little so that our gift cheers up the recipient:]\n\nCarry out giving (this is the gratitude for gifts rule): improve the mood of the second noun.\n\nMood is a kind of value. The moods are hostile, suspicious, indifferent, friendly, and adoring. An animal has a mood. An animal is usually indifferent.\n\nTo improve the mood of (character - an animal):\n\tif the mood of character is less than friendly, change the mood of the character to the mood after the mood of the character.\n\n[Now whenever we give something to an animal, the animal will be pleased about the present. Of course, we might also want to add a check rule to giving, to see whether the offering is something the recipient really wants:]\n\nCheck giving (this is the polite refusal of unwanted objects rule):\n\tif the noun interests the second noun\n\tbegin;\n\t\tdo nothing;\n\totherwise;\n\t\tsay "[The second noun] disdainfully refuses [the noun]." instead;\n\tend if.\n\nTo decide whether (item - a thing) interests (character - a person):\n\tif the character has the item, no;\n\tif the item is edible, yes;\n\tno.\n\nInstead of showing something to someone:\ntry giving the noun to the second noun.\n\n[There is already a perfectly workable report rule that will describe what happens when we give something to someone, but let\'s say we want to report on the recipient\'s changed mood, too:]\n\nAfter giving something to someone:\n\tsay "You give [the noun] to [the second noun], who appears mollified and is now merely [mood of the second noun]."\n\n[And the rest is all scenario:]\n\nThe Leafy Branch is a room. "You stand on smooth bark dappled by sunlight. The scent-trail runs forward to home.\n\nThe branch continues forward and backward from here, and a stem extends forward-up."\n\nInstead of going south in Leafy Branch, say "You must not back down! The scent trail leads onward!"\n\nThe Very Hungry Caterpillar is a hostile animal in the Leafy Branch. "[The Caterpillar] looks [mood]." Instead of examining the Caterpillar, say "[The caterpillar] appears [mood]."\n\nThe player carries an edible thing called a peanut crumb. The carrying capacity of the player is 1. After taking something, say "You lift [the noun], though it is nearly your own size."\n\nInstead of going north in the presence of a hostile caterpillar:\n\tsay "[The Caterpillar] moves to block your exit, glaring down at you with all the bristles on its skin extended to full size."\n\nInstead of going north in the presence of a suspicious caterpillar:\n\tsay "[The Caterpillar] moves to block your exit, though it might allow you past if you offered further tribute."\n\nThe Leaf Face is above the branch. "The smooth and shiny surface of the leaf extends forward from here, but you have lost the scent-trail. This is not the way home."  The pear fragment is an edible thing in Leaf Face. The dead aphid is a thing in Leaf Face.\n\nThe Twig is north of Leafy Branch. "The scent-trail is weak but not entirely gone, and you pursue it faithfully..."\n\nAfter going to the Twig:\n\tsay "The scent-trail is weak but not entirely gone, and you pursue it faithfully...";\n\tend the game in victory.\n\nUnderstand "forward-up" as up. Understand "forward" as north. Understand "backward" as south.  Understand "backward-down" as down.\n\nTest me with "forward / give crumb to caterpillar / forward / forward-up / get aphid / get fragment / down / give aphid to caterpillar / drop aphid / forward-up / get fragment / down / give fragment / forward".\n');
+}
+</script>
+<a href="javascript:pasteCode776()"><img border=0 src=../doc_images/paste.png></a> &quot;Bribery&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The block giving rule is not listed in the check giving it to rules.
+</font></blockquote><p>
+<p>
+<p>As it happens, correct behavior is built into the GIVE command once &quot;block giving&quot; is turned off, so we do not have to write a replacement report or carry-out rule; the object will be transferred to the possession of the caterpillar. But we do want to adjust the action just a little so that our gift cheers up the recipient:
+<p>
+<blockquote><font color="#000080">Carry out giving (this is the gratitude for gifts rule): improve the mood of the second noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Mood is a kind of value. The moods are hostile, suspicious, indifferent, friendly, and adoring. An animal has a mood. An animal is usually indifferent.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To improve the mood of (character - an animal):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the mood of character is less than friendly, change the mood of the character to the mood after the mood of the character.
+</font></blockquote><p>
+<p>
+<p>Now whenever we give something to an animal, the animal will be pleased about the present. Of course, we might also want to add a check rule to giving, to see whether the offering is something the recipient really wants:
+<p>
+<blockquote><font color="#000080">Check giving (this is the polite refusal of unwanted objects rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun interests the second noun
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do nothing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The second noun] disdainfully refuses [the noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide whether (item - a thing) interests (character - a person):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the character has the item, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is edible, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of showing something to someone:
+<br>try giving the noun to the second noun.
+</font></blockquote><p>
+<p>
+<p>There is already a perfectly workable report rule that will describe what happens when we give something to someone, but let's say we want to report on the recipient's changed mood, too:
+<p>
+<blockquote><font color="#000080">After giving something to someone:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You give [the noun] to [the second noun], who appears mollified and is now merely [mood of the second noun].&quot;
+</font></blockquote><p>
+<p>
+<p>And the rest is all scenario:
+<p>
+<blockquote><font color="#000080">The Leafy Branch is a room. &quot;You stand on smooth bark dappled by sunlight. The scent-trail runs forward to home.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The branch continues forward and backward from here, and a stem extends forward-up.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going south in Leafy Branch, say &quot;You must not back down! The scent trail leads onward!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Very Hungry Caterpillar is a hostile animal in the Leafy Branch. &quot;[The Caterpillar] looks [mood].&quot; Instead of examining the Caterpillar, say &quot;[The caterpillar] appears [mood].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries an edible thing called a peanut crumb. The carrying capacity of the player is 1. After taking something, say &quot;You lift [the noun], though it is nearly your own size.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going north in the presence of a hostile caterpillar:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The Caterpillar] moves to block your exit, glaring down at you with all the bristles on its skin extended to full size.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going north in the presence of a suspicious caterpillar:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The Caterpillar] moves to block your exit, though it might allow you past if you offered further tribute.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Leaf Face is above the branch. &quot;The smooth and shiny surface of the leaf extends forward from here, but you have lost the scent-trail. This is not the way home.&quot;  The pear fragment is an edible thing in Leaf Face. The dead aphid is a thing in Leaf Face.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Twig is north of Leafy Branch. &quot;The scent-trail is weak but not entirely gone, and you pursue it faithfully...&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After going to the Twig:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The scent-trail is weak but not entirely gone, and you pursue it faithfully...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;forward-up&quot; as up. Understand &quot;forward&quot; as north. Understand &quot;backward&quot; as south.  Understand &quot;backward-down&quot; as down.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;forward / give crumb to caterpillar / forward / forward-up / get aphid / get fragment / down / give aphid to caterpillar / drop aphid / forward-up / get fragment / down / give fragment / forward&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc40.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e267"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex267.html#e267 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>188</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex267.html#e267 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Barter Barter</font></b></a><br>Allowing characters other than the player to give objects to one another, accounting for the possibility that some items may not be desired by the intended recipients.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex267.html#e267 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc39.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc41.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

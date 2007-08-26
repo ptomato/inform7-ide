@@ -1,0 +1,280 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.8. Saying Complicated Things</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
+-->
+</STYLE>
+<body bgcolor="#FFFFE0">
+<!-- SEARCH TITLE "Cheese-makers" -->
+<!-- SEARCH SECTION "Ex 149" -->
+<!-- SEARCH SORT "Ex 007-008-149" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc43.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap7.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 7: Other Characters</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc45.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.8. Saying Complicated Things</b></font></td></tr></table>
+<p>
+<p>As we saw in the overview, there are challenges in choosing the commands with which the player will communicate to the game. Two common approaches are ASK/TELL conversation, where the player can ask or tell characters about keywords, as in ASK JILL ABOUT JACK or TELL FARMER ABOUT CHICKEN COOP, and menu-based conversation, where the player is offered a list of things to say and must pick one (often by number), as in
+<p>
+<blockquote><font color="#000080">1) Ask Jill where Jack went.
+<br>2) Tell Jill that the chicken coop was robbed.
+</font></blockquote><p>
+<p>
+<p>or, sometimes,
+<p>
+<blockquote><font color="#000080">1) &quot;Jill, have you seen your no-good layabout brother Jack anywhere?&quot;
+<br>2) &quot;Look, Farmer Jill, I think a fox got into the chickens.&quot;
+</font></blockquote><p>
+<p>
+<p>The problem with ASK/TELL conversation is that it can feel undirected - if the player doesn't know which keywords to ask or tell about next, he gets stuck. It also doesn't always provide much sense of ongoing context or conversational flow, since the player can ask lots of unrelated questions and jump around a lot. What's more, sometimes the thing the player character asks isn't quite the question the player had in mind. If we type ASK JILL ABOUT JACK, Jill could wind up answering any of a number of questions - where Jack is, how old Jack is, whether Jack committed the recent murder, and so on. The player doesn't have much fine control over the conversation. Nonetheless, this is sometimes just what we want: <b>Farewell</b> implements a moderately sophisticated system along these lines, which keeps track of what the player has already said and allows him to review past conversation.
+<p>
+<p>Menu-based conversation solves most of these problems: a branching tree of conversation choices maintains a consistent flow of discussion, it's hard for the player to run out of things to say, and the player always knows what his character is about to say. But there are compensating flaws. For one thing, a menu doesn't allow for many surprises. The player can see all the conversation the game has to offer by working methodically through all the menu branches. (This problem is sometimes referred to as the &quot;lawnmower effect&quot;, since the process of seeing all the conversation is like the process of running a lawnmower over every inch of the lawn. It becomes a chore rather than an entertainment.) Menu systems can be long-winded to set up and therefore none are exemplified here, but several have been released as extensions for Inform.
+<p>
+<p>Since about 2001, more and more IF has used a sort of compromise method: the player is allowed to ask or tell about keywords, but he's sometimes given prompts about things to say that follow naturally on the conversation he was just having, as in
+<p>
+<blockquote><font color="#000080">You could ask where Jack is.
+</font></blockquote><p>
+<p>
+<p>Moreover, when he asks about a topic where many comments are possible, he'll be allowed to clarify, either using a menu or through a disambiguation question such as
+<p>
+<blockquote><font color="#000080">>ask Jill about Jack
+<br>Do you want to ask where Jack is, how old Jack is, or whether Jack committed the recent murder?
+</font></blockquote><p>
+<p>
+<p><b>Sweeney</b> implements one such hybrid type of conversation.
+<p>
+<p>A third option is to take away almost all the player's expressiveness and give him just one command, TALK TO. The player can TALK TO characters whenever he wants, and the game will pick the most appropriate thing for him to talk about. This works best in works with few or simple puzzles and a fast-moving, constrained plot, where the player will keep having new things to talk about. <b>Cheese-makers</b> demonstrates this.
+<p>
+<p>Finally, a few extreme games try to fake natural language understanding by looking for keywords in the player's input, rather than an exact grammar. This is perilous, because it is all too easy for the game to completely misunderstand what the player meant to type. Nonetheless, for the sake of example, see <b>Complimentary Peanuts</b>, in which the incomprehension is partly excused by the fact that the player is talking to someone a bit hard of hearing.
+<p>
+<p><hr><p>
+<a name="e260"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex260.html#e260 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>238</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex260.html#e260 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Farewell</font></b></a><br>People who respond to conversational gambits, summarize what they said before if asked again, and provide recap of conversation that is past.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex260.html#e260 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e164"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex164.html#e164 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>239</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex164.html#e164 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Sweeney</font></b></a><br>A conversation where each topic may have multiple questions and answers associated with it, and where a given exchange can lead to new additions to the list.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex164.html#e164 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e256"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc44.html#e256 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>149</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc44.html#e256 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Cheese-makers</font></b></a><br>Scenes used to control the way a character reacts to conversation and comments, using a TALK TO command.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex256.html#e256 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>As we have seen, there are a number of different ways of controlling conversation in interactive fiction, and the best choice of way will depend quite a lot on what kind of work we're writing.
+<p>
+<p>One common model is to replace Inform's default ASK and TELL commands with a TALK TO command. This gives the player less control than he would otherwise have: instead of asking a character about any topic under the sun, he's restricted to seeing (or not seeing) a single sequence of text that the author has written in advance. On the other hand, such a system is harder for the player to break (since he can never ask about a topic that the author hasn't implemented), and easier for the author to tie into plot developments. If we give TALK TO different output at each scene, we get conversation that is always tied to the current state of the plot.
+<p>
+<p>This is a design approach that works best in a game with a large number of short, focused scenes. For other kinds of conversation system design, compare the other examples listed in the Recipe Book.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode605(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"The Cheese-makers" by Phrynichus.\n\nChapter 1 - Replacing old talk commands and making a new one\n\n[Here, using some techniques that will be discussed in the chapter on Understanding, we get rid of Inform\'s default handling of ASK and TELL, and create our own TALK TO action instead:]\n\nUnderstand the commands "ask" and "tell" and "say" and "answer" as something new.\n\nUnderstand "ask [text]" or "tell [text]" or "answer [text]" or "say [text]" as a mistake ("[talk to instead]").\n\nInstead of asking someone to try doing something:\n\tsay "[talk to instead][paragraph break]".\n\nInstead of answering someone that something:\n\tsay "[talk to instead][paragraph break]".\n\nTo say talk to instead:\n\tsay "(To communicate in [story title], TALK TO a character.) "\n\nUnderstand "talk to [someone]" as talking to. Understand "talk to [something]" as talking to. Talking to is an action applying to one visible thing.\n\nChapter 2 - Specific scenes and talking\n\n[Now, suppose we have a situation -- say, a stage play -- in which it is appropriate to talk to different characters at different times. During the prologue of the play, no one else is on-stage, and the player is to address the audience directly:]\n\nSection 1 - Prologue\n\nWhen play begins:\n\tchange right hand status line to "416 BC";\n\tchange left hand status line to "[location]"\n\nPrologue is a scene. Prologue begins when play begins.\n\nThe Theater of Dionysus is a room.\n\nThe audience is a person in the Theater. "The usual audience looks on: the priests and judges in the front row, and then Athenians, metics, and foreigners." The audience can be prepared or unprepared. The description is "Have you ever seen such a company of perjurers, pathics, and thieves?" Understand "priest" or "priests" or "priest of dionysus" or "judge" or "judges" or "athenians" or "metics" or "foreigners" as the audience.\n\nInstead of talking to the player when the Prologue is happening:\n\tsay "There will be plenty of occasion for muttered asides later in the play, but for now you must prepare the audience for things to come."\n\nInstead of talking to the audience when the Prologue is happening:\n\tsay "Drawing breath, you turn to the audience, and offer them a genial, witty, colorful, and of course crude synopsis of what they are about to see; describing all the characters in unmistakable terms and not omitting the most important of them all, your august self.";\n\tnow the audience is prepared.\n\nInstead of talking to the audience when the Prologue has happened:\n\tsay "You may only direct monologues to the audience when the other actors are off-stage. Otherwise, their characters might have to notice."\n\nPrologue ends when the audience is prepared.\n\n[But there might follow a scene in which the player shouldn\'t talk at all:]\n\nSection 2 - Parodos\n\nParodos is a scene. Parodos begins when Prologue ends.\n\nWhen Parodos begins:\n\tmove the chorus to the theater;\n\nInstead of talking to someone during Parodos:\n\tsay "Sssh: this moment belongs to the chorus. They\'ve worked so hard on it, after all."\n\nParodos ends when the time since Parodos began is 4 minutes.\n\nThe chorus is a person. The description is "They are dressed in exaggerated rural costume and feminine masks, as they are meant to represent a company of female cheese-makers from the Spartan-occupied deme of Dekeleia." Understand "cheesewives" or "cheese-makers" or "chorus-leader" as the chorus.\n\nEvery turn during Parodos:\n\trepeat through Table of Choral Events\n\tbegin;\n\t\tsay "[output entry][paragraph break]";\n\t\tblank out the whole row;\n\t\tmake no decision;\n\tend repeat.\n\nTable of Choral Events\noutput\n"The chorus now begins its entry, accompanying with anapestic song its march up the eisodos."\n"The chorus draws nearer, stomping and clomping and swinging their baskets of cheese."\n"You stand aside as the chorus fills the orchestra and dances to and fro."\n"The tune of the aulos-player grows more and more frenzied and then breaks off."\n\n[This last rule is a refinement borrowing from the Activities chapter, which gives characters different appearances in room descriptions depending on when we happen to look; because of the action of the play, we want to show the chorus and audience doing different things during different scenes.]\n\nRule for writing a paragraph about the chorus during Parodos:\n\tsay "The chorus are dancing and singing their way[if the time since Parodos began is less than 3 minutes] up the long walkways onto the stage[otherwise] into position in the orchestra[end if]. [The audience] appear to be pricing their costumes to the nearest obol: woe to the producer who cheats them of their due share of spectacle."\n\n[And now a scene in which the player can talk several times to a character (Heracles) but has no useful dialogue with the chorus, the audience, or himself. The prohibition from talking to the audience after the Prologue is already written, but we\'ll supply some appropriate responses for talking to the player or the chorus during this scene:]\n\nSection 3 - Episode\n\nEpisode is a scene. Episode begins when Parodos ends.\n\nWhen Episode begins:\n\tmove Heracles to the theater;\n\tsay "The chorus falls silent, which is the cue: Heracles bursts out of the scene building."\n\nHeracles is a man. The description is "Hard to mistake in his lion skin and boots, and carrying a formidable club." Heracles wears a lion skin and boots. He carries a formidable club. Heracles can be placid or annoyed. Heracles is placid. Heracles can be satisfied, intrigued, or unsatisfied. Heracles is unsatisfied.\n\nInstead of talking to the chorus during Episode:\n\tsay "Your improvised flirtation with the chorus raises no response but a crude gesture from the chorus-leader, who seems to be modeling the role on Iambe."\n\nInstead of talking to the player during Episode:\n\tif Heracles is annoyed\n\tbegin;\n\t\tsay "You mutter to yourself about men with more appetite than brain. The actor playing Heracles ignores you, but it\'s good odds he\'s scowling under his mask. He hates it when anyone but himself ad-libs for attention.";\n\totherwise;\n\t\tnow Heracles is annoyed;\n\t\tsay "\'By the dog, he\'ll eat me if he gets a chance,\' you mutter aside. [paragraph break]\'What\'s that you say, my ignoble friend?\' demands Heracles, hefting his club. He\'s not entirely joking: you\'ve left the script just now.";\n\tend if.\n\nInstead of talking to Heracles when Heracles is unsatisfied during Episode:\n\tsay "\'Dear Heracles, friendly Heracles,\' you begin, cringing out of the way as he responds with one of his affectionate ox-killing punches to the shoulder. [paragraph break]But Heracles falls still, and looks almost thoughtful, as tell him you know how he may rout the Spartans, woo all twenty-four lactic ladies, and tame his savage gut with a bathtubful of porridge. [paragraph break]\'Speak on, little man,\' he says.";\n\tnow Heracles is intrigued.\n\nInstead of talking to Heracles when Heracles is intrigued during Episode:\n\tsay "It takes several exchanges for him to wrap his one-inch brain around your ten-inch plan; but in the end he embraces the scheme, the women, and your humble self.";\n\tnow Heracles is satisfied.\n\nEvery turn when not talking to someone during Episode:\n\trepeat through Table of Episodic Events\n\tbegin;\n\t\tsay "[output entry][paragraph break]";\n\t\tblank out the whole row;\n\t\tmake no decision;\n\tend repeat.\n\nTable of Episodic Events\noutput\n"With a fart and a roar, Heracles asks the world at large, and you in particular, where his dinner might be."\n"In epic diction, Heracles invites the dairy-mistresses, whey-matrons, and concubines of curd to supply him a supper from their ample baskets."\n"Heracles and the chorus banter about the proclivities of cheese-wives. The chorus suggest that Heracles, as a son of Zeus, must know something about the appetites of which they speak."\n"Heracles boasts that a man like himself can perform any feat, but only when his belly is full. Coyly, the matrons prance and dance, skip and gambol out of his grasp, singing mockingly about heads of garlic and loaves of sesame-crusted bread."\n"The song of the feta fanciers now turns to pots of honey and new-made wine, borrowing verses from last year\'s Lenaia winner, \'The Bees\'. With a jolt, you realize that you\'ve missed your cue and the chorus are filling in for you."\n"Playing for time, the chorus-leader elaborates a whole banquet: rabbit stew, shanks of lamb, spitted quails, eels from lake Copais. Heracles looks as near swooning as any girl fresh from Brauron."\n"The chorus-leader extends the list of delicacies to include ox-brains, ham-hocks, barley, mullet, carrots, pigeons, lentils, radishes, peas, and apples both wine-dark and golden. The audience shifts on the benches. An expression of gloom settles over the Priest of Dionysus in the front row."\n"Inspired by Euripides[\'] own Muse, the chorus-leader invents a mock-Alcaean hymn on the merits of chervil. This is clearly his swan-song: if you don\'t speak at last, the play will come to a halt."\n"Silence descends."\n\nRule for writing a paragraph about Heracles during Episode:\n\tsay "[Heracles] stands at the center of the orchestra, with members of [the chorus] ranged on either side. [paragraph break][The audience] appear to be reserving their judgement, though they show signs of restiveness at the usual jokes: must there be a Heracles in [italic type]every[roman type] play?"\n\nEpisode ends successfully when Heracles is satisfied.\n\nWhen Episode ends successfully:\n\tsay "That, of course, is your cue: you\'re to come back on as Pan thirty verses from now, and it takes time to put on the hooves and the woolly-legged trousers.";\n\tend the game saying "You exit".\n\nEpisode ends disastrously when the number of filled rows in the Table of Episodic Events is 0.\n\nWhen Episode ends disastrously:\n\tend the game saying "The production has crashed to a halt".\n\nTest me with "ask audience about me / tell audience about me / audience, hello / audience, jump / talk to me / talk to audience / g / talk to chorus / look / x heracles / talk to me / talk to audience / z / look / talk to heracles / g".\n\n');
+}
+</script>
+<a href="javascript:pasteCode605()"><img border=0 src=../doc_images/paste.png></a> &quot;The Cheese-makers&quot; by Phrynichus.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Chapter 1 - Replacing old talk commands and making a new one
+</font></blockquote><p>
+<p>
+<p>Here, using some techniques that will be discussed in the chapter on Understanding, we get rid of Inform's default handling of ASK and TELL, and create our own TALK TO action instead:
+<p>
+<blockquote><font color="#000080">Understand the commands &quot;ask&quot; and &quot;tell&quot; and &quot;say&quot; and &quot;answer&quot; as something new.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;ask [text]&quot; or &quot;tell [text]&quot; or &quot;answer [text]&quot; or &quot;say [text]&quot; as a mistake (&quot;[talk to instead]&quot;).
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking someone to try doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[talk to instead][paragraph break]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of answering someone that something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[talk to instead][paragraph break]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say talk to instead:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(To communicate in [story title], TALK TO a character.) &quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;talk to [someone]&quot; as talking to. Understand &quot;talk to [something]&quot; as talking to. Talking to is an action applying to one visible thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Chapter 2 - Specific scenes and talking
+</font></blockquote><p>
+<p>
+<p>Now, suppose we have a situation -- say, a stage play -- in which it is appropriate to talk to different characters at different times. During the prologue of the play, no one else is on-stage, and the player is to address the audience directly:
+<p>
+<blockquote><font color="#000080">Section 1 - Prologue
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change right hand status line to &quot;416 BC&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change left hand status line to &quot;[location]&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Prologue is a scene. Prologue begins when play begins.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Theater of Dionysus is a room.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The audience is a person in the Theater. &quot;The usual audience looks on: the priests and judges in the front row, and then Athenians, metics, and foreigners.&quot; The audience can be prepared or unprepared. The description is &quot;Have you ever seen such a company of perjurers, pathics, and thieves?&quot; Understand &quot;priest&quot; or &quot;priests&quot; or &quot;priest of dionysus&quot; or &quot;judge&quot; or &quot;judges&quot; or &quot;athenians&quot; or &quot;metics&quot; or &quot;foreigners&quot; as the audience.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of talking to the player when the Prologue is happening:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There will be plenty of occasion for muttered asides later in the play, but for now you must prepare the audience for things to come.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of talking to the audience when the Prologue is happening:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Drawing breath, you turn to the audience, and offer them a genial, witty, colorful, and of course crude synopsis of what they are about to see; describing all the characters in unmistakable terms and not omitting the most important of them all, your august self.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the audience is prepared.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of talking to the audience when the Prologue has happened:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You may only direct monologues to the audience when the other actors are off-stage. Otherwise, their characters might have to notice.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Prologue ends when the audience is prepared.
+</font></blockquote><p>
+<p>
+<p>But there might follow a scene in which the player shouldn't talk at all:
+<p>
+<blockquote><font color="#000080">Section 2 - Parodos
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Parodos is a scene. Parodos begins when Prologue ends.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When Parodos begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the chorus to the theater;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of talking to someone during Parodos:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Sssh: this moment belongs to the chorus. They've worked so hard on it, after all.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Parodos ends when the time since Parodos began is 4 minutes.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The chorus is a person. The description is &quot;They are dressed in exaggerated rural costume and feminine masks, as they are meant to represent a company of female cheese-makers from the Spartan-occupied deme of Dekeleia.&quot; Understand &quot;cheesewives&quot; or &quot;cheese-makers&quot; or &quot;chorus-leader&quot; as the chorus.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn during Parodos:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Choral Events
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[output entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Choral Events
+<br>output
+<br>&quot;The chorus now begins its entry, accompanying with anapestic song its march up the eisodos.&quot;
+<br>&quot;The chorus draws nearer, stomping and clomping and swinging their baskets of cheese.&quot;
+<br>&quot;You stand aside as the chorus fills the orchestra and dances to and fro.&quot;
+<br>&quot;The tune of the aulos-player grows more and more frenzied and then breaks off.&quot;
+</font></blockquote><p>
+<p>
+<p>This last rule is a refinement borrowing from the Activities chapter, which gives characters different appearances in room descriptions depending on when we happen to look; because of the action of the play, we want to show the chorus and audience doing different things during different scenes.
+<p>
+<blockquote><font color="#000080">Rule for writing a paragraph about the chorus during Parodos:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The chorus are dancing and singing their way[if the time since Parodos began is less than 3 minutes] up the long walkways onto the stage[otherwise] into position in the orchestra[end if]. [The audience] appear to be pricing their costumes to the nearest obol: woe to the producer who cheats them of their due share of spectacle.&quot;
+</font></blockquote><p>
+<p>
+<p>And now a scene in which the player can talk several times to a character (Heracles) but has no useful dialogue with the chorus, the audience, or himself. The prohibition from talking to the audience after the Prologue is already written, but we'll supply some appropriate responses for talking to the player or the chorus during this scene:
+<p>
+<blockquote><font color="#000080">Section 3 - Episode
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Episode is a scene. Episode begins when Parodos ends.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When Episode begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move Heracles to the theater;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The chorus falls silent, which is the cue: Heracles bursts out of the scene building.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Heracles is a man. The description is &quot;Hard to mistake in his lion skin and boots, and carrying a formidable club.&quot; Heracles wears a lion skin and boots. He carries a formidable club. Heracles can be placid or annoyed. Heracles is placid. Heracles can be satisfied, intrigued, or unsatisfied. Heracles is unsatisfied.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of talking to the chorus during Episode:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your improvised flirtation with the chorus raises no response but a crude gesture from the chorus-leader, who seems to be modeling the role on Iambe.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of talking to the player during Episode:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Heracles is annoyed
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You mutter to yourself about men with more appetite than brain. The actor playing Heracles ignores you, but it's good odds he's scowling under his mask. He hates it when anyone but himself ad-libs for attention.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now Heracles is annoyed;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'By the dog, he'll eat me if he gets a chance,' you mutter aside. [paragraph break]'What's that you say, my ignoble friend?' demands Heracles, hefting his club. He's not entirely joking: you've left the script just now.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of talking to Heracles when Heracles is unsatisfied during Episode:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Dear Heracles, friendly Heracles,' you begin, cringing out of the way as he responds with one of his affectionate ox-killing punches to the shoulder. [paragraph break]But Heracles falls still, and looks almost thoughtful, as tell him you know how he may rout the Spartans, woo all twenty-four lactic ladies, and tame his savage gut with a bathtubful of porridge. [paragraph break]'Speak on, little man,' he says.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Heracles is intrigued.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of talking to Heracles when Heracles is intrigued during Episode:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It takes several exchanges for him to wrap his one-inch brain around your ten-inch plan; but in the end he embraces the scheme, the women, and your humble self.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Heracles is satisfied.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when not talking to someone during Episode:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Episodic Events
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[output entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Episodic Events
+<br>output
+<br>&quot;With a fart and a roar, Heracles asks the world at large, and you in particular, where his dinner might be.&quot;
+<br>&quot;In epic diction, Heracles invites the dairy-mistresses, whey-matrons, and concubines of curd to supply him a supper from their ample baskets.&quot;
+<br>&quot;Heracles and the chorus banter about the proclivities of cheese-wives. The chorus suggest that Heracles, as a son of Zeus, must know something about the appetites of which they speak.&quot;
+<br>&quot;Heracles boasts that a man like himself can perform any feat, but only when his belly is full. Coyly, the matrons prance and dance, skip and gambol out of his grasp, singing mockingly about heads of garlic and loaves of sesame-crusted bread.&quot;
+<br>&quot;The song of the feta fanciers now turns to pots of honey and new-made wine, borrowing verses from last year's Lenaia winner, 'The Bees'. With a jolt, you realize that you've missed your cue and the chorus are filling in for you.&quot;
+<br>&quot;Playing for time, the chorus-leader elaborates a whole banquet: rabbit stew, shanks of lamb, spitted quails, eels from lake Copais. Heracles looks as near swooning as any girl fresh from Brauron.&quot;
+<br>&quot;The chorus-leader extends the list of delicacies to include ox-brains, ham-hocks, barley, mullet, carrots, pigeons, lentils, radishes, peas, and apples both wine-dark and golden. The audience shifts on the benches. An expression of gloom settles over the Priest of Dionysus in the front row.&quot;
+<br>&quot;Inspired by Euripides['] own Muse, the chorus-leader invents a mock-Alcaean hymn on the merits of chervil. This is clearly his swan-song: if you don't speak at last, the play will come to a halt.&quot;
+<br>&quot;Silence descends.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for writing a paragraph about Heracles during Episode:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[Heracles] stands at the center of the orchestra, with members of [the chorus] ranged on either side. [paragraph break][The audience] appear to be reserving their judgement, though they show signs of restiveness at the usual jokes: must there be a Heracles in [italic type]every[roman type] play?&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Episode ends successfully when Heracles is satisfied.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When Episode ends successfully:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That, of course, is your cue: you're to come back on as Pan thirty verses from now, and it takes time to put on the hooves and the woolly-legged trousers.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;You exit&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Episode ends disastrously when the number of filled rows in the Table of Episodic Events is 0.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When Episode ends disastrously:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;The production has crashed to a halt&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;ask audience about me / tell audience about me / audience, hello / audience, jump / talk to me / talk to audience / g / talk to chorus / look / x heracles / talk to me / talk to audience / z / look / talk to heracles / g&quot;.
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc44.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e76"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex76.html#e76 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>312</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex76.html#e76 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Complimentary Peanuts</font></b></a><br>A character who responds to keywords in the player's instructions and remarks, even if there are other words included.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex76.html#e76 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc43.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc45.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

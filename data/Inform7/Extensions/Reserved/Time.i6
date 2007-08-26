@@ -53,7 +53,11 @@ Constant I7_TWELVE_HOURS = 720;
 	}
 ];
 
-[ I7_TIME_TOKEN first_word second_word at length flag illegal_char offhour hr mn i;
+[ I7_TIME_TOKEN first_word second_word at length flag
+	illegal_char offhour hr mn i original_wn;
+	original_wn = wn;
+{-call:compile_time_grammar}
+	wn = original_wn;
 	first_word = NextWordStopped();
 	switch (first_word) {
 		'midnight': parsed_number = 0; return GPR_NUMBER;

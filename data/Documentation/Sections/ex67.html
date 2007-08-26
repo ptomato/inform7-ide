@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.9. Commands consisting only of nouns</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.5. The text token</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,109 +6,135 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Misadventure" -->
-<!-- SEARCH SECTION "Ex 245" -->
-<!-- SEARCH SORT "Ex 016-009-245" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc248.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc250.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.9. Commands consisting only of nouns</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Nameless" -->
+<!-- SEARCH SECTION "Ex 252" -->
+<!-- SEARCH SORT "Ex 016-005-252" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc245.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc247.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.5. The text token</b></font></td></tr></table>
 <p>
-<p>In every example so far, and in almost all practical cases, the first word in a command which results in an action will be something fixed: a verb, in fact. When we write
+<p>Most actions involve items: taking a vase, perhaps. As we shall see, they might also involve values, or a mixture of the two: turning a dial to 17 would involve both a thing (the dial) and a number (17). A few of Inform's built-in actions, however, can act on any text at all. For instance, asking the Sybil about the Persian army would involve a thing (the Sybil) and some text (&quot;Persian army&quot;). Inform does not try to understand automatically what that text might mean, or to relate it to any items, places or values it knows about: instead, Inform leaves that to the specific story to work out for itself, since the answer is bound to depend on the context. (In the chapter on Tables, we saw ways to compile tables of responses to particular topics of conversation.)
 <p>
-<blockquote><font color="#000080">Understand &quot;photograph [something]&quot; as photographing.
+<p>The token for &quot;accept any text here&quot; is just &quot;[text]&quot;. For instance, if we create an action with:
+<p>
+<blockquote><font color="#000080">Getting help about is an action applying to one topic.
 </font></blockquote><p>
 <p>
-<p>we are saying that the first word of such a command will always be &quot;photograph&quot;. Occasionally, though, we would like to understand a noun as a command, perhaps in a situation where the command is obvious. If we say:
+<p>We can then provide grammar for this action like so:
 <p>
-<blockquote><font color="#000080">Understand &quot;[something]&quot; as examining.
+<blockquote><font color="#000080">Understand &quot;help on [text]&quot; as getting help about.
 </font></blockquote><p>
 <p>
-<p>then the command &quot;examine&quot; will be implicit when the player types a bare noun:
-<p>
-<blockquote><font color="#000080">A red box and a blue ball are here.
-<br>> ball
-<br>The blue ball is plaited from many small leather patches.
-</font></blockquote><p>
-<p>
-<p>so that the command &quot;ball&quot; has resulted in the action &quot;examining the blue ball&quot;.
-<p>
-<p>This is a feature which should be used sparingly, since it could easily lead to confusion if not carefully explained to the player. By default, it is not used at all.
+<p>When text like this is successfully matched, it is placed in a value called &quot;the topic understood&quot;. (The term &quot;topic&quot; is used traditionally, really: most of the times one needs this feature, it's for a topic of conversation, or a topic being looked up in a book.)
 <p>
 <p><hr><p>
+<a name="e46"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex46.html#e46 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>251</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex46.html#e46 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ish.</font></b></a><br>A (very) simple HELP command, using tokens to accept and interpret the player's  text whatever it might be.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex46.html#e46 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e67"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc249.html#e67 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>245</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc249.html#e67 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Misadventure</font></b></a><br>A going by name command which does respect movement rules, and accepts names of rooms as commands.<p></td></tr></table>
+<a name="e67"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc246.html#e67 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>252</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc246.html#e67 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Nameless</font></b></a><br>ASKing someone about an object rather than about a topic.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex67.html#e67 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The original Adventure allowed the player to type the names of rooms in order to move to them, and it is now not too difficult for us to do the same. Adventure restricted this option to adjacent rooms, but we might want to be a bit more flexible, so we will accept any room:
+<p>By default, ASK SOMEONE ABOUT... applies only to a text token. We might want also to offer the player the option of asking characters about pieces of physical evidence. This example implements an ASK PERSON ABOUT THING command that is mostly synonymous with SHOW, with the added nuance that the player can ask about things that are not currently visible, as long as he has encountered them at some time in the past.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode337(code) {
+function pasteCode338(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Misadventure"\n\nPlover Room is a room. "You\'re in a small chamber lit by an eerie green light. An extremely narrow tunnel exits to the west. A dark corridor leads northeast."\n\nThe Dark Corridor is northeast of Plover Room. Plover Room is south of the Dark Corridor. The printed name of the Dark Corridor is "Dark Room". The description of the Dark Corridor is "You\'re in the dark-room. A corridor leading south is the only exit."\n\nThe Alcove is west of Plover Room. "You are in an alcove. A small northwest path seems to widen after a short distance. An extremely tight tunnel leads east. It looks like a very tight squeeze. An eerie light can be seen at the other end."\n\nNorthwest of the Alcove is the Misty Cavern. The description of Misty Cavern is "You are following a wide path around the outer edge of a large cavern. Far below, through a heavy white mist, strange splashing noises can be heard. The mist rises up through a fissure in the ceiling. The path exits to the south and west." West of Misty Cavern is the Alcove.\n\nUnderstand "[any room]" as going by name. Understand "go to [any room]" as going by name.\n\nGoing by name is an action applying to one thing.\n\n[We should reject movement to the player\'s current location, or to anywhere he hasn\'t been and can\'t see:]\n\nCheck going by name:\n\tif the noun is the location, say "You\'re already in [the location]." instead;\n\tif the noun is not adjacent and the noun is unvisited, say "That noun did not make sense in this context." instead.\n\n[The assumption here is that the player does know the names of the rooms adjacent to his current location, even if he hasn\'t been there yet.]\n\n[Now for the travel itself. The simplest way to ensure that the usual movement rules will still apply is to convert GO BY NAME into a GO action, and here the best route comes to our aid:]\n\nCarry out going by name:\n\tlet aim be the best route from the location to the noun, using doors;\n\tif aim is not a direction, say "You can\'t think how to get there from here." instead;\n\tsay "(heading [aim])[command clarification break]";\n\ttry going aim;\n\tif the location is not the noun, say "You\'ll have to stop here."\n\n[This will allow the player to travel toward rooms he has already visited even if they are several moves away.]\n\n[Finally, so that the player can also use the names of doors as commands:]\n\nUnderstand "[door]" as entering.\n\n[And in keeping with the original, we might add to our scenario a rule or two about restrictions on movement, just to test that it\'s all working right:]\n\nThe player carries a plover egg and a platinum pyramid. The description of the egg is "Plover\'s eggs, by the way, are quite large." The printed name of the egg is "emerald the size of a plover\'s egg". Understand "emerald" as the egg. The description of the pyramid is "The platinum pyramid is 8 inches on a side!"\n\nInstead of going to the Plover Room from the Alcove when the player carries something which is not the plover egg:\n\tsay "Something you\'re carrying won\'t fit through the tunnel with you. You\'d best take inventory and drop something."\n\nTest me with "go to misty cavern / go to dark corridor / go to plover room / go to alcove / go to dark corridor / drop pyramid / go to dark corridor / g / go to alcove / g / go to misty cavern".\n');
+    myProject.pasteCode('"Nameless"\n\nThe Black Chamber is a room. "Despite its menacing name, it is quite an ordinary room, underlying the post office above. Here letters are brought each day, unsealed, transcribed, resealed, and sent again on their way; their contents then analyzed and recorded."\n\nThe Nameless Advisor is a woman in the Black Chamber. "A woman whose name has never been disclosed to you sits at the window, writing numbers on a sheet of paper." The Advisor carries a sheet of paper. Understand "woman" as the nameless advisor.\n\nThe player carries a letter from the emperor. The description of the letter is "Though its origin is obvious, its meaning is secret: the letters are an inexplicable jumble."\n\n[Now we create our new action, "interrogating it about". We write the grammar lines so that we can show any object in sight to someone, but also ask someone about any object that we have ever interacted with in the game, whether it is currently visible or not.]\n\nA thing can be known or unknown. The Nameless Advisor is known.\n\nUnderstand "ask [someone] about [any known thing]" as interrogating it about. interrogating it about is an action applying to two visible things.\n\n[Now we replace and redirect the showing action. This gets rid of the requirement in the default library that the player be holding anything he shows to another character:]\n\nUnderstand the commands "show" and "display" and "present" as something new.\n\nUnderstand "show [something] to [someone]" or "display [something] to [someone]" or "present [something] to [someone]" as interrogating it about (with nouns reversed). Understand "show [someone] [something]" as interrogating it about.\n\n[This bit keeps track of what the player has seen, for the purposes of "any known thing":]\n\nBefore printing the name of something (called the target): now the target is known.\n\n[Here we define what happens by default when we interrogate someone about something; we use the same response we get to asking someone about something that isn\'t otherwise interesting:]\n\nCarry out interrogating someone about something:\n\tsay "There is no reply."\n\n[Now redirect all asking to a topic table, and all interrogating to an object table:]\n\nInstead of asking Nameless Advisor about a topic listed in the Table of Nameless Advisor Topics:\n\tsay "[reply entry][paragraph break]".\n\nInstead of interrogating Nameless Advisor about an item listed in the Table of Nameless Advisor Items:\n\tsay "[reply entry][paragraph break]".\n\nTable of Nameless Advisor Items\nitem\treply\nletter\t"\'It is enciphered,\' she remarks[if the advisor can see the letter], glancing over the contents[otherwise], after you have offered a detailed description[end if]. \'A substitution cipher of some complexity, I believe.\'"\nAdvisor\t"She listens to your inquiries about her identity and parentage with a placid smile, but does not answer."\n\nTable of Nameless Advisor Topics\ntopic\treply\n"cipher"\t"\'I know many dozens of ciphers,\' she replies, smiling in a disquieting way."\n"substitution cipher"\t"\'One letter is allowed to stand for another,\' she explains, folding her hands together patiently. The backs of both hands are tattooed with silvery stars."\n\n[And just so that we can test what happens when asking someone about something out of sight:]\n\nThe safe box is a container in the Chamber. It is fixed in place. It is openable and closed.\n\n[...and something unknown:]\n\nThe poisonous apple is a thing.\n\nTest me with "test sight / test knowledge".\n\nTest sight with "i / x letter / ask Nameless Advisor about cipher / show cipher to Nameless Advisor / ask Nameless Advisor about the letter / show the letter to Nameless Advisor / show Nameless Advisor the letter".\n\nTest knowledge with "open safe box / put letter in safe box / close safe box / ask Nameless Advisor about the letter / show the letter to Nameless Advisor / ask Nameless Advisor about the apple".\n');
 }
 </script>
-<a href="javascript:pasteCode337()"><img border=0 src=../doc_images/paste.png></a> &quot;Misadventure&quot;
+<a href="javascript:pasteCode338()"><img border=0 src=../doc_images/paste.png></a> &quot;Nameless&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Plover Room is a room. &quot;You're in a small chamber lit by an eerie green light. An extremely narrow tunnel exits to the west. A dark corridor leads northeast.&quot;
+<blockquote><font color="#000080">The Black Chamber is a room. &quot;Despite its menacing name, it is quite an ordinary room, underlying the post office above. Here letters are brought each day, unsealed, transcribed, resealed, and sent again on their way; their contents then analyzed and recorded.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Dark Corridor is northeast of Plover Room. Plover Room is south of the Dark Corridor. The printed name of the Dark Corridor is &quot;Dark Room&quot;. The description of the Dark Corridor is &quot;You're in the dark-room. A corridor leading south is the only exit.&quot;
+<blockquote><font color="#000080">The Nameless Advisor is a woman in the Black Chamber. &quot;A woman whose name has never been disclosed to you sits at the window, writing numbers on a sheet of paper.&quot; The Advisor carries a sheet of paper. Understand &quot;woman&quot; as the nameless advisor.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Alcove is west of Plover Room. &quot;You are in an alcove. A small northwest path seems to widen after a short distance. An extremely tight tunnel leads east. It looks like a very tight squeeze. An eerie light can be seen at the other end.&quot;
+<blockquote><font color="#000080">The player carries a letter from the emperor. The description of the letter is &quot;Though its origin is obvious, its meaning is secret: the letters are an inexplicable jumble.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Northwest of the Alcove is the Misty Cavern. The description of Misty Cavern is &quot;You are following a wide path around the outer edge of a large cavern. Far below, through a heavy white mist, strange splashing noises can be heard. The mist rises up through a fissure in the ceiling. The path exits to the south and west.&quot; West of Misty Cavern is the Alcove.
+<p>Now we create our new action, &quot;interrogating it about&quot;. We write the grammar lines so that we can show any object in sight to someone, but also ask someone about any object that we have ever interacted with in the game, whether it is currently visible or not.
+<p>
+<blockquote><font color="#000080">A thing can be known or unknown. The Nameless Advisor is known.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;[any room]&quot; as going by name. Understand &quot;go to [any room]&quot; as going by name.
+<blockquote><font color="#000080">Understand &quot;ask [someone] about [any known thing]&quot; as interrogating it about. interrogating it about is an action applying to two visible things.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Going by name is an action applying to one thing.
+<p>Now we replace and redirect the showing action. This gets rid of the requirement in the default library that the player be holding anything he shows to another character:
+<p>
+<blockquote><font color="#000080">Understand the commands &quot;show&quot; and &quot;display&quot; and &quot;present&quot; as something new.
 </font></blockquote><p>
 <p>
-<p>We should reject movement to the player's current location, or to anywhere he hasn't been and can't see:
-<p>
-<blockquote><font color="#000080">Check going by name:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the location, say &quot;You're already in [the location].&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not adjacent and the noun is unvisited, say &quot;That noun did not make sense in this context.&quot; instead.
+<blockquote><font color="#000080">Understand &quot;show [something] to [someone]&quot; or &quot;display [something] to [someone]&quot; or &quot;present [something] to [someone]&quot; as interrogating it about (with nouns reversed). Understand &quot;show [someone] [something]&quot; as interrogating it about.
 </font></blockquote><p>
 <p>
-<p>The assumption here is that the player does know the names of the rooms adjacent to his current location, even if he hasn't been there yet.
+<p>This bit keeps track of what the player has seen, for the purposes of &quot;any known thing&quot;:
 <p>
-<p>Now for the travel itself. The simplest way to ensure that the usual movement rules will still apply is to convert GO BY NAME into a GO action, and here the best route comes to our aid:
-<p>
-<blockquote><font color="#000080">Carry out going by name:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let aim be the best route from the location to the noun, using doors;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if aim is not a direction, say &quot;You can't think how to get there from here.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(heading [aim])[command clarification break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try going aim;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is not the noun, say &quot;You'll have to stop here.&quot;
+<blockquote><font color="#000080">Before printing the name of something (called the target): now the target is known.
 </font></blockquote><p>
 <p>
-<p>This will allow the player to travel toward rooms he has already visited even if they are several moves away.
+<p>Here we define what happens by default when we interrogate someone about something; we use the same response we get to asking someone about something that isn't otherwise interesting:
 <p>
-<p>Finally, so that the player can also use the names of doors as commands:
-<p>
-<blockquote><font color="#000080">Understand &quot;[door]&quot; as entering.
+<blockquote><font color="#000080">Carry out interrogating someone about something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There is no reply.&quot;
 </font></blockquote><p>
 <p>
-<p>And in keeping with the original, we might add to our scenario a rule or two about restrictions on movement, just to test that it's all working right:
+<p>Now redirect all asking to a topic table, and all interrogating to an object table:
 <p>
-<blockquote><font color="#000080">The player carries a plover egg and a platinum pyramid. The description of the egg is &quot;Plover's eggs, by the way, are quite large.&quot; The printed name of the egg is &quot;emerald the size of a plover's egg&quot;. Understand &quot;emerald&quot; as the egg. The description of the pyramid is &quot;The platinum pyramid is 8 inches on a side!&quot;
+<blockquote><font color="#000080">Instead of asking Nameless Advisor about a topic listed in the Table of Nameless Advisor Topics:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going to the Plover Room from the Alcove when the player carries something which is not the plover egg:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Something you're carrying won't fit through the tunnel with you. You'd best take inventory and drop something.&quot;
+<blockquote><font color="#000080">Instead of interrogating Nameless Advisor about an item listed in the Table of Nameless Advisor Items:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;go to misty cavern / go to dark corridor / go to plover room / go to alcove / go to dark corridor / drop pyramid / go to dark corridor / g / go to alcove / g / go to misty cavern&quot;.
+<blockquote><font color="#000080">Table of Nameless Advisor Items
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">item</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">letter</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'It is enciphered,' she remarks[if the advisor can see the letter], glancing over the contents[otherwise], after you have offered a detailed description[end if]. 'A substitution cipher of some complexity, I believe.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">Advisor</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;She listens to your inquiries about her identity and parentage with a placid smile, but does not answer.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc249.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Table of Nameless Advisor Topics
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cipher&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'I know many dozens of ciphers,' she replies, smiling in a disquieting way.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;substitution cipher&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'One letter is allowed to stand for another,' she explains, folding her hands together patiently. The backs of both hands are tattooed with silvery stars.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<p>And just so that we can test what happens when asking someone about something out of sight:
+<p>
+<blockquote><font color="#000080">The safe box is a container in the Chamber. It is fixed in place. It is openable and closed.
+</font></blockquote><p>
+<p>
+<p>...and something unknown:
+<p>
+<blockquote><font color="#000080">The poisonous apple is a thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;test sight / test knowledge&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test sight with &quot;i / x letter / ask Nameless Advisor about cipher / show cipher to Nameless Advisor / ask Nameless Advisor about the letter / show the letter to Nameless Advisor / show Nameless Advisor the letter&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test knowledge with &quot;open safe box / put letter in safe box / close safe box / ask Nameless Advisor about the letter / show the letter to Nameless Advisor / ask Nameless Advisor about the apple&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc246.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e170"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex170.html#e170 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>246</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex170.html#e170 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Safari Guide</font></b></a><br>The same functionality, but making the player continue to move until he reaches his destination or a barrier, handling all openable doors on the way.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc248.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc250.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc245.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc247.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

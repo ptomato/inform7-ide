@@ -1,7 +1,8 @@
 #
 # Spec file for GNOME Inform 7
+# Change 1.fc7 to ubuntu1 for ubuntu-style release number
 #
-%define  ver     0.4
+%define  ver     0.5
 %define  rel     1.fc7
 %define  prefix  /usr
 

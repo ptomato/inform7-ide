@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.29. Deciding whether all includes</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.28. Printing a parser error</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,46 +6,92 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Deciding whether all includes" -->
-<!-- SEARCH SECTION "17.29" -->
-<!-- SEARCH SORT "017-029-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc288.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc290.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.29. Deciding whether all includes</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Printing a parser error" -->
+<!-- SEARCH SECTION "17.28" -->
+<!-- SEARCH SORT "017-028-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc288.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc290.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.28. Printing a parser error</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> When parsing a command such as &quot;take all&quot;, where the player uses &quot;all&quot; to signify everything within reach.
+<p><b>1. When it happens.</b> The parser is the part of the run-time software, included in all works produced by Inform, which tries to match the player's command against the grammar provided by the work. When it is unable to make a valid match, the parser prints an error to the player: for instance,
 <p>
-<p><b>2. The default behaviour.</b> The actual method used is complicated, as &quot;all&quot; is not as simple as it seems - &quot;take all&quot; would not include the player's own body, for instance, or the crescent moon. The point of this action is to allow the normal method to be changed for given objects, or given kinds of object.
+<blockquote><font color="#000080">> BIFURCATE TREE
+<br>That's not a verb I recognise.
+</font></blockquote><p>
 <p>
-<p><b>3. Examples.</b> (a) Removing scenery from &quot;all&quot;:
+<p>There are some 18 possible messages, and we can distinguish them using the following conditions:
+<p>
+<blockquote><font color="#000080">if the parser error is didn't understand...
+<br>if the parser error is only understood as far as...
+<br>if the parser error is didn't understand that number...
+<br>if the parser error is can't see any such thing...
+<br>if the parser error is said too little...
+<br>if the parser error is aren't holding that...
+<br>if the parser error is can't use multiple objects...
+<br>if the parser error is can only use multiple objects...
+<br>if the parser error is not sure what it refers to...
+<br>if the parser error is excepted something not included...
+<br>if the parser error is can only do that to something animate...
+<br>if the parser error is not a verb I recognise...
+<br>if the parser error is not something you need to refer to...
+<br>if the parser error is can't see it at the moment...
+<br>if the parser error is didn't understand the way that finished...
+<br>if the parser error is not enough of those available...
+<br>if the parser error is nothing to do...
+<br>if the parser error is I beg your pardon...
+</font></blockquote><p>
+<p>
+<p><b>2. The default behaviour.</b> Prints the message in question.
+<p>
+<p><b>3. Examples.</b> (a) Perhaps for newcomers:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode78(code) {
+function pasteCode69(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('Rule for deciding whether all includes scenery: it does not.\n\n');
+    myProject.pasteCode('After printing a parser error:\n\tsay "If you are new to interactive fiction, you may like to try typing HELP."\n\n');
 }
 </script>
-<a href="javascript:pasteCode78()"><img border=0 src=../doc_images/paste.png></a> Rule for deciding whether all includes scenery: it does not.
+<a href="javascript:pasteCode69()"><img border=0 src=../doc_images/paste.png></a> After printing a parser error:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;If you are new to interactive fiction, you may like to try typing HELP.&quot;
 </font></blockquote><p>
 <p>
-<p>The phrases &quot;it does&quot; and &quot;it does not&quot; make a decision.
-<p>
-<p>(b) Ensuring that a given thing, which might otherwise be excluded, is included:
+<p>(b) Or to give the parser a certain amount of character:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode79(code) {
+function pasteCode70(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('Rule for deciding whether all includes the oval roof: it does.\n\n');
+    myProject.pasteCode('Rule for printing a parser error when parser error is I beg your pardon:\n\tsay "What\'s that? Speak up, speak up." instead.\n\n{*}Rule for printing a parser error:\n\tsay "That\'s a rum thing to say, and no mistake." instead.\n\n');
 }
 </script>
-<a href="javascript:pasteCode79()"><img border=0 src=../doc_images/paste.png></a> Rule for deciding whether all includes the oval roof: it does.
+<a href="javascript:pasteCode70()"><img border=0 src=../doc_images/paste.png></a> Rule for printing a parser error when parser error is I beg your pardon:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;What's that? Speak up, speak up.&quot; instead.
 </font></blockquote><p>
 <p>
-<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows that the action will be taking, but nothing else. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode71(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Rule for printing a parser error:\n\tsay "That\'s a rum thing to say, and no mistake." instead.\n\n');
+}
+</script>
+<a href="javascript:pasteCode71()"><img border=0 src=../doc_images/paste.png></a> Rule for printing a parser error:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That's a rum thing to say, and no mistake.&quot; instead.
+</font></blockquote><p>
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc288.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc290.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -849,25 +849,23 @@ Constant imagealign_MarginRight $05;
 #ENDIF;
 ! End of infglk.h inclusion
 
-#IFDEF TARGET_GLULX;
-Array I7_FigureFlags->({-value:NUMBER_CREATED(blorb_figure)}+{-value:NUMBER_CREATED(blorb_sound)}+4);
-#ENDIF;
+Array I7_ResourceFlags->({-value:NUMBER_CREATED(blorb_figure)}+{-value:NUMBER_CREATED(blorb_sound)}+5);
 
 [ I7_DisplayFigure resource_ID one_time sfx;
+	if (one_time) {
+		if (I7_ResourceFlags->resource_ID) return;
+	}
+	I7_ResourceFlags->resource_ID = true;
 #IFDEF TARGET_ZCODE;
 ! Do nothing if on the V5 or V8 Z-machine, but still compile and run
 #IFTRUE #version_number == 6;
-	if (sfx) print "V6: sound "; else print "V6: picture ";
-	print resource_ID, " here.^";
-	if (sfx == false) {
+	if (sfx) {
 		@draw_picture resource_ID;
+	} else {
+		@sound_effect resource_ID;
 	}
 #ENDIF; ! Z-machine version 6
 #IFNOT; ! Glulx, then:
-	if (one_time) {
-		if (I7_FigureFlags->resource_ID) return;
-	}
-	I7_FigureFlags->resource_ID = true;
 	if (sfx) {
 		if (glk_gestalt(gestalt_Sound, 0)) {
 			glk_schannel_play(gg_foregroundchan, resource_ID);

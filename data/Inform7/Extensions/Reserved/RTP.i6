@@ -37,6 +37,9 @@ Constant RTP_ROUTELESS 30;
 Constant RTP_PROPOFNOTHING 31;
 Constant RTP_DECIDEONWRONGKIND 32;
 Constant RTP_DECIDEONNOTHING 33;
+Constant RTP_TABLE_CANTSAVE 34;
+Constant RTP_TABLE_WONTFIT 35;
+Constant RTP_TABLE_BADFILE 36;
 
 [ RunTimeProblem n obj obj2 ln obj3 i c;
 	! if (I7_enable_rte == false) return;
@@ -123,6 +126,15 @@ Constant RTP_DECIDEONNOTHING 33;
 				(PrintTableName) obj, "'.^";
 		RTP_TABLE_CANTSORT:
 			print "Attempt to sort a table whose ordering must remain fixed: table '",
+				(PrintTableName) obj, "'.^";
+		RTP_TABLE_CANTSAVE:
+			print "Attempt to save a table to a file whose data is unstable: table '",
+				(PrintTableName) obj, "'.^";
+		RTP_TABLE_WONTFIT:
+			print "File being read has too many rows or columns to fit into table: table '",
+				(PrintTableName) obj, "'.^";
+		RTP_TABLE_BADFILE:
+			print "File being read is not a previously saved table: table '",
 				(PrintTableName) obj, "'.^";
 		RTP_NOTINAROOM:
 			print "Attempt to test if the current location is '",
@@ -220,11 +232,6 @@ Constant RTP_DECIDEONNOTHING 33;
 		if (att < I7_FBNA) off = attribute_offsets-->att;
 		else off = attribute_offsets-->(50+att-I7_FBNA);
 	} else off = property_offsets-->att;
-! print "Off is ", off, "^";
-! for (i=0: i<116: i++) print attribute_offsets-->i, ", ";
-! print "^^Props: ";
-! for (i=0: i<166: i++) print property_offsets-->i, ", ";
-! print "^";
 	if (off<0) return RunTimeProblem(RTP_BADPROPERTY, obj);
 	textual = property_metadata-->off; off++;
 	if (PermitAttributeR(obj, off)) jump Okay;

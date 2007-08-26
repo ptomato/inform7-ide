@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.5. After rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.10. Understanding values</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,72 +6,92 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Morning After" -->
-<!-- SEARCH SECTION "Ex 74" -->
-<!-- SEARCH SORT "Ex 007-005-074" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc93.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc95.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.5. After rules</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Palette" -->
+<!-- SEARCH SECTION "Ex 261" -->
+<!-- SEARCH SORT "Ex 016-010-261" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc250.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc252.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.10. Understanding values</b></font></td></tr></table>
 <p>
-<p>There is pleasantly little to be said about &quot;after&quot; rules. If an action has survived all the rules in its way, and has actually succeeded, then we need to give the player a response which acknowledges this. Inform's normal rules will be sufficient to say something undramatic: for instance, if &quot;taking the napkin&quot; has succeeded then it will reply &quot;Taken.&quot; to the player.
+<p>So far every &quot;Understand&quot; sentence has ended with &quot;as&quot; and a description of an action. But we can also use &quot;Understand&quot; to supply new ways to talk about things and even values. For instance, if we create:
 <p>
-<p>An after rule is an opportunity to say something more interesting:
-<p>
-<blockquote><font color="#000080">After taking the diamonds, say &quot;Taken!&quot;
+<blockquote><font color="#000080">A brass lantern is in the Building.
 </font></blockquote><p>
 <p>
-<p>(Well, slightly more interesting.) After rules automatically end the action (as a success), which is what we would want in the above case. Allowing it to continue would simply result in &quot;Taken.&quot; being printed as well. However, should we really need to do something and then carry on:
+<p>then it can be called &quot;brass&quot;, or &quot;lantern&quot;, but not &quot;lamp&quot;: Inform does not really know what these words mean, and has no grasp of synonyms. We can arrange for &quot;lamp&quot; to work as well like so:
 <p>
-<blockquote><font color="#000080">After taking the diamonds: say &quot;(Mr Beebe looks up sharply.) &quot;; continue the action.
+<blockquote><font color="#000080">Understand &quot;lamp&quot; as the lantern.
+<br>Understand &quot;old lamp&quot; as the lantern.
+</font></blockquote><p>
+<p>
+<p>With care, we can do the same trick for entire kinds of thing at once. It is not ordinarily the case that a thing can be called by the name of its kind: if we put a woman called April into a room, then she can usually be called &quot;April&quot;, but not &quot;woman&quot;. (The exception is when we do not specify any name for her - in that case, Inform will give up and call her just &quot;woman&quot;.) So there is not usually any form of words which can refer to anything of a given kind. If we should want this, we have to say so explicitly:
+<p>
+<blockquote><font color="#000080">Understand &quot;machine&quot; as a device.
+</font></blockquote><p>
+<p>
+<p>Device is a kind, so now the word &quot;machine&quot; can be used to refer to any device: if there are two in the same place, the result might play out like so:
+<p>
+<blockquote><font color="#000080">>switch machine on
+<br>Which do you mean, the bale twiner or the grain thresher?
+<br>>twiner
+<br>You watch absorbed as a perfect cube of hay is trussed up like a parcel.
+</font></blockquote><p>
+<p>
+<p>Similarly, we might conceivably want to allow new ways to recognise values - in this case, a number:
+<p>
+<blockquote><font color="#000080">Understand &quot;eleventy-one&quot; as 111.
 </font></blockquote><p>
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e97"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc94.html#e97 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>74</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc94.html#e97 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Morning After</font></b></a><br>When the player picks something up which he hasn't already examined, the object is described.<p></td></tr></table>
+<a name="e97"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc251.html#e97 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>261</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc251.html#e97 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Palette</font></b></a><br>An artist's workshop in which the canvas can be painted in any colour, and where painterly names for pigments ("cerulean") are accepted alongside everyday ones ("blue").<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex97.html#e97 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to make the player's life slightly easier by examining everything he picks up, if he hasn't already examined it.
+<p>There are hundreds of traditional pigments, from lampblack to burnt sienna, so we will confine ourselves to just two:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode164(code) {
+function pasteCode347(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Morning After"\n\nA thing can be examined or unexamined.\n\nAfter taking something unexamined:\n\tsay "Taken. [run paragraph on]";\n\ttry examining the noun.\n\nCarry out examining something:\n\tnow the noun is examined.\n\n[Carry out rules are explained in more detail in the chapter on advanced action handling. For now, it may be enough to know that what we put into this carry out rule for examining will happen any time anything is examined, but that it will not interfere with the rest of the predefined behavior of the action. The player will still see the object description and so on, as usual.]\n\nThe Red Door Saloon is a room. "This old place is in pretty bad shape since the mine shut down. Now there\'s not much to see but the pair of deep gouges in the floorboards where they dragged away the Sheriff\'s corpse with the spurs still on."\n\nJed is a man in the Red Door Saloon. "At 8:30 AM the only person around is old Jed, collecting his hangover cure."\n\nThe pistol is a thing in the Red Door Saloon. The description of the pistol is "It ain\'t too accurate, but for two dollars you can\'t expect much."\n\nThe hangover cure is a thing in the Red Door Saloon. The description of the hangover cure is "Two yellow egg-yolks unbroken in a red-brown liquid. Yep."\n\nTest me with "x pistol / get all".\n');
+    myProject.pasteCode('"Palette"\n\nThe Atelier is a room. "The floridly untidy loft space used by a moderately unsuccessful artist (you, that is)." The canvas, palette and paint brush are here. Understand "painting" as the canvas.\n\nColour is a kind of value. The colours are white, red, blue and green.\n\nThe canvas has a colour. The canvas is white. The printed name of the canvas is "largely [colour] canvas".\n\nPainting is an action applying to one thing and one colour. Check painting: if the noun is not the canvas then say "Centuries of tradition suggest that canvas is the natural home of paint." instead. Carry out painting: change the colour of the canvas to the colour understood. Report painting: say "You splash away at the now [canvas]."\n\nUnderstand "paint [something] [a colour]" as painting.\n\nUnderstand "calico" as white. Understand "cerulean" or "cerulean blue" as blue.\n\nTest me with "examine canvas / paint canvas red / examine canvas / paint canvas cerulean / examine canvas".\n');
 }
 </script>
-<a href="javascript:pasteCode164()"><img border=0 src=../doc_images/paste.png></a> &quot;Morning After&quot;
+<a href="javascript:pasteCode347()"><img border=0 src=../doc_images/paste.png></a> &quot;Palette&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be examined or unexamined.
+<blockquote><font color="#000080">The Atelier is a room. &quot;The floridly untidy loft space used by a moderately unsuccessful artist (you, that is).&quot; The canvas, palette and paint brush are here. Understand &quot;painting&quot; as the canvas.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After taking something unexamined:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Taken. [run paragraph on]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the noun.
+<blockquote><font color="#000080">Colour is a kind of value. The colours are white, red, blue and green.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out examining something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is examined.
+<blockquote><font color="#000080">The canvas has a colour. The canvas is white. The printed name of the canvas is &quot;largely [colour] canvas&quot;.
 </font></blockquote><p>
 <p>
-<p>Carry out rules are explained in more detail in the chapter on advanced action handling. For now, it may be enough to know that what we put into this carry out rule for examining will happen any time anything is examined, but that it will not interfere with the rest of the predefined behavior of the action. The player will still see the object description and so on, as usual.
-<p>
-<blockquote><font color="#000080">The Red Door Saloon is a room. &quot;This old place is in pretty bad shape since the mine shut down. Now there's not much to see but the pair of deep gouges in the floorboards where they dragged away the Sheriff's corpse with the spurs still on.&quot;
+<blockquote><font color="#000080">Painting is an action applying to one thing and one colour. Check painting: if the noun is not the canvas then say &quot;Centuries of tradition suggest that canvas is the natural home of paint.&quot; instead. Carry out painting: change the colour of the canvas to the colour understood. Report painting: say &quot;You splash away at the now [canvas].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Jed is a man in the Red Door Saloon. &quot;At 8:30 AM the only person around is old Jed, collecting his hangover cure.&quot;
+<blockquote><font color="#000080">Understand &quot;paint [something] [a colour]&quot; as painting.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The pistol is a thing in the Red Door Saloon. The description of the pistol is &quot;It ain't too accurate, but for two dollars you can't expect much.&quot;
+<blockquote><font color="#000080">Understand &quot;calico&quot; as white. Understand &quot;cerulean&quot; or &quot;cerulean blue&quot; as blue.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The hangover cure is a thing in the Red Door Saloon. The description of the hangover cure is &quot;Two yellow egg-yolks unbroken in a red-brown liquid. Yep.&quot;
+<blockquote><font color="#000080">Test me with &quot;examine canvas / paint canvas red / examine canvas / paint canvas cerulean / examine canvas&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x pistol / get all&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc94.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc251.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc93.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc95.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e88"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex88.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>262</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex88.html#e88 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Baritone, Bass</font></b></a><br>Letting the player pick a gender (or perhaps other characteristics) before starting play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex88.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc250.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc252.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

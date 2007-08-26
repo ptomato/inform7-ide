@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.1. What are activities?</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.20. Review of Chapter 16: Understanding</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,27 +6,270 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "What are activities?" -->
-<!-- SEARCH SECTION "17.1" -->
-<!-- SEARCH SORT "017-001-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc260.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc262.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.1. What are activities?</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Review of Chapter 16: Understanding" -->
+<!-- SEARCH SECTION "16.20" -->
+<!-- SEARCH SORT "016-020-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc260.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc262.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.20. Review of Chapter 16: Understanding</b></font></td></tr></table>
 <p>
-<p>It is poor form to define with negatives, but the first thing to say about activities is that they are <i>not</i> actions. This needs saying because Inform often seems to treat them as if they are, by allowing us to write rules like so:
+<p>&quot;Understand...&quot; rules are used in Inform to change both how the player can give commands (such as POLISH THE SILVER) and how the player is allowed to refer to individual objects.
 <p>
-<blockquote><font color="#000080">Before printing the name of a woman, say &quot;Ms &quot;.
+<p>1. <b>Understanding the names of things</b>. As we've seen since the earliest chapters, we may add to the vocabulary used to refer to an object in the game, or to an entire class:
+<p>
+<blockquote><font color="#000080">Understand &quot;fish&quot; as the trout.
+<br>Understand &quot;fish&quot; or &quot;dinner&quot; as the trout.
+<br>Understand &quot;fish/dinner&quot; as the trout.
+<br>Understand &quot;gentleman&quot; as a man.
 </font></blockquote><p>
 <p>
-<p>With this rule in place, someone called &quot;Daphne&quot; will always be described as &quot;Ms Daphne&quot;, and so on. The language looks as if we were imposing a rule on an action called &quot;printing the name of&quot;, but there is no such action: instead, it is an &quot;activity&quot;. To spell out the difference:
+<p>If we use an entire phrase, as here
 <p>
-<blockquote><font color="#000080">An action is a simulated task for the fictional protagonist.
+<blockquote><font color="#000080">Understand &quot;red bird&quot; as the robin.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">An activity is a real task for the computer program doing the simulation.
+<p>Inform will match only the full phrase and not its components; so EXAMINE RED BIRD would work, but not EXAMINE RED or EXAMINE BIRD.
+<p>
+<p>If we have a combination of words we expect to use together very often, we can create a special understanding token, such as
+<p>
+<blockquote><font color="#000080">Understand &quot;red&quot; or &quot;scarlet&quot; or &quot;vermilion&quot; or &quot;vermillion&quot; or &quot;cinnabar&quot; as &quot;[red]&quot;.
+<br>Understand &quot;red/scarlet/vermilion/vermillion/cinnabar&quot; as &quot;[red]&quot;.
 </font></blockquote><p>
 <p>
-<p>Activities allow us to influence or change some of the standard habits of Inform, using rules as flexible and powerful as those applicable to actions, though activities are in several ways simpler and easier.
+<p>and then use this to define other understand rules, as in
+<p>
+<blockquote><font color="#000080">Understand &quot;[red] bird&quot; as the robin.
+</font></blockquote><p>
+<p>
+<p>2. <b>Understanding properties and conditional states</b>. Often we want to allow the player to use adjectives or names for objects only at some points in the game or under some circumstances.
+<p>
+<blockquote><font color="#000080">Understand &quot;Janine&quot; as the stranger when the stranger is known.
+<br>Understand the heat property as describing a pan.
+<br>Understand the heat property as referring to a pan.
+<br>Understand &quot;lady&quot; as a woman when the item described is ennobled.
+</font></blockquote><p>
+<p>
+<p>The destinction between referring and describing is that in the &quot;describing&quot; case, the property's name alone can mean the thing in question - so &quot;take unbroken&quot; will work; whereas, in the &quot;referring to&quot;, the property's name can only be used as an adjective preceding the name of thing itself - so &quot;take unbroken flowerpot&quot; will work but &quot;take unbroken&quot; will not.
+<p>
+<p>We can also make use of relationships to other things. For instance,
+<p>
+<blockquote><font color="#000080">Understand &quot;[something related by support] taco&quot; as the taco.
+</font></blockquote><p>
+<p>
+<p>allows BEEF TACO to mean the taco when something which can be named BEEF is on top of (that is, supported by) the taco.
+<p>
+<p>If we want to conditionally add to the way the name of something is displayed (e.g., to put &quot;broken&quot; in front of the name of any damaged pot), we may want to use the &quot;printing the name&quot; and &quot;printing the plural name&quot; activities; see the Activities chapter for more details.
+<p>
+<p>3. <b>Understanding actions</b>. We use understand sentences to tell Inform how a player is allowed to give a command.
+<p>
+<p>For clarity, these sample understand rules are listed together with the way the action might be defined:
+<p>
+<blockquote><font color="#000080">Understand &quot;help&quot; as asking for help.
+<br>Asking for help is an action out of world.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;whistle&quot; as whistling.
+<br>Whistling is an action applying to nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;shake [something]&quot; as shaking.
+<br>Shaking is an action applying to one thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;seduce [someone]&quot; as seducing.
+<br>Seducing is an action applying to one thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;spy on [any thing]&quot; as spying on.
+<br>Spying on is an action applying to one visible thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;go to [any room]&quot; as going to by name.
+<br>Going to by name is an action applying to one thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;mix [something] with [something]&quot; as mixing it with.
+<br>Mixing it with is an action applying to two things.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;fill [an open container] with [something]&quot; as inserting it into (with nouns reversed).
+<br>Inserting it into is an action applying to two things.
+</font></blockquote><p>
+<p>
+<p>Notice in this case that, since there are two objects affected by the action, our action name includes an &quot;it&quot; where the first of the two nouns would go.
+<p>
+<p>In a few special cases we might provide an understand rule that accepted unusually terse input:
+<p>
+<blockquote><font color="#000080">Understand &quot;[something]&quot; as examining.
+<br>Understand &quot;[any visited room]&quot; as going to by name.
+</font></blockquote><p>
+<p>
+<p>We may also occasionally write understand rules that supply less information that the action needs to go forward (by offering too few nouns or values), when we intend to use the &quot;supplying a missing noun&quot; or &quot;supplying a missing second noun&quot; activities. So for instance:
+<p>
+<blockquote><font color="#000080">Stabbing it with is an action applying to two things.
+<br>Understand &quot;stab [something] with [something]&quot; as stabbing it with.
+<br>Understand &quot;stab [something]&quot; as stabbing it with.
+<br>Rule for supplying a missing second noun when stabbing something with:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the second noun to the hypodermic needle.
+</font></blockquote><p>
+<p>
+<p>For more details, see the Activities chapter.
+<p>
+<p>4. <b>Action synonyms</b>. We may create synonyms for existing commands with lines such as
+<p>
+<blockquote><font color="#000080">Understand the commands &quot;mingle&quot; and &quot;combine&quot; as &quot;mix&quot;.
+</font></blockquote><p>
+<p>
+<p>and conversely we may tell Inform not to understand a command in the way it currently does with
+<p>
+<blockquote><font color="#000080">Understand the command &quot;murder&quot; as something new.
+</font></blockquote><p>
+<p>
+<p>Understanding a command as something new removes Inform's knowledge of all grammar applying to that specific word; so
+<p>
+<blockquote><font color="#000080">Understand the command &quot;get&quot; as something new.
+</font></blockquote><p>
+<p>
+<p>would not change Inform's understanding of
+<p>
+<blockquote><font color="#000080">TAKE FISH
+</font></blockquote><p>
+<p>
+<p>but would remove its understanding of
+<p>
+<blockquote><font color="#000080">GET FISH
+<br>GET UP
+<br>GET DOWN
+<br>GET IN BOX
+<br>GET ALL FROM BASKET
+</font></blockquote><p>
+<p>
+<p>and so on. While it might be nice to be able to cancel the understanding of single lines of grammar while leaving all other senses of &quot;get&quot; intact, there is currently no facility for doing this. It is not effective to write a line such as
+<p>
+<blockquote><font color="#000080">Understand the command &quot;get [something]&quot; as something new.
+</font></blockquote><p>
+<p>
+<p>5. <b>Value tokens</b>. Understand rules for actions may also use tokens to accept kinds of value, numbers, or strings of text of any length:
+<p>
+<blockquote><font color="#000080">Understand &quot;discuss [text]&quot; as discussing.
+<br>Discussing is an action applying to one topic.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;set [something] to [a number]&quot; as dialing it to.
+<br>Dialing it to is an action applying to one thing and one number.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;sell [something] for [a price]&quot; as selling it for.
+<br>Selling it for is an action applying to one price and one thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;paint [something] [a colour]&quot; as painting it the colour.
+<br>Painting it the colour is an action applying to one thing and one colour.
+</font></blockquote><p>
+<p>
+<p>Subsequently we will be able to refer to the player's chosen input as &quot;the topic understood&quot; (for text), &quot;the number understood&quot;, &quot;the colour understood&quot;, &quot;the price understood&quot;, and so on.
+<p>
+<p>We should bear in mind that, unless we compile to Glulx, Inform will not correctly interpret a number greater than 32767, or units that equate to values larger than this. See the chapter on Units for more discussion of limits on number and unit size.
+<p>
+<p>6. <b>Held objects, multiple objects</b>. Inform provides certain standard tokens to help us define actions that apply to more than one thing, or that imply some particular relationship between the objects named in the command.
+<p>
+<blockquote><font color="#000080">Understand &quot;wave [something preferably held] at [something]&quot; as waving it at.
+<br>Waving it at is an action applying to one carried thing and one visible thing.
+</font></blockquote><p>
+<p>
+<p>The &quot;something preferably held&quot; token tells Inform that, in cases of ambiguity, it should prefer an object which the player already has in inventory to objects that may be visible elsewhere. It is often used in combination with actions applying to carried objects. (For more about carried, visible, and touchable objects, see the Advanced Actions chapter; for more about making the player automatically pick up objects, see the &quot;implicitly taking&quot; activity in the Activities chapter.)
+<p>
+<p>The other special tokens are largely designed to create more reasonable behavior for vague commands involving ALL:
+<p>
+<blockquote><font color="#000080">Understand &quot;repair [things]&quot; as repairing.
+<br>Understand &quot;wave [things preferably held]&quot; as waving.
+<br>Understand &quot;take [things inside] from [something]&quot; as removing it from.
+<br>Understand &quot;put [other things] into/inside/in [something]&quot; as inserting it into.
+</font></blockquote><p>
+<p>
+<p>Here, for instance, we only want TAKE ALL FROM THE SILVER BOX to apply to the items that are already inside the box; and our token will ensure that this happens correctly.
+<p>
+<p>There are also times when we want to make our own, more flexible rules about how Inform should interpret a command from the player that uses the word ALL: for instance, we might want to automatically exclude items of scenery, or prevent the player from accidentally referring to a concealed object. For this purpose, we use not an understand rule but the &quot;deciding whether all includes&quot; activity. See the Activities chapter for more details.
+<p>
+<p>7. <b>Changing what the player is allowed to refer to</b>. If we want a given action to apply to things other than the ordinary set of objects the player can see in front of him, we can use an understand rule to define this. For instance
+<p>
+<blockquote><font color="#000080">Understand &quot;go to [any room]&quot; as distantly approaching.
+<br>Understand &quot;find [any thing]&quot; as seeking.
+</font></blockquote><p>
+<p>
+<p>Understand rules are useful to change what the player may refer to when the change of scope applies to a specific action. They are not so useful for cases where, for instance, the player is in a terrace with a view of a garden, and should be able to refer to attempt any action he likes on any item in the garden, since it's all in view. For that kind of situation, it is better to turn to the &quot;deciding the scope of something&quot; activity, discussed in the Activities chapter.
+<p>
+<p>8. <b>Making guesses about ambiguous commands</b>. If we have given Inform multiple understand rules using the same first word, Inform will sort these rules from most to least specific, and will use the first line matched. Thus if we had
+<p>
+<blockquote><font color="#000080">Understand &quot;push [open door]&quot; as slamming.
+<br>Understand &quot;push [door]&quot; as opening.
+<br>Understand &quot;push [something]&quot; as pushing.
+</font></blockquote><p>
+<p>
+<p>Inform would use the &quot;open door&quot; case if possible, then the &quot;door&quot; case, and finally the &quot;something&quot; case, if the other two did not apply. This can also be used to do some guesswork about what the player intends when a command is ambiguous; if we have both of these lines
+<p>
+<blockquote><font color="#000080">Understand &quot;eat [an edible thing]&quot; as eating.
+<br>Understand &quot;eat [something]&quot; as eating.
+</font></blockquote><p>
+<p>
+<p>Inform will try to look for an edible thing first, and only resort to an inedible object if the player's command cannot refer to anything edible.
+<p>
+<p>Sometimes we will want more specific control over Inform's guesses, or will want to discourage or encourage *all* actions to apply to a particular object:
+<p>
+<blockquote><font color="#000080">Does the player mean taking the great Eiffel Tower: it is very unlikely.
+<br>Does the player mean tying the noun to the noun: it is unlikely.
+<br>Does the player mean doing something to Lord Charisma: it is very likely.
+</font></blockquote><p>
+<p>
+<p>where the outcome may be any of
+<p>
+<blockquote><font color="#000080">it is very likely
+<br>it is likely
+<br>it is possible
+<br>it is unlikely
+<br>it is very unlikely
+</font></blockquote><p>
+<p>
+<p>In the case of multiple interpretations, Inform will accept whichever the rules deem to be likeliest. If there is no clear winner, the player will be asked which item he means.
+<p>
+<p>Finally, there are two activities that affect the way Inform communicates with the player about its guesses, &quot;asking which do you mean&quot; and &quot;clarifying the parser's choice of something&quot;. We can use these activities to change the way Inform refers to objects when asking &quot;which do you mean, the X or the Y?&quot; questions, and the way it describes its guesses to the player. See the Activities chapter for more details.
+<p>
+<p>9. <b>Special effects</b>. There are occasionally times when we will want to modify the player's line of input before attempting to understand it; we have seen one or two examples already that use the
+<p>
+<blockquote><font color="#000080">After reading a command: ...
+</font></blockquote><p>
+<p>
+<p>activity in order to achieve special effects. This activity is explained more fully in the activities chapter.
+<p>
+<p>Sometimes it is useful to remove certain punctuation marks from the player's command before interpreting it, so that for instance
+<p>
+<blockquote><font color="#000080">SAY XYZZY TO PRINCE
+</font></blockquote><p>
+<p>
+<p>is treated as identical with
+<p>
+<blockquote><font color="#000080">SAY &quot;XYZZY&quot; TO PRINCE
+</font></blockquote><p>
+<p>
+<p>The Punctuation Removal extension included with Inform provides several phrases to manipulate the player's command to change this sort of thing.
+<p>
+<p>Finally, on occasion we want to be able to record literal text used by the player, for instance when allowing the player to
+<p>
+<blockquote><font color="#000080">RECORD &quot;PASSWORD IS FLAUBERT&quot; IN CASE NOTEBOOK
+<br>WRITE KEITH MARS ON NAMETAG
+</font></blockquote><p>
+<p>
+<p>and so on. Again, Inform does not by default provide resources for handling this kind of need, but there are extensions available (not included in the Inform download) that provide mechanisms to do this more easily.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc260.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc262.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.10. Understanding values</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.9. Defining new assertion verbs</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,81 +6,346 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Palette" -->
-<!-- SEARCH SECTION "Ex 247" -->
-<!-- SEARCH SORT "Ex 016-010-247" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc249.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc251.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.10. Understanding values</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "The Unexamined Life" -->
+<!-- SEARCH SECTION "Ex 204" -->
+<!-- SEARCH SORT "Ex 013-009-204" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc200.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc202.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.9. Defining new assertion verbs</b></font></td></tr></table>
 <p>
-<p>So far every &quot;Understand&quot; sentence has ended with &quot;as&quot; and a description of an action. But we can also use &quot;Understand&quot; to supply new ways to talk about things and even values. For instance, if we create:
+<p>Here is an example definition of a new verb:
 <p>
-<blockquote><font color="#000080">A brass lantern is in the Building.
+<blockquote><font color="#000080">The verb to sport (he sports, they sport, he sported, it is sported, he is sporting) implies the wearing relation.
 </font></blockquote><p>
 <p>
-<p>then it can be called &quot;brass&quot;, or &quot;lantern&quot;, but not &quot;lamp&quot;: Inform does not really know what these words mean, and has no grasp of synonyms. We can arrange for &quot;lamp&quot; to work as well like so:
+<p>Once this is done, we can write the assertion
 <p>
-<blockquote><font color="#000080">Understand &quot;lamp&quot; as the lantern.
-<br>Understand &quot;old lamp&quot; as the lantern.
+<blockquote><font color="#000080">Mr Wickham sports a Tory rosette.
 </font></blockquote><p>
 <p>
-<p>With care, we can do the same trick for entire kinds of thing at once. It is not ordinarily the case that a thing can be called by the name of its kind: if we put a woman called April into a room, then she can usually be called &quot;April&quot;, but not &quot;woman&quot;. (The exception is when we do not specify any name for her - in that case, Inform will give up and call her just &quot;woman&quot;.) So there is not usually any form of words which can refer to anything of a given kind. If we should want this, we have to say so explicitly:
+<p>which will do the the same thing as
 <p>
-<blockquote><font color="#000080">Understand &quot;machine&quot; as a device.
+<blockquote><font color="#000080">Mr Wickham wears a Tory rosette.
 </font></blockquote><p>
 <p>
-<p>Device is a kind, so now the word &quot;machine&quot; can be used to refer to any device: if there are two in the same place, the result might play out like so:
+<p>because both verbs have the same relation as their meaning.
 <p>
-<blockquote><font color="#000080">>switch machine on
-<br>Which do you mean, the bale twiner or the grain thresher?
-<br>>twiner
-<br>You watch absorbed as a perfect cube of hay is trussed up like a parcel.
+<p>Note that we have to spell out many parts of the verb:
+<p>
+<blockquote><font color="#000080">to sport - infinitive
+<br>he sports - present singular
+<br>they sport - present plural
+<br>he sported - past
+<br>it is sported - past participle
+<br>he is sporting - present participle
 </font></blockquote><p>
 <p>
-<p>Similarly, we might conceivably want to allow new ways to recognise values - in this case, a number:
+<p>Although it looks as if Inform could easily generate these given the infinitive &quot;to sport&quot; alone, by adding an &quot;-s&quot; here or an &quot;-ed&quot; there, English can be a very irregular language. Since only a few verbs will be defined in any single project it seems best to be explicit. (If we do miss out any of the parts of the verb, the result will be that the usages missed out will not be understood by Inform. Sometimes that's a good thing, as some verbs have seldom-used present participles, for instance - &quot;he is liking me&quot;, for instance, is grammatical but odd.)
 <p>
-<blockquote><font color="#000080">Understand &quot;eleventy-one&quot; as 111.
-</font></blockquote><p>
+<p>The Phrasebook index contains all the verbs associated with assertions, in the &quot;table of verbs&quot; section. When we add new verbs to our source, those will appear in the Phrasebook as well.
 <p>
 <p><hr><p>
+<a name="e127"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex127.html#e127 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>203</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex127.html#e127 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Unthinkable Alliances</font></b></a><br>People are to be grouped into alliances. To kiss someone is to join his or her faction, which may make a grand alliance; to strike them is to give notice of quitting, and to become a lone wolf.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex127.html#e127 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e206"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc250.html#e206 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>247</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc250.html#e206 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Palette</font></b></a><br>An artist's workshop in which the canvas can be painted in any colour, and where painterly names for pigments ("cerulean") are accepted alongside everyday ones ("blue").<p></td></tr></table>
+<a name="e206"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc201.html#e206 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>204</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc201.html#e206 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Unexamined Life</font></b></a><br>An adaptive hint system that tracks what the player needs to have seen or to possess in order to solve a given puzzle, and doles out suggestions accordingly. Handles changes in the game state with remarkable flexibility, and allows the player to decide how explicit a nudge he wants at any given moment.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex206.html#e206 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>There are hundreds of traditional pigments, from lampblack to burnt sienna, so we will confine ourselves to just two:
+<p>Hint systems in IF come in a variety of flavors: some are a static, prewritten set of guidelines (which might exist in a menu or outside the game entirely); others are built in as part of the program, and attempt to adapt to the situation the player currently faces. Adaptive hints have the advantage that they are less likely to reveal information for which the player is not ready, and the disadvantage that they are more work for the author.
+<p>
+<p>The exercise here is to write an adaptive hint system that will both respond in agile ways to the state of the world model and require a minimum of authorial fussing. We also want the player to be able to ask for a hint about any object he encounters in the game world: this will let him be specific and avoid accidentally receiving hints about the wrong puzzles.
+<p>
+<p>Our baseline assumption is that a player may find a puzzle unsolvable for one of two reasons: he either hasn't seen the relevant clue, or he hasn't got the relevant equipment. If these are true, then he should be given hints about how to find this information, and then once he has it, more specific hints about the puzzle itself -- ending, as a last resort, with the exact command(s) he will need to use in order to bring about the solution.
+<p>
+<p>In practice, there are other possibilities, but this will do for an example.
+<p>
+<p>We begin by defining our relations:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode339(code) {
+function pasteCode290(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Palette"\n\nThe Atelier is a room. "The floridly untidy loft space used by a moderately unsuccessful artist (you, that is)." The canvas, palette and paint brush are here. Understand "painting" as the canvas.\n\nColour is a kind of value. The colours are white, red, blue and green.\n\nThe canvas has a colour. The canvas is white. The printed name of the canvas is "largely [colour] canvas".\n\nPainting is an action applying to one thing and one colour. Check painting: if the noun is not the canvas then say "Centuries of tradition suggest that canvas is the natural home of paint." instead. Carry out painting: change the colour of the canvas to the colour understood. Report painting: say "You splash away at the now [canvas]."\n\nUnderstand "paint [something] [a colour]" as painting.\n\nUnderstand "calico" as white. Understand "cerulean" or "cerulean blue" as blue.\n\nTest me with "examine canvas / paint canvas red / examine canvas / paint canvas cerulean / examine canvas".\n');
+    myProject.pasteCode('"The Unexamined Life"\n\nExplaining relates one thing to various things. The verb to explain (it explains, they explain, it explained, it is explained, it is explaining) implies the explaining relation.\n\nInstead of hinting about something when something unexamined (called the clue) explains the noun:\n\tsay "You\'re still missing some information that might be useful to understanding the problem. [More]";\n\tif player consents, try hinting about the clue.\n\nRequiring relates one thing to various things. The verb to require (it requires, they require, it required, it is required, it is requiring) implies the requiring relation.\n\nInstead of hinting about something when the noun requires something (called the implement) which is not carried by the player:\n\tsay "You\'re missing an object that might be useful to resolving this problem. [More]";\n\tif player consents, try hinting about the implement.\n\nHinting about is an action applying to one visible thing. Understand "hint about [any thing]" as hinting about.\n\n[This allows us to create the most absolutely generic sort of hint -- boring, perhaps, but in practice the player often just needs a nudge about what part of the game world he should be examining for a solution:]\n\nCarry out hinting about:\n\tif something explains the noun, say "You might want to review [the list of things which explain the noun]. ";\n\tif the noun requires something\n\tbegin;\n\t\tsay "You should be sure that you have [the list of things required by the noun]. ";\n\totherwise;\n\t\tsay "Sorry, I can\'t advise you further on that.";\n\tend if.\n\n[These things cover hinting about objects that are themselves puzzles. But what if the player asks for hints about a tool or piece of information because he doesn\'t know how to apply it yet? We might want to give some guidance there, as well.]\n\nCarry out hinting about something which explains something (called target):\n\tif target is unseen, say "[The noun] might prove useful information, sooner or later." instead;\n\totherwise say "You could examine [the noun]." instead.\n\nCarry out hinting about something which is required by something:\n\tsay "[The noun] might be useful to have. [More]";\n\tif player consents\n\tbegin;\n\t\tif a seen thing requires the noun, say "[The noun] may help with [the list of seen things which require the noun]." instead;\n\t\totherwise say "There are [number of things which require the noun in words] problems for which [the noun] might come in handy." instead;\n\tend if.\n\n[Now we have these general hints written, but we want to pre-empt them if the player has not yet fulfilled all the prerequisites.]\n\nInstead of hinting about something unseen:\n\tif the noun is visible\n\tbegin;\n\t\tnow the noun is seen;\n\t\tcontinue the action;\n\tend if;\n\tsay "Perhaps you should explore further. ";\n\tif the ultimate location of the noun is an unvisited room\n\tbegin;\n\t\ttry hinting about the ultimate location of the noun;\n\totherwise;\n\t\tif the ultimate location of the noun is the location\n\t\tbegin;\n\t\t\tsay "You\'re in the correct room right now[if the visible shell of the noun is a thing]. Try further exploring [the visible shell of the noun][end if].";\n\t\totherwise;\n\t\t\ttry hinting about the ultimate location of the noun;\n\t\tend if;\n\tend if.\n\nInstead of hinting about a visited room:\n\tsay "There\'s a room you\'ve visited, but you haven\'t exhausted all there is to see there. [More]";\n\tif player consents\n\tbegin;\n\t\tsay "Try going back to [the noun]. [More]";\n\t\tif player consents, direct player to the noun;\n\tend if.\n\nInstead of hinting about an unvisited room:\n\tsay "There\'s a room you haven\'t yet visited.  [More]";\n\tif player consents, direct player to the noun.\n\nTo direct player to (goal - a room):\n\tlet way be the best route from location to the goal, using even locked doors;\n\tif way is a direction, say "Try going [way] to start your explorations.";\n\totherwise say "Sorry, the route is an indirect one.";\n\nInstead of hinting about a portable seen thing which is not visible:\n\tif the noun is scenery, continue the action;\n\tsay "You have seen the item you need to solve this problem, but it\'s not in sight at the moment.  [More]";\n\tif player consents\n\tbegin;\n\t\ttry hinting about the ultimate location of the noun;\n\tend if.\n\n[And this business of "seen" things requires, of course, that we keep track:]\n\nA thing can be seen or unseen. A thing is usually unseen. The player is seen. After printing the name of something (called target): now the target is seen.\n\n[That "After printing..." rule means that as soon as the game automatically prints the name of an object, it tags that object as having been "seen" by the player. This requires just a little care on our part, that we never mention an object without using the game\'s printing rules. Still, it is much easier than most other possible forms of bookkeeping.]\n\n[We also need to deal with the question of whether the player has examined an object, for those objects whose descriptions carry vital information:]\n\nA thing can be examined or unexamined. A thing is usually unexamined. Carry out examining something: now the noun is examined.\n\n[In practice, there might be other ways of getting vital facts, and in a more sophisticated puzzle game we might need a more sophisticated model to track this. But examined or unexamined will do for now.]\n\nTo decide what room is the ultimate location of (item - a thing):\n\tlet place be the holder of the item;\n\twhile the place is a thing, let the place be the holder of the place;\n\tif the place is a room, decide on the place.\n\nTo decide what thing is the visible shell of (item - a thing):\n\tif item is visible, decide on the item;\n\tlet place be the holder of the item;\n\twhile place is a thing and place is not visible, let place be the holder of the place;\n\tif the place is visible, decide on the place.\n\nTo say more:\n\tsay "[paragraph break]Shall I go on? > ";\n\n[That covers most of the generic hints, but let\'s also add some slightly more precise hints about a few kinds of objects that are especially important in the model world. These hints will probably not be very interesting to a seasoned IF veteran, but a novice player who does not know the wording or cannot guess what something might be for may still find them useful:]\n\nCarry out hinting about a locked lockable thing:\n\tsay "You could unlock [the noun] with [the matching key of the noun]." instead.\n\nInstead of hinting about a locked thing when the matching key of the noun is not carried by the player:\n\tif the player can see the matching key of the noun\n\tbegin;\n\t\tsay "Perhaps [the matching key of the noun] would help.";\n\totherwise;\n\t\tsay "[The noun] is locked. There must be a key around somewhere. [More]";\n\t\tif player consents, try hinting about the matching key of the noun;\n\tend if.\n\nCarry out hinting about a closed openable unlocked thing:\n\tsay "You could open [the noun]." instead.\n\nCarry out hinting about an open door:\n\tsay "You could enter [the noun]." instead.\n\nCarry out hinting about an unexamined thing:\n\tsay "You might find out something if you examine [the noun]." instead.\n\nCarry out hinting about an edible thing:\n\tsay "You could eat [the noun]." instead.\n\nCarry out hinting about a wearable thing:\n\tsay "You could wear [the noun]." instead.\n\nCarry out hinting about a pushable between rooms thing:\n\tsay "You could push [the noun] some direction." instead.\n\n[Now to the actual objects in the game:]\n\nThe Crypt is a room. "This squat, barrel-vaulted chamber runs roughly north-south. Along either side are the graves of Saxon kings and early bishops of the church long since gone to dust -- one [tomb] in particular looks undisturbed."\n\n[Notice that we used the bracketed tomb here: the tomb is scenery, and if we do not use the name-printing function, Inform will not register that we have mentioned it to the player.]\n\nThe tomb is scenery in the Crypt. The tomb is openable and closed. The silver dagger is a thing in the tomb. Understand "tombs" as the tomb. The description of the silver dagger is "Gleaming in a soft light all its own. Its blade is figured with running deer and its hilt is made of horn." The wight requires the silver dagger. The tomb require the pry bar.\n\nInstead of opening the tomb when the player does not carry the pry bar:\n\tsay "The lids are stone, too heavy for you to raise without some implement."\n\n[Now we can add specific hints to replace the generic ones:]\n\nCarry out hinting about the tomb:\n\tsay "The lids are heavy, but you can open them when you carry the pry bar."\n\n[The rest of the hint system ensures that the player will not see this final suggestion until he has the pry bar, since the tomb "requires" the pry bar. Having the hint there doesn\'t excuse us from providing some alternate wording in case the player solves this not-very-difficult conundrum on his own, though:]\n\nUnderstand "pry [something] with [something preferably held]" as unlocking it with. Understand the commands "lever" or "prise" as "pry".\n\nInstead of unlocking something with the pry bar, try opening the noun.\n\nThe wight is a man in the Crypt. "[The wight] lurks near the south exit." The description of wight is "Old English [italic type]wiht[roman type]: a thing, a creature. It is little more than the memory of a life ill-lived, but it lingers here." Understand "wiht" or "creature" or "ghost" as the wight.\n\nInstead of going south in the presence of wight:\n\tsay "The wight breathes chill into your face.\n\nYour head swims, and you are aware that you no longer have the willpower to go in that direction."\n\nFresh Air is south from the Crypt.\n\nAfter going to Fresh Air:\n\taward 1 point;\n\tsay "Congratulations, you have escaped!";\n\tend the game in victory.\n\nThe inscription is fixed in place in the Crypt. "Someone has painstakingly carved [an inscription] into the wall above the door." The description is "Squinting, you decipher the Latin text: [italic type]Silver causes harm to those that live though dead[roman type]." The inscription explains wight.\n\nThe Treasure Chamber is north of the Crypt. "The walls are thick, the high windows promisingly barred with iron. But for all this there is no hint of any valuable stores remaining."\n\nThe pry bar is in the Treasure Chamber. "One of the window bars, rusted from its place, lies in a puddle of water." Understand "window" or "bars" as the pry bar. The description of the pry bar is "A few feet long, and not entirely rusted into uselessness yet."\n\nInstead of giving the dagger to wight:\n\tsay "The wight recoils, appalled."\n\nCarry out hinting about wight:\n\tsay "You will have to find some way to get wight to come in physical contact with the silver dagger, which he will certainly not do willingly. [More]";\n\tif player consents, say "You could, for instance, throw it at him." instead;\n\totherwise stop the action.\n\nUnderstand "touch [something] with [something]" as putting it on (with nouns reversed). Understand "hit [someone] with [something]" as putting it on (with nouns reversed).\n\nInstead of attacking the wight:\n\tsay "You can\'t force yourself to approach close enough for hand to hand combat: if, indeed, the wight has hands."\n\nInstead of putting the dagger on wight:\n\tsay "The wight fades out of your way without ever coming into contact with the dagger. Perhaps a more projectile method would work better."\n\nInstead of putting something on wight:\n\tsay "The wight dodges you."\n\nInstead of throwing the dagger at wight:\n\tremove wight from play;\n\tmove the dagger to the location;\n\taward 1 point;\n\tsay "The dagger passes through its airy form with a rending like the rip of silk. The fragments dissipate at once."\n\nThe maximum score is 2.\n\nTest me with "hint about wight / north / get bar / south / open tomb / get dagger / south / hint about wight / read inscription / hint about wight / attack wight / throw dagger at wight / south".\n\n');
 }
 </script>
-<a href="javascript:pasteCode339()"><img border=0 src=../doc_images/paste.png></a> &quot;Palette&quot;
+<a href="javascript:pasteCode290()"><img border=0 src=../doc_images/paste.png></a> &quot;The Unexamined Life&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Atelier is a room. &quot;The floridly untidy loft space used by a moderately unsuccessful artist (you, that is).&quot; The canvas, palette and paint brush are here. Understand &quot;painting&quot; as the canvas.
+<blockquote><font color="#000080">Explaining relates one thing to various things. The verb to explain (it explains, they explain, it explained, it is explained, it is explaining) implies the explaining relation.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Colour is a kind of value. The colours are white, red, blue and green.
+<blockquote><font color="#000080">Instead of hinting about something when something unexamined (called the clue) explains the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're still missing some information that might be useful to understanding the problem. [More]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if player consents, try hinting about the clue.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The canvas has a colour. The canvas is white. The printed name of the canvas is &quot;largely [colour] canvas&quot;.
+<blockquote><font color="#000080">Requiring relates one thing to various things. The verb to require (it requires, they require, it required, it is required, it is requiring) implies the requiring relation.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Painting is an action applying to one thing and one colour. Check painting: if the noun is not the canvas then say &quot;Centuries of tradition suggest that canvas is the natural home of paint.&quot; instead. Carry out painting: change the colour of the canvas to the colour understood. Report painting: say &quot;You splash away at the now [canvas].&quot;
+<blockquote><font color="#000080">Instead of hinting about something when the noun requires something (called the implement) which is not carried by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're missing an object that might be useful to resolving this problem. [More]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if player consents, try hinting about the implement.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;paint [something] [a colour]&quot; as painting.
+<blockquote><font color="#000080">Hinting about is an action applying to one visible thing. Understand &quot;hint about [any thing]&quot; as hinting about.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;calico&quot; as white. Understand &quot;cerulean&quot; or &quot;cerulean blue&quot; as blue.
+<p>This allows us to create the most absolutely generic sort of hint -- boring, perhaps, but in practice the player often just needs a nudge about what part of the game world he should be examining for a solution:
+<p>
+<blockquote><font color="#000080">Carry out hinting about:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if something explains the noun, say &quot;You might want to review [the list of things which explain the noun]. &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun requires something
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You should be sure that you have [the list of things required by the noun]. &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Sorry, I can't advise you further on that.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;examine canvas / paint canvas red / examine canvas / paint canvas cerulean / examine canvas&quot;.
+<p>These things cover hinting about objects that are themselves puzzles. But what if the player asks for hints about a tool or piece of information because he doesn't know how to apply it yet? We might want to give some guidance there, as well.
+<p>
+<blockquote><font color="#000080">Carry out hinting about something which explains something (called target):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if target is unseen, say &quot;[The noun] might prove useful information, sooner or later.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You could examine [the noun].&quot; instead.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc250.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Carry out hinting about something which is required by something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] might be useful to have. [More]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if player consents
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a seen thing requires the noun, say &quot;[The noun] may help with [the list of seen things which require the noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;There are [number of things which require the noun in words] problems for which [the noun] might come in handy.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<p>Now we have these general hints written, but we want to pre-empt them if the player has not yet fulfilled all the prerequisites.
+<p>
+<blockquote><font color="#000080">Instead of hinting about something unseen:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is visible
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the noun is seen;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Perhaps you should explore further. &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the ultimate location of the noun is an unvisited room
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try hinting about the ultimate location of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the ultimate location of the noun is the location
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're in the correct room right now[if the visible shell of the noun is a thing]. Try further exploring [the visible shell of the noun][end if].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try hinting about the ultimate location of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of hinting about a visited room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There's a room you've visited, but you haven't exhausted all there is to see there. [More]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if player consents
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Try going back to [the noun]. [More]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if player consents, direct player to the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of hinting about an unvisited room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There's a room you haven't yet visited.  [More]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if player consents, direct player to the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To direct player to (goal - a room):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from location to the goal, using even locked doors;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if way is a direction, say &quot;Try going [way] to start your explorations.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Sorry, the route is an indirect one.&quot;;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of hinting about a portable seen thing which is not visible:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is scenery, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You have seen the item you need to solve this problem, but it's not in sight at the moment.  [More]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if player consents
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try hinting about the ultimate location of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<p>And this business of &quot;seen&quot; things requires, of course, that we keep track:
+<p>
+<blockquote><font color="#000080">A thing can be seen or unseen. A thing is usually unseen. The player is seen. After printing the name of something (called target): now the target is seen.
+</font></blockquote><p>
+<p>
+<p>That &quot;After printing...&quot; rule means that as soon as the game automatically prints the name of an object, it tags that object as having been &quot;seen&quot; by the player. This requires just a little care on our part, that we never mention an object without using the game's printing rules. Still, it is much easier than most other possible forms of bookkeeping.
+<p>
+<p>We also need to deal with the question of whether the player has examined an object, for those objects whose descriptions carry vital information:
+<p>
+<blockquote><font color="#000080">A thing can be examined or unexamined. A thing is usually unexamined. Carry out examining something: now the noun is examined.
+</font></blockquote><p>
+<p>
+<p>In practice, there might be other ways of getting vital facts, and in a more sophisticated puzzle game we might need a more sophisticated model to track this. But examined or unexamined will do for now.
+<p>
+<blockquote><font color="#000080">To decide what room is the ultimate location of (item - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let place be the holder of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;while the place is a thing, let the place be the holder of the place;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the place is a room, decide on the place.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what thing is the visible shell of (item - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if item is visible, decide on the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let place be the holder of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;while place is a thing and place is not visible, let place be the holder of the place;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the place is visible, decide on the place.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say more:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[paragraph break]Shall I go on? > &quot;;
+</font></blockquote><p>
+<p>
+<p>That covers most of the generic hints, but let's also add some slightly more precise hints about a few kinds of objects that are especially important in the model world. These hints will probably not be very interesting to a seasoned IF veteran, but a novice player who does not know the wording or cannot guess what something might be for may still find them useful:
+<p>
+<blockquote><font color="#000080">Carry out hinting about a locked lockable thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You could unlock [the noun] with [the matching key of the noun].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of hinting about a locked thing when the matching key of the noun is not carried by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player can see the matching key of the noun
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Perhaps [the matching key of the noun] would help.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is locked. There must be a key around somewhere. [More]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if player consents, try hinting about the matching key of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out hinting about a closed openable unlocked thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You could open [the noun].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out hinting about an open door:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You could enter [the noun].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out hinting about an unexamined thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You might find out something if you examine [the noun].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out hinting about an edible thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You could eat [the noun].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out hinting about a wearable thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You could wear [the noun].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out hinting about a pushable between rooms thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You could push [the noun] some direction.&quot; instead.
+</font></blockquote><p>
+<p>
+<p>Now to the actual objects in the game:
+<p>
+<blockquote><font color="#000080">The Crypt is a room. &quot;This squat, barrel-vaulted chamber runs roughly north-south. Along either side are the graves of Saxon kings and early bishops of the church long since gone to dust -- one [tomb] in particular looks undisturbed.&quot;
+</font></blockquote><p>
+<p>
+<p>Notice that we used the bracketed tomb here: the tomb is scenery, and if we do not use the name-printing function, Inform will not register that we have mentioned it to the player.
+<p>
+<blockquote><font color="#000080">The tomb is scenery in the Crypt. The tomb is openable and closed. The silver dagger is a thing in the tomb. Understand &quot;tombs&quot; as the tomb. The description of the silver dagger is &quot;Gleaming in a soft light all its own. Its blade is figured with running deer and its hilt is made of horn.&quot; The wight requires the silver dagger. The tomb require the pry bar.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of opening the tomb when the player does not carry the pry bar:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The lids are stone, too heavy for you to raise without some implement.&quot;
+</font></blockquote><p>
+<p>
+<p>Now we can add specific hints to replace the generic ones:
+<p>
+<blockquote><font color="#000080">Carry out hinting about the tomb:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The lids are heavy, but you can open them when you carry the pry bar.&quot;
+</font></blockquote><p>
+<p>
+<p>The rest of the hint system ensures that the player will not see this final suggestion until he has the pry bar, since the tomb &quot;requires&quot; the pry bar. Having the hint there doesn't excuse us from providing some alternate wording in case the player solves this not-very-difficult conundrum on his own, though:
+<p>
+<blockquote><font color="#000080">Understand &quot;pry [something] with [something preferably held]&quot; as unlocking it with. Understand the commands &quot;lever&quot; or &quot;prise&quot; as &quot;pry&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of unlocking something with the pry bar, try opening the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The wight is a man in the Crypt. &quot;[The wight] lurks near the south exit.&quot; The description of wight is &quot;Old English [italic type]wiht[roman type]: a thing, a creature. It is little more than the memory of a life ill-lived, but it lingers here.&quot; Understand &quot;wiht&quot; or &quot;creature&quot; or &quot;ghost&quot; as the wight.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going south in the presence of wight:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The wight breathes chill into your face.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Your head swims, and you are aware that you no longer have the willpower to go in that direction.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Fresh Air is south from the Crypt.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After going to Fresh Air:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;award 1 point;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you have escaped!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The inscription is fixed in place in the Crypt. &quot;Someone has painstakingly carved [an inscription] into the wall above the door.&quot; The description is &quot;Squinting, you decipher the Latin text: [italic type]Silver causes harm to those that live though dead[roman type].&quot; The inscription explains wight.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Treasure Chamber is north of the Crypt. &quot;The walls are thick, the high windows promisingly barred with iron. But for all this there is no hint of any valuable stores remaining.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The pry bar is in the Treasure Chamber. &quot;One of the window bars, rusted from its place, lies in a puddle of water.&quot; Understand &quot;window&quot; or &quot;bars&quot; as the pry bar. The description of the pry bar is &quot;A few feet long, and not entirely rusted into uselessness yet.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of giving the dagger to wight:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The wight recoils, appalled.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out hinting about wight:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You will have to find some way to get wight to come in physical contact with the silver dagger, which he will certainly not do willingly. [More]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if player consents, say &quot;You could, for instance, throw it at him.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;touch [something] with [something]&quot; as putting it on (with nouns reversed). Understand &quot;hit [someone] with [something]&quot; as putting it on (with nouns reversed).
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of attacking the wight:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't force yourself to approach close enough for hand to hand combat: if, indeed, the wight has hands.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of putting the dagger on wight:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The wight fades out of your way without ever coming into contact with the dagger. Perhaps a more projectile method would work better.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of putting something on wight:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The wight dodges you.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of throwing the dagger at wight:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove wight from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the dagger to the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;award 1 point;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The dagger passes through its airy form with a rending like the rip of silk. The fragments dissipate at once.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The maximum score is 2.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;hint about wight / north / get bar / south / open tomb / get dagger / south / hint about wight / read inscription / hint about wight / attack wight / throw dagger at wight / south&quot;.
+</font></blockquote><p>
+<p>
+<p>(Note that, if using TEST ME to run through the solution, we will have to answer a few yes/no questions along the way.)
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc201.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc249.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc251.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc200.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc202.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

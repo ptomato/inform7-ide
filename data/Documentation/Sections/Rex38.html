@@ -1,0 +1,128 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>2.2. Varying What Is Read</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
+-->
+</STYLE>
+<body bgcolor="#FFFFE0">
+<!-- SEARCH TITLE "Laura" -->
+<!-- SEARCH SECTION "Ex 17" -->
+<!-- SEARCH SORT "Ex 002-002-017" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc5.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap2.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 2: Adaptive Prose</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc7.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>2.2. Varying What Is Read</b></font></td></tr></table>
+<p>
+<p>Making the printed text adapt to circumstances only makes half of the conversation graceful: the other half is to allow the player's commands to have a similar freedom. The things the player can refer to should always respond to the names which would seem natural to the player.
+<p>
+<p>Names of things which contain prepositions are sometimes tricky because Inform misreads the sentences creating them: <b>Laura</b> shows how some awkward cases can be safely overcome.
+<p>
+<p><b>First Name Basis</b> shows how to assign names generically.
+<p>
+<p>The more difficult case is to ensure that if we change the description or nature of something in play, then the names we understand for it adapt, too. &quot;Understand... if...&quot; can be all that's needed:
+<p>
+<blockquote><font color="#000080">Understand &quot;king&quot; as Aragorn if we have crowned Aragorn.
+</font></blockquote><p>
+<p>
+<p>Properties can also be matched without fuss:
+<p>
+<blockquote><font color="#000080">Tint is a kind of value. The tints are green, aquamarine and darkish purple. The wallpaper is fixed in place in the Hôtel. The wallpaper has a tint. Understand the tint property as describing the wallpaper.
+</font></blockquote><p>
+<p>
+<p>This allows EXAMINE AQUAMARINE WALLPAPER if, but only if, it happens to be aquamarine at the moment. Relationships can also be matched automatically:
+<p>
+<blockquote><font color="#000080">A box is a kind of container. The red box is a box in the Toyshop. Some crayons are in the red box. Understand &quot;box of [something related by containment]&quot; as a box.
+</font></blockquote><p>
+<p>
+<p>which recognises BOX OF CRAYONS until they are removed, when it reverts to plain BOX only.
+<p>
+<p>Greater difficulty arises if, using some variable or property or table to mark that a bottle contains wine, we print messages calling it &quot;bottle of wine&quot;. We are then honour-bound to understand commands like TAKE BOTTLE OF WINE in return, not to insist on TAKE BOTTLE. Almost all &quot;simulation&quot; IF runs in to issues like this, and there is no general solution because simulations are so varied.
+<p>
+<a href=Rdoc70.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Liquids</b></font></a><i> for a resolution of this bottle-of-wine issue</i><p><p>
+<a href=Rdoc23.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Background, Memory, and Knowledge</b></font></a><i> for a way to refer to characters whom the player knows about but who aren't currently in the room</i><p><p>
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e38"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc6.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>17</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc6.html#e38 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Laura</font></b></a><br>Some general advice about creating objects with unusual or awkward names, and a discussion of the use of printed names.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex38.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>Occasionally it is useful to give something a printed name because we want to call it something extremely long-winded; give one thing a name that is the subset of the name of something else; or use words such as &quot;with&quot; or &quot;and&quot; that are likely to confuse Inform into thinking that the object name ends before it actually does.
+<p>
+<p>Often it is enough to preface these ambiguously-titled things with &quot;a thing called...&quot; or &quot;a supporter called...&quot; or the like, as here:
+<p>
+<blockquote><font color="#000080">South of Spring Rolls is a room called Hot and Sour Soup.
+</font></blockquote><p>
+<p>
+<p>prevents Inform from trying to read &quot;Hot and Sour Soup&quot; as two separate rooms, while
+<p>
+<blockquote><font color="#000080">The player carries an orange ticket. The player carries a thing called an orange.
+</font></blockquote><p>
+<p>
+<p>creates two objects instead of the one orange ticket that would result if the second sentence were merely &quot;The player carries an orange.&quot;
+<p>
+<p>Even so, if we try to compile
+<p>
+<blockquote><font color="#000080">The player carries a thing called an incriminating photograph of a woman with blonde hair.
+</font></blockquote><p>
+<p>
+<p>Inform will misunderstand our meaning. So we might instead give the photograph a printed name:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode462(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Laura"\n\nThe City of Angels is a room. The incriminating photograph is carried by the player. The printed name of the incriminating photograph is "incriminating photograph of a woman with blonde hair".\n\n[Now we\'ve gotten around any awkwardness with printing the name -- but we also need to understand when the player refers to the photograph. When we define the names of objects under normal circumstances, Inform takes care of this automatically, but if we have especially set the printed name, we must also specially define the appropriate terms for the player to use. For this we need "understand", which will be explained in much more depth in a later chapter:]\n\nUnderstand "woman" or "with" or "blonde" or "hair" or "of" or "a" as the incriminating photograph.\n\nTest one with "x photograph / x incriminating photograph of a woman with blonde hair / x hair / x blonde / x woman with blonde hair / x incriminating photograph of a woman".\n\n[That\'s probably as far as we really need to go, and if you are satisfied with this behavior, there is no need to read on.]\n\n[One possible objection to this solution is that Inform will accept some nonsensical formulations as applying to the photograph: for instance, it will allow >EXAMINE PHOTOGRAPH OF, >X BLONDE PHOTOGRAPH WOMAN INCRIMINATING, or even >X OF ...though in the case there were two items with "of" names, the game would disambiguate with a question such as "Which do you mean, the incriminating photograph of a woman with blonde hair or the essence of wormwood?"]\n\n[Traditionally, Inform has tended to be fairly flexible about word order, preferring to err in the direction of leniency. On the other hand, there are times when we need more exacting rules in order to distinguish otherwise similar cases.]\n\n[Two features allow us to specify more exactly if we so desire. The first is that, if we specify a whole phrase as the name of something, all the words in that phrase are required, in the order given. Thus "Understand "blonde hair" as the photograph" would require that both "blonde" and "hair" be present, and would not recognize >X BLONDE, >X HAIR BLONDE, or >X HAIR.]\n\n[Second, we can create tokens, such as "Understand "blonde hair" or "hair" as "[hair]", and then use these tokens in match phrases. This saves a good deal of time when we want to specify a number of different but fussy alternatives. So, for instance, here is a drawing that would not respond to >X OF, or >X BROWN EYES, but would respond to >X DRAWING OF MAN WITH BROWN EYES, >X MAN WITH BROWN EYES, and so on:]\n\nThe drawing is carried by the player. The printed name of the drawing is "drawing of a man with brown eyes".\n\nUnderstand "eyes" or "brown eyes" as "[brown eyes]". Understand "man" or "man with [brown eyes]" or "brown-eyed man" as "[man]". Understand "[man]" or "drawing of [man]" or "drawing of a [man]" as the drawing.\n\nTest me with "test one / test two".\n\nTest two with "x drawing / x man / x of / x drawing of man / x drawing of a man / x drawing of a man with brown eyes / x drawing of a brown-eyed man / x brown eyes".\n\n');
+}
+</script>
+<a href="javascript:pasteCode462()"><img border=0 src=../doc_images/paste.png></a> &quot;Laura&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The City of Angels is a room. The incriminating photograph is carried by the player. The printed name of the incriminating photograph is &quot;incriminating photograph of a woman with blonde hair&quot;.
+</font></blockquote><p>
+<p>
+<p>Now we've gotten around any awkwardness with printing the name -- but we also need to understand when the player refers to the photograph. When we define the names of objects under normal circumstances, Inform takes care of this automatically, but if we have especially set the printed name, we must also specially define the appropriate terms for the player to use. For this we need &quot;understand&quot;, which will be explained in much more depth in a later chapter:
+<p>
+<blockquote><font color="#000080">Understand &quot;woman&quot; or &quot;with&quot; or &quot;blonde&quot; or &quot;hair&quot; or &quot;of&quot; or &quot;a&quot; as the incriminating photograph.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test one with &quot;x photograph / x incriminating photograph of a woman with blonde hair / x hair / x blonde / x woman with blonde hair / x incriminating photograph of a woman&quot;.
+</font></blockquote><p>
+<p>
+<p>That's probably as far as we really need to go, and if you are satisfied with this behavior, there is no need to read on.
+<p>
+<p>One possible objection to this solution is that Inform will accept some nonsensical formulations as applying to the photograph: for instance, it will allow >EXAMINE PHOTOGRAPH OF, >X BLONDE PHOTOGRAPH WOMAN INCRIMINATING, or even >X OF ...though in the case there were two items with &quot;of&quot; names, the game would disambiguate with a question such as &quot;Which do you mean, the incriminating photograph of a woman with blonde hair or the essence of wormwood?&quot;
+<p>
+<p>Traditionally, Inform has tended to be fairly flexible about word order, preferring to err in the direction of leniency. On the other hand, there are times when we need more exacting rules in order to distinguish otherwise similar cases.
+<p>
+<p>Two features allow us to specify more exactly if we so desire. The first is that, if we specify a whole phrase as the name of something, all the words in that phrase are required, in the order given. Thus &quot;Understand &quot;blonde hair&quot; as the photograph&quot; would require that both &quot;blonde&quot; and &quot;hair&quot; be present, and would not recognize >X BLONDE, >X HAIR BLONDE, or >X HAIR.
+<p>
+<p>Second, we can create tokens, such as &quot;Understand &quot;blonde hair&quot; or &quot;hair&quot; as &quot;[hair]&quot;, and then use these tokens in match phrases. This saves a good deal of time when we want to specify a number of different but fussy alternatives. So, for instance, here is a drawing that would not respond to >X OF, or >X BROWN EYES, but would respond to >X DRAWING OF MAN WITH BROWN EYES, >X MAN WITH BROWN EYES, and so on:
+<p>
+<blockquote><font color="#000080">The drawing is carried by the player. The printed name of the drawing is &quot;drawing of a man with brown eyes&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;eyes&quot; or &quot;brown eyes&quot; as &quot;[brown eyes]&quot;. Understand &quot;man&quot; or &quot;man with [brown eyes]&quot; or &quot;brown-eyed man&quot; as &quot;[man]&quot;. Understand &quot;[man]&quot; or &quot;drawing of [man]&quot; or &quot;drawing of a [man]&quot; as the drawing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;test one / test two&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test two with &quot;x drawing / x man / x of / x drawing of man / x drawing of a man / x drawing of a man with brown eyes / x drawing of a brown-eyed man / x brown eyes&quot;.
+</font></blockquote><p>
+<p>
+<p>Yet further refinements are possible; for a full discussion of how Inform understands names of objects, we should refer to the chapter on Understanding.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc6.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e79"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex79.html#e79 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>10</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex79.html#e79 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> First Name Basis</font></b></a><br>Allowing the player to use different synonyms to refer to something.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex79.html#e79 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc5.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc7.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.14. Phrases concerning rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.13. Writing, reading and appending text to files</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,111 +6,156 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Swigmore U." -->
-<!-- SEARCH SECTION "Ex 316" -->
-<!-- SEARCH SORT "Ex 018-014-316" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc307.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc309.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.14. Phrases concerning rules</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "The Fourth Body" -->
+<!-- SEARCH SECTION "Ex 343" -->
+<!-- SEARCH SORT "Ex 019-013-343" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc326.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc328.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.13. Writing, reading and appending text to files</b></font></td></tr></table>
 <p>
-<p>The &quot;ignore&quot; phrase is only one of a suite. The full list is:
+<p>Text can also be saved to a file, and again all file-handling is automatic:
 <p>
-<blockquote><font color="#000080">ignore ...rule...
-<br>reinstate ...rule...
+<blockquote><font color="#000080">write &quot;Jackdaws love my big sphinx of quartz.&quot; to the file of Abecedary Wisdom;
+<br>append &quot;Jinxed wizards pluck ivy from the big quilt.&quot; to the file of Abecedary Wisdom;
 </font></blockquote><p>
 <p>
-<p>The &quot;reinstate&quot; phrase simply reverses any previous &quot;ignore&quot; of the same rule, and is otherwise not useful.
+<p>The difference between &quot;write&quot; and &quot;append&quot; here is that &quot;write&quot; makes this text the entire contents of the file, whereas &quot;append&quot; adds it the end (creating the file if it did not previously exist).
 <p>
-<blockquote><font color="#000080">reject the result of ...rule...
-<br>accept the result of ...rule...
+<p>The quoted text can, of course, contain substitutions, so can be long and complex if need be.
+<p>
+<p>Text from a file is printed back with the text substitution:
+<p>
+<blockquote><font color="#000080">&quot;[text of the File of Abecedary Wisdom]&quot;
 </font></blockquote><p>
 <p>
-<p>Some rules produce results, as we shall see in the next section, but they can be set so that whatever result they produce will be ignored. Again, &quot;accept ...&quot; simply undoes a previous &quot;reject ...&quot; and otherwise has no effect.
+<p>To copy one file to another, for instance,
 <p>
-<blockquote><font color="#000080">substitute ...first rule... for ...second rule...
-<br>restore the original ...second rule...
-</font></blockquote><p>
-<p>
-<p>Whenever the second rule is to be invoked - from any rulebook, or as a result of any &quot;follow&quot; instruction - invoke the first one instead. Again, &quot;restore ...&quot; simply undoes the effect of an earlier &quot;substitute&quot;.
-<p>
-<blockquote><font color="#000080">move ...first rule... to before/after ...second rule...
-</font></blockquote><p>
-<p>
-<p>This causes the first rule to be ignored whenever it turns up in the ordinary way, but to be invoked either immediately before or immediately after the second rule whenever that second rule is invoked. In effect, it cuts out the first rule from wherever it was, and glues it onto the second. Note that there is no obligation for the first rule to begin in the same rulebook(s) as the second, so this can be used to slot in a wholly new rule, perhaps only if certain circumstances hold.
-<p>
-<p>These rule-changing instructions allow apparently casual sentences to wreak havoc with the model world. This, for instance, is quite the recipe for mayhem and perplexity:
-<p>
-<blockquote><font color="#000080">A procedural rule: reject the result of the before rules; ignore the after rules; move the after rules to before the before rules.
+<blockquote><font color="#000080">write &quot;[text of the file of Abecedary Wisdom]&quot; to the file of Secondary Wisdom;
 </font></blockquote><p>
 <p>
 <p><hr><p>
-<a name="e169"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex169.html#e169 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>314</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex169.html#e169 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uptempo</font></b></a><br>Adjust time advancement so the game clock moves fifteen minutes each turn.<p></td></tr></table>
-<a name="e118"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex118.html#e118 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>315</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex118.html#e118 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 1</font></b></a><br>A poisonous gas that spreads from room to room, incapacitating or killing the player when it reaches sufficient levels.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e17"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc308.html#e17 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>316</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc308.html#e17 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Swigmore U.</font></b></a><br>Adding a new kind of supporter called a perch, where everything dropped lands on the floor.<p></td></tr></table>
+<a name="e17"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc327.html#e17 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>343</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc327.html#e17 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Fourth Body</font></b></a><br>Notebooks in which the player can record assorted notes throughout play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex17.html#e17 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Inform's default assumption is that if a player on an enterable object drops something, the dropped article winds up beside him on the same supporter or in the same container. This makes lots of sense for a dais, say, or a king-sized bed. It's a little less sensible if the enterable supporter in question is a bar stool or the like. So suppose we want to add a new kind of supporter called a perch, where everything dropped lands on the floor.
+<p>Some mystery games supply the player with an in-game system for taking notes, in case he doesn't want to rely on scraps of paper next to the computer. One way of doing this is to write out all the player's notes and observations into a notebook file, whose contents can be retrieved during play (or, indeed, after it).
 <p>
-<p>There are actually several ways of implementing this, but one of them is to reach right into the drop action and replace the &quot;standard dropping rule&quot; with a different one of our own invention -- like this:
+<p>We'll first invent a general system for writing text into notebooks, by creating a new kind called jotter. Each individual jotter will have its own disc file, and there will be basically three things which can be done with jotters: erasing, reading and writing.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode410(code) {
+function pasteCode432(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Swigmore U."\n\nMoe\'s Tavern is a room. The bar is an enterable supporter in Moe\'s. A drink is a kind of thing. On the bar is a drink called a flaming Homer.\n\nA perch is a kind of supporter. A perch is always enterable. The stool is a perch in Moe\'s.\n\nThe player carries a dead field mouse and a tomacco fruit.\n\nThe sophisticated dropping rule is listed instead of the standard dropping rule in the carry out dropping rulebook.\n\nThis is the sophisticated dropping rule:\n\tif the player is on a perch (called the awkward position)\n\tbegin;\n\t\tlet place be the holder of the awkward position;\n\t\tmove the noun to the place;\n\totherwise;\n\t\tmove the noun to the holder of the player;\n\tend if.\n\nTest me with "sit on stool / drop mouse / look / get up / look".\n\n');
+    myProject.pasteCode('"The Fourth Body"\n\nA jotter is a kind of thing. A jotter has an external-file called the text file. A jotter can be fresh or used. A jotter is usually fresh. A jotter has a text called the heading.\n\nThe currently erased jotter is an object that varies.\nTo erase (pad - a jotter):\n\tnow the currently erased jotter is the pad;\n\twrite "[heading of the currently erased jotter][paragraph break]" to the text file of the pad;\n\tnow the pad is fresh.\n\nTo write in (pad - a jotter):\n\tappend "[the time of day]: [topic understood][line break]" to the text file of the pad;\n\tnow the pad is used.\n\nTo read (pad - a jotter):\n\tsay "You read: [paragraph break][text of the text file of the pad]".\n\n[This is all as might be expected, except perhaps for the business of the "currently erased jotter". Why copy "pad" into this - why not simply write "[heading of the pad]"? The answer is that "pad" is a temporary "let" value, and cannot be used inside other phrases, such as the "write ... to ..." phrase.]\n\n[We want to erase any jotters when play begins, as otherwise text left over from any previous games will still be visible:]\n\nWhen play begins:\n\trepeat with pad running through jotters\n\tbegin;\n\t\terase the pad;\n\tend repeat.\n\n[Now we need to create rules to allow the player to control reading, writing and erasing. Reading we will handle with the ordinary examining action, but we create new actions for writing and erasing. A nice little trick allows WRITE WHATEVER to default to writing WHATEVER in a notebook being carried.]\n\nInstead of examining a used jotter (called the pad):\n\tread the pad.\n\nInstead of examining a fresh jotter (called the pad):\n\tsay "There is nothing of note in [the pad]."\n\nUnderstand "write [text] in [something preferably held]" as writing it in. Understand "write [text]" as writing it in. Writing it in is an action applying to a topic and one thing. Rule for supplying a missing second noun while writing: if a jotter (called the pad) is carried, change the second noun to the pad; otherwise say "You will have to specify what to write that it."\n\nCheck writing it in:\n\tif the second noun is not a jotter, say "It would be better to write in a notebook." instead.\n\nCarry out writing it in:\n\twrite in the second noun.\n\nReport writing it in:\n\tsay "Under the current time, you write \'[the topic understood]\' into [the second noun]."\n\nUnderstand "erase [something preferably held]" as erasing. Erasing is an action applying to one carried thing.\n\nCheck erasing:\n\tif the noun is not a jotter, say "It\'s hard to see how." instead.\n\nCarry out erasing:\n\terase the noun.\n\nReport erasing:\n\tsay "You scrub out all the entries in [the noun]."\n\n[That completes a general-purpose implementation of jotters, and we put it to use:]\n\nThe player carries a jotter called your notebook. The file of Player\'s Observations is called "notebook". The text file of your notebook is the file of Player\'s Observations. The heading of your notebook is "Observations in the Pottingham Green Case".\n\nThe Damp Hillside is a room. "It is just after dawn: among the trees there is misty and pale blue light. [if Havers is in the location]The only saturated color in view is the orange-and-yellow jacket of [Detective Havers]. She is trying unsuccessfully to light a cigarette. [end if][paragraph break]The body itself is further down, closer to the bottom of the ravine. It would be foolish to speculate before seeing it, but the odds are that the corpse was rolled down after death. The ground is not steep enough for the fall itself to be deadly."\n\nDetective Havers is a woman in the Damp Hillside. The description is "She gives you a weak smile when you look at her: you know she hasn\'t slept more than three hours any of the last few nights." Havers is scenery.\n\nHavers is carrying a jotter called Barbara\'s notebook. The file of Barbara\'s Observations is called "barbara". The text file of Barbara\'s notebook is the file of Barbara\'s Observations. The heading of Barbara\'s notebook is "I could murder a cup of tea".\n\nThe time of day is 6:32 AM.\n\nInstead of examining your notebook when your notebook is fresh:\n\tsay "Your notebook is blank. Back in the office, of course, there are a stack of others. But you brought a fresh notebook in a kind of weary hope. You\'re going to pretend, just for now, that this body might be unrelated to the graphic string of murders you\'re already investigating."\n');
 }
 </script>
-<a href="javascript:pasteCode410()"><img border=0 src=../doc_images/paste.png></a> &quot;Swigmore U.&quot;
+<a href="javascript:pasteCode432()"><img border=0 src=../doc_images/paste.png></a> &quot;The Fourth Body&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Moe's Tavern is a room. The bar is an enterable supporter in Moe's. A drink is a kind of thing. On the bar is a drink called a flaming Homer.
+<blockquote><font color="#000080">A jotter is a kind of thing. A jotter has an external-file called the text file. A jotter can be fresh or used. A jotter is usually fresh. A jotter has a text called the heading.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A perch is a kind of supporter. A perch is always enterable. The stool is a perch in Moe's.
+<blockquote><font color="#000080">The currently erased jotter is an object that varies.
+<br>To erase (pad - a jotter):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the currently erased jotter is the pad;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write &quot;[heading of the currently erased jotter][paragraph break]&quot; to the text file of the pad;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pad is fresh.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries a dead field mouse and a tomacco fruit.
+<blockquote><font color="#000080">To write in (pad - a jotter):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;append &quot;[the time of day]: [topic understood][line break]&quot; to the text file of the pad;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pad is used.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The sophisticated dropping rule is listed instead of the standard dropping rule in the carry out dropping rulebook.
+<blockquote><font color="#000080">To read (pad - a jotter):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You read: [paragraph break][text of the text file of the pad]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">This is the sophisticated dropping rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is on a perch (called the awkward position)
+<p>This is all as might be expected, except perhaps for the business of the &quot;currently erased jotter&quot;. Why copy &quot;pad&quot; into this - why not simply write &quot;[heading of the pad]&quot;? The answer is that &quot;pad&quot; is a temporary &quot;let&quot; value, and cannot be used inside other phrases, such as the &quot;write ... to ...&quot; phrase.
+<p>
+<p>We want to erase any jotters when play begins, as otherwise text left over from any previous games will still be visible:
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with pad running through jotters
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let place be the holder of the awkward position;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the place;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the holder of the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;erase the pad;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;sit on stool / drop mouse / look / get up / look&quot;.
+<p>Now we need to create rules to allow the player to control reading, writing and erasing. Reading we will handle with the ordinary examining action, but we create new actions for writing and erasing. A nice little trick allows WRITE WHATEVER to default to writing WHATEVER in a notebook being carried.
+<p>
+<blockquote><font color="#000080">Instead of examining a used jotter (called the pad):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;read the pad.
 </font></blockquote><p>
 <p>
-<p>Now the carry-out behavior of the dropping action has been changed, but we haven't had to interfere in the checks or reporting at all. The rest of the action works just as it always did.
-<p>
-<p>Of course, maybe we do want to change the way the action is reported, to make it clearer to the player where the dropped article wound up:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode411(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('The sophisticated report dropping rule is listed instead of the standard report dropping rule in the report dropping rulebook.\n\nThis is the sophisticated report dropping rule:\n\tsay "You drop [the noun] on [if the holder of the noun is a room]the ground[otherwise][the holder of the noun][end if]."\n');
-}
-</script>
-<a href="javascript:pasteCode411()"><img border=0 src=../doc_images/paste.png></a> The sophisticated report dropping rule is listed instead of the standard report dropping rule in the report dropping rulebook.
+<blockquote><font color="#000080">Instead of examining a fresh jotter (called the pad):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There is nothing of note in [the pad].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">This is the sophisticated report dropping rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You drop [the noun] on [if the holder of the noun is a room]the ground[otherwise][the holder of the noun][end if].&quot;
+<blockquote><font color="#000080">Understand &quot;write [text] in [something preferably held]&quot; as writing it in. Understand &quot;write [text]&quot; as writing it in. Writing it in is an action applying to a topic and one thing. Rule for supplying a missing second noun while writing: if a jotter (called the pad) is carried, change the second noun to the pad; otherwise say &quot;You will have to specify what to write that it.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc308.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Check writing it in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not a jotter, say &quot;It would be better to write in a notebook.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out writing it in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write in the second noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report writing it in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Under the current time, you write '[the topic understood]' into [the second noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;erase [something preferably held]&quot; as erasing. Erasing is an action applying to one carried thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check erasing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a jotter, say &quot;It's hard to see how.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out erasing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;erase the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report erasing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You scrub out all the entries in [the noun].&quot;
+</font></blockquote><p>
+<p>
+<p>That completes a general-purpose implementation of jotters, and we put it to use:
+<p>
+<blockquote><font color="#000080">The player carries a jotter called your notebook. The file of Player's Observations is called &quot;notebook&quot;. The text file of your notebook is the file of Player's Observations. The heading of your notebook is &quot;Observations in the Pottingham Green Case&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Damp Hillside is a room. &quot;It is just after dawn: among the trees there is misty and pale blue light. [if Havers is in the location]The only saturated color in view is the orange-and-yellow jacket of [Detective Havers]. She is trying unsuccessfully to light a cigarette. [end if][paragraph break]The body itself is further down, closer to the bottom of the ravine. It would be foolish to speculate before seeing it, but the odds are that the corpse was rolled down after death. The ground is not steep enough for the fall itself to be deadly.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Detective Havers is a woman in the Damp Hillside. The description is &quot;She gives you a weak smile when you look at her: you know she hasn't slept more than three hours any of the last few nights.&quot; Havers is scenery.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Havers is carrying a jotter called Barbara's notebook. The file of Barbara's Observations is called &quot;barbara&quot;. The text file of Barbara's notebook is the file of Barbara's Observations. The heading of Barbara's notebook is &quot;I could murder a cup of tea&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The time of day is 6:32 AM.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining your notebook when your notebook is fresh:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your notebook is blank. Back in the office, of course, there are a stack of others. But you brought a fresh notebook in a kind of weary hope. You're going to pretend, just for now, that this body might be unrelated to the graphic string of murders you're already investigating.&quot;
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc327.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e117"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex117.html#e117 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>317</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex117.html#e117 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 2</font></b></a><br>Poisonous gas again, only this time it sinks.<p></td></tr></table>
-<a name="e194"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex194.html#e194 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>318</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex194.html#e194 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Solitude</font></b></a><br>Novice mode that prefaces every prompt with a list of possible commands the player could try, and highlights every important word used, to alert players to interactive items in the scenery.<p></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc307.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc309.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e125"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex125.html#e125 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>344</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex125.html#e125 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Fifth Body</font></b></a><br>An expansion on the notebook, allowing the player somewhat more room in which to type his recorded remark.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex125.html#e125 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e34"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex34.html#e34 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>345</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex34.html#e34 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mirror, Mirror</font></b></a><br>The sorcerer's mirror can, when held up high, form an impression of its surroundings which it then preserves.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex34.html#e34 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc326.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc328.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

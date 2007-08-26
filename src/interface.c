@@ -2484,7 +2484,7 @@ create_about_window (void)
   gtk_window_set_destroy_with_parent (GTK_WINDOW (about_window), TRUE);
   gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (about_window), VERSION);
   gtk_about_dialog_set_name (GTK_ABOUT_DIALOG (about_window), _("GNOME Inform 7"));
-  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_window), _("Inform (1.0 6.31/4W37)\n\nCopyright 2006-2007 P.F. Chimento (front end),\nGraham Nelson et al. (compiler)."));
+  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_window), _("Inform (1.0 6.31/4X60)\n\nCopyright 2006-2007 P.F. Chimento (front end),\nGraham Nelson et al. (compiler)."));
   gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (about_window), _("A GNOME IDE for Inform 7"));
   gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (about_window), "www.inform-fiction.org");
   gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (about_window), _("www.inform-fiction.org"));
@@ -2540,7 +2540,7 @@ create_welcome_dialog (void)
   gtk_widget_show (vbox14);
   gtk_container_add (GTK_CONTAINER (welcome_dialog), vbox14);
 
-  welcome_label = gtk_label_new (_("Welcome to Inform 7, a design system\nfor interactive fiction based on natural\nlanguage.\n\nTo begin writing, please click one of the\nthree buttons below.\n\nInform 7 was created by Graham Nelson,\nwith the help of Emily Short and many\nothers. The GNOME front-end was written\nby P.F. Chimento.\n\nThis is Public Beta build 4W37."));
+  welcome_label = gtk_label_new (_("Welcome to Inform 7, a design system\nfor interactive fiction based on natural\nlanguage.\n\nTo begin writing, please click one of the\nthree buttons below.\n\nInform 7 was created by Graham Nelson,\nwith the help of Emily Short and many\nothers. The GNOME front-end was written\nby P.F. Chimento.\n\nThis is Public Beta build 4X60."));
   gtk_widget_show (welcome_label);
   gtk_box_pack_start (GTK_BOX (vbox14), welcome_label, FALSE, FALSE, 0);
   gtk_label_set_line_wrap (GTK_LABEL (welcome_label), TRUE);

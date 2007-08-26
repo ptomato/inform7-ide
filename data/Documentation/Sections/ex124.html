@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.3. New rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.19. Changing visibility</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,138 +6,88 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Bribery" -->
-<!-- SEARCH SECTION "Ex 304" -->
-<!-- SEARCH SORT "Ex 018-003-304" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc296.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc298.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.3. New rules</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Flashlight" -->
+<!-- SEARCH SECTION "Ex 197" -->
+<!-- SEARCH SORT "Ex 012-019-197" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc190.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc192.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.19. Changing visibility</b></font></td></tr></table>
 <p>
-<p>Stretching a point seasonally, we might write:
+<p>Ordinarily, Inform has a simple model for visibility: it is either fully light or it is fully dark, and certain actions are impossible in the dark, such as examining something. If an action is tried which was defined as requiring light, Inform consults the visibility rules to see if it can go ahead. By default, there is only one visibility rule, which says &quot;yes&quot; in the light and &quot;no&quot; in darkness. Here, though, we create another one:
 <p>
-<blockquote><font color="#000080">Every turn, say &quot;The summer breeze shakes the apple-blossom.&quot;
+<blockquote><font color="#000080">Visibility rule when in darkness:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if examining the book begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You have to squint. Still...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;there is sufficient light;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;there is insufficient light.
 </font></blockquote><p>
 <p>
-<p>This rule is nameless. It needs no name because it will never need to be referred to: by identifying it as an every turn rule we have already said enough to lodge it in the &quot;every turn&quot; rulebook. In fact, though, it is easy to create a named rule:
+<p>A visibility rule must always conclude &quot;there is sufficient light&quot;, or &quot;there is insufficient light&quot;, or else do nothing and leave it to other rules to decide.
 <p>
-<blockquote><font color="#000080">This is the blossom shaking rule: say &quot;The summer breeze shakes the apple-blossom.&quot;
+<p>It is a possibly unexpected fact that &quot;looking&quot; does not require light, but instead behaves differently in darkness - it prints a pseudo-room-description such as
+<p>
+<blockquote><font color="#000080"><b>Darkness</b>
+<br>It is pitch dark, and you can't see a thing.
 </font></blockquote><p>
 <p>
-<p>The name of a rule must always end with the word &quot;rule&quot;, for clarity's sake. (The phrasing &quot;This is the ... rule&quot; is used because &quot;The ... rule&quot; would be open to misinterpretation.)
-<p>
-<p>Previously we had a rule which had no name, but belonged to a rulebook: now we have the opposite, because although the &quot;blossom shaking rule&quot; has a name, it has not been placed in any rulebook. That means it will probably never be applied, unless we give specific instructions for that.
-<p>
-<p>Alternatively, it is possible to both name and place a rule in a single sentence:
-<p>
-<blockquote><font color="#000080">Every turn (this is the alternative blossom rule): say &quot;The summer breeze shakes the apple-blossom.&quot;
-</font></blockquote><p>
-<p>
-<p>Now the &quot;alternative blossom rule&quot; is a named rule in the &quot;every turn&quot; rulebook.
+<p>instead of printing the description of the player's current room. This means that the &quot;looking&quot; action is unaffected by visibility rules. All the same, what &quot;looking&quot; does in the dark can be changed by using the two activities &quot;printing the name of a dark room&quot; and &quot;printing the description of a dark room&quot; (see the Activities chapter for details).
 <p>
 <p><hr><p>
-<a name="e266"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex266.html#e266 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>302</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex266.html#e266 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Stone</font></b></a><br>A soup to which the player can add ingredients, which will have different effects when the player eats.<p></td></tr></table>
-<a name="e73"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex73.html#e73 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>303</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex73.html#e73 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">The Crane's Leg 2</font></b></a><br>A description text generated based on the propensities of the player-character, following different rulebooks for different characters.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e124"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc297.html#e124 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>304</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc297.html#e124 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bribery</font></b></a><br>A GIVE command that gets rid of Inform's default refusal message in favor of something a bit more sophisticated.<p></td></tr></table>
+<a name="e124"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc191.html#e124 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>197</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc191.html#e124 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Flashlight</font></b></a><br>Visibility set so that looking under objects produces no result unless the player has a light source to shine there (regardless of the light level of the room).<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex124.html#e124 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>If we want to rewrite the functionality of a command that usually ends with a &quot;block...&quot; rule, we will have to begin by turning the blocking off.
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode397(code) {
+function pasteCode284(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Bribery"\n\nThe block giving rule is not listed in the check giving it to rules.\n\n[As it happens, correct behavior is built into the GIVE command once "block giving" is turned off, so we do not have to write a replacement report or carry-out rule; the object will be transferred to the possession of the caterpillar. But we do want to adjust the action just a little so that our gift cheers up the recipient:]\n\nCarry out giving (this is the gratitude for gifts rule): improve the mood of the second noun.\n\nMood is a kind of value. The moods are hostile, suspicious, indifferent, friendly, and adoring. An animal has a mood. An animal is usually indifferent.\n\nTo improve the mood of (character - an animal):\n\tif the mood of character is less than friendly, change the mood of the character to the mood after the mood of the character.\n\n[Now whenever we give something to an animal, the animal will be pleased about the present. Of course, we might also want to add a check rule to giving, to see whether the offering is something the recipient really wants:]\n\nCheck giving (this is the polite refusal of unwanted objects rule):\n\tif the noun interests the second noun\n\tbegin;\n\t\tdo nothing;\n\totherwise;\n\t\tsay "[The second noun] disdainfully refuses [the noun]." instead;\n\tend if.\n\nTo decide whether (item - a thing) interests (character - a person):\n\tif the character has the item, no;\n\tif the item is edible, yes;\n\tno.\n\nInstead of showing something to someone:\ntry giving the noun to the second noun.\n\n[There is already a perfectly workable report rule that will describe what happens when we give something to someone, but let\'s say we want to report on the recipient\'s changed mood, too:]\n\nAfter giving something to someone:\n\tsay "You give [the noun] to [the second noun], who appears mollified and is now merely [mood of the second noun]."\n\n[And the rest is all scenario:]\n\nThe Leafy Branch is a room. "You stand on smooth bark dappled by sunlight. The scent-trail runs forward to home.\n\nThe branch continues forward and backward from here, and a stem extends forward-up."\n\nInstead of going south in Leafy Branch, say "You must not back down! The scent trail leads onward!"\n\nThe Very Hungry Caterpillar is a hostile animal in the Leafy Branch. "[The Caterpillar] looks [mood]." Instead of examining the Caterpillar, say "[The caterpillar] appears [mood]."\n\nThe player carries an edible thing called a peanut crumb. The carrying capacity of the player is 1. After taking something, say "You lift [the noun], though it is nearly your own size."\n\nInstead of going north in the presence of a hostile caterpillar:\n\tsay "[The Caterpillar] moves to block your exit, glaring down at you with all the bristles on its skin extended to full size."\n\nInstead of going north in the presence of a suspicious caterpillar:\n\tsay "[The Caterpillar] moves to block your exit, though it might allow you past if you offered further tribute."\n\nThe Leaf Face is above the branch. "The smooth and shiny surface of the leaf extends forward from here, but you have lost the scent-trail. This is not the way home."  The pear fragment is an edible thing in Leaf Face. The dead aphid is a thing in Leaf Face.\n\nThe Twig is north of Leafy Branch. "The scent-trail is weak but not entirely gone, and you pursue it faithfully..."\n\nAfter going to the Twig:\n\tsay "The scent-trail is weak but not entirely gone, and you pursue it faithfully...";\n\tend the game in victory.\n\nUnderstand "forward-up" as up. Understand "forward" as north. Understand "backward" as south.  Understand "backward-down" as down.\n\nTest me with "forward / give crumb to caterpillar / forward / forward-up / get aphid / get fragment / down / give aphid to caterpillar / drop aphid / forward-up / get fragment / down / give fragment / forward".\n');
+    myProject.pasteCode('"Flashlight"\n\nThe Schoolhouse is a room. "Though normally comfortable, the room is dark and menacing during the storm; rain sheets on the windows, and you can barely see the flash of the lighthouse only a few miles away."\n\nThe cabinet is a fixed in place openable container in the Schoolhouse. The hurricane lantern is a thing in the Schoolhouse. "A hurricane lantern hangs from a peg." The lantern is lit.\n\nVisibility rule when looking under something:\n\tif the player is carrying a lit thing (called lamp)\n\tbegin;\n\t\tsay "You shine [the lamp] under [the noun]...";\n\t\tthere is sufficient light;\n\tend if;\n\tthere is insufficient light.\n\nThe marble is a thing. The marble can be found or lost. The marble is lost.\n\nInstead of looking under the cabinet when the marble is lost:\n\tmove the marble to the player;\n\tnow the marble is found;\n\tsay "Billy\'s lost marble! So that\'s where it got to!"\n\nTest me with "look under cabinet / get lantern / look under cabinet".\n\n');
 }
 </script>
-<a href="javascript:pasteCode397()"><img border=0 src=../doc_images/paste.png></a> &quot;Bribery&quot;
+<a href="javascript:pasteCode284()"><img border=0 src=../doc_images/paste.png></a> &quot;Flashlight&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The block giving rule is not listed in the check giving it to rules.
+<blockquote><font color="#000080">The Schoolhouse is a room. &quot;Though normally comfortable, the room is dark and menacing during the storm; rain sheets on the windows, and you can barely see the flash of the lighthouse only a few miles away.&quot;
 </font></blockquote><p>
 <p>
-<p>As it happens, correct behavior is built into the GIVE command once &quot;block giving&quot; is turned off, so we do not have to write a replacement report or carry-out rule; the object will be transferred to the possession of the caterpillar. But we do want to adjust the action just a little so that our gift cheers up the recipient:
-<p>
-<blockquote><font color="#000080">Carry out giving (this is the gratitude for gifts rule): improve the mood of the second noun.
+<blockquote><font color="#000080">The cabinet is a fixed in place openable container in the Schoolhouse. The hurricane lantern is a thing in the Schoolhouse. &quot;A hurricane lantern hangs from a peg.&quot; The lantern is lit.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Mood is a kind of value. The moods are hostile, suspicious, indifferent, friendly, and adoring. An animal has a mood. An animal is usually indifferent.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To improve the mood of (character - an animal):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the mood of character is less than friendly, change the mood of the character to the mood after the mood of the character.
-</font></blockquote><p>
-<p>
-<p>Now whenever we give something to an animal, the animal will be pleased about the present. Of course, we might also want to add a check rule to giving, to see whether the offering is something the recipient really wants:
-<p>
-<blockquote><font color="#000080">Check giving (this is the polite refusal of unwanted objects rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun interests the second noun
+<blockquote><font color="#000080">Visibility rule when looking under something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is carrying a lit thing (called lamp)
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do nothing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The second noun] disdainfully refuses [the noun].&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You shine [the lamp] under [the noun]...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;there is sufficient light;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;there is insufficient light.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To decide whether (item - a thing) interests (character - a person):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the character has the item, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is edible, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+<blockquote><font color="#000080">The marble is a thing. The marble can be found or lost. The marble is lost.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of showing something to someone:
-<br>try giving the noun to the second noun.
+<blockquote><font color="#000080">Instead of looking under the cabinet when the marble is lost:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the marble to the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the marble is found;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Billy's lost marble! So that's where it got to!&quot;
 </font></blockquote><p>
 <p>
-<p>There is already a perfectly workable report rule that will describe what happens when we give something to someone, but let's say we want to report on the recipient's changed mood, too:
-<p>
-<blockquote><font color="#000080">After giving something to someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You give [the noun] to [the second noun], who appears mollified and is now merely [mood of the second noun].&quot;
+<blockquote><font color="#000080">Test me with &quot;look under cabinet / get lantern / look under cabinet&quot;.
 </font></blockquote><p>
 <p>
-<p>And the rest is all scenario:
-<p>
-<blockquote><font color="#000080">The Leafy Branch is a room. &quot;You stand on smooth bark dappled by sunlight. The scent-trail runs forward to home.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The branch continues forward and backward from here, and a stem extends forward-up.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going south in Leafy Branch, say &quot;You must not back down! The scent trail leads onward!&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Very Hungry Caterpillar is a hostile animal in the Leafy Branch. &quot;[The Caterpillar] looks [mood].&quot; Instead of examining the Caterpillar, say &quot;[The caterpillar] appears [mood].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries an edible thing called a peanut crumb. The carrying capacity of the player is 1. After taking something, say &quot;You lift [the noun], though it is nearly your own size.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going north in the presence of a hostile caterpillar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The Caterpillar] moves to block your exit, glaring down at you with all the bristles on its skin extended to full size.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going north in the presence of a suspicious caterpillar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The Caterpillar] moves to block your exit, though it might allow you past if you offered further tribute.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Leaf Face is above the branch. &quot;The smooth and shiny surface of the leaf extends forward from here, but you have lost the scent-trail. This is not the way home.&quot;  The pear fragment is an edible thing in Leaf Face. The dead aphid is a thing in Leaf Face.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Twig is north of Leafy Branch. &quot;The scent-trail is weak but not entirely gone, and you pursue it faithfully...&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After going to the Twig:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The scent-trail is weak but not entirely gone, and you pursue it faithfully...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;forward-up&quot; as up. Understand &quot;forward&quot; as north. Understand &quot;backward&quot; as south.  Understand &quot;backward-down&quot; as down.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;forward / give crumb to caterpillar / forward / forward-up / get aphid / get fragment / down / give aphid to caterpillar / drop aphid / forward-up / get fragment / down / give fragment / forward&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc297.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>Because visibility is checked before instead rules, this discovery will (correctly) occur only when the player does have enough light.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc191.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc296.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc298.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc190.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc192.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5.9. Making new substitutions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.7. New value properties</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,95 +6,98 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Fifty Times Fifty Ways" -->
-<!-- SEARCH SECTION "Ex 59" -->
-<!-- SEARCH SORT "Ex 005-009-059" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc74.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap5.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 5: Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc76.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>5.9. Making new substitutions</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Would you...?" -->
+<!-- SEARCH SECTION "Ex 47" -->
+<!-- SEARCH SORT "Ex 004-007-047" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc59.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc61.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.7. New value properties</b></font></td></tr></table>
 <p>
-<p>If we have some textual effect which needs to occur in several different messages, we might want to create a new text substitution for it. For instance:
+<p>Moving on to properties which contain values, such as the &quot;matching key&quot; property of a door or a container, we need to use a different formulation.
 <p>
-<blockquote><font color="#000080">The Missile Base is a room. &quot;[security notice]Seems to be a futuristic missile base.&quot; M's Office is east of the Missile Base. &quot;[security notice]Admiral Sir M.- M.- glares up from his desk.&quot;
+<blockquote><font color="#000080">A dead end has some text called river sound. The river sound of a dead end is usually &quot;a faint whispering of running water&quot;. The Tortuous Alcove has river sound &quot;a gurgle of running water&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say security notice:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;This area is a Prohibited Place within the meaning of the Official Secrets Act 1939. &quot;
+<p>The property &quot;river sound&quot; is now applicable only to dead ends, and we would not be allowed to talk about it in any other context. As can be seen, it holds a piece of text. If we tried the following:
+<p>
+<blockquote><font color="#000080">The river sound of the Tortuous Alcove is 7.
 </font></blockquote><p>
 <p>
-<p>This is only the tip of the iceberg in how to define ways to do things using &quot;To...&quot;, as we shall see. The definition makes &quot;say the security notice&quot; a new phrase known to Inform. A text substitution is exactly a phrase whose name begins with &quot;say&quot; (well - except for the &quot;say&quot; phrase itself), so the effect is that &quot;[security notice]&quot; is a new text substitution. Several of the examples in this chapter make use of this trick.
+<p>...then Inform would object, because the number 7 is the wrong kind of value to go into the &quot;river sound&quot; property. If we need a numerical property, we can try this instead:
+<p>
+<blockquote><font color="#000080">A dead end has a number called the difficulty rating. The Tortuous Alcove has difficulty rating 7.
+</font></blockquote><p>
+<p>
+<p>Suppose that we were to add:
+<p>
+<blockquote><font color="#000080">The Exquisitely Narrow Defile is a dead end.
+</font></blockquote><p>
+<p>
+<p>The Defile must have a river sound, of course, because we said that every dead end would have one. Now in fact the Defile will be provided for because we also said:
+<p>
+<blockquote><font color="#000080">The river sound of a dead end is usually &quot;a faint whispering of running water&quot;.
+</font></blockquote><p>
+<p>
+<p>But suppose there are no instructions at all about the value of a property? What Inform does is to start off the property holding the &quot;default value&quot; for this kind of value: for instance, it sees that the river sound has to be &quot;some text&quot;, and it fills in the default value for text: which is the empty text, consisting of no words at all, and written &quot;&quot;. Similarly, its difficulty rating is set to 0. (A table of the kinds which can be used for properties, and their default values, can be found in the Kinds index.)
 <p>
 <p><hr><p>
-<a name="e158"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex158.html#e158 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>58</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex158.html#e158 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fifty Ways to Leave Your Larva</font></b></a><br>Using text substitution to make characters reply differently under the same circumstances.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e159"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc75.html#e159 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>59</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc75.html#e159 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Fifty Times Fifty Ways</font></b></a><br>Writing your own rules for how to carry out substitutions.<p></td></tr></table>
+<a name="e159"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc60.html#e159 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>47</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc60.html#e159 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Would you...?</font></b></a><br>Adding new properties to objects, and checking for their presence.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex159.html#e159 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>There is only so much we can cram into a text property, so being able to swap in properties is useful but limited. Fortunately, we can also, if we want, create new phrases for how to say things in brackets:
+<p>For instance, if we want to give some objects a flavor:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode149(code) {
+function pasteCode131(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Fifty Times Fifty Ways"\n\nThe Beekeeper\'s Palace is a room. Wasp is a woman in the palace. Drone is a man in the palace.\n\nA person can be fierce or mellow. Wasp is fierce. Drone is mellow. A person can be calm or angry. A person is usually calm. A person has some text called  insult. The insult of a person is usually "Grasshopper". The insult of Wasp is "Larva".\n\nInstead of kissing someone:\n\tsay "\'[denial for the noun], [insult for the noun]! [boast]!\'";\n\n[Now to provide some meaning to these bracketed forms. We\'ll start with the easy one:]\n\nTo say boast:\n\tsay "I have ferocious allies".\n\n[This is a "to say" phrase; we will learn more about phrases in a later chapter, but for now it may be enough to observe that whatever we write after "to say..." becomes a valid substitution in bracketed speech. In this particular case there is no advantage to using the boast token rather than spelling the text out in the quotation, but we might in theory add further instructions to randomize the output, for instance.]\n\n[To say phrases can be more complex, as well, since we can have them incorporate extra information:]\n\nTo say insult for (speaker - a person):\n\tif speaker is angry, say "[the insult of the noun]";\n\totherwise say "small one".\n\n[Here where we have (speaker - a person), we are leaving a slot which we can later fill in, madlibs-like, with any person we like. That is why we can write "insult for the noun": we are summoning the To say phrase and telling it to fill in the identity of the unknown speaker with the noun.]\n\n[This differs from "insult of the noun" in the previous example; in that case, each person had his own insult property, and were merely printing that property out. Here we are actually telling Inform to calculate anew what the insult should be, and giving it some instructions about how to do that.]\n\n[Our instructions can also get arbitrarily complex:]\n\nTo say denial for (speaker - a person):\n\tif speaker is calm\n\tbegin;\n\t\tsay "You must not";\n\totherwise if speaker is female;\n\t\tsay "Stand back";\n\totherwise;\n\t\tsay "You forget yourself";\n\tend if.\n\nInstead of attacking someone:\n\tnow the noun is angry;\n\tsay "\'Get away, [insult]!\'"\n\nTest me with "kiss wasp / hit wasp / kiss wasp / kiss drone / hit drone / kiss drone".\n\n');
+    myProject.pasteCode('"Would you...?"\n\nThe House is a room. The mouse is an animal in the House.\n\nThe player carries some green eggs and a ham.\n\nA food is a kind of thing that is edible. Food has some text called flavor. The flavor of food is usually "Tolerable."\n\n[Things are, in general, not edible by default, so we have to make them edible specifically in order to allow them to be eaten by the player. Here we\'ve defined food to be edible by default, and we have given it a standard piece of flavor text.]\n\nThe ham and the green eggs are food. The flavor of the green eggs is "Delicious!"\n\nAfter eating something:\n\tif the noun provides the property flavor, say "[the flavor of the noun][paragraph break]";\n\totherwise say "It\'s [noun]-flavored."\n\n[Note that we use "if the noun provides a flavor..." to make sure that the property exists before attempting to use it. Otherwise, there is the risk that we will try to print a property that does not exist, resulting in errors in the game.]\n\n[We will only get the "It\'s [noun]-flavored." response if we successfully eat something that is not a food and does not have flavor text. To test this feature, let\'s suppose something that isn\'t exactly food but can theoretically be chewed on:]\n\nThe player carries some paper. The paper is edible.\n\nTest me with "eat ham / eat green eggs / eat paper".\n');
 }
 </script>
-<a href="javascript:pasteCode149()"><img border=0 src=../doc_images/paste.png></a> &quot;Fifty Times Fifty Ways&quot;
+<a href="javascript:pasteCode131()"><img border=0 src=../doc_images/paste.png></a> &quot;Would you...?&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Beekeeper's Palace is a room. Wasp is a woman in the palace. Drone is a man in the palace.
+<blockquote><font color="#000080">The House is a room. The mouse is an animal in the House.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A person can be fierce or mellow. Wasp is fierce. Drone is mellow. A person can be calm or angry. A person is usually calm. A person has some text called  insult. The insult of a person is usually &quot;Grasshopper&quot;. The insult of Wasp is &quot;Larva&quot;.
+<blockquote><font color="#000080">The player carries some green eggs and a ham.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of kissing someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'[denial for the noun], [insult for the noun]! [boast]!'&quot;;
+<blockquote><font color="#000080">A food is a kind of thing that is edible. Food has some text called flavor. The flavor of food is usually &quot;Tolerable.&quot;
 </font></blockquote><p>
 <p>
-<p>Now to provide some meaning to these bracketed forms. We'll start with the easy one:
+<p>Things are, in general, not edible by default, so we have to make them edible specifically in order to allow them to be eaten by the player. Here we've defined food to be edible by default, and we have given it a standard piece of flavor text.
 <p>
-<blockquote><font color="#000080">To say boast:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;I have ferocious allies&quot;.
+<blockquote><font color="#000080">The ham and the green eggs are food. The flavor of the green eggs is &quot;Delicious!&quot;
 </font></blockquote><p>
 <p>
-<p>This is a &quot;to say&quot; phrase; we will learn more about phrases in a later chapter, but for now it may be enough to observe that whatever we write after &quot;to say...&quot; becomes a valid substitution in bracketed speech. In this particular case there is no advantage to using the boast token rather than spelling the text out in the quotation, but we might in theory add further instructions to randomize the output, for instance.
-<p>
-<p>To say phrases can be more complex, as well, since we can have them incorporate extra information:
-<p>
-<blockquote><font color="#000080">To say insult for (speaker - a person):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if speaker is angry, say &quot;[the insult of the noun]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;small one&quot;.
+<blockquote><font color="#000080">After eating something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun provides the property flavor, say &quot;[the flavor of the noun][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;It's [noun]-flavored.&quot;
 </font></blockquote><p>
 <p>
-<p>Here where we have (speaker - a person), we are leaving a slot which we can later fill in, madlibs-like, with any person we like. That is why we can write &quot;insult for the noun&quot;: we are summoning the To say phrase and telling it to fill in the identity of the unknown speaker with the noun.
+<p>Note that we use &quot;if the noun provides a flavor...&quot; to make sure that the property exists before attempting to use it. Otherwise, there is the risk that we will try to print a property that does not exist, resulting in errors in the game.
 <p>
-<p>This differs from &quot;insult of the noun&quot; in the previous example; in that case, each person had his own insult property, and were merely printing that property out. Here we are actually telling Inform to calculate anew what the insult should be, and giving it some instructions about how to do that.
+<p>We will only get the &quot;It's [noun]-flavored.&quot; response if we successfully eat something that is not a food and does not have flavor text. To test this feature, let's suppose something that isn't exactly food but can theoretically be chewed on:
 <p>
-<p>Our instructions can also get arbitrarily complex:
-<p>
-<blockquote><font color="#000080">To say denial for (speaker - a person):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if speaker is calm
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You must not&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if speaker is female;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Stand back&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You forget yourself&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">The player carries some paper. The paper is edible.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of attacking someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is angry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Get away, [insult]!'&quot;
+<blockquote><font color="#000080">Test me with &quot;eat ham / eat green eggs / eat paper&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;kiss wasp / hit wasp / kiss wasp / kiss drone / hit drone / kiss drone&quot;.
-</font></blockquote><p>
-<p>
-<p>So the effects we can get with text substitutions are quite flexible. We could even, if we wanted, fill in the substitutions by random choice, or by selecting items from a long list or table, should we have so bellicose a set of characters that they cannot make do with one or two insulting remarks apiece.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc75.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc60.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc74.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc76.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e0"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex0.html#e0 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>48</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex0.html#e0 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Straw Boater</font></b></a><br>Using text properties that apply only to some things and are not defined for others.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex0.html#e0 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc61.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

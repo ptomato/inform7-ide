@@ -980,6 +980,7 @@ Constant COMMA__TX      = ", ";
         13: print "(putting ", (the) x1, " into ", (the) SACK_OBJECT,
             " to make room)^"; say__p = 0; return;
         14: "You can't reach into ", (the) x1, ".";
+        15: "You cannot carry ", (the) x1, ".";
         #ifnot;
         13: "(putting ", (the) x1, " into ", (the) SACK_OBJECT, " to make room)";
         #endif; ! NI_BUILD_COUNT

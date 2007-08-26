@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.4. Persuasion</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.2. Named rules and rulebooks</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,135 +6,106 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Police State" -->
-<!-- SEARCH SECTION "Ex 159" -->
-<!-- SEARCH SORT "Ex 012-004-159" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc174.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc176.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.4. Persuasion</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Nine AM Appointment" -->
+<!-- SEARCH SECTION "Ex 318" -->
+<!-- SEARCH SORT "Ex 018-002-318" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc296.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc298.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.2. Named rules and rulebooks</b></font></td></tr></table>
 <p>
-<p>&quot;Asking ... to try ...&quot; actions run through their Before and Instead rules like any other actions, but then (if no rule has intervened) something different happens: Inform has to decide whether the person asked consents to try the action or not. By default, the answer is always no, and text like the following will be printed:
+<p>Most of the rules built into Inform have names. For instance, a rule called &quot;the advance time rule&quot; is the one which increments the number of turns - usually visible on the &quot;status line&quot; displayed above the window of a game in progress - and advances the clock, which is usually not visible, but ticking away behind the scenes.
 <p>
-<blockquote><font color="#000080">> will, go west
-<br>Will has better things to do.
+<p>A rulebook is a list of rules to be followed in sequence until one of them makes a decision. For instance, when actions get to the &quot;instead&quot; stage, each &quot;instead&quot; rule is tried until one of them chooses to do something. If the source text contains the rules
+<p>
+<blockquote><font color="#000080">Instead of taking something: say &quot;You have no particular need just now.&quot;
+<br>Instead of taking a fish: say &quot;It's all slimy.&quot;
 </font></blockquote><p>
 <p>
-<p>However, we can intervene to make the answer &quot;yes&quot;, using a special kind of rule which produces a yes/no answer. The following examples show how we can give broad or narrow permission, as we choose:
+<p>and a command to TAKE something is tried, then only one of these rules will have any effect. The &quot;instead&quot; rulebook contains:
 <p>
-<blockquote><font color="#000080">Persuasion rule for asking people to try going: persuasion succeeds.
-<br>Persuasion rule for asking Will to try going west: persuasion succeeds.
+<blockquote><font color="#000080">Rule (1) to be applied if the action matches &quot;taking a fish&quot;
+<br>Rule (2) to be applied if the action matches &quot;taking something&quot;
 </font></blockquote><p>
 <p>
-<p>Such a rule can either declare that &quot;persuasion succeeds&quot;, or that &quot;persuasion fails&quot;, or make no decision and leave it to another rule to say. If it decides that persuasion fails, it is also allowed to say something, describing why: in that event, the standard message (&quot;Will has better things to do.&quot;) is suppressed. For example,
+<p>Inside their rulebook, the rules are not listed in the order of definition in the source text. Rule (1) comes before rule (2) because it applies in more specific circumstances. This is the main idea: a rulebook gathers together rules about making some decision, or taking some action, and sorts them in order to give the more specific rules first choice about whether they want to intervene.
 <p>
-<blockquote><font color="#000080">Persuasion rule for asking Will to try going:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Will looks put out, and mutters under his breath.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;persuasion fails.
+<p>Whereas only some rules are named (the two &quot;instead&quot; rules above have no name, for instance), every rulebook has a name. For convenience, the following forms of rule and rulebook name are synonymous:
+<p>
+<blockquote><font color="#000080">advance time = the advance time rule
 </font></blockquote><p>
 <p>
-<p>The following rule, which is really only suitable for testing, makes everybody infinitely obliging:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode32(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('Persuasion rule for asking people to try doing something: persuasion succeeds.\n\n');
-}
-</script>
-<a href="javascript:pasteCode32()"><img border=0 src=../doc_images/paste.png></a> Persuasion rule for asking people to try doing something: persuasion succeeds.
+<blockquote><font color="#000080">the instead rules = instead rulebook = instead
 </font></blockquote><p>
 <p>
-<p>Supposing that Will does decide to cooperate, a new action is generated:
-<p>
-<blockquote><font color="#000080">Will going west
-</font></blockquote><p>
-<p>
-<p>and this is then subject to all of the usual action machinery. For instance, we could write a rule such as:
-<p>
-<blockquote><font color="#000080">Instead of Will going west, say &quot;He runs out into the waves, but soon returns, rueful.&quot;
-</font></blockquote><p>
-<p>
-<p>So in this case the new action (&quot;Will going west&quot;) failed: but the original action, &quot;asking Will to try going west&quot;, is still deemed to have succeeded - after all, Will <i>did</i> try. To put it more formally, &quot;asking X to try A&quot; succeeds if the persuasion rules succeed, and otherwise fails.
-<p>
-<p>Note also that &quot;Instead of...&quot; rules written for other people will be treated by Inform as failures, even if we write something like
-<p>
-<blockquote><font color="#000080">Instead of Will pulling the cord:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The bell rings.&quot;
-</font></blockquote><p>
-<p>
-<p>and thus may produce unsatisfactory results such as
-<p>
-<blockquote><font color="#000080">>WILL, PULL CORD
-<br>The bell rings.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Will is unable to do that.
-</font></blockquote><p>
-<p>
-<p>If we wish to write new successful actions for another character, we will need to create appropriate carry out and report rules for them: these will be explained in the sections to follow.
-<p>
-<p>(Finally, note that the mechanism Inform uses to see if we have printed a refusal message of our own, in the event of persuasion rules failing, can be fooled if we write a persuasion rule explicitly ending with a &quot;[paragraph break]&quot; text substitution.)
+<p>The names of built-in rules have been chosen as descriptively as possible: the &quot;can't go through closed doors rule&quot;, for instance. Names for rules tend to be verbose, but this is a situation where clarity is very much better than brevity.
 <p>
 <p><hr><p>
-<a name="e143"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex143.html#e143 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>158</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex143.html#e143 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Hypnotist of Blois</font></b></a><br>A hypnotist who can make people obedient and then set them free again.<p></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e219"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc175.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>159</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc175.html#e219 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Police State</font></b></a><br>Several friends who obey you; a policeman who doesn't (but who takes a dim view of certain kinds of antics).<p></td></tr></table>
+<a name="e219"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc297.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>318</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc297.html#e219 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Nine AM Appointment</font></b></a><br>A WAIT [number] MINUTES command which advances through an arbitrary number of turns.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex219.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>If there's some reason the player needs to be at a specific place and time, we might want to allow him to wait a number of minutes at once.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode254(code) {
+function pasteCode405(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Police State"\n\nSeventh Avenue is a room. "The bars are all closed now, and there aren\'t any good clubs to go to, so you\'re on your own for open-air entertainment."\n\nPersuasion rule for asking the policeman to try doing something: persuasion fails.\n\nPersuasion rule for asking someone to try doing something: persuasion succeeds.\n\n[Note that the policeman will never get to the second persuasion rule, so he will always refuse to do the player\'s nefarious bidding.]\n\nCharles, Thomas, and Larry are men in Seventh Avenue. Patricia is a woman in Seventh Avenue.\n\n[And here\'s an unnecessary aesthetic touch from a later chapter, which will round up the descriptions of your friends into a single paragraph:]\n\nRule for writing a paragraph about someone who is not the policeman:\n\tlet X be the number of visible people who are not the policeman;\n\tsay "It\'s just [X in words] of you now: [a list of visible people who are not the policeman]. But it sure has been a rip-roaring evening."\n\nThe policeman is a man in Seventh Avenue. "A policeman with a very guarded expression is watching you."\n\nSmelling a person is disorderly conduct. Tasting a person is disorderly conduct. Jumping is disorderly conduct. Singing is disorderly conduct.\n\nInstead of someone trying disorderly conduct in the presence of the policeman:\n\tsay "The policeman arrests [the person asked]!";\n\tremove the person asked from play;\n\tthe rule succeeds.\n\nInstead of disorderly conduct in the presence of the policeman:\n\tend the game saying "The policeman arrests you!"\n\nTest me with "charles, look / charles, jump / look / policeman, sing / thomas, taste policeman / patricia, sing / look / jump".\n\n');
+    myProject.pasteCode('"Nine AM Appointment"\n\nWaiting more is an action applying to one number.\n\nUnderstand "wait [number] minutes/turns" or "wait [number]" as waiting more.\n\nCarry out waiting more:\n\tlet duration be the number understood - 1;\n\trepeat with X running from 1 to duration\n\tbegin;\n\t\tfollow the turn sequence rules;\n\tend repeat.\n\n[The one nuance here is that after our wait command occurs, the turn sequence rules will occur one more time. So we need to subtract one from the parsed number to make it to the right number of minutes.]\n\nReport waiting more:\n\tsay "It is now [time of day + 1 minute]."\n\n[And if we want to ensure that the player doesn\'t (accidentally or intentionally) put the interpreter through a really long loop, we could put an upper limit on his patience:]\n\nCheck waiting more:\n\tif the number understood > 59, say "You really haven\'t got that kind of patience." instead.\n\nThe Specialist\'s Office is a room. The secretary is a woman in the Office. Instead of asking the secretary about "[appointment]", say "\'Hang on just five more minutes,\' she says, in a distracted manner."\n\nUnderstand "appointment" or "specialist" or "doctor" as "[appointment]".\n\nAt 9:45 AM: say "The secretary glances at you and gives a reassuring smile."\n\nTest me with "ask secretary about appointment / wait five minutes / g / g / wait 60 minutes / wait 30 minutes".\n');
 }
 </script>
-<a href="javascript:pasteCode254()"><img border=0 src=../doc_images/paste.png></a> &quot;Police State&quot;
+<a href="javascript:pasteCode405()"><img border=0 src=../doc_images/paste.png></a> &quot;Nine AM Appointment&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Seventh Avenue is a room. &quot;The bars are all closed now, and there aren't any good clubs to go to, so you're on your own for open-air entertainment.&quot;
+<blockquote><font color="#000080">Waiting more is an action applying to one number.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Persuasion rule for asking the policeman to try doing something: persuasion fails.
+<blockquote><font color="#000080">Understand &quot;wait [number] minutes/turns&quot; or &quot;wait [number]&quot; as waiting more.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Persuasion rule for asking someone to try doing something: persuasion succeeds.
+<blockquote><font color="#000080">Carry out waiting more:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let duration be the number understood - 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with X running from 1 to duration
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;follow the turn sequence rules;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>Note that the policeman will never get to the second persuasion rule, so he will always refuse to do the player's nefarious bidding.
+<p>The one nuance here is that after our wait command occurs, the turn sequence rules will occur one more time. So we need to subtract one from the parsed number to make it to the right number of minutes.
 <p>
-<blockquote><font color="#000080">Charles, Thomas, and Larry are men in Seventh Avenue. Patricia is a woman in Seventh Avenue.
+<blockquote><font color="#000080">Report waiting more:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is now [time of day + 1 minute].&quot;
 </font></blockquote><p>
 <p>
-<p>And here's an unnecessary aesthetic touch from a later chapter, which will round up the descriptions of your friends into a single paragraph:
+<p>And if we want to ensure that the player doesn't (accidentally or intentionally) put the interpreter through a really long loop, we could put an upper limit on his patience:
 <p>
-<blockquote><font color="#000080">Rule for writing a paragraph about someone who is not the policeman:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let X be the number of visible people who are not the policeman;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It's just [X in words] of you now: [a list of visible people who are not the policeman]. But it sure has been a rip-roaring evening.&quot;
+<blockquote><font color="#000080">Check waiting more:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number understood > 59, say &quot;You really haven't got that kind of patience.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The policeman is a man in Seventh Avenue. &quot;A policeman with a very guarded expression is watching you.&quot;
+<blockquote><font color="#000080">The Specialist's Office is a room. The secretary is a woman in the Office. Instead of asking the secretary about &quot;[appointment]&quot;, say &quot;'Hang on just five more minutes,' she says, in a distracted manner.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Smelling a person is disorderly conduct. Tasting a person is disorderly conduct. Jumping is disorderly conduct. Singing is disorderly conduct.
+<blockquote><font color="#000080">Understand &quot;appointment&quot; or &quot;specialist&quot; or &quot;doctor&quot; as &quot;[appointment]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of someone trying disorderly conduct in the presence of the policeman:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The policeman arrests [the person asked]!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the person asked from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;the rule succeeds.
+<blockquote><font color="#000080">At 9:45 AM: say &quot;The secretary glances at you and gives a reassuring smile.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of disorderly conduct in the presence of the policeman:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;The policeman arrests you!&quot;
+<blockquote><font color="#000080">Test me with &quot;ask secretary about appointment / wait five minutes / g / g / wait 60 minutes / wait 30 minutes&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;charles, look / charles, jump / look / policeman, sing / thomas, taste policeman / patricia, sing / look / jump&quot;.
-</font></blockquote><p>
-<p>
-<p>Notice the difference between the two rules about disorderly conduct: the one for other people says 'the rule succeeds' to make sure that the action is counted as a success and not (as normally happens with instead rules) a failure. Most of the time we don't care whether actions are judged successes or failures, but it matters here, because if we type CHARLES, JUMP and the result fails, then text such as 'Charles is unable to.' will be printed - which would get in the way. So we declare the action a success.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc175.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc297.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc174.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc176.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e153"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex153.html#e153 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>319</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex153.html#e153 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Delayed Gratification</font></b></a><br>A WAIT UNTIL [time] command which advances until the game clock reaches the correct hour.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex153.html#e153 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc296.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc298.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

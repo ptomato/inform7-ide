@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.13. Defining phrases in Inform 6</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.5. Change of properties with values</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,114 +6,101 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Pink or Blue" -->
-<!-- SEARCH SECTION "Ex 327" -->
-<!-- SEARCH SORT "Ex 021-013-327" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc357.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc359.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.13. Defining phrases in Inform 6</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Thirst" -->
+<!-- SEARCH SECTION "Ex 107" -->
+<!-- SEARCH SORT "Ex 008-005-107" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc113.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc115.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.5. Change of properties with values</b></font></td></tr></table>
 <p>
-<p>The phrases described in this documentation, such as &quot;end the game in death&quot;, are all defined in the Standard Rules, and are for the most part defined not in terms of other I7 phrases but instead reduced to equivalents in I6. For instance:
+<p>Changing properties with values is very similar:
 <p>
-<blockquote><font color="#000080">To end the game in death: (- deadflag=1; -).
+<blockquote><font color="#000080">change the printed name of the Closet to &quot;Suddenly Spooky Closet&quot;
 </font></blockquote><p>
 <p>
-<p>The notation &quot;(-&quot; and &quot;-)&quot; indicates that what comes in between is I6 code. The minus sign is supposed to be a mnemonic for the decrease from 7 to 6: later we shall use &quot;(+&quot; and &quot;+)&quot; to go back up the other way, from 6 to 7.
+<p>Inform checks three different things to ensure that this change is safe to perform. Firstly, the value must be the right kind for the property in question, so this for instance would be rejected:
 <p>
-<p>When a phrase is defined as containing only a single command, and that command is defined using I6 - as here - it is compiled in-line. This means that the phrase &quot;end the game in death&quot; will always be translated as &quot;deadflag=1;&quot;, rather than being translated into a call to a suitable function whose only statement is &quot;deadflag=1;&quot;.
-<p>
-<p>This is an easy case since the wording never varies. More typical examples would be:
-<p>
-<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
-<br>To sort (T - table-name) in (TC - table-column) order:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
+<blockquote><font color="#000080">change the printed name of the Closet to 7
 </font></blockquote><p>
 <p>
-<p>When the braced name of one of the variables in the phrase preamble appears, this is compiled to the corresponding I6 expression at the relevant position in the I6 code. So, for instance,
+<p>Secondly, the object in question has to be allowed to have the given property. This, for instance, would be disallowed:
 <p>
-<blockquote><font color="#000080">say the capacity of the basket
+<blockquote><font color="#000080">change the initial appearance of the Closet to &quot;Dusty&quot;
 </font></blockquote><p>
 <p>
-<p>might be compiled to
+<p>(since &quot;initial appearance&quot; is a property which only things can have, not rooms). Finally, the object has to actually have the property, not just have the right to have that property. Thus:
 <p>
-<blockquote><font color="#000080">print O17_basket.capacity;
+<blockquote><font color="#000080">change the printed name of the Closet to &quot;Suddenly Spooky Closet&quot;
 </font></blockquote><p>
 <p>
-<p>because &quot;{something}&quot; is expanded to &quot;capacity of the basket&quot; (I7 code) and then translated to &quot;O17_basket.capacity&quot; (I6 code), which is then spliced into the original I6 definition &quot;print {something};&quot;.
-<p>
-<p>Braces &quot;{&quot; are of course significant in I6. A real brace can be obtained by making the character following it a space, and then I7 will not attempt to read it as a request for substitution.
-<p>
-<p>Finally, note that while a normal I7 phrase definition can give a kind as what must be matched, e.g.,
-<p>
-<blockquote><font color="#000080">To release wild tigers into (arena - a room): ...
-</font></blockquote><p>
-<p>
-<p>it is in general a bad idea, and will result in inefficient code, for an phrase defined using I6 to do this. Instead, if possible, match against &quot;object&quot;, where any room, region, thing or direction will be a valid match:
-<p>
-<blockquote><font color="#000080">To release wild tigers into (arena - an object): ...
-</font></blockquote><p>
+<p>...is only permitted if the Closet is designed with a &quot;printed name&quot;. In fact this is certain to be true: all rooms and things automatically have a printed name, which is the short boldface description in the case of rooms, and the usual text briefly describing something in the case of things.
 <p>
 <p><hr><p>
-<a name="e148"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex148.html#e148 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>326</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex148.html#e148 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Odins</font></b></a><br>Making [is-are] and [it-they] say tokens that will choose appropriately based on the last object mentioned.<p></td></tr></table>
+<a name="e114"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex114.html#e114 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>106</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex114.html#e114 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Thirst 2</font></b></a><br>A campfire added to the camp site, which can be lit using tinder.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex114.html#e114 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e120"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc358.html#e120 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>327</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc358.html#e120 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Pink or Blue</font></b></a><br>Asking the player to select a gender to begin play.<p></td></tr></table>
+<a name="e120"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc114.html#e120 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>107</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc114.html#e120 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Thirst</font></b></a><br>A waterskin that is depleted as the player drinks from it.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex120.html#e120 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we would like to allow the player to choose a gender for the main character. We'd also like this to happen at the beginning of the game and outside the main parsing sequence. &quot;When play begins&quot; seems like a good place to put this.
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode422(code) {
+function pasteCode193(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Pink or Blue"\n\nWhen play begins:\n\tsay "Should your character be male or female? >";\n\tif men win, now the player is male;\n\totherwise now the player is female;\n\tsay paragraph break.\n\n[Now a piece of Inform 6 code handles the unusual input. It\'s not necessary to understand this to use it, and the code should work for any question you\'d like to ask the player. The first three words in quotation marks (\'male\', \'M\', \'man\'...) correspond to positive feedback; the later three words correspond to negative feedback. So "to decide whether men win" will be true if the player types one of the first three, and false if he types one of the last three.]\n\nTo decide whether men win:\n\t(- Question(\'male\',\'M//\',\'man\',\'female\',\'F//\',\'woman\') -)\n\nInclude (-\n\n[ Question pos1 pos2 pos3 neg1 neg2 neg3 i;\n\tfor (::)\n\t{   if (location == nothing || parent(player) == nothing) read buffer parse;\n\t\telse read buffer parse DrawStatusLine;\n\t\ti=parse-->1;\n\t\tif (i==pos1 or pos2 or pos3) rtrue;\n\t\tif (i==neg1 or neg2 or neg3) rfalse;\n\t\tprint "Please choose ", (address) pos1, " or ", (address) neg1, ". > ";\n\t}\n];\n\n-)\n\nInstead of examining the player when the player is female:\n\tsay "Congratulations, you are a girl!"\n\nInstead of examining the player when the player is male:\n\tsay "Congratulations, you are a boy!"\n\nThe Room of Self-Knowledge is a room. "Mirrors cover every available wall-surface of this hexagonal chamber, allowing you to examine yourself from all angles."\n');
+    myProject.pasteCode('"Thirst"\n\nThe player carries a waterskin. The waterskin can be full, partly drained, or empty. The waterskin is full. Understand "water" as the waterskin.\n\nInstead of drinking the waterskin when the waterskin is empty:\n\tsay "There is no water left."\n\nInstead of drinking the waterskin: if the waterskin is partly drained, change the waterskin to empty; if the waterskin is full, change the waterskin to partly drained; say "You drink a long draught."\n\nAfter printing the name of the waterskin: say " ([waterskin condition])"\n\nCampsite is a room. "It is solid night now, and the stars have come out. Unfamiliar stars. On the other side of the valley -- a valley round-bottomed but shallow, like a soup bowl -- burn other campfires, most likely bandits. Their voices do not carry, but the smoke rises and obscures the starlight over that way."\n\nA sleepsack is an enterable container in the Campsite. "Your sleepsack is laid out in a pocket of sandy soil and coarse grass."\n\nThe sandy soil, the stars, the distant campfires, and the coarse grass are scenery in the Campsite. Understand "smoke" as the campfires. Instead of listening in the presence of your campfire: say "All you hear are the reassuring snaps and cracks of the sticks in your fire." Understand "campfires" or "fires" as the distant campfires.\n\nYour campfire is scenery. Instead of pushing, pulling, turning, tasting, or touching your campfire, say "You would burn yourself." Understand "fire" as your campfire. The description of your campfire is "A reassuring protection against wild animals and cold."\n\nThe description of the stars is "You invent constellations for them. The slingshot. The scroll. The heart (upside down)."\n\nInstead of going nowhere when the player is in Campsite:\n\tsay "Now is not the time for wandering, alone in the dark. Better to keep here[if your campfire is visible], by the fire[end if]."\n\nInstead of singing:\n\tsay "You sing, deep and low, a song from home. It is a good night for singing and the song raises your spirits."\n\nTest me with "i / drink water / i / drink water / i".\n');
 }
 </script>
-<a href="javascript:pasteCode422()"><img border=0 src=../doc_images/paste.png></a> &quot;Pink or Blue&quot;
+<a href="javascript:pasteCode193()"><img border=0 src=../doc_images/paste.png></a> &quot;Thirst&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Should your character be male or female? >&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if men win, now the player is male;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the player is female;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
+<blockquote><font color="#000080">The player carries a waterskin. The waterskin can be full, partly drained, or empty. The waterskin is full. Understand &quot;water&quot; as the waterskin.
 </font></blockquote><p>
 <p>
-<p>Now a piece of Inform 6 code handles the unusual input. It's not necessary to understand this to use it, and the code should work for any question you'd like to ask the player. The first three words in quotation marks ('male', 'M', 'man'...) correspond to positive feedback; the later three words correspond to negative feedback. So &quot;to decide whether men win&quot; will be true if the player types one of the first three, and false if he types one of the last three.
-<p>
-<blockquote><font color="#000080">To decide whether men win:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- Question('male','M//','man','female','F//','woman') -)
+<blockquote><font color="#000080">Instead of drinking the waterskin when the waterskin is empty:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There is no water left.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Include (-
+<blockquote><font color="#000080">Instead of drinking the waterskin: if the waterskin is partly drained, change the waterskin to empty; if the waterskin is full, change the waterskin to partly drained; say &quot;You drink a long draught.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">[ Question pos1 pos2 pos3 neg1 neg2 neg3 i;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;for (::)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;{   if (location == nothing || parent(player) == nothing) read buffer parse;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else read buffer parse DrawStatusLine;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i=parse-->1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (i==pos1 or pos2 or pos3) rtrue;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (i==neg1 or neg2 or neg3) rfalse;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print &quot;Please choose &quot;, (address) pos1, &quot; or &quot;, (address) neg1, &quot;. > &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>];
+<blockquote><font color="#000080">After printing the name of the waterskin: say &quot; ([waterskin condition])&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">-)
+<blockquote><font color="#000080">Campsite is a room. &quot;It is solid night now, and the stars have come out. Unfamiliar stars. On the other side of the valley -- a valley round-bottomed but shallow, like a soup bowl -- burn other campfires, most likely bandits. Their voices do not carry, but the smoke rises and obscures the starlight over that way.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining the player when the player is female:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you are a girl!&quot;
+<blockquote><font color="#000080">A sleepsack is an enterable container in the Campsite. &quot;Your sleepsack is laid out in a pocket of sandy soil and coarse grass.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining the player when the player is male:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you are a boy!&quot;
+<blockquote><font color="#000080">The sandy soil, the stars, the distant campfires, and the coarse grass are scenery in the Campsite. Understand &quot;smoke&quot; as the campfires. Instead of listening in the presence of your campfire: say &quot;All you hear are the reassuring snaps and cracks of the sticks in your fire.&quot; Understand &quot;campfires&quot; or &quot;fires&quot; as the distant campfires.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Room of Self-Knowledge is a room. &quot;Mirrors cover every available wall-surface of this hexagonal chamber, allowing you to examine yourself from all angles.&quot;
+<blockquote><font color="#000080">Your campfire is scenery. Instead of pushing, pulling, turning, tasting, or touching your campfire, say &quot;You would burn yourself.&quot; Understand &quot;fire&quot; as your campfire. The description of your campfire is &quot;A reassuring protection against wild animals and cold.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc358.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">The description of the stars is &quot;You invent constellations for them. The slingshot. The scroll. The heart (upside down).&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going nowhere when the player is in Campsite:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Now is not the time for wandering, alone in the dark. Better to keep here[if your campfire is visible], by the fire[end if].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of singing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You sing, deep and low, a song from home. It is a good night for singing and the song raises your spirits.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;i / drink water / i / drink water / i&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc114.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc357.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc359.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc113.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc115.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

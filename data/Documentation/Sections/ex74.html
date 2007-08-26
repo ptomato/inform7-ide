@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.10. Action variables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.6. Reading and talking</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,163 +6,137 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "Croft" -->
-<!-- SEARCH SECTION "Ex 171" -->
-<!-- SEARCH SORT "Ex 012-010-171" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc180.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc182.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.10. Action variables</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Costa Rican Ornithology" -->
+<!-- SEARCH SECTION "Ex 83" -->
+<!-- SEARCH SORT "Ex 007-006-083" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc95.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc97.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.6. Reading and talking</b></font></td></tr></table>
 <p>
-<p>For some complex situations, it can be useful to keep track of a few values throughout the processing of the action. This is not an everyday occurrence: in the Standard Rules, for instance, only two or three out of 90 actions need to do this. But suppose we want to write a more deluxe version of our &quot;photographing&quot; action. This time, rather than having a single thing called the &quot;camera&quot;, we will provide a whole range of possible cameras, varying in quality:
-<p>
-<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light. Understand &quot;photograph [something]&quot; as photographing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Studio is a room. Sally is a woman in the Studio. A foam-lined tote bag is in the Studio.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A camera is a kind of thing. A camera has a number called picture quality. The digital SLR camera is a camera in the tote bag. The player carries a camera called the instant one-shot camera. The picture quality of the SLR camera is 10. The picture quality of the one-shot is 2. Definition: a camera is sharp if its picture quality is 5 or more.
-</font></blockquote><p>
-<p>
-<p>And we will want the photographing action to have the player use the best-quality camera which comes to hand. We will give the action a variable called the 'camera photographed with', thus:
-<p>
-<blockquote><font color="#000080">The photographing action has an object called the camera photographed with.
-</font></blockquote><p>
-<p>
-<p>This value is created when the action begins, and disappears when the action ends. (If the action should happen a second time before the first time was completed, a second copy of the value is created, leaving the original undisturbed.) When the action begins, the value starts out as something neutral - so if it is a number, it starts out as 0, if a text, it starts out as the blank text &quot;&quot;, and so on. Here it is an object, so it starts out as nothing - the value meaning no object at all. But of course we want to give it a value ourselves. We can do that using the &quot;setting action variables&quot; rulebook. For instance:
-<p>
-<blockquote><font color="#000080">Setting action variables for photographing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the camera photographed with is the sharpest camera which is carried by the actor.
-</font></blockquote><p>
-<p>
-<p>The &quot;setting action variables&quot; rulebook is run through before even the before rules, and it has no power to stop or change the action. Its rules should say nothing and do nothing other than to set rulebook variables like this one. Note that it is intended to work for any actor, not only the player: so rather than referring to the player as the performer of the action, we need to write &quot;the actor&quot;, as in the example above. (See subsequent sections for more on actors.)
-<p>
-<p>We can now write rules such as:
-<p>
-<blockquote><font color="#000080">A check photographing rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the camera photographed with is nothing then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
-</font></blockquote><p>
-<p>
-<p>Only rules to do with the photographing action - before, instead, after, check, carry out, or report rules, and so on - are allowed to see the 'camera photographed with' value: it's the private property of the action.
-<p>
-<p>A further elaboration allows us to make rules about photographing neater to write. If we create our variable like so:
-<p>
-<blockquote><font color="#000080">The photographing action has an object called the camera photographed with (matched as &quot;using&quot;).
-</font></blockquote><p>
-<p>
-<p>...then we are now allowed to add an optional 'using ...' clause onto a description of the action. For instance, we could write rules such as
-<p>
-<blockquote><font color="#000080">Instead of photographing something using the one-shot camera:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;But you promised to give this to Sally's nephew.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check photographing something using the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That would require some sort of contraption with mirrors.&quot; instead.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Report photographing something using a sharp camera:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You feel cool and important as the shutter clicks.&quot;
-</font></blockquote><p>
-<p>
-<p>(This is the method used by the Standard Rules to attach optional clauses such as 'to', 'with' and 'through' to the going action.)
-<p>
-<p><hr><p>
-<a name="e101"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex101.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>169</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex101.html#e101 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Removal</font></b></a><br>TAKE expanded to give responses such as "You take the book from the shelf." or "You pick up the toy from the ground."<p></td></tr></table>
-<a name="e224"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex224.html#e224 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>170</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex224.html#e224 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Puff of Orange Smoke</font></b></a><br>A system in which every character has a body, which is left behind when the person dies; attempts to do something to the body are redirected to the person while the person is alive.<p></td></tr></table>
-<!-- EXAMPLE START -->
-<a name="e74"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc181.html#e74 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>171</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc181.html#e74 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Croft</font></b></a><br>Adding special reporting and handling for objects dropped when the player is on a supporter, and special entering rules for moving from one supporter to another.<p></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Suppose that we have a design in which the player spends lots of time on enterable supporters, and in which we want to report certain actions -- dropping things onto those supporters, or leaping from one to another -- in a new way. We might begin by adding some action variables to help us keep track of the situation:
+<p>A few actions apply not to items alone, but also involve what might be called conversation. The first is the one used for looking things up in books (which is conversation of a kind, even if the author is not present): &quot;consulting ... about ...&quot;. For example,
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode266(code) {
+function pasteCode14(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode(' "Croft"\n\nThe dropping action has an object called the container dropped into (matched as "into").\n\nThe dropping action has an object called the supporter dropped onto (matched as "onto").\n\nRule for setting action variables for dropping:\n\tif the actor is in a container (called C), now the container dropped into is C;\n\tif the actor is on a supporter (called C), now the supporter dropped onto is C.\n\nReport dropping a heavy thing onto a metallic thing:\n\tsay "You drop [the noun], and [the supporter dropped onto] clangs protestingly." instead.\n\nReport someone dropping a heavy thing onto a metallic thing:\n\tsay "[The actor] drops [the noun] onto [the supporter dropped onto], which clangs protestingly." instead.\n\nA thing can be heavy or light. A thing can be metallic or ordinary. A thing is usually ordinary. A thing is usually light.\n\nThe Ancient Cambodian Temple is a room. "A vast space built for ancient and forgotten rituals. The stone floor crawls with vermin. Well above the floor, and separated by some feet, are twin platforms built into the wall: the one carved of jointed wood, the other of sheets of graven bronze."\n\nA platform is a kind of supporter. A platform is always enterable. A platform is usually scenery.\n\nThe bronze platform is a metallic platform in the Temple. Lara is a woman. She is on the bronze platform. She wears safari pants and a tank top. She carries a gun and a map. The gun is heavy.\n\nThe wood platform is an ordinary platform in the Temple. The player is on the wood platform. The player carries a rope, an Ancient Cambodian/English Phrasebook, a pickaxe, and a precious idol. The idol and the pickaxe are heavy.\n\nPersuasion rule: persuasion succeeds.\n\nThe entering action has an object called the place left (matched as "from").\n\tCheck entering a platform from a platform:\n\t\tif actor is the player, say "You leap into midair to cross the distance...";\n\totherwise say "[The actor] leaps gracefully across the distance...";\n\tmove the actor to the holder of the noun, without printing a room description.\n\n[Because this rule occurs before the "implicitly pass through other barriers rule", that rule will not occur when we move from platform to platform; we\'ll use our own custom rule instead.]\n\nRule for setting action variables for entering:\n\tnow the place left is the holder of the actor.\n\nReport entering a platform from a platform:\n\tsay "You land in a cat-like crouch on [the noun]." instead.\n\nReport Lara entering a platform from a platform:\n\tsay "Lara lands soundlessly on [the noun][if the noun supports the player] beside you[end if]." instead.\n\nReport entering a platform from the location:\n\tsay "You jump, catch the edge of [the noun] in your hands, and -- exerting considerable upper-body strength -- pull yourself up onto it." instead.\n\nReport Lara entering a platform from a location:\n\tsay "Lara jumps, catches the edge of [the noun], and is standing upright on it, all in less time than it takes to tell."\n\nInstead of examining a person who is not the player:\n\tsay "[The noun] carries [list of things carried by the noun] and wears [list of things worn by the noun]."\n\nInstead of climbing a platform, try entering the noun.\n\nTest me with "Lara, drop map / lara, drop gun / drop idol / enter bronze platform / drop pickaxe / get off / climb wood".\n');
+    myProject.pasteCode('In the Grove is a book of sybilline verses.\n\nAfter consulting the book about "grove", say "The Grove is a sacred yadda, yadda. There\'s a tree, that sort of thing. Wisdom."\n\nAfter consulting the book about "future events", say "It\'s a bit, what\'s the word? Delphic."\n\n');
 }
 </script>
-<a href="javascript:pasteCode266()"><img border=0 src=../doc_images/paste.png></a>  &quot;Croft&quot;
+<a href="javascript:pasteCode14()"><img border=0 src=../doc_images/paste.png></a> In the Grove is a book of sybilline verses.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The dropping action has an object called the container dropped into (matched as &quot;into&quot;).
+<blockquote><font color="#000080">After consulting the book about &quot;grove&quot;, say &quot;The Grove is a sacred yadda, yadda. There's a tree, that sort of thing. Wisdom.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The dropping action has an object called the supporter dropped onto (matched as &quot;onto&quot;).
+<blockquote><font color="#000080">After consulting the book about &quot;future events&quot;, say &quot;It's a bit, what's the word? Delphic.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for setting action variables for dropping:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the actor is in a container (called C), now the container dropped into is C;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the actor is on a supporter (called C), now the supporter dropped onto is C.
+<p>Note that what follows &quot;about&quot; here is a piece of text in double-quotes, and not the name of something. It can be almost any text at all, and in fact we shall later see (in the chapter on &quot;Understanding&quot;) that we can match complicated patterns of words, too.
+<p>
+<p>Similar actions are used for conversing with people:
+<p>
+<blockquote><font color="#000080">After asking the Sybil about &quot;verses&quot;, say &quot;She blushes.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report dropping a heavy thing onto a metallic thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You drop [the noun], and [the supporter dropped onto] clangs protestingly.&quot; instead.
+<blockquote><font color="#000080">After telling the Sybil about &quot;persians&quot;, say &quot;She nods gravely.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report someone dropping a heavy thing onto a metallic thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The actor] drops [the noun] onto [the supporter dropped onto], which clangs protestingly.&quot; instead.
+<blockquote><font color="#000080">After answering the Sybil that &quot;I am mad&quot;, say &quot;She sighs.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be heavy or light. A thing can be metallic or ordinary. A thing is usually ordinary. A thing is usually light.
+<p>These would be produced by commands like &quot;ask sybil about verses&quot;, &quot;tell sybil about persians&quot; and &quot;answer i am mad&quot;. Answering is very seldom used and can be forgotten about, but the distinction between asking and telling is often worth preserving, which is why there are two different actions for these. If you would prefer to make &quot;tell sybil about X&quot; do the same as &quot;ask sybil about X&quot;, the following rule would serve:
+<p>
+<blockquote><font color="#000080">Instead of telling the Sybil about something, try asking the Sybil about it.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Ancient Cambodian Temple is a room. &quot;A vast space built for ancient and forgotten rituals. The stone floor crawls with vermin. Well above the floor, and separated by some feet, are twin platforms built into the wall: the one carved of jointed wood, the other of sheets of graven bronze.&quot;
+<p>Games with a lot of conversation often involve great heaps of rules like the ones above, which can be repetitious to type out. We shall also later see (in the chapter on &quot;Tables&quot;) that we can tabulate questions and answers in a much more concise way, if we prefer.
+<p>
+<p><hr><p>
+<a name="e139"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex139.html#e139 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>81</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex139.html#e139 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Sybil 1</font></b></a><br>Direct all ASK, TELL, and ANSWER commands to ASK, and accept multiple words for certain cases.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex139.html#e139 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e117"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex117.html#e117 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>82</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex117.html#e117 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Sybil 2</font></b></a><br>Making the character understand YES, SAY YES TO CHARACTER, TELL CHARACTER YES, ANSWER YES, and CHARACTER, YES.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex117.html#e117 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e74"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc96.html#e74 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>83</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc96.html#e74 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Costa Rican Ornithology</font></b></a><br>A fully-implemented book, answering questions from a table of data, and responding to failed consultation with a custom message such as "You flip through the Guide to Central American Birds, but find no reference to penguins."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex74.html#e74 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>The following relies on quite a number of features we haven't met yet: tables, rules for printing names, instructions for understanding the player's commands. It is offered simply as an example of how a fully implemented book might be handled in Inform.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode166(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Costa Rican Ornithology"\n\nA book is a kind of thing. Understand "book" as a book. A book has a table-name called the contents.\n\nReport consulting a book about:\n\tsay "You flip through [the noun], but find no reference to [the topic understood]." instead.\n\n[With this "topic understood" phrase, we\'re telling Inform to print back the word or phrase that the player was attempting to look up. This overrides the more general default response, "You discover nothing of interest in the book." Now let\'s have an example of an actual book:]\n\nThe Guide to Central American Birds is a book carried by the player. The contents of the Guide is the Table of Listed Birds.\n\nInstead of consulting a book about a topic listed in the contents of the noun:\n\tsay "[reply entry][paragraph break]".\n\n[We will come back to the idea of tables and table-names later, but for now the important thing is that we have instructed Inform to look up its answers to consulting the bird guide in this form:]\n\nTable of Listed Birds\ntopic\treply\n"[red]" or "[red] bird/macaw"\t"You flip through the Guide for a while and eventually discover a reference to the [scarlet macaw], which appears to correspond with what you see before you."\n"quetzal/trogon" or "resplendent trogon"\t"The entry on the quetzal is quite lyrical, describing its brilliant plumage, flashing and igniting in the sunshine, which is supposedly sufficient to lure birdwatchers from all over the world. Unfortunately, the quetzal is described as being bright emerald in color, with a pink fuzz on its head and a long soft tail \'like a feather boa\'. None of these describes your visitor."\n\n[The topic column is a bit special: it matches the player\'s input, and is not meant to be printed out again. Topic columns will be discussed further in the chapter on Tables. (Note also that, however it may appear in the documentation, the topic column should not be spanning multiple lines in our source text.)]\n\n[We may also compress long or complicated topics by creating bracketed abbreviations, and in fact it\'s useful to do so now, to explain the red token we just used:]\n\nUnderstand "red-orange" or "bird" or "red" or "orange" as the scarlet macaw. Understand "red-orange" or "red" or "orange" or "scarlet" as "[red]".\n\n[This technique is discussed further in the chapter on Understanding.]\n\n[If we wanted more books, we could define those in the same way, giving each its own separate contents table to be used for consultation. But for the sake of the example we will keep it simple, and move on to the scenario itself:]\n\nThe Veranda is a room. "From here you can see a considerable expanse of dense-growing jungle plants, and eventually the open water beyond."\n\nThe scarlet macaw is an animal in the veranda. "A vibrantly-colored [scarlet macaw] perches on the rail."\n\nA thing can be known or unknown.\n\nBefore printing the name of the scarlet macaw while consulting:\n\tnow the scarlet macaw is known.\n\nRule for printing the name of the unknown scarlet macaw: if the macaw is unknown, say "red-orange bird of unknown species".\n\nTest me with "look up penguins in the guide / look up quetzal in guide / look up silver nuthatches in the guide / look / look up red bird in the book / look".\n');
+}
+</script>
+<a href="javascript:pasteCode166()"><img border=0 src=../doc_images/paste.png></a> &quot;Costa Rican Ornithology&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A platform is a kind of supporter. A platform is always enterable. A platform is usually scenery.
+<blockquote><font color="#000080">A book is a kind of thing. Understand &quot;book&quot; as a book. A book has a table-name called the contents.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The bronze platform is a metallic platform in the Temple. Lara is a woman. She is on the bronze platform. She wears safari pants and a tank top. She carries a gun and a map. The gun is heavy.
+<blockquote><font color="#000080">Report consulting a book about:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You flip through [the noun], but find no reference to [the topic understood].&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The wood platform is an ordinary platform in the Temple. The player is on the wood platform. The player carries a rope, an Ancient Cambodian/English Phrasebook, a pickaxe, and a precious idol. The idol and the pickaxe are heavy.
+<p>With this &quot;topic understood&quot; phrase, we're telling Inform to print back the word or phrase that the player was attempting to look up. This overrides the more general default response, &quot;You discover nothing of interest in the book.&quot; Now let's have an example of an actual book:
+<p>
+<blockquote><font color="#000080">The Guide to Central American Birds is a book carried by the player. The contents of the Guide is the Table of Listed Birds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Persuasion rule: persuasion succeeds.
+<blockquote><font color="#000080">Instead of consulting a book about a topic listed in the contents of the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The entering action has an object called the place left (matched as &quot;from&quot;).
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Check entering a platform from a platform:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if actor is the player, say &quot;You leap into midair to cross the distance...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The actor] leaps gracefully across the distance...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the actor to the holder of the noun, without printing a room description.
+<p>We will come back to the idea of tables and table-names later, but for now the important thing is that we have instructed Inform to look up its answers to consulting the bird guide in this form:
+<p>
+<blockquote><font color="#000080">Table of Listed Birds
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[red]&quot; or &quot;[red] bird/macaw&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;You flip through the Guide for a while and eventually discover a reference to the [scarlet macaw], which appears to correspond with what you see before you.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;quetzal/trogon&quot; or &quot;resplendent trogon&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;The entry on the quetzal is quite lyrical, describing its brilliant plumage, flashing and igniting in the sunshine, which is supposedly sufficient to lure birdwatchers from all over the world. Unfortunately, the quetzal is described as being bright emerald in color, with a pink fuzz on its head and a long soft tail 'like a feather boa'. None of these describes your visitor.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<p>Because this rule occurs before the &quot;implicitly pass through other barriers rule&quot;, that rule will not occur when we move from platform to platform; we'll use our own custom rule instead.
+<p>The topic column is a bit special: it matches the player's input, and is not meant to be printed out again. Topic columns will be discussed further in the chapter on Tables. (Note also that, however it may appear in the documentation, the topic column should not be spanning multiple lines in our source text.)
 <p>
-<blockquote><font color="#000080">Rule for setting action variables for entering:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the place left is the holder of the actor.
+<p>We may also compress long or complicated topics by creating bracketed abbreviations, and in fact it's useful to do so now, to explain the red token we just used:
+<p>
+<blockquote><font color="#000080">Understand &quot;red-orange&quot; or &quot;bird&quot; or &quot;red&quot; or &quot;orange&quot; as the scarlet macaw. Understand &quot;red-orange&quot; or &quot;red&quot; or &quot;orange&quot; or &quot;scarlet&quot; as &quot;[red]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report entering a platform from a platform:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You land in a cat-like crouch on [the noun].&quot; instead.
+<p>This technique is discussed further in the chapter on Understanding.
+<p>
+<p>If we wanted more books, we could define those in the same way, giving each its own separate contents table to be used for consultation. But for the sake of the example we will keep it simple, and move on to the scenario itself:
+<p>
+<blockquote><font color="#000080">The Veranda is a room. &quot;From here you can see a considerable expanse of dense-growing jungle plants, and eventually the open water beyond.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report Lara entering a platform from a platform:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lara lands soundlessly on [the noun][if the noun supports the player] beside you[end if].&quot; instead.
+<blockquote><font color="#000080">The scarlet macaw is an animal in the veranda. &quot;A vibrantly-colored [scarlet macaw] perches on the rail.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report entering a platform from the location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You jump, catch the edge of [the noun] in your hands, and -- exerting considerable upper-body strength -- pull yourself up onto it.&quot; instead.
+<blockquote><font color="#000080">A thing can be known or unknown.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report Lara entering a platform from a location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lara jumps, catches the edge of [the noun], and is standing upright on it, all in less time than it takes to tell.&quot;
+<blockquote><font color="#000080">Before printing the name of the scarlet macaw while consulting:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the scarlet macaw is known.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining a person who is not the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] carries [list of things carried by the noun] and wears [list of things worn by the noun].&quot;
+<blockquote><font color="#000080">Rule for printing the name of the unknown scarlet macaw: if the macaw is unknown, say &quot;red-orange bird of unknown species&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of climbing a platform, try entering the noun.
+<blockquote><font color="#000080">Test me with &quot;look up penguins in the guide / look up quetzal in guide / look up silver nuthatches in the guide / look / look up red bird in the book / look&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;Lara, drop map / lara, drop gun / drop idol / enter bronze platform / drop pickaxe / get off / climb wood&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc181.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc96.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc180.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc182.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc95.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc97.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

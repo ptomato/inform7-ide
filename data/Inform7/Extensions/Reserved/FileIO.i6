@@ -1,0 +1,280 @@
+! FileIO.i6
+
+! The I7 kind of value "auxiliary-file" is an --> array, holding the structure:
+Constant AUXF_MAGIC = 0; ! First word holds a safety constant
+Constant AUXF_MAGIC_VALUE = 16339; ! Should be first word of any valid file structure
+Constant AUXF_STATUS = 1; ! One of the following:
+Constant AUXF_STATUS_IS_UNUSED = 0; ! Never used
+Constant AUXF_STATUS_IS_CLOSED = 1; ! Currently closed
+Constant AUXF_STATUS_IS_OPEN_FOR_READ = 2;
+Constant AUXF_STATUS_IS_OPEN_FOR_WRITE = 3;
+Constant AUXF_STATUS_IS_OPEN_FOR_APPEND = 4;
+Constant AUXF_BINARY = 2; ! False for text files (I7 default), true for binary
+Constant AUXF_FREF = 3; ! Glulx file reference number (if file has been used)
+Constant AUXF_STREAM = 4; ! Stream for an open file (meaningless otherwise)
+Constant AUXF_FILENAME = 5; ! Packed address of constant string
+Constant AUXF_IFID_OF_OWNER = 6; ! UUID_ARRAY if owned by this project, or
+	! string array of IFID of owner wrapped in //...//, or I6_NULL to leave open
+
+[ I7_FileIO_Error auxf err_text;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE)) {
+		print "^*** Error on unknown file: ", (string) err_text, " ***^";
+	} else
+		print "^*** Error on file '", (string) auxf-->AUXF_FILENAME, "': ",
+			(string) err_text, " ***^";
+	return 0;
+];
+
+#IFDEF TARGET_GLULX;
+
+! Obtain the file reference for a file (which need not exist):
+
+[ I7_FileIO_Fref auxf fref usage;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE)) rfalse;
+	if (auxf-->AUXF_STATUS == 0) {
+		if (auxf-->AUXF_BINARY) usage = fileusage_BinaryMode;
+		else usage = fileusage_TextMode;
+		auxf-->AUXF_FREF =
+			glk_fileref_create_by_name(fileusage_Data + usage,
+				ChangeAnyToCString(auxf-->AUXF_FILENAME), 0);
+		auxf-->AUXF_STATUS = AUXF_STATUS_IS_CLOSED;
+	}
+	return auxf-->AUXF_FREF;
+];
+
+! Find out if a file exists
+
+[ I7_FileIO_Exists auxf fref;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE)) rfalse;
+	fref = I7_FileIO_Fref(auxf);
+	return glk_fileref_does_file_exist(fref);
+];
+
+[ I7_FileIO_Ready auxf fref str ch;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE)) rfalse;
+	fref = I7_FileIO_Fref(auxf);
+	if (glk_fileref_does_file_exist(fref) == false) rfalse;
+	str = glk_stream_open_file(fref, filemode_Read, 0);
+	ch = glk_get_char_stream(str);
+	glk_stream_close(str, 0);
+	if (ch ~= '*') rfalse;
+	rtrue;
+];
+
+[ I7_FileIO_MarkReady auxf readiness fref str ch;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return I7_FileIO_Error(auxf, "tried to open a non-file");
+	fref = I7_FileIO_Fref(auxf);
+	if (auxf-->AUXF_STATUS ~= AUXF_STATUS_IS_CLOSED)
+		return I7_FileIO_Error(auxf, "only closed files can be marked");
+	str = glk_stream_open_file(fref, filemode_ReadWrite, 0);
+	glk_stream_set_position(str, 0, 0); ! seek start
+	if (readiness) ch = '*'; else ch = '-';
+	glk_put_char_stream(str, ch); ! mark as complete
+	glk_stream_close(str, 0);
+];
+
+! Opening and closing files:
+
+[ I7_FileIO_Open auxf write_flag append_flag
+	fref str mode ix ch not_this_ifid owner force_header;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return I7_FileIO_Error(auxf, "tried to open a non-file");
+	fref = I7_FileIO_Fref(auxf);
+	if (auxf-->AUXF_STATUS ~= AUXF_STATUS_IS_CLOSED)
+		return I7_FileIO_Error(auxf, "tried to open a file already open");
+	if (write_flag) {
+		if (append_flag) {
+			mode = filemode_WriteAppend;
+			if (glk_fileref_does_file_exist(fref) == false)
+				force_header = true;
+		}
+		else mode = filemode_Write;
+	} else {
+		mode = filemode_Read;
+		if (glk_fileref_does_file_exist(fref) == false)
+			return I7_FileIO_Error(auxf, "tried to open a file which does not exist");
+	}
+	str = glk_stream_open_file(fref, mode, 0);
+	if (str == 0)
+		return I7_FileIO_Error(auxf, "tried to open a file but failed");
+	auxf-->AUXF_STREAM = str;
+	if (write_flag) {
+		if (append_flag)
+			auxf-->AUXF_STATUS = AUXF_STATUS_IS_OPEN_FOR_APPEND;
+		else
+			auxf-->AUXF_STATUS = AUXF_STATUS_IS_OPEN_FOR_WRITE;
+		glk_stream_set_current(str);
+		if ((append_flag == FALSE) || (force_header)) {
+			print "- ";
+			for (ix=6: ix <= UUID_ARRAY->0: ix++) print (char) UUID_ARRAY->ix;
+			print " ", (string) auxf-->AUXF_FILENAME, "^";
+		}
+	} else {
+		auxf-->AUXF_STATUS = AUXF_STATUS_IS_OPEN_FOR_READ;
+		ch = I7_FileIO_GetC(auxf);
+		if (ch ~= '-' or '*') { jump BadFile; }
+		if (ch == '-')
+			return I7_FileIO_Error(auxf, "tried to open a file which was incomplete");
+		ch = I7_FileIO_GetC(auxf);
+		if (ch ~= ' ') { jump BadFile; }
+		ch = I7_FileIO_GetC(auxf);
+		if (ch ~= '/') { jump BadFile; }
+		ch = I7_FileIO_GetC(auxf);
+		if (ch ~= '/') { jump BadFile; }
+		owner = auxf-->AUXF_IFID_OF_OWNER;
+		ix = 3;
+		if (owner == UUID_ARRAY) ix = 8;
+		if (owner ~= I6_NULL) {
+			for (: ix <= owner->0: ix++) {
+				ch = I7_FileIO_GetC(auxf);
+				if (ch == -1) { jump BadFile; }
+				if (ch ~= owner->ix) not_this_ifid = true;
+				if (ch == ' ') break;
+			}
+			if (not_this_ifid == false) {
+				ch = I7_FileIO_GetC(auxf);
+				if (ch ~= ' ') { jump BadFile; }
+			}
+		}
+		while (ch ~= -1) {
+			ch = I7_FileIO_GetC(auxf);
+			if (ch == 10 or 13) break;
+		}
+		if (not_this_ifid) {
+			auxf-->AUXF_STATUS = AUXF_STATUS_IS_CLOSED;
+			glk_stream_close(str, 0);
+			return I7_FileIO_Error(auxf,
+				"tried to open a file owned by another project");
+		}
+	}
+	return auxf-->AUXF_STREAM;
+	.BadFile;
+	auxf-->AUXF_STATUS = AUXF_STATUS_IS_CLOSED;
+	glk_stream_close(str, 0);
+	return I7_FileIO_Error(auxf, "tried to open a file which seems to be malformed");
+];
+
+[ I7_FileIO_Close auxf;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return I7_FileIO_Error(auxf, "tried to close a non-file");
+	if (auxf-->AUXF_STATUS ~=
+		AUXF_STATUS_IS_OPEN_FOR_READ or
+		AUXF_STATUS_IS_OPEN_FOR_WRITE or
+		AUXF_STATUS_IS_OPEN_FOR_APPEND)
+		return I7_FileIO_Error(auxf, "tried to close a file which is not open");
+	if ((auxf-->AUXF_BINARY == false) &&
+		(auxf-->AUXF_STATUS ==
+		AUXF_STATUS_IS_OPEN_FOR_WRITE or
+		AUXF_STATUS_IS_OPEN_FOR_APPEND)) {
+		glk_set_window(gg_mainwin);
+	}
+	if (auxf-->AUXF_STATUS ==
+		AUXF_STATUS_IS_OPEN_FOR_WRITE or
+		AUXF_STATUS_IS_OPEN_FOR_APPEND) {
+		glk_stream_set_position(auxf-->AUXF_STREAM, 0, 0); ! seek start
+		glk_put_char_stream(auxf-->AUXF_STREAM, '*'); ! mark as complete
+	}
+	glk_stream_close(auxf-->AUXF_STREAM, 0);
+	auxf-->AUXF_STATUS = AUXF_STATUS_IS_CLOSED;
+];
+
+! Getting and putting characters
+
+[ I7_FileIO_GetC auxf;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE)) return -1;
+	if (auxf-->AUXF_STATUS ~= AUXF_STATUS_IS_OPEN_FOR_READ) return -1;
+	return glk_get_char_stream(auxf-->AUXF_STREAM);
+];
+
+[ I7_FileIO_PutC auxf char;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return I7_FileIO_Error(auxf, "tried to write to a non-file");
+	if (auxf-->AUXF_STATUS ~=
+		AUXF_STATUS_IS_OPEN_FOR_WRITE or
+		AUXF_STATUS_IS_OPEN_FOR_APPEND)
+		return I7_FileIO_Error(auxf,
+			"tried to write to a file which is not open for writing");
+	return glk_put_char_stream(auxf-->AUXF_STREAM, char);
+];
+
+[ I7_FileIO_PrintLine auxf ch;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return I7_FileIO_Error(auxf, "tried to write to a non-file");
+	for (::) {
+		ch = I7_FileIO_GetC(auxf);
+		if (ch == -1) rfalse;
+		if (ch == 10 or 13) { print "^"; rtrue; }
+		print (char) ch;
+	}
+];
+
+[ I7_FileIO_PutContents auxf text append_flag
+	str ch save_say__p save_say__pc save_say__c;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return I7_FileIO_Error(auxf, "tried to access a non-file");
+	if (auxf-->AUXF_BINARY)
+		return I7_FileIO_Error(auxf, "writing text will not work with binary files");
+	str = I7_FileIO_Open(auxf, true, append_flag);
+	if (str == 0) rfalse;
+	save_say__p = say__p; say__p = 0;
+	save_say__pc = say__pc; say__pc = 0;
+	save_say__c = say__c; say__c = 0;
+	switch (metaclass(text)) {
+		String: print (string) text;
+		Routine: (text)();
+	}
+	I7_FileIO_Close(auxf);
+	say__p = save_say__p;
+	say__pc = save_say__pc;
+	say__c = save_say__c;
+	rfalse;
+];
+
+[ I7_FileIO_PrintContents auxf tab;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return I7_FileIO_Error(auxf, "tried to access a non-file");
+	if (auxf-->AUXF_BINARY)
+		return I7_FileIO_Error(auxf, "printing text will not work with binary files");
+	if (I7_FileIO_Open(auxf, false) == 0) rfalse;
+	while (I7_FileIO_PrintLine(auxf)) ;
+	I7_FileIO_Close(auxf);
+	rtrue;
+];
+
+[ I7_FileIO_PutTable auxf tab rv;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return I7_FileIO_Error(auxf, "tried to write table to a non-file");
+	if (auxf-->AUXF_BINARY)
+		return I7_FileIO_Error(auxf, "writing a table will not work with binary files");
+	if (I7_FileIO_Open(auxf, true) == 0) rfalse;
+	rv = TablePrint(tab);
+	I7_FileIO_Close(auxf);
+	if (rv) return RunTimeProblem(RTP_TABLE_CANTSAVE, tab);
+	rtrue;
+];
+
+[ I7_FileIO_GetTable auxf tab;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return I7_FileIO_Error(auxf, "tried to read table from a non-file");
+	if (auxf-->AUXF_BINARY)
+		return I7_FileIO_Error(auxf, "reading a table will not work with binary files");
+	if (I7_FileIO_Open(auxf, false) == 0) rfalse;
+	TableRead(tab, auxf);
+	I7_FileIO_Close(auxf);
+	rtrue;
+];
+
+#IFNOT; ! TARGET_GLULX
+[ I7_FileIO_Exists auxf; rfalse; ];
+[ I7_FileIO_Ready auxf; rfalse; ];
+[ I7_FileIO_PutTable auxf tab;
+	return I7_FileIO_Error(auxf, "external files can only be used under Glulx");
+];
+[ I7_FileIO_MarkReady auxf status; I7_FileIO_PutTable(auxf); ];
+[ I7_FileIO_GetTable auxf tab; I7_FileIO_PutTable(auxf); ];
+[ I7_FileIO_PrintContents auxf; I7_FileIO_PutTable(auxf); ];
+[ I7_FileIO_PutContents auxf; I7_FileIO_PutTable(auxf); ];
+#ENDIF; ! TARGET_GLULX
+
+! End of FileIO.i6

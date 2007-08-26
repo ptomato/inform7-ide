@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.6. More general linkages</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.12. Writing and reading tables to external files</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -6,94 +6,103 @@
 background-image:url('../doc_images/ovoid.png');
 color:white;
 }
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
 -->
 </STYLE>
-<body>
-<!-- SEARCH TITLE "The Prague Job" -->
-<!-- SEARCH SECTION "Ex 133" -->
-<!-- SEARCH SORT "Ex 010-006-133" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc147.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap10.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 10: Scenes</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc149.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.6. More general linkages</b></font></td></tr></table>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Alien Invasion Part 23" -->
+<!-- SEARCH SECTION "Ex 341" -->
+<!-- SEARCH SORT "Ex 019-012-341" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc325.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc327.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.12. Writing and reading tables to external files</b></font></td></tr></table>
 <p>
-<p>We are allowed to link the beginning or end of any scene to the beginning or end of any other scene. So, for instance:
+<p>The main use for files is to store and retrieve data, and the most flexible form of data used by Inform is the Table, so facilities are provided which make it as easy as possible to write and read the contents of a table to files.
 <p>
-<blockquote><font color="#000080">Luggage Trouble is a scene. Luggage Trouble begins when Brief Encounter begins.
+<p>To save the contents of a table to a file, we use the phrase:
+<p>
+<blockquote><font color="#000080">write file &quot;ice&quot; from the Table of Antarctic Reserves
 </font></blockquote><p>
 <p>
-<p>Thus the two scenes run concurrently, at least for a while. We can also add that:
+<p>naming the file with a literal double-quoted name (without substitutions, that is) and specifying which table it should come from. To load a file back into a table,
 <p>
-<blockquote><font color="#000080">Luggage Trouble ends when Brief Encounter ends.
+<blockquote><font color="#000080">read file &quot;ice&quot; into the Table of Antarctic Reserves
 </font></blockquote><p>
 <p>
-<p>This can be useful when a large, complicated scene really contains several smaller sub-scenes.
+<p>We can check if a file already exists using:
 <p>
-<p>A special exceptional case is that we can have any scene or scenes starting right at the outset:
-<p>
-<blockquote><font color="#000080">Railway Meeting is a scene. Railway Meeting begins when play begins.
+<blockquote><font color="#000080">if file &quot;ice&quot; exists, ...
 </font></blockquote><p>
 <p>
-<p>When play ends, of course, all scenes end, so there is no need to say that.
+<p>On writing a table, any blank rows are automatically moved to the bottom, and only the non-blank rows are written; on reading a file back in, any rows left spare at the foot of the table are automatically blanked. On the other hand if the file is too large to fit into the table - with too many columns or too many rows - a run-time problem is produced.
+<p>
+<p>One unfortunate restriction must be kept in mind. Some of what is stored in tables is solid information whose meaning never changes: the number 342, for instance, means the same to everyone. But other information depends entirely on the current location of certain structures in memory - for instance, a rule is internally referred to by its memory location. This potentially changes each time Go or Replay is clicked, and so it is not safe to pass it from one copy to another, or from one project to another. The only tables which Inform allows us to write into files are those containing &quot;safe&quot; data: numbers, units, times of day and kinds of value with named alternatives. Text, in particular, is not allowed, and nor are scenes, rules or rulebooks.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e221"><table CELLPADDING=0 CELLSPACING=0><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc148.html#e221 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>133</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc148.html#e221 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Prague Job</font></b></a><br>Scenes used to provide pacing while the player goes through his possessions.<p></td></tr></table>
+<a name="e221"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc326.html#e221 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>341</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc326.html#e221 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Alien Invasion Part 23</font></b></a><br>Keeping a preference file that could be loaded by any game in a series.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex221.html#e221 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to remind the player that he doesn't have all the time in the world, by starting to nag him when he's nearly, but not entirely, done going over his inventory in preparation for a job.
+<p>Suppose that we have a series of games each of which allows the player to select a puzzle difficulty level. When the player plays a new game in the series, we want him to start out by default with the same difficulty level he faced earlier on, so we store this information in a small preferences file, as follows:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode229(code) {
+function pasteCode430(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"The Prague Job"\n\nA thing can be seen or unseen. A thing is usually unseen. Carry out examining: now the noun is seen.\n\nThe player carries a lockpick, a smoke bomb, a grappling hook, and a pair of gloves. The description of the lockpick is "Effective on most kinds of key locks, it is a gift from your mentor in the discipline, old Wheezy." The description of the smoke bomb is "Your last of these, so you should rely on it only when other modes of escape have vanished. It takes effect when dropped, producing a cloud of purple haze sufficient to fill a medium-sized room." The description of the grappling hook is "Good for shooting at balconies and other sorts of overhang."  The gloves are wearable. The description of the gloves is "Black and shiny, with gripping material on the palms. Batman would be jealous."\n\nThe Toilet is a room. "The walls are painted an unattractive green; the fixtures are a bit old. But it is the only place in the hostel with any privacy." The Long Hallway is outside from the Toilet.\n\nReviewing Possessions is a scene. Reviewing Possessions begins when play begins.\n\nEscalating Danger is a scene. Reviewing Possessions ends when Escalating Danger begins. Escalating Danger begins when preparations near completion.\n\nTo decide whether preparations near completion:\n\tif at least two of the things which are carried by the player are seen, yes;\n\tno.\n\nWhen Escalating Danger begins: say "Someone pounds on the door of your hideout and yells at you in Czech."\n\nInstead of going from the Toilet during Reviewing Possessions: say "You need to go over your equipment first, and make sure you\'re ready here."\n\nInstead of going from the Toilet during Escalating Danger: say "You\'re not done checking over your materials."\n\nInstead of waiting during Escalating Danger: say "There\'s no time to waste."\n\nEvery turn during Escalating Danger: if the time since Escalating Danger began is greater than 1 minute, say "Impatient footsteps pass your door again."\n\nEscalating Danger ends when every thing which is carried by the player is seen. When Escalating Danger ends, say "There -- nothing damaged or torn. You\'re ready to go."\n\nMission is a scene. Mission begins when the player is in the Long Hallway. When Mission begins: end the game saying "The game is afoot"\n\nTest me with "i / x lockpick / out / x bomb / out / x hook / x gloves / out".\n');
+    myProject.pasteCode('"Alien Invasion Part 23"\n\nA difficulty is a kind of value. The difficulties are easy, moderate, hard, and fiendish.\n\nUnderstand "use [difficulty] puzzles" as selecting difficulty. Selecting difficulty is an action out of world, applying to one difficulty.\n\nCarry out selecting difficulty:\n\tchoose row 1 in the Table of Preference Settings;\n\tchange challenge level entry to difficulty understood;\n\tsay "Puzzles will be [challenge level entry] from now on."\n\nThe File of Preferences is called "prefs".\n\nWhen play begins:\n\tif File of Preferences exists\n\tbegin;\n\t\tread File of Preferences into the Table of Preference Settings;\n\t\tchoose row 1 in the Table of Preference Settings;\n\t\tsay "(The current puzzle difficulty is set to [challenge level entry].)";\n\tend if.\n\nCheck quitting the game:\n\twrite File of Preferences from the Table of Preference Settings;\n\nTable of Preference Settings\nchallenge level\neasy\n\nThe Sewer Junction is a room.\n\n');
 }
 </script>
-<a href="javascript:pasteCode229()"><img border=0 src=../doc_images/paste.png></a> &quot;The Prague Job&quot;
+<a href="javascript:pasteCode430()"><img border=0 src=../doc_images/paste.png></a> &quot;Alien Invasion Part 23&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be seen or unseen. A thing is usually unseen. Carry out examining: now the noun is seen.
+<blockquote><font color="#000080">A difficulty is a kind of value. The difficulties are easy, moderate, hard, and fiendish.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries a lockpick, a smoke bomb, a grappling hook, and a pair of gloves. The description of the lockpick is &quot;Effective on most kinds of key locks, it is a gift from your mentor in the discipline, old Wheezy.&quot; The description of the smoke bomb is &quot;Your last of these, so you should rely on it only when other modes of escape have vanished. It takes effect when dropped, producing a cloud of purple haze sufficient to fill a medium-sized room.&quot; The description of the grappling hook is &quot;Good for shooting at balconies and other sorts of overhang.&quot;  The gloves are wearable. The description of the gloves is &quot;Black and shiny, with gripping material on the palms. Batman would be jealous.&quot;
+<blockquote><font color="#000080">Understand &quot;use [difficulty] puzzles&quot; as selecting difficulty. Selecting difficulty is an action out of world, applying to one difficulty.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Toilet is a room. &quot;The walls are painted an unattractive green; the fixtures are a bit old. But it is the only place in the hostel with any privacy.&quot; The Long Hallway is outside from the Toilet.
+<blockquote><font color="#000080">Carry out selecting difficulty:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row 1 in the Table of Preference Settings;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change challenge level entry to difficulty understood;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Puzzles will be [challenge level entry] from now on.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Reviewing Possessions is a scene. Reviewing Possessions begins when play begins.
+<blockquote><font color="#000080">The File of Preferences is called &quot;prefs&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Escalating Danger is a scene. Reviewing Possessions ends when Escalating Danger begins. Escalating Danger begins when preparations near completion.
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if File of Preferences exists
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read File of Preferences into the Table of Preference Settings;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row 1 in the Table of Preference Settings;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(The current puzzle difficulty is set to [challenge level entry].)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To decide whether preparations near completion:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if at least two of the things which are carried by the player are seen, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+<blockquote><font color="#000080">Check quitting the game:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write File of Preferences from the Table of Preference Settings;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When Escalating Danger begins: say &quot;Someone pounds on the door of your hideout and yells at you in Czech.&quot;
+<blockquote><font color="#000080">Table of Preference Settings
+<br>challenge level
+<br>easy
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going from the Toilet during Reviewing Possessions: say &quot;You need to go over your equipment first, and make sure you're ready here.&quot;
+<blockquote><font color="#000080">The Sewer Junction is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going from the Toilet during Escalating Danger: say &quot;You're not done checking over your materials.&quot;
-</font></blockquote><p>
+<p>Our preference file is restricted to a single option here for simplicity's sake, but we could keep track of more information -- whether the player preferred verbose or brief room descriptions, screen configurations, and so on.
 <p>
-<blockquote><font color="#000080">Instead of waiting during Escalating Danger: say &quot;There's no time to waste.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn during Escalating Danger: if the time since Escalating Danger began is greater than 1 minute, say &quot;Impatient footsteps pass your door again.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Escalating Danger ends when every thing which is carried by the player is seen. When Escalating Danger ends, say &quot;There -- nothing damaged or torn. You're ready to go.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Mission is a scene. Mission begins when the player is in the Long Hallway. When Mission begins: end the game saying &quot;The game is afoot&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;i / x lockpick / out / x bomb / out / x hook / x gloves / out&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc148.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../recipes.html><img src=../doc_images/Hookrecipe.png id="hookrecipe" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td><td width=18 align="left" bgcolor="#000000"><a href=../examples.html><img src=../doc_images/Hookindex.png id="hookindex" style="height: 17px; width: 17px;" border="0"></a></td></tr></table></td></tr></table><p>
+<p>If we were disposed to be somewhat crueler, we could use a similar method to make the player finish each episode of the series in order to &quot;unlock&quot; the next. All we would need to do is store a numerical password in our preferences file when the player finished a given level; the next level would check, say, the Table of Completed Levels for that password, and refuse to play unless the right number were present.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc326.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc147.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc149.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e341"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex341.html#e341 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>342</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex341.html#e341 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Labyrinth of Ghosts</font></b></a><br>Remembering the fates of all previous explorers of the labyrinth.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex341.html#e341 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc325.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc327.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

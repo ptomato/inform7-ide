@@ -1,18 +1,25 @@
 ! Tables.i6 segment
 
 ! A table T is represented by a "table" array: T-->0 holds the
-! number of columns and T-->i is the address of column number i.
+! number of columns (which is at most 99) and T-->i is the address
+! of column number i.
 ! Columns are therefore numbered from 1 to T-->0, but they are also
 ! identified by an ID number of 100 or more, with each different
-! column name having its own ID number. Each column C is also a
-! "table" array, with C-->1 holding the unique ID number for the
-! column's name, and C-->2 up to C-->(C-->0) holding the entries.
-! Except that C-->1 also contains two upper bit flags:
+! column name having its own ID number.
+! Each column C is also a "table" array, with C-->1 holding the unique
+! ID number for the column's name, C-->2 holding the blank entry flags
+! offset and C-->3 up to C-->(C-->0) holding the entries.
+! C-->1 also contains four upper bit flags. These are also defined in
+! Tables.w in the NI source, and the values must agree.
 
-Constant I7_COLUMN_NUMBER $0fff;
 Constant I7_COLUMN_SIGNED $4000;
 Constant I7_COLUMN_TOPIC $2000;
 Constant I7_COLUMN_DONTSORTME $1000;
+Constant I7_COLUMN_NOBLANKBITS $0800;
+Constant I7_COLUMN_CANEXCHANGE $0400;
+Constant I7_COLUMN_NUMBER $03ff; ! Mask to remove upper bit flags
+
+Constant COL_HSIZE 2; ! Column header size: two words (ID/flags, blank bits)
 
 Array T_empty_table --> 0 0;
 
@@ -26,12 +33,17 @@ Array T_empty_table --> 0 0;
 
 ! The columns in a table can be assumed all to have the same
 ! height (i.e., number of rows): thus the number of rows in T
-! can be calculated as (T-->1)-->0 - 1.
+! can be calculated by looking at column 1, thus...
 
-[ TableRows tab; return ((tab-->1)-->0)-1; ];
+[ TableRows tab; return ((tab-->1)-->0) - COL_HSIZE; ];
 
-! The following dummy value is invalid for most types and unlikely
-! in the others, so is used to represent an empty cell.
+! The following dummy value is invalid for most types and unlikely in the
+! others, so is used to suggest an empty cell. We cannot be certain that a
+! cell is empty unless it both contains this value and also has the
+! corresponding bit set in the blanks bitmap for the column (unless the
+! column is one with the I7_COLUMN_NOBLANKBITS flag set, in which case
+! its data type is such that I7 can prove that the dummy value is certain
+! to mean that the cell is blank).
 
 #ifdef TARGET_ZCODE;
 Constant I7_TABLE_NOVALUE $7fe3;
@@ -39,15 +51,140 @@ Constant I7_TABLE_NOVALUE $7fe3;
 Constant I7_TABLE_NOVALUE $deadce11;
 #endif; ! TARGET_
 
+! The following should be used only where the entry has been found to be
+! I7_TABLE_NOVALUE, so that it is probably a blank. For some columns we
+! can immediately deduce from the value that this is indeed true, but
+! for others we have to consult the "blank bits".
+
+Array CheckTableEntryIsBlank_LU
+	->	$$00000001
+		$$00000010
+		$$00000100
+		$$00001000
+		$$00010000
+		$$00100000
+		$$01000000
+		$$10000000;
+Array CheckTableEntryIsNonBlank_LU
+	->	$$11111110
+		$$11111101
+		$$11111011
+		$$11110111
+		$$11101111
+		$$11011111
+		$$10111111
+		$$01111111;
+
+[ CheckTableEntryIsBlank tab col row i at;
+	if (col >= 100) col=TableFindCol(tab, col);
+	if (col == 0) rtrue;
+	if ((tab-->col)-->(row+COL_HSIZE) ~= I7_TABLE_NOVALUE) {
+		print "*** CTEIB on nonblank value: ", tab, " ", col, " ", row, "^";
+	}
+	if (((tab-->col)-->1) & I7_COLUMN_NOBLANKBITS) rtrue;
+	row--;
+	at = ((tab-->col)-->2) + (row/8);
+	!print "Check nonblank at = ", at, "^";
+	!print "Started = ", I7_T_Blanks->at, "^";
+	if ((I7_T_Blanks->at) & (CheckTableEntryIsBlank_LU->(row%8))) rtrue;
+	rfalse;
+];
+
+[ ForceTableEntryBlank tab col row i at;
+	if (col >= 100) col=TableFindCol(tab, col);
+	if (col == 0) rtrue;
+	(tab-->col)-->(row+COL_HSIZE) = I7_TABLE_NOVALUE;
+	if (((tab-->col)-->1) & I7_COLUMN_NOBLANKBITS) return;
+	row--;
+	at = ((tab-->col)-->2) + (row/8);
+	(I7_T_Blanks->at) 
+		= (I7_T_Blanks->at) | (CheckTableEntryIsBlank_LU->(row%8));
+];
+
+[ ForceTableEntryNonBlank tab col row i at;
+	if (col >= 100) col=TableFindCol(tab, col);
+	if (col == 0) rtrue;
+	if (((tab-->col)-->1) & I7_COLUMN_NOBLANKBITS) return;
+	row--;
+	at = ((tab-->col)-->2) + (row/8);
+	!print "Force nonblank at = ", at, "^";
+	!print "Started = ", I7_T_Blanks->at, "^";
+	(I7_T_Blanks->at) 
+		= (I7_T_Blanks->at) & (CheckTableEntryIsNonBlank_LU->(row%8));
+	!print "Finished = ", I7_T_Blanks->at, "^";
+];
+
+[ TableSwapBlankBits tab row1 row2 col at1 at2 bit1 bit2;
+	if (col >= 100) col=TableFindCol(tab, col);
+	if (col == 0) rtrue;
+	if (((tab-->col)-->1) & I7_COLUMN_NOBLANKBITS) return;
+	row1--;
+	at1 = ((tab-->col)-->2) + (row1/8);
+	row2--;
+	at2 = ((tab-->col)-->2) + (row2/8);
+	bit1 = ((I7_T_Blanks->at1) & (CheckTableEntryIsBlank_LU->(row1%8)));
+	bit2 = ((I7_T_Blanks->at2) & (CheckTableEntryIsBlank_LU->(row2%8)));
+	if (bit1) bit1 = true; 
+	if (bit2) bit2 = true;
+	if (bit1 == bit2) return;
+	if (bit1) {
+		(I7_T_Blanks->at1)
+			= (I7_T_Blanks->at1) & (CheckTableEntryIsNonBlank_LU->(row1%8));
+		(I7_T_Blanks->at2)
+			= (I7_T_Blanks->at2) | (CheckTableEntryIsBlank_LU->(row2%8));
+	} else {
+		(I7_T_Blanks->at1)
+			= (I7_T_Blanks->at1) | (CheckTableEntryIsBlank_LU->(row1%8));
+		(I7_T_Blanks->at2)
+			= (I7_T_Blanks->at2) & (CheckTableEntryIsNonBlank_LU->(row2%8));
+	}
+];
+
+[ TableMoveBlankBitsDown tab row1 row2 col at atp1 bit rx;
+	if (col >= 100) col=TableFindCol(tab, col);
+	if (col == 0) rtrue;
+	if (((tab-->col)-->1) & I7_COLUMN_NOBLANKBITS) return;
+	row1--; row2--;
+	! Read blank bit for row1:
+	at = ((tab-->col)-->2) + (row1/8);
+	bit = ((I7_T_Blanks->at) & (CheckTableEntryIsBlank_LU->(row1%8)));
+	if (bit) bit = true;
+	! Loop through, setting each blank bit to the next:
+	for (rx=row1:rx<row2:rx++) {
+		atp1 = ((tab-->col)-->2) + ((rx+1)/8);
+		at = ((tab-->col)-->2) + (rx/8);
+		if ((I7_T_Blanks->atp1) & (CheckTableEntryIsBlank_LU->((rx+1)%8))) {
+			(I7_T_Blanks->at)
+				= (I7_T_Blanks->at) | (CheckTableEntryIsBlank_LU->(rx%8));
+		} else {
+			(I7_T_Blanks->at)
+				= (I7_T_Blanks->at) & (CheckTableEntryIsNonBlank_LU->(rx%8));
+		}
+	}
+	! Write bit to blank bit for row2:
+	at = ((tab-->col)-->2) + (row2/8);
+	if (bit) {
+		(I7_T_Blanks->at)
+			= (I7_T_Blanks->at) | (CheckTableEntryIsBlank_LU->(row2%8));
+	} else {
+		(I7_T_Blanks->at)
+			= (I7_T_Blanks->at) & (CheckTableEntryIsNonBlank_LU->(row2%8));
+	}
+];
+
 ! TableRowCorr(T, C, V) returns the first row on which value V
 ! appears in column C of table T, or prints an error if it doesn't.
 
-[ TableRowCorr tab lookup_col lookup_value i j;
-	if (lookup_col >= 100) lookup_col=TableFindCol(tab, lookup_col, true);
-	lookup_col = tab-->lookup_col;
-	j = lookup_col-->0;
-	for (i=2:i<=j:i++)
-		if (lookup_col-->i == lookup_value) return i-1;
+[ TableRowCorr tab col lookup_value lookup_col i j;
+	if (col >= 100) col=TableFindCol(tab, col, true);
+	lookup_col = tab-->col;
+	j = lookup_col-->0 - COL_HSIZE;
+	for (i=1:i<=j:i++)
+		if (lookup_col-->(i+COL_HSIZE) == lookup_value) {
+			if ((lookup_value == I7_TABLE_NOVALUE) &&
+				(CheckTableEntryIsBlank(tab,col,i))) continue;
+			return i;
+		}
 	return RunTimeProblem(RTP_TABLE_NOCORR, tab);
 ];
 
@@ -56,13 +193,13 @@ Constant I7_TABLE_NOVALUE $deadce11;
 
 [ ExistsTableRowCorr tab col entry i k v f a b;
 	if (col >= 100) col=TableFindCol(tab, col);
-	f = ((tab-->col)-->1) & I7_COLUMN_TOPIC;
 	if (col == 0) rfalse;
-	k = ((tab-->1)-->0)-1;
+	f = ((tab-->col)-->1) & I7_COLUMN_TOPIC;
+	k = TableRows(tab);
 	for (i=1:i<=k:i++) {
-	! print "Checking row ", i, "^";
-		v = (tab-->col)-->(i+1);
-		if (v == I7_TABLE_NOVALUE) continue;
+		! print "Checking row ", i, "^";
+		v = (tab-->col)-->(i+COL_HSIZE);
+		if ((v == I7_TABLE_NOVALUE) && (CheckTableEntryIsBlank(tab,col,i))) continue;
 		if (f) {
 			if ((entry >= 256) && (entry == consult_from + 256*consult_words)) {
 				a = consult_from; b = consult_words;
@@ -70,8 +207,7 @@ Constant I7_TABLE_NOVALUE $deadce11;
 				a = entry/100; b = entry%100;
 			}
 			! print "a,b = ", a, ",", b, "^";
-		    if ((v)(a, b) ~= GPR_FAIL)
-				  return i;
+		    if ((v)(a, b) ~= GPR_FAIL) return i;
 		} else {
 		    if (v == entry) return i;
 		}
@@ -85,17 +221,23 @@ Constant I7_TABLE_NOVALUE $deadce11;
 ! or prints an error if the value V cannot be found or has no
 ! corresponding value in C1.
 
-[ TableLookUpCorr tab col lookup_col lookup_value write_flag write_value i j v;
-	if (col >= 100) col=TableFindCol(tab, col, true);
-	if (lookup_col >= 100) lookup_col=TableFindCol(tab, lookup_col, true);
-	col = tab-->col;
-	lookup_col = tab-->lookup_col;
-	j = lookup_col-->0;
-	for (i=2:i<=j:i++)
-		if (lookup_col-->i == lookup_value) {
-		    if (write_flag) { col-->i = write_value; rfalse; }
-			v = col-->i;
-			if (v ~= I7_TABLE_NOVALUE) return v;
+[ TableLookUpCorr tab col1 col2 lookup_value write_flag write_value cola1 cola2 i j v;
+	if (col1 >= 100) col1=TableFindCol(tab, col1, true);
+	if (col2 >= 100) col2=TableFindCol(tab, col2, true);
+	cola1 = tab-->col1;
+	cola2 = tab-->col2;
+	j = cola2-->0;
+	for (i=1+COL_HSIZE:i<=j:i++)
+		if (cola2-->i == lookup_value) {
+		    if (write_flag) {
+		    	cola1-->i = write_value;
+		    	ForceTableEntryNonBlank(tab,col1,i-COL_HSIZE);
+		    	rfalse;
+		    }
+			v = cola1-->i;
+			if ((v == I7_TABLE_NOVALUE) &&
+				(CheckTableEntryIsBlank(tab,col1,i-COL_HSIZE))) continue;
+			return v;
 		}
 	return RunTimeProblem(RTP_TABLE_NOCORR, tab);
 ];
@@ -103,15 +245,18 @@ Constant I7_TABLE_NOVALUE $deadce11;
 ! ExistsTableLookUpCorr(T, C1, C2, V) returns true if the operation
 ! TableLookUpCorr(T, C1, C2, V) can be done, false otherwise.
 
-[ ExistsTableLookUpCorr tab col lookup_col lookup_value i j;
-	if (col >= 100) col=TableFindCol(tab, col, false);
-	if (lookup_col >= 100) lookup_col=TableFindCol(tab, lookup_col, false);
-	if (col*lookup_col == 0) rfalse;
-	col = tab-->col; lookup_col = tab-->lookup_col;
-	j = lookup_col-->0;
-	for (i=2:i<=j:i++)
-		if ((lookup_col-->i == lookup_value)
-		    && (col-->i ~= I7_TABLE_NOVALUE)) rtrue;
+[ ExistsTableLookUpCorr tab col1 col2 lookup_value cola1 cola2 i j;
+	if (col1 >= 100) col1=TableFindCol(tab, col1, false);
+	if (col2 >= 100) col2=TableFindCol(tab, col2, false);
+	if (col1*col2 == 0) rfalse;
+	cola1 = tab-->col1; cola2 = tab-->col2;
+	j = cola2-->0;
+	for (i=1+COL_HSIZE:i<=j:i++)
+		if (cola2-->i == lookup_value) {
+			if ((cola1-->i == I7_TABLE_NOVALUE) &&
+				(CheckTableEntryIsBlank(tab,col1,i-COL_HSIZE))) continue;
+			rtrue;
+		}
 	rfalse;
 ];
 
@@ -120,18 +265,24 @@ Constant I7_TABLE_NOVALUE $deadce11;
 
 [ TableLookUpEntry tab col index write_flag write_value v;
 	if (col >= 100) col=TableFindCol(tab, col, true);
-	if ((index < 1) || (index > (((tab-->col)-->0)-1)))
+	if ((index < 1) || (index > TableRows(tab)))
 		return RunTimeProblem(RTP_TABLE_NOROW, tab, index);
 	if (write_flag) {
 		switch(write_flag) {
-			1: (tab-->col)-->(index+1) = write_value;
-			2: (tab-->col)-->(index+1) = ((tab-->col)-->(index+1)) + write_value;
-			3: (tab-->col)-->(index+1) = ((tab-->col)-->(index+1)) - write_value;
+			1: (tab-->col)-->(index+COL_HSIZE) = write_value;
+				ForceTableEntryNonBlank(tab,col,index);
+			2: (tab-->col)-->(index+COL_HSIZE) =
+					((tab-->col)-->(index+COL_HSIZE)) + write_value;
+				ForceTableEntryNonBlank(tab,col,index);
+			3: (tab-->col)-->(index+COL_HSIZE) =
+					((tab-->col)-->(index+COL_HSIZE)) - write_value;
+				ForceTableEntryNonBlank(tab,col,index);
+			4: ForceTableEntryBlank(tab,col,index);
 		}
 		rfalse;
 	}
-	v = ((tab-->col)-->(index+1));
-	if (v == I7_TABLE_NOVALUE)
+	v = ((tab-->col)-->(index+COL_HSIZE));
+	if ((v == I7_TABLE_NOVALUE) && (CheckTableEntryIsBlank(tab,col,index)))
 		return RunTimeProblem(RTP_TABLE_NOENTRY, tab, col, 0, index);
 	return v;
 ];
@@ -142,9 +293,10 @@ Constant I7_TABLE_NOVALUE $deadce11;
 [ ExistsTableLookUpEntry tab col index v;
 	if (col >= 100) col=TableFindCol(tab, col);
 	if (col == 0) rfalse;
-	if ((index<1) || (index > (((tab-->col)-->0)-1))) rfalse;
-	v = ((tab-->col)-->(index+1));
-	if (v == I7_TABLE_NOVALUE) rfalse;
+	if ((index<1) || (index > TableRows(tab))) rfalse;
+	v = ((tab-->col)-->(index+COL_HSIZE));
+	if ((v == I7_TABLE_NOVALUE) && (CheckTableEntryIsBlank(tab,col,index)))
+		rfalse;
 	rtrue;
 ];
 
@@ -152,8 +304,10 @@ Constant I7_TABLE_NOVALUE $deadce11;
 ! (R must be a legal row number.)
 
 [ TableRowIsBlank tab j k;
-	for (k=1:k<=tab-->0:k++)
-	  if (((tab-->k)-->(j+1)) ~= I7_TABLE_NOVALUE) rfalse;
+	for (k=1:k<=tab-->0:k++) {
+		if (((tab-->k)-->(j+COL_HSIZE)) ~= I7_TABLE_NOVALUE) rfalse;
+		if (CheckTableEntryIsBlank(tab, k, j) == false) rfalse;
+	}
 	rtrue;
 ];
 
@@ -162,7 +316,8 @@ Constant I7_TABLE_NOVALUE $deadce11;
 
 [ TableBlankOutRow tab j k;
 	if (tab==0) return RunTimeProblem(RTP_TABLE_NOTABLE, tab);
-	for (k=1:k<=tab-->0:k++) (tab-->k)-->(j+1) = I7_TABLE_NOVALUE;
+	for (k=1:k<=tab-->0:k++)
+		ForceTableEntryBlank(tab, k, j);
 ];
 
 ! TableBlankRows(T) returns the number of blank rows in T.
@@ -206,31 +361,40 @@ Constant I7_TABLE_NOVALUE $deadce11;
 
 ! TableSwapRows(T, R1, R2) exchanges rows R1 and R2.
 
-[ TableSwapRows tab i j k l m;
+[ TableSwapRows tab i j k l v1 v2;
 	if (i==j) return;
 	l = tab-->0;
 	for (k=1:k<=l:k++) {
-		m = (tab-->k)-->(i+1);
-		(tab-->k)-->(i+1) = (tab-->k)-->(j+1);
-		(tab-->k)-->(j+1) = m;
+		v1 = (tab-->k)-->(i+COL_HSIZE);
+		v2 = (tab-->k)-->(j+COL_HSIZE);
+		(tab-->k)-->(i+COL_HSIZE) = v2;
+		(tab-->k)-->(j+COL_HSIZE) = v1;
+		if ((v1 == I7_TABLE_NOVALUE) || (v2 == I7_TABLE_NOVALUE))
+			TableSwapBlankBits(tab, i, j, k);
 	}
 ];
 
-[ TableMoveRowDown tab r1 r2 rx k l m;
+[ TableMoveRowDown tab r1 r2 rx k l m v f;
 	if (r1==r2) return;
 	l = tab-->0;
 	for (k=1:k<=l:k++) {
-		m = (tab-->k)-->(r1+1);
-		for (rx=r1:rx<r2:rx++)
-			(tab-->k)-->(rx+1) = (tab-->k)-->(rx+2);
-		(tab-->k)-->(r2+1) = m;
+		f = false;
+		m = (tab-->k)-->(r1+COL_HSIZE);
+		if (m == I7_TABLE_NOVALUE) f = true;
+		for (rx=r1:rx<r2:rx++) {
+			v = (tab-->k)-->(rx+COL_HSIZE+1);
+			(tab-->k)-->(rx+COL_HSIZE) = v;
+			if (v == I7_TABLE_NOVALUE) f = true;
+		}
+		(tab-->k)-->(r2+COL_HSIZE) = m;
+		if (f) TableMoveBlankBitsDown(tab, r1, r2, k);
 	}
 ];
 
 ! TableShuffle(T) sorts T into random row order.
 
 [ TableShuffle tab i j k;
-	k = ((tab-->1)-->0)-1;
+	k = TableRows(tab);
 	for (i=2:i<=k:i++) TableSwapRows(tab, i, random(i));
 ];
 
@@ -260,7 +424,7 @@ Constant I7_TABLE_NOVALUE $deadce11;
 		} else {
 		    if (dir == 1) val = 0; else val = $ffff;
 		}
-	} else val = (tab-->col)-->(row+1);
+	} else val = (tab-->col)-->(row+COL_HSIZE);
 	if (signed_arithmetic) min_dv = $7fff; else min_dv = $ffff;
 	#ifnot; ! TARGET_GLULX
 	if (row == 0) {
@@ -269,14 +433,15 @@ Constant I7_TABLE_NOVALUE $deadce11;
 		} else {
 		    if (dir == 1) val = 0; else val = $ffffffff;
 		}
-	} else val = (tab-->col)-->(row+1);
+	} else val = (tab-->col)-->(row+COL_HSIZE);
 	if (signed_arithmetic) min_dv = $7fffffff; else min_dv = $ffffffff;
 	#endif; ! TARGET_
-	k = ((tab-->1)-->0)-1;
+	k = TableRows(tab);
 	if (dir == 1) {
 		for (i=1:i<=k:i++) {
-		    v = (tab-->col)-->(i+1);
-		    if (v == I7_TABLE_NOVALUE) continue;
+		    v = (tab-->col)-->(i+COL_HSIZE);
+		    if ((v == I7_TABLE_NOVALUE) && (CheckTableEntryIsBlank(tab,col,i)))
+		    	continue;
 		    dv = dir*v;
 		    if (signed_arithmetic)
 		    f = (((dv > dir*val) || ((v == val) && (i>row))) &&
@@ -288,8 +453,9 @@ Constant I7_TABLE_NOVALUE $deadce11;
 		}
 	} else {
 		for (i=k:i>=1:i--) {
-		    v = (tab-->col)-->(i+1);
-		    if (v == I7_TABLE_NOVALUE) continue;
+		    v = (tab-->col)-->(i+COL_HSIZE);
+		    if ((v == I7_TABLE_NOVALUE) && (CheckTableEntryIsBlank(tab,col,i)))
+		    	continue;
 		    dv = dir*v;
 		    if (signed_arithmetic)
 		    f = (((dv > dir*val) || ((v == val) && (i<row))) &&
@@ -313,12 +479,16 @@ Constant I7_TABLE_NOVALUE $deadce11;
 ! Finally, a wholly blank row is always placed after a row in
 ! which the entry in C is blank but where other entries are not.
 
-[ TableCompareRows tab col row1 row2 dir val1 val2;
+[ TableCompareRows tab col row1 row2 dir val1 val2 bl1 bl2;
 	if (col >= 100) col=TableFindCol(tab, col, false);
-	val1 = (tab-->col)-->(row1+1);
-	val2 = (tab-->col)-->(row2+1);
-	if (val1 == val2) {
+	val1 = (tab-->col)-->(row1+COL_HSIZE);
+	val2 = (tab-->col)-->(row2+COL_HSIZE);
+	if (val1 == I7_TABLE_NOVALUE) bl1 = CheckTableEntryIsBlank(tab,col,row1);
+	if (val2 == I7_TABLE_NOVALUE) bl2 = CheckTableEntryIsBlank(tab,col,row2);
+	if ((val1 == val2) && (bl1 == bl2)) {
 		if (val1 ~= I7_TABLE_NOVALUE) return 0;
+		if (bl1 == false) return 0;
+		! The two entries are both blank:
 		if (TableRowIsBlank(tab, row1)) {
 		    if (TableRowIsBlank(tab, row2)) return 0;
 		    return -1*dir;
@@ -326,8 +496,8 @@ Constant I7_TABLE_NOVALUE $deadce11;
 		if (TableRowIsBlank(tab, row2)) return dir;
 		return 0;
 	}
-	if (val1 == I7_TABLE_NOVALUE) return -1*dir;
-	if (val2 == I7_TABLE_NOVALUE) return dir;
+	if (bl1) return -1*dir;
+	if (bl2) return dir;
 	if (((tab-->col)-->1) & I7_COLUMN_SIGNED) {
 		if (val1 > val2) return 1;
 		return -1;
@@ -342,11 +512,13 @@ Constant I7_TABLE_NOVALUE $deadce11;
 	fbl = 0; lnbl = 0;
 	for (i=fromrow:i<=torow:i++)
 		if (TableRowIsBlank(tab, i)) {
-			if (fbl == -1) fbl = i;
+			if (fbl == 0) fbl = i;
 			blc++;
 		} else {
 			lnbl = i;
 		}
+	!print "First blank is ", fbl, "^";
+	!print "Last nonblank is ", lnbl, "^";
 	if ((fbl>0) && (lnbl>0) && (fbl < lnbl)) {
 		TableMoveRowDown(tab, fbl, lnbl); ! Move first blank just past last nonblank
 		TableMoveBlanksToBack(tab, fbl+1, lnbl-1);
@@ -354,25 +526,122 @@ Constant I7_TABLE_NOVALUE $deadce11;
 	return torow-blc; ! Final non-blank row
 ];
 
-[ TableSort tab col dir i j k f;
+[ TableColumnDebug tab col k i v;
+	if (col >= 100) col=TableFindCol(tab, col, false);
+	k = TableRows(tab);
+	print "Table col ", col, ": ";
+	for (i=1:i<=k:i++) {
+		v = (tab-->col)-->(i+COL_HSIZE);
+		if ((v == I7_TABLE_NOVALUE) && (CheckTableEntryIsBlank(tab,col,i)))
+			print "BLANK ";
+		else print v, " ";
+	}
+	print "*^";
+];
+
+[ TableSort tab col dir test_flag algorithm i j k f;
 	for (i=1:i<=tab-->0:i++) {
 		j = tab-->i; ! Address of column table
 		if ((j-->1) & I7_COLUMN_DONTSORTME)
 		    return RunTimeProblem(RTP_TABLE_CANTSORT, tab);
 	}
 	if (col >= 100) col=TableFindCol(tab, col, false);
+	!print "Initial state:^"; TableColumnDebug(tab, col);
+
 	k = TableRows(tab);
 	k = TableMoveBlanksToBack(tab, 1, k);
-	f = true;
-	while (f) {
-		f = false;
-		for (i=1:i<=k:i++)
-		    for (j=i+1:j<=k:j++)
-				  if (dir*TableCompareRows(tab, col, i, j, dir) > 0) {
-						TableSwapRows(tab, i, j); f = true; break;
-				  }
+	if (test_flag) {
+		print "After moving blanks to back:^"; TableColumnDebug(tab, col);
+	}
+
+	I7_Sort(tab, col, dir, k, test_flag, algorithm);
+
+	if (test_flag) {
+		print "Final state:^"; TableColumnDebug(tab, col);
 	}
 ];
+
+[ TablePrint tab i j k row col v;
+	for (i=1:i<=tab-->0:i++) {
+		j = tab-->i; ! Address of column table
+		if (((j-->1) & I7_COLUMN_CANEXCHANGE) == 0)
+		    rtrue;
+	}
+	k = TableRows(tab);
+	k = TableMoveBlanksToBack(tab, 1, k);
+	print "! ", (PrintTableName) tab, " (", k, ")^";
+	for (row=1:row<=k:row++) {
+		for (col=1:col<=tab-->0:col++) {
+			v = (tab-->col)-->(row+COL_HSIZE);
+			if ((v == I7_TABLE_NOVALUE) && (CheckTableEntryIsBlank(tab,col,row)))
+				print "-- ";
+			else print v, " ";
+		}
+		print "^";
+	}
+	rfalse;
+];
+
+#ifdef TARGET_GLULX;
+[ TableRead tab auxf row maxrow col ch v sgn dg j;
+	for (col=1:col<=tab-->0:col++) {
+		j = tab-->col; ! Address of column table
+		if (((j-->1) & I7_COLUMN_CANEXCHANGE) == 0)
+		    return RunTimeProblem(RTP_TABLE_CANTSAVE, tab);
+	}
+	maxrow = TableRows(tab);
+	!print maxrow, " rows available.^";
+	for (row=1: row<=maxrow: row++) {
+		TableBlankOutRow(tab, row);
+	}
+	for (row=1: row<=maxrow: row++) {
+		!print "Reading row ", row, "^";
+		ch = I7_FileIO_GetC(auxf);
+		if (ch == '!') {
+			while (ch ~= -1 or 10 or 13) ch = I7_FileIO_GetC(auxf);
+			while (ch == 10 or 13) ch = I7_FileIO_GetC(auxf);
+		}
+		for (col=1: col<=tab-->0: col++) {
+			if (ch == -1) { row++; jump NoMore; }
+			if (ch == 10 or 13) break;
+			sgn = 1;
+			if (ch == '-') {
+				ch = I7_FileIO_GetC(auxf);
+				if (ch == -1) jump NotTable;
+				if (ch == '-') { ch = I7_FileIO_GetC(auxf); jump EntryDone; }
+				sgn = -1;
+			}
+			dg = ch - '0';
+			if ((dg < 0) || (dg > 9)) jump NotTable;
+			v = dg;
+			for (::) {
+				ch = I7_FileIO_GetC(auxf);
+				dg = ch - '0';
+				if ((dg < 0) || (dg > 9)) break;
+				v = 10*v + dg;
+			}
+			v = v*sgn;
+			!print "v=", v, " ";
+			TableLookUpEntry(tab, col, row, true, v);
+			.EntryDone;
+			!print "First nd is ", ch, "^";
+			while (ch == 9 or 32) ch = I7_FileIO_GetC(auxf);
+		}
+		while (ch ~= -1 or 10 or 13) {
+			if ((ch ~= '-') && (((ch-'0')<0) || ((ch-'0')>9))) jump NotTable;
+			if (ch ~= 9 or 32) jump WontFit;
+			ch = I7_FileIO_GetC(auxf);
+		}
+	}
+	.NoMore;
+	while (ch == 9 or 32 or 10 or 13) ch = I7_FileIO_GetC(auxf);
+	if (ch == -1) return;
+	.WontFit;
+	return RunTimeProblem(RTP_TABLE_WONTFIT, tab);
+	.NotTable;
+	return RunTimeProblem(RTP_TABLE_BADFILE, tab);
+];
+#ENDIF; ! TARGET_GLULX
 
 #ifdef I7_RANKING_TABLE;
 [ PrintRank i j v;
@@ -388,5 +657,181 @@ Constant I7_TABLE_NOVALUE $deadce11;
 	".";
 ];
 #endif;
+
+! Sorting algorithms.
+! We are required to use a stable sorting algorithm with very low, ideally
+! zero, auxiliary storage requirement. Exchanges are generally slower than
+! comparisons.
+
+Global I7S_Tab;
+Global I7S_Col;
+Global I7S_Dir;
+#ifdef MEASURE_SORT_PERFORMANCE;
+Global I7S_CCOUNT;
+Global I7S_CCOUNT2;
+Global I7S_XCOUNT;
+#endif;
+
+[ I7_Sort tab col dir size test_flag algorithm;
+	I7S_Tab = tab;
+	I7S_Col = col;
+	I7S_Dir = dir;
+	#ifdef MEASURE_SORT_PERFORMANCE;
+	I7S_CCOUNT = 0;
+	I7S_CCOUNT2 = 0;
+	I7S_XCOUNT = 0;
+	#endif;
+	I7_Sort_Range(0, size, algorithm);
+	#ifdef MEASURE_SORT_PERFORMANCE;
+	if (test_flag)
+		print "Sorted array of size ", size, " with ", I7S_CCOUNT2, "*10000 + ", I7S_CCOUNT,
+			" comparisons and ", I7S_XCOUNT, " exchanges^";
+	#endif;
+];
+
+[ I7_Sort_Range x y algorithm;
+	if (y - x < 2) return;
+	if (algorithm) {
+		(algorithm)(x, y);
+	} else {
+		I7_InPlaceMergeSort(x, y);
+	}
+];
+
+[ I7_Sort_Compare x y;
+	#ifdef MEASURE_SORT_PERFORMANCE;
+	I7S_CCOUNT++;
+	if (I7S_CCOUNT == 10000) { I7S_CCOUNT = 0; I7S_CCOUNT2++; }
+	#endif;
+	return I7S_Dir*TableCompareRows(I7S_Tab, I7S_Col, x+1, y+1, I7S_Dir);
+];
+
+[ I7_Sort_Exchange x y;
+	#ifdef MEASURE_SORT_PERFORMANCE;
+	I7S_XCOUNT++;
+	if (I7S_XCOUNT < 0) { print "XO^"; I7S_XCOUNT = 0; }
+	#endif;
+	return TableSwapRows(I7S_Tab, x+1, y+1);
+];
+
+! Sorting algorithm used in builds up to and including 4W37: note that this is
+! not quite bubble sort, and that it is unstable. It is now no longer used.
+
+[ I7_4W37Sort x y
+	f i j;
+	if (y - x < 2) return;
+	f = true;
+	while (f) {
+		f = false;
+		for (i=x:i<y:i++)
+		    for (j=i+1:j<y:j++)
+				if (I7_Sort_Compare(i, j) > 0) {
+					I7_Sort_Exchange(i, j); f = true; break;
+				}
+	}
+];
+
+! Insertion sort: stable and O(n^2) running time, but better performance on
+! nearly sorted tables, and with very low overhead.
+
+[ I7_InsertionSort from to
+	i j;
+	if (to > from+1) { 
+		for (i = from+1: i < to: i++) { 
+			for (j = i: j > from: j--) { 
+				if (I7_Sort_Compare(j, j-1) < 0) 
+					I7_Sort_Exchange(j, j-1);
+				else break;
+			}
+		}
+	}
+];
+
+! In place mergesort: stable and O(n log n) running time, at some stack cost,
+! and generally good for nearly sorted tables, but complex and with overhead.
+! The code here mostly follows Thomas Baudel's implementation, which in turn
+! follows the C++ STL library.
+
+[ I7_InPlaceMergeSort from to
+	middle;
+	if (to - from < 12) {
+		if (to - from < 2) return;
+		I7_InsertionSort(from, to);
+		return;
+	}
+	middle = (from + to)/2; 
+	I7_InPlaceMergeSort(from, middle); 
+	I7_InPlaceMergeSort(middle, to); 
+	IPMS_Merge(from, middle, to, middle-from, to - middle); 
+];
+
+[ IPMS_Lower from to val
+	len half mid;
+	len = to - from;
+	while (len > 0) { 
+		half = len/2; 
+		mid = from + half;
+		if (I7_Sort_Compare(mid, val) < 0) {
+			from = mid + 1;
+			len = len - half -1; 
+		} else len = half;
+	}
+	return from;
+];
+
+[ IPMS_Upper from to val
+	len half mid;
+	len = to - from;
+	while (len > 0) { 
+		half = len/2; 
+		mid = from + half;
+		if (I7_Sort_Compare(val, mid) < 0)
+			len = half;
+		else {
+			from = mid + 1;
+			len = len - half -1; 
+		}
+	}
+	return from;
+];
+
+[ IPMS_Reverse from to;
+	while (from < to) {
+		I7_Sort_Exchange(from++, to--);
+	}
+];
+
+[ IPMS_Rotate from mid to
+	n val shift p1 p2;
+	if ((from==mid) || (mid==to)) return; 
+	IPMS_Reverse(from, mid-1); 
+	IPMS_Reverse(mid, to-1); 
+	IPMS_Reverse(from, to-1);
+];
+
+[ IPMS_Merge from pivot to len1 len2
+	first_cut second_cut len11 len22 new_mid;
+	if ((len1 == 0) || (len2 == 0)) return; 
+	if (len1+len2 == 2) { 
+		if (I7_Sort_Compare(pivot, from) < 0) 
+		I7_Sort_Exchange(pivot, from); 
+		return; 
+	}
+	if (len1 > len2) { 
+		len11 = len1/2; 
+		first_cut = from + len11; 
+		second_cut = IPMS_Lower(pivot, to, first_cut); 
+		len22 = second_cut - pivot; 
+	} else { 
+		len22 = len2/2; 
+		second_cut = pivot + len22; 
+		first_cut = IPMS_Upper(from, pivot, second_cut); 
+		len11 = first_cut - from; 
+	} 
+	IPMS_Rotate(first_cut, pivot, second_cut); 
+	new_mid = first_cut + len22; 
+	IPMS_Merge(from, first_cut, new_mid, len11, len22); 
+	IPMS_Merge(new_mid, second_cut, to, len1 - len11, len2 - len22); 
+];
 
 ! End of Tables.i6
