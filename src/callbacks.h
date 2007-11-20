@@ -33,5 +33,9 @@
 #include "inspector.h"
 #include "searchwindow.h"
 #include "widgets.h"
+#include "appmenu.h"
+#include "apptoolbar.h"
+#include "tabdocs.h"
+#include "tabskein.h"
 
 /* This is where Glade puts newly-created callback function prototypes. */

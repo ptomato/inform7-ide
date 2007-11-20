@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.16. Context: understanding when</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.17. Visible vs touchable vs carried</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,103 +19,143 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Bibliophilia" -->
-<!-- SEARCH SECTION "Ex 273" -->
-<!-- SEARCH SORT "Ex 016-016-273" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc256.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc258.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.16. Context: understanding when</b></font></td></tr></table>
+<!-- SEARCH TITLE "Eddystone" -->
+<!-- SEARCH SECTION "Ex 198" -->
+<!-- SEARCH SORT "Ex 012-017-198" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc188.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc190.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.17. Visible vs touchable vs carried</b></font></td></tr></table>
 <p>
-<p>We have now seen several different forms of &quot;Understand&quot; sentence: for instance,
+<p>To recap, actions are created like so:
 <p>
-<blockquote><font color="#000080">Understand the colour property as describing a building block.
-<br>Understand &quot;mix [colour] paint&quot; as mixing paint.
-<br>Understand &quot;rouge&quot; as red.
-<br>Understand &quot;curious girl&quot; as Alice.
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
+<br>Depositing it in is an action applying to two things.
+<br>Taking inventory is an action applying to nothing.
 </font></blockquote><p>
 <p>
-<p>Any of these may optionally have a condition tacked on: for instance,
+<p>Actions can involve up to two different things. We can place additional requirements on any of these things by describing them as a &quot;visible thing&quot;, &quot;touchable thing&quot; or &quot;carried thing&quot;. (If we simply say &quot;thing&quot; or &quot;things&quot;, as in the second example, Inform assumes the requirement to be &quot;touchable&quot;.) These three conditions are increasingly strong:
 <p>
-<blockquote><font color="#000080">Understand &quot;mix [colour] paint&quot; as mixing paint when the location is the Workshop.
-<br>Understand &quot;rouge&quot; as red when the make-up set is visible.
+<p>- To be &quot;visible&quot;, something needs only to be possible to refer to by the player, which in practice means that it must be visible to the player-character. The noun or second noun produced by any action resulting from a command at the keyboard will always satisfy this minimal condition.
+<p>
+<p>- To be &quot;touchable&quot;, the player-character must be able to physically touch the thing in question: this normally means that it must be in the same room, and there must be no physical barriers in between.
+<p>
+<p>- To be &quot;carried&quot;, the player-character must (directly) carry the thing in question. (But if the player types a command using an action requiring something &quot;carried&quot;, like WEAR HAT, the thing in question - the hat - will sometimes be picked up automatically. This is called &quot;implicit taking&quot;, and results in text like &quot;(first taking the top hat)&quot; being printed.)
+<p>
+<p>If an action involves two things, they need not have the same requirement as each other:
+<p>
+<blockquote><font color="#000080">Waving it at is an action applying to one carried thing and one visible thing.
 </font></blockquote><p>
 <p>
-<p>In principle, &quot;when ...&quot; can take in any condition at all. In practice a little care should be exercised not to do anything too slow, or which might have side-effects. (For instance, referring the decision to a phrase which then printed text up would be a bad idea.) Moreover, we must remember that the &quot;noun&quot; and &quot;second noun&quot; are not known yet, nor do we know what the action will be. So we cannot safely say &quot;when the noun is the fir cone&quot;, for instance. If we want more sophisticated handling of such cases, we need to write checking rules and so on in the usual way.
+<p>Thus to &quot;wave magic wand at banyan tree&quot;, the player must be holding the wand, but need only be able to see the tree.
 <p>
-<p>Contexts can be useful to make sense of things having different names depending on who is being spoken to, as here:
-<p>
-<blockquote><font color="#000080">Understand &quot;your&quot; as a thing when the item described is held by the person asked.
-</font></blockquote><p>
-<p>
-<p>With this rule in place FRODO, GIVE ME YOUR RING means that Frodo will know which ring is meant, even if there are a couple of dozen other rings present.
+<p>Note one special case. Requirements on touchability are waived in the case of &quot;try&quot; actions applied to people other than the player where the things they would need to touch are doors or backdrops. (This is a compromise to avoid difficulties arising from the ambiguous locations of such items.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e299"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc257.html#e299 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>273</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc257.html#e299 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bibliophilia</font></b></a><br>A bookshelf with a number of books, where the player's command to examine something will be interpreted as an attempt to look up titles if the bookshelf is present, but otherwise given the usual response.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex299.html#e299 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e299"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc189.html#e299 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>198</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc189.html#e299 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Eddystone</font></b></a><br>Creating new commands involving the standard compass directions.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex299.html#e299 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want a bookshelf with a very large number of books on it. They aren't to be taken or carried around in the game, but they should be mentioned, and the player should be allowed to look them up by name. Furthermore, the player's attempts to examine something unrecognized should be understood as an attempt to look up a title -- but only when the player is in the presence of the books. The rest of the time such requests should be rejected in the usual way.
+<p>Using the compass directions in commands is a little bit finicky because directions are forbidden to figure in any interactions involving touch. (Really, directions are more a concept than an object; this is a compromise situation.) In any case, if we want to write a new command involving these, we need to be sure to specify that the direction is a visible thing. For instance:
+<p>
+<blockquote><font color="#000080">&quot;Eddystone&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Lighthouse is a room. &quot;A lonely place, but in these tense times, no one but the lighthouse keeper and a few trusted agents are allowed on the grounds at all, for fear of sabotage.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The light is a fixed in place thing in the Lighthouse.  &quot;At the center of the room is the light itself, a 1000-Watt tungsten halogen light powered by diesel generator, and having a visible range of twenty-six nautical miles.&quot; Understand &quot;lamp&quot; as the light. It is lit. The light has a a direction called heading. The heading of the light is north.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A room is usually dark.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;turn [something] [a direction]&quot; as reorienting it to. Reorienting it to is an action applying to two things.
+</font></blockquote><p>
+<p>
+<p>will give us
+<p>
+<blockquote><font color="#000080">>turn light northeast
+<br>You must name something more substantial.
+</font></blockquote><p>
+<p>
+<p>To avoid this mystifying result:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode359(code) {
+function pasteCode286(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Bibliophilia"\n\nThe Graduate Lounge is a room. "Shabby sofas; plastic cups remaining from the afternoon\'s pre-lecture espresso; a collection of Xena and Hercules figurines posed for ironic effect. It\'s somewhat depressing at this hour, when everyone has gone home."\n\nThe Classics Reading Room is south of the Lounge. "Not as large a collection as the one in the Library, but it contains copies of everything really essential for reference."\n\nUnderstand "examine [text]" as examining as a book when the player is in the Reading Room. Understand "look up [text]" as examining as a book when the player is in the Reading Room.\n\nExamining as a book is an action applying to one topic.\n\nCarry out examining as a book:\n\tsay "You can\'t find any such text."\n\nInstead of examining as a book a topic listed in the Table of Book Titles:\n\tsay "[description entry][paragraph break]"\n\nTable of Book Titles\ntopic\ttitle\tdescription\n"Reading Greek Death" or "reading/greek/death" or "greek death"\t"Reading Greek Death"\t"A dense orange paperback treatise on the development of Greek eschatology."\n"TAPA/Transactions/134-2"\t"TAPA 134-2"\t"Transactions of the American Philological Association from 2004."\n"Oxford Classical Dictionary" or "OCD/dictionary/classical/oxford"\t"Oxford Classical Dictionary"\t"A hefty reference with short articles on everything from Greek meter to ancient cosmetics."\n"Collected Dialogues of Plato" or "Plato/dialogues/hamilton/cairns"\t"Collected Dialogues of Plato"\t"All the Platonic dialogues -- some, admittedly, in rather tired translations -- but still a useful single volume, ed. Edith Hamilton and Huntington Cairns."\n"Adobe Illustrator CS User Guide" or "user guide" or "adobe illustrator" or "adobe/illustrator/cs/user/guide"\t"Adobe Illustrator CS User Guide"\t"Hello, how did this get here? A suspiciously familiar name is scribbled inside the front cover..."\n\nSome books are scenery in the Reading Room. Understand "copies" or "book" or "shelf" or "shelves" as the books. Instead of examining the books:\n\tchoose a random row in the Table of Book Titles;\n\tsay "You scan the shelves and notice, among others, a volume entitled [italic type][title entry][roman type]."\n\nTest me with "south / examine ocd / examine books / examine books / examine plato / n / x hercules / s / x hercules".\n\n');
+    myProject.pasteCode('"Eddystone"\n\nThe Lighthouse is a room. "A lonely place, but in these tense times, no one but the lighthouse keeper and a few trusted agents are allowed on the grounds at all, for fear of sabotage."\n\nThe light is a fixed in place thing in the Lighthouse.  "At the center of the room is the light itself, a 1000-Watt tungsten halogen light powered by diesel generator, and having a visible range of twenty-six nautical miles." Understand "lamp" as the light. It is lit. The light has a direction called heading. The heading of the light is north.\n\nA room is usually dark.\n\nUnderstand "turn [something] [a direction]" as reorienting it to. Reorienting it to is an action applying to one thing and one visible thing.\n\nInstead of turning the light, say "Try turning the light to the direction of your choice."\n\nCheck reorienting it to: if the noun is not the light, say "You couldn\'t do so meaningfully." instead; if the second noun is up or the second noun is down, say "The light only points in compass directions." instead.\n\n[And now that\'s done, we have a little fun calculating where the beam hits:]\n\nCarry out reorienting it to:\n\tchange the heading of the light to the second noun;\n\tlet way be the heading of the light;\n\tlet place be the room way from the Lighthouse;\n\twhile place is a room and place is lower than Lighthouse\n\tbegin;\n\t\tlet place be the room way from the place;\n\tend while;\n\tif place is not a room, remove the beam from play;\n\totherwise move beam to the place.\n\nReport reorienting it to: say "The light now points [heading of the light][if the beam is in a room], spotlighting [the holder of the beam][otherwise], into empty space[end if]."\n\nThe beam is a lit thing. Understand "light" or "brilliant" as the beam. "Brilliant light from the lighthouse floods the whole area." It is fixed in place. Instead of doing something other than examining to the beam: say "The light is, of course, intangible." The description is "The light is coming from the lighthouse, since the lamp is apparently pointed this way."\n\nAltitude is a kind of value. 200 ft specifies an altitude. A room has an altitude. The altitude of a room is usually 50 ft. The altitude of the Lighthouse is 100 ft.\n\nDefinition: a room is low if its altitude is 20 ft or less.\n\nThe Jetty is south of the Lighthouse. "During daylight hours, a fine place to catch almost unlimited supplies of crayfish. Less entertaining by night."\n\nNorth of the Lighthouse is the Uphill Road. The altitude of Uphill Road is 75 ft. North of Uphill Road is Hilltop. The altitude of Hilltop is 110 ft. The description of Hilltop is "The highest natural point around for miles; sometimes you will sit up here and watch for the lighthouse supply ship, the Lady Loch."\n\nNortheast of the Lighthouse is Open Field. East of the Lighthouse is Stanley Creek Valley. The description of Stanley Creek is "This place used to have some other name meaning Ghost Valley in the aboriginal language, but it was piously renamed by missionaries." Train Trestle is east of the Stanley Creek Valley. "The now-abandoned track of the Bush Pacific Railway runs here, above Stanley Creek." The altitude of Train Trestle is 100 ft.\n\nBefore going from a room (called source) to a room (called destination):\n\tif source is lower than destination\n\tbegin;\n\t\tsay "It\'s an uphill climb...";\n\totherwise;\n\t\tif destination is lower than source, say "You\'re heading downhill now...";\n\t\totherwise say "It\'s a straight shot.";\n\tend if.\n\nTest me with "turn lamp / turn lamp down / turn lamp east / e / e".\n\n');
 }
 </script>
-<a href="javascript:pasteCode359()"><img border=0 src=../doc_images/paste.png></a> &quot;Bibliophilia&quot;
+<a href="javascript:pasteCode286()"><img border=0 src=../doc_images/paste.png></a> &quot;Eddystone&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Graduate Lounge is a room. &quot;Shabby sofas; plastic cups remaining from the afternoon's pre-lecture espresso; a collection of Xena and Hercules figurines posed for ironic effect. It's somewhat depressing at this hour, when everyone has gone home.&quot;
+<blockquote><font color="#000080">The Lighthouse is a room. &quot;A lonely place, but in these tense times, no one but the lighthouse keeper and a few trusted agents are allowed on the grounds at all, for fear of sabotage.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Classics Reading Room is south of the Lounge. &quot;Not as large a collection as the one in the Library, but it contains copies of everything really essential for reference.&quot;
+<blockquote><font color="#000080">The light is a fixed in place thing in the Lighthouse.  &quot;At the center of the room is the light itself, a 1000-Watt tungsten halogen light powered by diesel generator, and having a visible range of twenty-six nautical miles.&quot; Understand &quot;lamp&quot; as the light. It is lit. The light has a direction called heading. The heading of the light is north.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;examine [text]&quot; as examining as a book when the player is in the Reading Room. Understand &quot;look up [text]&quot; as examining as a book when the player is in the Reading Room.
+<blockquote><font color="#000080">A room is usually dark.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Examining as a book is an action applying to one topic.
+<blockquote><font color="#000080">Understand &quot;turn [something] [a direction]&quot; as reorienting it to. Reorienting it to is an action applying to one thing and one visible thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out examining as a book:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't find any such text.&quot;
+<blockquote><font color="#000080">Instead of turning the light, say &quot;Try turning the light to the direction of your choice.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining as a book a topic listed in the Table of Book Titles:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[description entry][paragraph break]&quot;
+<blockquote><font color="#000080">Check reorienting it to: if the noun is not the light, say &quot;You couldn't do so meaningfully.&quot; instead; if the second noun is up or the second noun is down, say &quot;The light only points in compass directions.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Book Titles
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">title</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">description</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Reading Greek Death&quot; or &quot;reading/greek/death&quot; or &quot;greek death&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Reading Greek Death&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;A dense orange paperback treatise on the development of Greek eschatology.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;TAPA/Transactions/134-2&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;TAPA 134-2&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Transactions of the American Philological Association from 2004.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Oxford Classical Dictionary&quot; or &quot;OCD/dictionary/classical/oxford&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Oxford Classical Dictionary&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;A hefty reference with short articles on everything from Greek meter to ancient cosmetics.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Collected Dialogues of Plato&quot; or &quot;Plato/dialogues/hamilton/cairns&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Collected Dialogues of Plato&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;All the Platonic dialogues -- some, admittedly, in rather tired translations -- but still a useful single volume, ed. Edith Hamilton and Huntington Cairns.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Adobe Illustrator CS User Guide&quot; or &quot;user guide&quot; or &quot;adobe illustrator&quot; or &quot;adobe/illustrator/cs/user/guide&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Adobe Illustrator CS User Guide&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Hello, how did this get here? A suspiciously familiar name is scribbled inside the front cover...&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<p>And now that's done, we have a little fun calculating where the beam hits:
+<p>
+<blockquote><font color="#000080">Carry out reorienting it to:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the heading of the light to the second noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the heading of the light;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let place be the room way from the Lighthouse;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;while place is a room and place is lower than Lighthouse
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let place be the room way from the place;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end while;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if place is not a room, remove the beam from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise move beam to the place.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Some books are scenery in the Reading Room. Understand &quot;copies&quot; or &quot;book&quot; or &quot;shelf&quot; or &quot;shelves&quot; as the books. Instead of examining the books:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose a random row in the Table of Book Titles;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You scan the shelves and notice, among others, a volume entitled [italic type][title entry][roman type].&quot;
+<blockquote><font color="#000080">Report reorienting it to: say &quot;The light now points [heading of the light][if the beam is in a room], spotlighting [the holder of the beam][otherwise], into empty space[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;south / examine ocd / examine books / examine books / examine plato / n / x hercules / s / x hercules&quot;.
+<blockquote><font color="#000080">The beam is a lit thing. Understand &quot;light&quot; or &quot;brilliant&quot; as the beam. &quot;Brilliant light from the lighthouse floods the whole area.&quot; It is fixed in place. Instead of doing something other than examining to the beam: say &quot;The light is, of course, intangible.&quot; The description is &quot;The light is coming from the lighthouse, since the lamp is apparently pointed this way.&quot;
 </font></blockquote><p>
 <p>
-<p>Now if we type >X HERCULES in the Lounge, we will get
-<p>
-<blockquote><font color="#000080">>x hercules
-<br>You can't see any such thing.
+<blockquote><font color="#000080">Altitude is a kind of value. 200 ft specifies an altitude. A room has an altitude. The altitude of a room is usually 50 ft. The altitude of the Lighthouse is 100 ft.
 </font></blockquote><p>
 <p>
-<p>thanks to our somewhat slovenly implementation of the Lounge scenery; but in the Reading Room,
-<p>
-<blockquote><font color="#000080">>x hercules
-<br>You can't find any such text.
+<blockquote><font color="#000080">Definition: a room is low if its altitude is 20 ft or less.
 </font></blockquote><p>
 <p>
-<p>In practice we might also want to extend our coverage somewhat to handle a case where the player tried to take books from the bookshelf: currently that would not be understood.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc257.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">The Jetty is south of the Lighthouse. &quot;During daylight hours, a fine place to catch almost unlimited supplies of crayfish. Less entertaining by night.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">North of the Lighthouse is the Uphill Road. The altitude of Uphill Road is 75 ft. North of Uphill Road is Hilltop. The altitude of Hilltop is 110 ft. The description of Hilltop is &quot;The highest natural point around for miles; sometimes you will sit up here and watch for the lighthouse supply ship, the Lady Loch.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Northeast of the Lighthouse is Open Field. East of the Lighthouse is Stanley Creek Valley. The description of Stanley Creek is &quot;This place used to have some other name meaning Ghost Valley in the aboriginal language, but it was piously renamed by missionaries.&quot; Train Trestle is east of the Stanley Creek Valley. &quot;The now-abandoned track of the Bush Pacific Railway runs here, above Stanley Creek.&quot; The altitude of Train Trestle is 100 ft.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before going from a room (called source) to a room (called destination):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if source is lower than destination
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It's an uphill climb...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if destination is lower than source, say &quot;You're heading downhill now...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;It's a straight shot.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;turn lamp / turn lamp down / turn lamp east / e / e&quot;.
+</font></blockquote><p>
+<p>
+<p>All very loosely based on the Eddystone Point lighthouse of Tasmania, built in 1889, and forbiddingly remote even today. George Isaacs, a child growing up in the lighthouse, remembers the plentiful crayfish.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc189.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc256.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc258.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc188.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc190.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

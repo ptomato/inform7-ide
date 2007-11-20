@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.1. Looking</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.2. The Status Line</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,140 +19,60 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "Night Sky" -->
-<!-- SEARCH SECTION "Ex 131" -->
-<!-- SEARCH SORT "Ex 006-001-131" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc24.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap6.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 6: Commands</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc26.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.1. Looking</b></font></td></tr></table>
+<!-- SEARCH TITLE "Capital City" -->
+<!-- SEARCH SECTION "Ex 359" -->
+<!-- SEARCH SORT "Ex 012-002-359" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc86.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap12.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 12: Typography, Layout, and Multimedia Effects</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc88.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.2. The Status Line</b></font></td></tr></table>
 <p>
-<p>Looking is one of the most complicated commands built into Inform, with a large number of things one might want to change.
+<p>The status line is the reverse-coloured bar along the top of the window during play, which conventionally, but not necessarily, shows the current location, the score (or sometimes the time of day) and the number of turns so far. It has been highly traditional since the early 1980s (Infocom's customer newsletter was for many years called &quot;The Status Line&quot;): it has become the visual identifier of IF. It plays the same role for IF that a header with chapter name and page number plays in a printed book.
 <p>
-<p>Looking prints the name and description of the room we're in. We can introduce variations into room names and descriptions by changing their printed name and description properties, as in
+<p>The status line is ordinarily printed from two named pieces of text, the &quot;left hand status line&quot; and the &quot;right hand status line&quot;. These can be changed during play, so for instance,
 <p>
-<blockquote><font color="#000080">change the printed name of the Church to &quot;Lightning-Struck Ruin&quot;;
+<blockquote><font color="#000080">When play begins, change the right hand status line to &quot;Time: [time of day]&quot;.
 </font></blockquote><p>
 <p>
-<p>If we need more drastic effects, we can turn off or change either of these features by altering the rules in the carry out looking rulebook.
+<p>The examples below offer miscellaneous alternatives, and are fairly self-descriptive.
 <p>
-<p>Next, the game determines what items are visible to the player and need to be described. These never include the player himself, or scenery, but other things in the environment will be made &quot;marked for listing&quot;.
-<p>
-<p>Then Inform carries out the writing a paragraph about... activity with anything that provides one; anything it prints the name of, it tags &quot;mentioned&quot;. Thus
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about Mr Wickham:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Mr Wickham looks speculatively at [list of women in the location].&quot;
-</font></blockquote><p>
-<p>
-<p>will count Wickham and everyone he looks at as all having been mentioned, and will not refer to them again through the rest of the room description.
-<p>
-<p>Inform then prints the initial appearances of objects that are marked for listing but not already mentioned; and then it performs the listing nondescript items activity, collating the remaining objects into a paragraph like
-<p>
-<blockquote><font color="#000080">You can see a dog, a hen, ...
-</font></blockquote><p>
-<p>
-<p>We can pre-empt items from appearing in this paragraph or change their listing by intervening with a Before listing nondescript items... rule, as in
-<p>
-<blockquote><font color="#000080">Before listing nondescript items when the player needs the watch:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the watch is marked for listing begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The watch catches your eye.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the watch to not marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>If we wanted the watch always to be listed this way, it would be better to give it an initial appearance, but for conditional cases, the listing nondescript items activity is a good place to intervene. It also allows us to replace the &quot;You can see...&quot; tag with something else more fitting, if for instance we are in a dimly lit room.
-<p>
-<p>When the game compiles the list of nondescript items, it adds tags such as &quot;(open)&quot; or &quot;(empty)&quot; or &quot;(on which is a fish tank)&quot; to the names of containers and supporters. We can suppress or change the &quot;(empty)&quot; tag with the printing room description details of activity, as in
-<p>
-<blockquote><font color="#000080">Rule for printing room description details: stop.
-</font></blockquote><p>
-<p>
-<p>And we can suppress the &quot;(open)&quot; and &quot;(on which is...)&quot; sorts of tags with the &quot;omit the contents in listing&quot; phrase, as in
-<p>
-<blockquote><font color="#000080">Rule for printing the name of the bottle while not inserting or removing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the bottle contains sand, say &quot;bottle of sand&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;empty bottle&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;omit contents in listing.
-</font></blockquote><p>
-<p>
-<p>Finally, the looking command lists visible non-scenery items that sit on scenery supporters, as in
-<p>
-<blockquote><font color="#000080">On the table is a folded newspaper.
-</font></blockquote><p>
-<p>
-<p>It is at the moment slightly vexing to change the output of this line - a matter we hope to improve in future versions of Inform. One somewhat inelegant but effective way around it is to make the table not scenery after all, but merely fixed in place, and then to control output with a writing a paragraph about sentence, thus:
-<p>
-<blockquote><font color="#000080">Parlor is a room. The table is in Parlor. On the table is a folded newspaper.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about the table:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the folded newspaper is on the table, say &quot;Your newspaper is folded neatly on the end table.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the table is mentioned.
-</font></blockquote><p>
-<p>
-<p>Replacing that with just
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about the table:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the table is mentioned.
-</font></blockquote><p>
-<p>
-<p>will prevent the game from describing the table or anything that is on it.
-<p>
-<p>One common thing we may want to do is change the description of a room depending on whether we've been there before (as in <b>Slightly Wrong</b>) or on how often we've visited (as in <b>Infiltration</b>). <b>Night Sky</b>, meanwhile, changes the description of a room when we've examined another object, so that the player's awareness of his environment is affected by other things the character knows.
-<p>
-<p><b>Verbosity</b> changes the default behavior that rooms are described fully only the first time the player visits.
-<p>
-<a href=Rdoc30.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Going, Pushing Things in Directions</b></font></a><i> for ways to change just those room descriptions that are shown as the result of the player's movement</i><p><p>
+<a href=Rdoc26.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Viewpoint</b></font></a><i> for a way to make the status line list the player's current identity</i><p><p>
 <p><hr><p>
-<a name="e245"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex245.html#e245 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>3</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex245.html#e245 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Slightly Wrong</font></b></a><br>A room whose description changes slightly after our first visit there.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex245.html#e245 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e33"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex33.html#e33 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>135</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex33.html#e33 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Infiltration</font></b></a><br>A room whose description changes depending on the number of times the player has visited.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex33.html#e33 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e105"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex105.html#e105 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>332</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex105.html#e105 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Blankness</font></b></a><br>Emptying the status line during the first screen of the game.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex105.html#e105 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e51"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc25.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>131</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc25.html#e51 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Night Sky</font></b></a><br>A room which changes its description depending on whether an object has been examined.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex51.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e51"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc87.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>359</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc87.html#e51 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Capital City</font></b></a><br>To arrange that the location information normally given on the left-hand side of the status line appears in block capitals.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex51.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Sometimes a nice effect is to change the way things are described depending on the information the player has gained in the course of play. We could for instance write this:
+<p>Not much is needed for this. The only noteworthy point is that it doesn't work by changing the LHSL to &quot;[the player's surroundings in upper case]&quot;: it cannot do this because &quot;the player's surroundings&quot; is not a value. Instead, &quot;[the player's surroundings]&quot; is a text substitution sometimes printing the name of a room, sometimes printing &quot;Darkness&quot;, and so on. We must therefore load it into a text first, and then apply &quot;...in upper case&quot;.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode586(code) {
+function pasteCode845(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Night Sky"\n\nThe Planetarium is a room. "[if we have examined the sinister message]A dark room where it seems something is about to jump out at you![otherwise]A tranquil dark room with a ceilingful of stars.[end if]"\n\nThe sinister message is a thing in the Planetarium. "A message is taped to the wall." The description is "\'BEWARE.\'"\n\nTest me with "look / x message / look".\n\n');
+    myProject.pasteCode('"Capital City"\n\nCapital City is a room. East is Lower Caissons. South of Lower Caissons\nis San Seriffe. East of San Seriffe is a dark room.\n\nTo say the player\'s capitalised surroundings:\n\tlet the masthead be "[the player\'s surroundings]" in upper case;\n\tsay the masthead.\n\nWhen play begins:\n\tchange the left hand status line to "[the player\'s capitalised surroundings]".\n\nTest me with "e / s / e".\n');
 }
 </script>
-<a href="javascript:pasteCode586()"><img border=0 src=../doc_images/paste.png></a> &quot;Night Sky&quot;
+<a href="javascript:pasteCode845()"><img border=0 src=../doc_images/paste.png></a> &quot;Capital City&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Planetarium is a room. &quot;[if we have examined the sinister message]A dark room where it seems something is about to jump out at you![otherwise]A tranquil dark room with a ceilingful of stars.[end if]&quot;
+<blockquote><font color="#000080">Capital City is a room. East is Lower Caissons. South of Lower Caissons
+<br>is San Seriffe. East of San Seriffe is a dark room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The sinister message is a thing in the Planetarium. &quot;A message is taped to the wall.&quot; The description is &quot;'BEWARE.'&quot;
+<blockquote><font color="#000080">To say the player's capitalised surroundings:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the masthead be &quot;[the player's surroundings]&quot; in upper case;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say the masthead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look / x message / look&quot;.
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the left hand status line to &quot;[the player's capitalised surroundings]&quot;.
 </font></blockquote><p>
 <p>
-<p>On the other hand, beware that this would not work as desired:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode587(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Night Sky"\n\nThe Planetarium is a room. "[if we have listened to the sinister message]A dark room where it seems something is about to jump out at you![otherwise]A tranquil dark room with a ceilingful of stars.[end if]"\n\nThe sinister message is a thing in the Planetarium. "A message plays very softly, so that you would have to listen to hear it." Instead of doing anything other than listening to the message: say "It\'s only a sound, after all.". Instead of listening to the sinister message: say "A voice whispers, \'BEWARE\'."\n\nTest me with "listen to message / look".\n\n');
-}
-</script>
-<a href="javascript:pasteCode587()"><img border=0 src=../doc_images/paste.png></a> &quot;Night Sky&quot;
+<blockquote><font color="#000080">Test me with &quot;e / s / e&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Planetarium is a room. &quot;[if we have listened to the sinister message]A dark room where it seems something is about to jump out at you![otherwise]A tranquil dark room with a ceilingful of stars.[end if]&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The sinister message is a thing in the Planetarium. &quot;A message plays very softly, so that you would have to listen to hear it.&quot; Instead of doing anything other than listening to the message: say &quot;It's only a sound, after all.&quot;. Instead of listening to the sinister message: say &quot;A voice whispers, 'BEWARE'.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;listen to message / look&quot;.
-</font></blockquote><p>
-<p>
-<p>The reason is that our Instead rule has pre-empted normal listening, so Inform considers that we have never successfully heard the message. The moral here is that &quot;if we have...&quot; is useful for tracking events that otherwise proceeded completely normally (picking up ordinary objects, examining things); if we have used instead to make some change, we will have to use a different approach to record that the event did occur as scheduled.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc25.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc87.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e324"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex324.html#e324 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>2</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex324.html#e324 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Verbosity</font></b></a><br>Making rooms give full descriptions each time we enter, even if we have visited before.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex324.html#e324 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc24.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc26.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e161"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex161.html#e161 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>107</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex161.html#e161 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Centered</font></b></a><br>Replacing the two-part status line with one that centers only the room name at the top of the screen.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex161.html#e161 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e271"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex271.html#e271 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>383</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex271.html#e271 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Status line with centered text, the hard way</font></b></a><br>A status line which has only the name of the location, centered.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex271.html#e271 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e300"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex300.html#e300 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>307</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex300.html#e300 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ways Out</font></b></a><br>A status line that lists the available exits from the current location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex300.html#e300 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e335"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex335.html#e335 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>308</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex335.html#e335 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Guided Tour</font></b></a><br>A status line that lists the available exits from the current location, changing the names of these exits depending on whether the room has been visited or not.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex335.html#e335 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e168"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>106</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex168.html#e168 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Politics as Usual</font></b></a><br>Have the status line indicate the current region of the map.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc86.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc88.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

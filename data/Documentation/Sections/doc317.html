@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.3. Virtual machines and story file formats</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.2. Memory limitations with indexed text</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,19 +19,33 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Virtual machines and story file formats" -->
-<!-- SEARCH SECTION "19.3" -->
-<!-- SEARCH SORT "019-003-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc316.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc318.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.3. Virtual machines and story file formats</b></font></td></tr></table>
+<!-- SEARCH TITLE "Memory limitations with indexed text" -->
+<!-- SEARCH SECTION "19.2" -->
+<!-- SEARCH SORT "019-002-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc316.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc318.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.2. Memory limitations with indexed text</b></font></td></tr></table>
 <p>
-<p>Back in Chapter 2, we saw that the Settings panel allows any given Inform project to be produced in one of four possible story file formats. Recall that story files are the released IF works: what the player sees. The source text, the Skein, and so on are not part of this. Although those four possible formats were introduced in Chapter 2, they have not been mentioned since, because almost everything in Inform will work fine on any of the possibilities.
+<p>Because Inform helps us to pretend that dynamic text is as easy to handle as numbers, we can often forget all about the difference between text and indexed text (until we get to creating variables, properties and table columns, anyway). But it's best to be aware that this really is a pretence. The following warnings are rather like the tiny print about side-effects on medicine bottles: that is, we mostly ignore them, and if the drugs should kill us, well, at least we have the consolation of knowing we were warned.
 <p>
-<p>However, once we go beyond text and into images, they begin to behave differently.
+<p>Inform creates &quot;story files&quot; for very small virtual computers (capable of running on phones, for instance) where memory is tight. If we create a number variable and keep on adding 1 to it, the value simply gets bigger. But if we make some text and keep on adding a letter &quot;x&quot; to it, the text takes up more and more space, growing into longer and longer runs of &quot;x&quot;s until there is no more space to hold it. There are basically three limitations on indexed text:
 <p>
-<p>A story file is not like a word-processed document, or a photograph. There are many rival formats for these - for instance, an image on a web page might be in JPEG or PNG format, among many others - but basically they are simple things for the reader to look at, and see everything in one go. An IF story file is more complicated, because the &quot;reader&quot; reacts to it, types in to it, is surprised by it, never quite knows what might happen next.
+<p>(1) An amount of memory has to be set aside for indexed text (and other flexible-sized data), and Inform guesses the amount needed. The amount can be increased with a use option, like so:
 <p>
-<p>A story file is in fact a computer program in its own right, but not a program like iTunes or Firefox which runs on a typical home or business computer. Instead it is a program for an imaginary computer, called a &quot;virtual machine&quot; or &quot;VM&quot;. This has a design ideally suited to IF, and it would be the perfect IF player's computer if only it actually existed. Because it doesn't, the player instead runs an &quot;interpreter&quot; program like Windows Glulxe or Zoom or Spatterlight - and this one is a program like iTunes or Firefox - and the interpreter acts as a middle-man. It creates a software version of the virtual machine, and then runs the IF story file on that VM. This sounds slow and impractical, but in fact it works well, and is also much safer since programs on the VM are not allowed to touch the real computer - so they cannot contain viruses or other malware.
+<blockquote><font color="#000080">Use dynamic memory allocation of at least 16384.
+</font></blockquote><p>
 <p>
-<p>The different formats of story file are programs for different virtual machines. Just as Windows and Mac OS X offer basically similar services to the user but are very different in appearance and their workings, so the different VMs are quite different. Some can display pictures, others not.
+<p>Inform raises its estimate of the amount needed to ensure that this amount is always at least its own guess, and also at least any amount declared like this. (And then it rounds up to the nearest power of 2, as it happens.) The default value of &quot;dynamic memory allocation&quot; is 8192.
+<p>
+<p>Glulx story files have the advantage here that, if they find themselves running on version 3.1.0 or later of the Glulx machine, they can use Glulx's new memory allocation features to grow their own memories as necessary, so that there are no hard limits at all.
+<p>
+<p>(2) When text is changed into indexed text, there may a maximum length it cannot exceed. The maximum is normally 1000 characters, which ought to be plenty, but can be raised by sentences such as:
+<p>
+<blockquote><font color="#000080">Use maximum indexed text length of at least 2000.
+</font></blockquote><p>
+<p>
+<p>What happens if this is broken, that is, if we try to use text overrunning this length? The Z-machine may simply crash, so if there is any chance that any single indexed text may grow unpredictably large, Glulx should always be used. On Glulx, overrunning text is truncated safely, except that under Glulx 3.1.0 or better the story file will try to use dynamic memory allocation to expand the limit as needed to avoid truncation. (Testing shows that text is slow to manipulate once it grows beyond about 20,000 characters in length, but this is not really surprising.)
+<p>
+<p>(3) Under the Z-machine, indexed text may only contain characters from the so-called &quot;ZSCII&quot; character set - standard numbers, letters, punctuation marks and the commonest West European accented letters. Anything more exotic is likely to be flattened into a question mark &quot;?&quot;. Under Glulx, any character can be used.
+<p>
+<p>All of this makes the Z-machine sound very inferior, for indexed text purposes. But note that Z can handle all of the examples in this chapter perfectly happily.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc316.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc318.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

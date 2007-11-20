@@ -23,11 +23,11 @@
 #include "story.h"
 
 GList *search_doc(const gchar *text, gboolean ignore_case, int algorithm);
-GList *search_project(const gchar *text, struct story *thestory,
-  gboolean ignore_case, int algorithm);
+GList *search_project(const gchar *text, Story *thestory, gboolean ignore_case,
+                      int algorithm);
 GList *search_extensions(const gchar*text, gboolean ignore_case, int algorithm);
 GtkWidget *new_search_window(GtkWidget *main_window, const gchar *text,
-  GList *results);
+                             GList *results);
 
 void
 on_search_results_view_row_activated   (GtkTreeView     *treeview,

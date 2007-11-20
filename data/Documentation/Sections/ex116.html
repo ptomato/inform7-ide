@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.7. Begin and end</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.3. One-way connections</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,75 +19,76 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Princess and the Pea" -->
-<!-- SEARCH SECTION "Ex 153" -->
-<!-- SEARCH SORT "Ex 011-007-153" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc159.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc161.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.7. Begin and end</b></font></td></tr></table>
+<!-- SEARCH TITLE "Port Royal 2" -->
+<!-- SEARCH SECTION "Ex 7" -->
+<!-- SEARCH SORT "Ex 003-003-007" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc28.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc30.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.3. One-way connections</b></font></td></tr></table>
 <p>
-<p>In practice it is not enough to apply &quot;if&quot; or &quot;while&quot; to a single phrase alone: we want to give a whole list of phrases to be followed repeatedly, or to be followed only if a condition holds.
+<p>Connections are ordinarily two-way, but do not have to be. One of the map connections in the Mammoth Cave simulation was made by the sentence:
 <p>
-<p>We do this using &quot;begin&quot; and &quot;end&quot;, as in the following examples.
-<p>
-<blockquote><font color="#000080">To comment upon (whatever - a thing):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is transparent then say &quot;I see right through this!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is an open door begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh look, an open door!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if whatever is openable then say &quot;But you could always shut it.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">The Debris Room is west of the Crawl.
 </font></blockquote><p>
 <p>
-<p>Here we group two phrases together under the same &quot;if&quot;. Note that the &quot;then&quot; has been replaced by &quot;begin&quot;, and that the end is marked by &quot;end if&quot;.
+<p>Besides reading this sentence at face value, Inform also deduced that the Crawl was probably meant to be east of the Debris Room: in other words, that the path between them is a two-way one. When Inform makes guesses like this, it treats them as being less certain than anything explicitly stated in the source. Inform will quietly overturn its assumption if information comes to hand which shows that it was wrong. That might happen in this case if another sentence read:
 <p>
-<p>Similarly for while:
-<p>
-<blockquote><font color="#000080">while (condition) begin; (... phrases ...); end while
+<blockquote><font color="#000080">The Hidden Alcove is east of the Debris Room.
 </font></blockquote><p>
 <p>
-<p>The &quot;begin&quot; of an &quot;if&quot; must of course match an &quot;end if&quot;, not an &quot;end while&quot;, and so on.
+<p>These two sentences are not contradictory: Inform allows them both, simply accepting that the world is more complicated than it first assumed. There are relatively few situations where Inform has to make educated guesses, but when it does, it tries always to follow Occam's Razor by constructing the simplest model world consistent with the information in the Source text.
+<p>
+<p>We can even explicitly make a route which turns around as it leads between two rooms:
+<p>
+<blockquote><font color="#000080">West of the Garden is south of the Meadow.
+</font></blockquote><p>
+<p>
+<p>Finally, if we want to establish a route which cannot be retraced at all, we can specify that a particular direction leads nowhere:
+<p>
+<blockquote><font color="#000080">East of the Debris Room is nowhere.
+</font></blockquote><p>
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e116"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc160.html#e116 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>153</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc160.html#e116 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Princess and the Pea</font></b></a><br>The player is unable to sleep on a mattress (or stack of mattresses) because the bottom one has something uncomfortable under it.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex116.html#e116 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e116"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc29.html#e116 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>7</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc29.html#e116 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Port Royal 2</font></b></a><br>Another part of Port Royal, with less typical map connections.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex116.html#e116 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The main point here is that we need to figure out where the stack meets the floor:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode242(code) {
+function pasteCode87(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Princess and the Pea"\n\nThe Topmost Turret is a room. A mattress is a kind of supporter. A mattress is always enterable. A mattress is portable.\n\nA large mattress is a mattress in the Turret. A medium mattress is a mattress in the Turret. A small mattress is a mattress in the Turret.\n\nInstead of sleeping when the player is on a mattress (called the bed):\n\tlet the item be the bed;\n\twhile the holder of the item is not a room\n\tbegin;\n\t\tlet the item be the holder of the item;\n\tend while;\n\tsay "You can still feel something very uncomfortable under [the item]."\n\nInstead of sleeping:\n\tsay "You can\'t sleep standing up!"\n\nInstead of looking under a mattress, say "You scout around, but are unable to determine what\'s causing you this discomfort. If only your maid Winnie were here. She\'s very good at this."\n\nTest me with "sleep / enter small / sleep / get up / get small / put small on medium / get on small / sleep / get up / g / get medium / put medium on large / get on small / look / sleep".\n');
+    myProject.pasteCode('"1691"\n\nThames Street End is a room.\n\n[If we check out a map of historic Port Royal, we find that Thames Street End bends around the northwest tip of the peninsula and becomes the (very) roughly north/south Fisher\'s Row. We can\'t put Fisher\'s Row south of Thames Street End, though, because Lime Street is already going that way. So instead, let\'s have a map connection that bends around from west to north:]\n\nWest of Thames Street End is north of Fisher\'s Row.\n\n[Now continuing west along Thames Street, or north along Fisher\'s Row, will bring us around the corner in question. Asymmetric map connections should be used carefully. They\'re good for representing the layout of the real world, which tends not to be laid out on a convenient square matrix, but if exits are not described clearly they can be disorienting for the player. So let\'s be sure to make things clear:]\n\nThe description of Fisher\'s Row is "A waterfront street that runs south towards Chocolata Hole, where the small craft are harboured. It also continues north around the tip of the peninsula from here, turning into the east-west Thames Street."\n\n[Meanwhile, suppose Fort James is in a prominent position, raised a bit from its surroundings; maybe the player should be able to go down from there, as well as south, to get to Thames Street End.]\n\nThames Street End is down from Fort James. Thames Street End is south from Fort James.\n\n[But we don\'t want the upward direction to work:]\n\nUp from Thames Street End is nowhere.\n\nTest me with "n / d / u / w / e / n / s".\n\n');
 }
 </script>
-<a href="javascript:pasteCode242()"><img border=0 src=../doc_images/paste.png></a> &quot;Princess and the Pea&quot;
+<a href="javascript:pasteCode87()"><img border=0 src=../doc_images/paste.png></a> &quot;1691&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Topmost Turret is a room. A mattress is a kind of supporter. A mattress is always enterable. A mattress is portable.
+<blockquote><font color="#000080">Thames Street End is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A large mattress is a mattress in the Turret. A medium mattress is a mattress in the Turret. A small mattress is a mattress in the Turret.
+<p>If we check out a map of historic Port Royal, we find that Thames Street End bends around the northwest tip of the peninsula and becomes the (very) roughly north/south Fisher's Row. We can't put Fisher's Row south of Thames Street End, though, because Lime Street is already going that way. So instead, let's have a map connection that bends around from west to north:
+<p>
+<blockquote><font color="#000080">West of Thames Street End is north of Fisher's Row.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of sleeping when the player is on a mattress (called the bed):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the item be the bed;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while the holder of the item is not a room
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the item be the holder of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end while;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can still feel something very uncomfortable under [the item].&quot;
+<p>Now continuing west along Thames Street, or north along Fisher's Row, will bring us around the corner in question. Asymmetric map connections should be used carefully. They're good for representing the layout of the real world, which tends not to be laid out on a convenient square matrix, but if exits are not described clearly they can be disorienting for the player. So let's be sure to make things clear:
+<p>
+<blockquote><font color="#000080">The description of Fisher's Row is &quot;A waterfront street that runs south towards Chocolata Hole, where the small craft are harboured. It also continues north around the tip of the peninsula from here, turning into the east-west Thames Street.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of sleeping:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't sleep standing up!&quot;
+<p>Meanwhile, suppose Fort James is in a prominent position, raised a bit from its surroundings; maybe the player should be able to go down from there, as well as south, to get to Thames Street End.
+<p>
+<blockquote><font color="#000080">Thames Street End is down from Fort James. Thames Street End is south from Fort James.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of looking under a mattress, say &quot;You scout around, but are unable to determine what's causing you this discomfort. If only your maid Winnie were here. She's very good at this.&quot;
+<p>But we don't want the upward direction to work:
+<p>
+<blockquote><font color="#000080">Up from Thames Street End is nowhere.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;sleep / enter small / sleep / get up / get small / put small on medium / get on small / sleep / get up / g / get medium / put medium on large / get on small / look / sleep&quot;.
+<blockquote><font color="#000080">Test me with &quot;n / d / u / w / e / n / s&quot;.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc160.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc29.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e170"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex170.html#e170 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>154</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex170.html#e170 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Matreshka</font></b></a><br>A SEARCH [room] action that will open every container the player can see, stopping only when there don't remain any that are closed, unlocked, and openable.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex170.html#e170 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc159.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc161.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e219"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex219.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>8</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex219.html#e219 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Unbuttoned Elevator Affair</font></b></a><br>A simple elevator connecting two floors which is operated simply by walking in and out, and has no buttons or fancy doors.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex219.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc28.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc30.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

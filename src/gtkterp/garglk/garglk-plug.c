@@ -262,6 +262,19 @@ garglk_request_window(GarglkPlug *plug, guint *windowid, GError **error)
 }
 
 gboolean
+garglk_set_minimum_size(GarglkPlug *plug, guint x, guint y, GError **error)
+{
+    gli_cols = (x - 2 * gli_wmarginx) / gli_cellw;
+    gli_rows = (y - 2 * gli_wmarginy) / gli_cellh;
+    
+    gtk_widget_set_size_request(GTK_WIDGET(plug), x, y);
+    gli_force_redraw = 1;
+	gli_windows_size_change();
+    
+    return TRUE;
+}
+
+gboolean
 garglk_grab_focus(GarglkPlug *plug, GError **error)
 {
     gtk_widget_grab_focus(gtk_bin_get_child(GTK_BIN(plug)));

@@ -24,6 +24,7 @@
 #include <glib/gstdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 #ifdef OSSP_UUID
 #  include <ossp/uuid.h> /* For systems with OSSP uuid */
@@ -52,19 +53,19 @@
 #define PROBLEMS_FILE "Build", "Problems.html"
 
 /* Declare these functions static so they can stay in this order */
-static void prepare_ni_compiler(struct story *thestory);
-static void start_ni_compiler(struct story *thestory);
-static void finish_ni_compiler(GPid pid, gint status, gpointer data);
-static void prepare_i6_compiler(struct story *thestory);
-static void start_i6_compiler(struct story *thestory);
-static void finish_i6_compiler(GPid pid, gint status, gpointer data);
-static void prepare_cblorb_compiler(struct story *thestory);
-static void start_cblorb_compiler(struct story *thestory);
-static void finish_cblorb_compiler(GPid pid, gint status, gpointer data);
-static void finish_refresh_index(struct story *thestory);
-static void finish_save_debug_build(struct story *thestory);
-static void finish_run(struct story *thestory);
-static void finish_release(struct story *thestory);
+static void prepare_ni_compiler(Story *thestory);
+static void start_ni_compiler(Story *thestory);
+static void finish_ni_compiler(GPid pid, gint status, Story *thestory);
+static void prepare_i6_compiler(Story *thestory);
+static void start_i6_compiler(Story *thestory);
+static void finish_i6_compiler(GPid pid, gint status, Story *thestory);
+static void prepare_cblorb_compiler(Story *thestory);
+static void start_cblorb_compiler(Story *thestory);
+static void finish_cblorb_compiler(GPid pid, gint status, Story *thestory);
+static void finish_refresh_index(Story *thestory);
+static void finish_save_debug_build(Story *thestory);
+static void finish_run(Story *thestory);
+static void finish_release(Story *thestory);
     
 /* Start the compiler running the census of extensions. If wait is TRUE, it will
 not do it in the background. */
@@ -90,13 +91,13 @@ void run_census(gboolean wait) {
 }
 
 /* Start the compiling process */
-void compile_project(struct story *thestory) {
+void compile_project(Story *thestory) {
     prepare_ni_compiler(thestory);
     start_ni_compiler(thestory);
 }
 
 /* Set everything up for using the NI compiler */
-static void prepare_ni_compiler(struct story *thestory) {
+static void prepare_ni_compiler(Story *thestory) {
     GError *err = NULL;
     
     /* Output buffer for messages */
@@ -171,7 +172,7 @@ static void display_ni_status(gpointer data, gchar *text) {
 }
 
 /* Start the NI compiler and set up the callback for when it is finished */
-static void start_ni_compiler(struct story *thestory) {
+static void start_ni_compiler(Story *thestory) {
     /* Output buffer for messages */
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
@@ -202,15 +203,13 @@ static void start_ni_compiler(struct story *thestory) {
     GPid pid = run_command_hook(thestory->filename, commandline, buffer,
                                 display_ni_status, progress, FALSE, TRUE);
     /* set up a watch for the exit status */
-    g_child_watch_add(pid, finish_ni_compiler, (gpointer)thestory);
+    g_child_watch_add(pid, (GChildWatchFunc)finish_ni_compiler, thestory);
     
     g_strfreev(commandline);
 }
 
 /* Display any errors from the NI compiler and continue on */
-static void finish_ni_compiler(GPid pid, gint status, gpointer data) {
-    struct story *thestory = (struct story *)data;
-
+static void finish_ni_compiler(GPid pid, gint status, Story *thestory) {
     /* Clear the progress indicator */
     clear_status(thestory->window);
         
@@ -304,7 +303,7 @@ static void finish_ni_compiler(GPid pid, gint status, gpointer data) {
     
 
 /* Get ready to run the I6 compiler; right now this does almost nothing */
-static void prepare_i6_compiler(struct story *thestory) {
+static void prepare_i6_compiler(Story *thestory) {
     display_status_message(thestory->window, "Running Inform 6...");
 }
 
@@ -345,7 +344,7 @@ static void display_i6_status(gpointer data, gchar *text) {
 }
 
 /* Run the I6 compiler */
-static void start_i6_compiler(struct story *thestory) {
+static void start_i6_compiler(Story *thestory) {
     /* Get the text buffer to put our output in */
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
@@ -369,7 +368,7 @@ static void start_i6_compiler(struct story *thestory) {
     GPid child_pid = run_command_hook(working_dir, commandline, buffer,
       display_i6_status, progress, TRUE, FALSE);
     /* set up a watch for the exit status */
-    g_child_watch_add(child_pid, finish_i6_compiler, (gpointer)thestory);
+    g_child_watch_add(child_pid, (GChildWatchFunc)finish_i6_compiler, thestory);
     
     g_strfreev(commandline);
     g_free(working_dir);
@@ -378,9 +377,7 @@ static void start_i6_compiler(struct story *thestory) {
 }
 
 /* Display any errors from Inform 6 and decide what to do next */
-static void finish_i6_compiler(GPid pid, gint status, gpointer data) {
-    struct story *thestory = (struct story *)data;
-
+static void finish_i6_compiler(GPid pid, gint status, Story *thestory) {
     /* Clear the status bar */
     clear_status(thestory->window);
     
@@ -480,13 +477,13 @@ static void finish_i6_compiler(GPid pid, gint status, gpointer data) {
 
 
 /* Get ready to run the CBlorb compiler */
-static void prepare_cblorb_compiler(struct story *thestory) {
+static void prepare_cblorb_compiler(Story *thestory) {
     display_status_message(thestory->window, "Running cBlorb...");
 }
 
 
 /* Run the CBlorb compiler */
-static void start_cblorb_compiler(struct story *thestory) {
+static void start_cblorb_compiler(Story *thestory) {
     /* Get buffer for messages */
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
@@ -500,7 +497,8 @@ static void start_cblorb_compiler(struct story *thestory) {
 
     GPid child_pid = run_command(working_dir, commandline, buffer);
     /* set up a watch for the exit status */
-    g_child_watch_add(child_pid, finish_cblorb_compiler, (gpointer)thestory);
+    g_child_watch_add(child_pid, (GChildWatchFunc)finish_cblorb_compiler,
+                      thestory);
     
     g_strfreev(commandline);
     g_free(working_dir);
@@ -508,9 +506,7 @@ static void start_cblorb_compiler(struct story *thestory) {
 }
     
 /* Display any errors from cBlorb */
-static void finish_cblorb_compiler(GPid pid, gint status, gpointer data) {
-    struct story *thestory = (struct story *)data;
-    
+static void finish_cblorb_compiler(GPid pid, gint status, Story *thestory) {
     /* Get exit code from CBlorb */
     int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
     
@@ -546,7 +542,7 @@ static void finish_cblorb_compiler(GPid pid, gint status, gpointer data) {
     }
 }
 
-static void finish_common(struct story *thestory) {
+static void finish_common(Story *thestory) {
     /* Display status message */
     display_status_message(thestory->window, "Compiling succeeded.");
                                  
@@ -562,7 +558,7 @@ static void finish_common(struct story *thestory) {
 }
 
 /* Finish up the user's Refresh Index command */
-static void finish_refresh_index(struct story *thestory) {
+static void finish_refresh_index(Story *thestory) {
     finish_common(thestory);
     
     /* Refresh the index and documentation tabs */
@@ -577,7 +573,7 @@ static void finish_refresh_index(struct story *thestory) {
 
 
 /* Finish up the user's Save Debug Build command */
-static void finish_save_debug_build(struct story *thestory) {
+static void finish_save_debug_build(Story *thestory) {
     finish_common(thestory);
     
     /* Switch to the Errors tab */
@@ -645,7 +641,7 @@ static void finish_save_debug_build(struct story *thestory) {
 
 
 /* Finish up the user's Go or Replay command */
-static void finish_run(struct story *thestory) {
+static void finish_run(Story *thestory) {
     finish_common(thestory);
     
     /* Run the project */
@@ -660,7 +656,7 @@ static void finish_run(struct story *thestory) {
 
 /* Finish up the user's Release command by choosing a location to store the
 project */
-static void finish_release(struct story *thestory) {
+static void finish_release(Story *thestory) {
     finish_common(thestory);
     
     /* Switch to the Errors tab */
@@ -724,13 +720,30 @@ static void finish_release(struct story *thestory) {
               NULL);
        
         if(g_rename(oldfile, filename)) {
-            error_dialog(NULL, NULL, "Error copying file '%s' to '%s': ",
-              oldfile, filename);
-            g_free(filename);
-            g_free(oldfile);
-            g_free(ext);
-            gtk_widget_destroy(dialog);
-            return;
+            if(errno == EXDEV) { 
+                /* Can't rename across devices, so physically copy the file */
+                gchar *contents;
+                gsize length;
+                GError *err = NULL;
+                if(!g_file_get_contents(oldfile, &contents, &length, &err)
+                   || !g_file_set_contents(filename, contents, length, &err)) {
+                    error_dialog(NULL, err, "Error copying file '%s' to '%s': ",
+                                oldfile, filename);
+                    g_free(filename);
+                    g_free(oldfile);
+                    g_free(ext);
+                    gtk_widget_destroy(dialog);
+                    return;
+                }
+            } else {
+                error_dialog(NULL, NULL, "Error copying file '%s' to '%s': %s",
+                             oldfile, filename, g_strerror(errno));
+                g_free(filename);
+                g_free(oldfile);
+                g_free(ext);
+                gtk_widget_destroy(dialog);
+                return;
+            }
         }
         g_free(filename);
         g_free(oldfile);

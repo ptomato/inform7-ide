@@ -26,13 +26,14 @@
 #include "inspector.h"
 #include "searchwindow.h"
 #include "story.h"
+#include "tabskein.h"
 #include "tabsource.h"
 
 /* The global pointer to the inspector window */
 GtkWidget *inspector_window;
 
 /* The private pointer to the story we are currently inspecting */
-static struct story *inspecting = NULL;
+static Story *inspecting = NULL;
 
 void
 after_inspector_window_realize         (GtkWidget       *widget,
@@ -175,9 +176,14 @@ static void show_inspector(int which, gboolean show) {
       case INSPECTOR_HEADINGS:
         inspector = lookup_widget(inspector_window, "headings_inspector");
         break;
+#ifdef I_LIKE_SKEIN
       case INSPECTOR_SKEIN:
         inspector = lookup_widget(inspector_window, "skein_inspector");
+        if(show && !GTK_WIDGET_VISIBLE(inspector)
+           && inspecting->drawflag[SKEIN_INSPECTOR])
+            skein_schedule_redraw(inspecting->theskein, inspecting);
         break;
+#endif /* I_LIKE_SKEIN */
       case INSPECTOR_SEARCH_FILES:
         inspector = lookup_widget(inspector_window, "search_inspector");
         break;
@@ -201,8 +207,10 @@ void update_inspectors() {
       config_file_get_bool("Inspectors", "Notes"));
     show_inspector(INSPECTOR_HEADINGS,
       config_file_get_bool("Inspectors", "Headings"));
+#ifdef I_LIKE_SKEIN
     show_inspector(INSPECTOR_SKEIN,
       config_file_get_bool("Inspectors", "Skein"));
+#endif /* I_LIKE_SKEIN */
     show_inspector(INSPECTOR_SEARCH_FILES,
       config_file_get_bool("Inspectors", "Search"));
 }
@@ -210,7 +218,13 @@ void update_inspectors() {
 /* Display the data from the story in the inspector. (Do not check whether we
    are already displaying the data from the same story, because this function is
    also called when we just want to refresh the data. */
-void refresh_inspector(struct story *thestory) {
+void refresh_inspector(Story *thestory) {
+    /* Erase the previous story's Skein canvas */
+    if(thestory->skeingroup[SKEIN_INSPECTOR]) {
+        gtk_object_destroy(GTK_OBJECT(thestory->skeingroup[SKEIN_INSPECTOR]));
+        thestory->skeingroup[SKEIN_INSPECTOR] = NULL;
+    }
+    
     /* Set the story we are currently inspecting */
     inspecting = thestory;
     
@@ -219,15 +233,25 @@ void refresh_inspector(struct story *thestory) {
       GTK_TEXT_VIEW(lookup_widget(inspector_window, "notes")),
       thestory->notes);
     
-    /* Refresh the headings inspector */
-    gtk_tree_view_set_model(
-      GTK_TREE_VIEW(lookup_widget(inspector_window, "headings")),
-      GTK_TREE_MODEL(thestory->headings));
-    if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
-        g_idle_remove_by_data(GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
-        g_idle_add((GSourceFunc)reindex_headings,
-          GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
+    /* Refresh the headings inspector. Only if we are not already displaying
+    these same headings, otherwise all the trees will close every time we click
+    on the project window. */
+    if(gtk_tree_view_get_model(GTK_TREE_VIEW(lookup_widget(inspector_window,
+       "headings"))) != GTK_TREE_MODEL(thestory->headings)) {
+        gtk_tree_view_set_model(
+          GTK_TREE_VIEW(lookup_widget(inspector_window, "headings")),
+          GTK_TREE_MODEL(thestory->headings));
+        if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
+            g_idle_remove_by_data(GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
+            g_idle_add((GSourceFunc)reindex_headings,
+              GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
+        }
     }
+    
+    /* Refresh the skein inspector */
+#ifdef I_LIKE_SKEIN
+    skein_schedule_redraw(inspecting->theskein, inspecting);
+#endif /* I_LIKE_SKEIN */
 }
 
 /* Get the position of the inspector window and save it for the next run */

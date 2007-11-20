@@ -189,6 +189,182 @@ GtkSourceBuffer *create_natural_inform_source_buffer() {
     return buffer;
 }
 
+static void
+on_headings_menu_item_activate(GtkMenuItem *menuitem, gpointer lineno)
+{
+    /* Only jump to the line if the menu item doesn't have a submenu; otherwise,
+    it will jump when the user hovers over the item, opening the submenu */
+    if(!gtk_menu_item_get_submenu(menuitem))
+        jump_to_line(GTK_WIDGET(menuitem), GPOINTER_TO_UINT(lineno));
+}
+
+void
+on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
+                                        gpointer         user_data)
+{
+    Story *thestory = get_story(GTK_WIDGET(menutoolbutton));
+    GtkTextBuffer *buffer = GTK_TEXT_BUFFER(thestory->buffer);
+    GtkTextIter pos, end;
+    gtk_text_buffer_get_start_iter(buffer, &pos);
+
+    /* Destroy the previous menu */
+    gtk_menu_tool_button_set_menu(menutoolbutton, NULL);
+    
+    GtkWidget *volume = NULL, *book = NULL, *part = NULL, *chapter = NULL,
+      *section = NULL;
+    GtkWidget *volume_item = NULL, *book_item = NULL, *part_item = NULL,
+      *chapter_item = NULL, *section_item = NULL;
+    
+    while(gtk_text_iter_get_char(&pos) != 0) {
+        if(gtk_text_iter_get_char(&pos) == '\n') {
+            gtk_text_iter_forward_line(&pos);
+            end = pos;
+            gtk_text_iter_forward_line(&end);
+            if(gtk_text_iter_get_char(&end) == '\n') {
+                /* Preceded and followed by a blank line */
+                /* Get the entire line and its line number, chop the \n */
+                gchar *text = g_strchomp(gtk_text_iter_get_text(&pos, &end));
+                gchar *lcase = g_utf8_strdown(text, -1);
+                gint lineno = gtk_text_iter_get_line(&pos) + 1;
+                /* Line numbers counted from 0 */
+                
+                if(g_str_has_prefix(lcase, "volume ")) {
+                    if(!volume) {
+                        volume = gtk_menu_new();
+                        volume_item = gtk_menu_item_new_with_label("");
+                        gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(
+                          GTK_BIN(volume_item))), "<b>Volume...</b>");
+                        gtk_widget_set_sensitive(volume_item, FALSE);
+                        gtk_widget_show(volume_item);
+                        gtk_menu_shell_append(GTK_MENU_SHELL(volume),
+                          volume_item);
+                        gtk_widget_show(volume);
+                    }
+                    volume_item = gtk_menu_item_new_with_label(text + 7);
+                    gtk_widget_show(volume_item);
+                    gtk_menu_shell_append(GTK_MENU_SHELL(volume), volume_item);
+                    g_signal_connect(volume_item, "activate",
+                                     G_CALLBACK(on_headings_menu_item_activate),
+                                     GUINT_TO_POINTER(lineno));
+                    book = part = chapter = section = NULL;
+                } else if(g_str_has_prefix(lcase, "book ")) {
+                    if(!book) {
+                        book = gtk_menu_new();
+                        book_item = gtk_menu_item_new_with_label("");
+                        gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(
+                          GTK_BIN(book_item))), "<b>Book...</b>");
+                        gtk_widget_set_sensitive(book_item, FALSE);
+                        gtk_widget_show(book_item);
+                        gtk_menu_shell_append(GTK_MENU_SHELL(book), book_item);
+                        gtk_widget_show(book);
+                        if(volume)
+                            gtk_menu_item_set_submenu(
+                              GTK_MENU_ITEM(volume_item), book);
+                    }
+                    book_item = gtk_menu_item_new_with_label(text + 5);
+                    gtk_widget_show(book_item);
+                    gtk_menu_shell_append(GTK_MENU_SHELL(book), book_item);
+                    g_signal_connect(book_item, "activate",
+                                     G_CALLBACK(on_headings_menu_item_activate),
+                                     GUINT_TO_POINTER(lineno));
+                    part = chapter = section = NULL;
+                } else if(g_str_has_prefix(lcase, "part ")) {
+                    if(!part) {
+                        part = gtk_menu_new();
+                        part_item = gtk_menu_item_new_with_label("");
+                        gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(
+                          GTK_BIN(part_item))), "<b>Part...</b>");
+                        gtk_widget_set_sensitive(part_item, FALSE);
+                        gtk_widget_show(part_item);
+                        gtk_menu_shell_append(GTK_MENU_SHELL(part), part_item);
+                        gtk_widget_show(part);
+                        if(book)
+                            gtk_menu_item_set_submenu(GTK_MENU_ITEM(book_item),
+                                                      part);
+                        else if(volume)
+                            gtk_menu_item_set_submenu(
+                              GTK_MENU_ITEM(volume_item), part);
+                    }
+                    part_item = gtk_menu_item_new_with_label(text + 5);
+                    gtk_widget_show(part_item);
+                    gtk_menu_shell_append(GTK_MENU_SHELL(part), part_item);
+                    g_signal_connect(part_item, "activate",
+                                     G_CALLBACK(on_headings_menu_item_activate),
+                                     GUINT_TO_POINTER(lineno));
+                    chapter = section = NULL;
+                } else if(g_str_has_prefix(lcase, "chapter ")) {
+                    if(!chapter) {
+                        chapter = gtk_menu_new();
+                        chapter_item = gtk_menu_item_new_with_label("");
+                        gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(
+                          GTK_BIN(chapter_item))), "<b>Chapter...</b>");
+                        gtk_widget_set_sensitive(chapter_item, FALSE);
+                        gtk_widget_show(chapter_item);
+                        gtk_menu_shell_append(GTK_MENU_SHELL(chapter),
+                          chapter_item);
+                        gtk_widget_show(chapter);
+                        if(part)
+                            gtk_menu_item_set_submenu(GTK_MENU_ITEM(part_item),
+                                                      chapter);
+                        else if(book)
+                            gtk_menu_item_set_submenu(GTK_MENU_ITEM(book_item),
+                                                      chapter);
+                        else if(volume)
+                            gtk_menu_item_set_submenu(
+                              GTK_MENU_ITEM(volume_item), chapter);
+                    }
+                    chapter_item = gtk_menu_item_new_with_label(text + 8);
+                    gtk_widget_show(chapter_item);
+                    gtk_menu_shell_append(GTK_MENU_SHELL(chapter),chapter_item);
+                    g_signal_connect(chapter_item, "activate",
+                                     G_CALLBACK(on_headings_menu_item_activate),
+                                     GUINT_TO_POINTER(lineno));
+                    section = NULL;
+                } else if(g_str_has_prefix(lcase, "section ")) {
+                    if(!section) {
+                        section = gtk_menu_new();
+                        section_item = gtk_menu_item_new_with_label("");
+                        gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(
+                          GTK_BIN(section_item))), "<b>Section...</b>");
+                        gtk_widget_set_sensitive(section_item, FALSE);
+                        gtk_widget_show(section_item);
+                        gtk_menu_shell_append(GTK_MENU_SHELL(section),
+                          section_item);
+                        gtk_widget_show(section);
+                        if(chapter)
+                            gtk_menu_item_set_submenu(
+                              GTK_MENU_ITEM(chapter_item), section);
+                        else if(part)
+                            gtk_menu_item_set_submenu(GTK_MENU_ITEM(part_item),
+                                                                    section);
+                        else if(book)
+                            gtk_menu_item_set_submenu(GTK_MENU_ITEM(book_item),
+                                                      section);
+                        else if(volume)
+                            gtk_menu_item_set_submenu(
+                              GTK_MENU_ITEM(volume_item), section);
+                    }
+                    section_item = gtk_menu_item_new_with_label(text + 8);
+                    gtk_widget_show(section_item);
+                    gtk_menu_shell_append(GTK_MENU_SHELL(section),section_item);
+                    g_signal_connect(section_item, "activate",
+                                     G_CALLBACK(on_headings_menu_item_activate),
+                                     GUINT_TO_POINTER(lineno));
+                }
+                g_free(text);
+                g_free(lcase);
+            }
+        }    
+        gtk_text_iter_forward_line(&pos);
+    }
+    
+    /* Set the appropriate menu as the drop-down menu of the button, or an empty
+    menu if no headings */
+    gtk_menu_tool_button_set_menu(menutoolbutton, volume? volume: book? book:
+                                  part? part: chapter? chapter: section?
+                                  section: gtk_menu_new());
+}
+
 /* Paste code at the current insert position in buffer, deleting any selection*/
 void paste_code(GtkSourceBuffer *buffer, gchar *code) {
     gtk_text_buffer_delete_selection(GTK_TEXT_BUFFER(buffer), TRUE, TRUE);
@@ -198,7 +374,7 @@ void paste_code(GtkSourceBuffer *buffer, gchar *code) {
 
 /* Scroll the source views to the specified line of the source */
 void jump_to_line(GtkWidget *widget, guint line) {
-    struct story *thestory = get_story(widget);
+    Story *thestory = get_story(widget);
     GtkTextIter cursor, line_end;
 
     int right = choose_notebook(widget, TAB_SOURCE);

@@ -46,12 +46,12 @@
 blank page if it doesn't exist. */
 static gboolean check_and_load_idle(gpointer thestory) {
     static int counter = TAB_INDEX_FIRST;
-    GtkWidget *widget = ((struct story *)thestory)->window;
+    GtkWidget *widget = ((Story *)thestory)->window;
     gchar *filename = NULL;
     
     switch(counter) {
     case TAB_INDEX_ACTIONS:
-        filename = g_build_filename(((struct story *)thestory)->filename,
+        filename = g_build_filename(((Story *)thestory)->filename,
           "Index", "Actions.html", NULL);
         if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
             html_load_file(GTK_HTML(lookup_widget(widget, "actions_l")),
@@ -64,7 +64,7 @@ static gboolean check_and_load_idle(gpointer thestory) {
         }
         break;
     case TAB_INDEX_CONTENTS:
-        filename = g_build_filename(((struct story *)thestory)->filename,
+        filename = g_build_filename(((Story *)thestory)->filename,
           "Index", "Contents.html", NULL);
         if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
             html_load_file(GTK_HTML(lookup_widget(widget, "contents_l")),
@@ -77,7 +77,7 @@ static gboolean check_and_load_idle(gpointer thestory) {
         }
         break;
     case TAB_INDEX_KINDS:
-        filename = g_build_filename(((struct story *)thestory)->filename,
+        filename = g_build_filename(((Story *)thestory)->filename,
           "Index", "Kinds.html", NULL);
         if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
             html_load_file(GTK_HTML(lookup_widget(widget, "kinds_l")),
@@ -90,7 +90,7 @@ static gboolean check_and_load_idle(gpointer thestory) {
         }
         break;
     case TAB_INDEX_PHRASEBOOK:
-        filename = g_build_filename(((struct story *)thestory)->filename,
+        filename = g_build_filename(((Story *)thestory)->filename,
           "Index", "Phrasebook.html", NULL);
         if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
             html_load_file(GTK_HTML(lookup_widget(widget, "phrasebook_l")),
@@ -103,7 +103,7 @@ static gboolean check_and_load_idle(gpointer thestory) {
         }
         break;
     case TAB_INDEX_RULES:
-        filename = g_build_filename(((struct story *)thestory)->filename,
+        filename = g_build_filename(((Story *)thestory)->filename,
           "Index", "Rules.html", NULL);
         if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
             html_load_file(GTK_HTML(lookup_widget(widget, "rules_l")),
@@ -116,7 +116,7 @@ static gboolean check_and_load_idle(gpointer thestory) {
         }
         break;
     case TAB_INDEX_SCENES:
-        filename = g_build_filename(((struct story *)thestory)->filename,
+        filename = g_build_filename(((Story *)thestory)->filename,
           "Index", "Scenes.html", NULL);
         if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
             html_load_file(GTK_HTML(lookup_widget(widget, "scenes_l")),
@@ -130,7 +130,7 @@ static gboolean check_and_load_idle(gpointer thestory) {
         break;
     case TAB_INDEX_WORLD:
     default:
-        filename = g_build_filename(((struct story *)thestory)->filename,
+        filename = g_build_filename(((Story *)thestory)->filename,
           "Index", "World.html", NULL);
         if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
             html_load_file(GTK_HTML(lookup_widget(widget, "world_l")),
@@ -159,7 +159,7 @@ static gboolean check_and_load_idle(gpointer thestory) {
 }
 
 /* Load all the correct files in the index tabs, if they exist */
-void reload_index_tabs(struct story *thestory, gboolean wait) {
+void reload_index_tabs(Story *thestory, gboolean wait) {
     if(wait)
         while(check_and_load_idle((gpointer)thestory))
             ;

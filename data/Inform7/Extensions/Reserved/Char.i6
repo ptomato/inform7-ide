@@ -1,0 +1,76 @@
+! Char.i6
+
+#ifdef I7_Char_Casing_Chart_0;
+
+[ I7_iscase c case
+	i tab min max len par;
+	if (c<'A') rfalse;
+	if (case == 0) {
+		if ((c >= 'a') && (c <= 'z')) rtrue;
+		tab = I7_Char_Casing_Chart_0;
+	} else {
+		if ((c >= 'A') && (c <= 'Z')) rtrue;
+		tab = I7_Char_Casing_Chart_1;
+	}
+	if (c<128) rfalse;
+	while (tab-->i) {
+		min = tab-->i; i++;
+		len = tab-->i; i++;
+		i++;
+		par = 0;
+		if (len<0) { par = 1; len = -len; }
+		if (c < min) rfalse;
+		if (c < min+len) {
+			if (par) { if ((c-min) % 2 == 0) rtrue; }
+			else { rtrue; }
+		}
+	}
+	rfalse;
+];
+
+[ I7_tocase c case
+	i tab min max len par del f;
+	if (c<'A') return c;
+	if (case == 1) {
+		if ((c >= 'a') && (c <= 'z')) return c-32;
+		tab = I7_Char_Casing_Chart_0;
+	} else {
+		if ((c >= 'A') && (c <= 'Z')) return c+32;
+		tab = I7_Char_Casing_Chart_1;
+	}
+	if (c<128) return c;
+	while (tab-->i) {
+		min = tab-->i; i++;
+		len = tab-->i; i++;
+		del = tab-->i; i++;
+		par = 0;
+		if (len<0) { par = 1; len = -len; }
+		if (c < min) return c;
+		if (c < min+len) {
+			f = false;
+			if (par) { if ((c-min) % 2 == 0) f = true; }
+			else { f = true; }
+			if (f) {
+				if (del == I7_U_NCT) return c;
+				return c+del;
+			}
+		}
+	}
+	return c;
+];
+
+[ I7_testcases case i j;
+	for (i=32: i<$E0; i++) {
+		if ((i>=127) && (i<155)) continue;
+		print i, " - ", (char) i, " -";
+		if (I7_iscase(i, 0)) print "  lower";
+		if (I7_iscase(i, 1)) print "  upper";
+		j = I7_tocase(i, 0); if (j ~= i) print "  tolower: ", (char) j;
+		j = I7_tocase(i, 1); if (j ~= i) print "  toupper: ", (char) j;
+		print "^";
+	}
+];
+
+#endif; ! I7_Char_Casing_Chart_0;
+
+! End of Char.i6

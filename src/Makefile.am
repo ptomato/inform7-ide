@@ -35,7 +35,6 @@ gnome_inform7_SOURCES = \
     colorscheme.c colorscheme.h \
     compile.c compile.h \
     tabgame.c tabgame.h \
-    skein.c skein.h \
     error.c error.h \
 	inspector.c inspector.h \
     rtf.c rtf.h \
@@ -44,10 +43,23 @@ gnome_inform7_SOURCES = \
     datafile.c datafile.h \
     spawn.c spawn.h \
     widgets.c widgets.h \
-    history.c history.h 
+    history.c history.h \
+    skein.c skein.h \
+    tabskein.c tabskein.h \
+    appmenu.c appmenu.h \
+    apptoolbar.c apptoolbar.h \
+    tabdocs.c tabdocs.h
 
 gnome_inform7_LDADD = @GNOMEINFORM7_LIBS@ $(INTLLIBS) $(GTKTERPLIBS) gtkterp/libgtkterp.a
 
 gnome_inform7_LDFLAGS = -L.
+
+
+
+
+
+
+
+
 
 

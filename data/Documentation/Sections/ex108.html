@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.19. Precedence</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.16. Reaching inside and reaching outside rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,160 +19,111 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Some Assembly Required" -->
-<!-- SEARCH SECTION "Ex 278" -->
-<!-- SEARCH SORT "Ex 016-019-278" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc259.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc261.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.19. Precedence</b></font></td></tr></table>
+<!-- SEARCH TITLE "Carnivale" -->
+<!-- SEARCH SECTION "Ex 197" -->
+<!-- SEARCH SORT "Ex 012-016-197" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc187.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc189.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.16. Reaching inside and reaching outside rules</b></font></td></tr></table>
 <p>
-<p>When several different lines of grammar are supplied to meet the same circumstances, it makes a big difference what order they are tried in. For instance, suppose we have:
+<p>The flow chart back at the start of this chapter shows that, early on in processing an action (between Before and Instead), Inform asks the question &quot;Can we see or touch things?&quot; This is where it enforces the requirements in the action's definition:
 <p>
-<blockquote><font color="#000080">Understand &quot;photograph [a door]&quot; as photographing.
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
+<br>Scraping it with is an action applying to two things.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;photograph [an open door]&quot; as photographing.
-</font></blockquote><p>
+<p>Seeing and touching are two different questions, which Inform answers in different ways. We shall see ways to modify or entirely alter what can be seen using the &quot;deciding the scope of something&quot; activity when we get to the Understanding and Activities chapters, and later in this chapter we will change the definition of touchability. What both have in common is that they are complicated questions, affected by the circumstances. We cannot simply declare that the player can touch a given lever, or can see in a given room: we must arrange for there to be no barriers between the player and the lever, or for there to be a light source in the room.
 <p>
-<p>The second line is more specific than the first, so Inform takes these grammar lines the other way around: it checks for &quot;open door&quot; before it checks for &quot;door&quot;. That didn't matter here, since both lines came out with the same result (the action of photographing), but it matters very much in the next example:
-<p>
-<blockquote><font color="#000080">Understand &quot;employ [a door]&quot; as opening.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;employ [an open door]&quot; as entering.
-</font></blockquote><p>
-<p>
-<p>More subtle is a line already seen:
-<p>
-<blockquote><font color="#000080">Understand &quot;on/in/inside&quot; or &quot;on top of&quot; as &quot;[within]&quot;.
-</font></blockquote><p>
-<p>
-<p>Here Inform puts &quot;on top of&quot; before &quot;on/in/inside&quot;, since otherwise only the &quot;on&quot; of &quot;on top of&quot; will be recognised.
-<p>
-<p>Mistakes always take precedence over non-mistakes: this is intended to make sure that
-<p>
-<blockquote><font color="#000080">Understand &quot;take umbrage&quot; as a mistake (&quot;Nobody takes umbrage in this game, mister.&quot;).
-</font></blockquote><p>
-<p>
-<p>will take precedence over
-<p>
-<blockquote><font color="#000080">Understand &quot;take [something]&quot; as taking.
-</font></blockquote><p>
-<p>
-<p>even if there is, in fact, a character called Mr Nimbus Umbrage so that the command could conceivably make sense.
-<p>
-<p><hr><p>
-<!-- EXAMPLE START -->
-<a name="e108"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc260.html#e108 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>278</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc260.html#e108 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Some Assembly Required</font></b></a><br>Building different styles of shirt from component sleeves and collars.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex108.html#e108 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>We now have the mechanisms in place to do some fairly sophisticated renaming of objects. For instance:
+<p>An example of rules applying to given objects is provided by the way that Inform decides whether the player can reach something or not. For instance, suppose the following:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode364(code) {
+function pasteCode30(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Some Assembly Required"\n\nGarment type is a kind of value. The garment types are vest, t-shirt, polo shirt, mandarin blouse, button-down, shell, experiment.\n\nEvery turn:\n\tassign identities.\n\nWhen play begins: assign identities.\n\nTo assign identities:\n\trepeat with item running through torsos\n\tbegin;\n\t\treassess item;\n\tend repeat.\n\nTo reassess (item - a torso):\n\tif the number of things which are part of the item is 0\n\tbegin;\n\t\tchange garment type of the item to vest;\n\t\trule succeeds;\n\tend if;\n\tif exactly two short sleeves are part of the item\n\tbegin;\n\t\tif a collar is part of the item,\n\t\t\tchange garment type of the item to polo shirt;\n\t\totherwise change garment type of the item to t-shirt;\n\t\trule succeeds;\n\tend if;\n\tif exactly two long sleeves are part of the item\n\tbegin;\n\t\tif a collar is part of the item,\n\t\t\tchange garment type of the item to button-down;\n\t\totherwise change garment type of the item to mandarin blouse;\n\t\trule succeeds;\n\tend if;\n\tif a collar is part of the item and the number of sleeves which are part of the item is 0, change garment type of the item to shell;\n\totherwise change garment type of the item to experiment.\n\nBefore cutting something which is worn by the player:\n\ttry taking off the noun.\n\nInstead of cutting something when something is part of the noun:\n\tsay "You cut up [the noun], snipping off [a list of things which are part of the noun].";\n\tnow every thing which is part of the noun is in the holder of the noun.\n\nInstead of cutting something which is part of something:\n\tsay "You carefully snip [the noun] free.";\n\tnow the player carries the noun.\n\nRule for printing the name of a torso: say "[garment type]".\n\nA torso is a kind of thing. A torso is always wearable. Understand "shirt" or "blouse" as a torso. A torso has a garment type. Understand the garment type property as describing a torso. A sleeve is a kind of thing. A short sleeve is a kind of sleeve. A long sleeve is a kind of sleeve. A collar is a kind of thing.\n\nUnderstand "sew [something] to [something]" as affixing it to. Affixing it to is an action applying to two things. Carry out affixing something to something: now the noun is part of the second noun. Report affixing something to something: assign identities; say "You sew [the noun] on, creating [a second noun]." Understand the command "stitch" as "sew".\n\nInstead of affixing something to something when the second noun is worn: say "You\'re wearing [the second noun]!"\n\nInstead of affixing a torso to something:\n\tif the second noun is a torso, say "Couture for Siamese twins is a daring field, but a bit of a niche market.";\n\totherwise try affixing the second noun to the noun.\n\nInstead of affixing a sleeve to something when at least two sleeves are part of the second noun: say "[The second noun] already sports [a list of sleeves that are part of the second noun]."\n\nInstead of affixing a collar to something when a collar is part of the second noun: say "[The second noun] already sports [a list of collars that are part of the second noun]."\n\nInstead of examining something when something is part of the noun: say "Stitched to [the noun] [is-are a list of things which are part of the noun]."\n\n[Here is where the issue of precedence arises. We want to encourage Inform to select a cuttable object that is part of something else, rather than one of the spares:]\n\nDefinition: a thing is removable if it is part of something. Understand "cut [removable thing]" as cutting.\n\nThe Boutique is a room. "Still festively strewn with the confetti and streamers of the Grand Opening party, and still almost totally customer-free."\n\nThe player carries a torso. The player carries three short sleeves. The player carries two long sleeves. The player carries two collars.\n\nTest me with "sew collar to shirt / i / sew short sleeve to shirt / g / i / x polo shirt / cut collar / i / cut shirt / sew long sleeve to shirt / i / sew long sleeve to shirt / i / sew collar to shirt / g / i / wear button-down".\n\n');
+    myProject.pasteCode('The Laboratory is a room. In the Laboratory is a conical flask. The flask is closed and transparent. In the flask is an antibumping granule.\n\n');
 }
 </script>
-<a href="javascript:pasteCode364()"><img border=0 src=../doc_images/paste.png></a> &quot;Some Assembly Required&quot;
+<a href="javascript:pasteCode30()"><img border=0 src=../doc_images/paste.png></a> The Laboratory is a room. In the Laboratory is a conical flask. The flask is closed and transparent. In the flask is an antibumping granule.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Garment type is a kind of value. The garment types are vest, t-shirt, polo shirt, mandarin blouse, button-down, shell, experiment.
+<p>The player will be able to examine the granule but not to take it, as that would require reaching through glass. Suppose the player does type TAKE GRANULE: then Inform looks for potential barriers between the player and the granule, and of course finds the conical flask. If, as in this case, the thing to be touched is on the inside, then Inform asks the &quot;reaching inside&quot; rules for permission. There are two reaching inside rules built in to Inform:
+<p>
+<blockquote><font color="#000080">can't reach inside rooms rule
+<br>can't reach inside closed containers rule
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;assign identities.
+<p>and in fact the second of these rules will cause the taking action to fail, because the conical flask is a closed container. (The other rule has to do with a player in one room able to see another room through, say, a telescope - merely having a line of sight doesn't give the ability to reach into the frame.)
+<p>
+<p>Symmetrically, Inform also has &quot;reaching outside&quot; rules, used if the player is inside something and wants to reach an object in the wider room. (From a bed, probably yes; from a cage, probably no.) This ordinarily contains just one rule:
+<p>
+<blockquote><font color="#000080">can't reach outside closed containers rule
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins: assign identities.
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e108"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc188.html#e108 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>197</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc188.html#e108 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Carnivale</font></b></a><br>An alternative to backdrops when we want something to be visible from a distance but only touchable from one room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex108.html#e108 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>Suppose we want to make an object that (unlike a backdrop) is definitely located in one room, but can be seen from far off. We want to allow the player to interact with it from a distance, but only using those actions that require visibility. Other actions should be denied:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode285(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Carnivale"\n\nThe Fairground is a region. Park Entrance, By the Wheel, and Candy Stand are in Fairground. Candy Stand is north of By the Wheel. Park Entrance is west of Candy Stand and northwest of By the Wheel.\n\nThe ferris wheel is scenery in By the Wheel. "It is extravagantly tall and carries several dozen glass gondolas for riders."\n\nThe description of By the Wheel is "You stand at the foot of an enormous ferris wheel, which turns far too quickly and never seems to stop for new riders."\n\nThe description of Park Entrance is "You are now just inside the gates. Behind you snakes a triple line of fairgoers all the way down the length of the valley to the railway station. Roughly southeast of here is the ferris wheel, towering over the other attractions."\n\nThe description of Candy Stand is "A hut in pale pink and baby blue dispenses marshmallow death\'s-heads, sugar-beetles, and other such treats. The giant ferris wheel is just off to the south from here."\n\n[As the descriptions make clear, the ferris wheel should be visible from everywhere in the fair, so we\'ll borrow a line from the Activities chapter to make that happen:]\n\nAfter deciding the scope of the player:\n\tif the location is in Fairground, place the ferris wheel in scope.\n\n');
+}
+</script>
+<a href="javascript:pasteCode285()"><img border=0 src=../doc_images/paste.png></a> &quot;Carnivale&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To assign identities:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through torsos
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reassess item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">The Fairground is a region. Park Entrance, By the Wheel, and Candy Stand are in Fairground. Candy Stand is north of By the Wheel. Park Entrance is west of Candy Stand and northwest of By the Wheel.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To reassess (item - a torso):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things which are part of the item is 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change garment type of the item to vest;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if exactly two short sleeves are part of the item
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a collar is part of the item,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change garment type of the item to polo shirt;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise change garment type of the item to t-shirt;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if exactly two long sleeves are part of the item
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a collar is part of the item,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change garment type of the item to button-down;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise change garment type of the item to mandarin blouse;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a collar is part of the item and the number of sleeves which are part of the item is 0, change garment type of the item to shell;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change garment type of the item to experiment.
+<blockquote><font color="#000080">The ferris wheel is scenery in By the Wheel. &quot;It is extravagantly tall and carries several dozen glass gondolas for riders.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before cutting something which is worn by the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try taking off the noun.
+<blockquote><font color="#000080">The description of By the Wheel is &quot;You stand at the foot of an enormous ferris wheel, which turns far too quickly and never seems to stop for new riders.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of cutting something when something is part of the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You cut up [the noun], snipping off [a list of things which are part of the noun].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing which is part of the noun is in the holder of the noun.
+<blockquote><font color="#000080">The description of Park Entrance is &quot;You are now just inside the gates. Behind you snakes a triple line of fairgoers all the way down the length of the valley to the railway station. Roughly southeast of here is the ferris wheel, towering over the other attractions.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of cutting something which is part of something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You carefully snip [the noun] free.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the noun.
+<blockquote><font color="#000080">The description of Candy Stand is &quot;A hut in pale pink and baby blue dispenses marshmallow death's-heads, sugar-beetles, and other such treats. The giant ferris wheel is just off to the south from here.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for printing the name of a torso: say &quot;[garment type]&quot;.
+<p>As the descriptions make clear, the ferris wheel should be visible from everywhere in the fair, so we'll borrow a line from the Activities chapter to make that happen:
+<p>
+<blockquote><font color="#000080">After deciding the scope of the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is in Fairground, place the ferris wheel in scope.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A torso is a kind of thing. A torso is always wearable. Understand &quot;shirt&quot; or &quot;blouse&quot; as a torso. A torso has a garment type. Understand the garment type property as describing a torso. A sleeve is a kind of thing. A short sleeve is a kind of sleeve. A long sleeve is a kind of sleeve. A collar is a kind of thing.
+<p>&quot;Scope&quot; determines what the player can interact with; by writing this rule, we make Inform understand all commands that refer to the ferris wheel when the player is anywhere in the fairground, instead of responding with
+<p>
+<blockquote><font color="#000080">You can't see any such thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;sew [something] to [something]&quot; as affixing it to. Affixing it to is an action applying to two things. Carry out affixing something to something: now the noun is part of the second noun. Report affixing something to something: assign identities; say &quot;You sew [the noun] on, creating [a second noun].&quot; Understand the command &quot;stitch&quot; as &quot;sew&quot;.
+<p>as it normally would.
+<p>
+<p>Now, by default, if the player were to type TOUCH FERRIS WHEEL while in another room, he would get the response
+<p>
+<blockquote><font color="#000080">You can't reach into By the Wheel.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of affixing something to something when the second noun is worn: say &quot;You're wearing [the second noun]!&quot;
+<p>This may not be quite what we want, but we can replace this text with our own reaching inside rule:
+<p>
+<blockquote><font color="#000080">Rule for reaching inside a room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can only look from this distance.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;deny access.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of affixing a torso to something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is a torso, say &quot;Couture for Siamese twins is a daring field, but a bit of a niche market.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise try affixing the second noun to the noun.
+<p>And because our accessibility rules are considered before the &quot;Instead&quot; phase, we can write the following rule confident that it will apply only when the player is in fact in range to touch the ferris wheel:
+<p>
+<blockquote><font color="#000080">Instead of touching the ferris wheel:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You don't dare: it's spinning too fast.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of affixing a sleeve to something when at least two sleeves are part of the second noun: say &quot;[The second noun] already sports [a list of sleeves that are part of the second noun].&quot;
+<blockquote><font color="#000080">Test me with &quot;x ferris wheel / touch ferris wheel / se / x ferris wheel / touch ferris wheel&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of affixing a collar to something when a collar is part of the second noun: say &quot;[The second noun] already sports [a list of collars that are part of the second noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining something when something is part of the noun: say &quot;Stitched to [the noun] [is-are a list of things which are part of the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>Here is where the issue of precedence arises. We want to encourage Inform to select a cuttable object that is part of something else, rather than one of the spares:
-<p>
-<blockquote><font color="#000080">Definition: a thing is removable if it is part of something. Understand &quot;cut [removable thing]&quot; as cutting.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Boutique is a room. &quot;Still festively strewn with the confetti and streamers of the Grand Opening party, and still almost totally customer-free.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries a torso. The player carries three short sleeves. The player carries two long sleeves. The player carries two collars.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;sew collar to shirt / i / sew short sleeve to shirt / g / i / x polo shirt / cut collar / i / cut shirt / sew long sleeve to shirt / i / sew long sleeve to shirt / i / sew collar to shirt / g / i / wear button-down&quot;.
-</font></blockquote><p>
-<p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc260.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc188.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e345"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex345.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>279</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex345.html#e345 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lakeside Living</font></b></a><br>Similar to "Lemonade", but with bodies of liquid that can never be depleted, and some adjustments to the "fill" command so that it will automatically attempt to fill from a large liquid source if possible.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex345.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc259.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc261.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc187.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc189.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

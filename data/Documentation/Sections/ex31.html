@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.2. Awarding points</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.12. Writing and reading tables to external files</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,76 +19,188 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "No Place Like Home" -->
-<!-- SEARCH SECTION "Ex 122" -->
-<!-- SEARCH SORT "Ex 009-002-122" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc128.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc130.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.2. Awarding points</b></font></td></tr></table>
+<!-- SEARCH TITLE "Rubies" -->
+<!-- SEARCH SECTION "Ex 372" -->
+<!-- SEARCH SORT "Ex 020-012-372" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc335.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc337.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.12. Writing and reading tables to external files</b></font></td></tr></table>
 <p>
-<p>Traditionally-written games award points throughout play, as an indication of progress. If we want to be traditional, we can award points as follows:
+<p>The main use for files is to store and retrieve data, and the most flexible form of data used by Inform is the Table, so facilities are provided which make it as easy as possible to write and read the contents of a table to files.
 <p>
-<blockquote><font color="#000080">award 5 points;
+<p>To save the contents of a table to a file, we use the phrase:
+<p>
+<blockquote><font color="#000080">write File of Glaciation Data from the Table of Antarctic Reserves
 </font></blockquote><p>
 <p>
-<p>substituting whatever number we feel is appropriate. We should be careful not to give out the same points over and over, that is, not to reward the same basic achievement many times over if the player simply repeats the same action. This, for instance, is open to abuse:
+<p>naming the file (which should be one already declared) and specifying which table it should come from. To load a file back into a table,
 <p>
-<blockquote><font color="#000080">After taking the trophy: award 5 points; say &quot;Well done!&quot;
+<blockquote><font color="#000080">read File of Glaciation Data into the Table of Antarctic Reserves
 </font></blockquote><p>
 <p>
-<p>The player may simply take the trophy, drop it again, take it again, ... and win five points every time around. We can prevent this by phrasing the rule more carefully:
+<p>We can check if a file already exists using:
 <p>
-<blockquote><font color="#000080">After taking the trophy for the first time: award 5 points; say &quot;Well done!&quot;
+<blockquote><font color="#000080">if File of Glaciation Data exists, ...
 </font></blockquote><p>
 <p>
-<p>Rather than being an open-ended scoring system, IF normally has a maximum possible score, which can be specified with a sentence like so:
+<p>On writing a table, any blank rows are automatically moved to the bottom, and only the non-blank rows are written; on reading a file back in, any rows left spare at the foot of the table are automatically blanked. On the other hand if the file is too large to fit into the table - with too many columns or too many rows - a run-time problem is produced.
 <p>
-<blockquote><font color="#000080">The maximum score is 10.
-</font></blockquote><p>
+<p>One unfortunate restriction must be kept in mind. Some of what is stored in tables is solid information whose meaning never changes: the number 342, for instance, means the same to everyone. But other information depends entirely on the current location of certain structures in memory - for instance, a rule is internally referred to by its memory location. This potentially changes each time Go or Replay is clicked, and so it is not safe to pass it from one copy to another, or from one project to another. The only tables which Inform allows us to write into files are those containing &quot;safe&quot; data: numbers, units, times of day and kinds of value with named alternatives. Scenes, rules or rulebooks, in particular, are not allowed.
 <p>
-<p>Recall that if the source declares:
+<p>And nor is text - but we can easily get around that, because indexed text (see the previous chapter) is. For instance, the following table can legally be written out to a file, weareas it would have thrown up a run-time problem if we tried it with the surface column defined simply as text:
 <p>
-<blockquote><font color="#000080">Use no scoring.
-</font></blockquote><p>
-<p>
-<p>then the SCORE, FULL SCORE, NOTIFY ON and NOTIFY OFF commands do not work; the final score is not shown at the end of a game; and the status line above the player's text area shows only the turn count, not (as is more usual) both the score and the turn count. The &quot;award ... points&quot; phrase has no visible effect, though it is not actually illegal.
-<p>
-<p><hr><p>
-<!-- EXAMPLE START -->
-<a name="e31"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc129.html#e31 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>122</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc129.html#e31 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> No Place Like Home</font></b></a><br>Recording a whole table of scores for specific treasures.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex31.html#e31 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Suppose we want to assign scores for a whole range of objects the player might pick up. One systematic way to do this would be with a table of point values for things:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode210(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"No Place Like Home"\n\nThe Hall of the Gnome King is a room. The emerald cow is a thing in the Hall of the Gnome King. The ivory chessman is a thing in the Hall of the Gnome King. The book of incantations is a thing in the Hall of the Gnome King.\n\nTable of Point Values\nitem\tscore\ncow\t10\nincantations\t4\nchessman\t1\n\nReport taking an item listed in the Table of Point Values:\n\taward score entry points;\n\tblank out the whole row.\n\nTest me with "take all".\n\n');
-}
-</script>
-<a href="javascript:pasteCode210()"><img border=0 src=../doc_images/paste.png></a> &quot;No Place Like Home&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Hall of the Gnome King is a room. The emerald cow is a thing in the Hall of the Gnome King. The ivory chessman is a thing in the Hall of the Gnome King. The book of incantations is a thing in the Hall of the Gnome King.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Point Values
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">item</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">score</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">cow</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">incantations</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">chessman</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td>
+<blockquote><font color="#000080">Table of Neptune's Moons
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">moon</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">surface (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;utterly unknown&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cryovolcanic ridges&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highly irregular and sooty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
 </tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report taking an item listed in the Table of Point Values:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;award score entry points;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row.
+<p><hr><p>
+<a name="e244"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex244.html#e244 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>370</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex244.html#e244 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alien Invasion Part 23</font></b></a><br>Keeping a preference file that could be loaded by any game in a series.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex244.html#e244 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e370"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex370.html#e370 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>371</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex370.html#e370 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Labyrinth of Ghosts</font></b></a><br>Remembering the fates of all previous explorers of the labyrinth.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex370.html#e370 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e31"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc336.html#e31 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>372</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc336.html#e31 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Rubies</font></b></a><br>A scoreboard that keeps track of the ten highest-scoring players from one playthrough to the next, adding the player's name if he has done well enough.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex31.html#e31 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>The trick here is that we need a table with indexed text in order to keep track of the players' names.
+<p>
+<p>Part 1 largely replicates the source from &quot;Identity Theft&quot;; new material starts at Part 2.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode461(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode(' "Rubies"\n\nPart 1 - Collecting Names\n\nThe player\'s forename is an indexed text that varies. The player\'s full name is an indexed text that varies.\n\nWhen play begins:\n\tchange the command prompt to "What is your name? > "\n\nTo decide whether collecting names:\n\tif the command prompt is "What is your name? > ", yes;\n\tno.\n\nAfter reading a command when collecting names:\n\tif the number of words in the player\'s command is greater than 5\n\tbegin;\n\t\tsay "[paragraph break]Who are you, a member of the British royal family? No one has that many names. Let\'s try this again.";\n\t\treject the player\'s command;\n\tend if;\n\tchange the player\'s full name to the player\'s command;\n\tchange the player\'s forename to word number 1 in the player\'s command;\n\tchange the command prompt to ">";\n\tsay "Hi, [player\'s forename]!";\n\tsay "[banner text]";\n\tmove the player to the location;\n\treject the player\'s command.\n\nInstead of looking when collecting names: do nothing.\n\nRule for printing the banner text when collecting names: do nothing.\n\nRule for constructing the status line when collecting names: do nothing.\n\nProcedural rule: if collecting names, ignore the turn sequence rules.\n\nPart 2 - Adding the Leaderboard\n\nFile of Leaderboard is called "leaderboard".\n\nWhen play begins:\n\tif the File of Leaderboard exists\n\tbegin;\n\t\tread File of Leaderboard into the Table of Leaders;\n\t\tsort the Table of Leaders in reverse scored amount order;\n\tend if;\n\nWhen play ends:\n\tchoose row 10 in the Table of Leaders; [we\'ve sorted the table, so the lowest score will be the one at the bottom]\n\tif the score is greater than scored amount entry\n\tbegin;\n\t\tchange name entry to the player\'s forename;\n\t\tchange the scored amount entry to the score;\n\tend if;\n\tshow leaderboard;\n\twrite the File of Leaderboard from the Table of Leaders.\n\nTo show leaderboard:\n\tsort the Table of Leaders in reverse scored amount order;\n\tsay "Current leading scores: [paragraph break]";\n\tsay fixed letter spacing;\n\trepeat through Table of Leaders\n\tbegin;\n\t\tif scored amount entry is greater than 0\n\t\tbegin;\n\t\t\tsay "  [name entry]";\n\t\t\tlet N be 25 minus the number of characters in name entry; [here we want to space out the scores so they make a neat column]\n\t\t\tif N is less than 1, change N to 1;\n\t\t\tsay N spaces;\n\t\t\tsay "[scored amount entry][line break]";\n\t\tend if;\n\tend repeat;\n\tsay variable letter spacing.\n\nTo say (N - a number) spaces:\n\trepeat with index running from 1 to N\n\tbegin;\n\t\tsay " ";\n\tend repeat.\n\nTable of Leaders\nscored amount\tname (indexed text)\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n\n[And now we introduce a scenario that allows different players to come up with different scores -- admittedly not a very interesting scenario, but it will do for now:]\n\nPart 3 - Scenario\n\nCarry out taking something which is not handled:\n\tincrease score by 1.\n\nThe Big Treasure Chamber is a room. It contains a ruby, an emerald, a gold tooth, an antique katana, and a silver coin.\n\nInstead of waiting, end the game in victory.\n\nTest me with "get ruby / z".\n');
+}
+</script>
+<a href="javascript:pasteCode461()"><img border=0 src=../doc_images/paste.png></a>  &quot;Rubies&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;take all&quot;.
+<blockquote><font color="#000080">Part 1 - Collecting Names
 </font></blockquote><p>
 <p>
-<p>&quot;Blank out the whole row&quot; removes the line from the table, so that each award will occur only once. The player will not be able to earn more and more points by dropping and taking the same item again.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc129.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">The player's forename is an indexed text that varies. The player's full name is an indexed text that varies.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;What is your name? > &quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide whether collecting names:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the command prompt is &quot;What is your name? > &quot;, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After reading a command when collecting names:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of words in the player's command is greater than 5
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[paragraph break]Who are you, a member of the British royal family? No one has that many names. Let's try this again.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the player's full name to the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the player's forename to word number 1 in the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;>&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Hi, [player's forename]!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[banner text]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of looking when collecting names: do nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for printing the banner text when collecting names: do nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for constructing the status line when collecting names: do nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Procedural rule: if collecting names, ignore the turn sequence rules.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Part 2 - Adding the Leaderboard
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">File of Leaderboard is called &quot;leaderboard&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the File of Leaderboard exists
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read File of Leaderboard into the Table of Leaders;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Leaders in reverse scored amount order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play ends:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row 10 in the Table of Leaders; [we've sorted the table, so the lowest score will be the one at the bottom]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the score is greater than scored amount entry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change name entry to the player's forename;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the scored amount entry to the score;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;show leaderboard;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write the File of Leaderboard from the Table of Leaders.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To show leaderboard:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Leaders in reverse scored amount order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Current leading scores: [paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say fixed letter spacing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Leaders
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if scored amount entry is greater than 0
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [name entry]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let N be 25 minus the number of characters in name entry; [here we want to space out the scores so they make a neat column]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if N is less than 1, change N to 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say N spaces;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[scored amount entry][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say variable letter spacing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say (N - a number) spaces:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with index running from 1 to N
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Leaders
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">scored amount</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">name (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<p>And now we introduce a scenario that allows different players to come up with different scores -- admittedly not a very interesting scenario, but it will do for now:
+<p>
+<blockquote><font color="#000080">Part 3 - Scenario
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out taking something which is not handled:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;increase score by 1.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Big Treasure Chamber is a room. It contains a ruby, an emerald, a gold tooth, an antique katana, and a silver coin.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of waiting, end the game in victory.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get ruby / z&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc336.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc128.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc130.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc335.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc337.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

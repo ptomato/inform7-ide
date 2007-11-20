@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.14. Printing room description details of something</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.2. Rooms and the map</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,87 +19,112 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Rules of Attraction" -->
-<!-- SEARCH SECTION "Ex 289" -->
-<!-- SEARCH SORT "Ex 017-014-289" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc274.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc276.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.14. Printing room description details of something</b></font></td></tr></table>
+<!-- SEARCH TITLE "Starry Void" -->
+<!-- SEARCH SECTION "Ex 6" -->
+<!-- SEARCH SORT "Ex 003-002-006" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc27.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc29.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.2. Rooms and the map</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> When an item is listed in the miscellaneous collection of items present in a room (the ones which do not deserve their own paragraphs): this is normally the last paragraph of a room description.
+<p>Rooms are joined together at their edges by &quot;map connections&quot;, most of which are pathways in one of the eight cardinal compass directions: north, northeast (written without a hyphen), east, southeast, south, southwest, west, northwest. We also have up and down, suitable for staircases or ladders. In real life, people are seldom conscious of their compass bearing when walking around buildings, but it makes a concise and unconfusing way for the player to say where to go next, so is generally accepted as a convention of the genre.
 <p>
-<p><b>2. The default behaviour.</b> A bracketed piece of extra information is added for certain items such as containers:
+<p>Two more directions are provided by Inform: &quot;inside&quot; and &quot;outside&quot;. These are best used when one location is, say, a meadow and the other is a woodcutter's hut in the middle of it; we might then say
 <p>
-<blockquote><font color="#000080">You can also see Po and a cage (empty) here.
+<blockquote><font color="#000080">Inside from the Meadow is the woodcutter's hut.
 </font></blockquote><p>
 <p>
-<p>The &quot; (empty)&quot; (note initial space) was added by this activity. (Note that this activity is not responsible for describing further items visible because of the item in question: that is, it does not print the text such as &quot;(in which is a notepad)&quot; which would appear if there were contents. If we want to remove such text, we should use &quot;omit contents in listing&quot;: see the activity &quot;for printing the name of something&quot;.)
+<p>The &quot;from&quot; is important, as it clarifies that we intend to link two different locations, not to create an item - the hut - in a single location - the meadow.
 <p>
-<p><b>3. Examples.</b> (a) To get rid of such addenda entirely, try:
+<p>A problem which sometimes arises when laying out maps is that Inform allows short forms of room names to be used as abbreviations. This is usually a good idea, but has unfortunate results if we write:
 <p>
-<blockquote><font color="#000080">Rule for printing room description details: stop.
+<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. The Airport is west of the Airport Road.
 </font></blockquote><p>
 <p>
-<p>(b) To add a new form of addendum:
+<p>...because &quot;Airport&quot; is taken as a reference to &quot;Airport Road&quot;, so Inform makes only two locations, one of which supernaturally leads to itself. We can avoid this by writing:
 <p>
-<blockquote><font color="#000080">Rule for printing room description details of a person:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot; (at last, someone to talk to)&quot; instead.
+<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. A room called the Airport is west of the Airport Road.
 </font></blockquote><p>
 <p>
-<p>If both examples (a) and (b) are in place at once, we might now read:
+<p>Using &quot;called&quot; is often a good way to specify something whose name might give rise to confusion otherwise. It always makes something new, and it is also neatly concise, because we can establish something's kind and name in the same sentence. As another example, suppose we want to create a room called &quot;South of the Hut&quot;, to south of the Hut. We can't do so like this:
 <p>
-<blockquote><font color="#000080">You can also see Po (at last, someone to talk to) and a cage here.
+<blockquote><font color="#000080">South of the Hut is a room. South of the Hut is south of the Hut.
 </font></blockquote><p>
+<p>
+<p>...because Inform will read that first sentence as placing a (nameless) room to the south of a room called &quot;Hut&quot;. Once again &quot;called&quot; can save the day:
+<p>
+<blockquote><font color="#000080">South of the Hut is a room called South of the Hut.
+</font></blockquote><p>
+<p>
+<p>It is best to use &quot;called&quot; in the simplest way possible, and in particular, best not to use &quot;called&quot; twice in the same sentence. Consider:
+<p>
+<blockquote><font color="#000080">The kitchen cabinet contains a container called a mixing bowl and a portable supporter called a platter.
+</font></blockquote><p>
+<p>
+<p>It is unlikely that anyone would want to name something &quot;a mixing bowl and a portable supporter called a platter&quot;, but not impossible, and Inform tends not to be a good judge of what is likely.
 <p>
 <p><hr><p>
+<a name="e182"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex182.html#e182 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>4</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex182.html#e182 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Port Royal 1</font></b></a><br>A partial implementation of Port Royal, Jamaica, set before the earthquake of 1692 demolished large portions of the city.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex182.html#e182 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e267"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex267.html#e267 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>5</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex267.html#e267 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Up and Up</font></b></a><br>Adding a short message as the player approaches a room, before the room description itself appears.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex267.html#e267 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e84"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc275.html#e84 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>289</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc275.html#e84 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Rules of Attraction</font></b></a><br>A magnet which picks up nearby metal objects, and describes itself appropriately in room descriptions and inventory listings, but otherwise goes by its ordinary name.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex84.html#e84 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e84"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc28.html#e84 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>6</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc28.html#e84 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Starry Void</font></b></a><br>Creating a booth that can be seen from the outside, opened and closed, and entered as a separate room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex84.html#e84 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Often we have some salient features of an object that we want to make sure the player notices whenever looking at the item in a room or in inventory. At other times, we may prefer to allow the name of the item to be printed bare. So for instance:
+<p>Sometimes we may want a room to be visible from the outside in one location, but treated as a separate location when we are inside. The simplest way to do this is to make the exterior form of the object into a door object, and to describe it differently from different vantage points. (Doors in general are described more fully in the Doors section of the Things chapter.)
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode375(code) {
+function pasteCode85(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Rules of Attraction"\n\nA metal form is a kind of thing. A magnet is a kind of metal form.\n\nEvery turn:\n\trepeat with item running through nonmagnetic metal forms which are not part of something\n\tbegin;\n\t\tif item is in a container which contains a magnet (called attractor)\n\t\tbegin;\n\t\t\tsay "[The item] sticks to [the attractor].";\n\t\t\tnow the item is part of the attractor;\n\t\tend if;\n\tend repeat.\n\nThe horseshoe magnet is a magnet carried by the player. The nail is a metal form carried by the player. The Barn is a room. In the Barn is a bucket. In the bucket is a metal form called the iron hook.\n\nDefinition: a thing is nonmagnetic if it is not a magnet.\n\nRule for printing room description details of a magnet (called attractor): if something is part of the attractor, say " (stuck to which [is-are the list of things which are part of the attractor])".\n\nAfter printing the name of a magnet (called attractor) while taking inventory:\n\tif something is part of the attractor, say " (stuck to which [is-are the list of things which are part of the attractor])".\n\nBefore taking a touchable thing which is part of a magnet (called attractor):\n\tmove the noun to the holder of the attractor.\n\nTest me with "i / put horseshoe in bucket / look / get horseshoe / i / drop horseshoe / i / look / get all / put all in bucket / i / x magnet / get nail / i".\n');
+    myProject.pasteCode(' "Starry Void"\n\nThe Center Ring is a room.\n\nThe magician\'s booth is a door. "[if in Center Ring]A magician\'s booth stands in the corner, painted dark blue with glittering gold stars.[otherwise if the magician\'s booth is closed]A crack of light indicates the way back out to the center ring.[otherwise]The door stands open to the outside.[end if]".\n\n[Here we\'ve arranged for the booth to be described in the initial room description in different ways depending on where the player is when viewing it. We might like to do the same if the player takes a closer look:]\n\nInstead of examining the magician\'s booth in the Center Ring:\n\tsay "It is dark blue and glittering with gold stars. [if the booth is open]The door currently stands open[otherwise]It has been firmly shut[end if]."\n\nInstead of examining the magician\'s booth in the Starry Void:\n\tsay "The booth door is [if the magician\'s booth is open]wide open[otherwise]shut, admitting only a thin crack of light[end if]."\n\n[And now we put it in place:]\n\nThe magician\'s booth is inside from Center Ring and outside from Starry Void.\n\n[...and make sure that the booth-and-door object responds to all the names we have used for it in different places:]\n\nUnderstand "door" or "of" or "the" or "light" or "crack" or "thin crack" as the booth.\n\nTest me with "in / examine booth / open door of the booth / in / examine door / close door / look / examine crack of light".\n\n');
 }
 </script>
-<a href="javascript:pasteCode375()"><img border=0 src=../doc_images/paste.png></a> &quot;Rules of Attraction&quot;
+<a href="javascript:pasteCode85()"><img border=0 src=../doc_images/paste.png></a>  &quot;Starry Void&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A metal form is a kind of thing. A magnet is a kind of metal form.
+<blockquote><font color="#000080">The Center Ring is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through nonmagnetic metal forms which are not part of something
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if item is in a container which contains a magnet (called attractor)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The item] sticks to [the attractor].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the item is part of the attractor;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">The magician's booth is a door. &quot;[if in Center Ring]A magician's booth stands in the corner, painted dark blue with glittering gold stars.[otherwise if the magician's booth is closed]A crack of light indicates the way back out to the center ring.[otherwise]The door stands open to the outside.[end if]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The horseshoe magnet is a magnet carried by the player. The nail is a metal form carried by the player. The Barn is a room. In the Barn is a bucket. In the bucket is a metal form called the iron hook.
+<p>Here we've arranged for the booth to be described in the initial room description in different ways depending on where the player is when viewing it. We might like to do the same if the player takes a closer look:
+<p>
+<blockquote><font color="#000080">Instead of examining the magician's booth in the Center Ring:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is dark blue and glittering with gold stars. [if the booth is open]The door currently stands open[otherwise]It has been firmly shut[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a thing is nonmagnetic if it is not a magnet.
+<blockquote><font color="#000080">Instead of examining the magician's booth in the Starry Void:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The booth door is [if the magician's booth is open]wide open[otherwise]shut, admitting only a thin crack of light[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for printing room description details of a magnet (called attractor): if something is part of the attractor, say &quot; (stuck to which [is-are the list of things which are part of the attractor])&quot;.
+<p>And now we put it in place:
+<p>
+<blockquote><font color="#000080">The magician's booth is inside from Center Ring and outside from Starry Void.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After printing the name of a magnet (called attractor) while taking inventory:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if something is part of the attractor, say &quot; (stuck to which [is-are the list of things which are part of the attractor])&quot;.
+<p>...and make sure that the booth-and-door object responds to all the names we have used for it in different places:
+<p>
+<blockquote><font color="#000080">Understand &quot;door&quot; or &quot;of&quot; or &quot;the&quot; or &quot;light&quot; or &quot;crack&quot; or &quot;thin crack&quot; as the booth.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before taking a touchable thing which is part of a magnet (called attractor):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the holder of the attractor.
+<blockquote><font color="#000080">Test me with &quot;in / examine booth / open door of the booth / in / examine door / close door / look / examine crack of light&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;i / put horseshoe in bucket / look / get horseshoe / i / drop horseshoe / i / look / get all / put all in bucket / i / x magnet / get nail / i&quot;.
+<p>A final nice touch, if we're so inclined, is to borrow from the Basic Actions chapter and make the player automatically open the booth door before trying to enter:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode86(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode(' Before going through the closed magician\'s booth:\n\tsay "(first opening the door of the booth)[command clarification break]";\n\tsilently try opening the booth.\n\n');
+}
+</script>
+<a href="javascript:pasteCode86()"><img border=0 src=../doc_images/paste.png></a>  Before going through the closed magician's booth:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first opening the door of the booth)[command clarification break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try opening the booth.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc275.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<p>For the contrasting case of a space that is nested inside another place and is not its own room -- say a stall at an open-air market, or a rowboat on a lake -- see the example &quot;Tamed&quot;.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc28.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc274.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc276.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc27.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc29.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

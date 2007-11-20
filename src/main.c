@@ -91,7 +91,7 @@ main (int argc, char *argv[])
 
 		num_args = g_strv_length(remaining_args);
 		for (i = 0; i < num_args; ++i) {
-			struct story *thestory = open_project(remaining_args[i]);
+			Story *thestory = open_project(remaining_args[i]);
             if(thestory != NULL)
                 gtk_widget_show(thestory->window);
 		}

@@ -249,5 +249,7 @@ void update_style(GtkSourceView *thiswidget);
 void update_font(GtkWidget *thiswidget);
 void update_font_size(GtkWidget *thiswidget);
 void update_tabs(GtkSourceView *thiswidget);
-
+gchar *get_font_family(void);
+int get_font_size(void);
+PangoFontDescription *get_font_description(void);
 #endif

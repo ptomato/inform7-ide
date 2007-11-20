@@ -1,0 +1,184 @@
+! StoredAction.i6
+
+#IFDEF I7_HEAP_SIZE; ! Will exist if any use is made of indexed texts
+
+! Compulsory services required by NI:
+
+[ I7_STORED_ACTION_TY_Create opcast stora;
+	stora = I7_Blk_Allocate(6*WORDSIZE, STORED_ACTION_TY, BLK_FLAG_WORD);
+	I7_Blk_Put(stora, 0, ##Wait); ! action
+	I7_Blk_Put(stora, 1, 0); ! noun
+	I7_Blk_Put(stora, 2, 0); ! second
+	I7_Blk_Put(stora, 3, player); ! actor
+	I7_Blk_Put(stora, 4, false); ! whether a request
+	I7_Blk_Put(stora, 5, 0); ! text of command if necessary
+	!print "Created at ", stora, "^";
+	return stora;
+];
+
+[ I7_STORED_ACTION_TY_Say stora text_of_command saved_command;
+	if ((stora==0) || (I7_Blk_Type(stora) ~= STORED_ACTION_TY)) return;
+	text_of_command = I7_Blk_Get(stora, 5);
+	if (text_of_command) {
+		saved_command = I7_INDEXED_TEXT_TY_Create();
+		I7_INDEXED_TEXT_TY_Cast(I7_command, SNIPPET_TY, saved_command);
+		I7_IT_SetPlayersCommand(text_of_command);
+		!print "(switching to text of command: ", (I7_INDEXED_TEXT_TY_Say) text_of_command, " at ", I7_Blk_Get(stora, 5), ")^";
+	}	
+	DB_Action(I7_Blk_Get(stora, 3), I7_Blk_Get(stora, 4),
+		I7_Blk_Get(stora, 0), I7_Blk_Get(stora, 1), I7_Blk_Get(stora, 2),
+		true);
+	if (text_of_command) {
+		!print "(switching back to: ", (I7_INDEXED_TEXT_TY_Say) saved_command, ")^";
+		I7_IT_SetPlayersCommand(saved_command);
+		I7_Blk_Free(saved_command);
+	}
+];
+
+[ I7_STORED_ACTION_TY_Compare storaleft storaright delta;
+	delta = I7_Blk_Get(storaleft, 0) - I7_Blk_Get(storaright, 0);
+	if (delta) return delta;
+	delta = I7_Blk_Get(storaleft, 1) - I7_Blk_Get(storaright, 1);
+	if (delta) return delta;
+	delta = I7_Blk_Get(storaleft, 2) - I7_Blk_Get(storaright, 2);
+	if (delta) return delta;
+	delta = I7_Blk_Get(storaleft, 3) - I7_Blk_Get(storaright, 3);
+	if (delta) return delta;
+	delta = I7_Blk_Get(storaleft, 4) - I7_Blk_Get(storaright, 4);
+	if (delta) return delta;
+	delta = I7_Blk_Get(storaleft, 5) - I7_Blk_Get(storaright, 5);
+	if (delta) return delta;
+	return 0;
+];
+
+[ I7_STORED_ACTION_TY_Distinguish txb1 txb2;
+	if (I7_STORED_ACTION_TY_Compare(txb1, txb2) == 0) rfalse;
+	rtrue;
+];
+
+[ I7_STORED_ACTION_TY_Free stora toc;
+	!print "freeing ", stora, "^";
+	toc = I7_Blk_Get(stora, 5);
+	if (toc) { I7_Blk_Free(toc); }
+	return stora;
+];
+
+[ I7_STORED_ACTION_TY_Deep_Copy storato storafrom tocfrom tocto;
+	tocfrom = I7_Blk_Get(storafrom, 5);
+	if (tocfrom == 0) return;
+	tocto = I7_INDEXED_TEXT_TY_Create();
+	I7_Blk_Deep_Copy(tocto, tocfrom);
+	I7_Blk_Put(storato, 5, tocto);
+];
+
+! Optional services used only by definitions in the Standard Rules:
+
+[ I7_STORED_ACTION_TY_Involves stora item at;
+	at = FindAction(I7_Blk_Get(stora, 0));
+	if (at) {
+		if ((ActionData-->(at+2) == OBJECT_TY) && (I7_Blk_Get(stora, 1) == item))
+			rtrue;
+		if ((ActionData-->(at+3) == OBJECT_TY) && (I7_Blk_Get(stora, 2) == item))
+			rtrue;
+	}
+	if (I7_Blk_Get(stora, 3) == item) rtrue;
+	if (I7_Blk_Get(stora, 4) == item) rtrue;
+	rfalse;
+];
+
+[ I7_STORED_ACTION_TY_Part stora ind at;
+	if (ind == 1 or 2) {
+		at = FindAction(I7_Blk_Get(stora, 0));
+		if ((at) && (ActionData-->(at+ind+1) == OBJECT_TY))
+			return I7_Blk_Get(stora, ind);
+		return nothing;
+	}
+	return I7_Blk_Get(stora, ind);
+];
+
+Array I7_SAT_Tmp-->6;
+[ I7_adopt_STORED_ACTION_TY stora;
+	I7_SAT_Tmp-->1 = action;
+	I7_SAT_Tmp-->2 = noun;
+	I7_SAT_Tmp-->3 = second;
+	I7_SAT_Tmp-->4 = actor;
+	I7_SAT_Tmp-->5 = act_requester;
+	action = I7_Blk_Get(stora, 0);
+	noun = I7_Blk_Get(stora, 1);
+	second = I7_Blk_Get(stora, 2);
+	actor = I7_Blk_Get(stora, 3);
+	if (I7_Blk_Get(stora, 4)) act_requester = player; else act_requester = nothing;
+];
+[ I7_unadopt_STORED_ACTION_TY;
+	action = I7_SAT_Tmp-->1;
+	noun = I7_SAT_Tmp-->2;
+	second = I7_SAT_Tmp-->3;	
+	actor = I7_SAT_Tmp-->4;	
+	act_requester = I7_SAT_Tmp-->5;
+	return I7_SAT_Tmp-->0;
+];
+
+[ I7_new_STORED_ACTION_TY a n s ac req stora;
+	if (stora == 0) stora = I7_STORED_ACTION_TY_Create();
+	I7_Blk_Put(stora, 0, a);
+	I7_Blk_Put(stora, 1, n);
+	I7_Blk_Put(stora, 2, s);
+	I7_Blk_Put(stora, 3, ac);
+	I7_Blk_Put(stora, 4, req);
+	return stora;
+];
+
+[ I7_current_STORED_ACTION_TY stora at text_of_command;
+	if ((stora==0) || (I7_Blk_Type(stora) ~= STORED_ACTION_TY)) return 0;
+	I7_Blk_Put(stora, 0, action);
+	I7_Blk_Put(stora, 1, noun);
+	I7_Blk_Put(stora, 2, second);
+	I7_Blk_Put(stora, 3, actor);
+	if (act_requester) I7_Blk_Put(stora, 4, true); else I7_Blk_Put(stora, 4, false);
+	at = FindAction(-1);
+	if ((at) &&
+		((ActionData-->(at+2) == UNDERSTANDING_TY) || (ActionData-->(at+3) == UNDERSTANDING_TY))) {
+		text_of_command = I7_Blk_Get(stora, 5);
+		if (text_of_command == 0) {
+			text_of_command = I7_INDEXED_TEXT_TY_Create();
+			!print "(creating text buffer for stora ", stora, ")^";
+			I7_Blk_Put(stora, 5, text_of_command);
+		}
+		I7_INDEXED_TEXT_TY_Cast(I7_command, SNIPPET_TY, text_of_command);
+		!print "(storing text of command: ", (I7_INDEXED_TEXT_TY_Say) I7_Blk_Get(stora, 5), " at ", I7_Blk_Get(stora, 5), ")^";
+	} else I7_Blk_Put(stora, 5, 0);
+	return stora;
+];
+
+[ I7_try_STORED_ACTION_TY stora ks text_of_command saved_command;
+	!print "I7_try_STORED_ACTION_TY on ", stora, "^";
+	if ((stora==0) || (I7_Blk_Type(stora) ~= STORED_ACTION_TY)) return;
+	if (ks) { @push keep_silent; keep_silent=1; }
+	text_of_command = I7_Blk_Get(stora, 5);
+	if (text_of_command) {
+		saved_command = I7_INDEXED_TEXT_TY_Create();
+		I7_INDEXED_TEXT_TY_Cast(I7_command, SNIPPET_TY, saved_command);
+		I7_IT_SetPlayersCommand(text_of_command);
+		!print "(switching to text of command: ", (I7_INDEXED_TEXT_TY_Say) text_of_command, ")^";
+	}
+	!print "TRY^";
+	I7_TryAction(I7_Blk_Get(stora, 4), I7_Blk_Get(stora, 3),
+		I7_Blk_Get(stora, 0), I7_Blk_Get(stora, 1), I7_Blk_Get(stora, 2));
+	!print "END TRY^";
+	if (text_of_command) {
+		!print "(switching back to: ", (I7_INDEXED_TEXT_TY_Say) saved_command, ")^";
+		I7_IT_SetPlayersCommand(saved_command);
+		I7_Blk_Free(saved_command);
+	}
+	if (ks) { @pull keep_silent; }
+];
+
+#IFNOT; ! IFDEF I7_HEAP_SIZE
+
+[ I7_STORED_ACTION_TY_Say stora; ];
+
+[ I7_new_STORED_ACTION_TY a n s ac req stora; return false; ];
+
+#ENDIF; ! IFDEF I7_HEAP_SIZE
+
+! End of StoredAction.i6

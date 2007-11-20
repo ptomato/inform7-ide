@@ -17,6 +17,7 @@
  */
  
 #include <gnome.h>
+#include <ctype.h>
 #include <gtkhtml/gtkhtml.h>
 #include <gtkhtml/gtkhtml-stream.h>
 
@@ -210,6 +211,20 @@ GtkHTMLStream *handle, gpointer data) {
         g_free(real_file);
     }
     
+    /* Check if it's a datafile */
+    gchar *temp = g_path_get_basename(file);
+    if(check_datafile(temp)) {
+        g_free(file);
+        file = get_datafile_path(temp);
+        g_free(temp);
+    }
+    /* Check if it's the "file://" protocol */
+    if(g_str_has_prefix(file, "file://")) {
+        temp = g_strdup(file + 7);
+        g_free(file);
+        file = temp;
+    }
+    
     /* Open "file" and write it to the html widget */
     if(!g_file_get_contents(file, &buf, &length, &err)) {
         error_dialog(NULL, err, "Error opening file %s: ", file);
@@ -233,7 +248,7 @@ on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data)
     g_return_if_fail(html != NULL);
     g_return_if_fail(requested_url != NULL);
     
-    struct story *thestory = get_story(GTK_WIDGET(html));
+    Story *thestory = get_story(GTK_WIDGET(html));
     int side = -1;
     if(GTK_WIDGET(html) == lookup_widget(GTK_WIDGET(html), "docs_l"))
         side = LEFT;
@@ -314,7 +329,7 @@ on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data)
         
         /* When clicking on a link to the documentation, this is a hack to
         get it to open in the documentation tab */
-        int right = get_current_notebook(GTK_WIDGET(html));
+        int right = get_current_notebook_side(GTK_WIDGET(html));
         html = GTK_HTML(lookup_widget(GTK_WIDGET(html), 
           right? "docs_r" : "docs_l"));
         gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(html), right),
@@ -398,7 +413,8 @@ on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data)
 }
 
 /* Destructor which removes the entry from the source table */
-static void on_html_destroy(GtkObject *widget, gpointer data)
+static void
+on_html_destroy(GtkObject *widget, gpointer data)
 {
     source_table_remove(GTK_HTML(widget));
 }
@@ -460,4 +476,85 @@ void html_refresh(GtkHTML *html) {
     gchar *buf = source_table_get(html);
     gtk_html_write(html, stream, buf, strlen(buf));  
     gtk_html_end(html, stream, GTK_HTML_STREAM_OK);
+}
+
+struct literal {
+	const gchar *name;
+	int len;
+	gchar replace;
+};
+
+static struct literal literals[] = {
+	{"quot;", 5, '\"'},
+	{"nbsp;", 5, ' '},
+	{"lt;",   3, '<'},
+	{"gt;",   3, '>'}
+};
+
+#define NUM_LITERALS (sizeof(literals) / sizeof(literals[0]))
+
+/* Convert HTML text to plain text by removing tags and substituting literals */
+gchar *
+html_to_plain_text(const gchar *htmltext)
+{
+    /* Reserve space for the main text */
+    int len = strlen(htmltext);
+    GString *text = g_string_sized_new(len);
+
+    /* Scan the text, removing markup */
+    gboolean white = FALSE;
+    const gchar *p1 = htmltext;
+    const gchar *p2 = p1 + len;
+    while(p1 < p2) {
+        /* Look for an HTML tag */
+        if(*p1 == '<') {
+            if(*(p1 + 1) == '!') {
+                p1 = strstr(p1, "-->");
+                if(p1 != NULL)
+                    p1 += 2;
+                else
+                    p1 = p2;
+            } else {
+                while(p1 < p2 && *p1 != '>')
+                    p1++;
+            }
+            g_assert(*p1 == '>');
+            
+            /* Add a carriage return for appropriate markup */
+            if(p1 >= htmltext + 2 && (strncmp(p1, "<p", 2) == 0
+               || strncmp(p1, "<P", 2) == 0)) {
+                g_string_append_c(text, '\n');
+                white = TRUE;
+            }
+        } else if(*p1 == '&') {
+            /* Scan for a known literal */
+            gboolean found = FALSE;
+            int i = 0;
+            while(!found && i < NUM_LITERALS) {
+                if(strncmp(p1 + 1, literals[i].name, literals[i].len) == 0)
+                    found = TRUE;
+                if(!found)
+                    i++;
+            }
+			/* Replace the literal */
+            if(found) {
+                g_string_append_c(text, literals[i].replace);
+                p1 += literals[i].len;
+            } else
+                g_string_append_c(text, *p1);
+            white = FALSE;
+        } else if(isspace(*p1)) {
+            if(!white)
+                g_string_append_c(text, ' ');
+            white = TRUE;
+        } else {
+            g_string_append_c(text, *p1);
+            white = FALSE;
+        }
+        p1++;
+    }
+
+    gchar *retval = g_strdup(text->str);
+    g_string_free(text, TRUE);
+    return retval;
 }

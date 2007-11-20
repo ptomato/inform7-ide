@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.3. Clothing</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.14. Goal-Seeking Characters</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,49 +19,253 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "Hayes Code" -->
-<!-- SEARCH SECTION "Ex 283" -->
-<!-- SEARCH SORT "Ex 009-003-283" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc58.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap9.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 9: Props: Food, Clothing, Money, Toys, Books, Electronics</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc60.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.3. Clothing</b></font></td></tr></table>
+<!-- SEARCH TITLE "Boston Cream" -->
+<!-- SEARCH SECTION "Ex 176" -->
+<!-- SEARCH SORT "Ex 007-014-176" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc52.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap7.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 7: Other Characters</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc54.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.14. Goal-Seeking Characters</b></font></td></tr></table>
 <p>
-<p>A person can wear any (portable) thing which has the &quot;wearable&quot; property. (This property seldom needs to be quoted because it is deduced automatically from sentences like &quot;Trevor wears a red hat.&quot;)
+<p>Goal-seeking characters are the most advanced IF life-form: they want to achieve specific outcomes, and they are able to work out plans of approach in order to bring these things about. They walk to rooms, open containers to search for things, use keys and tools, and ask leading questions in conversation.
 <p>
-<p>In most traditional IF, clothing is only used when it is exceptional in some way. That is, we ignore the three to eight different garments most people are wearing at any given time - the everyday clothes which people wear without thinking about them - and only simulate the unexpected extras: a borrowed jaunty red hat, a radiation-proof space suit, and so on.
+<p>A really advanced implementation of goal-seeking behavior is beyond the scope of our examples (though extensions exist that treat the problem more thoroughly). We can accomplish a surprising amount without heavy customization, though, if we keep in mind three points of technique:
 <p>
-<p>These unusual garments turn up only occasionally in play and usually one at a time, so Inform does not normally provide rules to restrict how much or little is worn, or in what unlikely combinations. <b>Get Me to the Church on Time</b> categorises clothing by body area (trousers for lower body, shirts for upper); <b>Bogart</b> by layer, distinguishing underwear from outer garments. <b>Hayes Code</b> is a somewhat stripped down version.
+<p>First: it helps to think abstractly and to create broadly-defined actions as a first step to more specific tasks. For instance, a character's goal might be to eat some dinner. He'd be equally satisfied with spaghetti carbonara or with braised lamb shanks, but he needs to figure out which is available. So we might have our every turn rule (or whatever we're using to activate the character) say something like
 <p>
-<p>Clothes are normally single things which have no function other than display and concealment, but <b>Being Prepared</b> gives them pockets which act as containers, and <b>Some Assembly Required</b> allows clothes to be stitched together from pieces of cloth.
+<blockquote><font color="#000080">Every turn when Clark is hungry:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try Clark dining.
+</font></blockquote><p>
 <p>
+<p>Dining would then be an action we've defined specially, which looks around Clark's environment for suitable food; if it finds food, it issues a
+<p>
+<blockquote><font color="#000080">try Clark eating the suitable food;
+</font></blockquote><p>
+<p>
+<p>command; but if not, it sends Clark off to look for something likely. <b>The Man of Steel</b> demonstrates the use of this.
+<p>
+<p>Second: though it doesn't actually contribute to the goal-seeking per se, lively reporting brings characters' generated behavior to life.
+<p>
+<blockquote><font color="#000080">Clark eats a donut.
+</font></blockquote><p>
+<p>
+<p>doesn't characterize Clark very much, even though the eating may be part of a subtle, intelligent plan to seduce Lois Lane. We'll do better if we replace a lot of the character reporting rules: to that end, see the example <b>Reporting rules for other characters' behavior</b>.
+<p>
+<p>Third: goal-seeking characters notice when something is in the way of the action they want to perform. When that happens, they form a plan about how to remove the obstacle. We've already seen this kind of implementation on the player's behalf: the player will pick up items before eating them, say. We can use Before rules to do similar things for other characters, as in
+<p>
+<blockquote><font color="#000080">Before Clark eating the wrapped candy:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try Clark unwrapping the candy;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the candy is wrapped, stop the action.
+</font></blockquote><p>
+<p>
+<p>Here we've set things up so that if Clark tries to eat the wrapped candy, he'll be interrupted by this other command; and if his unwrapping-the-candy attempt fails, he won't go on and eat the thing. <b>IQ Test</b> demonstrates a character who shows this kind of planning intelligence.
+<p>
+<p>Because before-rules chain neatly, we can trigger whole plans of behavior if we have a sensible set, as in
+<p>
+<blockquote><font color="#000080">Before someone entering a closed container: try the person asked opening the noun.
+<br>Before someone opening a locked container: try the person asked unlocking the noun.
+<br>Before someone unlocking a locked container: ...
+</font></blockquote><p>
+<p>
+<p>We must exercise a little bit of care if it is possible for the chain of actions to produce an endless loop - e.g., the character trying to take a key that is inside the transparent, locked box that it opens might repeatedly try to open the box, first unlocking the box, first taking the key, first opening the box, ... <b>Boston Cream</b> is a fully-worked scenario that deals with such a set of conundra.
+<p>
+<a href=Rdoc51.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Traveling Characters</b></font></a><i> for characters who plan routes to locations and travel towards them</i><p><p>
+<a href=Rdoc18.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Event Scheduling</b></font></a><i> for characters who follow a pre-written schedule of activities</i><p><p>
+<a href=Rdoc21.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Plot Management</b></font></a><i> for having a central function direct all the characters in order to further the plot</i><p><p>
 <p><hr><p>
-<a name="e335"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex335.html#e335 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>40</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex335.html#e335 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Get Me to the Church on Time</font></b></a><br>Using kinds of clothing to prevent the player from wearing several pairs of trousers at the same time.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex335.html#e335 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e224"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex224.html#e224 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>208</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex224.html#e224 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bogart</font></b></a><br>Clothing for the player that layers, so that items cannot be taken off in the wrong order, and the player's inventory lists only the clothing that is currently visible.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex224.html#e224 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e68"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex68.html#e68 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>188</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex68.html#e68 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Man of Steel</font></b></a><br>An escaping action which means "go to any room you can reach from here", and is only useful to non-player characters.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex68.html#e68 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e23"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex23.html#e23 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>193</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex23.html#e23 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Reporting rules for other characters' behavior</font></b></a><br>Elaborating the report rules to be more interesting than "Clark goes west."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex23.html#e23 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e382"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex382.html#e382 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>175</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex382.html#e382 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> IQ Test</font></b></a><br>Introducing Ogg, a person who will unlock and open a container when the player tells him to get something inside.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex382.html#e382 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e62"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc59.html#e62 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>283</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc59.html#e62 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Hayes Code</font></b></a><br>Clark Gable in a pin-striped suit and a pink thong.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex62.html#e62 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e62"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc53.html#e62 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>176</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc53.html#e62 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Boston Cream</font></b></a><br>A fuller implementation of Ogg, giving him a motivation of his own and allowing him to react to the situation created by the player.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex62.html#e62 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The following burlesque was considered too much for the tender readers of Chapter 3, since it involved explicit use of listing and persuasion:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode736(code) {
+function pasteCode662(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Hayes Code"\n\nThe Movie Set is a room. Clark Gable is a man in the Movie Set. "Clark leans on a polystyrene pillar, wearing [list of unconcealed things worn by Clark] with his usual aplomb." Persuasion rule for asking Clark to try doing something: persuasion succeeds.\n\nClark is wearing a pin-striped suit and a pink thong. Rule for deciding the concealed possessions of Clark: if the particular possession is the thong and Clark is wearing the suit, yes; otherwise no.\n\nTest me with "clark, remove suit / look / clark, remove thong / look".\n');
+    myProject.pasteCode('"Boston Cream"\n\nThe Donut Shop is a room. "Vibrantly decorated in donut colors: pink, brown, and cream."\n\nOgg is a man in the Donut Shop. "Ogg is slumped in the corner[if Ogg carries something] with [a list of things carried by Ogg][end if]. He wears a nametag which says \'HELLO MY NAME IS OG.\'" Understand "og" as Ogg. Ogg wears a nametag. The description of the nametag is "Very neatly written."\n\nThe Donut Shop contains a transparent closed openable locked lockable enterable container called a case. The case is fixed in place. The case contains some cake donuts, some jelly donuts, and some apple fritters. "The [if unopenable]damaged[otherwise]gleaming[end if] donut case [if something is in the case]contains [a list of things in the case][otherwise]has been stripped of its contents[end if]." The cake donuts, the jelly donuts, and the apple fritters are edible.\n\nThe matching key of the case is a silver key. The silver key is in a mesh basket. The mesh basket is closed, transparent, and openable. It is in the Donut Shop.\n\nBefore someone taking something which is carried by the player:\n\tif the person asked cannot touch the player\n\tbegin;\n\t\tsay "Ogg looks with a fixed frown at [the noun].";\n\t\tcontinue the action;\n\tend if;\n\tsay "[The person asked] comes up and shakes your arm until you drop [the noun].";\n\tsay line break;\n\tsilently try dropping the noun;\n\tstop the action.\n\nBefore someone unlocking a locked thing with something which is not carried by the person asked:\n\ttry the person asked taking the second noun;\n\tstop the action.\n\nBefore someone opening a locked thing (called the sealed chest):\n\tif the person asked can see the matching key of the sealed chest\n\tbegin;\n\t\tif the matching key of the sealed chest is enclosed by the sealed chest\n\t\tbegin;\n\t\t\tsay "Seeing the paradoxical location of [the matching key of the sealed chest], [the person asked] gives a howl of rage.";\n\t\t\taward 1 point;\n\t\t\tend the game saying "You have thwarted Ogg";\n\t\totherwise;\n\t\t\ttry the person asked unlocking the sealed chest with the matching key of the sealed chest;\n\t\tend if;\n\t\tstop the action;\n\tend if.\n\nBefore someone taking something which is in a closed container (called the shut chest):\n\ttry the person asked opening the shut chest;\n\tstop the action.\n\nOgg has a number called hunger.  The hunger of Ogg is 0.\n\nEvery turn:\n\tchange the hunger of Ogg to the hunger of Ogg plus 1;\n\tif the hunger of Ogg is 2 and Ogg is visible, say "Ogg\'s stomach growls.";\n\tif the hunger of Ogg is 3 and Ogg is visible\n\tbegin;\n\t\tif Ogg can see an edible thing (called the target)\n\t\tbegin;\n\t\t\tsay "Ogg eyes [the target] with obvious intent.";\n\t\totherwise;\n\t\t\tsay "Ogg glances at you in a disturbingly shifty way.";\n\t\tend if;\n\tend if;\n\tif the hunger of Ogg > 3\n\tbegin;\n\t\tif Ogg carries an edible thing (called the target)\n\t\tbegin;\n\t\t\ttry Ogg eating the target;\n\t\totherwise;\n\t\t\tlet new target be a random edible thing which can be seen by Ogg;\n\t\t\tif the new target is a thing\n\t\t\tbegin;\n\t\t\t\ttry Ogg taking the new target;\n\t\t\totherwise;\n\t\t\t\t if Ogg can touch the player, end the game saying "Ogg is gnawing your ankle";\n\t\t\t\totherwise try Ogg taking the player;\n\t\t\tend if;\n\t\tend if;\n\tend if.\n\nThe crumbs are a thing. "Crumbs of [the list of edible things which cannot be seen by the player] lie scattered over the whole floor."\n\nInstead of asking Ogg to try doing something when Ogg cannot touch the player:\n\tsay "Ogg tilts his head and shrugs, unable to hear your instruction clearly."\n\nInstead of asking Ogg to try eating something:\n\tsay "It\'s not as though Ogg really needs any encouragement in that department, is it?"\n\nDefinition: Ogg is hungry if the hunger of Ogg > 2.\n\nPersuasion rule for asking Ogg to try doing something: if Ogg is hungry, persuasion fails; persuasion succeeds.\n\nPersuasion rule for asking Ogg to try giving something edible to the player:\n\tpersuasion fails.\n\nUnsuccessful attempt by Ogg doing something:\n\tif the reason the action failed is a failing listed in the Table of Ogg Retorts\n\tbegin;\n\t\tsay "[reply entry][paragraph break]";\n\totherwise;\n\t\tsay "Ogg looks adorably confused.";\n\tend if.\n\nTable of Ogg Retorts\nfailing\treply\ncan\'t take people\'s possessions rule\t"\'Ogg too polite.\'"\ncan\'t take other people rule\t"\'Ogg not that greedy.\'"\ncan\'t take scenery rule\t"\'[The noun] very very heavy.\'"\ncan\'t take what\'s fixed in place rule\t"\'[The noun] very heavy."\ncan\'t drop what\'s not held rule\t"\'Hunh?\'"\n\nCarry out Ogg eating an edible thing:\n\tmove the crumbs to the holder of Ogg;\n\tchange the hunger of Ogg to 0.\n\nReport Ogg unlocking something with something:\n\tsay "Ogg struggles a bit with [the second noun] in the lock of [the noun], but does eventually succeed. \'Hunh!\' says Ogg.";\n\tstop the action.\n\nCarry out Ogg opening the case when the case has been open:\n\tnow the case is unopenable.\n\nInstead of closing the unopenable case:\n\tsay "The glass panels are no longer properly seated in their tracks, and the case cannot be closed ever again."\n\nReport Ogg opening the unopenable case:\n\tsay "Ogg forces [the case] so hard that it does break.";\n\tstop the action.\n\nReport Ogg opening the case:\n\tsay "Ogg yanks [the noun] open with such force that you fear for its structural integrity.";\n\tstop the action.\n\nReport Ogg taking something edible:\n\tsay "Ogg acquires [the noun] with a look of tender affection.";\n\tstop the action.\n\nReport Ogg eating something:\n\tsay "Ogg chows down on [the noun], scattering crumbs in all directions.";\n\tstop the action.\n\nReport Ogg eating something when the number of visible edible things is 1:\n\tsay "Ogg eats [the noun] in his trademark style. You can no longer bear to watch.";\n\tstop the action.\n\nAfter entering the case:\n\tsay "You climb inside the case, folding yourself up uncomfortably."\n\nAfter locking the case with something when the player is in the case:\n\tsay "You turn the key firmly in the lock -- amazing it locks from within, but it does -- and settle yourself for a long wait, hoping this thing is not air-tight."\n\nThe maximum score is 1.\n\nTest me with "open mesh / get key / unlock case / open case / enter case / close case / lock case / wait / wait".\n');
 }
 </script>
-<a href="javascript:pasteCode736()"><img border=0 src=../doc_images/paste.png></a> &quot;Hayes Code&quot;
+<a href="javascript:pasteCode662()"><img border=0 src=../doc_images/paste.png></a> &quot;Boston Cream&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Movie Set is a room. Clark Gable is a man in the Movie Set. &quot;Clark leans on a polystyrene pillar, wearing [list of unconcealed things worn by Clark] with his usual aplomb.&quot; Persuasion rule for asking Clark to try doing something: persuasion succeeds.
+<blockquote><font color="#000080">The Donut Shop is a room. &quot;Vibrantly decorated in donut colors: pink, brown, and cream.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Clark is wearing a pin-striped suit and a pink thong. Rule for deciding the concealed possessions of Clark: if the particular possession is the thong and Clark is wearing the suit, yes; otherwise no.
+<blockquote><font color="#000080">Ogg is a man in the Donut Shop. &quot;Ogg is slumped in the corner[if Ogg carries something] with [a list of things carried by Ogg][end if]. He wears a nametag which says 'HELLO MY NAME IS OG.'&quot; Understand &quot;og&quot; as Ogg. Ogg wears a nametag. The description of the nametag is &quot;Very neatly written.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;clark, remove suit / look / clark, remove thong / look&quot;.
+<blockquote><font color="#000080">The Donut Shop contains a transparent closed openable locked lockable enterable container called a case. The case is fixed in place. The case contains some cake donuts, some jelly donuts, and some apple fritters. &quot;The [if unopenable]damaged[otherwise]gleaming[end if] donut case [if something is in the case]contains [a list of things in the case][otherwise]has been stripped of its contents[end if].&quot; The cake donuts, the jelly donuts, and the apple fritters are edible.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc59.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">The matching key of the case is a silver key. The silver key is in a mesh basket. The mesh basket is closed, transparent, and openable. It is in the Donut Shop.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before someone taking something which is carried by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked cannot touch the player
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg looks with a fixed frown at [the noun].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The person asked] comes up and shakes your arm until you drop [the noun].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say line break;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try dropping the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before someone unlocking a locked thing with something which is not carried by the person asked:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked taking the second noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before someone opening a locked thing (called the sealed chest):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked can see the matching key of the sealed chest
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the matching key of the sealed chest is enclosed by the sealed chest
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Seeing the paradoxical location of [the matching key of the sealed chest], [the person asked] gives a howl of rage.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;award 1 point;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;You have thwarted Ogg&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try the person asked unlocking the sealed chest with the matching key of the sealed chest;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before someone taking something which is in a closed container (called the shut chest):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked opening the shut chest;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Ogg has a number called hunger.  The hunger of Ogg is 0.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the hunger of Ogg to the hunger of Ogg plus 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the hunger of Ogg is 2 and Ogg is visible, say &quot;Ogg's stomach growls.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the hunger of Ogg is 3 and Ogg is visible
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Ogg can see an edible thing (called the target)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg eyes [the target] with obvious intent.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg glances at you in a disturbingly shifty way.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the hunger of Ogg > 3
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Ogg carries an edible thing (called the target)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try Ogg eating the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let new target be a random edible thing which can be seen by Ogg;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the new target is a thing
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try Ogg taking the new target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if Ogg can touch the player, end the game saying &quot;Ogg is gnawing your ankle&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise try Ogg taking the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The crumbs are a thing. &quot;Crumbs of [the list of edible things which cannot be seen by the player] lie scattered over the whole floor.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking Ogg to try doing something when Ogg cannot touch the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg tilts his head and shrugs, unable to hear your instruction clearly.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking Ogg to try eating something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It's not as though Ogg really needs any encouragement in that department, is it?&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: Ogg is hungry if the hunger of Ogg > 2.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Persuasion rule for asking Ogg to try doing something: if Ogg is hungry, persuasion fails; persuasion succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Persuasion rule for asking Ogg to try giving something edible to the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;persuasion fails.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Unsuccessful attempt by Ogg doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is a failing listed in the Table of Ogg Retorts
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg looks adorably confused.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Ogg Retorts
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">failing</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take people's possessions rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Ogg too polite.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take other people rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Ogg not that greedy.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take scenery rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'[The noun] very very heavy.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take what's fixed in place rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'[The noun] very heavy.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't drop what's not held rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Hunh?'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out Ogg eating an edible thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the crumbs to the holder of Ogg;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the hunger of Ogg to 0.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Ogg unlocking something with something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg struggles a bit with [the second noun] in the lock of [the noun], but does eventually succeed. 'Hunh!' says Ogg.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out Ogg opening the case when the case has been open:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the case is unopenable.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of closing the unopenable case:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The glass panels are no longer properly seated in their tracks, and the case cannot be closed ever again.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Ogg opening the unopenable case:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg forces [the case] so hard that it does break.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Ogg opening the case:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg yanks [the noun] open with such force that you fear for its structural integrity.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Ogg taking something edible:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg acquires [the noun] with a look of tender affection.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Ogg eating something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg chows down on [the noun], scattering crumbs in all directions.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Ogg eating something when the number of visible edible things is 1:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Ogg eats [the noun] in his trademark style. You can no longer bear to watch.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After entering the case:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You climb inside the case, folding yourself up uncomfortably.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After locking the case with something when the player is in the case:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You turn the key firmly in the lock -- amazing it locks from within, but it does -- and settle yourself for a long wait, hoping this thing is not air-tight.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The maximum score is 1.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;open mesh / get key / unlock case / open case / enter case / close case / lock case / wait / wait&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc53.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e45"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex45.html#e45 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>42</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex45.html#e45 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Being Prepared</font></b></a><br>A kind for jackets, which always includes a container called a pocket.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex45.html#e45 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e108"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex108.html#e108 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>278</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex108.html#e108 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Some Assembly Required</font></b></a><br>Building different styles of shirt from component sleeves and collars.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex108.html#e108 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc58.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc60.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc52.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc54.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -26,5 +26,6 @@ gchar *get_extension_path(const gchar *author, const gchar *extname);
 gchar *get_datafile_path(const gchar *filename);
 gchar *get_datafile_path_va(const gchar *path1, ...);
 gboolean check_datafile(const gchar *filename);
+gchar *get_pixmap_path(const gchar *filename);
 
 #endif /* _DATAFILE_H */

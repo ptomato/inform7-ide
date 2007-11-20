@@ -40,4 +40,4 @@ void
 on_blorb_button_toggled                (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
-void update_settings(struct story *thestory);
+void update_settings(Story *thestory);

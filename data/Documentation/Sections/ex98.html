@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.16. Reaching inside and reaching outside rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.10. Understanding values</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,111 +19,118 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Carnivale" -->
-<!-- SEARCH SECTION "Ex 193" -->
-<!-- SEARCH SORT "Ex 012-016-193" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc187.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc189.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.16. Reaching inside and reaching outside rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Baritone, Bass" -->
+<!-- SEARCH SECTION "Ex 274" -->
+<!-- SEARCH SORT "Ex 016-010-274" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc251.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc253.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.10. Understanding values</b></font></td></tr></table>
 <p>
-<p>The flow chart back at the start of this chapter shows that, early on in processing an action (between Before and Instead), Inform asks the question &quot;Can we see or touch things?&quot; This is where it enforces the requirements in the action's definition:
+<p>So far every &quot;Understand&quot; sentence has ended with &quot;as&quot; and a description of an action. But we can also use &quot;Understand&quot; to supply new ways to talk about things and even values. For instance, if we create:
 <p>
-<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
-<br>Scraping it with is an action applying to two things.
+<blockquote><font color="#000080">A brass lantern is in the Building.
 </font></blockquote><p>
 <p>
-<p>Seeing and touching are two different questions, which Inform answers in different ways. We shall see ways to modify or entirely alter what can be seen using the &quot;deciding the scope of something&quot; activity when we get to the Understanding and Activities chapters, and later in this chapter we will change the definition of touchability. What both have in common is that they are complicated questions, affected by the circumstances. We cannot simply declare that the player can touch a given lever, or can see in a given room: we must arrange for there to be no barriers between the player and the lever, or for there to be a light source in the room.
+<p>then it can be called &quot;brass&quot;, or &quot;lantern&quot;, but not &quot;lamp&quot;: Inform does not really know what these words mean, and has no grasp of synonyms. We can arrange for &quot;lamp&quot; to work as well like so:
 <p>
-<p>An example of rules applying to given objects is provided by the way that Inform decides whether the player can reach something or not. For instance, suppose the following:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode30(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('The Laboratory is a room. In the Laboratory is a conical flask. The flask is closed and transparent. In the flask is an antibumping granule.\n\n');
-}
-</script>
-<a href="javascript:pasteCode30()"><img border=0 src=../doc_images/paste.png></a> The Laboratory is a room. In the Laboratory is a conical flask. The flask is closed and transparent. In the flask is an antibumping granule.
+<blockquote><font color="#000080">Understand &quot;lamp&quot; as the lantern.
+<br>Understand &quot;old lamp&quot; as the lantern.
 </font></blockquote><p>
 <p>
-<p>The player will be able to examine the granule but not to take it, as that would require reaching through glass. Suppose the player does type TAKE GRANULE: then Inform looks for potential barriers between the player and the granule, and of course finds the conical flask. If, as in this case, the thing to be touched is on the inside, then Inform asks the &quot;reaching inside&quot; rules for permission. There are two reaching inside rules built in to Inform:
+<p>With care, we can do the same trick for entire kinds of thing at once. It is not ordinarily the case that a thing can be called by the name of its kind: if we put a woman called April into a room, then she can usually be called &quot;April&quot;, but not &quot;woman&quot;. (The exception is when we do not specify any name for her - in that case, Inform will give up and call her just &quot;woman&quot;.) So there is not usually any form of words which can refer to anything of a given kind. If we should want this, we have to say so explicitly:
 <p>
-<blockquote><font color="#000080">can't reach inside rooms rule
-<br>can't reach inside closed containers rule
+<blockquote><font color="#000080">Understand &quot;machine&quot; as a device.
 </font></blockquote><p>
 <p>
-<p>and in fact the second of these rules will cause the taking action to fail, because the conical flask is a closed container. (The other rule has to do with a player in one room able to see another room through, say, a telescope - merely having a line of sight doesn't give the ability to reach into the frame.)
+<p>Device is a kind, so now the word &quot;machine&quot; can be used to refer to any device: if there are two in the same place, the result might play out like so:
 <p>
-<p>Symmetrically, Inform also has &quot;reaching outside&quot; rules, used if the player is inside something and wants to reach an object in the wider room. (From a bed, probably yes; from a cage, probably no.) This ordinarily contains just one rule:
-<p>
-<blockquote><font color="#000080">can't reach outside closed containers rule
+<blockquote><font color="#000080">>switch machine on
+<br>Which do you mean, the bale twiner or the grain thresher?
+<br>>twiner
+<br>You watch absorbed as a perfect cube of hay is trussed up like a parcel.
 </font></blockquote><p>
+<p>
+<p>Similarly, we might conceivably want to allow new ways to recognise values - in this case, a number:
+<p>
+<blockquote><font color="#000080">Understand &quot;eleventy-one&quot; as 111.
+</font></blockquote><p>
+<p>
+<p>When making complicated names, we need to watch out for the possibility of writing a definition which will cause Inform to go around in circles (something which will show up as a &quot;Too many activities at once&quot; run-time problem). For instance,
+<p>
+<blockquote><font color="#000080">Understand &quot;[thing] substitute&quot; as the placebo.
+</font></blockquote><p>
+<p>
+<p>will fail because Inform, working left to right, needs to look for every possible object name before it can progress: one possibility is the placebo itself: to check that, it needs to look for every possible object name: and so on, never finishing. A definition like this one very likely matches too much in any case (would we really want to accept PLACEBO SUBSTITUTE or CIGARETTE SUBSTITUTE SUBSTITUTE SUBSTITUTE here, as the definition implies?).
 <p>
 <p><hr><p>
+<a name="e107"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex107.html#e107 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>273</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex107.html#e107 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Palette</font></b></a><br>An artist's workshop in which the canvas can be painted in any colour, and where painterly names for pigments ("cerulean") are accepted alongside everyday ones ("blue").<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex107.html#e107 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e98"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc188.html#e98 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>193</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc188.html#e98 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Carnivale</font></b></a><br>An alternative to backdrops when we want something to be visible from a distance but only touchable from one room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex98.html#e98 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e98"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc252.html#e98 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>274</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc252.html#e98 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Baritone, Bass</font></b></a><br>Letting the player pick a gender (or perhaps other characteristics) before starting play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex98.html#e98 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to make an object that (unlike a backdrop) is definitely located in one room, but can be seen from far off. We want to allow the player to interact with it from a distance, but only using those actions that require visibility. Other actions should be denied:
+<p>The &quot;reading a command&quot; activity is rather advanced; for the moment, what we need to understand is that we're intervening in commands at the start of play and insisting that the player's first instruction to the game consist of a choice of gender. After that point, the gender will be set and play will proceed as normal.
+<p>
+<p>In order to do the parsing, we define gender as a kind of value, and give several alternate names to each gender.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode280(code) {
+function pasteCode361(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Carnivale"\n\nThe Fairground is a region. Park Entrance, By the Wheel, and Candy Stand are in Fairground. Candy Stand is north of By the Wheel. Park Entrance is west of Candy Stand and northwest of By the Wheel.\n\nThe ferris wheel is scenery in By the Wheel. "It is extravagantly tall and carries several dozen glass gondolas for riders."\n\nThe description of By the Wheel is "You stand at the foot of an enormous ferris wheel, which turns far too quickly and never seems to stop for new riders."\n\nThe description of Park Entrance is "You are now just inside the gates. Behind you snakes a triple line of fairgoers all the way down the length of the valley to the railway station. Roughly southeast of here is the ferris wheel, towering over the other attractions."\n\nThe description of Candy Stand is "A hut in pale pink and baby blue dispenses marshmallow death\'s-heads, sugar-beetles, and other such treats. The giant ferris wheel is just off to the south from here."\n\n[As the descriptions make clear, the ferris wheel should be visible from everywhere in the fair, so we\'ll borrow a line from the Activities chapter to make that happen:]\n\nAfter deciding the scope of the player:\n\tif the location is in Fairground, place the ferris wheel in scope.\n\n');
+    myProject.pasteCode('"Baritone, Bass"\n\nGetting Started is a room.\n\nGender is a kind of value. The genders are masculine, feminine, and unknown. Understand "male" or "man" or "M" as masculine. Understand "female" or "woman" or "F" as feminine.\n\nA person has a gender. The gender of the player is unknown.\n\nWhen play begins:\n\tchange the command prompt to "Please choose a gender for your character. >";\n\nAfter reading a command when the gender of the player is unknown:\n\tif the player\'s command includes "[gender]"\n\tbegin;\n\t\tnow the gender of the player is the gender understood;\n\t\tif the gender of the player is masculine, now the player is male;\n\t\tif the gender of the player is feminine, now the player is female;\n\t\tsay "[line break]Thank you. We now begin...";\n\t\tchange the command prompt to ">";\n\t\tmove the player to Sandy Beach;\n\t\treject the player\'s command;\n\totherwise;\n\t\tsay "Sorry, we\'re not ready to go on yet -- please pick a gender to begin. >";\n\t\treject the player\'s command;\n\tend if.\n\nSandy Beach is a room.\n\nInstead of examining the player when the player is female:\n\tsay "Congratulations, you are a girl!"\n\nInstead of examining the player when the player is male:\n\tsay "Congratulations, you are a boy!"\n\n');
 }
 </script>
-<a href="javascript:pasteCode280()"><img border=0 src=../doc_images/paste.png></a> &quot;Carnivale&quot;
+<a href="javascript:pasteCode361()"><img border=0 src=../doc_images/paste.png></a> &quot;Baritone, Bass&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Fairground is a region. Park Entrance, By the Wheel, and Candy Stand are in Fairground. Candy Stand is north of By the Wheel. Park Entrance is west of Candy Stand and northwest of By the Wheel.
+<blockquote><font color="#000080">Getting Started is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The ferris wheel is scenery in By the Wheel. &quot;It is extravagantly tall and carries several dozen glass gondolas for riders.&quot;
+<blockquote><font color="#000080">Gender is a kind of value. The genders are masculine, feminine, and unknown. Understand &quot;male&quot; or &quot;man&quot; or &quot;M&quot; as masculine. Understand &quot;female&quot; or &quot;woman&quot; or &quot;F&quot; as feminine.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of By the Wheel is &quot;You stand at the foot of an enormous ferris wheel, which turns far too quickly and never seems to stop for new riders.&quot;
+<blockquote><font color="#000080">A person has a gender. The gender of the player is unknown.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of Park Entrance is &quot;You are now just inside the gates. Behind you snakes a triple line of fairgoers all the way down the length of the valley to the railway station. Roughly southeast of here is the ferris wheel, towering over the other attractions.&quot;
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;Please choose a gender for your character. >&quot;;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of Candy Stand is &quot;A hut in pale pink and baby blue dispenses marshmallow death's-heads, sugar-beetles, and other such treats. The giant ferris wheel is just off to the south from here.&quot;
+<blockquote><font color="#000080">After reading a command when the gender of the player is unknown:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;[gender]&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the gender of the player is the gender understood;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the gender of the player is masculine, now the player is male;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the gender of the player is feminine, now the player is female;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break]Thank you. We now begin...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;>&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the player to Sandy Beach;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Sorry, we're not ready to go on yet -- please pick a gender to begin. >&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<p>As the descriptions make clear, the ferris wheel should be visible from everywhere in the fair, so we'll borrow a line from the Activities chapter to make that happen:
-<p>
-<blockquote><font color="#000080">After deciding the scope of the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is in Fairground, place the ferris wheel in scope.
+<blockquote><font color="#000080">Sandy Beach is a room.
 </font></blockquote><p>
 <p>
-<p>&quot;Scope&quot; determines what the player can interact with; by writing this rule, we make Inform understand all commands that refer to the ferris wheel when the player is anywhere in the fairground, instead of responding with
-<p>
-<blockquote><font color="#000080">You can't see any such thing.
+<blockquote><font color="#000080">Instead of examining the player when the player is female:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you are a girl!&quot;
 </font></blockquote><p>
 <p>
-<p>as it normally would.
-<p>
-<p>Now, by default, if the player were to type TOUCH FERRIS WHEEL while in another room, he would get the response
-<p>
-<blockquote><font color="#000080">You can't reach into By the Wheel.
+<blockquote><font color="#000080">Instead of examining the player when the player is male:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you are a boy!&quot;
 </font></blockquote><p>
 <p>
-<p>This may not be quite what we want, but we can replace this text with our own reaching inside rule:
+<p>If we had a whole series of things to ask the player about, we might define a whole series of kinds of value
 <p>
-<blockquote><font color="#000080">Rule for reaching inside a room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can only look from this distance.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;deny access.
+<blockquote><font color="#000080">The vocal ranges are soprano, mezzosoprano, contralto...
 </font></blockquote><p>
 <p>
-<p>And because our accessibility rules are considered before the &quot;Instead&quot; phase, we can write the following rule confident that it will apply only when the player is in fact in range to touch the ferris wheel:
+<p>and use a &quot;construction stage&quot; variable to keep track of the current stage of character-construction, as in
 <p>
-<blockquote><font color="#000080">Instead of touching the ferris wheel:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You don't dare: it's spinning too fast.&quot;
+<blockquote><font color="#000080">After reading a command when the current construction stage is choosing a vocal range:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x ferris wheel / touch ferris wheel / se / x ferris wheel / touch ferris wheel&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc188.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc252.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc187.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc189.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc251.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc253.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

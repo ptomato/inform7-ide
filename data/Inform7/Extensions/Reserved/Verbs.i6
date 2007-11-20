@@ -43,9 +43,12 @@ Global GVS_converted = -1;
 			vis = vis || (I7_CanSee(player, second));
 		if (rv=ProcessRulebook(GENERIC_CHECK_RB)) jump FailsUnlessConverted;
 		if (any && (rv=ProcessRulebook(ch))) jump FailsUnlessConverted;
+		if (deadflag) jump FailsUnlessConverted;
 		if (ProcessRulebook(GENERIC_CARRYOUT_RB) == 0)
 			if (any) ProcessRulebook(co);
+		if (deadflag) jump FailsUnlessConverted;
 		if (rv=ProcessRulebook(AFTER_RB)) jump HappyEnding;
+		if (deadflag) jump FailsUnlessConverted;
 		vis = vis || (I7_CanSee(player, actor));
 		if ((noun ofclass K2_thing) && (~~(noun ofclass K7_backdrop)))
 			vis = vis || (I7_CanSee(player, noun));
@@ -53,14 +56,20 @@ Global GVS_converted = -1;
 			vis = vis || (I7_CanSee(player, second));
 		if (keep_silent || (vis==false)) jump HappyEnding;
 		if (rv=ProcessRulebook(GENERIC_REPORT_RB)) jump HappyEnding;
+		if (deadflag) jump FailsUnlessConverted;
 		if (any) rv=ProcessRulebook(re);
 		jump HappyEnding;
 	}
 	if ((rv=ProcessRulebook(GENERIC_CHECK_RB)) || (rv=ProcessRulebook(ch)))
 		jump FailsUnlessConverted;
+	if (deadflag) jump FailsUnlessConverted;
 	if (ProcessRulebook(GENERIC_CARRYOUT_RB) == 0) ProcessRulebook(co);
+	if (deadflag) jump FailsUnlessConverted;
 	if (meta) say__p = 0;
-	if (rv=ProcessRulebook(AFTER_RB)) jump HappyEnding;
+	else {
+		if (rv=ProcessRulebook(AFTER_RB)) jump HappyEnding;
+		if (deadflag) jump FailsUnlessConverted;
+	}
 	if (keep_silent) jump HappyEnding;
 	if (rv=ProcessRulebook(GENERIC_REPORT_RB)) jump HappyEnding;
 	rv=ProcessRulebook(re);

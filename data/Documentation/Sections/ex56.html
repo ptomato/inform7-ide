@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.13. The past and perfect tenses</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.5. Assemblies and body parts</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,135 +19,121 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Tense Boxing" -->
-<!-- SEARCH SECTION "Ex 133" -->
-<!-- SEARCH SORT "Ex 009-013-133" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc139.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc141.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.13. The past and perfect tenses</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Night Before" -->
+<!-- SEARCH SECTION "Ex 45" -->
+<!-- SEARCH SORT "Ex 004-005-045" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc57.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc59.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.5. Assemblies and body parts</b></font></td></tr></table>
 <p>
-<p>The remaining sections of this chapter go into more technical ways to think about the progress of the game through time, and can be skipped at a first reading.
+<p>In the previous chapter, we saw that it was possible to make sub-parts of things. For instance,
 <p>
-<p>Conditions are clauses which require Inform to make a decision: is such-and-such true, or not true? We have already seen conditions attached to rules using &quot;when&quot;:
-<p>
-<blockquote><font color="#000080">Instead of waiting when the Sorting Hat is in the Hall: ...
+<blockquote><font color="#000080">The white door is in the Drawing Room. The handle is part of the white door.
 </font></blockquote><p>
 <p>
-<p>and, as we shall later see, we will often want to write instructions like:
+<p>creates a door with an attached handle. But what if we want to say that not just this door, but every door, should have a handle? To do this we first need to create a kind called &quot;handle&quot;, since there will clearly need to be many handles. The solution is:
 <p>
-<blockquote><font color="#000080">if the Sorting Hat is in the Hall then say &quot;Hermione blinks apprehensively.&quot;
+<blockquote><font color="#000080">A handle is a kind of thing. A handle is part of every door.
 </font></blockquote><p>
 <p>
-<p>The condition is &quot;the Sorting Hat is in the Hall&quot;, and during play this will sometimes be true and sometimes false.
+<p>&quot;Every&quot; is a loaded word and best used sparingly. A sentence like &quot;A handle is part of every handle&quot; would, if taken literally, mean that a handle takes forever to make and is never finished. Inform will reject this, but the moral is clear: we should think about what we are doing with &quot;every&quot;. Another restriction is it is not safe to meddle with the three fundamental kinds &quot;room&quot;, &quot;container&quot; or &quot;supporter&quot; by making them into assemblies, but in fact this one can be got around quite easily, like so -
 <p>
-<p>A condition in the form &quot;X is Y&quot; is of course written the present tense, and refers to the current state of affairs. Three other tenses are allowed. First, the present perfect:
-<p>
-<blockquote><font color="#000080">if X has been Y ...
+<blockquote><font color="#000080">A silver coin is a kind of thing. A banking room is a kind of room. Five silver coins are in every banking room.
 </font></blockquote><p>
 <p>
-<p>is true if it has ever been the case that &quot;X is Y&quot; at the start of any turn (or any action). So, for instance,
+<p>The effect of sentences like these is to make what we might call &quot;assemblies&quot; instead of single things. When a banking room is created, so are five more silver coins; when a door is created, so is another handle. Such sentences act not only on items created later on in the source text, but also on all those created so far.
 <p>
-<blockquote><font color="#000080">if the gate has been open ...
+<p>This is especially useful for body parts. If we would like to explore Voltaire's suggestion that history would have been very different if only Cleopatra's nose had been shorter, we will need noses:
+<p>
+<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person.
 </font></blockquote><p>
 <p>
-<p>will be valid if and only if the gate has ever been made open by any action (even if it is closed now), or if it started out by being open when play began.
+<p>Something to bear in mind, though, is that in play the following may well happen:
 <p>
-<p>Next is the past tense:
-<p>
-<blockquote><font color="#000080">if X was Y ...
+<blockquote><font color="#000080">>examine nose
+<br>Which do you mean, your nose, Antony's nose or Cleopatra's nose?
 </font></blockquote><p>
 <p>
-<p>holds if and only if &quot;X is Y&quot; was true at the start of the most recent action. This is convenient when trying to describe what has changed in the course of the action, but sometimes also when making the action itself happen. For instance:
+<p>...because the player, being also a &quot;person&quot;, is as susceptible to the invention of noses as anyone else.
 <p>
-<blockquote><font color="#000080">if the lantern was switched on then change the lantern to switched off;
-<br>if the lantern was switched off then change the lantern to switched on;
+<p>Note that Inform names the otherwise nameless noses after their owners. It will always do this unless there are multiple indistinguishable things being created, as in the &quot;five silver coins are in every banking room&quot; example: those will all just be called &quot;silver coin&quot;.
+<p>
+<p>Something to watch out for is that if we write:
+<p>
+<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person. Antony and Cleopatra are people.
 </font></blockquote><p>
 <p>
-<p>Completing the set is the past perfect:
+<p>then we can begin talking about &quot;Antony's nose&quot; and &quot;Cleopatra's nose&quot;: but it is not safe to discuss these before the sentence &quot;A nose is part of every person&quot; which creates them. Another pitfall is that if we then write:
 <p>
-<blockquote><font color="#000080">if X had been Y ...
+<blockquote><font color="#000080">Marcus Tullius Cicero is a person.
 </font></blockquote><p>
 <p>
-<p>which records whether &quot;X has been Y&quot; was true at the start of the most recent action. All these verbs can of course be negated (though &quot;wasn't&quot; and &quot;hadn't&quot; are disallowed as poor style: we use &quot;was not&quot; and &quot;had not&quot; instead). So for example,
-<p>
-<blockquote><font color="#000080">if the player had not been in the Ballroom ...
-</font></blockquote><p>
-<p>
-<p>is true if the player hadn't visited the Ballroom at the start of the most recent action.
-<p>
-<p>Something we must watch out for is that variables might not have the same values in the past that they have now. As a result, writing conditions such as &quot;if the noun has been open&quot; is a bad idea, because in the past &quot;the noun&quot; very likely referred to something different. It is really only safe to talk in the past tense about definite, fixed things: &quot;if the Great Gates of Kiev have been open&quot; would be fine.
+<p>then although &quot;Marcus Tullius Cicero's nose&quot; and &quot;Cicero's nose&quot; are both valid names for the consular nose, &quot;Marcus's nose&quot; is not.
 <p>
 <p><hr><p>
+<a name="e50"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex50.html#e50 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>43</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex50.html#e50 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Being Prepared</font></b></a><br>A kind for jackets, which always includes a container called a pocket.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex50.html#e50 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e158"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex158.html#e158 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>44</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex158.html#e158 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Model Shop</font></b></a><br>An "on/off button" which controls whatever device it is part of.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex158.html#e158 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e56"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc140.html#e56 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>133</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc140.html#e56 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Tense Boxing</font></b></a><br>An overview of all the variations of past and present tenses, and how they might be used.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex56.html#e56 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e56"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc58.html#e56 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>45</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc58.html#e56 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Night Before</font></b></a><br>Instructing Inform to prefer different interpretations of EXAMINE NOSE, depending on whether the player is alone, in company, or with Rudolph the Red-nosed Reindeer.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex56.html#e56 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Here we have a box that prints out its current state and its history each time we open and close it:
+<p>Suppose that we're going to give every person in the game a nose, but we want references to a nose always to mean the nose of someone *else*, if the player is with one other person. Moreover, on some occasions we're going to be in sight of Rudolph, so actions directed at an unspecified nose should always prefer his.
+<p>
+<p>This relies on a somewhat advanced technique from the Understanding chapter, but since it may become useful with assemblies and body parts, it is worth mentioning here.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode222(code) {
+function pasteCode130(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Tense Boxing"\n\nThe Temporal Prism is a room. "A room of angled mirrors, in whose surfaces you can see what is now; what just was; what has always been. A final mirror is broken and its frame gapes blackly."\n\nThe mysterious box is in the Temporal Prism. It is an openable closed container.\n\nTo assess the box:\n\tif the box was not open then say "The box was not open.";\n\tif the box was open then say "The box was open.";\n\tif the box had not been open then say "The box had not been open.";\n\tif the box had been open then say "The box had been open.";\n\tif the box is not open then say "The box is not open.";\n\tif the box is open then say "The box is open.";\n\tif the box has not been open then say "The box has not been open.";\n\tif the box has been open then say "The box has been open."\n\nBefore opening the mysterious box:\n\tsay "You are about to open the box.";\n\tassess the box.\n\nBefore closing the mysterious box:\n\tsay "You are about to close the box.";\n\tassess the box.\n\nAfter opening the mysterious box:\n\tsay "You now open the box.";\n\tassess the box.\n\nAfter closing the mysterious box:\n\tsay "You now close the box.";\n\tassess the box.\n\n[Note that "was..." and "was not..." and so on may describe conditions more complicated than simple properties: we could equally well ask "if the box has been in the sack", "if the box had been carried by the player", and so on.]\n\n[The past ("if the box was...") and past perfect ("if the box had been...") are especially useful for cases where we want to report on an action after the state of the item has changed; so, for instance:]\n\nAfter taking the mysterious box:\n\tif the box had not been carried by the player, say "You lift the mysterious box for the first time.";\n\tif the box had been carried by the player, say "You again pick up the mysterious box."\n\nTest me with "open box / close box / open box / take box / drop box / take box".\n\n');
+    myProject.pasteCode('"The Night Before"\n\nThe North Pole is a room. "Here it is: the famous Pole. From here you can go south (or south-south, or south-south-by-south); or, alternatively, take refuge inside a red-and-white-striped cabin." The cabin is scenery in the North Pole. Instead of entering the cabin, try going inside.\n\nSanta is a man in the North Pole. "Santa is pacing around in the snow and trying to psych himself up for the big night."\n\nInside from North Pole is the Candy Cane Cabin. The description of the Cabin is "Striped red and white, but nothing can make this place seem warm and inviting since Mrs. Santa ran off with the Tooth Fairy."\n\nThe Ice Shelf is south of North Pole. "The ice here has been smoothed into a kind of runway for easy take-off, and ends in a cliff and cold arctic sea." Donner, Vixen, Blixen, and Rudolph are animals in the Ice Shelf.\n\nA nose is a kind of thing. A nose is part of every person. The description of Santa\'s nose is "It\'s a bit ruddy. You don\'t like to mention it, but Santa\'s been dipping heavily into the Grey Goose since Mrs. Santa left town." The description of a nose is usually "Not terribly exciting."  The description of Rudolph\'s nose is "See how it glows!"\n\n[Next, we\'ll teach Inform some vocabulary to distinguish between the player and everyone else:]\n\nDefinition: a person is other if it is not the player.\n\nDefinition: a thing is selfish if it is part of the player and the player can see an other person.\n\nInstead of examining a selfish nose:\n\tsay "You cross your eyes, but can\'t get a good look."\n\n[Here is the part that actually determines the preferences. "Does the player mean..." can result in five outcomes: "it is very unlikely", "it is unlikely", "it is possible" (the neutral default), "it is likely", and "it is very likely". This is discussed in greater detail in the Understanding chapter. Here, we want to discourage references to the player\'s own nose and encourage references to the nose of Rudolph, so:]\n\nDoes the player mean doing something when the noun is a selfish nose or the second noun is a selfish nose: it is very unlikely.\n\nDoes the player mean doing something to Rudolph\'s nose: it is very likely.\n\n[And this part is just for decoration:]\n\nRule for writing a paragraph about Rudolph:\n\tsay "The reindeer are already harnessed and waiting impatiently. The brilliance of [Rudolph]\'s nose casts an eerie red glow over [the list of unmentioned animals in the location]."\n\nTest me with "x nose / x my nose / x santa\'s nose / in / x nose / out / s / x my nose / x nose / x rudolph\'s nose / x donner\'s nose".\n');
 }
 </script>
-<a href="javascript:pasteCode222()"><img border=0 src=../doc_images/paste.png></a> &quot;Tense Boxing&quot;
+<a href="javascript:pasteCode130()"><img border=0 src=../doc_images/paste.png></a> &quot;The Night Before&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Temporal Prism is a room. &quot;A room of angled mirrors, in whose surfaces you can see what is now; what just was; what has always been. A final mirror is broken and its frame gapes blackly.&quot;
+<blockquote><font color="#000080">The North Pole is a room. &quot;Here it is: the famous Pole. From here you can go south (or south-south, or south-south-by-south); or, alternatively, take refuge inside a red-and-white-striped cabin.&quot; The cabin is scenery in the North Pole. Instead of entering the cabin, try going inside.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The mysterious box is in the Temporal Prism. It is an openable closed container.
+<blockquote><font color="#000080">Santa is a man in the North Pole. &quot;Santa is pacing around in the snow and trying to psych himself up for the big night.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To assess the box:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box was not open then say &quot;The box was not open.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box was open then say &quot;The box was open.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box had not been open then say &quot;The box had not been open.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box had been open then say &quot;The box had been open.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box is not open then say &quot;The box is not open.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box is open then say &quot;The box is open.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box has not been open then say &quot;The box has not been open.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box has been open then say &quot;The box has been open.&quot;
+<blockquote><font color="#000080">Inside from North Pole is the Candy Cane Cabin. The description of the Cabin is &quot;Striped red and white, but nothing can make this place seem warm and inviting since Mrs. Santa ran off with the Tooth Fairy.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before opening the mysterious box:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are about to open the box.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;assess the box.
+<blockquote><font color="#000080">The Ice Shelf is south of North Pole. &quot;The ice here has been smoothed into a kind of runway for easy take-off, and ends in a cliff and cold arctic sea.&quot; Donner, Vixen, Blixen, and Rudolph are animals in the Ice Shelf.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before closing the mysterious box:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are about to close the box.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;assess the box.
+<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person. The description of Santa's nose is &quot;It's a bit ruddy. You don't like to mention it, but Santa's been dipping heavily into the Grey Goose since Mrs. Santa left town.&quot; The description of a nose is usually &quot;Not terribly exciting.&quot;  The description of Rudolph's nose is &quot;See how it glows!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After opening the mysterious box:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You now open the box.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;assess the box.
+<p>Next, we'll teach Inform some vocabulary to distinguish between the player and everyone else:
+<p>
+<blockquote><font color="#000080">Definition: a person is other if it is not the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After closing the mysterious box:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You now close the box.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;assess the box.
+<blockquote><font color="#000080">Definition: a thing is selfish if it is part of the player and the player can see an other person.
 </font></blockquote><p>
 <p>
-<p>Note that &quot;was...&quot; and &quot;was not...&quot; and so on may describe conditions more complicated than simple properties: we could equally well ask &quot;if the box has been in the sack&quot;, &quot;if the box had been carried by the player&quot;, and so on.
-<p>
-<p>The past (&quot;if the box was...&quot;) and past perfect (&quot;if the box had been...&quot;) are especially useful for cases where we want to report on an action after the state of the item has changed; so, for instance:
-<p>
-<blockquote><font color="#000080">After taking the mysterious box:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box had not been carried by the player, say &quot;You lift the mysterious box for the first time.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the box had been carried by the player, say &quot;You again pick up the mysterious box.&quot;
+<blockquote><font color="#000080">Instead of examining a selfish nose:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You cross your eyes, but can't get a good look.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;open box / close box / open box / take box / drop box / take box&quot;.
+<p>Here is the part that actually determines the preferences. &quot;Does the player mean...&quot; can result in five outcomes: &quot;it is very unlikely&quot;, &quot;it is unlikely&quot;, &quot;it is possible&quot; (the neutral default), &quot;it is likely&quot;, and &quot;it is very likely&quot;. This is discussed in greater detail in the Understanding chapter. Here, we want to discourage references to the player's own nose and encourage references to the nose of Rudolph, so:
+<p>
+<blockquote><font color="#000080">Does the player mean doing something when the noun is a selfish nose or the second noun is a selfish nose: it is very unlikely.
 </font></blockquote><p>
 <p>
-<p>This is in many respects similar to a rule beginning &quot;After taking the mysterious box for the first time...&quot;, but it is superior in most circumstances, for two reasons.
+<blockquote><font color="#000080">Does the player mean doing something to Rudolph's nose: it is very likely.
+</font></blockquote><p>
 <p>
-<p>First, it will respond correctly even if the player has somehow carried the box before without taking it explicitly: for instance, if another character gave him the box, if the box were moved into his inventory as a result of another action, or if the player carried the box at the start of play. Inform begins its reckoning of time when the game begins, so if the box is defined as being open at the outset, &quot;if the box has been open&quot; will always be true.
+<p>And this part is just for decoration:
 <p>
-<p>Second, &quot;after taking... for the first time&quot; fires only the first time the player attempts to take something. If the player tried to take the box, failed, and then tried again later, the &quot;for the first time...&quot; rule would not fire; our &quot;if the box has not been carried...&quot; rule would.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc140.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Rule for writing a paragraph about Rudolph:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The reindeer are already harnessed and waiting impatiently. The brilliance of [Rudolph]'s nose casts an eerie red glow over [the list of unmentioned animals in the location].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x nose / x my nose / x santa's nose / in / x nose / out / s / x my nose / x nose / x rudolph's nose / x donner's nose&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc58.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e197"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex197.html#e197 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>134</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex197.html#e197 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bruneseau's Journey</font></b></a><br>A candle which reacts to lighting and blowing actions differently depending on whether it has already been lit once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex197.html#e197 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc139.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc141.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e7"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex7.html#e7 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>46</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex7.html#e7 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> U-Stor-It</font></b></a><br>A "chest" kind which consists of a container which has a lid as a supporter.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex7.html#e7 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc57.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

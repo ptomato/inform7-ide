@@ -424,7 +424,8 @@ gtk_terp_get_filename(GtkTerp *terp)
  * Returns: %TRUE on success, %FALSE if error was set.
  */
 gboolean
-gtk_terp_start_game(GtkTerp *terp, GtkTerpInterpreter format, GError **error)
+gtk_terp_start_game(GtkTerp *terp, const GtkTerpInterpreter format,
+                    GError **error)
 {
     g_return_val_if_fail(terp != NULL, FALSE);
     g_return_val_if_fail(GTK_IS_TERP(terp), FALSE);
@@ -565,7 +566,7 @@ gtk_terp_get_running(GtkTerp *terp)
  * automatically. Interactive mode is on by deafult.
  */
 void
-gtk_terp_set_interactive(GtkTerp *terp, gboolean interactive)
+gtk_terp_set_interactive(GtkTerp *terp, const gboolean interactive)
 {
     g_return_if_fail(terp != NULL);
     g_return_if_fail(GTK_IS_TERP(terp));
@@ -604,7 +605,7 @@ gtk_terp_get_interactive(GtkTerp *terp)
  * will not work.
  */
 void
-gtk_terp_set_protected(GtkTerp *terp, gboolean protect)
+gtk_terp_set_protected(GtkTerp *terp, const gboolean protect)
 {
     g_return_if_fail(terp != NULL);
     g_return_if_fail(GTK_IS_TERP(terp));
@@ -631,6 +632,28 @@ gtk_terp_get_protected(GtkTerp *terp)
     g_return_val_if_fail(terp != NULL, FALSE);
     g_return_val_if_fail(GTK_IS_TERP(terp), FALSE);
     return terp->priv->protect == 1;
+}
+
+/**
+ * gtk_terp_set_minimum_size:
+ * @terp: a #GtkTerp
+ * @x: horizontal size in pixels
+ * @y: vertical size in pixels
+ *
+ * Sets the minimum size of the interpreter, telling it to recalculate the
+ * number of rows and columns and redisplay. If the interpreter is not running,
+ * it does nothing.
+ */
+void
+gtk_terp_set_minimum_size(GtkTerp *terp, const guint x, const guint y)
+{
+    g_return_if_fail(terp != NULL);
+    g_return_if_fail(GTK_IS_TERP(terp));
+    
+    if(terp->priv->running == 1)
+        g_return_if_fail(
+          org_informfiction_garglk_set_minimum_size(terp->priv->proxy, x, y,
+                                                    NULL));
 }
 
 /**

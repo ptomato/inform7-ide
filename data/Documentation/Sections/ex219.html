@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.2. Named rules and rulebooks</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.3. One-way connections</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,93 +19,70 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Nine AM Appointment" -->
-<!-- SEARCH SECTION "Ex 318" -->
-<!-- SEARCH SORT "Ex 018-002-318" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc296.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc298.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.2. Named rules and rulebooks</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Unbuttoned Elevator Affair" -->
+<!-- SEARCH SECTION "Ex 8" -->
+<!-- SEARCH SORT "Ex 003-003-008" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc28.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc30.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.3. One-way connections</b></font></td></tr></table>
 <p>
-<p>Most of the rules built into Inform have names. For instance, a rule called &quot;the advance time rule&quot; is the one which increments the number of turns - usually visible on the &quot;status line&quot; displayed above the window of a game in progress - and advances the clock, which is usually not visible, but ticking away behind the scenes.
+<p>Connections are ordinarily two-way, but do not have to be. One of the map connections in the Mammoth Cave simulation was made by the sentence:
 <p>
-<p>A rulebook is a list of rules to be followed in sequence until one of them makes a decision. For instance, when actions get to the &quot;instead&quot; stage, each &quot;instead&quot; rule is tried until one of them chooses to do something. If the source text contains the rules
-<p>
-<blockquote><font color="#000080">Instead of taking something: say &quot;You have no particular need just now.&quot;
-<br>Instead of taking a fish: say &quot;It's all slimy.&quot;
+<blockquote><font color="#000080">The Debris Room is west of the Crawl.
 </font></blockquote><p>
 <p>
-<p>and a command to TAKE something is tried, then only one of these rules will have any effect. The &quot;instead&quot; rulebook contains:
+<p>Besides reading this sentence at face value, Inform also deduced that the Crawl was probably meant to be east of the Debris Room: in other words, that the path between them is a two-way one. When Inform makes guesses like this, it treats them as being less certain than anything explicitly stated in the source. Inform will quietly overturn its assumption if information comes to hand which shows that it was wrong. That might happen in this case if another sentence read:
 <p>
-<blockquote><font color="#000080">Rule (1) to be applied if the action matches &quot;taking a fish&quot;
-<br>Rule (2) to be applied if the action matches &quot;taking something&quot;
+<blockquote><font color="#000080">The Hidden Alcove is east of the Debris Room.
 </font></blockquote><p>
 <p>
-<p>Inside their rulebook, the rules are not listed in the order of definition in the source text. Rule (1) comes before rule (2) because it applies in more specific circumstances. This is the main idea: a rulebook gathers together rules about making some decision, or taking some action, and sorts them in order to give the more specific rules first choice about whether they want to intervene.
+<p>These two sentences are not contradictory: Inform allows them both, simply accepting that the world is more complicated than it first assumed. There are relatively few situations where Inform has to make educated guesses, but when it does, it tries always to follow Occam's Razor by constructing the simplest model world consistent with the information in the Source text.
 <p>
-<p>Whereas only some rules are named (the two &quot;instead&quot; rules above have no name, for instance), every rulebook has a name. For convenience, the following forms of rule and rulebook name are synonymous:
+<p>We can even explicitly make a route which turns around as it leads between two rooms:
 <p>
-<blockquote><font color="#000080">advance time = the advance time rule
+<blockquote><font color="#000080">West of the Garden is south of the Meadow.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">the instead rules = instead rulebook = instead
-</font></blockquote><p>
+<p>Finally, if we want to establish a route which cannot be retraced at all, we can specify that a particular direction leads nowhere:
 <p>
-<p>The names of built-in rules have been chosen as descriptively as possible: the &quot;can't go through closed doors rule&quot;, for instance. Names for rules tend to be verbose, but this is a situation where clarity is very much better than brevity.
+<blockquote><font color="#000080">East of the Debris Room is nowhere.
+</font></blockquote><p>
 <p>
 <p><hr><p>
+<a name="e116"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex116.html#e116 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>7</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex116.html#e116 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Port Royal 2</font></b></a><br>Another part of Port Royal, with less typical map connections.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex116.html#e116 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e219"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc297.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>318</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc297.html#e219 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Nine AM Appointment</font></b></a><br>A WAIT [number] MINUTES command which advances through an arbitrary number of turns.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex219.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e219"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc29.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>8</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc29.html#e219 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Unbuttoned Elevator Affair</font></b></a><br>A simple elevator connecting two floors which is operated simply by walking in and out, and has no buttons or fancy doors.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex219.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>If there's some reason the player needs to be at a specific place and time, we might want to allow him to wait a number of minutes at once.
+<p>This is very simple. The interior of the elevator is a single room, but which is mapped east of both of its termini. The reverse map connection, west from the elevator, can only go to a single room, and that's what determines which floor the elevator is on.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode405(code) {
+function pasteCode88(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Nine AM Appointment"\n\nWaiting more is an action applying to one number.\n\nUnderstand "wait [number] minutes/turns" or "wait [number]" as waiting more.\n\nCarry out waiting more:\n\tlet duration be the number understood - 1;\n\trepeat with X running from 1 to duration\n\tbegin;\n\t\tfollow the turn sequence rules;\n\tend repeat.\n\n[The one nuance here is that after our wait command occurs, the turn sequence rules will occur one more time. So we need to subtract one from the parsed number to make it to the right number of minutes.]\n\nReport waiting more:\n\tsay "It is now [time of day + 1 minute]."\n\n[And if we want to ensure that the player doesn\'t (accidentally or intentionally) put the interpreter through a really long loop, we could put an upper limit on his patience:]\n\nCheck waiting more:\n\tif the number understood > 59, say "You really haven\'t got that kind of patience." instead.\n\nThe Specialist\'s Office is a room. The secretary is a woman in the Office. Instead of asking the secretary about "[appointment]", say "\'Hang on just five more minutes,\' she says, in a distracted manner."\n\nUnderstand "appointment" or "specialist" or "doctor" as "[appointment]".\n\nAt 9:45 AM: say "The secretary glances at you and gives a reassuring smile."\n\nTest me with "ask secretary about appointment / wait five minutes / g / g / wait 60 minutes / wait 30 minutes".\n');
+    myProject.pasteCode('"The Unbuttoned Elevator Affair"\n\nUNCLE Headquarters is a room. "The steel nerve-center of the free world\'s battle against the Technological Hierarchy for the Removal of Undesirables and the Subjugation of Humanity. Being against technology, we have only a very simple elevator to the east."\n\nDel Floria\'s Tailor Shop is a room. "Only trained anti-THRUSH agents recognise the booth in the east wall as a secret elevator."\n\nThe Secret Elevator is east of UNCLE Headquarters. The Secret Elevator is east of Del Floria\'s Tailor Shop.\n\nAfter going to the Secret Elevator:\n\tsay "The doors automatically close, there is a rush of motion, and they open again.";\n\tif UNCLE Headquarters is mapped west of the Secret Elevator, now Del Floria\'s Tailor Shop is mapped west of the Secret Elevator;\n\totherwise now UNCLE Headquarters is mapped west of the Secret Elevator;\n\tcontinue the action.\n\nTest me with "east / west / east / west".\n');
 }
 </script>
-<a href="javascript:pasteCode405()"><img border=0 src=../doc_images/paste.png></a> &quot;Nine AM Appointment&quot;
+<a href="javascript:pasteCode88()"><img border=0 src=../doc_images/paste.png></a> &quot;The Unbuttoned Elevator Affair&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Waiting more is an action applying to one number.
+<blockquote><font color="#000080">UNCLE Headquarters is a room. &quot;The steel nerve-center of the free world's battle against the Technological Hierarchy for the Removal of Undesirables and the Subjugation of Humanity. Being against technology, we have only a very simple elevator to the east.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;wait [number] minutes/turns&quot; or &quot;wait [number]&quot; as waiting more.
+<blockquote><font color="#000080">Del Floria's Tailor Shop is a room. &quot;Only trained anti-THRUSH agents recognise the booth in the east wall as a secret elevator.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out waiting more:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let duration be the number understood - 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with X running from 1 to duration
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;follow the turn sequence rules;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">The Secret Elevator is east of UNCLE Headquarters. The Secret Elevator is east of Del Floria's Tailor Shop.
 </font></blockquote><p>
 <p>
-<p>The one nuance here is that after our wait command occurs, the turn sequence rules will occur one more time. So we need to subtract one from the parsed number to make it to the right number of minutes.
-<p>
-<blockquote><font color="#000080">Report waiting more:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is now [time of day + 1 minute].&quot;
+<blockquote><font color="#000080">After going to the Secret Elevator:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The doors automatically close, there is a rush of motion, and they open again.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if UNCLE Headquarters is mapped west of the Secret Elevator, now Del Floria's Tailor Shop is mapped west of the Secret Elevator;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now UNCLE Headquarters is mapped west of the Secret Elevator;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
 </font></blockquote><p>
 <p>
-<p>And if we want to ensure that the player doesn't (accidentally or intentionally) put the interpreter through a really long loop, we could put an upper limit on his patience:
-<p>
-<blockquote><font color="#000080">Check waiting more:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number understood > 59, say &quot;You really haven't got that kind of patience.&quot; instead.
+<blockquote><font color="#000080">Test me with &quot;east / west / east / west&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Specialist's Office is a room. The secretary is a woman in the Office. Instead of asking the secretary about &quot;[appointment]&quot;, say &quot;'Hang on just five more minutes,' she says, in a distracted manner.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;appointment&quot; or &quot;specialist&quot; or &quot;doctor&quot; as &quot;[appointment]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">At 9:45 AM: say &quot;The secretary glances at you and gives a reassuring smile.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;ask secretary about appointment / wait five minutes / g / g / wait 60 minutes / wait 30 minutes&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc297.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc29.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e153"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex153.html#e153 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>319</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex153.html#e153 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Delayed Gratification</font></b></a><br>A WAIT UNTIL [time] command which advances until the game clock reaches the correct hour.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex153.html#e153 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc296.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc298.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc28.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc30.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -69,14 +69,16 @@ gboolean gtk_terp_load_game       (GtkTerp *terp, const gchar *filename,
 void     gtk_terp_unload_game     (GtkTerp *terp);
 gboolean gtk_terp_get_game_loaded (GtkTerp *terp);
 gchar*   gtk_terp_get_filename    (GtkTerp *terp);
-gboolean gtk_terp_start_game      (GtkTerp *terp, GtkTerpInterpreter format,
+gboolean gtk_terp_start_game      (GtkTerp *terp,
+                                   const GtkTerpInterpreter format,
                                    GError **error);
 void     gtk_terp_stop_game       (GtkTerp *terp);
 gboolean gtk_terp_get_running     (GtkTerp *terp);
-void     gtk_terp_set_interactive (GtkTerp *terp, gboolean interactive);
+void     gtk_terp_set_interactive (GtkTerp *terp, const gboolean interactive);
 gboolean gtk_terp_get_interactive (GtkTerp *terp);
-void     gtk_terp_set_protected   (GtkTerp *terp, gboolean protect);
+void     gtk_terp_set_protected   (GtkTerp *terp, const gboolean protect);
 gboolean gtk_terp_get_protected   (GtkTerp *terp);
+void     gtk_terp_set_minimum_size(GtkTerp *terp, const guint x, const guint y);
 void     gtk_terp_feed_command    (GtkTerp *terp, const gchar *command);
 void     gtk_terp_feed_text       (GtkTerp *terp, const gchar *text);
 

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.7. Adjacent rooms and routes through the map</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.9. Defining new assertion verbs</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,121 +19,82 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "A View of Green Hills" -->
-<!-- SEARCH SECTION "Ex 72" -->
-<!-- SEARCH SORT "Ex 006-007-072" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc86.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc88.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.7. Adjacent rooms and routes through the map</b></font></td></tr></table>
+<!-- SEARCH TITLE "Unthinkable Alliances" -->
+<!-- SEARCH SECTION "Ex 212" -->
+<!-- SEARCH SORT "Ex 013-009-212" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc201.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc203.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.9. Defining new assertion verbs</b></font></td></tr></table>
 <p>
-<p>Another useful adjective built into Inform is &quot;adjacent&quot;. Two rooms are said to be adjacent if there is a map connection between them which does not pass through some barrier such as a door. This is easily tested:
+<p>Here is an example definition of a new verb:
 <p>
-<blockquote><font color="#000080">if the Hallway is adjacent to the Study ...
+<blockquote><font color="#000080">The verb to sport (he sports, they sport, he sported, it is sported, he is sporting) implies the wearing relation.
 </font></blockquote><p>
 <p>
-<p>We usually want to know about the places adjacent to the current scene of the action, so that is what the adjective &quot;adjacent&quot; means when applied to rooms. For instance:
+<p>Once this is done, we can write the assertion
 <p>
-<blockquote><font color="#000080">if somebody is in an adjacent room, ...
+<blockquote><font color="#000080">Mr Wickham sports a Tory rosette.
 </font></blockquote><p>
 <p>
-<p>As with the case of &quot;visible&quot;, the adjective is a cut-down version of the more general relationship. This often happens: &quot;worn&quot; and &quot;carried&quot;, for instance, imply &quot;by the player&quot; unless something else is specified.
+<p>which will do the the same thing as
 <p>
-<p>If we want to ask a more direct question, we can obtain specific map connections like so:
-<p>
-<blockquote><font color="#000080">say &quot;You look north into [the room north from the Garden].&quot;
+<blockquote><font color="#000080">Mr Wickham wears a Tory rosette.
 </font></blockquote><p>
 <p>
-<p>since &quot;the room D from A&quot; produces the room which lies in direction D from room A. We need to be a little careful here. What if there is no map connection this way? In that case, &quot;the room ... from ...&quot; produces the special value &quot;nothing&quot;. Thus:
+<p>because both verbs have the same relation as their meaning.
 <p>
-<blockquote><font color="#000080">if the room north from the Garden is nothing, say &quot;The grass leads nowhere.&quot;
+<p>Note that we have to spell out many parts of the verb:
+<p>
+<blockquote><font color="#000080">to sport - infinitive
+<br>he sports - present singular
+<br>they sport - present plural
+<br>he sported - past
+<br>it is sported - past participle
+<br>he is sporting - present participle
 </font></blockquote><p>
 <p>
-<p>While on the subject of navigating the map, the phrase &quot;the best route from A to B&quot; gives a direction to take in order to get from A to B by the shortest number of movements between rooms - if there is any way through at all. For example, here is a lure:
+<p>Although it looks as if Inform could easily generate these given the infinitive &quot;to sport&quot; alone, by adding an &quot;-s&quot; here or an &quot;-ed&quot; there, English can be a very irregular language. Since only a few verbs will be defined in any single project it seems best to be explicit. (If we do miss out any of the parts of the verb, the result will be that the usages missed out will not be understood by Inform. Sometimes that's a good thing, as some verbs have seldom-used present participles, for instance - &quot;he is liking me&quot;, for instance, is grammatical but odd.)
 <p>
-<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room].&quot;
-</font></blockquote><p>
-<p>
-<p>Best routes are ordinarily forbidden to go through doors, but if the suffix &quot;using doors&quot; is added as an option then any open or openable and unlocked door may be used on the way; and if &quot;using even locked doors&quot; is given, then any door at all will do. Since magnetism is no respecter of property, that seems right here:
-<p>
-<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room, using even locked doors].&quot;
-</font></blockquote><p>
-<p>
-<p>The phrase &quot;the best route from A to B&quot; gives the direction to take next, if we are at A and want to end up at B. Suppose this is east. We can find out where we go next by looking up &quot;the room east from A&quot;: similarly for any other direction, of course. (This can see through any doors, locked or not.)
-<p>
-<p>We can also stipulate that only certain rooms may be used for the journey, as in the following example:
-<p>
-<blockquote><font color="#000080">best route from the Drawbridge to the Keep through visited rooms
-</font></blockquote><p>
-<p>
-<p>The condition - in this case, that &quot;visited rooms&quot; must be used - also applies to both ends of the journey. (Also, saying something like &quot;...through containers&quot; would mean there is never a route, since it is only rooms which appear on the map.)
-<p>
-<p>Lastly, we can find out how long the journey would be:
-<p>
-<blockquote><font color="#000080">The description of the proximity gadget is &quot;You are now [number of moves from the location to the Sundial] moves from the Sundial.&quot;;
-</font></blockquote><p>
-<p>
-<p>This number is, of course, 0 if the location is already the Sundial. If there is no way at all to get to the Sundial, the number is -1.
+<p>The Phrasebook index contains all the verbs associated with assertions, in the &quot;table of verbs&quot; section. When we add new verbs to our source, those will appear in the Phrasebook as well.
 <p>
 <p><hr><p>
-<a name="e156"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex156.html#e156 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>69</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex156.html#e156 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> All Roads Lead to Mars</font></b></a><br>Layout where the player is allowed to wander any direction he likes, and the map will arrange itself in order so that he finds the correct "next" location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex156.html#e156 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e43"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex43.html#e43 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>70</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex43.html#e43 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mistress of Animals</font></b></a><br>A person who moves randomly between rooms of the map.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex43.html#e43 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e333"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex333.html#e333 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>71</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex333.html#e333 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hotel Stechelberg</font></b></a><br>Signposts such as those provided on hiking paths in the Swiss Alps, which show the correct direction and hiking time to all other locations.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex333.html#e333 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e140"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc87.html#e140 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>72</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc87.html#e140 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> A View of Green Hills</font></b></a><br>A LOOK [direction] command which allows the player to see descriptions of the nearby landscape.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex140.html#e140 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e140"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc202.html#e140 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>212</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc202.html#e140 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Unthinkable Alliances</font></b></a><br>People are to be grouped into alliances. To kiss someone is to join his or her faction, which may make a grand alliance; to strike them is to give notice of quitting, and to become a lone wolf.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex140.html#e140 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose a game in which the player is wandering an open landscape with long vistas, allowing him to LOOK in some direction, or even look at an adjacent location.
+<p>The following is best tested by experimentally kissing and/or attacking, and typing RELATIONS after every change to see the effect.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode155(code) {
+function pasteCode299(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"A View of Green Hills"\n\nCorinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.\n\nUnderstand "look [direction]" as facing.\n\nFacing is an action applying to one visible thing.\n\nCarry out facing:\n\tlet the viewed item be the room noun from the location;\n\tif the viewed item is not a room, say "You can\'t see anything promising that way." instead;\n\ttry looking toward the viewed item.\n\n[In rules about action handling, "noun" refers to the first object that the player has mentioned in his command, so if the player typed >LOOK WEST, "let the viewed item be the room noun from the location" would be processed as "let the viewed item be the room west from the location", and so on.]\n\n[We can at need override the default behavior, if it is not going to be appropriate for the player to see the next room over. There is only sky above at any time, so...]\n\nInstead of facing up:\n\tsay "Above you is bright sky."\n\nUnderstand "look toward [any adjacent room]" as looking toward. Understand "examine [any adjacent room]" as looking toward.\n\nLooking toward is an action applying to one visible thing.\n\nCarry out looking toward:\n\tsay "You make out [the noun] that way."\n\n[This design allows us to create descriptions for rooms (as seen from the outside) which will work regardless of where we\'re looking from. For instance:]\n\nInstead of looking toward Athens:\n\tsay "Even from here you can make out the silhouette of the Acropolis."\n\nTest me with "look north / look south / look up / look east / east / look west".\n');
+    myProject.pasteCode('"Unthinkable Alliances"\n\nUnthinkable Solutions is a room. Sophie, Daisy, Ryan and Owen are in Unthinkable Solutions.\n\nAlliance relates people to each other in groups. The verb to help (he helps, they help, he helped, he is helped) implies the alliance relation.\n\nSophie helps Ryan. Daisy helps Ryan. Owen helps the player.\n\nInstead of kissing someone (called the blessed one):\n\tsay "Smack!";\n\tnow the player helps the blessed one.\n\nInstead of attacking someone (called the vilified one):\n\tsay "Smack!";\n\tnow the player does not help the vilified one.\n\nTest me with "relations / kiss sophie / relations / hit ryan / relations".\n');
 }
 </script>
-<a href="javascript:pasteCode155()"><img border=0 src=../doc_images/paste.png></a> &quot;A View of Green Hills&quot;
+<a href="javascript:pasteCode299()"><img border=0 src=../doc_images/paste.png></a> &quot;Unthinkable Alliances&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.
+<blockquote><font color="#000080">Unthinkable Solutions is a room. Sophie, Daisy, Ryan and Owen are in Unthinkable Solutions.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;look [direction]&quot; as facing.
+<blockquote><font color="#000080">Alliance relates people to each other in groups. The verb to help (he helps, they help, he helped, he is helped) implies the alliance relation.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Facing is an action applying to one visible thing.
+<blockquote><font color="#000080">Sophie helps Ryan. Daisy helps Ryan. Owen helps the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out facing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the viewed item be the room noun from the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the viewed item is not a room, say &quot;You can't see anything promising that way.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try looking toward the viewed item.
+<blockquote><font color="#000080">Instead of kissing someone (called the blessed one):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Smack!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player helps the blessed one.
 </font></blockquote><p>
 <p>
-<p>In rules about action handling, &quot;noun&quot; refers to the first object that the player has mentioned in his command, so if the player typed >LOOK WEST, &quot;let the viewed item be the room noun from the location&quot; would be processed as &quot;let the viewed item be the room west from the location&quot;, and so on.
-<p>
-<p>We can at need override the default behavior, if it is not going to be appropriate for the player to see the next room over. There is only sky above at any time, so...
-<p>
-<blockquote><font color="#000080">Instead of facing up:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Above you is bright sky.&quot;
+<blockquote><font color="#000080">Instead of attacking someone (called the vilified one):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Smack!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player does not help the vilified one.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;look toward [any adjacent room]&quot; as looking toward. Understand &quot;examine [any adjacent room]&quot; as looking toward.
+<blockquote><font color="#000080">Test me with &quot;relations / kiss sophie / relations / hit ryan / relations&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Looking toward is an action applying to one visible thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out looking toward:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You make out [the noun] that way.&quot;
-</font></blockquote><p>
-<p>
-<p>This design allows us to create descriptions for rooms (as seen from the outside) which will work regardless of where we're looking from. For instance:
-<p>
-<blockquote><font color="#000080">Instead of looking toward Athens:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Even from here you can make out the silhouette of the Acropolis.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;look north / look south / look up / look east / east / look west&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc87.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc202.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc86.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc88.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e224"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex224.html#e224 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>213</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex224.html#e224 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Unexamined Life</font></b></a><br>An adaptive hint system that tracks what the player needs to have seen or to possess in order to solve a given puzzle, and doles out suggestions accordingly. Handles changes in the game state with remarkable flexibility, and allows the player to decide how explicit a nudge he wants at any given moment.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex224.html#e224 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc201.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc203.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

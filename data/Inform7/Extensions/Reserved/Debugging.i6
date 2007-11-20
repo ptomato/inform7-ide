@@ -69,17 +69,19 @@ Array debuggable_states -> NO_DEBUGGABLES;
 		else print "out of play";
 	}
 ];
-[ ShowMeSub;
+[ ShowMeSub view na;
+	view = noun;
  	if (noun == nothing) noun = real_location;
  	if (ShowMeRecursively(noun, 0, (noun == real_location))) {
  		if (noun == real_location)
 			print "* denotes things which are not in scope^";
 	}
- 	if (noun ofclass K2_thing) {
+ 	if (view ofclass K2_thing) {
  		print "location:";
  		ShowRLocation(noun, true);
 		print "^";
  	}
+ 	{-call:add_showme_details}
 ];
 [ ShowMeRecursively obj depth f c i k;
 	spaces(2*depth);
@@ -138,5 +140,7 @@ Verb meta "showme"
 	* multi -> ShowMe;
 Verb meta "relations"
 	* -> ShowRelations;
+Verb meta "showheap"
+	* -> ShowHeap;
 
 ! End of Debugging.i6

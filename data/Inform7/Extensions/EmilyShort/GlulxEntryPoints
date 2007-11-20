@@ -1,4 +1,4 @@
-Version 2 of Glulx Entry Points (for Glulx only) by Emily Short begins here.
+Version 3 of Glulx Entry Points (for Glulx only) by Emily Short begins here.
 
 "Provides hooks to allow the author to write specialized multimedia behavior that would normally go through HandleGlkEvent. This is a rather dull utility library that will be of most use to authors wanting to write Glulx extensions compatible with other Glulx extensions already in use."
 
@@ -8,6 +8,8 @@ Include(-
 
 Replace HandleGlkEvent;  
 Replace IdentifyGlkObject;
+
+Global replacement_cmd_ptr;
 
 -) before the library.   
 
@@ -29,7 +31,7 @@ The glulx object-updating rules is a rulebook.
 Current glulx rock is a number that varies.
 Current glulx rock-ref is a number that varies.
 
-Glulx replacement command is some text that varies. 
+Glulx replacement command is some indexed text that varies. 
 
 To decide whether glulx mouse input is supported:
 	(- ( glk_gestalt(gestalt_MouseInput, 0) ) -)
@@ -64,6 +66,7 @@ To decide whether glulx sound notification is supported:
 To decide whether glulx hyperlinks are supported:
 	(- ( glk_gestalt(gestalt_Hyperlinks, 0) ) -)
 
+
 Include (-
 
    [ IdentifyGlkObject phase type ref rock;
@@ -92,7 +95,7 @@ Include (-
    ];
 
 
-  [ HandleGlkEvent ev context abortres newcmd cmdlen;
+  [ HandleGlkEvent ev context abortres newcmd cmdlen  N;
       context = 0; ! suppress ignored warning
       switch (ev-->0) {
 	evtype_Redraw:
@@ -107,19 +110,13 @@ Include (-
 	evtype_SoundNotify:
 		if (FollowRulebook( (+glulx sound notification rules+) ) && RulebookSucceeded()) { rtrue; }
 
-	evtype_Hyperlink:
+	evtype_Hyperlink: 
 		FollowRulebook( (+glulx hyperlink rules+) );
-		if ( (+ glulx replacement command +) ~= I7_EMPTY_TEXT)
-			{
-				newcmd = (+ glulx replacement command +);
-				cmdlen = PrintAnyToArray(abortres+WORDSIZE,	 INPUT_BUFFER_LEN-WORDSIZE,newcmd);
-				abortres-->0 = cmdlen;   
-				glk_set_style(style_Input);
-				print (string) newcmd, "^";
-				glk_set_style(style_Normal); 
-				return 2;
-			}
-		
+		if ( FollowRulebook( (+command-counting rules +) ) && RulebookSucceeded())
+		{ 
+			FollowRulebook( (+command-showing rules+) );
+			if ( FollowRulebook( (+command-pasting rules+) ) ) 	return 2;
+		} 
 	
 	evtype_CharInput:
 		if (FollowRulebook( (+glulx character input rules+) ) && RulebookSucceeded()) { rtrue; }
@@ -129,21 +126,41 @@ Include (-
 
 	evtype_MouseInput:
 		FollowRulebook( (+glulx mouse input rules+) );
-		if ( (+ glulx replacement command +) ~= I7_EMPTY_TEXT)
-		{
-			newcmd = (+ glulx replacement command +);
-			cmdlen = PrintAnyToArray(abortres+WORDSIZE, INPUT_BUFFER_LEN-WORDSIZE,newcmd);
-			abortres-->0 = cmdlen;   
-			glk_set_style(style_Input);
-			print (string) newcmd, "^";
-			glk_set_style(style_Normal);
-			return 2;
-		}         
+		if ( FollowRulebook( (+command-counting rules +) ) && RulebookSucceeded())
+		{ 
+			FollowRulebook( (+command-showing rules+) );
+			if ( FollowRulebook( (+command-pasting rules+) ) ) 	return 2;
+		}  
+
 	}
 
    ];
 
 -)
+
+The command-counting rules are a rulebook.
+
+A command-counting rule (this is the ordinary checking for content rule):
+	if the number of characters in the glulx replacement command is 0, rule fails;
+	rule succeeds.
+
+
+The command-showing rules are a rulebook.
+
+A command-showing rule (this is the print text to the input prompt rule):
+	say input-style-for-glulx;
+	say Glulx replacement command;
+	say roman type;
+
+To say input-style-for-Glulx: 
+	(- glk_set_style(style_Input); -)
+ 
+
+The command-pasting rules are a rulebook. 
+
+A command-pasting rule (this is the glue replacement command into parse buffer rule): 
+	change the text of the player's command to the Glulx replacement command;
+	rule succeeds.
 
 Glulx Entry Points ends here.
 
@@ -170,7 +187,9 @@ Glulx Entry Points provides a set of rulebooks so that the author can add respon
 	The glulx line input rules is a rulebook.
 	The glulx hyperlink rules is a rulebook.
 
-One of the things we may want to do -- especially with mouse input or hyperlinks -- is generate a command for the player. To do this, we set the value of glulx replacement command to whatever string of text we want to turn into the player's command. We also make the rulebook in question succeed. If we do this, Inform will treat whatever command we issued in "glulx replacement command" as though the player had typed it at the command prompt. The extension Basic Hyperlinks builds on this infrastructure and provides an example of how to make use of these features.
+One of the things we may want to do -- especially with mouse input or hyperlinks -- is generate a command for the player. To do this, we set the value of Glulx replacement command to whatever string of text we want to turn into the player's command. If we do this, Inform will treat whatever command we issued in "Glulx replacement command" as though the player had typed it at the command prompt. The extension Basic Hyperlinks builds on this infrastructure and provides an example of how to make use of these features. 
+
+Because the Glulx replacement command is indexed text, it is possible to build on to the string automatically, if for some reason we need to auto-generate our recommended commands. 
 
 We also have a series of rulebooks for handling the stages of IdentifyGlkObject:
 	
@@ -182,4 +201,4 @@ We also have a series of rulebooks for handling the stages of IdentifyGlkObject:
 
 Examples of the use of these can be seen in the extension Simple Graphics Windows.
 
-Please note that this extension is provided as a framework and as a basis for other extensions. If some particular multimedia feature is not working, it may be that Inform does not yet support this in the IDE: be sure to check the details of the version you are running.
+Please note that this extension is provided as a framework and as a basis for other extensions, but that currently Inform is not designed to support sound output properly.

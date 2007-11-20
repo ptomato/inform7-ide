@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.21. Inform 6 grammar, actions and rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>22.11. Implications</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,42 +19,39 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Inform 6 grammar, actions and rules" -->
-<!-- SEARCH SECTION "21.21" -->
-<!-- SEARCH SORT "021-021-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc372.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc374.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.21. Inform 6 grammar, actions and rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Implications" -->
+<!-- SEARCH SECTION "22.11" -->
+<!-- SEARCH SORT "022-011-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc372.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap22.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 22: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc374.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>22.11. Implications</b></font></td></tr></table>
 <p>
-<p>Inform 6 grammar (&quot;Verb&quot; and &quot;Extend&quot;) should not be used, unless there is no alternative: instead I7 equivalents should be given. But I6 actions can certainly be used, and indeed the Standard Rules use almost the whole gamut of I6 actions. They define actions using a convenient shorthand:
+<p>Extensions often need to define new kinds or properties, which we want to make as helpful as possible for the user. In particular, we want them not to require additional work for the author just to obtain the effect which seems only natural.
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode80(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('Wearing is an action corresponding to Wear\npast participle worn\napplying to one thing\n- check -\ncan\'t wear what\'s not clothing rule = WearSub_C1\ncan\'t wear what\'s not held rule = WearSub_C2\ncan\'t wear what\'s already worn rule = WearSub_C3\n- carry-out -\nstandard wearing rule = WearSub_O1\n- report -\nstandard report wearing rule = WearSub_R1.\n\n');
-}
-</script>
-<a href="javascript:pasteCode80()"><img border=0 src=../doc_images/paste.png></a> Wearing is an action corresponding to Wear
-<br>past participle worn
-<br>applying to one thing
-<br>- check -
-<br>can't wear what's not clothing rule = WearSub_C1
-<br>can't wear what's not held rule = WearSub_C2
-<br>can't wear what's already worn rule = WearSub_C3
-<br>- carry-out -
-<br>standard wearing rule = WearSub_O1
-<br>- report -
-<br>standard report wearing rule = WearSub_R1.
+<p>For example, consider Inform's built-in &quot;locked&quot; property. If a door is locked, then it cannot be opened, which seems fair enough. But if the player tries to unlock the door, he might then find the following response:
+<p>
+<blockquote><font color="#000080">That doesn't seem to be something you can unlock.
 </font></blockquote><p>
 <p>
-<p>The clause &quot;corresponding to Wear&quot; tells I7 to call the action &quot;Wear&quot;, thus making it match the I6 action of the same name. The remainder constructs the three rulebooks for the action, supplying names for suitable rules and moreover giving the names of I6-defined routines which will carry them out. The five I6 routines named are the fragments of the old I6 library's &quot;WearSub&quot;: for instance,
+<p>Which does not seem right. In real life, almost all locked items have outwardly exposed locks which it is perfectly sensible to try to unlock, given a key. The problem is that our door has the &quot;locked&quot; property, but not the &quot;lockable&quot; one.
 <p>
-<blockquote><font color="#000080">[ WearSub_C3; if (noun has worn) { L__M(##Wear,3,noun); rtrue; } rfalse; ];
+<p>The Standard Rules solve this problem by including the following line:
+<p>
+<blockquote><font color="#000080">Something locked is usually lockable.
 </font></blockquote><p>
 <p>
-<p>We can also create named rules corresponding to I6 routines like so:
+<p>This ensures that any door said by the author only to be &quot;locked&quot; will be &quot;lockable&quot; as well, and adds a small but worthwhile touch of realism.
 <p>
-<blockquote><font color="#000080">The time passes rule corresponds to routine TS4_R.
+<p>Such a sentence is called an &quot;implication&quot;, as it is in the form &quot;Condition A implies Condition B&quot;. Note that the two conditions must consist of either/or properties with or without kinds attached. Thus:
+<p>
+<blockquote><font color="#000080">A room in the Open Desert is usually lighted.
 </font></blockquote><p>
+<p>
+<p>will not work because &quot;a room in the Open Desert&quot; is a more complicated grammatical construction than, say, &quot;lighted&quot; or &quot;a lighted room&quot;: it contains a relative clause. Inform can only deal with simple implications.
+<p>
+<p>Inform never overrides certainties with mere implications, and is cautious about allowing them to build overly long chains of argument. This is to prevent the following kind of difficulty:
+<p>
+<blockquote><font color="#000080">An open door is usually closed. A closed door is usually open.
+</font></blockquote><p>
+<p>
+<p>Implications have not been mentioned up to now since they are only really needed by extensions, but also because they can be tricky, with unforeseen consequences. We should handle them with care.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc372.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc374.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

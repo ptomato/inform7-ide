@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.3. Changing the status line</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.16. Randomness</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,72 +19,126 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Centered" -->
-<!-- SEARCH SECTION "Ex 104" -->
-<!-- SEARCH SORT "Ex 008-003-104" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc111.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc113.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.3. Changing the status line</b></font></td></tr></table>
+<!-- SEARCH TITLE "Do Pass Go" -->
+<!-- SEARCH SECTION "Ex 118" -->
+<!-- SEARCH SORT "Ex 008-016-118" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc124.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc126.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.16. Randomness</b></font></td></tr></table>
 <p>
-<p>The status line is the black bar along the top of a game being played, which ordinarily displays the current position, score and number of moves taken. Like the command prompt, it is not fixed but results from values which can be changed: the &quot;left hand status line&quot; and &quot;right hand status line&quot;.
+<p>Sometimes we want to introduce random behaviour into play. We usually do this by generating random values, and then acting differently depending on what they are. The following:
 <p>
-<p>The default values are &quot;[the player's surroundings]&quot; for the left hand status line and &quot;[score]/[turn count]&quot; for the right hand status line. Score and turn count are numbers which vary in play (there will be much more about scoring later); &quot;[the player's surroundings]&quot; expands to a succinct description of where the player is, be this in darkness, in a lighted room or inside an opaque container such as a large packing case. These make useful elements to juggle in redesigning the status line, as in the following example:
+<blockquote><font color="#000080">a random number from 2 to 5
+</font></blockquote><p>
+<p>
+<p>produces, as it suggests, a random number drawn from the choices 2, 3, 4 or 5, each of which is equally likely to come up.
+<p>
+<p>We can also use random conditions:
+<p>
+<blockquote><font color="#000080">if a random chance of 2 in 3 succeeds then ...
+</font></blockquote><p>
+<p>
+<p>Here is a rule which applies only 15% of the time:
+<p>
+<blockquote><font color="#000080">Instead of waiting when a random chance of 15 in 100 succeeds: ...
+</font></blockquote><p>
+<p>
+<p>If we make a new kind of value, we can also take random values from it:
+<p>
+<blockquote><font color="#000080">A cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.
+</font></blockquote><p>
+<p>
+<p>The value &quot;a random cloud pattern&quot; then produces a random choice from the seven cloud patterns, each equally likely.
+<p>
+<p>Testing IF which makes random choices can be rather frustrating, because a problem showing up on one attempt may not show up on another. To ease testing, the following sentence will &quot;fix&quot; the process of generating these random numbers so that they are not random at all - the same sequence of random numbers will be produced on each run.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode18(code) {
+function pasteCode19(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('When play begins:\n\tchange the left hand status line to\n\t\t"[the player\'s surroundings] / [turn count] / [score]";\n\tchange the right hand status line to "Time: [time of day]".\n\n');
+    myProject.pasteCode('When play begins, seed the random-number generator with 1234.\n\n');
 }
 </script>
-<a href="javascript:pasteCode18()"><img border=0 src=../doc_images/paste.png></a> When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the left hand status line to
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;[the player's surroundings] / [turn count] / [score]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot;Time: [time of day]&quot;.
+<a href="javascript:pasteCode19()"><img border=0 src=../doc_images/paste.png></a> When play begins, seed the random-number generator with 1234.
 </font></blockquote><p>
 <p>
-<p>The text in the right hand status line should be kept no more than 14 letters long, including any spaces. The left hand status line has more leeway, but should still be kept brief.
+<p>The seed value &quot;1234&quot; can be anything positive; a different sequence of random numbers will be produced for each different seed value. A seed value of 0 restores the RNG to properly random behaviour again.
 <p>
 <p><hr><p>
-<a name="e152"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex152.html#e152 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>103</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex152.html#e152 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Politics as Usual</font></b></a><br>Have the status line indicate the current region of the map.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex152.html#e152 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e146"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc112.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>104</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc112.html#e146 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Centered</font></b></a><br>Replacing the two-part status line with one that centers only the room name at the top of the screen.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex146.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e146"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc125.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>118</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc125.html#e146 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Do Pass Go</font></b></a><br>A pair of dice which can be rolled, and are described with their current total when not carried, and have individual scores when examined.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex146.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>If we want to lay out the status line in some other way than with left-hand and right-hand entries, it is possible to do this as well. Later we will learn about the &quot;rule for constructing the status line&quot;, but here is a basic effect using this rule and an Inform extension included as part of the standard distribution, called Basic Screen Effects.
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode190(code) {
+function pasteCode206(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Centered"\n\nWhen play begins:\n\tsay "After months of boring through the Earth\'s crust in this metal-jawed vehicle, you break through..."\n\nThe Hollow Core is a room. "Truly a magnificent sight: the land curves up away from you in every direction, covered with the cities and fields of the Core People. Molten rock runs in the canals, bringing heat and light to every home.\n\nAt the center of the Earth hangs a dense black sun."\n\nInclude Basic Screen Effects by Emily Short.\n\nRule for constructing the status line:\n\tcenter "[location]" at row 1;\n\trule succeeds.\n\nTest me with "look".\n\n');
+    myProject.pasteCode('"Do Pass Go"\n\nGo is a room. "A giant square area, where you and your other pewter ornament friends gather before setting out to purchase London."\n\nThe pair of dice is carried by the player.\n\nThe pair of dice has a number called first die. The pair of dice has a number called second die. The first die of the pair is 6. The second die of the pair is 6. Rule for printing the name of the pair of dice while taking inventory: say "pair of dice".\nRule for printing the name of the pair of dice: say "pair of dice showing [first die of the pair plus second die of the pair]".\n\nTo say detailed state of the dice:\n\tif the first die of the pair is the second die of the pair, say "double [first die of the pair]";\n\totherwise say "[first die of the pair] and [second die of the pair]".\n\nThe description of the pair of dice is "The pair of dice are [if the dice are carried]itching to be rolled[otherwise]showing [detailed state of the dice][end if]."\n\nRolling is an action applying to one carried thing. Understand "roll [something preferably held]" as rolling.\n\nCheck rolling when the noun is not the pair of dice: say "Not something you can roll." instead.\nCarry out rolling:\n\tnow the pair of dice is in the holder of the actor;\n\tnow the first die of the pair of dice is a random number from 1 to 6;\n\tnow the second die of the pair of dice is a random number from 1 to 6.\nReport rolling:\n\tsay "You roll [detailed state of the dice]."\n\nTest me with "i / roll dice / look / x dice / get dice / x dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice".\n\n[Because we remember the states of the individual dice, not just a total, we can make use of the combination rolled.]\n\nThe doubles count is a number that varies.\nAfter rolling:\n\tif the first die of the pair is the second die of the pair, increase the doubles count by 1;\n\totherwise change the doubles count to 0;\n\tcontinue the action.\n\nJail is a room. "This is Jail, and not the Just Visiting periphery, either."\n\nEvery turn when the doubles count is 3:\n\tsay "The blue-uniformed policemen blows his whistle and beckons you sternly...";\n\tnow the player carries the pair of dice;\n\tnow the player is in Jail;\n\tnow the doubles count is 0.\n\nEvery turn when the doubles count is 1 and the player is in Jail:\n\tsay "The warden gruffly releases you.";\n\tnow the player carries the pair of dice;\n\tnow the player is in Go.\n');
 }
 </script>
-<a href="javascript:pasteCode190()"><img border=0 src=../doc_images/paste.png></a> &quot;Centered&quot;
+<a href="javascript:pasteCode206()"><img border=0 src=../doc_images/paste.png></a> &quot;Do Pass Go&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;After months of boring through the Earth's crust in this metal-jawed vehicle, you break through...&quot;
+<blockquote><font color="#000080">Go is a room. &quot;A giant square area, where you and your other pewter ornament friends gather before setting out to purchase London.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Hollow Core is a room. &quot;Truly a magnificent sight: the land curves up away from you in every direction, covered with the cities and fields of the Core People. Molten rock runs in the canals, bringing heat and light to every home.
+<blockquote><font color="#000080">The pair of dice is carried by the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">At the center of the Earth hangs a dense black sun.&quot;
+<blockquote><font color="#000080">The pair of dice has a number called first die. The pair of dice has a number called second die. The first die of the pair is 6. The second die of the pair is 6. Rule for printing the name of the pair of dice while taking inventory: say &quot;pair of dice&quot;.
+<br>Rule for printing the name of the pair of dice: say &quot;pair of dice showing [first die of the pair plus second die of the pair]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Include Basic Screen Effects by Emily Short.
+<blockquote><font color="#000080">To say detailed state of the dice:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the first die of the pair is the second die of the pair, say &quot;double [first die of the pair]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[first die of the pair] and [second die of the pair]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for constructing the status line:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;center &quot;[location]&quot; at row 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
+<blockquote><font color="#000080">The description of the pair of dice is &quot;The pair of dice are [if the dice are carried]itching to be rolled[otherwise]showing [detailed state of the dice][end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look&quot;.
+<blockquote><font color="#000080">Rolling is an action applying to one carried thing. Understand &quot;roll [something preferably held]&quot; as rolling.
 </font></blockquote><p>
 <p>
-<p>Basic Screen Effects also provides a mechanism for building complicated status lines of more than one row. To read its documentation, we include the extension, press Go!, and then consult the contents index that results.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc112.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Check rolling when the noun is not the pair of dice: say &quot;Not something you can roll.&quot; instead.
+<br>Carry out rolling:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pair of dice is in the holder of the actor;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the first die of the pair of dice is a random number from 1 to 6;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the second die of the pair of dice is a random number from 1 to 6.
+<br>Report rolling:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You roll [detailed state of the dice].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;i / roll dice / look / x dice / get dice / x dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice&quot;.
+</font></blockquote><p>
+<p>
+<p>Because we remember the states of the individual dice, not just a total, we can make use of the combination rolled.
+<p>
+<blockquote><font color="#000080">The doubles count is a number that varies.
+<br>After rolling:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the first die of the pair is the second die of the pair, increase the doubles count by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change the doubles count to 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Jail is a room. &quot;This is Jail, and not the Just Visiting periphery, either.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the doubles count is 3:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The blue-uniformed policemen blows his whistle and beckons you sternly...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the pair of dice;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is in Jail;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the doubles count is 0.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the doubles count is 1 and the player is in Jail:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The warden gruffly releases you.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the pair of dice;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is in Go.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc125.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc111.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc113.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e27"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex27.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>119</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex27.html#e27 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lanista 1</font></b></a><br>Very simple randomized combat in which characters hit one another for a randomized amount of damage.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex27.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e285"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex285.html#e285 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>120</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex285.html#e285 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Weathering</font></b></a><br>The automatic weather station atop Mt. Pisgah shows randomly fluctuating temperature, pressure and cloud cover.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex285.html#e285 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e343"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex343.html#e343 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>121</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex343.html#e343 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uptown Girls</font></b></a><br>A stream of random pedestrians who go by the player.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex343.html#e343 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc124.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc126.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

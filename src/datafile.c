@@ -99,3 +99,16 @@ gboolean check_datafile(const gchar *filename) {
         return TRUE;
     return FALSE;
 }
+
+/* Returns the path to filename in the application pixmap directory. */
+gchar *get_pixmap_path(const gchar *filename) {
+    gchar *real_filename = g_build_filename("gnome-inform7", filename, NULL);
+    gchar *path = gnome_program_locate_file(gnome_program_get(), 
+      GNOME_FILE_DOMAIN_APP_PIXMAP, real_filename, TRUE, NULL);
+    g_free(real_filename);
+    if(path)
+        return path;
+    error_dialog(NULL, NULL, "An application file, %s, was not found. Please "
+      "reinstall GNOME Inform 7.", filename);
+    return NULL;
+}

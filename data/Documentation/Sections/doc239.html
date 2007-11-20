@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.16. Defining things with tables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.15. Varying which table to look at</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,51 +19,58 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Defining things with tables" -->
-<!-- SEARCH SECTION "15.16" -->
-<!-- SEARCH SORT "015-016-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc238.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Tables</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc240.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.16. Defining things with tables</b></font></td></tr></table>
+<!-- SEARCH TITLE "Varying which table to look at" -->
+<!-- SEARCH SECTION "15.15" -->
+<!-- SEARCH SORT "015-015-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc238.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Tables</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc240.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.15. Varying which table to look at</b></font></td></tr></table>
 <p>
-<p>Suppose we need to create a collection of items which differ in their properties, but are basically part of a larger pattern. For instance, here we set up what we need to make a collection of coloured shirts:
+<p>So far, we have always used fixed table names when referring to tables: for instance in source like &quot;sort the Table of Recent Monarchs in accession order&quot;, we refer to the &quot;Table of Recent Monarchs&quot;, a definite and explicitly named table.
 <p>
-<blockquote><font color="#000080">A jersey is a kind of thing. A jersey is wearable. A jersey has a number called year established. A jersey has a text called citation. The description of a jersey is &quot;Since [year established], the Tour de France has awarded this jersey to the [citation].&quot;
-</font></blockquote><p>
+<p>With a little care, however, we are allowed to have variables which themselves hold the names of tables. This opens up the possibility of more elaborate ways of storing and interconnecting information in table form, but is probably best avoided until it becomes necessary.
 <p>
-<p>Now we have the pattern, but making the actual shirts is tedious and repetitive:
-<p>
-<blockquote><font color="#000080">The yellow jersey is a jersey. The year established of the yellow jersey is 1919. The citation of the yellow jersey is &quot;race leader&quot;. The polkadot jersey...
-</font></blockquote><p>
-<p>
-<p>And so on. Instead, we can use a table to abbreviate all of this:
+<p>For example, suppose we have two different tables with the same basic structure:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode54(code) {
+function pasteCode53(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Tour des Maillots"\n\nThe Staging Area is a room. A jersey is a kind of thing. A jersey is wearable. Some jerseys in the Staging Area are defined by the Table of Honorary Jerseys. The description of a jersey is "Since [year established], the Tour de France has awarded this jersey to the [citation]."\n\nTable of Honorary Jerseys\njersey\tyear established\tcitation\na yellow jersey\t1919\t"race leader"\na polkadot jersey\t1933\t"King of the Mountains"\na green jersey\t1953\t"highest point scorer on sprints"\na white jersey\t1975\t"best cyclist aged 25 or less"\n\n');
+    myProject.pasteCode('Table 1 - Nifty Opening Plays in US Scrabble\nword\tscore\n"muzjiks"\t128\n\nTable 2 - Nifty Opening Plays in UK Scrabble\nword\tscore\n"quartzy"\t126\n"squeezy"\t126\n\n[We could then record which one of these tables to use in a variable:]\n\nThe lexicon is a table-name that varies. The lexicon is Table 1.\n\n[Note that for this purpose, the kind of value is a special kind called "table-name", not "table". (The word "table" already has too many meanings and we must be careful to avoid ambiguities here.) We could make use of this as follows, for instance:]\n\nTo flip tables:\n\tsay "You exchange dictionaries, lexically crossing the Atlantic. ";\n\tif the lexicon is Table 1, change the lexicon to Table 2;\n\totherwise change the lexicon to Table 1;\n\tchoose a random row in the lexicon;\n\tsay "Did you know that according to [the lexicon], [word entry] scores [score entry]?"\n\n');
 }
 </script>
-<a href="javascript:pasteCode54()"><img border=0 src=../doc_images/paste.png></a> &quot;Tour des Maillots&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Staging Area is a room. A jersey is a kind of thing. A jersey is wearable. Some jerseys in the Staging Area are defined by the Table of Honorary Jerseys. The description of a jersey is &quot;Since [year established], the Tour de France has awarded this jersey to the [citation].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Honorary Jerseys
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">jersey</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">year established</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">citation</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a yellow jersey</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1919</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;race leader&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a polkadot jersey</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1933</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;King of the Mountains&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a green jersey</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1953</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highest point scorer on sprints&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a white jersey</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1975</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;best cyclist aged 25 or less&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+<a href="javascript:pasteCode53()"><img border=0 src=../doc_images/paste.png></a> Table 1 - Nifty Opening Plays in US Scrabble
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">word</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">score</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;muzjiks&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">128</font>&nbsp;&nbsp;&nbsp;</td>
 </tr></table>
 </font></blockquote><p>
 <p>
-<p>The first column provides names for the new things to be created. Subsequent columns provide property values. Note that we did not need to say that jerseys have a number called &quot;year established&quot; because Inform is able to infer this from the column heading and the presence of numbers in the column; similarly for &quot;citation&quot;. Lastly, note that if any entry is blank (written &quot;--&quot;) then that particular property is simply not set for that particular item.
+<blockquote><font color="#000080">Table 2 - Nifty Opening Plays in UK Scrabble
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">word</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">score</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;quartzy&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">126</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;squeezy&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">126</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
 <p>
-<p>Note that Inform reads articles such as &quot;the&quot; or &quot;a&quot; in the first column just as it would when something is created with any other sentence.
+<p>We could then record which one of these tables to use in a variable:
+<p>
+<blockquote><font color="#000080">The lexicon is a table-name that varies. The lexicon is Table 1.
+</font></blockquote><p>
+<p>
+<p>Note that for this purpose, the kind of value is a special kind called &quot;table-name&quot;, not &quot;table&quot;. (The word &quot;table&quot; already has too many meanings and we must be careful to avoid ambiguities here.) We could make use of this as follows, for instance:
+<p>
+<blockquote><font color="#000080">To flip tables:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You exchange dictionaries, lexically crossing the Atlantic. &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the lexicon is Table 1, change the lexicon to Table 2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change the lexicon to Table 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;choose a random row in the lexicon;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Did you know that according to [the lexicon], [word entry] scores [score entry]?&quot;
+</font></blockquote><p>
+<p>
+<p>which produces text such as
+<p>
+<blockquote><font color="#000080">You exchange dictionaries, lexically crossing the Atlantic. Did you know that according to Table 1 - Nifty Opening Plays in US Scrabble, muzjiks scores 128?
+</font></blockquote><p>
 <p>
 <p><hr><p>
-<a name="e164"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex164.html#e164 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>239</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex164.html#e164 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Sweeney</font></b></a><br>A conversation where each topic may have multiple questions and answers associated with it, and where a given exchange can lead to new additions to the list.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex164.html#e164 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e298"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex298.html#e298 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>240</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex298.html#e298 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Introduction to Juggling</font></b></a><br>Assortment of equipment defined with price and description, in a table.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex298.html#e298 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e284"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex284.html#e284 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>249</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex284.html#e284 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Farewell</font></b></a><br>People who respond to conversational gambits, summarize what they said before if asked again, and provide recap of conversation that is past.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex284.html#e284 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc238.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc240.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

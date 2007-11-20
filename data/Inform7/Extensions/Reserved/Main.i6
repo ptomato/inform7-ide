@@ -6,7 +6,8 @@
 
 {-callv:handle_census_mode}
 
-{-callv:make_type_IDs_table}
+{-segment:Types.i6}
+
 {-callv:make_built_in_relations}
 {-callv:make_built_in_verbs}
 
@@ -27,6 +28,7 @@
 {-callv:tidy_up_ofs_further} ! More "of" wrangling
 {-callv:register_recently_lexed_phrases} ! To make commands children of their routines
 {-callv:declare_source_loaded}
+{-callv:include_templates_for_types}
 
 {-log-phase:Semantic analysis II}
 {-callv:verify_parse_tree} ! Purely to check that NI is running correctly
@@ -86,8 +88,10 @@
 
 #ifdef TARGET_ZCODE;
 	Constant I6_NULL $ffff;
+	Constant MAX_POSITIVE_NUMBER 32767;
 #ifnot;
 	Constant I6_NULL $ffffffff;
+	Constant MAX_POSITIVE_NUMBER 2147483647;
 #endif;
 
 Constant NO_PLACES;
@@ -114,6 +118,7 @@ Global I7_concealed_item;
 Global I7_TProp;
 Global I7_TSign;
 Global I7_suppress_scope_loops;
+Global I7BASP = 0;
 
 Constant I7_EMPTY_TEXT "";
 
@@ -146,6 +151,8 @@ Replace ActionsOffSub;
 Global say__c; Global say__p = 1; Global say__pc = 0;
 Global I7_caps_mode = false;
 Global I7_uninitialised = false;
+Global I7_IT_RE_Trace = false;
+Global I7_IT_RE_Err = 0;
 
 ! --- Properties ---
 Property component_parent;
@@ -153,6 +160,10 @@ Property component_child;
 Property component_sibling;
 Property I7_Map_Region;
 Property regional_found_in;
+
+! --- I7 type numbers as I6 constants ---
+
+{-call:compile_I6_constants_for_typenames}
 
 ! --- Inclusion of library routines ---
 Include "Parser";
@@ -185,6 +196,7 @@ Global debug_scenes = 0;
 Attribute pushable; Global move_pushing;
 Global move_from; Global move_to;
 Global move_by; Global move_through;
+Global actor_location;
 
 Constant RS_CAPACITY = 666;
 Global   rulechange_sp = 0;
@@ -211,6 +223,8 @@ Constant Relation_ByRoutine	8;
 ! --- Variable used by choose objects mechanism ---
 Global cobj_flag = 0;
 [ I7ResetChooseObjects; cobj_flag = 0; rfalse; ];
+
+Array LocalParking --> 16;
 
 ! --- Printing routines ---
 {-call:compile_printing_routines}
@@ -285,7 +299,6 @@ Array EMPTY_RULEBOOK -> $ff $ff $ff $ff; ! 4 bytes needed in case of Glulx
 {-segment:Activities.i6}
 {-segment:Relations.i6}
 {-segment:WorldModel.i6}
-{-segment:Time.i6}
 {-segment:Figures.i6}
 {-segment:FileIO.i6}
 
@@ -319,6 +332,12 @@ Array EMPTY_RULEBOOK -> $ff $ff $ff $ff; ! 4 bytes needed in case of Glulx
 	#ifnot; ! TARGET_GLULX
 	@setrandom n;
 	#endif; ! TARGET_
+];
+[ I7_RNG n m s;
+	if (n==m) return n;
+	if (n>m) { s = n; n = m; m = s; }
+	n--;
+	return random(m-n) + n;
 ];
 
 {-routine:I7_SceneChange}
@@ -354,6 +373,7 @@ Constant ActionCount = {-value:NUMBER_CREATED(action_name)};
 
 [ Initialise pp;
 	CreatePropertyOffsets();
+	I7_Blk_Initialise(); I7_Initial_Heap_Allocation(); I7_Create_Blk_Consts();
 {-call:compile_initial_time_and_place}
 	#ifdef I7_LOOKMODE; lookmode = I7_LOOKMODE; #endif;
 	InformLibrary.end_turn_sequence = TurnEndPrimitive;
@@ -470,6 +490,7 @@ Include "Grammar";
 	parsed_number = n*sign; wn++;
 	return GPR_NUMBER;
 ];
+{-segment:Time.i6}
 
 {-call:compile_type_gprs}
 
@@ -505,6 +526,13 @@ Constant I7_cap_short_name = short_name;
 {-call:compile_allocated_counter_storage}
 
 Constant I7_BOXES = {-value:extent_of_runtime_quotations_array};
+
+{-call:compile_heap_allocator}
+
+{-segment:Flex.i6}
+{-segment:IndexedText.i6}
+{-segment:StoredAction.i6}
+{-call:create_block_constants}
 
 {-log-phase:Compilation now complete}
 

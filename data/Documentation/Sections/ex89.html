@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.15. Printing a refusal to act in the dark</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.5. Kinds</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,122 +19,90 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Zorn of Zorna" -->
-<!-- SEARCH SECTION "Ex 290" -->
-<!-- SEARCH SORT "Ex 017-015-290" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc275.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc277.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.15. Printing a refusal to act in the dark</b></font></td></tr></table>
+<!-- SEARCH TITLE "First Name Basis" -->
+<!-- SEARCH SECTION "Ex 11" -->
+<!-- SEARCH SORT "Ex 003-005-011" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc30.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc32.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.5. Kinds</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> When an action which requires light is tried, and the visibility rules decide that not enough light is present.
+<p>The following description runs to only 33 words, but makes a surprisingly intricate design. It not only places things within rooms, but also places them very specifically with respect to each other:
 <p>
-<p><b>2. The default behaviour.</b> To print &quot;It is pitch dark, and you can't see a thing.&quot;
+<blockquote><font color="#000080">&quot;Midsummer Day&quot;
+</font></blockquote><p>
 <p>
-<p><b>3. Examples.</b> (a) This might do for some twilit, penumbral room:
+<blockquote><font color="#000080">East of the Garden is the Gazebo. Above is the Treehouse. A billiards table is in the Gazebo. On it is a trophy cup. A starting pistol is in the cup.
+</font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for printing a refusal to act in the dark: if we are examining something, say &quot;It's not totally dark here, perhaps, but certainly too dim for close-up examination of anything.&quot; instead.
+<p>Inform needs to identify the places and objects being described by the nouns here, and to guess what it can about them. For instance, the pistol can be picked up but not walked inside, whereas the Treehouse is the reverse. (This is obvious to someone who knows what these words mean, less obvious to a computer which does not, but the text contains sufficient clues.) Inform does this by sorting the various nouns into different categories, which are called &quot;kinds&quot;. For instance:
+<p>
+<blockquote><font color="#000080">Garden, Gazebo, Treehouse - <b>room</b>
+<br>billiards table - <b>supporter</b>
+<br>cup - <b>container</b>
+<br>starting pistol - <b>thing</b>
+<br>East, up (implied by &quot;above&quot;) - <b>direction</b>
+</font></blockquote><p>
+<p>
+<p>(A container is something which can contain other things, and a supporter similarly.) For instance Inform knows that if one thing is in another, then the second thing is either a room or a container, and if one thing is on another, the second thing is a supporter. This worked nicely for the design above, but:
+<p>
+<blockquote><font color="#000080">In the Treehouse is a cardboard box.
+</font></blockquote><p>
+<p>
+<p>results in the cardboard box being made only a &quot;thing&quot;: because nothing has been put inside it, there is no reason for Inform - which does not know what a cardboard box looks like - to guess that it is a &quot;container&quot;. So we need to add:
+<p>
+<blockquote><font color="#000080">The box is a container.
+</font></blockquote><p>
+<p>
+<p>It is rather clumsy to have to write two sentences like this, so we would normally write this instead:
+<p>
+<blockquote><font color="#000080">In the Treehouse is a container called the cardboard box.
 </font></blockquote><p>
 <p>
 <p><hr><p>
+<a name="e259"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex259.html#e259 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>10</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex259.html#e259 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Midsummer Day</font></b></a><br>A few sentences laying out a garden together with some things which might be found in it.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex259.html#e259 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e89"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc276.html#e89 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>290</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc276.html#e89 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Zorn of Zorna</font></b></a><br>Light levels vary depending on the number of candles the player has lit, and this determines whether or not he is able to examine detailed objects successfully.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex89.html#e89 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e89"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc31.html#e89 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>11</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc31.html#e89 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> First Name Basis</font></b></a><br>Allowing the player to use different synonyms to refer to something.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex89.html#e89 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Sometimes we create objects that we want the player to be able to call by different names: a television that should also answer to &quot;tv&quot; and &quot;telly&quot;, for instance, or a refrigerator the player might also call &quot;fridge&quot;. In this case, we can use instructions like
+<p>
+<blockquote><font color="#000080">Understand &quot;tv&quot; and &quot;telly&quot; as the television.
+</font></blockquote><p>
+<p>
+<p>to add extra names to the object we've defined.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode376(code) {
+function pasteCode91(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Zorn of Zorna"\n\nVisibility rule:\n\tif examining\n\tbegin;\n\t\tif the detail of the noun is fine and the number of visible lit candles is less than 5, there is insufficient light;\n\t\tif the detail of the noun is ordinary and the number of visible lit candles is less than 3, there is insufficient light;\n\tend if;\n\tthere is sufficient light.\n\nDetail is a kind of value. The details are fine, ordinary, and gross. A thing has detail.\n\nA candle is a kind of thing. Before printing the name of a candle while not burning or blowing out: say "[if lit]lit [otherwise]unlit [end if]". A candle is usually lit. Before printing the plural name of a candle while not burning or blowing out: say "[if lit]lit [otherwise]unlit [end if]". A candle is usually lit. Understand the lit property as describing a candle. A candle is usually gross.\n\nInstead of burning a candle: now the noun is lit; say "You light [the noun]."\n\nUnderstand "blow out [something]" or "extinguish [something]" or "put out [something]" as blowing out. Understand the command "snuff" as "extinguish". Blowing out is an action applying to one thing.\n\nUnderstand "burn [unlit candle]" as burning.\n\nInstead of blowing out a candle:\n\tchange the noun to unlit;\n\tsay "You put out [the noun]."\n\n\nRule for printing a refusal to act in the dark:\n\tif we are examining something, say "The details of [the noun] are too fine to make out in the light of only [the number of visible lit candles in words] candle[s]." instead.\n\n\nEvery turn when the Todal is visible:\n\tif the number of visible lit candles is greater than 1\n\tbegin;\n\t\tsay "The brightness of the room wakens the Todal from slumber, and with you unarmed...";\n\t\tend the game in death;\n\totherwise;\n\t\tsay "Todal sleeps fitfully, troubled by even that faint light.";\n\tend if.\n\nA room is usually dark.\n\nThe Palace is a room. "The Duke is out; the way is clear. East is Saralinda\'s Chamber; north, a hallway zigs and zags down to the gate that leads out." A finely-written placard is in the Palace. "A finely-written placard is on the wall next to this exit." The placard is fine. The description of the placard is "You read: \'Beware the Todal: its bite is worse than its gleep.\n\nNo more than one candle!\'"\n\nThe candle-stand is a supporter in the Palace. Understand "stand" as the candle-stand. The description of the candle-stand is "The candle-stand is a tall metal branch for holding lights, but someone has quite practically added casters to the bottom." It is pushable between rooms. Three candles are on the candle-stand. Instead of removing something from the candle-stand: say "[The noun] is fixed quite firmly in place." Instead of taking something which is on the candle-stand: say "[The noun] won\'t come out of the holder." Instead of putting something on the candle-stand: say "[The candle-stand] is full."\n\nSaralinda\'s Chamber is east of the Palace. "Now that Saralinda herself is gone, there is no real radiance in this place." Two unlit candles are in Saralinda\'s Chamber.\n\nA large-print romantic novel is in Saralinda\'s Chamber. The novel is ordinary. The description of the novel is "\'She Was Only The Chimney-Sweep\'s Daughter\', by Marie Swelldon."\n\nThe Zig-Zag Hallway is north of the Palace. "The Hallway goes left, then right, then left again..." Two unlit candles are in the Hallway.\n\nTodal is an animal in the Zig-Zag Hallway.\n\nRule for printing the description of a dark room when the Todal is in the location:\n\ttry listening.\n\nInstead of listening when in darkness and the Todal is in the location:\n\tsay "In the darkness something softly gleeps."\n\nInstead of going north from the Hallway when in darkness:\n\tsay "You stumble and cannot find your way."\n\nNorth of the Hallway is Freedom. Instead of going to Freedom: say "You make it out into the cool night air at last!"; end the game in victory.\n\nTest me with "examine placard / get placard / n / listen / n / s / examine candle-stand / push candle-stand east / examine novel / get unlit candle / light it / light unlit candle / examine placard / push candle-stand west / e / examine novel / w / n / n".\n');
+    myProject.pasteCode('"First Name Basis"\n\nThe Crew Lounge is a room. "Deliberately spartan: the crew feels weight restrictions here first, so there aren\'t any chairs, just a few thin pads on the ground."\n\nThe holographic projector is a device in the Crew Lounge. "The one major source of entertainment is the holographic projector, a top of the line Misthon 9000, on which you view every beam you can get." Understand "holo" or "holograph" or "Misthon" or "9000" as the projector.\n\nThe description of the projector is "[if switched on]The projector is now playing a documentary about the early politics of the Mars colony.[otherwise]The air above the projector is disappointingly clear.[end if]".\n\n[(This description is for local color; we will learn more about devices, and conditions like "if switched on", later in this chapter.)]\n\n[By default, Inform does not understand the names of an object\'s kind as referring to that object, unless the object has no other name of its own. We can change this, if we like, by defining names that should be applied to everything of a given kind:]\n\nLewis and Harper are men in the Crew Lounge. Understand "man" or "guy" or "chap" or "lad" or "male" as a man.\n\nThe description of Lewis is "A wiry, excitable engineer who just signed aboard last week." The description of Harper is "Harper\'s a good guy: taciturn when sober, affectionate when drunk, but rarely annoying in either state."\n\nTest me with "x holo / x man / lewis / x guy / harper / turn on projector / x holo projector".\n\n');
 }
 </script>
-<a href="javascript:pasteCode376()"><img border=0 src=../doc_images/paste.png></a> &quot;Zorn of Zorna&quot;
+<a href="javascript:pasteCode91()"><img border=0 src=../doc_images/paste.png></a> &quot;First Name Basis&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Visibility rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if examining
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the detail of the noun is fine and the number of visible lit candles is less than 5, there is insufficient light;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the detail of the noun is ordinary and the number of visible lit candles is less than 3, there is insufficient light;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;there is sufficient light.
+<blockquote><font color="#000080">The Crew Lounge is a room. &quot;Deliberately spartan: the crew feels weight restrictions here first, so there aren't any chairs, just a few thin pads on the ground.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Detail is a kind of value. The details are fine, ordinary, and gross. A thing has detail.
+<blockquote><font color="#000080">The holographic projector is a device in the Crew Lounge. &quot;The one major source of entertainment is the holographic projector, a top of the line Misthon 9000, on which you view every beam you can get.&quot; Understand &quot;holo&quot; or &quot;holograph&quot; or &quot;Misthon&quot; or &quot;9000&quot; as the projector.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A candle is a kind of thing. Before printing the name of a candle while not burning or blowing out: say &quot;[if lit]lit [otherwise]unlit [end if]&quot;. A candle is usually lit. Before printing the plural name of a candle while not burning or blowing out: say &quot;[if lit]lit [otherwise]unlit [end if]&quot;. A candle is usually lit. Understand the lit property as describing a candle. A candle is usually gross.
+<blockquote><font color="#000080">The description of the projector is &quot;[if switched on]The projector is now playing a documentary about the early politics of the Mars colony.[otherwise]The air above the projector is disappointingly clear.[end if]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of burning a candle: now the noun is lit; say &quot;You light [the noun].&quot;
+<p>(This description is for local color; we will learn more about devices, and conditions like &quot;if switched on&quot;, later in this chapter.)
+<p>
+<p>By default, Inform does not understand the names of an object's kind as referring to that object, unless the object has no other name of its own. We can change this, if we like, by defining names that should be applied to everything of a given kind:
+<p>
+<blockquote><font color="#000080">Lewis and Harper are men in the Crew Lounge. Understand &quot;man&quot; or &quot;guy&quot; or &quot;chap&quot; or &quot;lad&quot; or &quot;male&quot; as a man.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;blow out [something]&quot; or &quot;extinguish [something]&quot; or &quot;put out [something]&quot; as blowing out. Understand the command &quot;snuff&quot; as &quot;extinguish&quot;. Blowing out is an action applying to one thing.
+<blockquote><font color="#000080">The description of Lewis is &quot;A wiry, excitable engineer who just signed aboard last week.&quot; The description of Harper is &quot;Harper's a good guy: taciturn when sober, affectionate when drunk, but rarely annoying in either state.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;burn [unlit candle]&quot; as burning.
+<blockquote><font color="#000080">Test me with &quot;x holo / x man / lewis / x guy / harper / turn on projector / x holo projector&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of blowing out a candle:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the noun to unlit;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You put out [the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Rule for printing a refusal to act in the dark:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if we are examining something, say &quot;The details of [the noun] are too fine to make out in the light of only [the number of visible lit candles in words] candle[s].&quot; instead.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Every turn when the Todal is visible:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of visible lit candles is greater than 1
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The brightness of the room wakens the Todal from slumber, and with you unarmed...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in death;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Todal sleeps fitfully, troubled by even that faint light.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A room is usually dark.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Palace is a room. &quot;The Duke is out; the way is clear. East is Saralinda's Chamber; north, a hallway zigs and zags down to the gate that leads out.&quot; A finely-written placard is in the Palace. &quot;A finely-written placard is on the wall next to this exit.&quot; The placard is fine. The description of the placard is &quot;You read: 'Beware the Todal: its bite is worse than its gleep.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">No more than one candle!'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The candle-stand is a supporter in the Palace. Understand &quot;stand&quot; as the candle-stand. The description of the candle-stand is &quot;The candle-stand is a tall metal branch for holding lights, but someone has quite practically added casters to the bottom.&quot; It is pushable between rooms. Three candles are on the candle-stand. Instead of removing something from the candle-stand: say &quot;[The noun] is fixed quite firmly in place.&quot; Instead of taking something which is on the candle-stand: say &quot;[The noun] won't come out of the holder.&quot; Instead of putting something on the candle-stand: say &quot;[The candle-stand] is full.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Saralinda's Chamber is east of the Palace. &quot;Now that Saralinda herself is gone, there is no real radiance in this place.&quot; Two unlit candles are in Saralinda's Chamber.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A large-print romantic novel is in Saralinda's Chamber. The novel is ordinary. The description of the novel is &quot;'She Was Only The Chimney-Sweep's Daughter', by Marie Swelldon.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Zig-Zag Hallway is north of the Palace. &quot;The Hallway goes left, then right, then left again...&quot; Two unlit candles are in the Hallway.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Todal is an animal in the Zig-Zag Hallway.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for printing the description of a dark room when the Todal is in the location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try listening.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of listening when in darkness and the Todal is in the location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;In the darkness something softly gleeps.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going north from the Hallway when in darkness:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You stumble and cannot find your way.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">North of the Hallway is Freedom. Instead of going to Freedom: say &quot;You make it out into the cool night air at last!&quot;; end the game in victory.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;examine placard / get placard / n / listen / n / s / examine candle-stand / push candle-stand east / examine novel / get unlit candle / light it / light unlit candle / examine placard / push candle-stand west / e / examine novel / w / n / n&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc276.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Inform's naming abilities go considerably further, in fact: we can also instruct it to understand words only under certain circumstances, or only when they appear with other words. Fuller details may be found in the chapter on Understanding.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc31.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc275.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc277.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc30.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc32.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

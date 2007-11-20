@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.4. Glulx Multimedia Effects</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.12. Traveling Characters</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,98 +19,80 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "Flathead News Network" -->
-<!-- SEARCH SECTION "Ex 346" -->
-<!-- SEARCH SORT "Ex 012-004-346" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc85.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap12.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 12: Typography, Layout, and Multimedia Effects</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc87.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.4. Glulx Multimedia Effects</b></font></td></tr></table>
+<!-- SEARCH TITLE "Mistress of Animals" -->
+<!-- SEARCH SECTION "Ex 71" -->
+<!-- SEARCH SORT "Ex 007-012-071" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc50.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap7.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 7: Other Characters</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc52.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.12. Traveling Characters</b></font></td></tr></table>
 <p>
-<p>Glulx is one of the two basic story file formats to which Inform can work. It is the more powerful of the two, but less universally playable: it should be used without fear if it offers a project any worthwhile advantage, but otherwise not.
+<p>There are a number of ways we can make characters navigate our map. We might reasonably want them to approach and follow the player (as in <b>Van Helsing</b>); or to allow the player to follow characters who have left the room (as in <b>Actaeon</b>).
 <p>
-<p>Among its powers are the ability to display images, play back sound effects, and read and write external files to the disc. With care and a certain amount of fuss, this can even give a playing story file limited Internet connectivity, although it should be stressed that this can only be done if the player sets up his computer just right and runs an auxiliary program beside the game itself. That will mostly be too much to ask, if the player is playing offline, but when the story file is being run on an interpreter running at a server - so that the player simply sends commands to it and sees responses back on a web page - one could easily imagine setting up the server to provide these auxiliary programs, without any extra difficulty for the player.
+<p>Characters who are less interested in the player will more likely follow their own courses around the available geography, however. A character may move randomly from room to room, as demonstrated in <b>Mistress of Animals</b>; he may follow a path that we have specifically written in advance, as <b>Odyssey</b> shows; or, most elegantly, he may use the &quot;best route&quot; calculation to find the best possible way to a given target room, as seen in <b>Latris Theon</b>.
+<p>
+<p>This final method is arguably the neatest solution to character movement, allowing for characters to act in sophisticated ways; if we incorporate the Locksmith extension, other characters will even unlock and open doors that are in their way. The chief catch is that it should not be used too profligately with large numbers of characters, since on slow machines the processing power required to plan all their travel will make a noticeable difference to the running speed of the game.
+<p>
+<p>All the same, the constraints are not so severe as to preclude having a moderate number of route-finding characters all wandering around at once. This does introduce a new problem, however: movement descriptions can become hard to follow if every turn produces long reams of reports such as
+<p>
+<blockquote><font color="#000080">Joe enters the room from the south.
+<br>Lawrence opens the gate.
+<br>Lawrence departs to the west.
+<br>Lucy comes in from above.
+<br>Ted enters the room from the south.
+<br>Bill departs to the west.
+</font></blockquote><p>
+<p>
+<p><b>Patient Zero</b> tackles this problem by calculating all of the character movement without printing any text; it then combines similar or related events into coherent paragraphs, as in
+<p>
+<blockquote><font color="#000080">Rhoda and Antony walk into the Post Office. Rhoda could have been rolling in chocolate and Antony looks as though dipped in french vanilla.
+</font></blockquote><p>
+<p>
+<p>or
+<p>
+<blockquote><font color="#000080">Antony opens the iron gate. He goes through.
+</font></blockquote><p>
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e48"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc86.html#e48 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>346</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc86.html#e48 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Flathead News Network</font></b></a><br>Using external files, together with a simple Unix script running in the background, to provide live news headlines inside a story file.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex48.html#e48 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e48"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc51.html#e48 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>71</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc51.html#e48 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Mistress of Animals</font></b></a><br>A person who moves randomly between rooms of the map.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex48.html#e48 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>This example can only work if we have a separate program running in the background while the story file is being played, and as such it will only work if we set things up in a special way. Exactly how to do this will vary from platform to platform.
-<p>
-<p>First, the source text for the Inform end of the communication line:
+<p>Suppose we want a restless sort of character always pacing from room to room. It is quite easy to use adjacency to achieve this effect:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode802(code) {
+function pasteCode551(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Flathead News Network"\n\nThe file of RSS Requests is called "rssrequest".\n\nThe file of RSS Responses (owned by project "RSS-SCRIPT") is called "rssreply".\n\nTo request (RSS feed address - text):\n\tmark the file of RSS Responses as not ready to read;\n\twrite the RSS feed address to the file of RSS Requests.\n\nNewsroom is a room. "This is the secret nerve-centre of FNN, the Flathead News Network."\n\nThe BBC button is in the Newsroom. Instead of pushing the BBC button: say "Bong!"; request "newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml".\n\nThe NASA button is in the Newsroom. Instead of pushing the NASA button: say "Bang!"; request "www.nasa.gov/rss/breaking_news.rss".\n\nThe WHO button is in the Newsroom. Instead of pushing the WHO button: say "Bing!"; request "www.gallifreyone.com/news.xml".\n\nA screen is in the Newsroom.\n\nInstead of examining the screen:\n\tif ready to read the file of RSS Responses, say "From the screen you read:[line break][text of the file of RSS Responses]";\n\totherwise say "The screen remains blank for now."\n\n');
+    myProject.pasteCode('"Mistress of Animals"\n\nCorinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.\n\nArtemis is a woman in Thebes.\n\nEvery turn:\n\tif Artemis is in a room (called the current space)\n\tbegin;\n\t\tlet next space be a random room which is adjacent to the current space;\n\t\tif Artemis is visible, say "Artemis heads to [the next space].";\n\t\tmove Artemis to next space;\n\t\tif Artemis is visible, say "Artemis arrives from [the current space].";\n\tend if.\n\nTest me with "z / z / z / z / z / z".\n\n');
 }
 </script>
-<a href="javascript:pasteCode802()"><img border=0 src=../doc_images/paste.png></a> &quot;Flathead News Network&quot;
+<a href="javascript:pasteCode551()"><img border=0 src=../doc_images/paste.png></a> &quot;Mistress of Animals&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The file of RSS Requests is called &quot;rssrequest&quot;.
+<blockquote><font color="#000080">Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The file of RSS Responses (owned by project &quot;RSS-SCRIPT&quot;) is called &quot;rssreply&quot;.
+<blockquote><font color="#000080">Artemis is a woman in Thebes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To request (RSS feed address - text):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;mark the file of RSS Responses as not ready to read;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;write the RSS feed address to the file of RSS Requests.
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is in a room (called the current space)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let next space be a random room which is adjacent to the current space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis heads to [the next space].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move Artemis to next space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis arrives from [the current space].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Newsroom is a room. &quot;This is the secret nerve-centre of FNN, the Flathead News Network.&quot;
+<blockquote><font color="#000080">Test me with &quot;z / z / z / z / z / z&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The BBC button is in the Newsroom. Instead of pushing the BBC button: say &quot;Bong!&quot;; request &quot;newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The NASA button is in the Newsroom. Instead of pushing the NASA button: say &quot;Bang!&quot;; request &quot;www.nasa.gov/rss/breaking_news.rss&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The WHO button is in the Newsroom. Instead of pushing the WHO button: say &quot;Bing!&quot;; request &quot;www.gallifreyone.com/news.xml&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A screen is in the Newsroom.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining the screen:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if ready to read the file of RSS Responses, say &quot;From the screen you read:[line break][text of the file of RSS Responses]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;The screen remains blank for now.&quot;
-</font></blockquote><p>
-<p>
-<p>As far as the story file is concerned, then, it sends a request down the communication line by writing the chosen RSS feed to the file named &quot;rssrequest&quot;, and expects a reply to come back down the line by being written to the file &quot;rssreply&quot;. However, the story file needs to expect that this might take some time. (Maybe forever, if there is no program responding, or if the Internet connection is not working.) The story file marks the &quot;rssreply&quot; file as not ready before it makes a request; if it subsequently finds that the file is now ready, that must mean that the other program has done the honours, and that all is well. In the mean time, &quot;The screen remains blank for now.&quot;
-<p>
-<p>Now for the RSS-SCRIPT program. The following provides a crude but workable program suitable for running as a Perl script on a system which provides the standard Internet fetching program &quot;curl&quot;: Mac OS X, for instance. (If you have OS X, you can paste the following into a (Unix-format) text file called &quot;rss-script.pl&quot;, place it in your home folder, open the Terminal utility, type &quot;perl rss-script.pl&quot;, and then hide the Terminal window again.)
-<p>
-<blockquote><font color="#000080">for (;;) { # repeat forever:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;system(&quot;sleep 1&quot;); # wait 1 second
-<br>&nbsp;&nbsp;&nbsp;&nbsp;open REQUEST, &quot;rssrequest.glkdata&quot; or next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;# the request file has been detected:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;$header_line = &lt;REQUEST&gt;; # the header line
-<br>&nbsp;&nbsp;&nbsp;&nbsp;$rss_feed = &lt;REQUEST&gt;; # the actual content - the RSS feed URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;close REQUEST;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if ($header_line =~ m/^\*/) { # if the request file is marked ready
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$rss = system(&quot;curl $rss_feed &gt;rawrss.txt&quot;); # download the RSS feed
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# read the RSS XML into a single Perl string:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open RAWRSS, &quot;rawrss.txt&quot; or next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$raw = &quot;&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while ($nl = &lt;RAWRSS&gt;) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$raw = $raw.&quot; &quot;.$nl;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close RAWRSS;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# look for the title and description of the first item:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ($raw =~ m/\&lt;item\&gt;\&lt;title.*?\&gt;(.*?)\&lt;\/title\&gt;.*?\&lt;description.*?\&gt;(.*?)\&lt;\/description\&gt;/) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# write the reply:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open REPLY, &quot;&gt;rssreply.glkdata&quot; or next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print REPLY &quot;* //RSS-SCRIPT// rssreply\n&quot;, $1, &quot;\n&quot;, $2, &quot;\n&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close REPLY;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# request safely dealt with, so we can remove it:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system(&quot;rm 'rssrequest.glkdata'&quot;);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>}
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc86.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Of course, it helps that Artemis is the sort to like open spaces. The implementation would become more complicated if there were doors which might block transit between these locations.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc51.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc85.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc87.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e208"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex208.html#e208 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>242</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex208.html#e208 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Odyssey</font></b></a><br>A person who follows a path predetermined and stored in a table, and who can be delayed if the player tries to interact with her.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex208.html#e208 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e149"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex149.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>171</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex149.html#e149 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Latris Theon</font></b></a><br>A person who can accept instructions to go to new destinations and move towards them according to the most reasonable path.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex149.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e155"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex155.html#e155 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>268</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex155.html#e155 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Actaeon</font></b></a><br>A FOLLOW command allowing the player to pursue a person who has just left the room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex155.html#e155 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e19"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex19.html#e19 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>37</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex19.html#e19 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Van Helsing</font></b></a><br>A character who approaches the player, then follows him from room to room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex19.html#e19 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e141"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex141.html#e141 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>354</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex141.html#e141 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Patient Zero</font></b></a><br>People who wander around the map performing various errands, and in the process spread a disease which only the player can eradicate.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex141.html#e141 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc50.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc52.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

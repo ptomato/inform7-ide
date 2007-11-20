@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.3. Rules applied to activities</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.2. How activities work</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,24 +19,36 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Rules applied to activities" -->
-<!-- SEARCH SECTION "17.3" -->
-<!-- SEARCH SORT "017-003-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc263.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc265.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.3. Rules applied to activities</b></font></td></tr></table>
+<!-- SEARCH TITLE "How activities work" -->
+<!-- SEARCH SECTION "17.2" -->
+<!-- SEARCH SORT "017-002-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc263.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc265.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.2. How activities work</b></font></td></tr></table>
 <p>
-<p>The activity &quot;printing the name of something&quot; is the process of printing up the name of something on screen: ordinarily, this means saying the text in its &quot;printed name&quot; property.
+<p>All activities start, continue for a while and then finish: however, no activity ever runs on for more than a single turn. Several activities can be going on at the same time. For instance, suppose the following is printed as part of the description of a grocery:
 <p>
-<p>As with actions, rules can be attached to activities which change or augment what would normally happen. In fact the situation is simpler, because (unlike an action) an activity always finishes, so there is no question of not reaching its &quot;after&quot; stage. There are also only three rulebooks attached to an activity, as compared with the six affecting an action.
-<p>
-<p>The three rulebooks for printing the name are called &quot;before printing the name&quot;, &quot;for printing the name&quot; and &quot;after printing the name&quot;, and this is the general pattern. What happens is:
-<p>
-<blockquote><font color="#000080">1. All &quot;before printing the name of&quot; rules are considered;
-<br>2. The most specific, applicable &quot;rule for printing the name of&quot; is considered;
-<br>3. All &quot;after printing the name of&quot; rules are considered.
+<blockquote><font color="#000080">You can see a banana, an apple and a star-fruit here.
 </font></blockquote><p>
 <p>
-<p>Whereas an action's later stages never take place if an early stage ends unexpectedly, an activity always goes through all three of its stages. Invoking the word &quot;instead&quot; in a before rule for an action will terminate not only the before rules but the whole action: the same thing for an activity will only terminate the before rules, and the for and after rules will take place as usual.
+<p>At the moment when Inform prints &quot;apple&quot;, two activities are under way: &quot;listing contents of the Grocery&quot;, and &quot;printing the name of the apple&quot;. The sequence of events was in fact:
 <p>
-<p>The actual task is usually carried out by one single rule tucked into the back of the &quot;for...&quot; rulebook: it is the rule for printing the name of whatever is concerned, hence the name. Inform's standard activities are all of this pattern: they start out with no &quot;before&quot; or &quot;after&quot; rules, and just one &quot;for&quot; rule.
+<blockquote><font color="#000080">say &quot;You can see &quot;
+<br><i>start listing contents of the Grocery</i>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;a &quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<i>start printing the name of the banana</i>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;banana&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<i>finish printing the name of the banana</i>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;, an &quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<i>start printing the name of the apple</i>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;apple&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<i>finish printing the name of the apple</i>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot; and a &quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<i>start printing the name of the star-fruit</i>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;star-fruit&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<i>finish printing the name of the star-fruit</i>
+<br><i>finish listing contents of the Grocery</i>
+<br>say &quot; here.&quot;
+</font></blockquote><p>
+<p>
+<p>The golden rule is: if activity B starts during activity A, it must also finish during activity A.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc263.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc265.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -28,6 +28,18 @@ GtkWidget*
 game_create (gchar *widget_name, gchar *string1, gchar *string2,
                 gint int1, gint int2);
 
-void run_project(struct story *thestory);
-void stop_project(struct story *thestory);
+void
+on_game_viewport_l_size_allocate       (GtkWidget       *widget,
+                                        GtkAllocation   *allocation,
+                                        gpointer         user_data);
+
+void
+on_game_viewport_r_size_allocate       (GtkWidget       *widget,
+                                        GtkAllocation   *allocation,
+                                        gpointer         user_data);
+
+void run_project(Story *thestory);
+void stop_project(Story *thestory);
+void resize_game_window(Story *thestory, int right, guint w, guint h);
+gboolean game_is_running(Story *thestory);
 #endif

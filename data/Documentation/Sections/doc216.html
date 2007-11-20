@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.9. The parts of a number specification</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.8. Multiple-number specifications</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,58 +19,31 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "The parts of a number specification" -->
-<!-- SEARCH SECTION "14.9" -->
-<!-- SEARCH SORT "014-009-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc215.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc217.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.9. The parts of a number specification</b></font></td></tr></table>
+<!-- SEARCH TITLE "Multiple-number specifications" -->
+<!-- SEARCH SECTION "14.8" -->
+<!-- SEARCH SORT "014-008-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc215.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc217.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.8. Multiple-number specifications</b></font></td></tr></table>
 <p>
-<p>We often need to break up a number specification into its pieces. For instance, suppose we want to know the dollars part of $1.99? We can do this by naming the parts:
+<p>Natural language is full of notations for weights and measures which involve more than one number, and perhaps some punctuation. For instance, suppose we want a running time for some piece of music, in minutes and seconds: we might choose to write this in the old-fashioned way 4'33.
 <p>
-<blockquote><font color="#000080">A monetary value is a kind of value. $1.99 specifies a monetary value with parts dollars and cents.
+<blockquote><font color="#000080">A running time is a kind of value. 3'59 specifies a running time.
 </font></blockquote><p>
 <p>
-<p>We can now find the relevant parts like so. Suppose that &quot;sum&quot; is a monetary value. Then:
+<p>The choice of &quot;3&quot; here makes no difference, much as the choice of &quot;10&quot; in the weight examples was arbitrary. But the &quot;59&quot; is significant. Numbers after the first one are expected to range from 0 up to the value we quote - so in this case, the number of seconds can be anything from 0 to 59. Or, for instance:
 <p>
-<blockquote><font color="#000080">dollars part of sum
-<br>cents part of sum
+<blockquote><font color="#000080">A height is a kind of value. 5 foot 11 specifies a height.
 </font></blockquote><p>
 <p>
-<p>are both numbers, so for instance we can
+<p>A specification can contain up to four numbers like this: but see the caveats on the limited total size of those numbers in the next section.
 <p>
-<blockquote><font color="#000080">say &quot;Looks like around [dollars part of sum in words] dollar[s].&quot;
+<p>Specifications must not contain double-quotation marks because, even though people did once use these to denote minutes of arc, they would simply confuse programs like Inform's user interface which have to keep track of what is quoted text and what is not. But other punctuation marks are fine <i>provided they occur between two digits</i>. For instance, in
+<p>
+<blockquote><font color="#000080">A monetary value is a kind of value. $1.99 specifies a monetary value.
 </font></blockquote><p>
 <p>
-<p>We can also go the other way:
+<p>the full stop between the 1 and the 99 is not interpreted as a division of two sentences; and similarly for colons in examples such as
 <p>
-<blockquote><font color="#000080">monetary value with dollars part 4 cents part 72
+<blockquote><font color="#000080">An aspect ratio is a kind of value. 16:9 specifies an aspect ratio.
 </font></blockquote><p>
 <p>
-<p>produces the monetary value $4.72. (Note the lack of commas or &quot;and&quot;s, and that the parts have to be given in the right order.) This is really intended to be useful when we manipulate such values in unusual ways:
-<p>
-<blockquote><font color="#000080">An aspect ratio is a kind of value. 16:20 specifies an aspect ratio with parts width and height.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide which aspect ratio is the wider version of (AR - an aspect ratio):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let W be the width part of AR multiplied by 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let H be the height part of AR;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the wider ratio be the aspect ratio with width part W height part H;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the wider ratio.
-</font></blockquote><p>
-<p>
-<p>Declaring the parts of a number specification individually also enables us to tack one or more options onto any of the parts:
-<p>
-<blockquote><font color="#000080">A monetary value is a kind of value. $1.99 specifies a monetary value with parts dollars and cents (optional, preamble optional).
-</font></blockquote><p>
-<p>
-<p>This declares that the &quot;cents&quot; part is optional - it will be 0 if not specified - and that if omitted, the non-numeric &quot;preamble&quot; before it should also be omitted. Thus &quot;$3&quot; is now valid and equivalent to &quot;$3.00&quot;: indeed it will be the preferred form when Inform prints out a monetary value which is an exact number of dollars. If we had said that &quot;cents&quot; was optional, but not said that the preamble was optional, then &quot;$3.&quot; would have been the form - which is less satisfactory.
-<p>
-<p>There is only one other option: &quot;without leading zeros&quot;, as in the following.
-<p>
-<blockquote><font color="#000080">An aspect ratio is a kind of value. 16:20 specifies an aspect ratio with parts width and height (without leading zeros).
-</font></blockquote><p>
-<p>
-<p>This ensures that when the ratio 4:3 is printed, it will be printed as &quot;4:3&quot; and not &quot;4:03&quot; as would otherwise happen.
-<p>
-<p><hr><p>
-<a name="e103"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex103.html#e103 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>218</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex103.html#e103 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Zqlran Era 8</font></b></a><br>Creating an alternative system of time for our game, using new units.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex103.html#e103 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc215.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc217.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

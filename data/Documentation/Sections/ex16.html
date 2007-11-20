@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.16. The value after and the value before</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.5. Unsuccessful attempts</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,94 +19,148 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Entropy" -->
-<!-- SEARCH SECTION "Ex 164" -->
-<!-- SEARCH SORT "Ex 011-016-164" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc168.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc170.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.16. The value after and the value before</b></font></td></tr></table>
+<!-- SEARCH TITLE "Generation X" -->
+<!-- SEARCH SECTION "Ex 174" -->
+<!-- SEARCH SORT "Ex 012-005-174" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc176.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc178.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.5. Unsuccessful attempts</b></font></td></tr></table>
 <p>
-<p>Arithmetic is fundamental to most systems for computer programming: with Inform that is less true, so we only now come to the first mention of the addition of numbers. As might be expected, &quot;+&quot; can be used to combine two number values into one:
+<p>Suppose, finally, that Will not only consents to try the action, but it also survives its passage through Before and Instead rules. What happens then? In principle, what happens to Will is exactly what would have happened to the player in his place. For instance:
 <p>
-<blockquote><font color="#000080">change the score to the score + 4
+<blockquote><font color="#000080">> will, go east
+<br>Will leaves to the east.
 </font></blockquote><p>
 <p>
-<p>(This can also be spelled out &quot;plus&quot;: or we could have written &quot;increase the score by 4&quot;. Similarly, we can &quot;decrease&quot;.) Inform generally expects to apply addition only to two numbers, so we cannot normally apply &quot;+&quot; to values like these:
+<p>If on the other hand Will's attempt is frustrated because one of the checking rules stops him, then Will's action fails. For instance, if Will tries going northeast but there is no room to northeast, one of the rules checking the &quot;going&quot; action will stop him. We will then see this:
 <p>
-<blockquote><font color="#000080">Colour is a kind of value. The colours are red, orange, yellow, green, blue, indigo and violet.
+<blockquote><font color="#000080">> will, go northeast
+<br>Will is unable to do that.
 </font></blockquote><p>
 <p>
-<p>There will be more about arithmetic on new kinds of value in the chapter on Units, but it may be useful to note that although we cannot (ordinarily) add up colours, we do automatically have two ways to make new colours from old:
+<p>This is rather a generic message, and we may want something more interesting. We can provide that using yet another special kind of rule:
 <p>
-<blockquote><font color="#000080">the colour after C
-<br>the colour before C
+<blockquote><font color="#000080">Unsuccessful attempt by Will going: say &quot;Will blunders around going nowhere, as usual.&quot;
 </font></blockquote><p>
 <p>
-<p>produce the next, and the previous colour respectively, in order of their declaration. Thus &quot;the colour after red&quot; is orange; &quot;the colour before blue&quot; is green. The values wrap around, that is, &quot;the colour before red&quot; is violet and &quot;the colour after violet&quot; is red.
+<p>Even that is still a little generic, though, because it treats all of the various ways that &quot;going&quot; can fail as the same. If we have ACTIONS switched on, we can see what goes on behind the scenes when we ask Will to walk into a door:
 <p>
-<p>We are also allowed to use number-like comparisons with new kinds of value. Thus &quot;red < yellow&quot; is true, while &quot;green >= violet&quot; is not. Again, more on comparisons in the chapter on units.
+<blockquote><font color="#000080">>will, go west
+<br>[asking Will to try going west]
+<br>[(1) Will going west]
+<br>[(1) Will going west - failed the can't go through closed doors rule]
+<br>Will blunders around going nowhere, as usual.
+<br>[asking Will to try going west - succeeded]
+</font></blockquote><p>
+<p>
+<p>(The &quot;(1)&quot; lets us know that a new action is starting during the old one, and before the old one finishes: sometimes we go up to three or four deep, though seldom more in practical cases.) We can now rewrite the &quot;unsuccessful attempt&quot; rule like so:
+<p>
+<blockquote><font color="#000080">Unsuccessful attempt by Will going:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the can't go through closed doors rule, say &quot;Will looks doubtful and mumbles about doors.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Will blunders around going nowhere, as usual.&quot;
+</font></blockquote><p>
+<p>
+<p>The value &quot;reason the action failed&quot; is set to whichever checking rule threw out the action which Will tried. The names of these rules try to be self-explanatory - at any rate, those with gnomic names are not useful for this sort of thing, and can be ignored - and can be found out either using ACTIONS or by consulting the Actions index.
+<p>
+<p>Finally, note that &quot;unsuccessful attempt&quot; rules apply only when the person in question is being asked to perform the action by somebody else - as in the examples above.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e16"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc169.html#e16 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>164</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc169.html#e16 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Entropy</font></b></a><br>All objects in the game have a heat, but if not kept insulated they will tend toward room temperature (and at a somewhat exaggerated rate).<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex16.html#e16 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e16"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc177.html#e16 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>174</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc177.html#e16 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Generation X</font></b></a><br>A person who goes along with the player's instructions, but reluctantly, and will get annoyed after too many repetitions of the same kind of unsuccessful command.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex16.html#e16 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode253(code) {
+function pasteCode264(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Entropy"\n\nHeat is a kind of value. The heats are frosty, cold, cool, room temperature, warm, hot, and scalding. Everything has a heat. The heat of a thing is usually room temperature.\n\nEvery turn:\n\trepeat with item running through things which are not in an insulated container\n\tbegin;\n\t\tif the heat of the item is greater than room temperature, change the heat of the item to the heat before the heat of the item;\n\t\tif the heat of the item is less than room temperature, change the heat of the item to the heat after the heat of the item;\n\tend repeat.\n\nDefinition: a container is insulated if it is closed and it is opaque.\n\nThe vacuum thermos is an opaque closed openable container carried by the player. In the vacuum thermos is a frosty thing called an ice cube.\n\nEvery turn:\n\tif the heat of the ice cube is greater than cold\n\tbegin;\n\t\tif the ice cube is visible, say "The ice cube melts! \'HA ha,\' says Maxwell, in a very unsporting, some might say demonic, way.";\n\t\tremove the ice cube from play;\n\tend if.\n\nBefore printing the name of something: say "[heat] ".\n\nEquilibrium is a room. "A perfectly smooth chamber sealed from the outside world. You can\'t at this moment work out where the exit is, though possibly that is just because the lighting is so very very even and diffuse. And doesn\'t come from anywhere that you can see, either."\n\nMaxwell is a man in Equilibrium.  "Maxwell perches awkwardly on a stool across from you[if Maxwell has something], holding [a list of things carried by Maxwell][end if]." He is carrying a box of Chinese food. The Chinese food is scalding. "A discarded [item described] lies on the floor." The description of Maxwell is "He has the faintly peevish look of one who has not been properly fed."\n\nEvery turn when Maxwell has the food:\n\tif the heat of the Chinese food is greater than warm, say "Maxwell takes a bite, and swears.";\n\tif the heat of the Chinese food is warm, say "Maxwell eats as fast as he can, enjoying the food while it\'s at just the right temperature.";\n\tif the heat of the Chinese food is less than warm\n\tbegin;\n\t\tsay "Maxwell sadly stabs at his leftovers with a chopstick, but does not try to eat any more.";\n\t\tmove the food to the location;\n\tend if.\n\nTest me with "z / z / open thermos / close thermos / open thermos".\n');
+    myProject.pasteCode('"Generation X"\n\nThe Volunteer Center is a room. "A fairly spartan office, though there are a few attractive posters from advertising campaigns of the past, and an ominous map charting the deforestation of Brazil."\n\nThe desk is scenery in the Volunteer Center. "Your standard metal desk, with a drawer for postal supplies and the like." On the desk is a pile of leaflets and a pile of business cards. The power stapler is a device on the desk. A drawer is part of the desk. It is openable and closed. In the drawer are a sponge and a roll of bulk-mail stamps.\n\nInstead of doing something:\n\tif examining, continue the action;\n\tif searching, continue the action;\n\tif looking, continue the action;\n\tif asking Jenna to try doing something, continue the action;\n\tsay "The whole point of this exercise is to train Jenna. Once you have her on the envelope-stuffing, you can go make some calls."\n\nInstead of answering Jenna that something:\n\tsay "You\'re going to have to break the instructions down to the simplest ones possible, given that she\'s in the mood to misunderstand on purpose."\n\nA cardboard box is in the Center. In the cardboard box is a pile of empty envelopes. The box is openable and closed. The description is "A recycling symbol is prominent on the side, which makes you feel a little bit better about using a mailing campaign for this cause."\n\nJenna is a woman in the Volunteer Center. "Your daughter Jenna is here, barely visible through the cloud of resentment." The description is "Jenna [if jenna carries something]has [the list of things carried by Jenna][otherwise]returns your stare, with added hostility[end if]."\n\nA persuasion rule for asking Jenna to try doing something: persuasion succeeds.\n\nUnsuccessful attempt by Jenna doing something:\n\trepeat through Table of Retorts\n\tbegin;\n\t\tif the reason the action failed is the cause entry\n\t\tbegin;\n\t\t\tsay "[response entry][paragraph break]";\n\t\t\trule succeeds;\n\t\tend if;\n\tend repeat;\n\tsay "\'I don\'t see how I\'m supposed to do that, Mom,\' Jenna says."\n\nTable of Retorts\ncause\tresponse\ncan\'t take yourself rule\t"\'Is that like \'get a grip on yourself\' or something?\' Jenna asks, momentarily diverted."\ncan\'t take what\'s fixed in place rule\t"[physical impossibility]"\ncan\'t take scenery rule\t"[physical impossibility]"\ncan\'t take what\'s already taken rule\t"[already done]"\ncan\'t drop what\'s already dropped rule\t"[already done]"\ncan\'t wear what\'s already worn rule\t"[already done]"\ncan\'t take off what\'s not worn rule\t"[already done]"\ncan\'t close what\'s already closed rule\t"[already done]"\ncan\'t open what\'s already open rule\t"[already done]"\ncan\'t switch off what\'s already off rule\t"[already done]"\ncan\'t switch on what\'s already on rule\t"[already done]"\ncan\'t unlock what\'s already unlocked rule\t"[already done]"\ncan\'t lock what\'s already locked rule\t"[already done]"\n\nTo say physical impossibility:\n\tsay "\'Maybe you should\'ve brought someone a little stronger,\' Jenna says. \'Like the Incredible Hulk.\' "\n\nTo say already done:\n\trepeat through Table of Bored Remarks\n\tbegin;\n\t\tsay "[response entry]";\n\t\tblank out the whole row;\n\t\trule succeeds;\n\tend repeat;\n\tsay "\'Okay, I\'m going to be, like, in the car,\' says Jenna. \'Outside.\' ";\n\tend the game saying "Jenna has gotten fed up".\n\nTable of Bored Remarks\nresponse\n"\'Did that,\' says Jenna."\n"\'Check,\' says Jenna."\n"\'Yeah, Mom, I already did that, okay?\'"\n"\'Look, if I have to be here doing dumb stuff, could you at least tell me to do stuff that isn\'t already done?\' Jenna asks wearily."\n"Jenna gives a great upward sigh, riffling her bangs. \'Once again... there is totally no point.\'"\n\nTest me with "e / x jenna / jenna, get stapler / jenna, get stapler / x jenna / jenna, drop stapler / jenna, drop stapler / jenna, open box / jenna, open box / jenna, switch stapler on / jenna, switch stapler on / jenna, take desk / jenna, open box / jenna, open box".\n');
 }
 </script>
-<a href="javascript:pasteCode253()"><img border=0 src=../doc_images/paste.png></a> &quot;Entropy&quot;
+<a href="javascript:pasteCode264()"><img border=0 src=../doc_images/paste.png></a> &quot;Generation X&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Heat is a kind of value. The heats are frosty, cold, cool, room temperature, warm, hot, and scalding. Everything has a heat. The heat of a thing is usually room temperature.
+<blockquote><font color="#000080">The Volunteer Center is a room. &quot;A fairly spartan office, though there are a few attractive posters from advertising campaigns of the past, and an ominous map charting the deforestation of Brazil.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things which are not in an insulated container
+<blockquote><font color="#000080">The desk is scenery in the Volunteer Center. &quot;Your standard metal desk, with a drawer for postal supplies and the like.&quot; On the desk is a pile of leaflets and a pile of business cards. The power stapler is a device on the desk. A drawer is part of the desk. It is openable and closed. In the drawer are a sponge and a roll of bulk-mail stamps.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if examining, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if searching, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if looking, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if asking Jenna to try doing something, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The whole point of this exercise is to train Jenna. Once you have her on the envelope-stuffing, you can go make some calls.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of answering Jenna that something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're going to have to break the instructions down to the simplest ones possible, given that she's in the mood to misunderstand on purpose.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A cardboard box is in the Center. In the cardboard box is a pile of empty envelopes. The box is openable and closed. The description is &quot;A recycling symbol is prominent on the side, which makes you feel a little bit better about using a mailing campaign for this cause.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Jenna is a woman in the Volunteer Center. &quot;Your daughter Jenna is here, barely visible through the cloud of resentment.&quot; The description is &quot;Jenna [if jenna carries something]has [the list of things carried by Jenna][otherwise]returns your stare, with added hostility[end if].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A persuasion rule for asking Jenna to try doing something: persuasion succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Unsuccessful attempt by Jenna doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Retorts
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the heat of the item is greater than room temperature, change the heat of the item to the heat before the heat of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the heat of the item is less than room temperature, change the heat of the item to the heat after the heat of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the cause entry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[response entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'I don't see how I'm supposed to do that, Mom,' Jenna says.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a container is insulated if it is closed and it is opaque.
+<blockquote><font color="#000080">Table of Retorts
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">cause</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">response</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take yourself rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Is that like 'get a grip on yourself' or something?' Jenna asks, momentarily diverted.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take what's fixed in place rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[physical impossibility]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take scenery rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[physical impossibility]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take what's already taken rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't drop what's already dropped rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't wear what's already worn rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take off what's not worn rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't close what's already closed rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't open what's already open rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't switch off what's already off rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't switch on what's already on rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't unlock what's already unlocked rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't lock what's already locked rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The vacuum thermos is an opaque closed openable container carried by the player. In the vacuum thermos is a frosty thing called an ice cube.
+<blockquote><font color="#000080">To say physical impossibility:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Maybe you should've brought someone a little stronger,' Jenna says. 'Like the Incredible Hulk.' &quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the heat of the ice cube is greater than cold
+<blockquote><font color="#000080">To say already done:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Bored Remarks
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the ice cube is visible, say &quot;The ice cube melts! 'HA ha,' says Maxwell, in a very unsporting, some might say demonic, way.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the ice cube from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[response entry]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Okay, I'm going to be, like, in the car,' says Jenna. 'Outside.' &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Jenna has gotten fed up&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before printing the name of something: say &quot;[heat] &quot;.
+<blockquote><font color="#000080">Table of Bored Remarks
+<br>response
+<br>&quot;'Did that,' says Jenna.&quot;
+<br>&quot;'Check,' says Jenna.&quot;
+<br>&quot;'Yeah, Mom, I already did that, okay?'&quot;
+<br>&quot;'Look, if I have to be here doing dumb stuff, could you at least tell me to do stuff that isn't already done?' Jenna asks wearily.&quot;
+<br>&quot;Jenna gives a great upward sigh, riffling her bangs. 'Once again... there is totally no point.'&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Equilibrium is a room. &quot;A perfectly smooth chamber sealed from the outside world. You can't at this moment work out where the exit is, though possibly that is just because the lighting is so very very even and diffuse. And doesn't come from anywhere that you can see, either.&quot;
+<blockquote><font color="#000080">Test me with &quot;e / x jenna / jenna, get stapler / jenna, get stapler / x jenna / jenna, drop stapler / jenna, drop stapler / jenna, open box / jenna, open box / jenna, switch stapler on / jenna, switch stapler on / jenna, take desk / jenna, open box / jenna, open box&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Maxwell is a man in Equilibrium.  &quot;Maxwell perches awkwardly on a stool across from you[if Maxwell has something], holding [a list of things carried by Maxwell][end if].&quot; He is carrying a box of Chinese food. The Chinese food is scalding. &quot;A discarded [item described] lies on the floor.&quot; The description of Maxwell is &quot;He has the faintly peevish look of one who has not been properly fed.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when Maxwell has the food:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the heat of the Chinese food is greater than warm, say &quot;Maxwell takes a bite, and swears.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the heat of the Chinese food is warm, say &quot;Maxwell eats as fast as he can, enjoying the food while it's at just the right temperature.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the heat of the Chinese food is less than warm
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Maxwell sadly stabs at his leftovers with a chopstick, but does not try to eat any more.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the food to the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;z / z / open thermos / close thermos / open thermos&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc169.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc177.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e155"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex155.html#e155 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>165</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex155.html#e155 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Hang of Thursdays</font></b></a><br>Turns take a quarter day each, and the game rotates through the days of the week.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex155.html#e155 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc168.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc170.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc176.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc178.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

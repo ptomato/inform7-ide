@@ -326,9 +326,11 @@ Constant I7_ROUTE_HIGH_BIT = $80000000;
 		}
 	}
 	if (relkind == Relation_OtoV) {
-		while (to->relprop) {
-			if (to->relprop == from) return to;
-			to = to->relprop;
+		while ((to ~= nothing) && (to provides relprop) && (to.relprop)) {
+			!print "to = ", (name) to, " --> ", (name) to.relprop, "^";
+			(to.relprop).vector = to;
+			if (to.relprop == from) return to;
+			to = to.relprop;
 		}
 		return nothing;
 	}

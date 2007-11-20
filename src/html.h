@@ -28,5 +28,6 @@ GtkWidget *create_html(gchar *widget_name, gchar *string1, gchar *string2,
 void html_load_file(GtkHTML *html, const gchar *filename);
 void html_load_blank(GtkHTML *html);
 void html_refresh(GtkHTML *html);
+gchar *html_to_plain_text(const gchar *htmltext);
 
 #endif

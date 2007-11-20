@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.2. Changing the command prompt</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.4. Standard tokens of grammar</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,118 +19,74 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Don Pedro's Revenge" -->
-<!-- SEARCH SECTION "Ex 102" -->
-<!-- SEARCH SORT "Ex 008-002-102" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc110.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc112.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.2. Changing the command prompt</b></font></td></tr></table>
+<!-- SEARCH TITLE "Shawn's Bad Day" -->
+<!-- SEARCH SECTION "Ex 261" -->
+<!-- SEARCH SORT "Ex 016-004-261" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc245.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc247.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.4. Standard tokens of grammar</b></font></td></tr></table>
 <p>
-<p>The command prompt is the text printed by Inform to ask the player for another command. Ordinarily this is simply a greater-than-sign, &quot;>&quot;, so we tend not to notice it as text at all. Internally, though, it is a variable value called &quot;command prompt&quot;, which means we can change it.
+<p>We have already seen &quot;[something]&quot; and &quot;[someone]&quot;, which are standard examples of &quot;tokens of grammar&quot; - patterns matched by suitable named things. There are several other standard tokens, provided not so much from necessity but to allow the game parser to be more graceful and responsive. &quot;[someone]&quot; matches the same possibilities as &quot;[a person]&quot; would, but the parser handles it a little better in cases of failure. These special tokens are best explained by looking at some of the examples in the standard grammar, which can be browsed in the Index of any game.
 <p>
-<p>For example, this will be a more conversational sort of prompt:
-<p>
-<blockquote><font color="#000080">When play begins: change the command prompt to &quot;What now? &quot;.
+<blockquote><font color="#000080">Understand &quot;wear [something preferably held]&quot; as wearing.
 </font></blockquote><p>
 <p>
-<p>Whereas this will be more up-to-the-minute and demanding:
+<p>Here we expect that the named item will be one that is held by the player, and the parser will use this to resolve ambiguities between names of things carried and not carried. (If the action is one which positively requires that its noun be something carried, such as &quot;eating&quot;, then a command matching this token against something not carried will generate an automatic attempt to take it.)
 <p>
-<blockquote><font color="#000080">When play begins: change the command prompt to &quot;[time of day] >&quot;.
+<blockquote><font color="#000080">Understand &quot;take [things]&quot; as taking.
+<br>Understand &quot;drop [things preferably held]&quot; as dropping.
 </font></blockquote><p>
 <p>
-<p>(&quot;Time of day&quot; is another variable value, which is fairly self-explanatory, but will be covered in detail later on.) The prompt can be changed at any point, so can be used to indicate the current situation, or even as a sly way to introduce a sort of conversation between computer and player.
+<p>&quot;[things]&quot; is like &quot;[something]&quot; but allows a list of items, or a vague plural like &quot;all&quot;, to be typed. The result will be a sequence of actions, one for each item thus described. &quot;[things preferably held]&quot; is the analogous token for &quot;[something preferably held]&quot;.
+<p>
+<blockquote><font color="#000080">Understand &quot;take [things inside] from [something]&quot; as removing.
+</font></blockquote><p>
+<p>
+<p>&quot;[things inside]&quot; matches only what is inside the second-named thing, and ensures that (for instance) the command &quot;take all from box&quot; does not also try to take the box.
+<p>
+<blockquote><font color="#000080">Understand &quot;put [other things] in/inside/into [something]&quot; as inserting it into.
+</font></blockquote><p>
+<p>
+<p>Similarly, &quot;[other things]&quot; will allow anything except the second-named thing. (Like &quot;[things inside]&quot; it is really only needed for handling containers.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e286"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc111.html#e286 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>102</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc111.html#e286 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Don Pedro's Revenge</font></b></a><br>Combat scenario in which the player's footing and position changes from move to move, and the command prompt also changes to reflect that.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex286.html#e286 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e286"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc246.html#e286 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>261</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc246.html#e286 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Shawn's Bad Day</font></b></a><br>Allowing the player to EXAMINE ALL.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex286.html#e286 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose our game features a detailed simulated combat between the player character and his opponent. He might have several weapons available, and several types of attack available; and at any given time he might be perched up in the rigging of his ship, standing on the open deck, or boxed in between some barrels. His options will vary depending on his position, and obviously it would detract from the pacing to make the player keep LOOKing in the middle of combat in order to remind himself where he is. Instead, we'll roll this information into the command prompt:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode188(code) {
+function pasteCode348(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Don Pedro\'s Revenge"\n\nThe Deck of the Helene Marie is a room. "The two crews are embattled all around you, but your attention is reserved for your particular enemy: Don Pedro."\n\nTable of Random Prompts\nposition\tprompt\nboxed\t"So securely boxed-in that you can really only parry or thrust, you try to "\nboxed\t"Trapped between your barrels, you decide to "\nperched\t"Able to slice at your attackers but not to advance or retreat, you choose to "\nperched\t"Perched up here with the advantage of height (but little mobility), you attempt to "\nfree\t"Out on the open deck with no impediments, free to advance or retreat, you decide to "\n\nWhen play begins: reset the prompt.\n\nEvery turn: reset the prompt.\n\nTo reset the prompt:\n\tsort the Table of Random Prompts in random order;\n\trepeat through the Table of Random Prompts\n\tbegin;\n\t\tif the position entry is the placement of the player\n\t\tbegin;\n\t\t\tchange the command prompt to prompt entry;\n\t\t\tstop;\n\t\tend if;\n\tend repeat.\n\nAfter reading a command: say conditional paragraph break.\n\nA placement is a kind of value. The placements are boxed, perched, free. The player has a placement. The player is free.\n\nUnderstand "retreat" or "parry" as retreating. Retreating is an action applying to nothing.\n\nCheck retreating:\n\tif the player is perched, say "You can\'t move backward or parry very successfully from this position." instead.\n\nCarry out retreating:\n\tnow the player is boxed;\n\tsay "You protect yourself, but end up wedged in between two barrels."\n\nUnderstand "thrust" or "advance" as advancing. Advancing is an action applying to nothing.\n\nCheck advancing:\n\tif the player is perched, say "You can\'t move forward from here, only slash." instead.\n\nCarry out advancing:\n\tnow the player is free;\n\tsay "You push forward aggressively, making your way to the open deck."\n\nInstead of jumping:\n\tnow the player is perched;\n\tsay "You leap and swing yourself boldly up into the rigging, leaving your attackers beneath you."\n\nInstead of jumping when the player is perched:\n\tnow the player is free;\n\tsay "You leap down from your position, into the middle of the deck."\n\nTest me with "advance / jump / advance / retreat / jump / retreat / retreat / advance".\n\n');
+    myProject.pasteCode('"Shawn\'s Bad Day"\n\nThe Treasury is a room. The vault is a lockable locked closed openable container in the Treasury. It is fixed in place. "A massive vault fills up one wall." The description is "The vault\'s system includes [a list of things which are part of the vault]."\n\nA little green light, a little blue light, a little red light, a thin black pane of glass, a laser beam, a retinal scanner, a thumbprint ID plate, a dial, and a large lever are part of the vault.\n\nThe security guard is a man in the Treasury. The description is "His name is Shawn, and he doesn\'t look happy."\n\nThe description of the green light is "Off." The description of the blue light is "Tranquilly on." The description of the red light is "Angrily flashing."\n\nUnderstand "examine [things]" as multiply examining.\n\nMultiply examining is an action applying to one thing.\n\nCarry out multiply examining:\n\ttry examining the noun.\n\nTest me with "examine all".\n');
 }
 </script>
-<a href="javascript:pasteCode188()"><img border=0 src=../doc_images/paste.png></a> &quot;Don Pedro's Revenge&quot;
+<a href="javascript:pasteCode348()"><img border=0 src=../doc_images/paste.png></a> &quot;Shawn's Bad Day&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Deck of the Helene Marie is a room. &quot;The two crews are embattled all around you, but your attention is reserved for your particular enemy: Don Pedro.&quot;
+<blockquote><font color="#000080">The Treasury is a room. The vault is a lockable locked closed openable container in the Treasury. It is fixed in place. &quot;A massive vault fills up one wall.&quot; The description is &quot;The vault's system includes [a list of things which are part of the vault].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Random Prompts
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">position</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">prompt</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">boxed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;So securely boxed-in that you can really only parry or thrust, you try to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">boxed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Trapped between your barrels, you decide to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">perched</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Able to slice at your attackers but not to advance or retreat, you choose to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">perched</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Perched up here with the advantage of height (but little mobility), you attempt to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">free</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Out on the open deck with no impediments, free to advance or retreat, you decide to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">A little green light, a little blue light, a little red light, a thin black pane of glass, a laser beam, a retinal scanner, a thumbprint ID plate, a dial, and a large lever are part of the vault.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins: reset the prompt.
+<blockquote><font color="#000080">The security guard is a man in the Treasury. The description is &quot;His name is Shawn, and he doesn't look happy.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn: reset the prompt.
+<blockquote><font color="#000080">The description of the green light is &quot;Off.&quot; The description of the blue light is &quot;Tranquilly on.&quot; The description of the red light is &quot;Angrily flashing.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To reset the prompt:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Random Prompts in random order;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Random Prompts
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the position entry is the placement of the player
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to prompt entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">Understand &quot;examine [things]&quot; as multiply examining.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After reading a command: say conditional paragraph break.
+<blockquote><font color="#000080">Multiply examining is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A placement is a kind of value. The placements are boxed, perched, free. The player has a placement. The player is free.
+<blockquote><font color="#000080">Carry out multiply examining:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;retreat&quot; or &quot;parry&quot; as retreating. Retreating is an action applying to nothing.
+<blockquote><font color="#000080">Test me with &quot;examine all&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check retreating:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is perched, say &quot;You can't move backward or parry very successfully from this position.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out retreating:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is boxed;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You protect yourself, but end up wedged in between two barrels.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;thrust&quot; or &quot;advance&quot; as advancing. Advancing is an action applying to nothing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check advancing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is perched, say &quot;You can't move forward from here, only slash.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out advancing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is free;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You push forward aggressively, making your way to the open deck.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of jumping:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is perched;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You leap and swing yourself boldly up into the rigging, leaving your attackers beneath you.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of jumping when the player is perched:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is free;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You leap down from your position, into the middle of the deck.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;advance / jump / advance / retreat / jump / retreat / retreat / advance&quot;.
-</font></blockquote><p>
-<p>
-<p>Of course, this won't be much fun until we also provide the player with a few weapons, some more fighting maneuvers, and, most of all, a Don Pedro to defeat.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc111.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc246.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc110.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc112.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc245.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc247.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

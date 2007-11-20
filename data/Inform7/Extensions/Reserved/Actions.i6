@@ -122,19 +122,21 @@ Global trace_actions = 0;
 	rfalse;
 ];
 
-[ DA_Name n; print (name) n; ];
-[ DA_Topic ignore a b c d i;
+[ DA_Name n; if (n ofclass K3_direction) print (name) n; else print (the) n; ];
+[ DA_Topic x a b c d i cf cw;
+	cw = x/256; cf = x%256;
 	print "~";
-	for (a=consult_from:d<consult_words:d++,a++) {
+	for (a=cf:d<cw:d++,a++) {
 		wn = a; b = WordAddress(a); c = WordLength(a);
 		for (i=b:i<b+c:i++) {
 			print (char) 0->i;
 		}
-		if (d<consult_words-1) print " ";
+		if (d<cw-1) print " ";
 	}
 	print "~";
 ];
 [ DA_Number n; print n; ];
+[ DA_TruthState n; if (n==0) print "false"; else print "true"; ];
 [ FindAction fa t;
 	if (fa == -1) fa = action;
 	t = 1;
@@ -144,33 +146,50 @@ Global trace_actions = 0;
 	}
 	rfalse;
 ];
-[ DB_Action ac acr act n s t l j v c;
-	if (debug_rule_nesting > 0) print "(", debug_rule_nesting, ") ";
-	if (ac ~= player) {
+[ DB_Action ac acr act n s for_say t l j v c clc;
+	if ((for_say == 0) && (debug_rule_nesting > 0))
+		print "(", debug_rule_nesting, ") ";
+	if ((ac ~= player) && (for_say ~= 2)) {
 		if (acr) print "asking ", (the) ac, " to try ";
-		else print (the) ac, " trying ";
+		else print (the) ac, " ";
 	}
 	t = 1;
 	while (t <= ActionData-->0) {
 		if (act == ActionData-->t) {
 			l = t+9; t = t+4;
 			while ((v = ActionData-->t) ~= I6_NULL) {
-					if (v ofclass Routine) {
-					  if (c==0) { (v)(n); }
-					  else { (v)(s); }
-					  c++;
-					} else print (string) v;
-					t++;
-					if (t == l) break;
-					if (ActionData-->t ~= I6_NULL) print " ";
+				if (v ofclass Routine) {
+					if (for_say == 2) {
+						if (ActionData-->(t+1) ~= I6_NULL) {
+							if (clc++ > 0) print " ";
+							print "it";
+						}
+					} else {
+						if (clc++ > 0) print " ";
+						if (c==0) { (v)(n); }
+						else { (v)(s); }
+						c++;
+					}
+				} else {
+					if (clc++ > 0) print " ";
+					print (string) v;
+				}
+				t++;
+				if (t == l) break;
 			}
-			if (keep_silent) print " - silently";
+			if ((keep_silent) && (for_say == 0)) print " - silently";
 			return;
 		}
 		t = t+11;
 	}
 ];
-[ I7_TryAction req by ac n s;
+[ I7_SayActionName act;
+	DB_Action(0, 0, act, 0, 0, 2);
+];
+[ I7_TryAction req by ac n s stora tbits saved_command text_of_command;
+	if (stora) return I7_new_STORED_ACTION_TY(ac, n, s, by, req, stora);
+	tbits = req & (16+32);
+	req = req & 1;
 	@push actor; @push act_requester; @push inp1; @push inp2; @push parsed_number;
 	actor = by; if (req) act_requester = player; else act_requester = 0;
 !  print inp1, inp2, "^";
@@ -180,11 +199,37 @@ Global trace_actions = 0;
 		else { inp1 = 1; parsed_number = n; }
 		if (ActionData-->(by+3) == I7_OBJECT_TY) inp2 = s;
 		else { inp2 = 1; parsed_number = s; }
+		if (((ActionData-->(by+2) == UNDERSTANDING_TY) ||
+			(ActionData-->(by+3) == UNDERSTANDING_TY)) && (tbits)) {
+			!print "saving...^";
+			saved_command = I7_INDEXED_TEXT_TY_Create();
+			I7_INDEXED_TEXT_TY_Cast(I7_command, SNIPPET_TY, saved_command);
+			text_of_command = I7_INDEXED_TEXT_TY_Create();
+			I7_INDEXED_TEXT_TY_Cast(parsed_number, TEXT_TY, text_of_command);
+			!I7_INDEXED_TEXT_TY_Say(text_of_command); print "...^";
+			I7_IT_SetPlayersCommand(text_of_command);
+			if (tbits == 16) {
+				n = I7_command; inp1 = 1; parsed_number = I7_command;
+			} else {
+				s = I7_command; inp2 = 1; parsed_number = I7_command;
+			}
+			I7_Blk_Free(text_of_command);
+			@push consult_from;
+			@push consult_words;
+			consult_from = 1;
+			consult_words = parsed_number - 100;
+		}
 	}
 !  print "Made by ITA: ", inp1, inp2, "^";
 	InformLibrary.begin_action(ac, n, s);
 !  <(ac) n s>;
 !  print inp1, inp2, "^";
+	if (saved_command) {
+		@pull consult_words;
+		@pull consult_from;
+		I7_IT_SetPlayersCommand(saved_command);
+		I7_Blk_Free(saved_command);
+	}
 	@pull parsed_number; @pull inp2; @pull inp1; @pull act_requester; @pull actor;
 	TrackActions(1);
 ];
@@ -199,31 +244,31 @@ Global trace_actions = 0;
 	say__p = s; rfalse;
 ];
 
-[ I7_VerifyNouns mask noun_subtype second_subtype at;
+[ I7_VerifyNouns mask noun_kova second_kova at;
 	at = FindAction(-1);
 	if (at == 0) rfalse;
-	mask = ActionData-->(at+1); noun_subtype = ActionData-->(at+2);
-!print "at = ", at, " nst = ", noun_subtype, "^";
+	mask = ActionData-->(at+1); noun_kova = ActionData-->(at+2);
+!print "at = ", at, " nst = ", noun_kova, "^";
 !print "consult_from = ", consult_from, " consult_words = ", consult_from, "^";
 !print "inp1 = ", inp1, " noun = ", noun, "^";
 !print "inp2 = ", inp2, " second = ", second, "^";
 	if (mask & $$100000) { meta = 1; rfalse; }
-	second_subtype = ActionData-->(at+3);
-!print "sst = ", second_subtype, "^";
-	if (noun_subtype == {-value:SNIPPET_TY} or {-value:UNDERSTANDING_TY}) {
+	second_kova = ActionData-->(at+3);
+!print "sst = ", second_kova, "^";
+	if (noun_kova == {-value:SNIPPET_TY} or {-value:UNDERSTANDING_TY}) {
 	    if (inp1 ~= 1) { inp2 = inp1; second = noun; }
 	    parsed_number = 100*consult_from + consult_words;
 	    inp1 = 1; noun = consult_from + 256*consult_words;
 	}
-	if (second_subtype == {-value:SNIPPET_TY} or {-value:UNDERSTANDING_TY}) {
+	if (second_kova == {-value:SNIPPET_TY} or {-value:UNDERSTANDING_TY}) {
 	    parsed_number = 100*consult_from + consult_words;
 	    inp2 = 1; second = consult_from + 256*consult_words;
 	}
 	if (inp1 == 1) {
-	    if (noun_subtype == {-value:OBJECT_TY}) {
+	    if (noun_kova == {-value:OBJECT_TY}) {
 	        "You must name an object.^"; }
 	} else {
-	    if (noun_subtype ~= {-value:OBJECT_TY}) {
+	    if (noun_kova ~= {-value:OBJECT_TY}) {
 	        "You may not name an object.^"; }
 	    if ((mask & $$01000) && (noun == nothing)) {
 	        CarryOutActivity(6); if (noun == nothing) {
@@ -233,10 +278,10 @@ Global trace_actions = 0;
 	        "You may not supply a noun.^"; }
 	}
 	if (inp2 == 1) {
-	    if (second_subtype == {-value:OBJECT_TY}) {
+	    if (second_kova == {-value:OBJECT_TY}) {
 	        "You must name an object.^"; }
 	} else {
-	    if (second_subtype ~= {-value:OBJECT_TY}) {
+	    if (second_kova ~= {-value:OBJECT_TY}) {
 	        "You may not name a second object.^"; }
 	    if ((mask & $$10000) && (second == nothing)) {
 	        CarryOutActivity(7); if (second == nothing) {

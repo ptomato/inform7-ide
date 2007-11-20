@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.6. Displaying the figures</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.5. Matching and exactly matching</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,30 +19,53 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Displaying the figures" -->
-<!-- SEARCH SECTION "19.6" -->
-<!-- SEARCH SORT "019-006-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc319.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc321.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.6. Displaying the figures</b></font></td></tr></table>
+<!-- SEARCH TITLE "Matching and exactly matching" -->
+<!-- SEARCH SECTION "19.5" -->
+<!-- SEARCH SORT "019-005-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc319.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc321.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.5. Matching and exactly matching</b></font></td></tr></table>
 <p>
-<p>Inform's basic picture support simply allows figures to be shown at particular times. Once seen, they scroll away, just as text does once it has been printed. These pictures are really part of the stream of narrative. (If we would like icons or other images to be permanently present on screen, and divide the screen up in pictorial ways to achieve interesting layouts, we need to use special extensions to access Glulx's more exotic features.)
+<p>Up to now, we have only been able to judge two texts by seeing if they are equal, but we can now ask more subtle questions.
 <p>
-<p>Displaying a picture is therefore like printing some text. Rather than
-<p>
-<blockquote><font color="#000080">say &quot;The woodlands stretch from here to the horizon.&quot;;
+<blockquote><font color="#000080">if WHATEVER matches the text FIND, ...
 </font></blockquote><p>
 <p>
-<p>we would write
+<p>tests whether FIND occurs anywhere inside WHATEVER. For instance:
 <p>
-<blockquote><font color="#000080">display the Figure of Woodlands;
+<blockquote><font color="#000080">if &quot;[score]&quot; matches the text &quot;3&quot;, ...
 </font></blockquote><p>
 <p>
-<p>As an option, we could also write
+<p>tests whether the digit 3 occurs anywhere in the score, as printed out; and
 <p>
-<blockquote><font color="#000080">display the Figure of Woodlands, one time only;
+<blockquote><font color="#000080">if the printed name of the location matches the text &quot;the&quot;, ...
 </font></blockquote><p>
 <p>
-<p>which causes the image to be shown only the first time this phrase is reached.
+<p>tests to see whether &quot;the&quot; can be found anywhere in the current room's name. Note that the location &quot;Smotheringly Hot Jungle&quot; would pass this test - it's there if you look. On the other hand, &quot;The Orangery&quot; would not, because &quot;The&quot; does not match against &quot;the&quot;. We can get around this in a variety of ways, one of which is to tell Inform to be insensitive to the case (upper or lower) of letters:
 <p>
-<p>Once again, note that the &quot;display&quot; phrase does nothing unless the Settings for the project are set to the Glulx story file format. When a Glulx work is released as a blorb (the default setting for the way releases occur: see the chapter on Publishing), all the images used are automatically included.
+<blockquote><font color="#000080">if the printed name of the location matches the text &quot;the&quot;, case insensitively
+<br>begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...
+<br>end if.
+</font></blockquote><p>
+<p>
+<p>We can also see how many times something matches:
+<p>
+<blockquote><font color="#000080">number of times WHATEVER matches the text FIND
+<br>number of times WHATEVER matches the text FIND, case insensitively
+</font></blockquote><p>
+<p>
+<p>This may be 0, of course. Here the matches involved are not allowed to overlap: so &quot;aaaaaaaa&quot; matches the text &quot;aaaa&quot; twice, not five times, even though it occurs at five different positions.
+<p>
+<p>Finally we can also insist on exact matching, like so:
+<p>
+<blockquote><font color="#000080">WHATEVER exactly matches the text FIND
+<br>WHATEVER exactly matches the text FIND, case insensitively
+</font></blockquote><p>
+<p>
+<p>Here the match has to start at the front and finish at the end, and there's no &quot;number of times WHATEVER exactly matches the text FIND&quot; since this is by definition going to have to be 0 or 1. Of course,
+<p>
+<blockquote><font color="#000080">WHATEVER exactly matches the text FIND
+</font></blockquote><p>
+<p>
+<p>could be more simply phrased as &quot;WHATEVER is FIND&quot;, since what it does to compare the two texts character-for-character. But in the next section we shall see that &quot;matches&quot; and &quot;exactly matches&quot; can do much more than the simple text matching demonstrated above.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc319.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc321.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.11. Future events</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.18. Changing reachability</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,130 +19,106 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "MRE" -->
-<!-- SEARCH SECTION "Ex 127" -->
-<!-- SEARCH SORT "Ex 009-011-127" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc137.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc139.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.11. Future events</b></font></td></tr></table>
+<!-- SEARCH TITLE "Dinner is Served" -->
+<!-- SEARCH SECTION "Ex 200" -->
+<!-- SEARCH SORT "Ex 012-018-200" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc189.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc191.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.18. Changing reachability</b></font></td></tr></table>
 <p>
-<p>We often want to arrange for something to happen at some point in the future. Here is yet another timepiece:
+<p>The question of what the player can, and cannot, reach to touch is important in interactive fiction. It contains some of the subtlest ideas in the model world, though they often go unnoticed. For instance, if a key is on a shelf which is part of a closed box, can we reach for the key? This comes down to whether the shelf, described only as &quot;part of&quot; the box, is on the inside or the outside: and in fact, because it cannot know which is the case, Inform allows either. So in general it is best to regard &quot;parts&quot; as being exterior parts, but to avoid having parts on containers that might in the course of play be closed up with the player inside.
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode24(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('An egg-timer is in the Chamber. "A plastic egg timer in the shape of a chicken can be pressed to set it going." Instead of pushing the egg-timer: say "It begins to mark time."; the egg-timer clucks in four turns from now.\n\nAt the time when the egg-timer clucks: say "Cluck! Cluck! Cluck! says the egg-timer."\n\n');
-}
-</script>
-<a href="javascript:pasteCode24()"><img border=0 src=../doc_images/paste.png></a> An egg-timer is in the Chamber. &quot;A plastic egg timer in the shape of a chicken can be pressed to set it going.&quot; Instead of pushing the egg-timer: say &quot;It begins to mark time.&quot;; the egg-timer clucks in four turns from now.
+<p>We can, if we wish, change the principles of what can be touched by writing new reaching inside or reaching outside rules. Returning to the example of the conical flask:
+<p>
+<blockquote><font color="#000080">A rule for reaching inside the flask: say &quot;Your hand passes through the glass as if it were not there, chilling you to the bone.&quot;; allow access.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">At the time when the egg-timer clucks: say &quot;Cluck! Cluck! Cluck! says the egg-timer.&quot;
+<p>(Or this could equally be called &quot;a reaching inside rule for the flask&quot;.) More generally, we could give the usual flexible description of what the rule applies to:
+<p>
+<blockquote><font color="#000080">A rule for reaching inside open containers: say &quot;Your hands seem enigmatically too large for [the container in question].&quot;; deny access.
 </font></blockquote><p>
 <p>
-<p>The event here is called &quot;the egg-timer clucks&quot;. It only happens if we instruct so, which we do by writing
+<p>The &quot;container in question&quot; is the one to which the rule is being applied. Note that a reaching inside rule can &quot;deny access&quot; (stopping with fail), or &quot;allow access&quot; (stopping with success), or neither, in which case the decision is left up to any subsequent rules in the rulebook to make. If none of them decide, access is allowed.
 <p>
-<blockquote><font color="#000080">the egg-timer clucks in four turns from now
+<p>If it seems possible that these rules will be employed by people other than the player, then we need to write them a little more carefully, and in particular we need to ensure that they print nothing for other people. In the first case below, anybody can reach through the glass; in the second case, only the player cannot reach into open containers.
+<p>
+<blockquote><font color="#000080">A rule for reaching inside the flask:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person reaching is the player, say &quot;Your hand passes through the glass as if it were not there, chilling you to the bone.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;allow access.
 </font></blockquote><p>
 <p>
-<p>meaning four turns after the turn in which the egg-timer is pushed. We could alternatively describe this future moment as something like &quot;in 18 minutes from now&quot;, or &quot;at 4:15 PM&quot;.
-<p>
-<p>If we know in advance what time we want something to happen, we can more simply write:
-<p>
-<blockquote><font color="#000080">At 4 PM: say &quot;The great bells of the clock tower chime four.&quot;
+<blockquote><font color="#000080">A rule for reaching inside open containers:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person reaching is the player begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your hands seem enigmatically too large for [the container in question].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deny access.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<p>(Note that in either case such rules begin with the word &quot;at&quot;: they are the only rules allowed to begin with the word &quot;at&quot;.)
+<p>The &quot;person reaching&quot; is, as its name suggests, the person trying to reach through the barrier in question.
 <p>
 <p><hr><p>
+<a name="e227"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex227.html#e227 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>199</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex227.html#e227 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Magneto's Revenge</font></b></a><br>Kitty Pryde of the X-Men is able to reach through solid objects, so we might implement her with special powers that the player does not have...<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex227.html#e227 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e212"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc138.html#e212 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>127</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc138.html#e212 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> MRE</font></b></a><br>Hunger that eventually kills the player, and foodstuffs that can delay the inevitable by different amounts of time.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex212.html#e212 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e212"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc190.html#e212 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>200</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc190.html#e212 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Dinner is Served</font></b></a><br>A window between two locations. When the window is open, the player can reach through into the other location; when it isn't, access is barred.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex212.html#e212 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Many older interactive fiction games required the player to find food and eat on a regular basis in order to avoid death. This effect was often unrealistic (since most people can survive much longer than a few hours without eating) and is often seen as an annoyance. However, for the sake of argument, suppose that we do want to construct a hunger-and-death system.
-<p>
-<p>To make things a little more interesting, we will postulate that different foods are differently filling, so that if the player manages to find something really caloric, he is off the hook on his hunger search for a while.
-<p>
-<p>We will also implement the system so that the player gets messages when he is hungry, then dies a short time later. (The times involved are ludicrously short, but this allows us to see the effects within a simple example. In a real game we would want to allow a considerably longer timer for the hunger to play out.)
-<p>
-<p>First, a little scene-setting:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode215(code) {
+function pasteCode288(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"MRE"\n\nWhen play begins:\n\tchange the right hand status line to "[time of day]";\n\tsay "The procedure was painless at first: increased strength was the first sign, followed by a sensation of delayed time, as though everyone around you moved more slowly. Your ability to dodge and perform feats of agility doubled, then trebled. You were heralded as a triumph of medicine. They told you there would be no side effects worth speaking of.\n\nThey were wrong."\n\nThe Base Camp Larder is a room. "This room has been reinforced after each incident -- and there have been dozens in the last two months -- so that it now rivals Fort Knox. Only your new skill and speed enabled you to dodge the motion sensors, knock out the computerized security system, fool the retinal scanner, and punch a hole in the steel containment grating. But you\'re inside now."\n\n[Now we define our food, and add some special instructions for what happens to our hunger counters when the food is eaten:]\n\nFood is a kind of thing. Food is usually edible. Food has a time called the satisfaction period. The satisfaction period of a food is usually 5 minutes.\n\nA person can be hungry or replete. The player is hungry.\n\nThe Larder contains an apple, a candy bar, and a large plate of pasta. The apple, the candy bar, and the pasta are food. The satisfaction period of the apple is 2 minutes. The satisfaction period of the pasta is 125 minutes.\n\nCheck eating something:\n\tif the noun is not food, say "[The noun] might be edible, but it\'s not what you\'d consider really food."\n\nCarry out eating something:\n\tnow the player is replete;\n\thunger resumes in the satisfaction period of the noun from now.\n\n[The first of those two phrases, "now the player is replete", causes the player to cease to be hungry; the second one sets up a future event in which the hunger sets in again. The length of time until that event depends on how satisfying the specific food is. Now we define that event:]\n\nAt the time when hunger resumes:\n\tstarvation occurs in three minutes from now;\n\tnow the player is hungry.\n\nAt the time when starvation occurs:\n\tif the player is hungry, end the game saying "You have starved".\n\n[Note "if the player is hungry": it is possible that the starvation event will be set up but the player will eat before it occurs; in that case, we want it not to take effect.]\n\n[And now, since we really ought to give the player some warning of what is happening to him:]\n\nEvery turn when the player is hungry:\n\tchoose a random row in the Table of Hunger Complaints;\n\tsay "[hunger entry][paragraph break]".\n\nTable of Hunger Complaints\nhunger\n"Gosh, you\'re starving."\n"It feels as though you haven\'t eaten in days. Weeks, almost."\n"The world seems to slow down and everything becomes sharper and brighter. You are a hunter, a hunter of foodstuffs."\n"You find yourself staring at [the random visible thing that is not the player] and wondering how it would taste."\n\nTest me with "eat apple / z / z / z / eat candy bar / z / z / z / z / z / z / z / z / z".\n\n');
+    myProject.pasteCode('"Dinner is Served"\n\nStreet in Kolonaki is a room. "There is a single round table out on the street here, and a window more or less at knee level looks down into the Olive Tree Gyro Shop, which is partly basement."\n\nThe Street contains a round table. The table is scenery. On the round table is a plate. On the plate are a gyro and a mound of fresh potates. The plate is portable. The potates and the gyro are edible. The description of potates is "They\'d be called french fries, at home, but these are steak-cut and fried in olive oil." The description of the gyro is "Dripping garlic-yogurt sauce."\n\nOlive Tree Gyro Shop is inside from Street in Kolonaki. Kostis is a man in the Gyro Shop. In the Shop is a stand. On the stand is a rotating column of cooking lamb flesh. In the shop is a closed, openable container called a drinks refrigerator. The refrigerator contains a can of Mythos beer and a can of Coke Light.\n\n[Here\'s the part that allows reaching through the window:]\n\nA procedural rule: if the window is open, ignore the can\'t reach inside rooms rule; otherwise substitute the can\'t reach through closed window rule for the can\'t reach inside rooms rule.\n\nThis is the can\'t reach through closed window rule:\n\tif the container in question is a room and the container in question is not the location\n\tbegin;\n\t\tsay "You can\'t reach through the closed window.";\n\t\trule fails;\n\tend if.\n\n[And the rest is window-dressing.]\n\nAfter looking when a room (called the next room) is adjacent:\n\ttry examining the next room.\n\nInstead of examining a supporter, say "On [the noun] [is-are a list of things on the noun]." Instead of examining an open container, say "In [the noun] [is-are a list of things in the noun]."\n\nThe window is a backdrop. It is in the Street and the Shop. The window can be openable. The window can be open. The window is openable, transparent, and closed. Instead of searching the window in the Street: try examining the shop. Instead of searching the window in the Shop: try examining the street.\n\nUnderstand "examine [any adjacent room]" as examining.\n\nInstead of examining a room:\n\tsay "Over in [the noun], you can see [a list of visible things in the noun]."\n\nAfter deciding the scope of the player:\n\tif the player is in the Street, place the Shop in scope;\n\tif the player is in the Shop, place the Street in scope.\n\nTest me with "examine shop / open refrigerator / open window / examine shop / open refrigerator / get beer / in / examine street / out / get gyro / close window / put gyro in refrigerator / open window / put gyro in refrigerator".\n');
 }
 </script>
-<a href="javascript:pasteCode215()"><img border=0 src=../doc_images/paste.png></a> &quot;MRE&quot;
+<a href="javascript:pasteCode288()"><img border=0 src=../doc_images/paste.png></a> &quot;Dinner is Served&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot;[time of day]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The procedure was painless at first: increased strength was the first sign, followed by a sensation of delayed time, as though everyone around you moved more slowly. Your ability to dodge and perform feats of agility doubled, then trebled. You were heralded as a triumph of medicine. They told you there would be no side effects worth speaking of.
+<blockquote><font color="#000080">Street in Kolonaki is a room. &quot;There is a single round table out on the street here, and a window more or less at knee level looks down into the Olive Tree Gyro Shop, which is partly basement.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">They were wrong.&quot;
+<blockquote><font color="#000080">The Street contains a round table. The table is scenery. On the round table is a plate. On the plate are a gyro and a mound of fresh potates. The plate is portable. The potates and the gyro are edible. The description of potates is &quot;They'd be called french fries, at home, but these are steak-cut and fried in olive oil.&quot; The description of the gyro is &quot;Dripping garlic-yogurt sauce.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Base Camp Larder is a room. &quot;This room has been reinforced after each incident -- and there have been dozens in the last two months -- so that it now rivals Fort Knox. Only your new skill and speed enabled you to dodge the motion sensors, knock out the computerized security system, fool the retinal scanner, and punch a hole in the steel containment grating. But you're inside now.&quot;
+<blockquote><font color="#000080">Olive Tree Gyro Shop is inside from Street in Kolonaki. Kostis is a man in the Gyro Shop. In the Shop is a stand. On the stand is a rotating column of cooking lamb flesh. In the shop is a closed, openable container called a drinks refrigerator. The refrigerator contains a can of Mythos beer and a can of Coke Light.
 </font></blockquote><p>
 <p>
-<p>Now we define our food, and add some special instructions for what happens to our hunger counters when the food is eaten:
+<p>Here's the part that allows reaching through the window:
 <p>
-<blockquote><font color="#000080">Food is a kind of thing. Food is usually edible. Food has a time called the satisfaction period. The satisfaction period of a food is usually 5 minutes.
+<blockquote><font color="#000080">A procedural rule: if the window is open, ignore the can't reach inside rooms rule; otherwise substitute the can't reach through closed window rule for the can't reach inside rooms rule.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A person can be hungry or replete. The player is hungry.
+<blockquote><font color="#000080">This is the can't reach through closed window rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the container in question is a room and the container in question is not the location
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't reach through the closed window.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule fails;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Larder contains an apple, a candy bar, and a large plate of pasta. The apple, the candy bar, and the pasta are food. The satisfaction period of the apple is 2 minutes. The satisfaction period of the pasta is 125 minutes.
+<p>And the rest is window-dressing.
+<p>
+<blockquote><font color="#000080">After looking when a room (called the next room) is adjacent:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the next room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check eating something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not food, say &quot;[The noun] might be edible, but it's not what you'd consider really food.&quot;
+<blockquote><font color="#000080">Instead of examining a supporter, say &quot;On [the noun] [is-are a list of things on the noun].&quot; Instead of examining an open container, say &quot;In [the noun] [is-are a list of things in the noun].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out eating something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is replete;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;hunger resumes in the satisfaction period of the noun from now.
+<blockquote><font color="#000080">The window is a backdrop. It is in the Street and the Shop. The window can be openable. The window can be open. The window is openable, transparent, and closed. Instead of searching the window in the Street: try examining the shop. Instead of searching the window in the Shop: try examining the street.
 </font></blockquote><p>
 <p>
-<p>The first of those two phrases, &quot;now the player is replete&quot;, causes the player to cease to be hungry; the second one sets up a future event in which the hunger sets in again. The length of time until that event depends on how satisfying the specific food is. Now we define that event:
-<p>
-<blockquote><font color="#000080">At the time when hunger resumes:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;starvation occurs in three minutes from now;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is hungry.
+<blockquote><font color="#000080">Understand &quot;examine [any adjacent room]&quot; as examining.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">At the time when starvation occurs:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is hungry, end the game saying &quot;You have starved&quot;.
+<blockquote><font color="#000080">Instead of examining a room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Over in [the noun], you can see [a list of visible things in the noun].&quot;
 </font></blockquote><p>
 <p>
-<p>Note &quot;if the player is hungry&quot;: it is possible that the starvation event will be set up but the player will eat before it occurs; in that case, we want it not to take effect.
-<p>
-<p>And now, since we really ought to give the player some warning of what is happening to him:
-<p>
-<blockquote><font color="#000080">Every turn when the player is hungry:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose a random row in the Table of Hunger Complaints;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[hunger entry][paragraph break]&quot;.
+<blockquote><font color="#000080">After deciding the scope of the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Street, place the Shop in scope;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Shop, place the Street in scope.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Hunger Complaints
-<br>hunger
-<br>&quot;Gosh, you're starving.&quot;
-<br>&quot;It feels as though you haven't eaten in days. Weeks, almost.&quot;
-<br>&quot;The world seems to slow down and everything becomes sharper and brighter. You are a hunter, a hunter of foodstuffs.&quot;
-<br>&quot;You find yourself staring at [the random visible thing that is not the player] and wondering how it would taste.&quot;
+<blockquote><font color="#000080">Test me with &quot;examine shop / open refrigerator / open window / examine shop / open refrigerator / get beer / in / examine street / out / get gyro / close window / put gyro in refrigerator / open window / put gyro in refrigerator&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;eat apple / z / z / z / eat candy bar / z / z / z / z / z / z / z / z / z&quot;.
-</font></blockquote><p>
-<p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc138.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc190.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e216"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex216.html#e216 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>128</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex216.html#e216 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Totality</font></b></a><br>To schedule an eclipse of the sun, which involves a number of related events.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex216.html#e216 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e250"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex250.html#e250 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>129</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex250.html#e250 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Empire</font></b></a><br>A train which follows a schedule, stopping at a number of different locations.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex250.html#e250 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e232"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex232.html#e232 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>130</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex232.html#e232 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hour of the Wren</font></b></a><br>Allowing the player to make an appointment, which is then kept.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex232.html#e232 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc137.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc139.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc189.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc191.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

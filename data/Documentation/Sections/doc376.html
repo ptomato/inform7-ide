@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.24. Invocation labels, counters and storage</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>22.14. Phrases to decide in Inform 6</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,54 +19,30 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Invocation labels, counters and storage" -->
-<!-- SEARCH SECTION "21.24" -->
-<!-- SEARCH SORT "021-024-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc375.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc377.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.24. Invocation labels, counters and storage</b></font></td></tr></table>
+<!-- SEARCH TITLE "Phrases to decide in Inform 6" -->
+<!-- SEARCH SECTION "22.14" -->
+<!-- SEARCH SORT "022-014-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc375.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap22.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 22: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc377.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>22.14. Phrases to decide in Inform 6</b></font></td></tr></table>
 <p>
-<p>The process of expanding the I6 code which represents a phrase is called &quot;invocation&quot;. As we have seen, when a phrase is defined using a single piece of I6 code, invocation consists of copying out that I6 code, except that tokens in braces &quot;{thus}&quot; are replaced:
+<p>There are basically three forms of phrase in I7: phrases which do something, but produce no value or opinion as a result; phrases to decide whether or not something is true; and phrases to decide on a value. We have already seen examples of writing the first form in I6:
 <p>
 <blockquote><font color="#000080">To say (something - number): (- print {something}; -).
 </font></blockquote><p>
 <p>
-<p>Ordinarily the only token names allowed are those matching up with names in the prototype, as here, but we have already seen one special syntax: &quot;{phrase options}&quot;, which expands as a bitmap of the options chosen. And in fact the invocation language is larger still, as a skim through the Standard Rules will show. The notes below deliberately cover only some of its features: those which are likely to remain part of the permanent design of Inform, and which are adaptable to many uses. <b>Please do not use any of the undocumented invocation syntaxes: they change frequently, without notice or even mention in the change log.</b>
+<p>Here the I6 form is required to be I6 routine code in void context, that is, it will normally be one or more statements each of which ends in a semicolon (unless there are braced code blocks present). In this case, we have just one I6 statement, ending in a semicolon.
 <p>
-<p>The first special syntaxes are textual tricks. {-delete} deletes the most recent character in the I6 expansion of the phrase so far. {-erase} erases the I6 expansion of the phrase so far. {-open-brace} and {-close-brace} produce literal &quot;{&quot; and &quot;}&quot; characters.
+<p>An example of a phrase to decide whether something is true would be:
 <p>
-<p>The following:
-<p>
-<blockquote><font color="#000080">{-counter:NAME}
-<br>{-advance-counter:NAME}
-<br>{-zero-counter:NAME}
-<br>{-allocate-storage:NAME}
+<blockquote><font color="#000080">To decide whether in darkness: (- (location==thedark) -).
 </font></blockquote><p>
 <p>
-<p>create (if one does not already exist) a counter called NAME. This is initially zero, and can be reset back to zero using &quot;{-zero-counter:NAME}&quot;, which expands into no text. The token &quot;{-counter:NAME}&quot; expands into the current value of the counter, as a literal decimal number. The token &quot;{-advance-counter:NAME}&quot; does the same, but then also increases it by one. Finally, the token &quot;{-allocate-storage:NAME}&quot; expands to nothing, but tells Inform to create an &quot;-->&quot; array called &quot;I7_ST_NAME&quot; which includes entries from 0 up to the final value of the NAME counter.
+<p>Here the I6 code providing the definition must be a valid I6 condition, and be in round brackets, but there is no semicolon.
 <p>
-<p>This allows each instance in the source text of a given phrase to have both (i) a unique ID number for that invocation, and (ii) its own word of run-time storage, which can allow it to have a state preserved in between times when it is executed. For example:
+<p>Lastly, an example of a phrase to decide on a value:
 <p>
-<blockquote><font color="#000080">To say once only -- beginning say_once_only:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-allocate-storage:say_once_only}if (I7_ST_say_once_only-->{-counter:say_once_only} == false) {-open-brace} I7_ST_say_once_only-->{-advance-counter:say_once_only} = true; -).
-<br>To say end once only -- ending say_once_only:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-close-brace} -).
+<blockquote><font color="#000080">To decide which number is the hours part of (t - time): (- ({t}/60) -).
 </font></blockquote><p>
 <p>
-<p>To complete the tools available for defining a segmented substitution, we need a way for the definition of the head to know about the middle segments and the tail:
-<p>
-<p>When invoking either the head or the tail, {-segment-count} expands to the literal decimal number of pieces of text in between the two, which is always one more than the number of middle segments, since the text comes in between the segments. When invoking any middle segment, {-segment-count} expands to the number of pieces of text so far -- thus it expands to 1 on the first middle segment invoked, 2 on the next, and so on.
-<p>
-<p>Lastly {-final-segment-marker} expands to the I6 identifier which marks the end segment, or to I6_NULL if the end segment has no marker. The idea of markers is to enable the head's definition to know which of a number of choices has been used for the tail, supposing that this is a construction with a variety of legal endings. For example:
-<p>
-<blockquote><font color="#000080">To say emphasise -- beginning say_emphasise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- style {-final-segment-marker}; -).
-<br>To say with italics -- ending say_emphasise with marker underline:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- style roman; -).
-<br>To say with fixed space type -- ending say_emphasise with marker fixed:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- style roman; -).
-</font></blockquote><p>
-<p>
-<p>The markers used for the tails here are &quot;underline&quot; and &quot;fixed&quot;, and when the head is invoked, the marker for its tail is expanded into the argument of I6's &quot;style&quot; statement.
-<p>
-<p>The examples above are all to do with segmented substitutions, which is where they are most useful, but most of the syntaxes above work equally well for ordinary &quot;To...&quot; phrase definitions.
+<p>Again, this is a value in I6 as well: no semicolon. It is probably safest to place the value in round brackets.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc375.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc377.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

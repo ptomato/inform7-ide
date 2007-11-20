@@ -36,6 +36,7 @@
 #include "extwindow.h"
 #include "file.h"
 #include "rtf.h"
+#include "skein.h"
 #include "story.h"
 #include "tabindex.h"
 #include "tabsettings.h"
@@ -66,11 +67,11 @@ static GnomeVFSMonitorHandle *monitor_file(const gchar *filename,
     return retval;
 }
 
-static void project_changed(GnomeVFSMonitorHandle *handle,
-  const gchar *monitor_uri, const gchar *info_uri,
-  GnomeVFSMonitorEventType event_type, gpointer data) {
-    struct story *thestory = (struct story *)data;
-    
+static void
+project_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
+                const gchar *info_uri, GnomeVFSMonitorEventType event_type,
+                Story *thestory)
+{
     if(event_type == GNOME_VFS_MONITOR_EVENT_CHANGED
       || event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
         /* g_file_set_contents works by deleting and creating */
@@ -116,11 +117,11 @@ static void project_changed(GnomeVFSMonitorHandle *handle,
     }
 }
 
-static void extension_changed(GnomeVFSMonitorHandle *handle,
-  const gchar *monitor_uri, const gchar *info_uri,
-  GnomeVFSMonitorEventType event_type, gpointer data) {
-    struct extension *ext = (struct extension *)data;
-      
+static void
+extension_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
+                  const gchar *info_uri, GnomeVFSMonitorEventType event_type,
+                  Extension *ext)
+{
     if(event_type == GNOME_VFS_MONITOR_EVENT_CHANGED
       || event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
         GtkWidget *dialog = gtk_message_dialog_new((GtkWindow *)ext->window,
@@ -167,10 +168,11 @@ static void extension_changed(GnomeVFSMonitorHandle *handle,
 /* If the document is not saved, ask the user whether he/she wants to save it.
 Returns TRUE if we can proceed, FALSE if the user cancelled. */
 gboolean verify_save(GtkWidget *thiswidget) {
-    struct story *thestory = get_story(thiswidget);
+    Story *thestory = get_story(thiswidget);
     
     if(gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(thestory->buffer))
-      || gtk_text_buffer_get_modified(thestory->notes)) {
+       || gtk_text_buffer_get_modified(thestory->notes)
+       || skein_get_modified(thestory->theskein)) {
         GtkWidget *save_changes_dialog = gtk_message_dialog_new_with_markup(
           GTK_WINDOW(gtk_widget_get_toplevel(thiswidget)),
           GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -203,12 +205,12 @@ gboolean verify_save(GtkWidget *thiswidget) {
 
 /* Read a project directory, loading all the appropriate files into a new
 story struct and returning that */
-struct story *open_project(gchar *directory) {
+Story *open_project(gchar *directory) {
     gchar *source_dir = g_build_filename(directory, "Source", NULL);    
     GError *err = NULL;
     gchar *filename, *text;
 
-    struct story *thestory = new_story();
+    Story *thestory = new_story();
     set_story_filename(thestory, directory);
 
     /* Read the source */
@@ -256,8 +258,9 @@ struct story *open_project(gchar *directory) {
 #endif /* SUCKY_GNOME */
     
     /* Watch for changes to the source file */
-    thestory->monitor = monitor_file(filename, project_changed,
-      (gpointer)thestory);
+    thestory->monitor = monitor_file(filename,
+                                     (GnomeVFSMonitorCallback)project_changed,
+                                     thestory);
     g_free(filename);
     
     /* Write the source to the source buffer, clearing the undo history */
@@ -266,7 +269,8 @@ struct story *open_project(gchar *directory) {
     gtk_source_buffer_end_not_undoable_action(thestory->buffer);
     g_free(text);
     
-    /* Read the skein: TODO */
+    /* Read the skein */
+    skein_load(thestory->theskein, directory);
 
     /* Read the notes */
     filename = g_build_filename(directory, "notes.rtf", NULL);
@@ -330,7 +334,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     gchar *source_dir = g_build_filename(directory, "Source", NULL);
     GError *err = NULL;
     gchar *filename, *text;
-    struct story *thestory = get_story(thiswidget);
+    Story *thestory = get_story(thiswidget);
 
     if(thestory->monitor)
         gnome_vfs_monitor_cancel(thestory->monitor);
@@ -402,12 +406,13 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
 #endif /* SUCKY_GNOME */
     
     /* Start file monitoring again */
-    thestory->monitor = monitor_file(filename, project_changed,
-      (gpointer)thestory);
+    thestory->monitor = monitor_file(filename,
+                                     (GnomeVFSMonitorCallback)project_changed,
+                                     thestory);
     g_free(filename);
     
     /* Save the skein */
-    /* TODO */
+    skein_save(thestory->theskein, directory);
 
     /* Save the notes */
     gtk_text_buffer_get_bounds(thestory->notes, &start, &end);
@@ -425,6 +430,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     
     /* Save the project settings */
     filename = g_build_filename(directory, "Settings.plist", NULL);
+    g_assert(thestory->story_format <= 999);
     gchar format_string[3];
     g_sprintf(format_string, "%d", thestory->story_format);
     text = g_strconcat(
@@ -471,7 +477,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
 
 /* A version of verify_save for the extension editing window */
 gboolean verify_save_ext(GtkWidget *thiswidget) {
-    struct extension *ext = get_ext(thiswidget);
+    Extension *ext = get_ext(thiswidget);
     
     if(gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(ext->buffer))) {
         GtkWidget *save_changes_dialog = gtk_message_dialog_new_with_markup(
@@ -547,6 +553,12 @@ gchar **theauthor) {
     
     gchar *name = NULL;
     while(ptr[0] != NULL && strcmp(ptr[0], "by")) {
+        /* Skip over '(for <TARGET VM> only)' */
+        if(ptr[0] != NULL && ptr[1] != NULL && ptr[2] != NULL &&
+           !strcmp(ptr[0], "(for") && !strcmp(ptr[2], "only)")) {
+            ptr += 3;
+            continue;
+        }
         if(name) {
             gchar *newname = g_strconcat(name, " ", ptr[0], NULL);
             g_free(name);
@@ -588,11 +600,11 @@ gchar **theauthor) {
 }
 
 /* Opens the extension from filename, and returns a new extension struct. */
-struct extension *open_extension(gchar *filename) {
+Extension *open_extension(gchar *filename) {
     GError *err = NULL;
     gchar *text;
 
-    struct extension *ext = new_ext();
+    Extension *ext = new_ext();
     set_ext_filename(ext, filename);
 
     /* Read the source */
@@ -640,7 +652,9 @@ struct extension *open_extension(gchar *filename) {
     }
 #endif
     
-    ext->monitor = monitor_file(filename, extension_changed, (gpointer)ext);
+    ext->monitor = monitor_file(filename,
+                                (GnomeVFSMonitorCallback)extension_changed,
+                                ext);
     
     return ext;
 }
@@ -649,7 +663,7 @@ struct extension *open_extension(gchar *filename) {
 void save_extension(GtkWidget *thiswidget) {
     GError *err = NULL;
     gchar *text;
-    struct extension *ext = get_ext(thiswidget);
+    Extension *ext = get_ext(thiswidget);
 
     /* Update the list of recently used files */
 #ifndef SUCKY_GNOME
@@ -700,8 +714,9 @@ void save_extension(GtkWidget *thiswidget) {
     }
     g_free(text);
 
-    ext->monitor = monitor_file(ext->filename, extension_changed,
-      (gpointer)ext);
+    ext->monitor = monitor_file(ext->filename,
+                                (GnomeVFSMonitorCallback)extension_changed,
+                                ext);
     
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ext->buffer), FALSE);
 }
@@ -912,7 +927,7 @@ void delete_extension(gchar *author, gchar *extname) {
 
 /* Helper function to delete a file relative to the project path; does nothing
 if file does not exist */
-static void delete_from_project_dir(struct story *thestory, gchar *subdir,
+static void delete_from_project_dir(Story *thestory, gchar *subdir,
 gchar *filename) {
     gchar *pathname;
     
@@ -927,7 +942,7 @@ gchar *filename) {
 
 /* If the "delete build files" option is checked, delete all the build files
 from the project directory */
-void delete_build_files(struct story *thestory) {
+void delete_build_files(Story *thestory) {
     if(config_file_get_bool("Cleaning", "BuildFiles")) {
         delete_from_project_dir(thestory, NULL, "Metadata.iFiction");
         delete_from_project_dir(thestory, NULL, "Release.blurb");

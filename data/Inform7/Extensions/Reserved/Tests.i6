@@ -15,11 +15,16 @@ Verb meta "test"
 {-call:compile_test_printout}
 	}
 ];
+#ifdef TARGET_ZCODE;
+Constant I7_TEST_STACK_SIZE = 15;
+#ifnot;
+Constant I7_TEST_STACK_SIZE = 31;
+#endif;
 
-Array test_stack --> 15;
+Array test_stack --> I7_TEST_STACK_SIZE;
 Global test_sp = 0;
 [ TestStart T R k;
-	if (test_sp == 15) ">--> Testing too many levels deep";
+	if (test_sp == I7_TEST_STACK_SIZE) ">--> Testing too many levels deep";
 	test_stack-->test_sp = T;
 	test_stack-->(test_sp+1) = 1;
 	test_sp = test_sp + 3;

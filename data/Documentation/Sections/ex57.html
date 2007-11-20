@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.9. Using new kinds of value in properties</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.8. Replacements</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,87 +19,132 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Signs and Portents" -->
-<!-- SEARCH SECTION "Ex 51" -->
-<!-- SEARCH SORT "Ex 004-009-051" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc61.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc63.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.9. Using new kinds of value in properties</b></font></td></tr></table>
+<!-- SEARCH TITLE "Fido" -->
+<!-- SEARCH SECTION "Ex 367" -->
+<!-- SEARCH SORT "Ex 019-008-367" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc322.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc324.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.8. Replacements</b></font></td></tr></table>
 <p>
-<p>Having created a new kind of value called &quot;brightness&quot;, we are free to use it in the ordinary way like this:
+<p>Suppose V is an indexed text which varies - perhaps a property of something, or a variable defined everywhere, or a temporary &quot;let&quot;-named value. How do we change its contents? The easiest way is simply to assign text to it. Thus:
 <p>
-<blockquote><font color="#000080">The lantern has a brightness called the flame strength. The flame strength of the lantern is blazing.
+<blockquote><font color="#000080">let V be &quot;It is now [the time of the day in words].&quot;
 </font></blockquote><p>
 <p>
-<p>The &quot;flame strength&quot; property is now only allowed to have one of four values we allowed: guttering light, weak light, radiant light or blazing light. Inform will not allow anything else to be put into it, or allow it to be compared to (say) the number 3.
+<p>And, for instance,
 <p>
-<p>However, it seems artificial to call the brightness of the lantern &quot;flame strength&quot;, when we could instead simply call it &quot;brightness&quot;, so we are also allowed this:
-<p>
-<blockquote><font color="#000080">The lantern has a brightness. The lantern is blazing.
+<blockquote><font color="#000080">let V be &quot;[V]!&quot;
 </font></blockquote><p>
 <p>
-<p>New kinds of value are very convenient when substituting variations in text:
+<p>adds an exclamation mark at the end of V.
 <p>
-<blockquote><font color="#000080">A dead end is a kind of room with printed name &quot;Dead End&quot; and description &quot;This is a dead end, where crags in the uneven rock are caught by the [brightness of the lantern] flame you hold aloft. Despite [river sound] there is no sign of the stream.&quot; A dead end is usually dark.
+<p>Otherwise, it is more useful (also a little faster) to modify V by changing its characters, words and so on. Thus:
+<p>
+<blockquote><font color="#000080">replace character number N in V with NEW
 </font></blockquote><p>
 <p>
-<p>The &quot;brightness of the lantern&quot; in square brackets is printed not as literal text, but as whatever the brightness currently is. (This is called a text substitution, and will be the subject of the next chapter.) If the brightness had been a number from 1 to 4, this would have resulted in something like &quot;... by the 3 flame...&quot;, but since it is a new kind of value, the result is &quot;... by the radiant flame...&quot;
+<p>changes the Nth character to NEW (which is not required to be a single character: it simply occupies the spot previously occupied by the Nth character). Similarly:
+<p>
+<blockquote><font color="#000080">replace word number N in V with NEW
+<br>replace punctuated word number N in V with NEW
+<br>replace unpunctuated word number N in V with NEW
+<br>replace line number N in V with NEW
+<br>replace paragraph number N in V with NEW
+</font></blockquote><p>
+<p>
+<p>Last, but not least, we can replace text wherever it occurs:
+<p>
+<blockquote><font color="#000080">replace the text FIND in V with NEW
+<br>replace the text FIND in V with NEW, case insensitively
+<br>replace the regular expression FIND in V with NEW
+<br>replace the regular expression FIND in V with NEW, case insensitively
+</font></blockquote><p>
+<p>
+<p>These match as much as they can, but again, with the matches not allowed to overlap. Thus
+<p>
+<blockquote><font color="#000080">replace the text &quot;a&quot; in V with &quot;z&quot;
+</font></blockquote><p>
+<p>
+<p>changes every lower-case &quot;a&quot; to &quot;z&quot;: the same thing done case insensitively would change each &quot;a&quot; or &quot;A&quot; to &quot;z&quot;.
+<p>
+<p>When replacing a regular expression, the replacement text also has a few special meanings (though, thankfully, many fewer than for the expression itself). Once again &quot;\n&quot; and &quot;\t&quot; can be used for line break and tab characters, and &quot;\\&quot; must be used for an actual backslash. But, very usefully, &quot;\1&quot; to &quot;\9&quot; expand as the contents of groups numbered 1 to 9, and &quot;\0&quot; to the exact text matched. So:
+<p>
+<blockquote><font color="#000080">replace the regular expression &quot;\d+&quot; in V with &quot;roughly \0&quot;
+</font></blockquote><p>
+<p>
+<p>adds the word &quot;roughly&quot; in front of any run of digits in V, because \0 becomes in turn whichever run of digits matched. And
+<p>
+<blockquote><font color="#000080">replace the regular expression &quot;(\w+) (.*)&quot; in V with &quot;\2, \1&quot;
+</font></blockquote><p>
+<p>
+<p>performs the transformation &quot;Frank Booth&quot; to &quot;Booth, Frank&quot;.
+<p>
+<p>Finally, prefixing the number by &quot;l&quot; or &quot;u&quot; forces the text it represents into lower or upper case, respectively. For instance:
+<p>
+<blockquote><font color="#000080">replace the regular expression &quot;\b(\w)(\w*)&quot; in X with &quot;\u1\l2&quot;;
+</font></blockquote><p>
+<p>
+<p>changes the casing of X to &quot;title casing&quot;, where each individual word is capitalised. (This is a little slow on large texts, since so many matches and replacements are made: it's more efficient to use the official phrases for changing case.)
 <p>
 <p><hr><p>
-<a name="e200"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex200.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>49</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex200.html#e200 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Undertomb</font></b></a><br>A small map of dead ends, in which the sound of an underground river has different strengths in different caves.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex200.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e332"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex332.html#e332 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>50</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex332.html#e332 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">The Crane's Leg 1</font></b></a><br>A description text that automatically highlights the ways in which the object differs from a standard member of its kind.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex332.html#e332 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e11"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex11.html#e11 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>365</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex11.html#e11 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Blackout</font></b></a><br>Filtering the names of rooms printed while in darkness.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex11.html#e11 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e162"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex162.html#e162 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>366</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex162.html#e162 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Igpay Atinlay</font></b></a><br>A pig Latin filter for the player's commands.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex162.html#e162 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e57"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc62.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>51</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc62.html#e57 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Signs and Portents</font></b></a><br>Signpost that points to various destinations, depending on how the player has turned it.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex57.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e57"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc323.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>367</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc323.html#e57 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Fido</font></b></a><br>A dog the player can name and un-name at will.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex57.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Suppose we'd like to have a dog which the player is allowed to name himself. We'd like to deal correctly with both
+<p>
+<blockquote><font color="#000080">>name the dog fido
+</font></blockquote><p>
+<p>
+<p>and
+<p>
+<blockquote><font color="#000080">>name the dog &quot;fido&quot;
+</font></blockquote><p>
+<p>
+<p>so we'll also need to strip quotation marks out of the command. We can do this as follows:
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode135(code) {
+function pasteCode456(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Signs and Portents"\n\nSeven Dials is a room. The description of Seven Dials is "There is a signpost, on which seven hands swivel and swing, freely as weathercocks. They make your present road now London, now Abingdon; now Weston-super-Mare, or now Hell."\n\nSeven Dials contains a signpost. The signpost is scenery. Understand "sign" and "post" as the signpost.\n\nDestination is a kind of value. The destinations are London, Abingdon, Luton, Weston-super-Mare, Runnymede, Hell, and Low Noon.\n\nThe signpost has a destination.\n\n[In order to interact with the signpost, we will need to borrow some action rules from chapter 6:]\n\nInstead of examining the signpost:\n\tsay "[The signpost] currently puts you on the road to [italic type][the destination of the signpost][roman type], but it swiftly alters again.";\n\tchange the destination of the signpost to the destination after the destination of the signpost.\n\nInstead of turning the signpost:\n\tchange the destination of the signpost to the destination after the destination of the signpost;\n\tsay "With a hand\'s touch you turn the signpost to mark your way for [italic type][the destination of the signpost][roman type]."\n\nInstead of going north in Seven Dials when the destination of the signpost is Hell:\n\tsay "It is a path that goes gently ever down and down with no stumbling block or any distraction at either side; there are no bandits and no tolls.";\n\tend the game in death.\n\nInstead of going north in Seven Dials when the destination of the signpost is Low Noon:\n\tsay "A long road whose scenery does not change, nor anything on the horizon move but the sun. When at last you come to Noon, she hangs above your head like a hat.";\n\tend the game in victory.\n\nTest me with "x signpost / n / turn signpost / n / turn signpost / n / turn signpost / n / turn signpost / n".\n\nTest more with  "x signpost / n / turn signpost / n / turn signpost / n / turn signpost / n / turn signpost / turn signpost / n".\n');
+    myProject.pasteCode(' "Fido"\n\nThe Back Yard is a room.\n\nA dog is an animal in Back Yard. The dog has some indexed text called the nickname.  The nickname of the dog is "nothing". Understand the nickname property as describing the dog.\n\nRule for printing the name of the dog when the nickname of the dog is not "nothing":\n\tsay "[nickname of the dog]"\n\nNaming it with is an action applying to one thing and one topic. Understand "name [something] [text]" as naming it with. Check naming it with: say "You can\'t name that."\n\nInstead of naming the dog with "nothing":\n\tchange the nickname of the dog to "nothing";\n\tnow the dog is improper-named;\n\tsay "You revoke your choice of dog-name."\n\nInstead of naming the dog with something:\n\tlet N be indexed text; let N be "[the topic understood]";\n\treplace the text "\'" in N with "";\n\tchange the nickname of the dog to "[N]";\n\tnow the dog is proper-named;\n\tsay "The dog is now known as [nickname of the dog]."\n\nTest me with "name the dog Fido / name the dog Lawrence / look / x lawrence / name Lawrence nothing / look / x lawrence".\n');
 }
 </script>
-<a href="javascript:pasteCode135()"><img border=0 src=../doc_images/paste.png></a> &quot;Signs and Portents&quot;
+<a href="javascript:pasteCode456()"><img border=0 src=../doc_images/paste.png></a>  &quot;Fido&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Seven Dials is a room. The description of Seven Dials is &quot;There is a signpost, on which seven hands swivel and swing, freely as weathercocks. They make your present road now London, now Abingdon; now Weston-super-Mare, or now Hell.&quot;
+<blockquote><font color="#000080">The Back Yard is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Seven Dials contains a signpost. The signpost is scenery. Understand &quot;sign&quot; and &quot;post&quot; as the signpost.
+<blockquote><font color="#000080">A dog is an animal in Back Yard. The dog has some indexed text called the nickname.  The nickname of the dog is &quot;nothing&quot;. Understand the nickname property as describing the dog.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Destination is a kind of value. The destinations are London, Abingdon, Luton, Weston-super-Mare, Runnymede, Hell, and Low Noon.
+<blockquote><font color="#000080">Rule for printing the name of the dog when the nickname of the dog is not &quot;nothing&quot;:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[nickname of the dog]&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The signpost has a destination.
+<blockquote><font color="#000080">Naming it with is an action applying to one thing and one topic. Understand &quot;name [something] [text]&quot; as naming it with. Check naming it with: say &quot;You can't name that.&quot;
 </font></blockquote><p>
 <p>
-<p>In order to interact with the signpost, we will need to borrow some action rules from chapter 6:
-<p>
-<blockquote><font color="#000080">Instead of examining the signpost:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The signpost] currently puts you on the road to [italic type][the destination of the signpost][roman type], but it swiftly alters again.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the destination of the signpost to the destination after the destination of the signpost.
+<blockquote><font color="#000080">Instead of naming the dog with &quot;nothing&quot;:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the nickname of the dog to &quot;nothing&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the dog is improper-named;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You revoke your choice of dog-name.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of turning the signpost:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the destination of the signpost to the destination after the destination of the signpost;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;With a hand's touch you turn the signpost to mark your way for [italic type][the destination of the signpost][roman type].&quot;
+<blockquote><font color="#000080">Instead of naming the dog with something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be indexed text; let N be &quot;[the topic understood]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;replace the text &quot;'&quot; in N with &quot;&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the nickname of the dog to &quot;[N]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the dog is proper-named;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The dog is now known as [nickname of the dog].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going north in Seven Dials when the destination of the signpost is Hell:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is a path that goes gently ever down and down with no stumbling block or any distraction at either side; there are no bandits and no tolls.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in death.
+<blockquote><font color="#000080">Test me with &quot;name the dog Fido / name the dog Lawrence / look / x lawrence / name Lawrence nothing / look / x lawrence&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going north in Seven Dials when the destination of the signpost is Low Noon:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A long road whose scenery does not change, nor anything on the horizon move but the sun. When at last you come to Noon, she hangs above your head like a hat.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x signpost / n / turn signpost / n / turn signpost / n / turn signpost / n / turn signpost / n&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test more with  &quot;x signpost / n / turn signpost / n / turn signpost / n / turn signpost / n / turn signpost / turn signpost / n&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc62.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc323.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc61.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc63.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e114"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex114.html#e114 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>368</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex114.html#e114 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mr. Burns' Repast</font></b></a><br>Letting the player guess types for an unidentifiable fish.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex114.html#e114 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e278"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex278.html#e278 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>369</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex278.html#e278 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Northstar</font></b></a><br>Making Inform understand ASK JOSH TO TAKE INVENTORY as JOSH, TAKE INVENTORY. This requires us to use a regular expression on the player's command, replacing some of the content.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex278.html#e278 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc322.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc324.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -28,6 +28,7 @@
 #include "skein.h"
 #include "story.h"
 #include "tabgame.h"
+#include "tabskein.h"
 #include "tabsource.h"
 #include "windowlist.h"
 
@@ -36,8 +37,8 @@ static GSList *storylist = NULL;
 
 /* Create and initialize a new story structure, with main window and source
 buffer and skein, etc. */
-struct story *new_story() {
-    struct story *newstory = g_malloc(sizeof(struct story));
+Story *new_story() {
+    Story *newstory = g_new0(Story, 1);
 
     newstory->filename = NULL;
     newstory->monitor = NULL;
@@ -64,11 +65,32 @@ struct story *new_story() {
     newstory->action = COMPILE_NONE;
     
     /* Create an empty skein */
-    newstory->theskein = create_skein();
-    newstory->skein_ptr = get_start_pointer(newstory->theskein);
-
-    /* Initialize the navigation history */
+    newstory->theskein = skein_new();
+    newstory->editingskein = FALSE;
+    newstory->redrawingskein = FALSE;
     int foo;
+    for(foo = 0; foo < 3; foo++) {
+        newstory->skeingroup[foo] = NULL;
+        newstory->drawflag[foo] = FALSE;
+    }
+#ifdef I_LIKE_SKEIN
+    g_signal_connect(G_OBJECT(newstory->theskein), "tree-changed",
+                     G_CALLBACK(skein_layout_and_redraw), (gpointer)newstory);
+    g_signal_connect(G_OBJECT(newstory->theskein), "node-text-changed",
+                     G_CALLBACK(skein_layout_and_redraw), (gpointer)newstory);
+    g_signal_connect(G_OBJECT(newstory->theskein), "thread-changed",
+                     G_CALLBACK(skein_schedule_redraw), (gpointer)newstory);
+    g_signal_connect(G_OBJECT(newstory->theskein), "node-color-changed",
+                     G_CALLBACK(skein_schedule_redraw), (gpointer)newstory);
+    g_signal_connect(G_OBJECT(newstory->theskein), "lock-changed",
+                     G_CALLBACK(skein_schedule_redraw), (gpointer)newstory);
+    g_signal_connect(G_OBJECT(newstory->theskein), "transcript-thread-changed",
+                     G_CALLBACK(skein_schedule_redraw), (gpointer)newstory);
+    g_signal_connect(G_OBJECT(newstory->theskein), "show-node",
+                     G_CALLBACK(show_node), (gpointer)newstory);
+#endif /* I_LIKE_SKEIN */
+    
+    /* Initialize the navigation history */
     for(foo = 0; foo < 2; foo++) {
         newstory->back[foo] = g_queue_new();
         newstory->forward[foo] = g_queue_new();
@@ -105,7 +127,7 @@ struct story *new_story() {
 }
 
 /* Free all the resources from the story */
-void delete_story(struct story *oldstory) {
+void delete_story(Story *oldstory) {
     storylist = g_slist_remove(storylist, (gconstpointer)oldstory);
 
     stop_project(oldstory);
@@ -115,7 +137,7 @@ void delete_story(struct story *oldstory) {
         free(oldstory->filename);
     }
     gtk_widget_destroy(oldstory->window);
-    destroy_skein(oldstory->theskein);
+    skein_free(oldstory->theskein);
     if(oldstory->monitor)
         gnome_vfs_monitor_cancel(oldstory->monitor);
     
@@ -152,22 +174,22 @@ void delete_story(struct story *oldstory) {
 
 /* Returns the story struct associated with the main window that is the toplevel
 of widget */
-struct story *get_story(GtkWidget *widget) {
+Story *get_story(GtkWidget *widget) {
     GSList *iter = storylist;
     /* the following is because the menu items do not share the same toplevel
      as the other widgets? */
     GtkWidget *topwindow = lookup_widget(widget, "app_window");
 
     while(iter != NULL) {
-        if(((struct story *)(iter->data))->window == topwindow)
-            return (struct story *)(iter->data);
+        if(((Story *)iter->data)->window == topwindow)
+            return (Story *)iter->data;
         iter = g_slist_next(iter);
     }
     return NULL;
 }
 
 /* Format and set the filename of a story struct */
-void set_story_filename(struct story *thestory, gchar *filename) {
+void set_story_filename(Story *thestory, gchar *filename) {
     if(thestory->filename)
         g_free(thestory->filename);
     thestory->filename = g_strdup(filename);
@@ -181,25 +203,25 @@ void set_story_filename(struct story *thestory, gchar *filename) {
 void for_each_story_window(void (*func)(GtkWidget *)) {
     GSList *iter;
     for(iter = storylist; iter != NULL; iter = g_slist_next(iter))
-        func(((struct story *)(iter->data))->window);
+        func(((Story *)iter->data)->window);
 }
 
 /* Carry out func for each story window in idle time */
 void for_each_story_window_idle(GSourceFunc func) {
     GSList *iter;
     for(iter = storylist; iter != NULL; iter = g_slist_next(iter))
-        g_idle_add(func, (gpointer)(((struct story *)(iter->data))->window));
+        g_idle_add(func, (gpointer)(((Story *)iter->data)->window));
 }
 
 /* Carry out func for each story buffer */
 void for_each_story_buffer(void (*func)(GtkSourceBuffer *)) {
     GSList *iter;
     for(iter = storylist; iter != NULL; iter = g_slist_next(iter))
-        func(((struct story *)(iter->data))->buffer);
+        func(((Story *)iter->data)->buffer);
 }
 
 /* Return the extension of the output file of this story */
-gchar *get_story_extension(struct story *thestory) {
+gchar *get_story_extension(Story *thestory) {
     switch(thestory->story_format) {
         case FORMAT_Z5:
             return "z5";

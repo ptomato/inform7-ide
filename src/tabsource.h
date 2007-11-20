@@ -26,6 +26,10 @@ GtkWidget*
 source_create (gchar *widget_name, gchar *string1, gchar *string2,
                 gint int1, gint int2);
 
+void
+on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
+                                        gpointer         user_data);
+
 GtkTextTag *create_string_markup_tag();
 GtkSourceBuffer *create_natural_inform_source_buffer();
 void paste_code (GtkSourceBuffer *buffer, gchar *code);

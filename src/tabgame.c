@@ -37,7 +37,7 @@
 
 /* Callback for when the interpreter is finished */
 static void on_interpreter_exit(GtkTerp *terp, gint exit_code, 
-                                struct story *thestory)
+                                Story *thestory)
 {
     gtk_terp_unload_game(terp);
     
@@ -45,10 +45,10 @@ static void on_interpreter_exit(GtkTerp *terp, gint exit_code,
         g_signal_handler_disconnect((gpointer)terp, thestory->handler_finished);
     if(thestory->handler_input)
         g_signal_handler_disconnect((gpointer)terp, thestory->handler_input);
-
+    
     thestory->handler_finished = 0;
     thestory->handler_input = 0;
-
+    
     gtk_widget_set_sensitive(lookup_widget(thestory->window, "stop"), FALSE);
     gtk_widget_set_sensitive(lookup_widget(thestory->window, "stop_toolbutton"),
                              FALSE);
@@ -56,12 +56,9 @@ static void on_interpreter_exit(GtkTerp *terp, gint exit_code,
 
 /* Grab commands entered by the user and store them in the skein */
 static void catch_input(GtkTerp *terp, const gchar *command,
-                        struct story *thestory)
+                        Story *thestory)
 {
-    struct node *newnode = g_malloc(sizeof(struct node));
-    newnode->command = g_strdup(command);
-    thestory->theskein = add_node(thestory->theskein, &(thestory->skein_ptr),
-                                  newnode);
+    skein_new_line(thestory->theskein, command);
 }
 
 /* Create the GtkTerp widget and set some preferences */
@@ -75,8 +72,28 @@ game_create (gchar *widget_name, gchar *string1, gchar *string2,
     return GTK_WIDGET(terp);
 }
 
-/* Run the story in the VteTerminal widget */
-void run_project(struct story *thestory) {
+/* Resize the interpreter widget when its parent scroll window is allocated */
+void
+on_game_viewport_l_size_allocate       (GtkWidget       *widget,
+                                        GtkAllocation   *allocation,
+                                        gpointer         user_data)
+{
+    resize_game_window(get_story(widget), LEFT, allocation->width,
+                       allocation->height);
+}
+
+
+void
+on_game_viewport_r_size_allocate       (GtkWidget       *widget,
+                                        GtkAllocation   *allocation,
+                                        gpointer         user_data)
+{
+    resize_game_window(get_story(widget), RIGHT, allocation->width,
+                       allocation->height);
+}
+
+/* Run the story in the GtkTerp widget */
+void run_project(Story *thestory) {
     int right = choose_notebook(thestory->window, TAB_GAME);
     GtkTerp *terp = GTK_TERP(lookup_widget(thestory->window, right?
       "game_r" : "game_l"));
@@ -93,6 +110,16 @@ void run_project(struct story *thestory) {
         return;
     }
     g_free(path);
+    
+    /* Get a list of the commands that need to be fed in */
+    GSList *commands = skein_get_commands(thestory->theskein);
+    
+    /* Set non-interactive if there are commands, because if we don't, the first
+    screen might freeze on a "-- more --" prompt and ignore the first automatic
+    input */
+    if(commands)
+        gtk_terp_set_interactive(terp, FALSE);
+    
     if(!gtk_terp_start_game(terp, (thestory->story_format == FORMAT_GLULX)?
                             GTK_TERP_GLULXE : GTK_TERP_FROTZ, &err)) {
         error_dialog(GTK_WINDOW(thestory->window), err,
@@ -101,7 +128,7 @@ void run_project(struct story *thestory) {
         return;
     }
 
-    /* Save the signal handlers so we can disconnect them */
+    /* Connect signals and save the signal handlers to disconnect later */
     thestory->handler_finished = g_signal_connect((gpointer)terp,
       "stopped", G_CALLBACK(on_interpreter_exit), (gpointer)thestory);
     thestory->handler_input = g_signal_connect((gpointer)terp,
@@ -122,27 +149,40 @@ void run_project(struct story *thestory) {
     
     /* Feed the commands up to the current pointer in the skein into the
     terminal */
-    GSList *commands = get_nodes_to_here(thestory->theskein,
-      thestory->skein_ptr);
-    /* Start a new branch at the beginning */
-    thestory->theskein = reset_skein(thestory->theskein, &(thestory->skein_ptr));
-    gtk_terp_set_interactive(terp, FALSE);
-    gtk_terp_feed_text(terp, " "); /* bug workaround */
-    GSList *iter = g_slist_next(commands);
-    while(iter != NULL) {
-        gtk_terp_feed_command(terp, ((struct node *)(iter->data))->command);
-        iter = g_slist_next(iter);
+    skein_reset(thestory->theskein, TRUE);      
+    while(commands != NULL) {
+        gtk_terp_feed_command(terp, (gchar *)(commands->data));
+        g_free(commands->data);
+        commands = g_slist_delete_link(commands, commands);
     }
-    free_node_list(commands);
     gtk_terp_set_interactive(terp, TRUE);
 }
 
 /* Kill the interpreter if it is running */
-void stop_project(struct story *thestory) {
+void
+stop_project(Story *thestory)
+{
     GtkTerp *terp = GTK_TERP(lookup_widget(thestory->window, "game_l"));
     if(gtk_terp_get_game_loaded(terp))
         gtk_terp_stop_game(terp);
     terp = GTK_TERP(lookup_widget(thestory->window, "game_r"));
     if(gtk_terp_get_game_loaded(terp))
         gtk_terp_stop_game(terp);
+}
+
+/* Resize the interpreter */
+void resize_game_window(Story *thestory, int right, guint w, guint h)
+{
+    GtkTerp *terp = GTK_TERP(lookup_widget(thestory->window,
+                                           right? "game_r" : "game_l"));
+    if(gtk_terp_get_running(terp))
+        gtk_terp_set_minimum_size(terp, w, h);
+}
+/* Tell whether the interpreter is running on either side */
+gboolean
+game_is_running(Story *thestory)
+{
+    return
+      gtk_terp_get_running(GTK_TERP(lookup_widget(thestory->window,"game_r")))||
+      gtk_terp_get_running(GTK_TERP(lookup_widget(thestory->window,"game_l")));
 }

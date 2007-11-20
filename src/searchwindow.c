@@ -44,6 +44,7 @@ static GList *doc_index = NULL;
 
 typedef struct {
 	gboolean example;
+    gboolean recipebook;
 	gchar *section;
 	gchar *title;
 	gchar *sort;
@@ -65,7 +66,8 @@ enum {
 enum {
     RESULT_TYPE_PROJECT,
     RESULT_TYPE_EXTENSION,
-    RESULT_TYPE_DOCUMENTATION
+    RESULT_TYPE_DOCUMENTATION,
+    RESULT_TYPE_RECIPE_BOOK
 };
 
 typedef struct {
@@ -79,7 +81,9 @@ typedef struct {
 
 
 /* Free the data in a Result structure */
-static void result_free(Result *foo) {
+static void
+result_free(Result *foo)
+{
     g_free(foo->context);
     g_free(foo->source_sort);
     g_free(foo->source_location);
@@ -110,9 +114,10 @@ on_search_results_view_row_activated   (GtkTreeView     *treeview,
       -1);
     
     gchar *anchor;
-    struct extension *ext;
+    Extension *ext;
     switch(result_type) {
-    case RESULT_TYPE_DOCUMENTATION:    
+    case RESULT_TYPE_DOCUMENTATION:
+    case RESULT_TYPE_RECIPE_BOOK:
         /* Check if there is an anchor we need to jump to */
         
         if((anchor = strchr(filename, '#')))
@@ -148,8 +153,9 @@ on_search_results_view_row_activated   (GtkTreeView     *treeview,
 
 /* Create a new search results window with the results listed.
 Frees the results */
-GtkWidget *new_search_window(GtkWidget *main_window, const gchar *text,
-  GList *results) {
+GtkWidget *
+new_search_window(GtkWidget *main_window, const gchar *text, GList *results)
+{
     GtkWidget *search_window = create_search_window();
     
     gtk_label_set_text(
@@ -202,7 +208,9 @@ GtkWidget *new_search_window(GtkWidget *main_window, const gchar *text,
 
 /* Free the internal private documentation index. No need to call this function;
 it is connected to atexit. */
-static void free_doc_index() {
+static void
+free_doc_index()
+{
     GList *iter;
     for(iter = doc_index; iter != NULL; iter = g_list_next(iter)) {
         DocText *text = (DocText *)(iter->data);
@@ -237,6 +245,7 @@ static struct tag tags[] = {
 	{"i>",          2, FALSE, FALSE},
 	{"img",         3, FALSE, FALSE},
 	{"p>",          2, FALSE, TRUE },
+    {"pre>",        4, FALSE, FALSE},
 	{"script",      6, TRUE,  FALSE},
 	{"table",       5, FALSE, FALSE},
 	{"TABLE",       5, FALSE, FALSE},
@@ -268,7 +277,9 @@ static struct literal literals[] = {
 /* Read the specified HTML file and convert it to plain text. Store the text and
 the metadata in the comments in the DocText structure. Returns TRUE on success,
 FALSE on failure. */
-static gboolean html_decode(const gchar *filename, DocText **doc_text) {
+static gboolean
+html_decode(const gchar *filename, DocText **doc_text)
+{
 	g_return_val_if_fail(filename != NULL, FALSE);
 	
 	GError *err;
@@ -287,11 +298,13 @@ static gboolean html_decode(const gchar *filename, DocText **doc_text) {
 	}
 	
 	/* Get the body text */
-	gchar *body1 = strstr(html, "<body>");
+	gchar *body1 = strstr(html, "<body"); /* <body bgcolor="blabla"> */
 	gchar *body2 = strstr(html, "</body>");
 	if(body1 == NULL || body2 == NULL || body2 <= body1)
 		return FALSE;
-	gchar *body_html = g_strndup(body1 + 6, body2 - body1 - 6);
+    gchar *end_of_body_tag = strchr(body1 + 6, '>');
+	gchar *body_html = g_strndup(end_of_body_tag + 1,
+                                 body2 - end_of_body_tag - 1);
 	g_free(html);
 	
 	/* Reserve space for the main text */
@@ -356,7 +369,8 @@ static gboolean html_decode(const gchar *filename, DocText **doc_text) {
 			if(sscanf(p1, "<!-- SEARCH TITLE \"%[^\"]", meta) == 1)
 				(*doc_text)->title = g_strdup(meta);
 			else if(sscanf(p1, "<!-- SEARCH SECTION \"%[^\"]", meta) == 1)
-				(*doc_text)->section = g_strdup(meta);
+				(*doc_text)->section = ((*doc_text)->recipebook)?
+                    g_strconcat("Recipe Book, ", meta, NULL) : g_strdup(meta);
 			else if(sscanf(p1, "<!-- SEARCH SORT \"%[^\"]", meta) == 1)
 				(*doc_text)->sort = g_strdup(meta);
 			else if(strncmp(p1, "<!-- EXAMPLE START -->", 22) == 0)
@@ -413,17 +427,27 @@ static gboolean html_decode(const gchar *filename, DocText **doc_text) {
 }
 
 
-/* Comparison function to sort the results by source string */
-static int sort_by_source(gconstpointer a, gconstpointer b) {
-    return strcmp(((Result *)a)->source_sort, ((Result *)b)->source_sort);
+/* Comparison function to sort the results by source string, placing recipe book
+after regular documentation entries */
+static int
+sort_by_source(gconstpointer a, gconstpointer b)
+{
+    if(((Result *)a)->result_type == ((Result *)b)->result_type)
+        return strcmp(((Result *)a)->source_sort, ((Result *)b)->source_sort);
+    if(((Result *)a)->result_type == RESULT_TYPE_RECIPE_BOOK &&
+       ((Result *)b)->result_type == RESULT_TYPE_DOCUMENTATION)
+        return 1;
+    return -1;
 }
 
 /* Function to search through a GtkSourceBuffer, putting context, line number
 and new search point into the pointers indicated. Returns whether there was a
 match. */
-static gboolean search_buffer(const gchar *search_text, gboolean ignore_case,
-  int algorithm, GtkSourceBuffer *buffer,
-  GtkTextIter *search_from, gchar **context, gint *lineno) {
+static gboolean
+search_buffer(const gchar *search_text, gboolean ignore_case, int algorithm,
+              GtkSourceBuffer *buffer, GtkTextIter *search_from,
+              gchar **context, gint *lineno)
+{
     /* Run the main loop, because this function will probably be called many
       times in succession */
     while(gtk_events_pending())
@@ -470,7 +494,9 @@ static gboolean search_buffer(const gchar *search_text, gboolean ignore_case,
 }
 
 /* Search the documentation pages for the string 'text' */
-GList *search_doc(const gchar *text, gboolean ignore_case, int algorithm) {
+GList *
+search_doc(const gchar *text, gboolean ignore_case, int algorithm)
+{
     GError *err;
     GList *results = NULL;
 	
@@ -486,17 +512,20 @@ GList *search_doc(const gchar *text, gboolean ignore_case, int algorithm) {
         }
         const gchar *filename;
         while((filename = g_dir_read_name(docdir)) != NULL) {
-            if(g_str_has_prefix(filename, "doc")
-              && g_str_has_suffix(filename, ".html"))
+            if((g_str_has_prefix(filename, "doc")
+                || g_str_has_prefix(filename, "Rdoc"))
+               && g_str_has_suffix(filename, ".html"))
                 example = FALSE;
-            else if(g_str_has_prefix(filename, "ex")
-              && g_str_has_suffix(filename, ".html"))
+            else if((g_str_has_prefix(filename, "ex")
+                     || g_str_has_prefix(filename, "Rex"))
+                    && g_str_has_suffix(filename, ".html"))
                 example = TRUE;
             else
                 continue;
-            
+
             DocText *doc_text = g_new0(DocText, 1);
             doc_text->example = example;
+            doc_text->recipebook = g_str_has_prefix(filename, "R");
             doc_text->file = g_build_filename(docpath, filename, NULL);
             if(html_decode(doc_text->file, &doc_text))
                 doc_index = g_list_prepend(doc_index, (gpointer)doc_text);
@@ -505,7 +534,7 @@ GList *search_doc(const gchar *text, gboolean ignore_case, int algorithm) {
         
         g_atexit(free_doc_index);
     } /* doc_index == NULL */
-	
+    
     GList *iter;
     for(iter = doc_index; iter != NULL; iter = g_list_next(iter)) {
         DocText *doc_text = (DocText *)iter->data;
@@ -527,7 +556,8 @@ GList *search_doc(const gchar *text, gboolean ignore_case, int algorithm) {
               doc_text->title, NULL);
             result->source_sort = g_strdup(doc_text->sort);
             result->source_file = g_strdup(doc_text->file);
-            result->result_type = RESULT_TYPE_DOCUMENTATION;
+            result->result_type = doc_text->recipebook?
+                  RESULT_TYPE_RECIPE_BOOK : RESULT_TYPE_DOCUMENTATION;
             /* For examples, add a reference to the example section */
             if(doc_text->example) {
                 gchar *name = g_path_get_basename(doc_text->file);
@@ -553,8 +583,10 @@ GList *search_doc(const gchar *text, gboolean ignore_case, int algorithm) {
 
 
 /* Search the project file for the string 'text' */
-GList *search_project(const gchar *text, struct story *thestory,
-gboolean ignore_case, int algorithm) {
+GList *
+search_project(const gchar *text, Story *thestory, gboolean ignore_case,
+                      int algorithm)
+{
     GList *results = NULL;
 	
 	GtkTextIter search_from;
@@ -582,8 +614,9 @@ gboolean ignore_case, int algorithm) {
 
 
 /* Search the user-installed extensions for the string 'text' */
-GList *search_extensions(const gchar *text, gboolean ignore_case,
-  int algorithm) {
+GList *
+search_extensions(const gchar *text, gboolean ignore_case, int algorithm)
+{
     GList *results = NULL;
 	GError *err = NULL;
     gchar *extension_dir = get_extension_path(NULL, NULL);

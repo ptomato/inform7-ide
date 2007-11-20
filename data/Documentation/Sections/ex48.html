@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.14. Exchanging files with other programs</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.7. Adjacent rooms and routes through the map</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,124 +19,100 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Flathead News Network" -->
-<!-- SEARCH SECTION "Ex 346" -->
-<!-- SEARCH SORT "Ex 019-014-346" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc327.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc329.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.14. Exchanging files with other programs</b></font></td></tr></table>
+<!-- SEARCH TITLE "Mistress of Animals" -->
+<!-- SEARCH SECTION "Ex 71" -->
+<!-- SEARCH SORT "Ex 006-007-071" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc86.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc88.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.7. Adjacent rooms and routes through the map</b></font></td></tr></table>
 <p>
-<p>Provided we declare the files in the right way, it is easy for one project to read a file created by another project.
+<p>Another useful adjective built into Inform is &quot;adjacent&quot;. Two rooms are said to be adjacent if there is a map connection between them which does not pass through some barrier such as a door. This is easily tested:
 <p>
-<p>But if we want more rapid communication, between two projects which are each playing at the same time, we need to be more careful. What if project A tries to read the file at the same moment that project B is writing it?
-<p>
-<p>To avoid this, we have a concept of files being &quot;ready&quot;. A file is ready if it exists, and is completely written, and not in use elsewhere. The following conditions can be used:
-<p>
-<blockquote><font color="#000080">if the file of Invariants exists...
-<br>if ready to read the file of Invariants...
+<blockquote><font color="#000080">if the Hallway is adjacent to the Study ...
 </font></blockquote><p>
 <p>
-<p>A file cannot be ready to read if it does not exist, so this is a stronger condition. If A and B are attempting communication in real time, both running at once, then Project A should check that an external file owned by B is ready before it tries to read it. Files can also be marked as ready or not ready, in effect claiming them, thus:
+<p>We usually want to know about the places adjacent to the current scene of the action, so that is what the adjective &quot;adjacent&quot; means when applied to rooms. For instance:
 <p>
-<blockquote><font color="#000080">mark the file of Invariants as ready to read;
-<br>mark the file of Invariants as not ready to read;
+<blockquote><font color="#000080">if somebody is in an adjacent room, ...
 </font></blockquote><p>
 <p>
-<p>Possibilities really begin to open up when project A is our story file, but B is not another story file at all: it is some external program such as a Web service, say. (Of course this is harder to set up, since the player needs to have both A and B running at the same time, but for games running on an Internet server this can all be made seamless.)
+<p>As with the case of &quot;visible&quot;, the adjective is a cut-down version of the more general relationship. This often happens: &quot;worn&quot; and &quot;carried&quot;, for instance, imply &quot;by the player&quot; unless something else is specified.
 <p>
-<p>When Inform begins writing a table, or text, to a file, it initially marks the file as not ready: only when the table or text is completely written and the file about to close is the file marked as ready.
+<p>If we want to ask a more direct question, we can obtain specific map connections like so:
 <p>
-<p>In order to write non-story-file programs as B, communicating with story files as A, we need to know the file format used by Inform. An Inform file is currently a Unix text file (with 10 as the line division character), encoded as ASCII Latin-1. (We would like to use Unicode at some point in the future, but the Glk and Glulx layers are still not fully converted to Unicode.) It opens with a single header line in the form:
-<p>
-<blockquote><font color="#000080">* //IFID// leafname
+<blockquote><font color="#000080">say &quot;You look north into [the room north from the Garden].&quot;
 </font></blockquote><p>
 <p>
-<p>The opening character is an asterisk if the file is currently ready, a hyphen if the file is currently not ready. The IFID between the slashes is the IFID number of the project which last wrote to the file. (Marking &quot;ready&quot; or &quot;not ready&quot; does not count as a write for this purpose.) If an external program wrote the file, it should call itself something which will not clash with any story file's IFID. The leafname is the filename text used inside the story file where the file was declared. For instance:
+<p>since &quot;the room D from A&quot; produces the room which lies in direction D from room A. We need to be a little careful here. What if there is no map connection this way? In that case, &quot;the room ... from ...&quot; produces the special value &quot;nothing&quot;. Thus:
 <p>
-<blockquote><font color="#000080">* //4122DDA8-A153-46BC-8F57-42220F9D8795// ice
+<blockquote><font color="#000080">if the room north from the Garden is nothing, say &quot;The grass leads nowhere.&quot;
 </font></blockquote><p>
+<p>
+<p>While on the subject of navigating the map, the phrase &quot;the best route from A to B&quot; gives a direction to take in order to get from A to B by the shortest number of movements between rooms - if there is any way through at all. For example, here is a lure:
+<p>
+<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room].&quot;
+</font></blockquote><p>
+<p>
+<p>Best routes are ordinarily forbidden to go through doors, but if the suffix &quot;using doors&quot; is added as an option then any open or openable and unlocked door may be used on the way; and if &quot;using even locked doors&quot; is given, then any door at all will do. Since magnetism is no respecter of property, that seems right here:
+<p>
+<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room, using even locked doors].&quot;
+</font></blockquote><p>
+<p>
+<p>The phrase &quot;the best route from A to B&quot; gives the direction to take next, if we are at A and want to end up at B. Suppose this is east. We can find out where we go next by looking up &quot;the room east from A&quot;: similarly for any other direction, of course. (This can see through any doors, locked or not.)
+<p>
+<p>We can also stipulate that only certain rooms may be used for the journey, as in the following example:
+<p>
+<blockquote><font color="#000080">best route from the Drawbridge to the Keep through visited rooms
+</font></blockquote><p>
+<p>
+<p>The condition - in this case, that &quot;visited rooms&quot; must be used - also applies to both ends of the journey. (Also, saying something like &quot;...through containers&quot; would mean there is never a route, since it is only rooms which appear on the map.)
+<p>
+<p>Lastly, we can find out how long the journey would be:
+<p>
+<blockquote><font color="#000080">The description of the proximity gadget is &quot;You are now [number of moves from the location to the Sundial] moves from the Sundial.&quot;;
+</font></blockquote><p>
+<p>
+<p>This number is, of course, 0 if the location is already the Sundial. If there is no way at all to get to the Sundial, the number is -1.
 <p>
 <p><hr><p>
+<a name="e172"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex172.html#e172 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>70</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex172.html#e172 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> All Roads Lead to Mars</font></b></a><br>Layout where the player is allowed to wander any direction he likes, and the map will arrange itself in order so that he finds the correct "next" location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex172.html#e172 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e48"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc328.html#e48 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>346</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc328.html#e48 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Flathead News Network</font></b></a><br>Using external files, together with a simple Unix script running in the background, to provide live news headlines inside a story file.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex48.html#e48 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e48"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc87.html#e48 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>71</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc87.html#e48 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Mistress of Animals</font></b></a><br>A person who moves randomly between rooms of the map.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex48.html#e48 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>This example can only work if we have a separate program running in the background while the story file is being played, and as such it will only work if we set things up in a special way. Exactly how to do this will vary from platform to platform.
-<p>
-<p>First, the source text for the Inform end of the communication line:
+<p>Suppose we want a restless sort of character always pacing from room to room. It is quite easy to use adjacency to achieve this effect:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode435(code) {
+function pasteCode155(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Flathead News Network"\n\nThe file of RSS Requests is called "rssrequest".\n\nThe file of RSS Responses (owned by project "RSS-SCRIPT") is called "rssreply".\n\nTo request (RSS feed address - text):\n\tmark the file of RSS Responses as not ready to read;\n\twrite the RSS feed address to the file of RSS Requests.\n\nNewsroom is a room. "This is the secret nerve-centre of FNN, the Flathead News Network."\n\nThe BBC button is in the Newsroom. Instead of pushing the BBC button: say "Bong!"; request "newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml".\n\nThe NASA button is in the Newsroom. Instead of pushing the NASA button: say "Bang!"; request "www.nasa.gov/rss/breaking_news.rss".\n\nThe WHO button is in the Newsroom. Instead of pushing the WHO button: say "Bing!"; request "www.gallifreyone.com/news.xml".\n\nA screen is in the Newsroom.\n\nInstead of examining the screen:\n\tif ready to read the file of RSS Responses, say "From the screen you read:[line break][text of the file of RSS Responses]";\n\totherwise say "The screen remains blank for now."\n\n');
+    myProject.pasteCode('"Mistress of Animals"\n\nCorinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.\n\nArtemis is a woman in Thebes.\n\nEvery turn:\n\tif Artemis is in a room (called the current space)\n\tbegin;\n\t\tlet next space be a random room which is adjacent to the current space;\n\t\tif Artemis is visible, say "Artemis heads to [the next space].";\n\t\tmove Artemis to next space;\n\t\tif Artemis is visible, say "Artemis arrives from [the current space].";\n\tend if.\n\nTest me with "z / z / z / z / z / z".\n\n');
 }
 </script>
-<a href="javascript:pasteCode435()"><img border=0 src=../doc_images/paste.png></a> &quot;Flathead News Network&quot;
+<a href="javascript:pasteCode155()"><img border=0 src=../doc_images/paste.png></a> &quot;Mistress of Animals&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The file of RSS Requests is called &quot;rssrequest&quot;.
+<blockquote><font color="#000080">Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The file of RSS Responses (owned by project &quot;RSS-SCRIPT&quot;) is called &quot;rssreply&quot;.
+<blockquote><font color="#000080">Artemis is a woman in Thebes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To request (RSS feed address - text):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;mark the file of RSS Responses as not ready to read;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;write the RSS feed address to the file of RSS Requests.
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is in a room (called the current space)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let next space be a random room which is adjacent to the current space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis heads to [the next space].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move Artemis to next space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis arrives from [the current space].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Newsroom is a room. &quot;This is the secret nerve-centre of FNN, the Flathead News Network.&quot;
+<blockquote><font color="#000080">Test me with &quot;z / z / z / z / z / z&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The BBC button is in the Newsroom. Instead of pushing the BBC button: say &quot;Bong!&quot;; request &quot;newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The NASA button is in the Newsroom. Instead of pushing the NASA button: say &quot;Bang!&quot;; request &quot;www.nasa.gov/rss/breaking_news.rss&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The WHO button is in the Newsroom. Instead of pushing the WHO button: say &quot;Bing!&quot;; request &quot;www.gallifreyone.com/news.xml&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A screen is in the Newsroom.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining the screen:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if ready to read the file of RSS Responses, say &quot;From the screen you read:[line break][text of the file of RSS Responses]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;The screen remains blank for now.&quot;
-</font></blockquote><p>
-<p>
-<p>As far as the story file is concerned, then, it sends a request down the communication line by writing the chosen RSS feed to the file named &quot;rssrequest&quot;, and expects a reply to come back down the line by being written to the file &quot;rssreply&quot;. However, the story file needs to expect that this might take some time. (Maybe forever, if there is no program responding, or if the Internet connection is not working.) The story file marks the &quot;rssreply&quot; file as not ready before it makes a request; if it subsequently finds that the file is now ready, that must mean that the other program has done the honours, and that all is well. In the mean time, &quot;The screen remains blank for now.&quot;
-<p>
-<p>Now for the RSS-SCRIPT program. The following provides a crude but workable program suitable for running as a Perl script on a system which provides the standard Internet fetching program &quot;curl&quot;: Mac OS X, for instance. (If you have OS X, you can paste the following into a (Unix-format) text file called &quot;rss-script.pl&quot;, place it in your home folder, open the Terminal utility, type &quot;perl rss-script.pl&quot;, and then hide the Terminal window again.)
-<p>
-<blockquote><font color="#000080">for (;;) { # repeat forever:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;system(&quot;sleep 1&quot;); # wait 1 second
-<br>&nbsp;&nbsp;&nbsp;&nbsp;open REQUEST, &quot;rssrequest.glkdata&quot; or next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;# the request file has been detected:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;$header_line = &lt;REQUEST&gt;; # the header line
-<br>&nbsp;&nbsp;&nbsp;&nbsp;$rss_feed = &lt;REQUEST&gt;; # the actual content - the RSS feed URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;close REQUEST;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if ($header_line =~ m/^\*/) { # if the request file is marked ready
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$rss = system(&quot;curl $rss_feed &gt;rawrss.txt&quot;); # download the RSS feed
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# read the RSS XML into a single Perl string:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open RAWRSS, &quot;rawrss.txt&quot; or next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$raw = &quot;&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while ($nl = &lt;RAWRSS&gt;) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$raw = $raw.&quot; &quot;.$nl;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close RAWRSS;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# look for the title and description of the first item:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ($raw =~ m/\&lt;item\&gt;\&lt;title.*?\&gt;(.*?)\&lt;\/title\&gt;.*?\&lt;description.*?\&gt;(.*?)\&lt;\/description\&gt;/) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# write the reply:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open REPLY, &quot;&gt;rssreply.glkdata&quot; or next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print REPLY &quot;* //RSS-SCRIPT// rssreply\n&quot;, $1, &quot;\n&quot;, $2, &quot;\n&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close REPLY;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# request safely dealt with, so we can remove it:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system(&quot;rm 'rssrequest.glkdata'&quot;);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>}
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc328.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Of course, it helps that Artemis is the sort to like open spaces. The implementation would become more complicated if there were doors which might block transit between these locations.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc87.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc327.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc329.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e362"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex362.html#e362 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>72</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex362.html#e362 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hotel Stechelberg</font></b></a><br>Signposts such as those provided on hiking paths in the Swiss Alps, which show the correct direction and hiking time to all other locations.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex362.html#e362 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e153"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex153.html#e153 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>73</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex153.html#e153 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A View of Green Hills</font></b></a><br>A LOOK [direction] command which allows the player to see descriptions of the nearby landscape.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex153.html#e153 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc86.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc88.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

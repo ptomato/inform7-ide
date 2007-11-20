@@ -21,6 +21,7 @@
 
 #include <gnome.h>
 
+#include "extension.h"
 #include "story.h"
 
 enum {
@@ -43,27 +44,27 @@ on_find_close_clicked                  (GtkButton       *button,
 
 void
 on_find_next_clicked                   (GtkButton       *button,
-                                        gpointer         user_data);
+                                        Story           *thestory);
 
 void
 on_xfind_next_clicked                  (GtkButton       *button,
-                                        gpointer         user_data);
+                                        Extension       *ext);
 
 void
 on_find_previous_clicked               (GtkButton       *button,
-                                        gpointer         user_data);
+                                        Story           *thestory);
 
 void
 on_xfind_previous_clicked              (GtkButton       *button,
-                                        gpointer         user_data);
+                                        Extension       *ext);
 
 void
 on_find_replace_find_clicked           (GtkButton       *button,
-                                        gpointer         user_data);
+                                        Story           *thestory);
 
 void
 on_xfind_replace_find_clicked          (GtkButton       *button,
-                                        gpointer         user_data);
+                                        Extension       *ext);
 
 void
 on_find_replace_clicked                (GtkButton       *button,
@@ -75,10 +76,10 @@ on_xfind_replace_clicked               (GtkButton       *button,
                                         
 void
 on_find_replace_all_clicked            (GtkButton       *button,
-                                        gpointer         user_data);
+                                        Story           *thestory);
                                         
 void
 on_xfind_replace_all_clicked           (GtkButton       *button,
-                                        gpointer         user_data);
+                                        Extension       *ext);
   
 #endif

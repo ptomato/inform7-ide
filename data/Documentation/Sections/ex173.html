@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.14. Phrases concerning rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.25. Supplying a missing noun/second noun</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,150 +19,77 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Uptempo" -->
-<!-- SEARCH SECTION "Ex 333" -->
-<!-- SEARCH SORT "Ex 018-014-333" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc308.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc310.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.14. Phrases concerning rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Minimal Movement" -->
+<!-- SEARCH SECTION "Ex 322" -->
+<!-- SEARCH SORT "Ex 017-025-322" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc286.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc288.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.25. Supplying a missing noun/second noun</b></font></td></tr></table>
 <p>
-<p>The &quot;ignore&quot; phrase is only one of a suite. The full list is:
+<p><b>1. When it happens.</b> (Two different activities here, but identical except for applying to different nouns.) Suppose that, because of an instruction to Understand something even though it would be lacking a noun - say, 'Understand &quot;take&quot; as taking.' - an incomplete action is generated, one which is required to have a noun, but doesn't. &quot;Supplying a missing noun&quot; takes place to remedy the problem. It can either:
 <p>
-<blockquote><font color="#000080">ignore ...rule...
-<br>reinstate ...rule...
+<p>(i) Set a noun, printing text like &quot;(presumably the black bag)&quot; if it wants, in which case the action goes forward, though it is still subject to the full rules on accessibility exactly as any other action would be; or
+<p>
+<p>(ii) Make no choice, in which case no action takes place and the player's command is rejected. If the activity printed nothing, Inform will produce a generic reply to the player that &quot;You must supply a noun.&quot;.
+<p>
+<p><b>2. The default behaviour.</b> In the default grammar for Inform, only three such half-finished actions are ever Understood. One is &quot;going&quot; with no direction, for which this activity simply prints a refusal. The other two are the two undirected senses, &quot;smelling&quot; and &quot;listening&quot;. In each case, the &quot;supplying a missing noun&quot; activity sets the noun to the current location: so, for instance, typing the bare command &quot;listen&quot; might generate the action &quot;listening to the Shoreline&quot;.
+<p>
+<p><b>3. Examples.</b> (a) This is the definition Inform uses to make &quot;listen&quot; work as outlined above:
+<p>
+<blockquote><font color="#000080">Rule for supplying a missing noun while listening (this is the ambient sound rule): change the noun to the location.
 </font></blockquote><p>
 <p>
-<p>The &quot;reinstate&quot; phrase simply reverses any previous &quot;ignore&quot; of the same rule, and is otherwise not useful.
+<p>(b) It can be elegant to allow second nouns to be dropped with habitual actions, or where the choice is obvious:
 <p>
-<blockquote><font color="#000080">reject the result of ...rule...
-<br>accept the result of ...rule...
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode65(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Understand "unlock [something]" as unlocking it with.\n\nRule for supplying a missing second noun while unlocking:\n\tif the skeleton key is carried, change the second noun to the skeleton key;\n\totherwise say "You will have to specify what to unlock [the noun] with."\n\n');
+}
+</script>
+<a href="javascript:pasteCode65()"><img border=0 src=../doc_images/paste.png></a> Understand &quot;unlock [something]&quot; as unlocking it with.
 </font></blockquote><p>
 <p>
-<p>Some rules produce results, as we shall see in the next section, but they can be set so that whatever result they produce will be ignored. Again, &quot;accept ...&quot; simply undoes a previous &quot;reject ...&quot; and otherwise has no effect.
-<p>
-<blockquote><font color="#000080">substitute ...first rule... for ...second rule...
-<br>restore the original ...second rule...
+<blockquote><font color="#000080">Rule for supplying a missing second noun while unlocking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the skeleton key is carried, change the second noun to the skeleton key;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You will have to specify what to unlock [the noun] with.&quot;
 </font></blockquote><p>
 <p>
-<p>Whenever the second rule is to be invoked - from any rulebook, or as a result of any &quot;follow&quot; instruction - invoke the first one instead. Again, &quot;restore ...&quot; simply undoes the effect of an earlier &quot;substitute&quot;.
-<p>
-<blockquote><font color="#000080">move ...first rule... to before/after ...second rule...
-</font></blockquote><p>
-<p>
-<p>This causes the first rule to be ignored whenever it turns up in the ordinary way, but to be invoked either immediately before or immediately after the second rule whenever that second rule is invoked. In effect, it cuts out the first rule from wherever it was, and glues it onto the second. Note that there is no obligation for the first rule to begin in the same rulebook(s) as the second, so this can be used to slot in a wholly new rule, perhaps only if certain circumstances hold.
-<p>
-<p>These rule-changing instructions allow apparently casual sentences to wreak havoc with the model world. This, for instance, is quite the recipe for mayhem and perplexity:
-<p>
-<blockquote><font color="#000080">A procedural rule: reject the result of the before rules; ignore the after rules; move the after rules to before the before rules.
-</font></blockquote><p>
+<p>Note that, in order for our activity to succeed, we do need to supply a grammar line allowing the player to try &quot;unlocking it with&quot; using only one noun. Otherwise, the command &quot;unlock something&quot; will still produce the question &quot;What do you want to unlock the door with?&quot;
 <p>
 <p><hr><p>
+<a name="e118"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex118.html#e118 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>321</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex118.html#e118 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Latin Lessons</font></b></a><br>Supplying missing nouns and second nouns for other characters besides the player.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex118.html#e118 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e173"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc309.html#e173 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>333</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc309.html#e173 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Uptempo</font></b></a><br>Adjust time advancement so the game clock moves fifteen minutes each turn.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex173.html#e173 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e173"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc287.html#e173 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>322</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc287.html#e173 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Minimal Movement</font></b></a><br>Supplying a default direction for "go", so that "leave", "go", etc., are always interpreted as "out".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex173.html#e173 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose a game in which all actions take a very long time. Here's a simple implementation:
+<p>Sometimes it would be nice to respond a little more sensitively to a vague command such as &quot;leave&quot; -- converting it, perhaps, to a &quot;go out&quot; command.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode419(code) {
+function pasteCode410(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Uptempo"\n\nThe fast time rule is listed instead of the advance time rule in the turn sequence rules.\n\nThis is the fast time rule:\n\tincrease the turn count by 1;\n\tchange the time of day to the time of day + 15 minutes.\n\nWhen play begins: change the right hand status line to "[time of day]".\n\nThe Temporal Hot Spot is a room.\n\nTest me with "z / z".\n\n');
+    myProject.pasteCode('"Minimal Movement"\n\nThe Doll-like House is a room. The Postage-Stamp-Sized Garden is outside from the House.\n\nRule for supplying a missing noun while going:\n\tchange noun to outside.\n\n[This particular situation is very slightly complicated by the existing rules about vague movement, but fortunately we can easily turn those off.]\n\nThe block vaguely going rule is not listed in the for supplying a missing noun rules.\n\nTest me with "go".\n');
 }
 </script>
-<a href="javascript:pasteCode419()"><img border=0 src=../doc_images/paste.png></a> &quot;Uptempo&quot;
+<a href="javascript:pasteCode410()"><img border=0 src=../doc_images/paste.png></a> &quot;Minimal Movement&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The fast time rule is listed instead of the advance time rule in the turn sequence rules.
+<blockquote><font color="#000080">The Doll-like House is a room. The Postage-Stamp-Sized Garden is outside from the House.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">This is the fast time rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;increase the turn count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the time of day to the time of day + 15 minutes.
+<blockquote><font color="#000080">Rule for supplying a missing noun while going:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change noun to outside.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins: change the right hand status line to &quot;[time of day]&quot;.
+<p>This particular situation is very slightly complicated by the existing rules about vague movement, but fortunately we can easily turn those off.
+<p>
+<blockquote><font color="#000080">The block vaguely going rule is not listed in the for supplying a missing noun rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Temporal Hot Spot is a room.
+<blockquote><font color="#000080">Test me with &quot;go&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;z / z&quot;.
-</font></blockquote><p>
-<p>
-<p>This works fine as it stands, but we may run into some difficulty with it if we add scheduled events:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode420(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('At 9:30 AM:\n\tsay "Two turtles run by, almost too fast to see."\n\nAt 9:37 AM:\n\tsay "A snail blitzes past."\n\nAt 9:42 AM:\n\tsay "The grass grows."\n\nAt 9:50 AM:\n\tsay "Several flowers burst open."\n\n');
-}
-</script>
-<a href="javascript:pasteCode420()"><img border=0 src=../doc_images/paste.png></a> At 9:30 AM:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Two turtles run by, almost too fast to see.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">At 9:37 AM:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A snail blitzes past.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">At 9:42 AM:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The grass grows.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">At 9:50 AM:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Several flowers burst open.&quot;
-</font></blockquote><p>
-<p>
-<p>Time is counted forward after the schedule has already been consulted, so that only the 9:30 AM event happens between 9:30 and 9:45; the next two appear to occur between 9:45 and 10:00 AM, and the 9:50 AM event is not reported until the 10:00 AM to 10:15 wait. To get around this, we might schedule events only on the fifteen-minute mark when we want them to occur. Alternatively, we might try instead
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode421(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Uptempo"\n\nFirst turn sequence rule:\n\tincrease the turn count by 1;\n\tchange the time of day to the time of day + 14 minutes.\n\nWhen play begins: change the right hand status line to "[time of day]".\n\nThe Temporal Hot Spot is a room.\n\nAt 9:30 AM:\n\tsay "Two turtles run by, almost too fast to see."\n\nAt 9:37 AM:\n\tsay "A snail blitzes past."\n\nAt 9:42 AM:\n\tsay "The grass grows."\n\nAt 9:50 AM:\n\tsay "Several flowers burst open."\n\nTest me with "z / z / z / z".\n\n');
-}
-</script>
-<a href="javascript:pasteCode421()"><img border=0 src=../doc_images/paste.png></a> &quot;Uptempo&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">First turn sequence rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;increase the turn count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the time of day to the time of day + 14 minutes.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins: change the right hand status line to &quot;[time of day]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Temporal Hot Spot is a room.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">At 9:30 AM:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Two turtles run by, almost too fast to see.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">At 9:37 AM:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A snail blitzes past.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">At 9:42 AM:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The grass grows.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">At 9:50 AM:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Several flowers burst open.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;z / z / z / z&quot;.
-</font></blockquote><p>
-<p>
-<p>This moves time forward substantially at the beginning of each turn-sequence rule set, then checks the schedule and prints events, and then (using the ordinary advance time rule) moves time forward one last minute, for a total of fifteen minutes each move.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc309.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc287.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e36"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex36.html#e36 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>334</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex36.html#e36 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Swigmore U.</font></b></a><br>Adding a new kind of supporter called a perch, where everything dropped lands on the floor.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex36.html#e36 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e68"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex68.html#e68 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>335</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex68.html#e68 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 1</font></b></a><br>A poisonous gas that spreads from room to room, incapacitating or killing the player when it reaches sufficient levels.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex68.html#e68 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e218"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex218.html#e218 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>336</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex218.html#e218 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 2</font></b></a><br>Poisonous gas again, only this time it sinks.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex218.html#e218 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e314"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex314.html#e314 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>337</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex314.html#e314 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Solitude</font></b></a><br>Novice mode that prefaces every prompt with a list of possible commands the player could try, and highlights every important word used, to alert players to interactive items in the scenery.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex314.html#e314 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc308.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc310.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc286.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc288.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

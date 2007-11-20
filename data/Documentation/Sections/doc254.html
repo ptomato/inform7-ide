@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.13. Tokens can produce values</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.12. New tokens</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,21 +19,36 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Tokens can produce values" -->
-<!-- SEARCH SECTION "16.13" -->
-<!-- SEARCH SORT "016-013-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc253.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc255.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.13. Tokens can produce values</b></font></td></tr></table>
+<!-- SEARCH TITLE "New tokens" -->
+<!-- SEARCH SECTION "16.12" -->
+<!-- SEARCH SORT "016-012-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc253.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc255.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.12. New tokens</b></font></td></tr></table>
 <p>
-<p>The examples just seen were tokens which simply matched specific words typed by the player, but newly created tokens can also produce values:
+<p>We have now made good use of square-bracketed tokens, such as &quot;[something]&quot;, in a variety of &quot;Understand...&quot; sentences. It is sometimes convenient to create new tokens of our own, to match whatever grammar we choose: this enables complicated knots of grammar to be used in many different &quot;Understand...&quot; sentences without having to write it all out each time.
 <p>
-<blockquote><font color="#000080">Colour is a kind of value. The colours are red, green and blue. Understand &quot;colour [a colour]&quot; or &quot;[a colour] shade&quot; as &quot;[tint]&quot;.
+<p>For instance, here are new tokens: one for each of two groups of alternative prepositions.
+<p>
+<blockquote><font color="#000080">Understand &quot;beneath/under/by/near/beside/alongside/against&quot; or &quot;next to&quot; or &quot;in front of&quot; as &quot;[beside]&quot;.
 </font></blockquote><p>
 <p>
-<p>Here the &quot;[tint]&quot; token matches, for instance, &quot;colour red&quot; and &quot;blue shade&quot;, which would result in the values red and blue, respectively.
-<p>
-<p>Tokens are not allowed to produce more than one value, and if several patterns are given to define them then those patterns have to be compatible. That means the following is disallowed, since it might work out to a colour, or to an object, leaving Inform unable to judge whether an action can safely be applied to the result.
-<p>
-<blockquote><font color="#000080">Understand &quot;colour [a colour]&quot; or &quot;[something]&quot; as &quot;[tint]&quot;.
+<blockquote><font color="#000080">Understand &quot;on/in/inside&quot; or &quot;on top of&quot; as &quot;[within]&quot;.
 </font></blockquote><p>
 <p>
+<p>Again, note that the slash indicates a choice between words only, not between entire phrases. For instance,
+<p>
+<blockquote><font color="#000080">Understand &quot;red bird/robin&quot; as &quot;[robin]&quot;.
+</font></blockquote><p>
+<p>
+<p>breaks down to understanding either &quot;red bird&quot; or &quot;red robin&quot;, not &quot;red bird&quot; or &quot;robin&quot;. By contrast,
+<p>
+<blockquote><font color="#000080">Understand &quot;red bird&quot; or &quot;robin&quot; as &quot;[robin]&quot;.
+</font></blockquote><p>
+<p>
+<p>will understand either &quot;red bird&quot; or &quot;robin&quot; but not &quot;red robin&quot;. If we want to capture all three forms, we might define
+<p>
+<blockquote><font color="#000080">Understand &quot;red bird/robin&quot; or &quot;robin&quot; as &quot;[robin]&quot;.
+</font></blockquote><p>
+<p>
+<p><hr><p>
+<a name="e111"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex111.html#e111 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>275</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex111.html#e111 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lies</font></b></a><br>Commands to allow the player to lie down in three different ways.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex111.html#e111 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc253.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc255.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

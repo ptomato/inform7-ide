@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.17. Random choices of things</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.12. Check rules for actions by other people</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,65 +19,79 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Candy" -->
-<!-- SEARCH SECTION "Ex 119" -->
-<!-- SEARCH SORT "Ex 008-017-119" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc125.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc127.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.17. Random choices of things</b></font></td></tr></table>
+<!-- SEARCH TITLE "Get Axe" -->
+<!-- SEARCH SECTION "Ex 191" -->
+<!-- SEARCH SORT "Ex 012-012-191" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc183.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc185.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.12. Check rules for actions by other people</b></font></td></tr></table>
 <p>
-<p>As well as choosing random values, we often want to make a random choice of things or rooms. Perhaps a character is to wander about at random; perhaps a falling block of masonry will crush some random item. The value
+<p>If we want to impose the restriction about carrying the camera on other people, we need a rule like the following:
 <p>
-<blockquote><font color="#000080">random D
-<br>a random D
+<blockquote><font color="#000080">Check someone photographing: if the person asked does not carry the camera, stop the action.
 </font></blockquote><p>
 <p>
-<p>(the article &quot;a&quot; is optional) produces a random choice of the things in the world which fit the description D. For instance,
+<p>Implicitly, that &quot;someone&quot; excludes the player. Note that we say nothing in this rule, stopping the action without a word: after all, Clark might well be out of sight when trying this. If he is within sight, then we read:
 <p>
-<blockquote><font color="#000080">say &quot;You can see [number of adjacent rooms] way[s] from here; how about [random adjacent room]?&quot;
+<blockquote><font color="#000080">>clark, photograph me
+<br>Clark Gable is unable to do that.
 </font></blockquote><p>
 <p>
-<p>Unexpected results may follow if there is nothing in the game which fits the description, as then the random choice will be nothing. For instance, the above would then say:
+<p>We saw before that Inform's built-in rules all have handy names (the &quot;can't drop what's already dropped rule&quot;, and such), and that these are useful when writing better &quot;unable to...&quot; messages. So for a deluxe version, we end up with:
 <p>
-<blockquote><font color="#000080">You can see 0 ways from here; how about nothing?
+<blockquote><font color="#000080">Check someone trying photographing (this is the other people can't photograph without the camera rule): if the person asked does not carry the camera, stop the action.
+</font></blockquote><p>
+<p>
+<p>And now, with ACTIONS on, we find that:
+<p>
+<blockquote><font color="#000080">>clark, photograph me
+<br>[asking Clark Gable to try photographing yourself]
+<br>[(1) Clark Gable photographing yourself]
+<br>[(1) Clark Gable photographing yourself - failed the other people can't photograph without the camera rule]
+<br>Clark Gable is unable to do that.
+<br>[asking Clark Gable to try photographing yourself - succeeded]
+</font></blockquote><p>
+<p>
+<p>which means that we could have, say,
+<p>
+<blockquote><font color="#000080">Unsuccessful attempt by Clark photographing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the other people can't photograph without the camera rule, say &quot;Clark is too suave to be embarrassed. 'Frankly, my dear, I don't have a camera.'&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Clark tries, and fails, to take a photograph.&quot;
 </font></blockquote><p>
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e306"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc126.html#e306 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>119</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc126.html#e306 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Candy</font></b></a><br>One of several identical candies chosen at the start of play to be poisonous.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex306.html#e306 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e306"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc184.html#e306 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>191</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc184.html#e306 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Get Axe</font></b></a><br>Changing the check rules to try automatically leaving a container before attempting to take it. (And arranging things so that other people will do likewise.)<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex306.html#e306 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to give the player a bag of candies, of which a random one is poisonous. We can pick which one should be poisoned at the start of play, like this:
+<p>We could now re-write the check rules so that any time someone (the player or someone else) tries to pick up a container which he is in, he will first get out:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode206(code) {
+function pasteCode281(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Candy"\n\nThe plural of piece of candy is pieces of candy. A piece of candy is a kind of thing. A piece of candy is always edible. Four pieces of candy are in the Halloween bag.\n\nToxicity is a kind of value. The toxicities are safe and poisonous. A piece of candy has a toxicity. A piece of candy is usually safe.\n\nThe Porch is a room. The player carries the Halloween bag.\n\nAfter eating a poisonous piece of candy:\n\tsay "Oh, that didn\'t taste right at all. Oh well!"\n\nWhen play begins:\n\tnow a random piece of candy is poisonous.\n\nTest me with "eat candy / g / g / g".\n');
+    myProject.pasteCode('"GET AXE"\n\nThis is the clever can\'t take what you\'re inside rule:\n\tif the person asked is in the noun, try the person asked exiting;\n\tif the person asked is in the noun, rule fails.\n\nProcedural rule: substitute the clever can\'t take what you\'re inside rule for the can\'t take what you\'re inside rule.\n\nAttic is a room. The unused coffin is in the Attic. The coffin is enterable and openable and open. Raskolnikov is a man in the coffin.\n\nPersuasion rule for asking Raskolnikov to try doing something: persuasion succeeds.\n\nTest me with "raskolnikov, get coffin".\n');
 }
 </script>
-<a href="javascript:pasteCode206()"><img border=0 src=../doc_images/paste.png></a> &quot;Candy&quot;
+<a href="javascript:pasteCode281()"><img border=0 src=../doc_images/paste.png></a> &quot;GET AXE&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The plural of piece of candy is pieces of candy. A piece of candy is a kind of thing. A piece of candy is always edible. Four pieces of candy are in the Halloween bag.
+<blockquote><font color="#000080">This is the clever can't take what you're inside rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is in the noun, try the person asked exiting;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is in the noun, rule fails.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Toxicity is a kind of value. The toxicities are safe and poisonous. A piece of candy has a toxicity. A piece of candy is usually safe.
+<blockquote><font color="#000080">Procedural rule: substitute the clever can't take what you're inside rule for the can't take what you're inside rule.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Porch is a room. The player carries the Halloween bag.
+<blockquote><font color="#000080">Attic is a room. The unused coffin is in the Attic. The coffin is enterable and openable and open. Raskolnikov is a man in the coffin.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After eating a poisonous piece of candy:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh, that didn't taste right at all. Oh well!&quot;
+<blockquote><font color="#000080">Persuasion rule for asking Raskolnikov to try doing something: persuasion succeeds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now a random piece of candy is poisonous.
+<blockquote><font color="#000080">Test me with &quot;raskolnikov, get coffin&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;eat candy / g / g / g&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc126.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc184.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e318"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex318.html#e318 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>120</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex318.html#e318 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Zork II</font></b></a><br>A "Carousel Room", as in Zork II, where moving in any direction from the room leads (at random) to one of the eight rooms nearby.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex318.html#e318 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc125.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc127.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e291"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex291.html#e291 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>192</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex291.html#e291 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Barter Barter</font></b></a><br>Allowing characters other than the player to give objects to one another, accounting for the possibility that some items may not be desired by the intended recipients.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex291.html#e291 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc183.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc185.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

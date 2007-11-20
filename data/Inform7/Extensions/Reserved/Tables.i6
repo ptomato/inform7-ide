@@ -17,7 +17,8 @@ Constant I7_COLUMN_TOPIC $2000;
 Constant I7_COLUMN_DONTSORTME $1000;
 Constant I7_COLUMN_NOBLANKBITS $0800;
 Constant I7_COLUMN_CANEXCHANGE $0400;
-Constant I7_COLUMN_NUMBER $03ff; ! Mask to remove upper bit flags
+Constant I7_COLUMN_ALLOCATED $0200;
+Constant I7_COLUMN_NUMBER $01ff; ! Mask to remove upper bit flags
 
 Constant COL_HSIZE 2; ! Column header size: two words (ID/flags, blank bits)
 
@@ -90,21 +91,41 @@ Array CheckTableEntryIsNonBlank_LU
 	rfalse;
 ];
 
-[ ForceTableEntryBlank tab col row i at;
+[ ForceTableEntryBlank tab col row i at oldv flags;
 	if (col >= 100) col=TableFindCol(tab, col);
 	if (col == 0) rtrue;
+	flags = (tab-->col)-->1;
+	oldv = (tab-->col)-->(row+COL_HSIZE);
+	!print "Force so: ", col, " ", row, " ", flags, " ", oldv, "^";
+	if ((flags & I7_COLUMN_ALLOCATED) &&
+		(oldv ~= 0 or I7_TABLE_NOVALUE)) {
+		I7_Blk_Free(oldv);
+	}
 	(tab-->col)-->(row+COL_HSIZE) = I7_TABLE_NOVALUE;
-	if (((tab-->col)-->1) & I7_COLUMN_NOBLANKBITS) return;
+	if (flags & I7_COLUMN_NOBLANKBITS) return;
 	row--;
 	at = ((tab-->col)-->2) + (row/8);
 	(I7_T_Blanks->at) 
 		= (I7_T_Blanks->at) | (CheckTableEntryIsBlank_LU->(row%8));
 ];
 
-[ ForceTableEntryNonBlank tab col row i at;
+[ ForceTableEntryNonBlank tab col row i at oldv flags tc kov j;
 	if (col >= 100) col=TableFindCol(tab, col);
 	if (col == 0) rtrue;
 	if (((tab-->col)-->1) & I7_COLUMN_NOBLANKBITS) return;
+	flags = (tab-->col)-->1;
+	oldv = (tab-->col)-->(row+COL_HSIZE);
+	!print "Force not: ", col, " ", row, " ", flags, " ", oldv, "^";
+	if ((flags & I7_COLUMN_ALLOCATED) &&
+		(oldv == 0 or I7_TABLE_NOVALUE)) {
+		kov = UNKNOWN_TY;
+		tc = ((tab-->col)-->1) & I7_COLUMN_NUMBER;
+		for (j=0: I7_TC_KOV-->j: j=j+2)
+			if (I7_TC_KOV-->j == tc)
+				kov = I7_TC_KOV-->(j+1);
+		if (kov ~= UNKNOWN_TY)
+			(tab-->col)-->(row+COL_HSIZE) = I7_Blk_Create(kov);
+	}
 	row--;
 	at = ((tab-->col)-->2) + (row/8);
 	!print "Force nonblank at = ", at, "^";
@@ -230,8 +251,8 @@ Array CheckTableEntryIsNonBlank_LU
 	for (i=1+COL_HSIZE:i<=j:i++)
 		if (cola2-->i == lookup_value) {
 		    if (write_flag) {
-		    	cola1-->i = write_value;
 		    	ForceTableEntryNonBlank(tab,col1,i-COL_HSIZE);
+		    	cola1-->i = write_value;
 		    	rfalse;
 		    }
 			v = cola1-->i;
@@ -269,15 +290,17 @@ Array CheckTableEntryIsNonBlank_LU
 		return RunTimeProblem(RTP_TABLE_NOROW, tab, index);
 	if (write_flag) {
 		switch(write_flag) {
-			1: (tab-->col)-->(index+COL_HSIZE) = write_value;
-				ForceTableEntryNonBlank(tab,col,index);
-			2: (tab-->col)-->(index+COL_HSIZE) =
+			1:	ForceTableEntryNonBlank(tab,col,index);
+				(tab-->col)-->(index+COL_HSIZE) = write_value;
+			2:	ForceTableEntryNonBlank(tab,col,index);
+				(tab-->col)-->(index+COL_HSIZE) =
 					((tab-->col)-->(index+COL_HSIZE)) + write_value;
-				ForceTableEntryNonBlank(tab,col,index);
-			3: (tab-->col)-->(index+COL_HSIZE) =
+			3:	ForceTableEntryNonBlank(tab,col,index);
+				(tab-->col)-->(index+COL_HSIZE) =
 					((tab-->col)-->(index+COL_HSIZE)) - write_value;
-				ForceTableEntryNonBlank(tab,col,index);
-			4: ForceTableEntryBlank(tab,col,index);
+			4:	ForceTableEntryBlank(tab,col,index);
+			5:	ForceTableEntryNonBlank(tab,col,index);
+				return ((tab-->col)-->(index+COL_HSIZE));
 		}
 		rfalse;
 	}
@@ -561,7 +584,7 @@ Array CheckTableEntryIsNonBlank_LU
 	}
 ];
 
-[ TablePrint tab i j k row col v;
+[ TablePrint tab i j k row col v tc kov;
 	for (i=1:i<=tab-->0:i++) {
 		j = tab-->i; ! Address of column table
 		if (((j-->1) & I7_COLUMN_CANEXCHANGE) == 0)
@@ -572,10 +595,18 @@ Array CheckTableEntryIsNonBlank_LU
 	print "! ", (PrintTableName) tab, " (", k, ")^";
 	for (row=1:row<=k:row++) {
 		for (col=1:col<=tab-->0:col++) {
+			tc = ((tab-->col)-->1) & I7_COLUMN_NUMBER;
+			kov = NUMBER_TY;
+			for (i=0: I7_TC_KOV-->i: i=i+2)
+				if (I7_TC_KOV-->i == tc)
+					kov = I7_TC_KOV-->(i+1);
 			v = (tab-->col)-->(row+COL_HSIZE);
 			if ((v == I7_TABLE_NOVALUE) && (CheckTableEntryIsBlank(tab,col,row)))
 				print "-- ";
-			else print v, " ";
+			else {
+				if (I7_Blk_Write_File_Form(v, kov) == false) print v;
+				print " ";
+			}
 		}
 		print "^";
 	}
@@ -583,7 +614,7 @@ Array CheckTableEntryIsNonBlank_LU
 ];
 
 #ifdef TARGET_GLULX;
-[ TableRead tab auxf row maxrow col ch v sgn dg j;
+[ TableRead tab auxf row maxrow col ch v sgn dg j tc kov;
 	for (col=1:col<=tab-->0:col++) {
 		j = tab-->col; ! Address of column table
 		if (((j-->1) & I7_COLUMN_CANEXCHANGE) == 0)
@@ -604,6 +635,12 @@ Array CheckTableEntryIsNonBlank_LU
 		for (col=1: col<=tab-->0: col++) {
 			if (ch == -1) { row++; jump NoMore; }
 			if (ch == 10 or 13) break;
+			tc = ((tab-->col)-->1) & I7_COLUMN_NUMBER;
+			kov = NUMBER_TY;
+			for (j=0: I7_TC_KOV-->j: j=j+2)
+				if (I7_TC_KOV-->j == tc)
+					kov = I7_TC_KOV-->(j+1);
+			!print "tc = ", tc, " kov = ", kov, "^";
 			sgn = 1;
 			if (ch == '-') {
 				ch = I7_FileIO_GetC(auxf);
@@ -611,18 +648,32 @@ Array CheckTableEntryIsNonBlank_LU
 				if (ch == '-') { ch = I7_FileIO_GetC(auxf); jump EntryDone; }
 				sgn = -1;
 			}
-			dg = ch - '0';
-			if ((dg < 0) || (dg > 9)) jump NotTable;
-			v = dg;
-			for (::) {
-				ch = I7_FileIO_GetC(auxf);
+			if (((tab-->col)-->1) & I7_COLUMN_ALLOCATED)
+				ForceTableEntryNonBlank(tab, col, row);
+			!print "A";
+			v = I7_Blk_Read_File_Form(0, 0, -1, kov);
+			if (v) {
+				if (((tab-->col)-->1) & I7_COLUMN_ALLOCATED)
+					v = I7_Blk_Read_File_Form(TableLookUpEntry(tab, col, row),
+						auxf, ch, kov);
+				else
+					v = I7_Blk_Read_File_Form(0, auxf, ch, kov);
+				ch = 32;
+			} else {
 				dg = ch - '0';
-				if ((dg < 0) || (dg > 9)) break;
-				v = 10*v + dg;
+				if ((dg < 0) || (dg > 9)) jump NotTable;
+				v = dg;
+				for (::) {
+					ch = I7_FileIO_GetC(auxf);
+					dg = ch - '0';
+					if ((dg < 0) || (dg > 9)) break;
+					v = 10*v + dg;
+				}
+				v = v*sgn;
 			}
-			v = v*sgn;
 			!print "v=", v, " ";
-			TableLookUpEntry(tab, col, row, true, v);
+			if (((tab-->col)-->1) & I7_COLUMN_ALLOCATED == 0)
+				TableLookUpEntry(tab, col, row, true, v);
 			.EntryDone;
 			!print "First nd is ", ch, "^";
 			while (ch == 9 or 32) ch = I7_FileIO_GetC(auxf);

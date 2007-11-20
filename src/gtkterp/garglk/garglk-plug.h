@@ -48,6 +48,7 @@ gboolean garglk_set_interactive(GarglkPlug *plug, gboolean interactive, GError *
 gboolean garglk_set_protected(GarglkPlug *plug, gboolean protect, GError **error);
 gboolean garglk_feed_text(GarglkPlug *plug, gchar *text, GError **error);
 gboolean garglk_request_window(GarglkPlug *plug, guint *windowid, GError **error);
+gboolean garglk_set_minimum_size(GarglkPlug *plug, guint x, guint y, GError **error);
 gboolean garglk_grab_focus(GarglkPlug *plug, GError **error);
 gboolean garglk_stop(GarglkPlug *plug, GError **error);
 

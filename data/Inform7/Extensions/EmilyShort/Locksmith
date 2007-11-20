@@ -1,4 +1,4 @@
-Version 3 of Locksmith by Emily Short begins here.
+Version 4 of Locksmith by Emily Short begins here.
 
 "Implicit handling of doors and containers so that lock manipulation is automatic if the player has the necessary keys."
 
@@ -82,14 +82,17 @@ This is the need a matching key rule:
 				change the second noun to the item;
 				abide by the must have accessible the second noun rule;
 			otherwise;
-				if the player is the person asked, say "You lack a key that fits [the noun].";
+				if the player is the person asked, say "[key-refusal for noun]";
 				stop the action;
 			end if;
 		end if;
 	otherwise;
-		if the player is the person asked, say "You lack a key that fits [the noun].";
+		if the player is the person asked, say "[key-refusal for noun]";
 		stop the action;
 	end if.
+
+To say key-refusal for (locked-thing - an object):
+	say "You lack a key that fits [the locked-thing]."
 
 Definition: a thing is key-accessible:
 	if the person asked carries it, yes;
@@ -341,7 +344,15 @@ Locksmith adds implicit handling of doors and containers so that lock manipulati
 
 First, Locksmith will try opening all doors the player tries to pass through; try closing all lockables before locking them; and try unlocking all locked items before opening them. Other characters will follow the same rules. 
 
-By default, these actions are described as other automatic actions usually are in Inform: the player sees something like "(first unlocking...)" before he opens the door. The "Use sequential action" mode is provided for the case where we would prefer to see "You unlock the door." instead.
+By default, these actions are described as other automatic actions usually are in Inform: the player sees something like "(first unlocking...)" before he opens the door. The "Use sequential action" mode is provided for the case where we would prefer to see "You unlock the door." instead. 
+
+If the player tries to open a door but does not have the right key, he receives a key-refusal message, such as "You lack a key that fits the red chest." We can override this by writing other "to say key-refusal for..." phrases, like this:
+
+	To say key-refusal for (locked-thing - a container):
+		say "You will be unable to see the contents of [the locked-thing] until you find the appropriate key."
+
+	To say key-refusal for (locked-thing - the red chest):
+		say "The red chest resists all your attempts because you do not have the magic orb."
 
 Second, Locksmith tries to provide an intelligent default if no key is specified, so that >LOCK DOOR will work if the player is holding the correct key. 
 

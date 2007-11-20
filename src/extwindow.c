@@ -23,6 +23,7 @@
 #include "interface.h"
 #include "support.h"
 
+#include "appmenu.h"
 #include "appwindow.h"
 #include "configfile.h"
 #include "error.h"
@@ -72,7 +73,7 @@ void
 on_xclose_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    struct extension *ext = get_ext(GTK_WIDGET(menuitem));
+    Extension *ext = get_ext(GTK_WIDGET(menuitem));
 
     /* If this was the last window open, ask if we really want to quit */
     if(verify_save_ext(GTK_WIDGET(menuitem))) {
@@ -97,7 +98,7 @@ void
 on_xsave_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    struct extension *ext = get_ext(GTK_WIDGET(menuitem));
+    Extension *ext = get_ext(GTK_WIDGET(menuitem));
 
     if(ext->filename == NULL)
         on_xsave_as_activate(menuitem, user_data);
@@ -110,7 +111,7 @@ void
 on_xsave_as_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    struct extension *ext = get_ext(GTK_WIDGET(menuitem));
+    Extension *ext = get_ext(GTK_WIDGET(menuitem));
         
     /* Create a file chooser for saving the extension */
     GtkWidget *dialog = gtk_file_chooser_dialog_new ("Save File",
@@ -144,7 +145,7 @@ void
 on_xrevert_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    struct extension *ext = get_ext(GTK_WIDGET(menuitem));
+    Extension *ext = get_ext(GTK_WIDGET(menuitem));
     
     if(ext->filename == NULL)
         return; /* No saved version to revert to */        
@@ -180,7 +181,7 @@ void
 on_xundo_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    struct extension *ext = get_ext(GTK_WIDGET(menuitem));
+    Extension *ext = get_ext(GTK_WIDGET(menuitem));
 
     if(gtk_source_buffer_can_undo(ext->buffer))
         gtk_source_buffer_undo(ext->buffer);
@@ -191,7 +192,7 @@ void
 on_xredo_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    struct extension *ext = get_ext(GTK_WIDGET(menuitem));
+    Extension *ext = get_ext(GTK_WIDGET(menuitem));
 
     if(gtk_source_buffer_can_redo(ext->buffer))
         gtk_source_buffer_redo(ext->buffer);
@@ -309,7 +310,7 @@ on_ext_window_delete_event             (GtkWidget       *widget,
                                         gpointer         user_data)
 {
     if(verify_save_ext(widget)) {
-        struct extension *ext = get_ext(GTK_WIDGET(widget));
+        Extension *ext = get_ext(GTK_WIDGET(widget));
 
         if(get_num_app_windows() == 1) {
             GtkWidget *dialog = gtk_message_dialog_new(NULL, 0,
@@ -339,7 +340,7 @@ void
 on_ext_window_destroy                  (GtkObject       *object,
                                         gpointer         user_data)
 {
-    struct extension *ext = get_ext(GTK_WIDGET(object));
+    Extension *ext = get_ext(GTK_WIDGET(object));
     if(ext == NULL)
         return;
     
@@ -373,7 +374,7 @@ on_ext_window_destroy                  (GtkObject       *object,
 
 /* Scroll to the requested line number. */
 void jump_to_line_ext(GtkWidget *widget, gint line) {
-    struct extension *ext = get_ext(widget);
+    Extension *ext = get_ext(widget);
     GtkTextIter cursor, line_end;
         
     gtk_text_buffer_get_iter_at_line(GTK_TEXT_BUFFER(ext->buffer), &cursor,

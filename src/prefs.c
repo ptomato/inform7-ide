@@ -953,43 +953,7 @@ void update_style(GtkSourceView *thiswidget) {
 
 /* Change the font that this widget uses */
 void update_font(GtkWidget *thiswidget) {
-    PangoFontDescription *font = pango_font_description_new();
-    gchar *customfont;
-    
-    int setting = config_file_get_int("Fonts", "FontSet");
-    switch(setting) {
-        case FONT_SET_PROGRAMMER:
-            pango_font_description_set_family(font, "DejaVu Sans Mono,"
-              "DejaVu Sans LGC Mono,Bitstream Vera Sans Mono,Courier New,"
-              "Luxi Mono,Monospace");
-            break;
-        case FONT_SET_CUSTOM:
-            customfont = config_file_get_string("Fonts", "CustomFont");
-            pango_font_description_set_family(font, customfont);
-            g_free(customfont);
-            break;
-        case FONT_SET_STANDARD:
-        default:
-            pango_font_description_set_family(font, "DejaVu Sans,"
-              "DejaVu LGC Sans,Bitstream Vera Sans,Arial,Luxi Sans,Sans");
-    }
-    
-    int size = config_file_get_int("Fonts", "FontSize");
-    switch(size) {
-        case FONT_SIZE_MEDIUM:
-            pango_font_description_set_size(font, SIZE_MEDIUM * PANGO_SCALE);
-            break;
-        case FONT_SIZE_LARGE:
-            pango_font_description_set_size(font, SIZE_LARGE * PANGO_SCALE);
-            break;
-        case FONT_SIZE_HUGE:
-            pango_font_description_set_size(font, SIZE_HUGE * PANGO_SCALE);
-            break;
-        case FONT_SIZE_STANDARD:
-        default:
-            pango_font_description_set_size(font, SIZE_STANDARD * PANGO_SCALE);
-    }
-    
+    PangoFontDescription *font = get_font_description();
     gtk_widget_modify_font(thiswidget, font);
     pango_font_description_free(font);
 }
@@ -997,23 +961,7 @@ void update_font(GtkWidget *thiswidget) {
 /* Change only the font size but not the face that this widget uses */
 void update_font_size(GtkWidget *thiswidget) {
     PangoFontDescription *font = pango_font_description_new();
-
-    int size = config_file_get_int("Fonts", "FontSize");
-    switch(size) {
-        case FONT_SIZE_MEDIUM:
-            pango_font_description_set_size(font, SIZE_MEDIUM * PANGO_SCALE);
-            break;
-        case FONT_SIZE_LARGE:
-            pango_font_description_set_size(font, SIZE_LARGE * PANGO_SCALE);
-            break;
-        case FONT_SIZE_HUGE:
-            pango_font_description_set_size(font, SIZE_HUGE * PANGO_SCALE);
-            break;
-        case FONT_SIZE_STANDARD:
-        default:
-            pango_font_description_set_size(font, SIZE_STANDARD * PANGO_SCALE);
-    }
-    
+    pango_font_description_set_size(font, get_font_size() * PANGO_SCALE);
     gtk_widget_modify_font(thiswidget, font);
     pango_font_description_free(font);
 }
@@ -1024,4 +972,53 @@ void update_tabs(GtkSourceView *thiswidget) {
     if(spaces == 0)
         spaces = 8; /* default is 8 */
     gtk_source_view_set_tabs_width(thiswidget, spaces);
+}
+/* Return a string of font families for the font setting. String must be freed*/
+gchar *
+get_font_family(void)
+{
+    gchar *customfont;
+    switch(config_file_get_int("Fonts", "FontSet")) {
+        case FONT_SET_PROGRAMMER:
+            return g_strdup("DejaVu Sans Mono,DejaVu Sans LGC Mono,"
+              "Bitstream Vera Sans Mono,Courier New,Luxi Mono,Monospace");
+        case FONT_SET_CUSTOM:
+            customfont = config_file_get_string("Fonts", "CustomFont");
+            if(customfont)
+                return customfont;
+        default:
+            ;
+    }
+    return g_strdup("DejaVu Sans,DejaVu LGC Sans,Bitstream Vera Sans,Arial,"
+                    "Luxi Sans,Sans");
+}
+
+/* Return the font size in points for the font size setting */
+int
+get_font_size(void)
+{
+    switch(config_file_get_int("Fonts", "FontSize")) {
+        case FONT_SIZE_MEDIUM:
+            return SIZE_MEDIUM;
+        case FONT_SIZE_LARGE:
+            return SIZE_LARGE;
+        case FONT_SIZE_HUGE:
+            return SIZE_HUGE;
+        default:
+            ;
+    }
+    return SIZE_STANDARD;
+}
+
+/* Get the current font as a PangoFontDescription.
+Must be freed with pango_font_description_free. */
+PangoFontDescription *
+get_font_description(void)
+{
+    PangoFontDescription *font = pango_font_description_new();
+    gchar *fontfamily = get_font_family();
+    pango_font_description_set_family(font, fontfamily);
+    g_free(fontfamily);
+    pango_font_description_set_size(font, get_font_size() * PANGO_SCALE);
+    return font;
 }

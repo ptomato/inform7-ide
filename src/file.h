@@ -30,12 +30,12 @@
 
 gboolean verify_save(GtkWidget *thiswidget);
 void save_project(GtkWidget *thiswidget, gchar *directory);
-struct story *open_project(gchar *directory);
+Story *open_project(gchar *directory);
 gboolean verify_save_ext(GtkWidget *thiswidget);
-struct extension *open_extension(gchar *filename);
+Extension *open_extension(gchar *filename);
 void save_extension(GtkWidget *thiswidget);
 void install_extension(const gchar *filename);
 void delete_extension(gchar *author, gchar *extname);
-void delete_build_files(struct story *thestory);
+void delete_build_files(Story *thestory);
 
 #endif

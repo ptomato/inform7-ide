@@ -23,6 +23,6 @@
 #include "story.h"
 
 /*void blank_index_tabs(GtkWidget *thiswidget);*/
-void reload_index_tabs(struct story *thestory, gboolean wait);
+void reload_index_tabs(Story *thestory, gboolean wait);
 
 #endif

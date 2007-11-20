@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.13. Relations involving values</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.13. Locks and keys</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,102 +19,113 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Meet Market" -->
-<!-- SEARCH SECTION "Ex 211" -->
-<!-- SEARCH SORT "Ex 013-013-211" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc204.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc206.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.13. Relations involving values</b></font></td></tr></table>
+<!-- SEARCH TITLE "Neighborhood Watch" -->
+<!-- SEARCH SECTION "Ex 23" -->
+<!-- SEARCH SORT "Ex 003-013-023" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc38.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc40.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.13. Locks and keys</b></font></td></tr></table>
 <p>
-<p>Most of the openly declared relations in Inform are between things - people, for instance, or rooms - but beneath the surface, many relations also apply to values. For instance,
+<p>It seems unwise for a door in Notting Hill to be unlocked, so:
 <p>
-<blockquote><font color="#000080">if the turn count is less than 100, ...
+<blockquote><font color="#000080">The blue door is lockable and locked. The matching key of the blue door is the brass Yale key.
 </font></blockquote><p>
 <p>
-<p>involves a relation between two numbers expressed by the verb &quot;to be less than&quot;. These can also be created easily, provided we are willing to supply a definition. For instance:
+<p>Since the second sentence here is a little clumsy, we can equivalently say
 <p>
-<blockquote><font color="#000080">Material is a kind of value. The materials are wood and metal. A thing has a material.
+<blockquote><font color="#000080">The brass Yale key unlocks the blue door.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Materiality relates a thing (called X) to a material (called Y) when Y is the material of X. The verb to be made of implies the materiality relation.
+<p>Yet a third way to say this is:
+<p>
+<blockquote><font color="#000080">The blue door has matching key the brass Yale key.
 </font></blockquote><p>
 <p>
-<p>Of course, this does no more than to wrap up a property in the language of relations, but that does give us the elegant wording
+<p>This introduces three new properties: a door can be locked or unlocked; lockable or not lockable; and it can have a matching key, which must be another thing. The same thing can be the matching key of many different locks: and note that a door can be locked and even lockable without having a matching key at all, in which case the player trying to open it will be permanently out of luck. Doors are ordinarily unlocked, not lockable, and without a matching key.
 <p>
-<blockquote><font color="#000080">if the cube is made of wood, ...
-<br>say &quot;The carpenter looks at [the list of things which are made of wood].&quot;;
-</font></blockquote><p>
-<p>
-<p>as an alternative to:
-<p>
-<blockquote><font color="#000080">if the cube is wood, ...
-<br>say &quot;The carpenter looks at [the list of things which are wood].&quot;;
-</font></blockquote><p>
-<p>
-<p>By writing a more interesting definition, we get a more interesting relation as a result, of course. Here is a mathematical one:
-<p>
-<blockquote><font color="#000080">Divisibility relates a number (called N) to a number (called M) when remainder after dividing M by N is 0. The verb to divide (it divides, they divide, it divided, it is divisible) implies the divisibility relation. The verb to be a factor of implies the divisibility relation.
-</font></blockquote><p>
-<p>
-<p>We now find that &quot;2 divides 12&quot;, &quot;5 is not a factor of 12&quot; and &quot;12 is divisible by 3&quot; are all true. Again, we are only really gaining a nice form of words, but improving the clarity of the source text is never a bad thing.
+<p>Containers can also have locks, in exactly the same way, and are allowed to have the same properties. On the other hand supporters never have locks: it makes no sense to be able to lock a tabletop, for instance, and Inform will not allow any discussion of the matching key of a supporter, or of a supporter being locked or unlocked.
 <p>
 <p><hr><p>
+<a name="e309"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex309.html#e309 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>22</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex309.html#e309 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Disenchantment Bay 6</font></b></a><br>Disenchantment Bay: locking up the charter boat's fishing rods.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex309.html#e309 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e210"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc205.html#e210 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>211</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc205.html#e210 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Meet Market</font></b></a><br>A case in which relations give characters multiple values of the same kind.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex210.html#e210 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e210"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc39.html#e210 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>23</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc39.html#e210 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Neighborhood Watch</font></b></a><br>A locked door that can be locked or unlocked without a key from one side, but not from the other.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex210.html#e210 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>We have already seen that we can give things value properties -- a lamp has a brightness, for instance. Relations give us additional flexibility: since we may relate various things to various values, it is possible to describe a thing as having more than one value at the same time.
-<p>
-<p>To demonstrate:
+<p>Suppose we want a locked door that can be opened with a key, but is also openable by hand without a key from one side only. We start by defining an ordinary lockable door and the key that controls it:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode297(code) {
+function pasteCode102(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Meet Market" by "K M and Eric Rossing"\n\nFeature is a kind of value.  The features are snub-nosed, gangly, comely, bright-eyed, and sulky.\n\nAppearance relates various persons to various features.  The verb to appear (she appears, they appear) implies the appearance relation.\n\nMeet Market is a room.\n\nBob, Carol, Ted, and Alice are people in the Meet Market.\n\nBob appears snub-nosed and gangly.\n\nTed appears sulky and snub-nosed.\n\nCarol appears comely and bright-eyed.\n\nAlice appears bright-eyed and comely.\n\nYourself appears sulky and gangly.\n\nInstead of looking:\n\tsay "The snub-nosed ones: [list of people who appear snub-nosed][line break]";\n\tsay "The gangly ones: [list of people who appear gangly][line break]";\n\tsay "The comely ones: [list of people who appear comely][line break]";\n\tsay "The bright-eyed ones: [list of people who appear bright-eyed][line break]";\n\tsay "The sulky ones: [list of people who appear sulky][paragraph break]".\n\nTest me with "look".\n\n');
+    myProject.pasteCode('"Neighborhood Watch"\n\nThe shabby door is a door. It is outside from the Studio Apartment and inside from the Rickety Stairwell. The shabby door is locked.\n\nThe brass key is carried by the player. It unlocks the shabby door.\n\n[The next part is going to require that we modify the normal operation of the "lock" command. "Lock" ordinarily requires that the player supply two objects: a thing he wants to unlock, and the key he wants to use on it. The full command is LOCK DOOR WITH THE KEY, and Inform will not accept simply LOCK DOOR as locking.]\n\n[Therefore, we\'re going to need to create our own new variant on the lock verb (and the unlock verb, while we\'re at it). The full procedure for this is laid out in the chapters on Action and Understanding, but here is an example:]\n\nUnderstand "lock [something]" as locking keylessly. Locking keylessly is an action applying to one thing.\n\n[Here we\'ve created a new action -- locking something without a key -- and we\'ve told Inform to understand LOCK DOOR as this action, rather than an incomplete command to LOCK DOOR WITH SOMETHING.]\n\n[Now we add some instructions so that the game will not let us use this keyless unlocking command unless we\'re in the right place or are properly equipped:]\n\nCheck locking keylessly:\n\tif the noun is not a door, say "[The noun] is not something you can lock." instead;\n\tif the noun is locked, say "[The noun] is already locked." instead;\n\tif the player carries the brass key and the player is in the Stairwell, try locking the noun with the brass key instead;\n\tif the player is in the Stairwell, say "You can\'t lock the door from this side without the key." instead.\n\n[This check rule is performed before the keyless locking action succeeds. The first thing we do is try to use the key if the player is outside and has the key: this way, LOCK DOOR will turn automatically into LOCK DOOR WITH THE KEY, under circumstances where that is both possible and necessary.]\n\n[The second thing is to check whether the player is outside but keyless, and, if so stop the action from being performed successfully. Here we print a failure message followed by the word "instead", which tells Inform that we\'ve substituted some other outcome for the usual performance of the action.]\n\n[Now we\'re reasonably sure that the player is only locking keylessly in the case that he is inside the Studio. (We might have to do a more thorough check for this if there were more than two rooms, but as it is, the player can only be in the Stairwell or in the Studio, so if we have ruled out the Stairwell, we are safe.) So now we want to add what happens when locking-without-a-key command succeeds:]\n\nCarry out locking keylessly:\n\tnow the noun is locked.\n\n[That\'s it. We\'ve just told Inform to make the door be locked. "Now..." syntax will be explained more thoroughly in the chapter on change. But we still haven\'t described to the player what just happened, so let\'s provide a description of that, too:]\n\nReport locking keylessly:\n\tsay "You flip over the deadbolt to lock [the noun]."\n\n[And now we have to do a similar set of things for unlocking:]\n\nUnderstand "unlock [something]" as unlocking keylessly. Unlocking keylessly is an action applying to one thing.\n\nCheck unlocking keylessly:\n\tif the noun is not a door, say "[The noun] is not something you can lock." instead;\n\tif the noun is unlocked, say "[The noun] is already unlocked." instead;\n\tif the player carries the brass key and the player is in the Stairwell, try unlocking the noun with the brass key instead;\n\tif the player is in the Stairwell, say "You can\'t unlock the door from this side without the key." instead.\n\nCarry out unlocking keylessly:\n\tnow the noun is unlocked.\n\nReport unlocking keylessly:\n\tsay "You flip over the deadbolt to unlock [the noun]."\n\nTest me with "unlock door / drop key / open door / out / close door / lock door / open door / in / get key / out / close door / lock door / unlock door".\n\n');
 }
 </script>
-<a href="javascript:pasteCode297()"><img border=0 src=../doc_images/paste.png></a> &quot;Meet Market&quot; by &quot;K M and Eric Rossing&quot;
+<a href="javascript:pasteCode102()"><img border=0 src=../doc_images/paste.png></a> &quot;Neighborhood Watch&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Feature is a kind of value.  The features are snub-nosed, gangly, comely, bright-eyed, and sulky.
+<blockquote><font color="#000080">The shabby door is a door. It is outside from the Studio Apartment and inside from the Rickety Stairwell. The shabby door is locked.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Appearance relates various persons to various features.  The verb to appear (she appears, they appear) implies the appearance relation.
+<blockquote><font color="#000080">The brass key is carried by the player. It unlocks the shabby door.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Meet Market is a room.
+<p>The next part is going to require that we modify the normal operation of the &quot;lock&quot; command. &quot;Lock&quot; ordinarily requires that the player supply two objects: a thing he wants to unlock, and the key he wants to use on it. The full command is LOCK DOOR WITH THE KEY, and Inform will not accept simply LOCK DOOR as locking.
+<p>
+<p>Therefore, we're going to need to create our own new variant on the lock verb (and the unlock verb, while we're at it). The full procedure for this is laid out in the chapters on Action and Understanding, but here is an example:
+<p>
+<blockquote><font color="#000080">Understand &quot;lock [something]&quot; as locking keylessly. Locking keylessly is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Bob, Carol, Ted, and Alice are people in the Meet Market.
+<p>Here we've created a new action -- locking something without a key -- and we've told Inform to understand LOCK DOOR as this action, rather than an incomplete command to LOCK DOOR WITH SOMETHING.
+<p>
+<p>Now we add some instructions so that the game will not let us use this keyless unlocking command unless we're in the right place or are properly equipped:
+<p>
+<blockquote><font color="#000080">Check locking keylessly:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a door, say &quot;[The noun] is not something you can lock.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is locked, say &quot;[The noun] is already locked.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries the brass key and the player is in the Stairwell, try locking the noun with the brass key instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Stairwell, say &quot;You can't lock the door from this side without the key.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Bob appears snub-nosed and gangly.
+<p>This check rule is performed before the keyless locking action succeeds. The first thing we do is try to use the key if the player is outside and has the key: this way, LOCK DOOR will turn automatically into LOCK DOOR WITH THE KEY, under circumstances where that is both possible and necessary.
+<p>
+<p>The second thing is to check whether the player is outside but keyless, and, if so stop the action from being performed successfully. Here we print a failure message followed by the word &quot;instead&quot;, which tells Inform that we've substituted some other outcome for the usual performance of the action.
+<p>
+<p>Now we're reasonably sure that the player is only locking keylessly in the case that he is inside the Studio. (We might have to do a more thorough check for this if there were more than two rooms, but as it is, the player can only be in the Stairwell or in the Studio, so if we have ruled out the Stairwell, we are safe.) So now we want to add what happens when locking-without-a-key command succeeds:
+<p>
+<blockquote><font color="#000080">Carry out locking keylessly:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is locked.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Ted appears sulky and snub-nosed.
+<p>That's it. We've just told Inform to make the door be locked. &quot;Now...&quot; syntax will be explained more thoroughly in the chapter on change. But we still haven't described to the player what just happened, so let's provide a description of that, too:
+<p>
+<blockquote><font color="#000080">Report locking keylessly:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You flip over the deadbolt to lock [the noun].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carol appears comely and bright-eyed.
+<p>And now we have to do a similar set of things for unlocking:
+<p>
+<blockquote><font color="#000080">Understand &quot;unlock [something]&quot; as unlocking keylessly. Unlocking keylessly is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Alice appears bright-eyed and comely.
+<blockquote><font color="#000080">Check unlocking keylessly:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a door, say &quot;[The noun] is not something you can lock.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is unlocked, say &quot;[The noun] is already unlocked.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries the brass key and the player is in the Stairwell, try unlocking the noun with the brass key instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Stairwell, say &quot;You can't unlock the door from this side without the key.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Yourself appears sulky and gangly.
+<blockquote><font color="#000080">Carry out unlocking keylessly:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is unlocked.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of looking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The snub-nosed ones: [list of people who appear snub-nosed][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The gangly ones: [list of people who appear gangly][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The comely ones: [list of people who appear comely][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The bright-eyed ones: [list of people who appear bright-eyed][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The sulky ones: [list of people who appear sulky][paragraph break]&quot;.
+<blockquote><font color="#000080">Report unlocking keylessly:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You flip over the deadbolt to unlock [the noun].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look&quot;.
+<blockquote><font color="#000080">Test me with &quot;unlock door / drop key / open door / out / close door / lock door / open door / in / get key / out / close door / lock door / unlock door&quot;.
 </font></blockquote><p>
 <p>
-<p>The same logic might be used to provide characters who have complex mood states: a person might be angry and sad, not merely one or the other -- feelings being what they are.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc205.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Some (but not all) of this work is done for you if you like by the Locksmith extension. If you prefer, you can include that extension, then follow the documentation in order to implement the remainder of the scenario. Locksmith takes care of implementing the additional locking and unlocking actions, and provides some other conveniences.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc39.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc204.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc206.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc38.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc40.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

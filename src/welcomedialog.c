@@ -49,10 +49,13 @@ after_welcome_dialog_realize           (GtkWidget       *widget,
 {
     /* Set the background pixmap for this window */
     GtkRcStyle *newstyle = gtk_widget_get_modifier_style(widget);
+    gchar *filename = g_build_filename("gnome-inform7",
+                                       "welcome-background.png", NULL);
     newstyle->bg_pixmap_name[GTK_STATE_NORMAL] =
       gnome_program_locate_file(gnome_program_get(),
-      GNOME_FILE_DOMAIN_APP_PIXMAP, "gnome-inform7/welcome-background.png",
+      GNOME_FILE_DOMAIN_APP_PIXMAP, filename,
       TRUE, NULL);
+    g_free(filename);
     gtk_widget_modify_style(widget, newstyle);
     
     /* Set the font size to 14 pixels for the widgets in this window */
@@ -113,7 +116,7 @@ void
 on_welcome_open_button_clicked         (GtkButton       *button,
                                         gpointer         user_data)
 {
-    struct story *thestory;
+    Story *thestory;
 
     gtk_widget_hide(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 
@@ -204,7 +207,7 @@ on_welcome_reopen_button_clicked       (GtkButton       *button,
     /* Hide the welcome dialog when opening the new story */
     gtk_widget_hide(gtk_widget_get_toplevel(GTK_WIDGET(button)));
     
-    struct story *thestory;
+    Story *thestory;
     thestory = open_project(projectdir);
     g_free(projectdir);
     

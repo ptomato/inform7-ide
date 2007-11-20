@@ -24,6 +24,6 @@
 #include "story.h"
 
 void run_census(gboolean wait);
-void compile_project(struct story *thestory);
+void compile_project(Story *thestory);
 
 #endif

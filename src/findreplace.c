@@ -220,10 +220,10 @@ on_find_close_clicked                  (GtkButton       *button,
   started from an Inform 7 project */
 void
 on_find_next_clicked                   (GtkButton       *button,
-                                        gpointer         user_data)
+                                        Story           *thestory)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
-    find(GTK_TEXT_BUFFER(((struct story *)user_data)->buffer),
+    find(GTK_TEXT_BUFFER(thestory->buffer),
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget, "find_text"))),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
       "find_ignore_case"))),
@@ -234,21 +234,19 @@ on_find_next_clicked                   (GtkButton       *button,
       "find_algorithm"))));
       /* Do not free or modify the strings from gtk_entry_get_text */
     scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(((struct story *)user_data)->window,
-      "source_l")));
+      GTK_TEXT_VIEW(lookup_widget(thestory->window, "source_l")));
     scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(((struct story *)user_data)->window,
-      "source_r")));
+      GTK_TEXT_VIEW(lookup_widget(thestory->window, "source_r")));
 }
 
 /* Callback for when "Find Next" is clicked from a Find dialog that was
   started from an extension */
 void
 on_xfind_next_clicked                   (GtkButton       *button,
-                                        gpointer         user_data)
+                                         Extension       *ext)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
-    find(GTK_TEXT_BUFFER(((struct extension *)user_data)->buffer),
+    find(GTK_TEXT_BUFFER(ext->buffer),
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget, "find_text"))),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
       "find_ignore_case"))),
@@ -259,8 +257,7 @@ on_xfind_next_clicked                   (GtkButton       *button,
       "find_algorithm"))));
       /* Do not free or modify the strings from gtk_entry_get_text */
     scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(((struct extension *)user_data)->window,
-      "ext_code")));
+      GTK_TEXT_VIEW(lookup_widget(ext->window, "ext_code")));
 }
 
 
@@ -268,10 +265,10 @@ on_xfind_next_clicked                   (GtkButton       *button,
   started from an Inform 7 project */
 void
 on_find_previous_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
+                                        Story           *thestory)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
-    find(GTK_TEXT_BUFFER(((struct story *)user_data)->buffer),
+    find(GTK_TEXT_BUFFER(thestory->buffer),
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget, "find_text"))),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
       "find_ignore_case"))),
@@ -282,21 +279,19 @@ on_find_previous_clicked               (GtkButton       *button,
       "find_algorithm"))));
       /* Do not free or modify the strings from gtk_entry_get_text */
     scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(((struct story *)user_data)->window,
-      "source_l")));
+      GTK_TEXT_VIEW(lookup_widget(thestory->window, "source_l")));
     scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(((struct story *)user_data)->window,
-      "source_r")));
+      GTK_TEXT_VIEW(lookup_widget(thestory->window, "source_r")));
 }
 
 /* Callback for when "Find Previous" is clicked from a Find dialog that was
   started from an extension */
 void
 on_xfind_previous_clicked              (GtkButton       *button,
-                                        gpointer         user_data)
+                                        Extension       *ext)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
-    find(GTK_TEXT_BUFFER(((struct extension *)user_data)->buffer),
+    find(GTK_TEXT_BUFFER(ext->buffer),
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget, "find_text"))),
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(lookup_widget(thiswidget,
       "find_ignore_case"))),
@@ -307,18 +302,17 @@ on_xfind_previous_clicked              (GtkButton       *button,
       "find_algorithm"))));
       /* Do not free or modify the strings from gtk_entry_get_text */
     scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(((struct extension *)user_data)->window,
-      "ext_code")));
+      GTK_TEXT_VIEW(lookup_widget(ext->window, "ext_code")));
 }
 
 /* Callback for when "Replace" is clicked from a Find dialog that was
   started from an I7 project */
 void
 on_find_replace_find_clicked           (GtkButton       *button,
-                                        gpointer         user_data)
+                                        Story           *thestory)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
-    replace(GTK_TEXT_BUFFER(((struct story *)user_data)->buffer),
+    replace(GTK_TEXT_BUFFER(thestory->buffer),
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
       "find_text"))),
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
@@ -332,21 +326,19 @@ on_find_replace_find_clicked           (GtkButton       *button,
       "find_algorithm"))),
       TRUE /* go to next occurrence */);
     scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(((struct story *)user_data)->window,
-      "source_l")));
+      GTK_TEXT_VIEW(lookup_widget(thestory->window, "source_l")));
     scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(((struct story *)user_data)->window,
-      "source_r")));
+      GTK_TEXT_VIEW(lookup_widget(thestory->window, "source_r")));
 }
 
 /* Callback for when "Replace" is clicked from a Find dialog that was
   started from an extension */
 void
 on_xfind_replace_find_clicked          (GtkButton       *button,
-                                        gpointer         user_data)
+                                        Extension       *ext)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
-    replace(GTK_TEXT_BUFFER(((struct extension *)user_data)->buffer),
+    replace(GTK_TEXT_BUFFER(ext->buffer),
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
       "find_text"))),
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
@@ -360,19 +352,18 @@ on_xfind_replace_find_clicked          (GtkButton       *button,
       "find_algorithm"))),
       TRUE /* go to next occurrence */);
     scroll_text_view_to_cursor(
-      GTK_TEXT_VIEW(lookup_widget(((struct extension *)user_data)->window,
-      "ext_code")));
+      GTK_TEXT_VIEW(lookup_widget(ext->window, "ext_code")));
 }
 
 /* Callback for when "Replace All" is clicked from a Find dialog that was
 started from an I7 project */
 void
 on_find_replace_all_clicked        (GtkButton       *button,
-                                        gpointer         user_data)
+                                    Story           *thestory)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
     int replace_count = replace_all(
-      GTK_TEXT_BUFFER(((struct story *)user_data)->buffer),
+      GTK_TEXT_BUFFER(thestory->buffer),
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget, 
         "find_text"))),
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
@@ -386,7 +377,7 @@ on_find_replace_all_clicked        (GtkButton       *button,
     gtk_widget_destroy(gtk_widget_get_toplevel(thiswidget));
 
     GtkWidget *dialog = gtk_message_dialog_new(
-      GTK_WINDOW(((struct story *)user_data)->window),
+      GTK_WINDOW(thestory->window),
       GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
       "%d occurences replaced.", replace_count);
     gtk_dialog_run(GTK_DIALOG(dialog));
@@ -397,11 +388,11 @@ on_find_replace_all_clicked        (GtkButton       *button,
 started from an extension */
 void
 on_xfind_replace_all_clicked        (GtkButton       *button,
-                                        gpointer         user_data)
+                                     Extension       *ext)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
     int replace_count = replace_all(
-      GTK_TEXT_BUFFER(((struct extension *)user_data)->buffer),
+      GTK_TEXT_BUFFER(ext->buffer),
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
         "find_text"))),
       gtk_entry_get_text(GTK_ENTRY(lookup_widget(thiswidget,
@@ -415,7 +406,7 @@ on_xfind_replace_all_clicked        (GtkButton       *button,
     gtk_widget_destroy(gtk_widget_get_toplevel(thiswidget));
 
     GtkWidget *dialog = gtk_message_dialog_new(
-      GTK_WINDOW(((struct extension *)user_data)->window),
+      GTK_WINDOW(ext->window),
       GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
       "%d occurences replaced.", replace_count);
     gtk_dialog_run(GTK_DIALOG(dialog));

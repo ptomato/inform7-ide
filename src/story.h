@@ -22,6 +22,7 @@
 #include <glib.h>
 #include <gtksourceview/gtksourcebuffer.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libgnomecanvas/libgnomecanvas.h>
 
 #include "skein.h"
 
@@ -56,7 +57,14 @@ struct history {
 
 typedef struct history History;
 
-struct story {
+enum {
+    SKEIN_LEFT = 0,
+    SKEIN_RIGHT,
+    SKEIN_INSPECTOR,
+    NUM_SKEINS
+};
+
+typedef struct {
     /* The toplevel window in which this story is being edited */
     GtkWidget *window;
     /* This story's filename */
@@ -81,9 +89,13 @@ struct story {
     int action;
     
     /* Skein */
-    skein theskein;
-    skein_pointer skein_ptr;
-    
+    Skein *theskein;
+    GnomeCanvasGroup *skeingroup[NUM_SKEINS];
+    gboolean drawflag[NUM_SKEINS];
+    int drawcounter;
+    gboolean editingskein;
+    gboolean redrawingskein;
+        
     /* History navigation */
     GQueue *back[2];
     GQueue *forward[2];
@@ -91,15 +103,15 @@ struct story {
     gulong handler_notebook_change[2];
     gulong handler_errors_change[2];
     gulong handler_index_change[2];
-};
+} Story;
 
-struct story *new_story();
-void delete_story(struct story *oldstory);
-struct story *get_story(GtkWidget *widget);
-void set_story_filename(struct story *thestory, gchar *filename);
+Story *new_story();
+void delete_story(Story *oldstory);
+Story *get_story(GtkWidget *widget);
+void set_story_filename(Story *thestory, gchar *filename);
 void for_each_story_window(void (*func)(GtkWidget *));
 void for_each_story_window_idle(GSourceFunc func);
 void for_each_story_buffer(void (*func)(GtkSourceBuffer *));
-gchar *get_story_extension(struct story *thestory);
+gchar *get_story_extension(Story *thestory);
 
 #endif

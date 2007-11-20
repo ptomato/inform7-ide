@@ -1,0 +1,602 @@
+! Flex.i6
+
+! Heap: 2^n sized "blocks" of bytes, n >= 3 (Z) or >= 4 (G)
+! 
+! ->0 = n
+! ->1 = data type + multiple type
+! 
+! Top bit of byte 1 set = this is a multiple-block type, in which case:
+! -->1 = next or I6_NULL
+! -->2 = previous or I6_NULL
+
+! Data type 0, with multiple type bit set, indicates free space.
+! The initial 16-byte block is inviolable and provides the head of the
+! free space object. The following are maintained:
+! (a) In the free space object, B-->BLK_NEXT is always an address after B;
+! (b) For any contiguous run of free space blocks excluding the head,
+! block sizes are such that the last in the run is the largest power of 2
+! size which will fit into the memory occupied by the run.
+! (Note that if property (b) holds for run R then it holds for any subrun
+! of R, so that allocating any intermediate block to form two disjoint
+! runs does not violate (b) for either of the residual runs. Maintaining
+! (b) is therefore a matter of being careful to fragment blocks only from
+! the front when smaller blocks are needed, and to rejoin from the back
+! when blocks are freed and added to the free space object.)
+! The free space object therefore always contains the minimum number of
+! blocks possible to represent the gaps between allocated blocks: though
+! of course the ability to move those around would change everything.
+
+#IFDEF I7_HEAP_SIZE;
+
+#IFDEF TARGET_ZCODE;
+Constant BLK_DATA_OFFSET 4;
+Constant BLK_DATA_MULTI_OFFSET 8;
+Constant BLK_HEADER_KOV = 1;
+Constant BLK_NEXT 2;
+Constant BLK_PREV 3;
+#IFNOT;
+Constant BLK_DATA_OFFSET 8;
+Constant BLK_DATA_MULTI_OFFSET 16;
+Constant BLK_HEADER_KOV = 1;
+Constant BLK_NEXT 2;
+Constant BLK_PREV 3;
+#ENDIF;
+
+Constant BLK_HEADER_N = 0;
+Constant BLK_HEADER_FLAGS = 1;
+Constant BLK_N_VALUE = 0;
+
+Constant BLK_FLAG_MULTIPLE = 1;
+Constant BLK_FLAG_16_BIT = 2;
+Constant BLK_FLAG_WORD = 4;
+
+Array I7_Blk_Heap -> I7_HEAP_SIZE + 16;
+Array I7BASTACK --> 256;
+
+[ I7_Blk_Initialise n bsize blk2;
+	blk2 = I7_Blk_Heap + 16;
+	I7_Blk_Heap->BLK_HEADER_N = n;
+	I7_Blk_Heap-->BLK_HEADER_KOV = 0;
+	I7_Blk_Heap->BLK_HEADER_FLAGS = BLK_FLAG_MULTIPLE;
+	I7_Blk_Heap-->BLK_NEXT = blk2;
+	I7_Blk_Heap-->BLK_PREV = I6_NULL;
+	for (bsize=1: bsize < I7_HEAP_SIZE: bsize=bsize*2) n++;
+	blk2->BLK_HEADER_N = n;
+	blk2-->BLK_HEADER_KOV = 0;
+	blk2->BLK_HEADER_FLAGS = BLK_FLAG_MULTIPLE;
+	blk2-->BLK_NEXT = I6_NULL;
+	blk2-->BLK_PREV = I7_Blk_Heap;
+];
+
+[ I7_Blk_Type txb;
+	return txb-->BLK_HEADER_KOV;
+];
+
+[ I7_Blk_Size txb bsize n;
+	if (txb == 0) return 0;
+	for (bsize=1: n<txb->BLK_HEADER_N: bsize=bsize*2) n++;
+	return bsize;
+];
+
+[ I7_Blk_Total_Size txb tsize;
+	if (txb == 0) return 0;
+	if ((txb->BLK_HEADER_FLAGS) & BLK_FLAG_MULTIPLE == 0)
+		return I7_Blk_Size(txb);
+	for (:txb~=I6_NULL:txb=txb-->BLK_NEXT) {
+		tsize = tsize + I7_Blk_Size(txb);
+	}
+	return tsize;
+];
+
+[ I7_Blk_Absolute_Free_Space multiple txb asize;
+	for (txb=I7_Blk_Heap-->BLK_NEXT: txb~=I6_NULL: txb=txb-->BLK_NEXT) {
+		asize = asize + I7_Blk_Size(txb);
+		if (multiple) asize = asize - BLK_DATA_MULTI_OFFSET;
+		else asize = asize - BLK_DATA_OFFSET;
+	}
+	return asize;
+];
+
+[ I7_Blk_Debug txb n k i bsize tot dtot kov;
+	if (txb == 0) "Block never created.";
+	kov = txb-->BLK_HEADER_KOV;
+	print "Block ", txb, " (kov ", kov, "): ";
+	for (:txb~=I6_NULL:txb = txb-->BLK_NEXT) {
+		if (k++ == 100) " ... and so on.";
+		if (txb-->BLK_HEADER_KOV ~= kov) print "*Wrong kov=", txb-->BLK_HEADER_KOV, "* ";
+		n = txb->BLK_HEADER_N;
+		for (bsize=1:n>0:n--) bsize=bsize*2;
+		i = bsize - BLK_DATA_OFFSET;
+		dtot = dtot+i;
+		tot = tot+bsize;
+		print txb, "(", bsize, ") > ";
+	}
+	print dtot, " data in ", tot, " bytes^";
+];
+
+[ I7_Blk_Debug_Chunkiness from to txb pf;
+	if (to==0) to = I6_NULL;
+	for (txb=from:(txb~=to) && (txb~=I6_NULL):txb=txb-->BLK_NEXT) {
+		if (pf) print "+";
+		print I7_Blk_Size(txb);
+		pf = true;
+	}
+	print "^";
+];
+
+[ I7_Blk_Allocate size kov flags
+	bsize n m free min_m max_m min_free secondhalf i hsize head tail;
+	.RetryWithLargerHeap;
+	if (I7_Blk_Absolute_Free_Space(flags & BLK_FLAG_MULTIPLE) < size) {
+!		print "*** Memory absolutely ran out ***^";
+!		rfalse;
+		#ifndef TARGET_ZCODE;
+			@gestalt 7 0 i;
+			if (i ~= 0) {
+				!print "gestalt allows^";
+				free = 1; for (n=0: (n<12) || (free<size): n++) free=free*2;
+				while (free < size) free=free*2;
+				@malloc free i;
+				if (i ~= 0) {
+					i->BLK_HEADER_N = n;
+					i-->BLK_HEADER_KOV = 0;
+					i->BLK_HEADER_FLAGS = BLK_FLAG_MULTIPLE;
+					i-->BLK_NEXT = I6_NULL;
+					i-->BLK_PREV = I6_NULL;
+					for (free = I7_Blk_Heap-->BLK_NEXT:free ~= I6_NULL:free = free-->BLK_NEXT)
+						if (free-->BLK_NEXT == I6_NULL) {
+							free-->BLK_NEXT = i;
+							i-->BLK_PREV = free;
+							break;
+						}
+					!print "Increasing heap by malloc: now ";
+					I7_Blk_Debug_Chunkiness(I7_Blk_Heap, 0);
+					!return 0;
+					jump RetryWithLargerHeap;
+				}
+			}
+		#endif;
+		print "*** Memory absolutely ran out ***^";
+		rfalse;
+	}
+	if (flags & BLK_FLAG_MULTIPLE) hsize = BLK_DATA_MULTI_OFFSET;
+	else hsize = BLK_DATA_OFFSET;
+	n=0;
+	for (bsize=1: bsize < hsize+size: bsize=bsize*2) n++;
+!print "Looking for free 2 to the ", n, " block for kov ", kov, "^";
+!print "Free space: "; I7_Blk_Debug_Chunkiness(I7_Blk_Heap, 0);
+	min_m = 10000; max_m = 0;
+
+	for (free = I7_Blk_Heap-->BLK_NEXT:free ~= I6_NULL:free = free-->BLK_NEXT) {
+!print "Trying free block at ", free, "^";
+		m = free->BLK_HEADER_N;
+!print "With size 2 to the ", m, "^";
+		! Current block the ideal size
+		if (m == n) jump CorrectSizeFound;
+		! Current block too large: find the smallest which is larger than needed
+		if (m > n) {
+			if (min_m > m) {
+				min_m = m;
+				min_free = free;
+			}
+		}
+		! Current block too small: find the largest which is smaller than needed
+		if (m < n) {
+			if (max_m < m) {
+				max_m = m;
+			}
+		}
+	}
+	if (min_m == 10000) {
+		if (flags & BLK_FLAG_MULTIPLE == 0) {
+			print "*** Memory too fragmented ***^";
+			return 0;
+		}
+		for (bsize=1: max_m > 0: bsize=bsize*2) max_m--;
+		!print "Forced to split as ", bsize-hsize, " + ", size-(bsize-hsize), "^";
+		head = I7_Blk_Allocate(bsize-hsize, kov, flags);
+		if (head == 0) {
+			print "*** Memory failed: headless ***^";
+			return 0;
+		}
+		!print "Head looks like "; I7_Blk_Debug_Chunkiness(head);
+		tail = I7_Blk_Allocate(size-(bsize-hsize), kov, flags);
+		!print "Tail looks like "; I7_Blk_Debug_Chunkiness(head);
+		if (tail == 0) {
+			print "*** Memory failed: tailless ***^";
+			return 0;
+		}
+		head-->BLK_NEXT = tail;
+		tail-->BLK_PREV = head;
+		!print "Joined looks like "; I7_Blk_Debug_Chunkiness(head);
+		return head;
+	}
+!print "Smallest free block has size 2 to the ", min_m, "^";
+	for (bsize=1,m=1: m<=min_m: bsize=bsize*2) m++;
+!print "Which is ", bsize, " bytes^";
+	free = min_free;
+	while (min_m > n) {
+		! Halve free
+		bsize = bsize/2;
+!print "Halving free block to ", bsize, " + ", bsize, "^";
+		secondhalf = free + bsize;
+		secondhalf-->BLK_NEXT = free-->BLK_NEXT;
+		if (secondhalf-->BLK_NEXT ~= I6_NULL)
+			(secondhalf-->BLK_NEXT)-->BLK_PREV = secondhalf;
+		secondhalf-->BLK_PREV = free;
+		free-->BLK_NEXT = secondhalf;
+		free->BLK_HEADER_N = (free->BLK_HEADER_N) - 1;
+		secondhalf->BLK_HEADER_N = free->BLK_HEADER_N;
+		secondhalf-->BLK_HEADER_KOV = free-->BLK_HEADER_KOV;
+		secondhalf->BLK_HEADER_FLAGS = free->BLK_HEADER_FLAGS;
+		min_m--;
+	}
+.CorrectSizeFound;
+	if (free-->BLK_NEXT == I6_NULL) {
+		! We remove final block, so previous is now final
+		(free-->BLK_PREV)-->BLK_NEXT = I6_NULL;
+	} else {
+		! We remove a middle block, so join previous to next
+		(free-->BLK_PREV)-->BLK_NEXT = free-->BLK_NEXT;
+		(free-->BLK_NEXT)-->BLK_PREV = free-->BLK_PREV;
+	}
+	free-->BLK_HEADER_KOV = kov;
+	free->BLK_HEADER_FLAGS = flags;
+	if (flags & BLK_FLAG_MULTIPLE) {
+		free-->BLK_NEXT = I6_NULL;
+		free-->BLK_PREV = I6_NULL;
+	}
+	for (i=hsize:i<bsize:i++) free->i=0;
+!print "CSF with hsize ", hsize;
+	return free;
+];
+
+[ I7_Blk_Merge txb first last pv nx;
+	first = txb; last = txb;
+	while (last-->BLK_NEXT == last+I7_Blk_Size(last))
+		last = last-->BLK_NEXT;
+	while ((first-->BLK_PREV + I7_Blk_Size(first-->BLK_PREV) == first) &&
+		(first-->BLK_PREV ~= I7_Blk_Heap))
+		first = first-->BLK_PREV;
+	pv = first-->BLK_PREV;
+	nx = last-->BLK_NEXT;
+!	print "Block recutting at ", first, ": ";
+!	I7_Blk_Debug_Chunkiness(pv-->BLK_NEXT, nx);
+if (I7_Blk_Recut(first, last)) {
+!		print "Block recut: "; I7_Blk_Debug_Chunkiness(pv-->BLK_NEXT, nx);
+!		print "Free space now: "; I7_Blk_Debug_Chunkiness(I7_Blk_Heap);
+	}
+];
+
+[ I7_Blk_Recut first last tsize backsize mfrom mto bnext backend n bsize fine_so_far;
+	if (first == last) rfalse;
+	mfrom = first; mto = last + I7_Blk_Size(last);
+	bnext = last-->BLK_NEXT;
+	fine_so_far = true;
+	for (:mto>mfrom: mto = mto - backsize) {
+		for (n=0, backsize=1: backsize*2 <= mto-mfrom: n++) backsize=backsize*2;
+!print "Ideal back chunk size ", backsize, "^";
+		if ((fine_so_far) && (backsize == I7_Blk_Size(last))) {
+			bnext = last; last = last-->BLK_PREV;
+			bnext-->BLK_PREV = last;
+			last-->BLK_NEXT = bnext;
+!print "Fine^";
+			continue;
+		}
+		fine_so_far = false; ! From this point, "last" is meaningless
+!print "Cutting by hand^";
+		backend = mto - backsize;
+		backend->BLK_HEADER_N = n;
+		backend-->BLK_HEADER_KOV = 0;
+		backend->BLK_HEADER_FLAGS = BLK_FLAG_MULTIPLE;
+		backend-->BLK_NEXT = bnext;
+		if (bnext ~= I6_NULL) {
+			bnext-->BLK_PREV = backend;
+			bnext = backend;
+		}
+	}
+	if (fine_so_far) rfalse;
+	rtrue;
+];
+
+[ I7_Blk_Free_Block txb free nx;
+!	print "Block ", txb, " (kov ", I7_Blk_Type(txb), ") freed^";
+	txb-->BLK_HEADER_KOV = 0;
+	txb->BLK_HEADER_FLAGS = BLK_FLAG_MULTIPLE;
+	for (free = I7_Blk_Heap:free ~= I6_NULL:free = free-->BLK_NEXT) {
+		nx = free-->BLK_NEXT;
+		if (nx == I6_NULL) {
+			free-->BLK_NEXT = txb;
+			txb-->BLK_PREV = free;
+			txb-->BLK_NEXT = I6_NULL;
+			I7_Blk_Merge(txb);
+			return;
+		}
+		if (UnsignedCompare(nx, txb) == 1) {
+			free-->BLK_NEXT = txb;
+			txb-->BLK_PREV = free;
+			txb-->BLK_NEXT = nx;
+			nx-->BLK_PREV = txb;
+			I7_Blk_Merge(txb);
+			return;
+		}
+	}
+];
+
+[ I7_Blk_Free txb fromtxb ptxb;
+	if (txb == 0) return;
+	I7_Blk_Deallocate(txb);
+!	print "Block ", txb, " doing ff^";
+	if ((txb->BLK_HEADER_FLAGS) & BLK_FLAG_MULTIPLE) {
+!print "A^", I6_NULL;
+!		print "Prev: ", txb-->BLK_PREV, "^";
+!		print "Next: ", txb-->BLK_NEXT, "^";
+		if (txb-->BLK_PREV ~= I6_NULL)
+			(txb-->BLK_PREV)-->BLK_NEXT = I6_NULL;
+!print "b^";
+		fromtxb = txb;
+		for (:(txb-->BLK_NEXT)~=I6_NULL:txb = txb-->BLK_NEXT) ;
+!print "c^";
+		while (txb ~= fromtxb) {
+			ptxb = txb-->BLK_PREV; I7_Blk_Free_Block(txb); txb = ptxb;
+		}
+!print "d^";
+	}
+!print "e^";
+	I7_Blk_Free_Block(txb);
+];
+
+[ I7_Blk_Resize txb req newsize bsize newblk kov n i otxb flags;
+	if (txb == 0) { print "Cannot resize null block^"; return; }
+	kov = txb-->BLK_HEADER_KOV;
+	flags = txb->BLK_HEADER_FLAGS;
+	if (flags & BLK_FLAG_MULTIPLE == 0) { 
+		print "Cannot resize inextensible block^"; return;
+	}
+	otxb = txb;
+!print "Resizing to ", req, ": "; I7_Blk_Debug(otxb);
+	newsize = req;
+	for (::txb = txb-->BLK_NEXT) {
+		n = txb->BLK_HEADER_N;
+		for (bsize=1:n>0:n--) bsize=bsize*2;
+		i = bsize - BLK_DATA_MULTI_OFFSET;
+		newsize = newsize - i;
+		if (newsize > 0) {
+			if (txb-->BLK_NEXT ~= I6_NULL) continue;
+!print "Resizing block ", txb, " to ", req, " requires ", newsize, " extra^";
+			newblk = I7_Blk_Allocate(newsize, kov, flags);
+			if (newblk == 0) rfalse;
+			txb-->BLK_NEXT = newblk;
+			newblk-->BLK_PREV = txb;
+!print "After extending: "; I7_Blk_Debug(otxb);
+			rtrue;
+		}
+		if (txb-->BLK_NEXT ~= I6_NULL) {
+			I7_Blk_Free(txb-->BLK_NEXT);
+			txb-->BLK_NEXT = I6_NULL;
+!print "After freeing: "; I7_Blk_Debug(otxb);
+		}
+		rtrue;
+	}
+];
+
+[ I7_Blk_Get_Extent txb tsize flags;
+	if (txb == 0) return 0;
+	flags = txb->BLK_HEADER_FLAGS;
+	if (flags & BLK_FLAG_MULTIPLE == 0)
+		tsize = I7_Blk_Size(txb) - BLK_DATA_OFFSET;
+	else
+		for (:txb~=I6_NULL:txb=txb-->BLK_NEXT)
+			tsize = tsize + I7_Blk_Size(txb) - BLK_DATA_MULTI_OFFSET;
+	#ifdef TARGET_ZCODE;
+	if (flags & BLK_FLAG_WORD) return tsize/2;
+	#ifnot;
+	if (flags & BLK_FLAG_WORD) return tsize/4;
+	#endif;
+	if (flags & BLK_FLAG_16_BIT) return tsize/2;
+	return tsize;
+];
+
+[ I7_Blk_Change_Extent txb tsize mark flags wsize;
+	if (txb == 0) return 0;
+	flags = txb->BLK_HEADER_FLAGS; wsize = 1;
+	#ifdef TARGET_ZCODE;
+	if (flags & BLK_FLAG_WORD) wsize = 2;
+	#ifnot;
+	if (flags & BLK_FLAG_WORD) wsize = 4;
+	#endif;
+	if (flags & BLK_FLAG_16_BIT) wsize = 2;
+	return I7_Blk_Resize(txb, (tsize)*wsize);
+];
+
+[ I7_Blk_Get txb pos dsize hsize flags wsize ot op;
+	if (txb==0) rfalse;
+	flags = txb->BLK_HEADER_FLAGS; wsize = 1;
+	#ifdef TARGET_ZCODE;
+	if (flags & BLK_FLAG_WORD) wsize = 2;
+	#ifnot;
+	if (flags & BLK_FLAG_WORD) wsize = 4;
+	#endif;
+	if (flags & BLK_FLAG_16_BIT) wsize = 2;
+	ot = txb; op = pos;
+	pos = pos*wsize;
+	if (flags & BLK_FLAG_MULTIPLE)
+		hsize = BLK_DATA_MULTI_OFFSET;
+	else
+		hsize = BLK_DATA_OFFSET;
+	for (:txb~=I6_NULL:txb=txb-->BLK_NEXT) {
+		dsize = I7_Blk_Size(txb) - hsize;
+		if ((pos >= 0) && (pos<dsize)) {
+			txb = txb + hsize + pos;
+			switch(wsize) {
+				1: return txb->0;
+				2:	#ifdef TARGET_ZCODE; return txb-->0;
+					#ifnot; return (txb->0)*256 + (txb->1);
+					#endif;
+				4: return txb-->0;
+			}
+		}
+		pos = pos - dsize;
+	}
+	"*** I7_Blk_Get: reading from index out of range: ", op, " in ", ot, " ***";
+];
+
+[ I7_Blk_Put txb pos val dsize hsize flags wsize ot op;
+	if (txb==0) rfalse;
+	!print "Writing ", val, " to pos ", pos, "^";
+	flags = txb->BLK_HEADER_FLAGS; wsize = 1;
+	#ifdef TARGET_ZCODE;
+	if (flags & BLK_FLAG_WORD) wsize = 2;
+	#ifnot;
+	if (flags & BLK_FLAG_WORD) wsize = 4;
+	#endif;
+	if (flags & BLK_FLAG_16_BIT) wsize = 2;
+	ot = txb; op = pos;
+	pos = pos*wsize;
+	if (flags & BLK_FLAG_MULTIPLE)
+		hsize = BLK_DATA_MULTI_OFFSET;
+	else
+		hsize = BLK_DATA_OFFSET;
+	for (:txb~=I6_NULL:txb=txb-->BLK_NEXT) {
+		dsize = I7_Blk_Size(txb) - hsize;
+		if ((pos >= 0) && (pos<dsize)) {
+			txb = txb + hsize + pos;
+			switch(wsize) {
+				1: txb->0 = val;
+				2:	#ifdef TARGET_ZCODE; txb-->0 = val;
+					#ifnot;
+						txb->0 = (val/256)%256; txb->1 = val%256;
+					#endif;
+				4: txb-->0 = val;
+			}
+			return;
+		}
+		pos = pos - dsize;
+	}
+	"*** I7_Blk_Put: writing to index out of range: ", op, " in ", ot, " ***";
+];
+
+[ I7_Blk_Deep_Copy txbto txbfrom dsize i;
+	if (txbto == 0)  {
+		print "*** Deep copy failed because destination empty ***^";
+		rfalse;
+	}
+	if (txbfrom == 0)  {
+		print "*** Deep copy failed because source empty ***^";
+		rfalse;
+	}
+	if (txbfrom-->BLK_HEADER_KOV ~= txbto-->BLK_HEADER_KOV) {
+		print "*** Deep copy failed because types mismatch ***^";
+		print txbfrom, " ", txbfrom-->BLK_HEADER_KOV, " --> ",
+			txbto, " ", txbto-->BLK_HEADER_KOV, "^";
+		rfalse;
+	}
+	I7_Blk_Deallocate(txbto);
+	dsize = I7_Blk_Get_Extent(txbfrom);
+!	print "Data size of blocks to be deep copied = ", dsize, "^";
+	if ((txbfrom->BLK_HEADER_FLAGS) & BLK_FLAG_MULTIPLE) {
+		if (I7_Blk_Change_Extent(txbto, dsize, -1) == false) {
+			print "*** Deep copy failed because resizing failed ***^";
+			rfalse;
+		}
+	}
+	for (i=0:i<dsize:i++) {
+		!print "Copying char ", i, "^";
+		I7_Blk_Put(txbto, i, I7_Blk_Get(txbfrom, i));
+	}
+	switch (txbfrom-->BLK_HEADER_KOV) {
+		INDEXED_TEXT_TY: I7_INDEXED_TEXT_TY_Deep_Copy(txbto, txbfrom);
+		STORED_ACTION_TY: I7_STORED_ACTION_TY_Deep_Copy(txbto, txbfrom);
+		default: print "*** Impossible runtime deallocation ***^"; rfalse;
+	}
+	return txbto;
+];
+
+[ I7_Blk_Initial_Copy txbto txbfrom dsize i;
+	if (txbto == 0)  {
+		print "*** Initial copy failed because destination empty ***^";
+		rfalse;
+	}
+	if (txbfrom == 0)  {
+		print "*** Initial copy failed because source empty ***^";
+		rfalse;
+	}
+	dsize = 1; for (i=1: i<=txbfrom->BLK_N_VALUE: i++) dsize=dsize*2;
+	for (i=0:i<dsize:i++) txbto->i = txbfrom->i;
+	return txbto;
+];
+
+[ I7_Blk_Deep_Comparison txbleft txbright kov;
+	if ((txbleft == 0) && (txbright == 0)) return 0;
+	if (txbleft == 0) return 1;
+	if (txbright == 0) return -1;
+	if (txbleft-->BLK_HEADER_KOV ~= txbright-->BLK_HEADER_KOV)
+		return txbleft-->BLK_HEADER_KOV - txbright-->BLK_HEADER_KOV;
+	kov = txbleft-->BLK_HEADER_KOV;
+	switch(kov) {
+		INDEXED_TEXT_TY: return I7_INDEXED_TEXT_TY_Compare(txbleft, txbright);
+		STORED_ACTION_TY: return I7_STORED_ACTION_TY_Compare(txbleft, txbright);
+		default: print "*** Impossible runtime comparison ***^"; rfalse;
+	}
+];
+
+[ I7_Blk_Read_File_Form txb auxf ch kov;
+	switch (kov) {
+		INDEXED_TEXT_TY: if (ch == -1) rtrue; return I7_INDEXED_TEXT_TY_RFF(txb, auxf, ch);
+		default: rfalse;
+	}
+];
+
+[ I7_Blk_Write_File_Form txb kov;
+	switch (kov) {
+		INDEXED_TEXT_TY: I7_INDEXED_TEXT_TY_WFF(txb); rtrue;
+		default: rfalse;
+	}
+];
+
+[ I7_Blk_Cast txb tokov fromkov val;
+	switch (tokov) {
+		INDEXED_TEXT_TY: return I7_INDEXED_TEXT_TY_Cast(val, fromkov, txb);
+		default: print "*** Impossible runtime cast ***^"; rfalse;
+	}
+];
+
+[ I7_Blk_Create kov opcast;
+	switch (kov) {
+		INDEXED_TEXT_TY: return I7_INDEXED_TEXT_TY_Create(opcast);
+		STORED_ACTION_TY: return I7_STORED_ACTION_TY_Create(opcast);
+		default: print "*** Impossible runtime creation ***^"; rfalse;
+	}
+];
+
+[ I7_Blk_Deallocate blk;
+	if (blk == 0) return;
+	switch (blk-->BLK_HEADER_KOV) {
+		INDEXED_TEXT_TY: return I7_INDEXED_TEXT_TY_Free(blk);
+		STORED_ACTION_TY: return I7_STORED_ACTION_TY_Free(blk);
+		default: print "*** Impossible runtime deallocation ***^"; rfalse;
+	}
+];
+
+[ ShowHeapSub;
+	print "Managing a heap of initially ", I7_HEAP_SIZE+16, " bytes.^";
+	print I7_Blk_Absolute_Free_Space(false), " bytes currently free.^";
+	print "Free space decomposition: "; I7_Blk_Debug_Chunkiness(I7_Blk_Heap);
+	print "Free space map: "; I7_Blk_Debug(I7_Blk_Heap);
+];
+
+#IFNOT; ! IFDEF I7_HEAP_SIZE
+
+[ I7_Blk_Initialise; ];
+[ I7_Blk_Read_File_Form; ];
+[ I7_Blk_Write_File_Form; ];
+[ I7_Blk_Free; ];
+[ I7_Blk_Create; ];
+
+[ ShowHeapSub;
+	">--> This story file does not use a heap of managed memory.";
+];
+
+#ENDIF; ! IFDEF I7_HEAP_SIZE
+
+! End of Flex.i6

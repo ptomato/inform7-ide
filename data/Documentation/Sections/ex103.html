@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.9. The parts of a number specification</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.8. Understanding kinds of value</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,120 +19,183 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Zqlran Era 8" -->
-<!-- SEARCH SECTION "Ex 218" -->
-<!-- SEARCH SORT "Ex 014-009-218" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc215.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc217.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.9. The parts of a number specification</b></font></td></tr></table>
+<!-- SEARCH TITLE "Pages" -->
+<!-- SEARCH SECTION "Ex 269" -->
+<!-- SEARCH SORT "Ex 016-008-269" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc249.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc251.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.8. Understanding kinds of value</b></font></td></tr></table>
 <p>
-<p>We often need to break up a number specification into its pieces. For instance, suppose we want to know the dollars part of $1.99? We can do this by naming the parts:
-<p>
-<blockquote><font color="#000080">A monetary value is a kind of value. $1.99 specifies a monetary value with parts dollars and cents.
-</font></blockquote><p>
-<p>
-<p>We can now find the relevant parts like so. Suppose that &quot;sum&quot; is a monetary value. Then:
-<p>
-<blockquote><font color="#000080">dollars part of sum
-<br>cents part of sum
-</font></blockquote><p>
-<p>
-<p>are both numbers, so for instance we can
-<p>
-<blockquote><font color="#000080">say &quot;Looks like around [dollars part of sum in words] dollar[s].&quot;
-</font></blockquote><p>
-<p>
-<p>We can also go the other way:
-<p>
-<blockquote><font color="#000080">monetary value with dollars part 4 cents part 72
-</font></blockquote><p>
-<p>
-<p>produces the monetary value $4.72. (Note the lack of commas or &quot;and&quot;s, and that the parts have to be given in the right order.) This is really intended to be useful when we manipulate such values in unusual ways:
-<p>
-<blockquote><font color="#000080">An aspect ratio is a kind of value. 16:20 specifies an aspect ratio with parts width and height.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide which aspect ratio is the wider version of (AR - an aspect ratio):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let W be the width part of AR multiplied by 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let H be the height part of AR;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the wider ratio be the aspect ratio with width part W height part H;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the wider ratio.
-</font></blockquote><p>
-<p>
-<p>Declaring the parts of a number specification individually also enables us to tack one or more options onto any of the parts:
-<p>
-<blockquote><font color="#000080">A monetary value is a kind of value. $1.99 specifies a monetary value with parts dollars and cents (optional, preamble optional).
-</font></blockquote><p>
-<p>
-<p>This declares that the &quot;cents&quot; part is optional - it will be 0 if not specified - and that if omitted, the non-numeric &quot;preamble&quot; before it should also be omitted. Thus &quot;$3&quot; is now valid and equivalent to &quot;$3.00&quot;: indeed it will be the preferred form when Inform prints out a monetary value which is an exact number of dollars. If we had said that &quot;cents&quot; was optional, but not said that the preamble was optional, then &quot;$3.&quot; would have been the form - which is less satisfactory.
-<p>
-<p>There is only one other option: &quot;without leading zeros&quot;, as in the following.
-<p>
-<blockquote><font color="#000080">An aspect ratio is a kind of value. 16:20 specifies an aspect ratio with parts width and height (without leading zeros).
-</font></blockquote><p>
-<p>
-<p>This ensures that when the ratio 4:3 is printed, it will be printed as &quot;4:3&quot; and not &quot;4:03&quot; as would otherwise happen.
-<p>
-<p><hr><p>
-<!-- EXAMPLE START -->
-<a name="e103"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc216.html#e103 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>218</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc216.html#e103 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Zqlran Era 8</font></b></a><br>Creating an alternative system of time for our game, using new units.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex103.html#e103 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Suppose that our game takes place on an alien planet that does not follow Earth time. On this planet, we want to track time with different units. We also want time to advance in those units, and we want to be able to set a schedule of timed events.
+<p>Newly created kinds of value can also be understood, which we make good use of in the example game &quot;Studious&quot;:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode302(code) {
+function pasteCode56(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Zqlran Era 8"\n\nThe Barren Lavender Surface of Zql is a room. "It is late twilight on Zql. Overhead, two crescent moons, both green, mark the sluggish passage of time. A cold wind is blowing over the pale purplish ground cover, but it does not penetrate your airtight suit."\n\nA Zqlran date is a kind of value. 14-88 specifies a Zqlran date with parts zqls and frbs. Current zqlran date is a zqlran date that varies. The current zqlran date is 8-22. Previous zqlran date is a zqlran date that varies. The previous zqlran date is 8-20.\n\nWhen play begins:\n\tchange left hand status line to "[current zqlran date], or [current zqlran date in words]".\n\nTo say (Zqlra - a Zqlran date) in words:\n\tsay "[zqls part of Zqlra] Z, [frbs part of Zqlra] f."\n\n[Inform automatically supplies a way to say a new unit, which will look similar to the format in which we defined that unit in the first place. But we can (as shown here) create our own alternative say phrases to express the units in other ways as well.]\n\n[Next, we need to meddle with time advancement so that time is tracked in Zqlran date rather than in minutes. This requires borrowing a trick from a later chapter, to replace Inform\'s built-in time handling with an alternative time handling rule of our own:]\n\nThe Zqlran time rule is listed instead of the advance time rule in the turn sequence rules.\n\nThis is the Zqlran time rule:\n\tincrease turn count by 1;\n\tchange the previous zqlran date to current zqlran date;\n\tchange the current zqlran date to current zqlran date + 0-02;\n\trepeat through the Table of Zql Schedule\n\tbegin;\n\t\tif era entry is greater than previous zqlran date and era entry is not greater than current zqlran date\n\t\tbegin;\n\t\t\tsay event entry;\n\t\t\tsay paragraph break;\n\t\t\tblank out the whole row;\n\t\tend if;\n\tend repeat.\n\nTable of Zql Schedule\nera\tevent\n8-24\t"A wisp-thin cloud blows rapidly across the face of Nepenthe, the lesser of the two green moons."\n8-28\t"The cloud across Nepenthe clears."\n\n');
+    myProject.pasteCode('"Studious"\n\nThe Studio is a room. "The unreal world of the photographic studio, full of fake furniture, cantilevered stands and silver-white shades like miniature parachutes." The lumpy black camera is in the Studio. "A lumpy black camera hangs from a tripod."\n\nThe rake-thin model is a woman in the Studio. "A rake-thin model, exquisitely bored and boringly exquisite, angles herself indolently."\n\nLimb is a kind of value. The limbs are left leg, left arm, right leg and right arm.\n\nDetailing is an action applying to one limb and one visible thing, requiring light. Check detailing: if the camera is not carried then say "You can hardly photograph without a camera, now can you?" instead. Report detailing: say "Click! You take a detail photograph of the [limb understood] of [the second noun]."\n\nUnderstand "photograph [limb] of [a person]" as detailing.\n\nTest me with "get camera / photograph left leg of model".\n\n');
 }
 </script>
-<a href="javascript:pasteCode302()"><img border=0 src=../doc_images/paste.png></a> &quot;Zqlran Era 8&quot;
+<a href="javascript:pasteCode56()"><img border=0 src=../doc_images/paste.png></a> &quot;Studious&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Barren Lavender Surface of Zql is a room. &quot;It is late twilight on Zql. Overhead, two crescent moons, both green, mark the sluggish passage of time. A cold wind is blowing over the pale purplish ground cover, but it does not penetrate your airtight suit.&quot;
+<blockquote><font color="#000080">The Studio is a room. &quot;The unreal world of the photographic studio, full of fake furniture, cantilevered stands and silver-white shades like miniature parachutes.&quot; The lumpy black camera is in the Studio. &quot;A lumpy black camera hangs from a tripod.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A Zqlran date is a kind of value. 14-88 specifies a Zqlran date with parts zqls and frbs. Current zqlran date is a zqlran date that varies. The current zqlran date is 8-22. Previous zqlran date is a zqlran date that varies. The previous zqlran date is 8-20.
+<blockquote><font color="#000080">The rake-thin model is a woman in the Studio. &quot;A rake-thin model, exquisitely bored and boringly exquisite, angles herself indolently.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change left hand status line to &quot;[current zqlran date], or [current zqlran date in words]&quot;.
+<blockquote><font color="#000080">Limb is a kind of value. The limbs are left leg, left arm, right leg and right arm.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say (Zqlra - a Zqlran date) in words:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[zqls part of Zqlra] Z, [frbs part of Zqlra] f.&quot;
+<blockquote><font color="#000080">Detailing is an action applying to one limb and one visible thing, requiring light. Check detailing: if the camera is not carried then say &quot;You can hardly photograph without a camera, now can you?&quot; instead. Report detailing: say &quot;Click! You take a detail photograph of the [limb understood] of [the second noun].&quot;
 </font></blockquote><p>
 <p>
-<p>Inform automatically supplies a way to say a new unit, which will look similar to the format in which we defined that unit in the first place. But we can (as shown here) create our own alternative say phrases to express the units in other ways as well.
-<p>
-<p>Next, we need to meddle with time advancement so that time is tracked in Zqlran date rather than in minutes. This requires borrowing a trick from a later chapter, to replace Inform's built-in time handling with an alternative time handling rule of our own:
-<p>
-<blockquote><font color="#000080">The Zqlran time rule is listed instead of the advance time rule in the turn sequence rules.
+<blockquote><font color="#000080">Understand &quot;photograph [limb] of [a person]&quot; as detailing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">This is the Zqlran time rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;increase turn count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the previous zqlran date to current zqlran date;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the current zqlran date to current zqlran date + 0-02;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Zql Schedule
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if era entry is greater than previous zqlran date and era entry is not greater than current zqlran date
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say event entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">Test me with &quot;get camera / photograph left leg of model&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Zql Schedule
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">era</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">event</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">8-24</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;A wisp-thin cloud blows rapidly across the face of Nepenthe, the lesser of the two green moons.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">8-28</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;The cloud across Nepenthe clears.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+<p>Note the way we can refer to the limb mentioned by the player as the &quot;limb understood&quot;. Similarly, we could talk about the &quot;number understood&quot; if the value parsed had been a number, and so on.
+<p>
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e103"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc250.html#e103 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>269</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc250.html#e103 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Pages</font></b></a><br>A book with pages that can be read by number (as in "read page 3 in...") and which accepts relative page references as well (such as "read the last page of...", "read the next page", and so on).<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex103.html#e103 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>Suppose we have a book that the player must consult page-by-page, and we want to be able to accept all of the following input:
+<p>
+<blockquote><font color="#000080">> READ BOOK (to choose a random page and read it)
+<br>> READ PAGE 1 IN BOOK
+<br>> READ PAGE 2
+<br>> READ THE LAST PAGE OF THE BOOK
+<br>> READ THE NEXT PAGE
+<br>> READ PREVIOUS PAGE IN BOOK
+<br>> READ THE FIRST PAGE
+</font></blockquote><p>
+<p>
+<p>One approach would be to write many different understand rules and actions: one action for reading randomly, one for reading a specific page, one for reading the first page, one for reading the previous page, one for reading the next page, and one for reading the last page. But this gets tedious to construct and maintain.
+<p>
+<p>More usefully, we could consider that all of the last four options are essentially the same action at heart: the player is asking to read a page in the book using a name rather than a number, and we will have to perform a minor calculation to discover what the number should be. Here's an implementation using named values to resolve this problem:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode356(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode(' "Pages"\n\nThe Library is a room. The sinister book is carried by the player. The sinister book has a number called the last page read. The sinister book has a number called the length. The length of the sinister book is 50.\n\nUnderstand the command "read" as something new.\n\nUnderstand "read [something]" or "consult [something]" or "read in/from [something]" as reading. Reading is an action applying to one thing, requiring light.\n\nUnderstand "read [number] in/from/of [something]" or "read page [number] in/from/of [something]" or "look up page [number] in/from/of [something]" or "consult page [number] in/from/of [something]" as reading it in. Reading it in is an action applying to one number and one thing, requiring light.\n\nNamed page is a kind of value. The named pages are first page, last page, next page, previous page.\n\nTo decide what number is the effective value of (L - last page):\n\tdecide on the length of the book.\n\nTo decide what number is the effective value of (F - first page):\n\tdecide on 1.\n\nTo decide what number is the effective value of (N - next page):\n\tlet X be the last page read of the book plus 1;\n\tdecide on X.\n\nTo decide what number is the effective value of (P - previous page):\n\tlet X be the last page read of the book minus 1;\n\tdecide on X.\n\nUnderstand "read [named page] in/from/of [something]" or "read the [named page] in/from/of [something]" as reading it relatively in. Reading it relatively in is an action applying to one named page and one thing, requiring light.\n\nDoes the player mean reading something in the sinister book: it is very likely.\n\nThis is the book requirement rule:\n\tif the player is not carrying the sinister book, say "You\'re not reading anything." instead.\n\nCheck reading it relatively in:\n\tif the second noun is not the sinister book, say "There are no pages in [the second noun]." instead;\n\tabide by the book requirement rule.\n\nCarry out reading it relatively in:\n\tlet N be the effective value of the named page understood;\n\tchange the number understood to N;\n\ttry reading N in the book.\n\nCheck reading it in:\n\tif the second noun is not the sinister book, say "There are no pages in [the second noun]." instead;\n\tabide by the book requirement rule.\n\nCheck reading it in:\n\tif the number understood is greater than the length of the sinister book, say "There are only [length of sinister book in words] pages in the book." instead;\n\tif the number understood is less than 1, say "The page numbering begins with 1." instead.\n\nCarry out reading it in:\n\tread page number understood.\n\nCheck reading:\n\tif the noun is not the sinister book, say "There are no pages in [the noun]." instead;\n\tabide by the book requirement rule.\n\nCarry out reading:\n\tlet N be a random number between 1 and the length of the sinister book; change the number understood to N;\n\tsay "You flip the pages randomly and arrive at page [the number understood]:[paragraph break]";\n\ttry reading the number understood in the sinister book.\n\nTable of Book Contents\npage\tcontent\n2\t"dhuma jyotih salila marutam / samnipatah kva meghah / samdes arthah kva patukaranaih / pranibhih prapaniyah"\n13\t"amathesteron pws eipe kai saphesteron"\n50\t"Rrgshilz maplot..."\n\nTo read page (N - a number):\n\tnow the last page read of the sinister book is N;\n\tif there is a content corresponding to a page of N in the Table of Book Contents\n\tbegin;\n\t\tchoose row with a page of N in the Table of Book Contents;\n\t\tsay "You read: \'[content entry]\'[paragraph break]";\n\totherwise;\n\t\tsay "Page [N] appears to be blank.";\n\tend if.\n\nTo read page (N - 47):\n\tsay "Your eyes burn; your ears ring. Beneath your gaze, the dreadful sigils writhe, reminding you of that which lies outside the edges of the universe...";\n\tend the game saying "You have lost your remaining sanity".\n\nTest me with "read from the sinister book / read the book / read the next page / read page 2 / read previous page / g / read the first page / read the last page of the book / read the next page / read 47 in book".\n\n\n');
+}
+</script>
+<a href="javascript:pasteCode356()"><img border=0 src=../doc_images/paste.png></a>  &quot;Pages&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Library is a room. The sinister book is carried by the player. The sinister book has a number called the last page read. The sinister book has a number called the length. The length of the sinister book is 50.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand the command &quot;read&quot; as something new.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;read [something]&quot; or &quot;consult [something]&quot; or &quot;read in/from [something]&quot; as reading. Reading is an action applying to one thing, requiring light.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;read [number] in/from/of [something]&quot; or &quot;read page [number] in/from/of [something]&quot; or &quot;look up page [number] in/from/of [something]&quot; or &quot;consult page [number] in/from/of [something]&quot; as reading it in. Reading it in is an action applying to one number and one thing, requiring light.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Named page is a kind of value. The named pages are first page, last page, next page, previous page.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what number is the effective value of (L - last page):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the length of the book.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what number is the effective value of (F - first page):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on 1.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what number is the effective value of (N - next page):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let X be the last page read of the book plus 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on X.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what number is the effective value of (P - previous page):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let X be the last page read of the book minus 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on X.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;read [named page] in/from/of [something]&quot; or &quot;read the [named page] in/from/of [something]&quot; as reading it relatively in. Reading it relatively in is an action applying to one named page and one thing, requiring light.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Does the player mean reading something in the sinister book: it is very likely.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">This is the book requirement rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not carrying the sinister book, say &quot;You're not reading anything.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check reading it relatively in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not the sinister book, say &quot;There are no pages in [the second noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;abide by the book requirement rule.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out reading it relatively in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be the effective value of the named page understood;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the number understood to N;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try reading N in the book.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check reading it in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not the sinister book, say &quot;There are no pages in [the second noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;abide by the book requirement rule.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check reading it in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number understood is greater than the length of the sinister book, say &quot;There are only [length of sinister book in words] pages in the book.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number understood is less than 1, say &quot;The page numbering begins with 1.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out reading it in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;read page number understood.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check reading:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not the sinister book, say &quot;There are no pages in [the noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;abide by the book requirement rule.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out reading:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be a random number between 1 and the length of the sinister book; change the number understood to N;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You flip the pages randomly and arrive at page [the number understood]:[paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try reading the number understood in the sinister book.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Book Contents
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">page</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">content</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;dhuma jyotih salila marutam / samnipatah kva meghah / samdes arthah kva patukaranaih / pranibhih prapaniyah&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;amathesteron pws eipe kai saphesteron&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">50</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Rrgshilz maplot...&quot;</font>&nbsp;&nbsp;&nbsp;</td>
 </tr></table>
 </font></blockquote><p>
 <p>
-<p>Note that we could if we wished use a different device for scheduling events: this one simply prints text at scheduled eras, but we might also (for instance) make the event entry be a rule for Inform to follow, and tell Inform to carry out that rule at the scheduled time.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc216.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">To read page (N - a number):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the last page read of the sinister book is N;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if there is a content corresponding to a page of N in the Table of Book Contents
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row with a page of N in the Table of Book Contents;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You read: '[content entry]'[paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Page [N] appears to be blank.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To read page (N - 47):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your eyes burn; your ears ring. Beneath your gaze, the dreadful sigils writhe, reminding you of that which lies outside the edges of the universe...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;You have lost your remaining sanity&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;read from the sinister book / read the book / read the next page / read page 2 / read previous page / g / read the first page / read the last page of the book / read the next page / read 47 in book&quot;.
+</font></blockquote><p>
+<p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc250.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc215.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc217.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e83"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>270</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex83.html#e83 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Straw Into Gold</font></b></a><br>Creating a Rumpelstiltskin character who is always referred to as "dwarf", "guy", "dude", or "man" -- depending on which the player last used -- until the first time the player refers to him as "Rumpelstiltskin".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc249.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc251.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

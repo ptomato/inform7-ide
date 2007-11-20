@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.15. Phrases to decide other things</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.12. Doors</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,90 +19,65 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Witnessed 2" -->
-<!-- SEARCH SECTION "Ex 162" -->
-<!-- SEARCH SORT "Ex 011-015-162" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc167.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc169.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.15. Phrases to decide other things</b></font></td></tr></table>
+<!-- SEARCH TITLE "Disenchantment Bay 5" -->
+<!-- SEARCH SECTION "Ex 19" -->
+<!-- SEARCH SORT "Ex 003-012-019" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc37.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc39.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.12. Doors</b></font></td></tr></table>
 <p>
-<p>A condition is a yes/no decision, but we can also take decisions where the result is a value. Suppose we want to create a concept of the &quot;grand prize&quot;, which will have different values at different times in play. Each time the &quot;grand prize&quot; is referred to, Inform will have to decide what its value is, and the following tells Inform how to make that decision:
+<p>The map of an interactive fiction is the layout of rooms and the entrances and exits which connect them. So far, these map connections have always run from one room to another, like so:
 <p>
-<blockquote><font color="#000080">To decide which treasure is the grand prize:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the Dark Room has been visited then decide on the silver bars;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the plover's egg.
+<blockquote><font color="#000080">The Painted Room is north of the Undertomb.
 </font></blockquote><p>
 <p>
-<p>Note that we have to say what kind the answer will be: here it's a kind of thing called &quot;treasure&quot; (which we're supposing has already been created), and as it turns out only two treasures are ever eligible anyway (we're also supposing that the plover's egg and the silver bars are treasures already created, of course). And note also that the phrase must in all cases end with a &quot;decide on ...&quot; to say what the answer is.
+<p>However, we can also interpose doors between rooms, like so:
 <p>
-<p>Now that we have &quot;grand prize&quot; created, we can use it just as we would use any other value, so for instance:
-<p>
-<blockquote><font color="#000080">if taking the grand prize then ...
+<blockquote><font color="#000080">The heavy iron grating is east of the Orchard and west of the Undertomb. The grating is a door.
 </font></blockquote><p>
 <p>
-<p>As this is something of a dialect difference between English speakers, &quot;what&quot; and &quot;which&quot; are synonymous here, i.e., we could equally well write something like:
+<p>The second sentence is needed since otherwise Inform will take &quot;heavy iron grating&quot; to be the name of a third room, whereas what we want is for the grating to be something physically present in both the Orchard and in the Undertomb, and acting as a conduit between them. To this end it needs to be a &quot;door&quot;, a kind we have not so far seen. In the absence of any other instruction, a newly created door will be fixed in place, closed and openable.
 <p>
-<blockquote><font color="#000080">To decide what number is the target score: ...
+<p>The grating really does come in between the two rooms: the grating is what lies immediately east of the Orchard, not the Undertomb room. So if we wrote the following:
+<p>
+<blockquote><font color="#000080">The Undertomb is east of the Orchard. The heavy iron grating is east of the Orchard and west of the Undertomb. The grating is a door.
 </font></blockquote><p>
+<p>
+<p>then Inform would say that this is a contradiction: we said the Undertomb was east of the Orchard, but then we said that the grating was east of the Orchard.
+<p>
+<p>Inform's &quot;door&quot; kind can be used for all manner of conduits, so the word door need not be taken literally. In Ursula K. LeGuin's beguiling novel &quot;The Tombs of Atuan&quot;, from which the above rooms are stolen, it is not a grating which interposes, but:
+<p>
+<blockquote><font color="#000080">The red rock stair is east of the Orchard and above the Undertomb. The stair is an open door. The stair is not openable.
+</font></blockquote><p>
+<p>
+<p>In real life, most doors are two-sided, and can be used from either of the rooms which they join, but this is not always convenient for interactive fiction. Here is a one-sided door:
+<p>
+<blockquote><font color="#000080">The blue door is a door. It is south of Notting Hill. Through it is the Flat Landing.
+</font></blockquote><p>
+<p>
+<p>(Note the use of &quot;it&quot; here as an optional abbreviation.) This will make a door visible only on the Notting Hill side; no map connection will be made in the reverse direction, unless we ask for one.
+<p>
+<p>Should we ever need it, the values &quot;front side of ...&quot; and &quot;back side of ...&quot; reveal where a door is placed. (For instance, &quot;front side of the heavy iron grating&quot; is the Orchard.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e204"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc168.html#e204 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>162</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc168.html#e204 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Witnessed 2</font></b></a><br>A piece of ghost-hunting equipment that responds depending on whether or not the meter is on and a ghost is visible or touchable from the current location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex204.html#e204 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e204"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc38.html#e204 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>19</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc38.html#e204 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Disenchantment Bay 5</font></b></a><br>Disenchantment Bay: adding the door and the deck to our charter boat.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex204.html#e204 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>We mentioned that there is a door out to the deck in our example. The following two sentences will create both the door and the other room:
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode251(code) {
+function pasteCode98(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Witnessed"\n\nThe player carries a device called a Trifield Natural EMF Meter. The description of the Meter is "This cost a pretty penny off the internet, but it\'s worth it: according to the website it has been programmed by PhD physicists to ignore manmade sources of fields and to respond only to paranormal EMF changes.\n\nIt also features an optional Tone Alarm, which can be turned on to indicate when readings spike. If the alarm is off, the meter just reads out the magnetic and electric field levels on a scale from 0-100 microteslas, or 0-1000 V/m.\n\nSince both fields are important, you keep the meter set to SUM mode. The meter has its own optional backlighting, so that you can see the reading even if your flashlight is off. Currently it is reading at [meter setting]." A Tone Alarm is part of the Meter. It is a device. The description of the Tone Alarm is "The Tone Alarm will make a noise, if the EMF picks up a spike."\n\nTo decide what number is meter setting:\n\tif the meter is switched off, decide on 0;\n\tif a ghost is touchable, decide on 35;\n\tif a ghost is visible, decide on 12;\n\tdecide on 0.\n\nAfter switching on the meter:\n\tsay "You turn on the meter. The needle steadies at [meter setting]."\n\nEvery turn: if the meter setting is greater than 10 and the Tone Alarm is switched on, say "[The Tone Alarm] shrieks."\n\nThirtieth Street Station is a room. "A huge, high, rectangular room with coffered ceilings, which looks grand but mostly makes you feel lonely and small. There are long benches in rows down the middle of the room, and an information desk with the train times, and a series of ticket windows, none of which matters very much at the moment."\n\nThe benches are an enterable supporter. They are scenery in the Station. The information desk is scenery in the Station. Some ticket windows are scenery in the Station. Instead of examining scenery in the Station: say "You\'re fairly sure that whatever is going on here has nothing to do with [the noun]." Understand "window" as ticket windows.\n\nThe mural is fixed in place in Thirtieth Street. "At the north side of the station is a particularly pointless and empty annex to the main room. It is dominated by a huge relief of sorts, and this is what you remember." Understand "metal" or "relief" or "huge" as the mural. The description of the mural is "It is both stylized and confusing, but you think it might be supposed to represent the various tasks and occupations of Philadelphia\'s population. The portions closer to the ground look as though they have recently been subjected to a light dusting of talcum powder. No unusual prints are evident."\n\nThe wind chimes are fixed in place in Thirtieth Street. "Carefully attached to the wall with a piece of duct tape and a hook is a light-weight set of wind chimes. Someone else has been here before you, it seems." The description is "Several of your friends use wind chimes as a sort of ghost alarm, since ghosts sometimes cause very localized movements of air when there is no natural breeze."\n\nA ghost is a kind of person. The pale figure is a ghost.\n\nAt 9:03 AM: move the pale figure to the location; say "You shiver with some sort of presence."\n\nTest me with "turn on alarm / turn on meter / z / z / z / x figure".\n');
+    myProject.pasteCode('The cabin door is south of the Cabin and north of the Deck. It is a door and scenery.\n\n');
 }
 </script>
-<a href="javascript:pasteCode251()"><img border=0 src=../doc_images/paste.png></a> &quot;Witnessed&quot;
+<a href="javascript:pasteCode98()"><img border=0 src=../doc_images/paste.png></a> The cabin door is south of the Cabin and north of the Deck. It is a door and scenery.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries a device called a Trifield Natural EMF Meter. The description of the Meter is &quot;This cost a pretty penny off the internet, but it's worth it: according to the website it has been programmed by PhD physicists to ignore manmade sources of fields and to respond only to paranormal EMF changes.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">It also features an optional Tone Alarm, which can be turned on to indicate when readings spike. If the alarm is off, the meter just reads out the magnetic and electric field levels on a scale from 0-100 microteslas, or 0-1000 V/m.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Since both fields are important, you keep the meter set to SUM mode. The meter has its own optional backlighting, so that you can see the reading even if your flashlight is off. Currently it is reading at [meter setting].&quot; A Tone Alarm is part of the Meter. It is a device. The description of the Tone Alarm is &quot;The Tone Alarm will make a noise, if the EMF picks up a spike.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide what number is meter setting:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the meter is switched off, decide on 0;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a ghost is touchable, decide on 35;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a ghost is visible, decide on 12;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on 0.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After switching on the meter:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You turn on the meter. The needle steadies at [meter setting].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn: if the meter setting is greater than 10 and the Tone Alarm is switched on, say &quot;[The Tone Alarm] shrieks.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Thirtieth Street Station is a room. &quot;A huge, high, rectangular room with coffered ceilings, which looks grand but mostly makes you feel lonely and small. There are long benches in rows down the middle of the room, and an information desk with the train times, and a series of ticket windows, none of which matters very much at the moment.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The benches are an enterable supporter. They are scenery in the Station. The information desk is scenery in the Station. Some ticket windows are scenery in the Station. Instead of examining scenery in the Station: say &quot;You're fairly sure that whatever is going on here has nothing to do with [the noun].&quot; Understand &quot;window&quot; as ticket windows.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The mural is fixed in place in Thirtieth Street. &quot;At the north side of the station is a particularly pointless and empty annex to the main room. It is dominated by a huge relief of sorts, and this is what you remember.&quot; Understand &quot;metal&quot; or &quot;relief&quot; or &quot;huge&quot; as the mural. The description of the mural is &quot;It is both stylized and confusing, but you think it might be supposed to represent the various tasks and occupations of Philadelphia's population. The portions closer to the ground look as though they have recently been subjected to a light dusting of talcum powder. No unusual prints are evident.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The wind chimes are fixed in place in Thirtieth Street. &quot;Carefully attached to the wall with a piece of duct tape and a hook is a light-weight set of wind chimes. Someone else has been here before you, it seems.&quot; The description is &quot;Several of your friends use wind chimes as a sort of ghost alarm, since ghosts sometimes cause very localized movements of air when there is no natural breeze.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A ghost is a kind of person. The pale figure is a ghost.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">At 9:03 AM: move the pale figure to the location; say &quot;You shiver with some sort of presence.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;turn on alarm / turn on meter / z / z / z / x figure&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc168.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Now Inform has constructed a generic room called &quot;Deck&quot; to the south. It has neither a description nor any contents yet, but we could fix that in time. It does have a view of the glacier, though, since we defined the glacier view to be everywhere.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc38.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e344"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex344.html#e344 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>163</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex344.html#e344 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A Haughty Spirit</font></b></a><br>Windows overlooking lower spaces which will prevent the player from climbing through if the lower space is too far below.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex344.html#e344 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc167.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc169.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e355"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex355.html#e355 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>20</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex355.html#e355 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Escape</font></b></a><br>Window that can be climbed through or looked through.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex355.html#e355 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e276"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex276.html#e276 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>21</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex276.html#e276 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Garibaldi 1</font></b></a><br>Providing a security readout device by which the player can check on the status of all doors in the game.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex276.html#e276 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc37.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc39.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

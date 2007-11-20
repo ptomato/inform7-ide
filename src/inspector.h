@@ -60,7 +60,7 @@ on_headings_row_activated              (GtkTreeView     *treeview,
                                         gpointer         user_data);
 
 void update_inspectors();
-void refresh_inspector(struct story *thestory);
+void refresh_inspector(Story *thestory);
 void save_inspector_window_position();
 gboolean reindex_headings(gpointer data);
 

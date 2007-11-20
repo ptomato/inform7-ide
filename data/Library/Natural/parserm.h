@@ -2771,11 +2771,8 @@ Global parsetoken_nesting = 0;
                 if (o == LanguageDescriptors-->l) jump AssumeDescriptor;
             pronoun__word = pronoun_word; pronoun__obj = pronoun_obj;
             etype = VAGUE_PE;
-            #ifdef NI_BUILD_COUNT;
-            return 0;
-            #ifnot;
+            if (parser_trace >= 3) print "  [Stop: unset pronoun]^";
             return GPR_FAIL;
-            #endif; ! NI_BUILD_COUNT
         }
     }
 
@@ -3181,7 +3178,12 @@ Global parsetoken_nesting = 0;
         if (match_classes-->marker > 0) print (the) k; else print (a) k;
 
         if (i < j-1)  print (string) COMMA__TX;
-        if (i == j-1) print (string) OR__TX;
+        if (i == j-1) {
+			#Ifdef I7_SERIAL_COMMA;
+			print ",";
+        	#Endif; ! I7_SERIAL_COMMA
+        	print (string) OR__TX;
+        }
     }
     L__M(##Miscellany, 57);
 
@@ -4332,7 +4334,7 @@ Constant SCORE__DIVISOR = 20;
     while (x ~= 0) {
         y = sibling(x);
         #ifdef NI_BUILD_COUNT;
-        if ((I7_Conceals(domain, x) == false) || (domain == actor))
+        if ((domain == actor) || (I7_Conceals(domain, x) == false))
             ScopeWithin_O(x, nosearch, context);
         #ifnot; ! NI_BUILD_COUNT
         ScopeWithin_O(x, nosearch, context);

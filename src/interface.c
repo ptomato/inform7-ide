@@ -204,6 +204,13 @@ static GnomeUIInfo show_tabs_menu_uiinfo[] =
     GDK_F3, (GdkModifierType) GDK_SHIFT_MASK, NULL
   },
   {
+    GNOME_APP_UI_ITEM, N_("S_kein"),
+    N_("Show the Skein tab"),
+    (gpointer) on_show_skein_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_F4, (GdkModifierType) GDK_SHIFT_MASK, NULL
+  },
+  {
     GNOME_APP_UI_ITEM, N_("_Game"),
     N_("Show the Game tab"),
     (gpointer) on_show_game_activate, NULL, NULL,
@@ -476,7 +483,7 @@ create_app_window (void)
   GtkWidget *skein_layout_l;
   GtkWidget *skein_trim_l;
   GtkWidget *skein_play_all_l;
-  GtkWidget *scrolledwindow3;
+  GtkWidget *skein_l_scroll;
   GtkWidget *skein_l;
   GtkWidget *label11;
   GtkWidget *vbox9;
@@ -488,12 +495,12 @@ create_app_window (void)
   GtkWidget *scrolledwindow9;
   GtkWidget *canvas3;
   GtkWidget *label12;
-  GtkWidget *scrolledwindow39;
-  GtkWidget *viewport1;
-  GtkWidget *vbox43;
+  GtkWidget *vbox50;
   GtkWidget *toolbar12;
   GtkWidget *game_back_l;
   GtkWidget *game_forward_l;
+  GtkWidget *scrolledwindow39;
+  GtkWidget *game_viewport_l;
   GtkWidget *game_l;
   GtkWidget *label13;
   GtkWidget *vbox47;
@@ -584,7 +591,7 @@ create_app_window (void)
   GtkWidget *skein_layout_r;
   GtkWidget *skein_trim_r;
   GtkWidget *skein_play_all_r;
-  GtkWidget *scrolledwindow6;
+  GtkWidget *skein_r_scroll;
   GtkWidget *skein_r;
   GtkWidget *label38;
   GtkWidget *vbox10;
@@ -596,12 +603,12 @@ create_app_window (void)
   GtkWidget *scrolledwindow10;
   GtkWidget *canvas4;
   GtkWidget *label39;
-  GtkWidget *scrolledwindow40;
-  GtkWidget *viewport2;
-  GtkWidget *vbox44;
+  GtkWidget *vbox49;
   GtkWidget *toolbar13;
   GtkWidget *game_back_r;
   GtkWidget *game_forward_r;
+  GtkWidget *scrolledwindow40;
+  GtkWidget *game_viewport_r;
   GtkWidget *game_r;
   GtkWidget *label40;
   GtkWidget *vbox48;
@@ -1071,6 +1078,7 @@ create_app_window (void)
   gtk_widget_show (skein_labels_l);
   gtk_tool_item_set_homogeneous (GTK_TOOL_ITEM (skein_labels_l), FALSE);
   gtk_container_add (GTK_CONTAINER (toolbar8), skein_labels_l);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (skein_labels_l), tooltips, _("Show a menu of the labelled knots: selecting a knot will go to it"), NULL);
   gtk_tool_item_set_is_important (GTK_TOOL_ITEM (skein_labels_l), TRUE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-preferences", tmp_toolbar_icon_size);
@@ -1084,22 +1092,23 @@ create_app_window (void)
   skein_trim_l = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Trim..."));
   gtk_widget_show (skein_trim_l);
   gtk_container_add (GTK_CONTAINER (toolbar8), skein_trim_l);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (skein_trim_l), tooltips, _("Remove all knots that have not been locked"), NULL);
 
   tmp_image = gtk_image_new_from_stock ("gtk-media-play", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   skein_play_all_l = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Play All"));
   gtk_widget_show (skein_play_all_l);
   gtk_container_add (GTK_CONTAINER (toolbar8), skein_play_all_l);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (skein_play_all_l), tooltips, _("Play all threads that lead to a blessed knot"), NULL);
   gtk_tool_item_set_is_important (GTK_TOOL_ITEM (skein_play_all_l), TRUE);
 
-  scrolledwindow3 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_show (scrolledwindow3);
-  gtk_box_pack_start (GTK_BOX (vbox3), scrolledwindow3, TRUE, TRUE, 0);
-  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow3), GTK_SHADOW_IN);
+  skein_l_scroll = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (skein_l_scroll);
+  gtk_box_pack_start (GTK_BOX (vbox3), skein_l_scroll, TRUE, TRUE, 0);
 
-  skein_l = gnome_canvas_new_aa ();
+  skein_l = gnome_canvas_new ();
   gtk_widget_show (skein_l);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow3), skein_l);
+  gtk_container_add (GTK_CONTAINER (skein_l_scroll), skein_l);
   gnome_canvas_set_scroll_region (GNOME_CANVAS (skein_l), 0, 0, 100, 100);
 
   label11 = gtk_label_new (_("Skein"));
@@ -1159,22 +1168,13 @@ create_app_window (void)
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook_l), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook_l), 4), label12);
   gtk_label_set_angle (GTK_LABEL (label12), 270);
 
-  scrolledwindow39 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_show (scrolledwindow39);
-  gtk_container_add (GTK_CONTAINER (notebook_l), scrolledwindow39);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow39), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-
-  viewport1 = gtk_viewport_new (NULL, NULL);
-  gtk_widget_show (viewport1);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow39), viewport1);
-
-  vbox43 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_show (vbox43);
-  gtk_container_add (GTK_CONTAINER (viewport1), vbox43);
+  vbox50 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox50);
+  gtk_container_add (GTK_CONTAINER (notebook_l), vbox50);
 
   toolbar12 = gtk_toolbar_new ();
   gtk_widget_show (toolbar12);
-  gtk_box_pack_start (GTK_BOX (vbox43), toolbar12, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox50), toolbar12, FALSE, FALSE, 0);
   gtk_toolbar_set_style (GTK_TOOLBAR (toolbar12), GTK_TOOLBAR_BOTH_HORIZ);
   tmp_toolbar_icon_size = gtk_toolbar_get_icon_size (GTK_TOOLBAR (toolbar12));
 
@@ -1192,9 +1192,19 @@ create_app_window (void)
   gtk_container_add (GTK_CONTAINER (toolbar12), game_forward_l);
   gtk_widget_set_sensitive (game_forward_l, FALSE);
 
+  scrolledwindow39 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow39);
+  gtk_box_pack_start (GTK_BOX (vbox50), scrolledwindow39, TRUE, TRUE, 0);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow39), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+  game_viewport_l = gtk_viewport_new (NULL, NULL);
+  gtk_widget_show (game_viewport_l);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow39), game_viewport_l);
+  gtk_viewport_set_shadow_type (GTK_VIEWPORT (game_viewport_l), GTK_SHADOW_NONE);
+
   game_l = game_create ("game_l", "", "", 0, 0);
   gtk_widget_show (game_l);
-  gtk_box_pack_start (GTK_BOX (vbox43), game_l, TRUE, TRUE, 0);
+  gtk_container_add (GTK_CONTAINER (game_viewport_l), game_l);
   GTK_WIDGET_SET_FLAGS (game_l, GTK_CAN_FOCUS);
   GTK_WIDGET_UNSET_FLAGS (game_l, GTK_CAN_DEFAULT);
 
@@ -1674,6 +1684,7 @@ create_app_window (void)
   gtk_widget_show (skein_labels_r);
   gtk_tool_item_set_homogeneous (GTK_TOOL_ITEM (skein_labels_r), FALSE);
   gtk_container_add (GTK_CONTAINER (toolbar9), skein_labels_r);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (skein_labels_r), tooltips, _("Show a menu of the labelled knots: selecting a knot will go to it"), NULL);
   gtk_tool_item_set_is_important (GTK_TOOL_ITEM (skein_labels_r), TRUE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-preferences", tmp_toolbar_icon_size);
@@ -1687,22 +1698,23 @@ create_app_window (void)
   skein_trim_r = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Trim..."));
   gtk_widget_show (skein_trim_r);
   gtk_container_add (GTK_CONTAINER (toolbar9), skein_trim_r);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (skein_trim_r), tooltips, _("Remove all knots that have not been locked"), NULL);
 
   tmp_image = gtk_image_new_from_stock ("gtk-media-play", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   skein_play_all_r = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Play All"));
   gtk_widget_show (skein_play_all_r);
   gtk_container_add (GTK_CONTAINER (toolbar9), skein_play_all_r);
+  gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (skein_play_all_r), tooltips, _("Play all threads that lead to a blessed knot"), NULL);
   gtk_tool_item_set_is_important (GTK_TOOL_ITEM (skein_play_all_r), TRUE);
 
-  scrolledwindow6 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_show (scrolledwindow6);
-  gtk_box_pack_start (GTK_BOX (vbox6), scrolledwindow6, TRUE, TRUE, 0);
-  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow6), GTK_SHADOW_IN);
+  skein_r_scroll = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (skein_r_scroll);
+  gtk_box_pack_start (GTK_BOX (vbox6), skein_r_scroll, TRUE, TRUE, 0);
 
-  skein_r = gnome_canvas_new_aa ();
+  skein_r = gnome_canvas_new ();
   gtk_widget_show (skein_r);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow6), skein_r);
+  gtk_container_add (GTK_CONTAINER (skein_r_scroll), skein_r);
   gnome_canvas_set_scroll_region (GNOME_CANVAS (skein_r), 0, 0, 100, 100);
 
   label38 = gtk_label_new (_("Skein"));
@@ -1762,22 +1774,13 @@ create_app_window (void)
   gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook_r), gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook_r), 4), label39);
   gtk_label_set_angle (GTK_LABEL (label39), 270);
 
-  scrolledwindow40 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_show (scrolledwindow40);
-  gtk_container_add (GTK_CONTAINER (notebook_r), scrolledwindow40);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow40), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-
-  viewport2 = gtk_viewport_new (NULL, NULL);
-  gtk_widget_show (viewport2);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow40), viewport2);
-
-  vbox44 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_show (vbox44);
-  gtk_container_add (GTK_CONTAINER (viewport2), vbox44);
+  vbox49 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox49);
+  gtk_container_add (GTK_CONTAINER (notebook_r), vbox49);
 
   toolbar13 = gtk_toolbar_new ();
   gtk_widget_show (toolbar13);
-  gtk_box_pack_start (GTK_BOX (vbox44), toolbar13, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox49), toolbar13, FALSE, FALSE, 0);
   gtk_toolbar_set_style (GTK_TOOLBAR (toolbar13), GTK_TOOLBAR_BOTH_HORIZ);
   tmp_toolbar_icon_size = gtk_toolbar_get_icon_size (GTK_TOOLBAR (toolbar13));
 
@@ -1795,9 +1798,19 @@ create_app_window (void)
   gtk_container_add (GTK_CONTAINER (toolbar13), game_forward_r);
   gtk_widget_set_sensitive (game_forward_r, FALSE);
 
+  scrolledwindow40 = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow40);
+  gtk_box_pack_start (GTK_BOX (vbox49), scrolledwindow40, TRUE, TRUE, 0);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow40), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+  game_viewport_r = gtk_viewport_new (NULL, NULL);
+  gtk_widget_show (game_viewport_r);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow40), game_viewport_r);
+  gtk_viewport_set_shadow_type (GTK_VIEWPORT (game_viewport_r), GTK_SHADOW_NONE);
+
   game_r = game_create ("game_r", "", "", 0, 0);
   gtk_widget_show (game_r);
-  gtk_box_pack_start (GTK_BOX (vbox44), game_r, TRUE, TRUE, 0);
+  gtk_container_add (GTK_CONTAINER (game_viewport_r), game_r);
   GTK_WIDGET_SET_FLAGS (game_r, GTK_CAN_FOCUS);
   GTK_WIDGET_UNSET_FLAGS (game_r, GTK_CAN_DEFAULT);
 
@@ -2027,6 +2040,9 @@ create_app_window (void)
   g_signal_connect ((gpointer) game_forward_l, "clicked",
                     G_CALLBACK (on_forward_l_clicked),
                     NULL);
+  g_signal_connect ((gpointer) game_viewport_l, "size_allocate",
+                    G_CALLBACK (on_game_viewport_l_size_allocate),
+                    NULL);
   g_signal_connect ((gpointer) docs_back_l, "clicked",
                     G_CALLBACK (on_back_l_clicked),
                     NULL);
@@ -2104,6 +2120,9 @@ create_app_window (void)
                     NULL);
   g_signal_connect ((gpointer) game_forward_r, "clicked",
                     G_CALLBACK (on_forward_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) game_viewport_r, "size_allocate",
+                    G_CALLBACK (on_game_viewport_r_size_allocate),
                     NULL);
   g_signal_connect ((gpointer) docs_back_r, "clicked",
                     G_CALLBACK (on_back_r_clicked),
@@ -2188,12 +2207,13 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[0].widget, "show_source");
   GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[1].widget, "show_errors");
   GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[2].widget, "show_index");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[3].widget, "show_game");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[4].widget, "show_documentation");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[5].widget, "show_settings");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[6].widget, "separator28");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[7].widget, "switch_sides");
-  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[8].widget, "next_sub_panel");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[3].widget, "show_skein");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[4].widget, "show_game");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[5].widget, "show_documentation");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[6].widget, "show_settings");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[7].widget, "separator28");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[8].widget, "switch_sides");
+  GLADE_HOOKUP_OBJECT (app_window, show_tabs_menu_uiinfo[9].widget, "next_sub_panel");
   GLADE_HOOKUP_OBJECT (app_window, windows_menu_uiinfo[2].widget, "show_index");
   GLADE_HOOKUP_OBJECT (app_window, show_index_menu_uiinfo[0].widget, "show_actions");
   GLADE_HOOKUP_OBJECT (app_window, show_index_menu_uiinfo[1].widget, "show_contents");
@@ -2291,7 +2311,7 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, skein_layout_l, "skein_layout_l");
   GLADE_HOOKUP_OBJECT (app_window, skein_trim_l, "skein_trim_l");
   GLADE_HOOKUP_OBJECT (app_window, skein_play_all_l, "skein_play_all_l");
-  GLADE_HOOKUP_OBJECT (app_window, scrolledwindow3, "scrolledwindow3");
+  GLADE_HOOKUP_OBJECT (app_window, skein_l_scroll, "skein_l_scroll");
   GLADE_HOOKUP_OBJECT (app_window, skein_l, "skein_l");
   GLADE_HOOKUP_OBJECT (app_window, label11, "label11");
   GLADE_HOOKUP_OBJECT (app_window, vbox9, "vbox9");
@@ -2303,12 +2323,12 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, scrolledwindow9, "scrolledwindow9");
   GLADE_HOOKUP_OBJECT (app_window, canvas3, "canvas3");
   GLADE_HOOKUP_OBJECT (app_window, label12, "label12");
-  GLADE_HOOKUP_OBJECT (app_window, scrolledwindow39, "scrolledwindow39");
-  GLADE_HOOKUP_OBJECT (app_window, viewport1, "viewport1");
-  GLADE_HOOKUP_OBJECT (app_window, vbox43, "vbox43");
+  GLADE_HOOKUP_OBJECT (app_window, vbox50, "vbox50");
   GLADE_HOOKUP_OBJECT (app_window, toolbar12, "toolbar12");
   GLADE_HOOKUP_OBJECT (app_window, game_back_l, "game_back_l");
   GLADE_HOOKUP_OBJECT (app_window, game_forward_l, "game_forward_l");
+  GLADE_HOOKUP_OBJECT (app_window, scrolledwindow39, "scrolledwindow39");
+  GLADE_HOOKUP_OBJECT (app_window, game_viewport_l, "game_viewport_l");
   GLADE_HOOKUP_OBJECT (app_window, game_l, "game_l");
   GLADE_HOOKUP_OBJECT (app_window, label13, "label13");
   GLADE_HOOKUP_OBJECT (app_window, vbox47, "vbox47");
@@ -2398,7 +2418,7 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, skein_layout_r, "skein_layout_r");
   GLADE_HOOKUP_OBJECT (app_window, skein_trim_r, "skein_trim_r");
   GLADE_HOOKUP_OBJECT (app_window, skein_play_all_r, "skein_play_all_r");
-  GLADE_HOOKUP_OBJECT (app_window, scrolledwindow6, "scrolledwindow6");
+  GLADE_HOOKUP_OBJECT (app_window, skein_r_scroll, "skein_r_scroll");
   GLADE_HOOKUP_OBJECT (app_window, skein_r, "skein_r");
   GLADE_HOOKUP_OBJECT (app_window, label38, "label38");
   GLADE_HOOKUP_OBJECT (app_window, vbox10, "vbox10");
@@ -2410,12 +2430,12 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, scrolledwindow10, "scrolledwindow10");
   GLADE_HOOKUP_OBJECT (app_window, canvas4, "canvas4");
   GLADE_HOOKUP_OBJECT (app_window, label39, "label39");
-  GLADE_HOOKUP_OBJECT (app_window, scrolledwindow40, "scrolledwindow40");
-  GLADE_HOOKUP_OBJECT (app_window, viewport2, "viewport2");
-  GLADE_HOOKUP_OBJECT (app_window, vbox44, "vbox44");
+  GLADE_HOOKUP_OBJECT (app_window, vbox49, "vbox49");
   GLADE_HOOKUP_OBJECT (app_window, toolbar13, "toolbar13");
   GLADE_HOOKUP_OBJECT (app_window, game_back_r, "game_back_r");
   GLADE_HOOKUP_OBJECT (app_window, game_forward_r, "game_forward_r");
+  GLADE_HOOKUP_OBJECT (app_window, scrolledwindow40, "scrolledwindow40");
+  GLADE_HOOKUP_OBJECT (app_window, game_viewport_r, "game_viewport_r");
   GLADE_HOOKUP_OBJECT (app_window, game_r, "game_r");
   GLADE_HOOKUP_OBJECT (app_window, label40, "label40");
   GLADE_HOOKUP_OBJECT (app_window, vbox48, "vbox48");
@@ -2484,7 +2504,7 @@ create_about_window (void)
   gtk_window_set_destroy_with_parent (GTK_WINDOW (about_window), TRUE);
   gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (about_window), VERSION);
   gtk_about_dialog_set_name (GTK_ABOUT_DIALOG (about_window), _("GNOME Inform 7"));
-  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_window), _("Inform (1.0 6.31/4X60)\n\nCopyright 2006-2007 P.F. Chimento (front end),\nGraham Nelson et al. (compiler)."));
+  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_window), _("Inform (1.0 6.31/5G67)\n\nCopyright 2006-2007 P.F. Chimento (front end),\nGraham Nelson et al. (compiler)."));
   gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (about_window), _("A GNOME IDE for Inform 7"));
   gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (about_window), "www.inform-fiction.org");
   gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (about_window), _("www.inform-fiction.org"));
@@ -2540,7 +2560,7 @@ create_welcome_dialog (void)
   gtk_widget_show (vbox14);
   gtk_container_add (GTK_CONTAINER (welcome_dialog), vbox14);
 
-  welcome_label = gtk_label_new (_("Welcome to Inform 7, a design system\nfor interactive fiction based on natural\nlanguage.\n\nTo begin writing, please click one of the\nthree buttons below.\n\nInform 7 was created by Graham Nelson,\nwith the help of Emily Short and many\nothers. The GNOME front-end was written\nby P.F. Chimento.\n\nThis is Public Beta build 4X60."));
+  welcome_label = gtk_label_new (_("Welcome to Inform 7, a design system\nfor interactive fiction based on natural\nlanguage.\n\nTo begin writing, please click one of the\nthree buttons below.\n\nInform 7 was created by Graham Nelson,\nwith the help of Emily Short and many\nothers. The GNOME front-end was written\nby P.F. Chimento.\n\nThis is Public Beta build 5G67."));
   gtk_widget_show (welcome_label);
   gtk_box_pack_start (GTK_BOX (vbox14), welcome_label, FALSE, FALSE, 0);
   gtk_label_set_line_wrap (GTK_LABEL (welcome_label), TRUE);
@@ -4407,8 +4427,8 @@ create_inspector_window (void)
   GtkWidget *headings;
   GtkWidget *label84;
   GtkWidget *skein_inspector;
-  GtkWidget *scrolledwindow44;
-  GtkWidget *canvas5;
+  GtkWidget *skein_inspector_scroll;
+  GtkWidget *skein_inspector_canvas;
   GtkWidget *label85;
   GtkWidget *search_inspector;
   GtkWidget *vbox35;
@@ -4494,20 +4514,17 @@ create_inspector_window (void)
   gtk_expander_set_label_widget (GTK_EXPANDER (headings_inspector), label84);
 
   skein_inspector = gtk_expander_new (NULL);
-  gtk_widget_show (skein_inspector);
   gtk_box_pack_start (GTK_BOX (vbox34), skein_inspector, TRUE, TRUE, 0);
-  gtk_expander_set_expanded (GTK_EXPANDER (skein_inspector), TRUE);
 
-  scrolledwindow44 = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_show (scrolledwindow44);
-  gtk_container_add (GTK_CONTAINER (skein_inspector), scrolledwindow44);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow44), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow44), GTK_SHADOW_IN);
+  skein_inspector_scroll = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (skein_inspector_scroll);
+  gtk_container_add (GTK_CONTAINER (skein_inspector), skein_inspector_scroll);
 
-  canvas5 = gnome_canvas_new ();
-  gtk_widget_show (canvas5);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow44), canvas5);
-  gnome_canvas_set_scroll_region (GNOME_CANVAS (canvas5), 0, 0, 100, 100);
+  skein_inspector_canvas = gnome_canvas_new ();
+  gtk_widget_show (skein_inspector_canvas);
+  gtk_container_add (GTK_CONTAINER (skein_inspector_scroll), skein_inspector_canvas);
+  gtk_widget_set_size_request (skein_inspector_canvas, -1, 200);
+  gnome_canvas_set_scroll_region (GNOME_CANVAS (skein_inspector_canvas), 0, 0, 100, 100);
 
   label85 = gtk_label_new (_("Skein"));
   gtk_widget_show (label85);
@@ -4618,8 +4635,8 @@ create_inspector_window (void)
   GLADE_HOOKUP_OBJECT (inspector_window, headings, "headings");
   GLADE_HOOKUP_OBJECT (inspector_window, label84, "label84");
   GLADE_HOOKUP_OBJECT (inspector_window, skein_inspector, "skein_inspector");
-  GLADE_HOOKUP_OBJECT (inspector_window, scrolledwindow44, "scrolledwindow44");
-  GLADE_HOOKUP_OBJECT (inspector_window, canvas5, "canvas5");
+  GLADE_HOOKUP_OBJECT (inspector_window, skein_inspector_scroll, "skein_inspector_scroll");
+  GLADE_HOOKUP_OBJECT (inspector_window, skein_inspector_canvas, "skein_inspector_canvas");
   GLADE_HOOKUP_OBJECT (inspector_window, label85, "label85");
   GLADE_HOOKUP_OBJECT (inspector_window, search_inspector, "search_inspector");
   GLADE_HOOKUP_OBJECT (inspector_window, vbox35, "vbox35");

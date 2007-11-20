@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.4. When play ends</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.3. Pattern matching</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,136 +19,120 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Big Sky Country" -->
-<!-- SEARCH SECTION "Ex 123" -->
-<!-- SEARCH SORT "Ex 009-004-123" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc130.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc132.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.4. When play ends</b></font></td></tr></table>
+<!-- SEARCH TITLE "Ferragamo Again" -->
+<!-- SEARCH SECTION "Ex 155" -->
+<!-- SEARCH SORT "Ex 011-003-155" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc155.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc157.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.3. Pattern matching</b></font></td></tr></table>
 <p>
-<p>Short of something like a power cut, the game can only end when one of the two participants chooses to end it: either the player, by deciding that enough is enough, or us.
+<p>The following phrases all use different wording from each other:
 <p>
-<p>If we decide that a conclusion of some kind, happy or not, has been reached, we can herald that moment with phrases like so:
-<p>
-<blockquote><font color="#000080">end the game in death
-<br>end the game in victory
-<br>end the game saying &quot;You have come to a full stop&quot;
+<blockquote><font color="#000080">award 2 points
+<br>award 8 points
+<br>award 30 points
 </font></blockquote><p>
 <p>
-<p>The phrase &quot;end the game in death&quot; is equivalent to ending it saying &quot;You have died&quot;, and similarly victory simply means announcing &quot;You have won&quot;. (Note that the actual ending does not follow instantly, but rather, at the next available opportunity, which usually means when the current rule has finished.)
+<p>but they have the same meaning, with only one detail being different between them. A single definition (internal to Inform, since &quot;award ... points&quot; comes built in) covers these and all similar cases. It is written like so:
 <p>
-<p>The more general phrase allows any text (short, please) to be used:
-<p>
-<blockquote><font color="#000080">Instead of eating the fish, end the game saying &quot;You have been poisoned&quot;.
+<blockquote><font color="#000080">To award (some - a number) points: ...
 </font></blockquote><p>
 <p>
-<p>The rulebook &quot;when play ends&quot; is the matching bookend to &quot;when play begins&quot;. It is followed when the game decides to end (not when the player simply gives up and quits), and before any epitaph like
+<p>This pattern of words matches the text &quot;award 4 points&quot;, and indeed &quot;award four points&quot;, but not
 <p>
-<blockquote><font color="#000080">*** You have been poisoned ***
+<blockquote><font color="#000080">award &quot;blue cheese&quot; points;
 </font></blockquote><p>
 <p>
-<p>appears. For example:
+<p>which results in the following error:
 <p>
-<blockquote><font color="#000080">When play ends, say &quot;Oh dear.&quot;
+<blockquote><font color="#000080"><b>Problem.</b> You wrote 'award &quot;blue cheese&quot; points' <img border=0 src=../doc_images/Reveal.png>, but '&quot;blue cheese&quot;' seems to be some text, whereas I was expecting to find a number there.
 </font></blockquote><p>
 <p>
-<p>In such a rule, the phrase &quot;resume the game&quot; will cause play to continue exactly as if no ending had been reached at all:
+<p>The number does not need to be a literal constant such as 52, but can be anything which works out to be a number: the name of a number variable, for instance.
 <p>
-<blockquote><font color="#000080">When play ends when the game ended in death:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh dear. Still, here's another chance.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;resume the game.
+<p>The bracketed part of the definition takes the form (name - what it is). The definition only applies if the text supplied agrees with the &quot;what it is&quot; part - for instance, 8 agreed with being a number, but &quot;blue cheese&quot; did not. If the definition does apply, then the name holds whatever value was supplied. For instance:
+<p>
+<blockquote><font color="#000080">To slam shut (box - an open container): say &quot;With great panache, you slam shut [the box].&quot;
 </font></blockquote><p>
 <p>
-<p>The conditions &quot;the game ended in death&quot; and &quot;the game ended in victory&quot; can be used by &quot;When play ends&quot; rules to distinguish the outcome, if it matters.
+<p>The &quot;what it is&quot; will usually be a description of some objects, or the name of a kind of value, but it is also allowed to give a specific value. For instance, we could define:
+<p>
+<blockquote><font color="#000080">To award (some - 13) points: say &quot;You shiver uncontrollably.&quot;
+</font></blockquote><p>
+<p>
+<p>which would withhold this unlucky bounty, applying only to that one case. (As elsewhere in Inform, more specific definitions take priority over more general ones, so &quot;award (some - 13) points&quot; takes priority over &quot;award (some - a number) points&quot;.)
+<p>
+<p>Sometimes it will not be possible to tell if the value supplied meets the requirements until the game is actually playing. If, at run-time, no definition fits some phrase which has to be carried out, a run-time problem message is produced.
+<p>
+<p>Finally, and more straightforwardly, we can specify variations in wording using slashes between alternative words in a &quot;To ...&quot; definition. For instance:
+<p>
+<blockquote><font color="#000080">To award (some - a number) point/points: ...
+</font></blockquote><p>
+<p>
+<p>allows the final word to be either &quot;point&quot; or &quot;points&quot;. Slashes like this can only be used with literal words (not bracketed values) and give alternative forms only of a single word at a time. (If we need more variation than that, we should make more than one definition.)
 <p>
 <p><hr><p>
+<a name="e312"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex312.html#e312 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>154</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex312.html#e312 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ahem</font></b></a><br>Writing a phrase, with several variant forms, whose function is to follow a rule several times.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex312.html#e312 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e130"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc131.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>123</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc131.html#e130 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Big Sky Country</font></b></a><br>Allowing the player to continue play after a fatal accident, but penalizing him by scattering his possessions around the game map.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex130.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e130"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc156.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>155</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc156.html#e130 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Ferragamo Again</font></b></a><br>Using the same phrase to produce different results with different characters.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex130.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Some older games allowed the player to be resurrected after a death, but punished him by distributing his possessions far and wide. Here we emulate that effect.
+<p>Here we use phrases that match individual items where possible, and the general kind otherwise:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode211(code) {
+function pasteCode245(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Big Sky Country"\n\nWhen play begins: say "There\'s a bit of a drive over from Anaconda, Montana, and then through a couple or three ghost towns, but finally you find what you\'re looking for, and strike out on foot..."\n\nEntrance to Devil\'s Canyon is a room. "You are at the top of a steep road, which proceeds down into the canyon proper." A sign is in Devil\'s Canyon. It is fixed in place. "An ominous sign has been put up by the local sheriff\'s office." The description is "PROCEED AT OWN RISK - NO RESCUES!"\n\nInstead of going down when a random chance of 1 in 3 succeeds:\n\tsay "Whoooops, your footing is not as secure as you thought...";\n\tend the game in death.\n\nDusty Path is below Entrance. "A dusty path, with grey-brown thorny bushes on either side. Immediately to your right is a sheer drop; far below you can see the rusting remains of a Model T that some fool tried to drive by here."\n\nHairpin is below Dusty Path. "A sharp bend in the road, doubling back down towards the bottom of the canyon. Just north of here there is also a small cavern of some kind[if the stick pin is in the cavern], which attracts your eye with some glittery thing[end if]."\n\nThe Cavern is north of Hairpin. "Really not much more than a little hollow in the side of the canyon." In the cavern are a snake and a diamond stick pin. The snake is an animal. The description of the snake is "You\'re no expert, but it looks like a rattler."\n\nInstead of taking the diamond stick pin in the presence of the snake: say "Turns out the snake is partial to that there pin, and takes exception to your intending to make off with it."; end the game in death.\n\n[In a fuller implementation of this game, we might make it possible to get by the snake, but in this version, it\'s just going to remain troublesome.]\n\nCrooked Path is below Hairpin. "You\'re about two thirds of the way down to the bottom of the cavern at this point."\n\nAt the Spot is below Crooked Path. "This\'ll be it: a bare patch of ground that might as well have an X painted right on it."\n\nRule for supplying a missing noun while digging:\n\tchange noun to the location.\n\nUnderstand "dig" or "dig hole/here" or "dig in ground/dirt/earth" as digging. Digging is an action applying to one thing.\n\nInstead of digging at the spot:\n\tsay "You dig and dig, and after a half hour or so, sure enough, you do turn up a big box of gold! You\'re going to be richer than God and Bill Gates put together.";\n\taward 5 points;\n\tend the game in victory.\n\nInstead of digging at the spot when the player does not carry the shovel:\n\tsay "What, without your shovel? That won\'t work too well."\n\nThe player carries a walking stick. The player wears a hat, a whistle, and a daypack. The daypack contains a mylar blanket, a granola bar, a cellular phone, a water bottle, a folding shovel, and a photocopied map. The granola bar is edible. Instead of drinking the water, say "You quench your thirst, for the time being." The description of the map is "The map shows the winding path of Devil\'s Canyon, with a large X down by the south end. That would be where your uncle Jesse buried the gold from the train robbery."\n\nThe maximum score is 5.\n\nWhen play ends when the game ended in death:\n\tsay "Oh dear, that ought to be fatal! However, if you like I can get you out of it...\n\n\tShall I? >";\n\tif the player consents\n\tbegin;\n\t\trepeat with item running through things had by the player\n\t\tbegin;\n\t\t\tmove the item to a random visited room;\n\t\tend repeat;\n\t\tsay "A strong wind picks you up and sets you back at [the location], though perhaps minus a few of your things.";\n\t\tresume the game;\n\t\ttry looking;\n\tend if.\n\n');
+    myProject.pasteCode('"Ferragamo Again"\n\nThe Break Room is a room. Vanessa, Tina, and Lisa are women in the Break Room. Mark and Holman are men in the Break Room.\n\nUnderstand the commands "ask" and "tell" and "answer" as something new.\n\nUnderstand "talk about [any subject]" as talking about. Talking about is an action applying to one visible thing.\n\nUnderstand "talk about [text]" as talking randomly about. Talking randomly about is an action applying to one topic. Carry out talking randomly about: say "Mostly you\'re interested in [the list of subjects]."\n\nCarry out talking about something:\n\tchange the previous subject to the noun.\n\nReport talking about something:\n\tsay "You chat for a while about [the noun]."\n\nA subject is a kind of thing. Assyrian vowel sounds, designer handbags, and instant run-off voting are subjects. Understand "linguistics" and "mute" and "stop" as sounds. Understand "prada" and "tods" and "coach" and "carmen marc valvo" as designer handbags. Understand "reform" and "election" and "election fraud" and "two-party system" and "Diebold" as instant run-off voting.\n\nTo say (annoyed-person - a person) gestures in irritation:\n\tsay "[The annoyed-person] sighs heavily. [run paragraph on]"\n\nTo say (annoyed-person - Vanessa) gestures in irritation:\n\tsay "[The annoyed-person] takes off her glasses and polishes them on her sleeve. [run paragraph on]".\n\nTo say (annoyed-person - Holman) gestures in irritation:\n\tsay "Holman bobs his head. [run paragraph on]"\n\nThe previous subject is a subject that varies.\n\nInstead of talking about something for more than one turn:\n\tif the noun is the previous subject, say "[a random visible person gestures in irritation]Maybe you should let this one go.[line break][paragraph break]";\n\totherwise continue the action.\n\nTest me with "talk about chocolate / talk about vowel sounds / g / talk about handbags / talk about prada / talk about tods".\n');
 }
 </script>
-<a href="javascript:pasteCode211()"><img border=0 src=../doc_images/paste.png></a> &quot;Big Sky Country&quot;
+<a href="javascript:pasteCode245()"><img border=0 src=../doc_images/paste.png></a> &quot;Ferragamo Again&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins: say &quot;There's a bit of a drive over from Anaconda, Montana, and then through a couple or three ghost towns, but finally you find what you're looking for, and strike out on foot...&quot;
+<blockquote><font color="#000080">The Break Room is a room. Vanessa, Tina, and Lisa are women in the Break Room. Mark and Holman are men in the Break Room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Entrance to Devil's Canyon is a room. &quot;You are at the top of a steep road, which proceeds down into the canyon proper.&quot; A sign is in Devil's Canyon. It is fixed in place. &quot;An ominous sign has been put up by the local sheriff's office.&quot; The description is &quot;PROCEED AT OWN RISK - NO RESCUES!&quot;
+<blockquote><font color="#000080">Understand the commands &quot;ask&quot; and &quot;tell&quot; and &quot;answer&quot; as something new.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going down when a random chance of 1 in 3 succeeds:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Whoooops, your footing is not as secure as you thought...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in death.
+<blockquote><font color="#000080">Understand &quot;talk about [any subject]&quot; as talking about. Talking about is an action applying to one visible thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Dusty Path is below Entrance. &quot;A dusty path, with grey-brown thorny bushes on either side. Immediately to your right is a sheer drop; far below you can see the rusting remains of a Model T that some fool tried to drive by here.&quot;
+<blockquote><font color="#000080">Understand &quot;talk about [text]&quot; as talking randomly about. Talking randomly about is an action applying to one topic. Carry out talking randomly about: say &quot;Mostly you're interested in [the list of subjects].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Hairpin is below Dusty Path. &quot;A sharp bend in the road, doubling back down towards the bottom of the canyon. Just north of here there is also a small cavern of some kind[if the stick pin is in the cavern], which attracts your eye with some glittery thing[end if].&quot;
+<blockquote><font color="#000080">Carry out talking about something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the previous subject to the noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Cavern is north of Hairpin. &quot;Really not much more than a little hollow in the side of the canyon.&quot; In the cavern are a snake and a diamond stick pin. The snake is an animal. The description of the snake is &quot;You're no expert, but it looks like a rattler.&quot;
+<blockquote><font color="#000080">Report talking about something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You chat for a while about [the noun].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of taking the diamond stick pin in the presence of the snake: say &quot;Turns out the snake is partial to that there pin, and takes exception to your intending to make off with it.&quot;; end the game in death.
+<blockquote><font color="#000080">A subject is a kind of thing. Assyrian vowel sounds, designer handbags, and instant run-off voting are subjects. Understand &quot;linguistics&quot; and &quot;mute&quot; and &quot;stop&quot; as sounds. Understand &quot;prada&quot; and &quot;tods&quot; and &quot;coach&quot; and &quot;carmen marc valvo&quot; as designer handbags. Understand &quot;reform&quot; and &quot;election&quot; and &quot;election fraud&quot; and &quot;two-party system&quot; and &quot;Diebold&quot; as instant run-off voting.
 </font></blockquote><p>
 <p>
-<p>In a fuller implementation of this game, we might make it possible to get by the snake, but in this version, it's just going to remain troublesome.
-<p>
-<blockquote><font color="#000080">Crooked Path is below Hairpin. &quot;You're about two thirds of the way down to the bottom of the cavern at this point.&quot;
+<blockquote><font color="#000080">To say (annoyed-person - a person) gestures in irritation:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The annoyed-person] sighs heavily. [run paragraph on]&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">At the Spot is below Crooked Path. &quot;This'll be it: a bare patch of ground that might as well have an X painted right on it.&quot;
+<blockquote><font color="#000080">To say (annoyed-person - Vanessa) gestures in irritation:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The annoyed-person] takes off her glasses and polishes them on her sleeve. [run paragraph on]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for supplying a missing noun while digging:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change noun to the location.
+<blockquote><font color="#000080">To say (annoyed-person - Holman) gestures in irritation:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Holman bobs his head. [run paragraph on]&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;dig&quot; or &quot;dig hole/here&quot; or &quot;dig in ground/dirt/earth&quot; as digging. Digging is an action applying to one thing.
+<blockquote><font color="#000080">The previous subject is a subject that varies.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of digging at the spot:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You dig and dig, and after a half hour or so, sure enough, you do turn up a big box of gold! You're going to be richer than God and Bill Gates put together.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;award 5 points;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
+<blockquote><font color="#000080">Instead of talking about something for more than one turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the previous subject, say &quot;[a random visible person gestures in irritation]Maybe you should let this one go.[line break][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise continue the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of digging at the spot when the player does not carry the shovel:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;What, without your shovel? That won't work too well.&quot;
+<blockquote><font color="#000080">Test me with &quot;talk about chocolate / talk about vowel sounds / g / talk about handbags / talk about prada / talk about tods&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries a walking stick. The player wears a hat, a whistle, and a daypack. The daypack contains a mylar blanket, a granola bar, a cellular phone, a water bottle, a folding shovel, and a photocopied map. The granola bar is edible. Instead of drinking the water, say &quot;You quench your thirst, for the time being.&quot; The description of the map is &quot;The map shows the winding path of Devil's Canyon, with a large X down by the south end. That would be where your uncle Jesse buried the gold from the train robbery.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The maximum score is 5.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play ends when the game ended in death:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh dear, that ought to be fatal! However, if you like I can get you out of it...
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">&nbsp;&nbsp;&nbsp;&nbsp;Shall I? >&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player consents
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things had by the player
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the item to a random visited room;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A strong wind picks you up and sets you back at [the location], though perhaps minus a few of your things.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resume the game;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try looking;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>&quot;If the player consents&quot; is just a convenient way to ask a yes/no question that the player must answer before going on with the game.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc131.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc156.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc130.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc132.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc155.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc157.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

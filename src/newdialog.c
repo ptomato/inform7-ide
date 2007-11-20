@@ -287,7 +287,7 @@ on_new_druid_inform7_page_finish       (GnomeDruidPage  *gnomedruidpage,
     config_file_set_string("User", "Name", author);
 
     /* Create a new story struct and initialize it */
-    struct story *thestory = new_story();
+    Story *thestory = new_story();
     set_story_filename(thestory, directory);
 
     gchar *title = g_strconcat("\"", name, "\" by \"", author, "\"\n", NULL);
@@ -389,7 +389,7 @@ on_new_druid_extension_page_finish     (GnomeDruidPage  *gnomedruidpage,
     config_file_set_string("User", "Name", author);
 
     /* Create a new extension struct and initialize it */
-    struct extension *ext = new_ext();
+    Extension *ext = new_ext();
     set_ext_filename(ext, directory);
 
     gchar *text = g_strconcat(name, " by ", author, " begins here.\n\n", 

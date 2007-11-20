@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.16. Randomness</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.7. Indexed text in variables, properties and tables</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,126 +19,147 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Do Pass Go" -->
-<!-- SEARCH SECTION "Ex 115" -->
-<!-- SEARCH SORT "Ex 008-016-115" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc124.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc126.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.16. Randomness</b></font></td></tr></table>
+<!-- SEARCH TITLE "Identity Theft" -->
+<!-- SEARCH SECTION "Ex 362" -->
+<!-- SEARCH SORT "Ex 019-007-362" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc321.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc323.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.7. Indexed text in variables, properties and tables</b></font></td></tr></table>
 <p>
-<p>Sometimes we want to introduce random behaviour into play. We usually do this by generating random values, and then acting differently depending on what they are. The following:
+<p>So far we have been able to ignore the difference between &quot;text&quot; and &quot;indexed text&quot; because Inform has always been able to convert the former to the latter when needed. But the reverse conversion cannot be made. Ordinary text is stored in a specially compacted, read-only form: it's really part of the program, not part of the data.
 <p>
-<blockquote><font color="#000080">a random number from 2 to 5
+<p>The upshot of this is that if we need a variable to contain text which can be internally altered during play, then we must declare this. Instead of writing
+<p>
+<blockquote><font color="#000080">The player's forename is a text that varies.
 </font></blockquote><p>
 <p>
-<p>produces, as it suggests, a random number drawn from the choices 2, 3, 4 or 5, each of which is equally likely to come up.
+<p>we must write:
 <p>
-<p>We can also use random conditions:
-<p>
-<blockquote><font color="#000080">if a random chance of 2 in 3 succeeds then ...
+<blockquote><font color="#000080">The player's forename is an indexed text that varies.
 </font></blockquote><p>
 <p>
-<p>Here is a rule which applies only 15% of the time:
+<p>Similarly for a property:
 <p>
-<blockquote><font color="#000080">Instead of waiting when a random chance of 15 in 100 succeeds: ...
+<blockquote><font color="#000080">A person has an indexed text called nickname.
 </font></blockquote><p>
 <p>
-<p>If we make a new kind of value, we can also take random values from it:
+<p>For a named &quot;let&quot; value, we have a dilemma. These are normally created by writing something like:
 <p>
-<blockquote><font color="#000080">A cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.
+<blockquote><font color="#000080">let the target be 17;
 </font></blockquote><p>
 <p>
-<p>The value &quot;a random cloud pattern&quot; then produces a random choice from the seven cloud patterns, each equally likely.
+<p>and Inform looks at the value - here 17, a number - to deduce that the new value, called &quot;target&quot;, must be a number. So if we write:
 <p>
-<p>Testing IF which makes random choices can be rather frustrating, because a problem showing up on one attempt may not show up on another. To ease testing, the following sentence will &quot;fix&quot; the process of generating these random numbers so that they are not random at all - the same sequence of random numbers will be produced on each run.
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode19(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('When play begins, seed the random-number generator with 1234.\n\n');
-}
-</script>
-<a href="javascript:pasteCode19()"><img border=0 src=../doc_images/paste.png></a> When play begins, seed the random-number generator with 1234.
+<blockquote><font color="#000080">let the target be &quot;excellent&quot;;
 </font></blockquote><p>
 <p>
-<p>The seed value &quot;1234&quot; can be anything positive; a different sequence of random numbers will be produced for each different seed value. A seed value of 0 restores the RNG to properly random behaviour again.
+<p>the result is that &quot;target&quot; is just a text, not an indexed text. We get around this by writing instead:
+<p>
+<blockquote><font color="#000080">let the target be an indexed text;
+</font></blockquote><p>
+<p>
+<p>which creates the value, initially having the empty text as contents, and then
+<p>
+<blockquote><font color="#000080">let the target be &quot;excellent&quot;;
+</font></blockquote><p>
+<p>
+<p>to subsequently set its initial state.
+<p>
+<p>The same issue arises for table columns, because we are allowed to simply write out values in table columns, and let Inform work out what kind they are. If there are blank entries, we can always write in the kind of value by hand, but suppose the entries are initially all filled in? The answer is that we can imitate this:
+<p>
+<blockquote><font color="#000080">Table of Neptune's Moons
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">moon</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">surface (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Nereid&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;utterly unknown&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Triton&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cryovolcanic ridges&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Proteus&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highly irregular and sooty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<p>Here the two columns are called &quot;moon&quot; and &quot;surface&quot;, so we can talk about the &quot;moon entry&quot; and the &quot;surface entry&quot; once a row has been chosen: but the moon entry is text, and the surface entry is indexed text.
+<p>
+<p>Lastly, suppose we want to define new phrases which deal with text. Here we have two things to remember. First, we need to say that the value decided is indexed text, not text; secondly, that text converts to indexed text by magic, but not vice versa. So:
+<p>
+<blockquote><font color="#000080">To decide what indexed text is (T - text) doubled:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on &quot;[T][T]&quot;.
+</font></blockquote><p>
+<p>
+<p>works fine so long as we only want to pass text to it, but would not let us double indexed text. This, on the other hand, handles both:
+<p>
+<blockquote><font color="#000080">To decide what indexed text is (T - indexed text) doubled:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on &quot;[T][T]&quot;.
+</font></blockquote><p>
+<p>
+<p>So for instance:
+<p>
+<blockquote><font color="#000080">say &quot;Neptune&quot; doubled.
+</font></blockquote><p>
+<p>
+<p>prints &quot;NeptuneNeptune&quot; because Inform automatically converts &quot;Neptune&quot; to indexed text when &quot;doubled&quot; is used on it.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e133"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc125.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>115</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc125.html#e133 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Do Pass Go</font></b></a><br>A pair of dice which can be rolled, and are described with their current total when not carried, and have individual scores when examined.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex133.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e133"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc322.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>362</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc322.html#e133 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Identity Theft</font></b></a><br>Allowing the player to enter a name to be used for the player character during the game.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex133.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Let's say we want to allow the player to enter any name he likes for his character. Moreover, we want to reject very long names (which are likely to be mistakes anyway), and we want to extract the player's chosen first name from the rest.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode202(code) {
+function pasteCode451(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Do Pass Go"\n\nGo is a room. "A giant square area, where you and your other pewter ornament friends gather before setting out to purchase London."\n\nThe pair of dice is carried by the player.\n\nThe pair of dice has a number called first die. The pair of dice has a number called second die. The first die of the pair is 6. The second die of the pair is 6. Rule for printing the name of the pair of dice while taking inventory: say "pair of dice".\nRule for printing the name of the pair of dice: say "pair of dice showing [first die of the pair plus second die of the pair]".\n\nTo say detailed state of the dice:\n\tif the first die of the pair is the second die of the pair, say "double [first die of the pair]";\n\totherwise say "[first die of the pair] and [second die of the pair]".\n\nThe description of the pair of dice is "The pair of dice are [if the dice are carried]itching to be rolled[otherwise]showing [detailed state of the dice][end if]."\n\nRolling is an action applying to one carried thing. Understand "roll [something preferably held]" as rolling.\n\nCheck rolling when the noun is not the pair of dice: say "Not something you can roll." instead.\nCarry out rolling:\n\tnow the pair of dice is in the holder of the actor;\n\tnow the first die of the pair of dice is a random number from 1 to 6;\n\tnow the second die of the pair of dice is a random number from 1 to 6.\nReport rolling:\n\tsay "You roll [detailed state of the dice]."\n\nTest me with "i / roll dice / look / x dice / get dice / x dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice".\n\n[Because we remember the states of the individual dice, not just a total, we can make use of the combination rolled.]\n\nThe doubles count is a number that varies.\nAfter rolling:\n\tif the first die of the pair is the second die of the pair, increase the doubles count by 1;\n\totherwise change the doubles count to 0;\n\tcontinue the action.\n\nJail is a room. "This is Jail, and not the Just Visiting periphery, either."\n\nEvery turn when the doubles count is 3:\n\tsay "The blue-uniformed policemen blows his whistle and beckons you sternly...";\n\tnow the player carries the pair of dice;\n\tnow the player is in Jail;\n\tnow the doubles count is 0.\n\nEvery turn when the doubles count is 1 and the player is in Jail:\n\tsay "The warden gruffly releases you.";\n\tnow the player carries the pair of dice;\n\tnow the player is in Go.\n');
+    myProject.pasteCode(' "Identity Theft"\n\nThe player\'s forename is an indexed text that varies. The player\'s full name is an indexed text that varies.\n\nWhen play begins:\n\tchange the command prompt to "What is your name? > "\n\nTo decide whether collecting names:\n\tif the command prompt is "What is your name? > ", yes;\n\tno.\n\nAfter reading a command when collecting names:\n\tif the number of words in the player\'s command is greater than 5\n\tbegin;\n\t\tsay "[paragraph break]Who are you, a member of the British royal family? No one has that many names. Let\'s try this again.";\n\t\treject the player\'s command;\n\tend if;\n\tchange the player\'s full name to the player\'s command;\n\tchange the player\'s forename to word number 1 in the player\'s command;\n\tchange the command prompt to ">";\n\tsay "Hi, [player\'s forename]!";\n\tsay "[banner text]";\n\tmove the player to the location;\n\treject the player\'s command.\n\n[We also want to postpone the proper beginning of the game until we\'ve gotten the name:]\n\nInstead of looking when collecting names: do nothing.\n\nRule for printing the banner text when collecting names: do nothing.\n\nRule for constructing the status line when collecting names: do nothing.\n\nProcedural rule: if collecting names, ignore the turn sequence rules.\n\nYour Bedroom is a room. The printed name of Your Bedroom is "[player\'s forename]\'s Bedroom".\n\nThe player carries a letter. The description of the letter is "Dear [player\'s full name], [paragraph break]You have won the Norwegian Daily Lottery! ...".\n');
 }
 </script>
-<a href="javascript:pasteCode202()"><img border=0 src=../doc_images/paste.png></a> &quot;Do Pass Go&quot;
+<a href="javascript:pasteCode451()"><img border=0 src=../doc_images/paste.png></a>  &quot;Identity Theft&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Go is a room. &quot;A giant square area, where you and your other pewter ornament friends gather before setting out to purchase London.&quot;
+<blockquote><font color="#000080">The player's forename is an indexed text that varies. The player's full name is an indexed text that varies.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The pair of dice is carried by the player.
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;What is your name? > &quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The pair of dice has a number called first die. The pair of dice has a number called second die. The first die of the pair is 6. The second die of the pair is 6. Rule for printing the name of the pair of dice while taking inventory: say &quot;pair of dice&quot;.
-<br>Rule for printing the name of the pair of dice: say &quot;pair of dice showing [first die of the pair plus second die of the pair]&quot;.
+<blockquote><font color="#000080">To decide whether collecting names:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the command prompt is &quot;What is your name? > &quot;, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say detailed state of the dice:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the first die of the pair is the second die of the pair, say &quot;double [first die of the pair]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[first die of the pair] and [second die of the pair]&quot;.
+<blockquote><font color="#000080">After reading a command when collecting names:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of words in the player's command is greater than 5
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[paragraph break]Who are you, a member of the British royal family? No one has that many names. Let's try this again.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the player's full name to the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the player's forename to word number 1 in the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;>&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Hi, [player's forename]!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[banner text]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the pair of dice is &quot;The pair of dice are [if the dice are carried]itching to be rolled[otherwise]showing [detailed state of the dice][end if].&quot;
+<p>We also want to postpone the proper beginning of the game until we've gotten the name:
+<p>
+<blockquote><font color="#000080">Instead of looking when collecting names: do nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rolling is an action applying to one carried thing. Understand &quot;roll [something preferably held]&quot; as rolling.
+<blockquote><font color="#000080">Rule for printing the banner text when collecting names: do nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check rolling when the noun is not the pair of dice: say &quot;Not something you can roll.&quot; instead.
-<br>Carry out rolling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pair of dice is in the holder of the actor;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the first die of the pair of dice is a random number from 1 to 6;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the second die of the pair of dice is a random number from 1 to 6.
-<br>Report rolling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You roll [detailed state of the dice].&quot;
+<blockquote><font color="#000080">Rule for constructing the status line when collecting names: do nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;i / roll dice / look / x dice / get dice / x dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice&quot;.
+<blockquote><font color="#000080">Procedural rule: if collecting names, ignore the turn sequence rules.
 </font></blockquote><p>
 <p>
-<p>Because we remember the states of the individual dice, not just a total, we can make use of the combination rolled.
-<p>
-<blockquote><font color="#000080">The doubles count is a number that varies.
-<br>After rolling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the first die of the pair is the second die of the pair, increase the doubles count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change the doubles count to 0;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+<blockquote><font color="#000080">Your Bedroom is a room. The printed name of Your Bedroom is &quot;[player's forename]'s Bedroom&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Jail is a room. &quot;This is Jail, and not the Just Visiting periphery, either.&quot;
+<blockquote><font color="#000080">The player carries a letter. The description of the letter is &quot;Dear [player's full name], [paragraph break]You have won the Norwegian Daily Lottery! ...&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the doubles count is 3:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The blue-uniformed policemen blows his whistle and beckons you sternly...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the pair of dice;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is in Jail;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the doubles count is 0.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the doubles count is 1 and the player is in Jail:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The warden gruffly releases you.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the pair of dice;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is in Go.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc125.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc322.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e25"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex25.html#e25 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>116</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex25.html#e25 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lanista 1</font></b></a><br>Very simple randomized combat in which characters hit one another for a randomized amount of damage.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex25.html#e25 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e261"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex261.html#e261 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>117</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex261.html#e261 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Weathering</font></b></a><br>The automatic weather station atop Mt. Pisgah shows randomly fluctuating temperature, pressure and cloud cover.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex261.html#e261 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e315"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex315.html#e315 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>118</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex315.html#e315 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uptown Girls</font></b></a><br>A stream of random pedestrians who go by the player.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex315.html#e315 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc124.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc126.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e38"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex38.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>363</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex38.html#e38 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mirror, Mirror</font></b></a><br>The sorcerer's mirror can, when held up high, form an impression of its surroundings which it then preserves.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex38.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e217"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex217.html#e217 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>364</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex217.html#e217 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Cow Exonerated</font></b></a><br>Creating a class of matches that burn for a time and then go out, with elegant reporting when several matches go out at once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex217.html#e217 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc321.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc323.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

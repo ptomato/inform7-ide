@@ -90,12 +90,8 @@ int gli_wbordery = 1;
 int gli_tmarginx = 7;
 int gli_tmarginy = 7;
 
-/* GTKTERP
-   columns > 53 so that we can have a decent status bar
-   this is the _minimum_ size before the container widget
-   decides it needs scroll bars */
-int gli_cols = 53;
-int gli_rows = 10;
+int gli_cols = 60;
+int gli_rows = 25;
 
 float gli_conf_propaspect = 1.0;
 float gli_conf_monoaspect = 1.0;

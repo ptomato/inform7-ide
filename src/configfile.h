@@ -22,11 +22,13 @@
 #include <gnome.h>
 
 void check_config_file();
-void config_file_set_string(gchar *path, gchar *key, const gchar *value);
-gchar *config_file_get_string(gchar *path, gchar *key);
-void config_file_set_int(gchar *path, gchar *key, const gint value);
-gint config_file_get_int(gchar *path, gchar *key);
-void config_file_set_bool(gchar *path, gchar *key, const gboolean value);
-gboolean config_file_get_bool(gchar *path, gchar *key);
+void config_file_set_string(const gchar *path, const gchar *key,
+                            const gchar *value);
+gchar *config_file_get_string(const gchar *path, const gchar *key);
+void config_file_set_int(const gchar *path, const gchar *key, const gint value);
+gint config_file_get_int(const gchar *path, const gchar *key);
+void config_file_set_bool(const gchar *path, const gchar *key,
+                          const gboolean value);
+gboolean config_file_get_bool(const gchar *path, const gchar *key);
 
 #endif

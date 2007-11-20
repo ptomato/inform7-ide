@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.12. Writing and reading tables to external files</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>22.13. Defining phrases in Inform 6</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,90 +19,111 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Alien Invasion Part 23" -->
-<!-- SEARCH SECTION "Ex 341" -->
-<!-- SEARCH SORT "Ex 019-012-341" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc325.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc327.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.12. Writing and reading tables to external files</b></font></td></tr></table>
+<!-- SEARCH TITLE "Pink or Blue" -->
+<!-- SEARCH SECTION "Ex 382" -->
+<!-- SEARCH SORT "Ex 022-013-382" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc374.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap22.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 22: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc376.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>22.13. Defining phrases in Inform 6</b></font></td></tr></table>
 <p>
-<p>The main use for files is to store and retrieve data, and the most flexible form of data used by Inform is the Table, so facilities are provided which make it as easy as possible to write and read the contents of a table to files.
+<p>The phrases described in this documentation, such as &quot;end the game in death&quot;, are all defined in the Standard Rules, and are for the most part defined not in terms of other I7 phrases but instead reduced to equivalents in I6. For instance:
 <p>
-<p>To save the contents of a table to a file, we use the phrase:
-<p>
-<blockquote><font color="#000080">write file &quot;ice&quot; from the Table of Antarctic Reserves
+<blockquote><font color="#000080">To end the game in death: (- deadflag=1; -).
 </font></blockquote><p>
 <p>
-<p>naming the file with a literal double-quoted name (without substitutions, that is) and specifying which table it should come from. To load a file back into a table,
+<p>The notation &quot;(-&quot; and &quot;-)&quot; indicates that what comes in between is I6 code. The minus sign is supposed to be a mnemonic for the decrease from 7 to 6: later we shall use &quot;(+&quot; and &quot;+)&quot; to go back up the other way, from 6 to 7.
 <p>
-<blockquote><font color="#000080">read file &quot;ice&quot; into the Table of Antarctic Reserves
+<p>When a phrase is defined as containing only a single command, and that command is defined using I6 - as here - it is compiled in-line. This means that the phrase &quot;end the game in death&quot; will always be translated as &quot;deadflag=1;&quot;, rather than being translated into a call to a suitable function whose only statement is &quot;deadflag=1;&quot;.
+<p>
+<p>This is an easy case since the wording never varies. More typical examples would be:
+<p>
+<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
+<br>To sort (T - table-name) in (TC - table-column) order:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
 </font></blockquote><p>
 <p>
-<p>We can check if a file already exists using:
+<p>When the braced name of one of the variables in the phrase preamble appears, this is compiled to the corresponding I6 expression at the relevant position in the I6 code. So, for instance,
 <p>
-<blockquote><font color="#000080">if file &quot;ice&quot; exists, ...
+<blockquote><font color="#000080">say the capacity of the basket
 </font></blockquote><p>
 <p>
-<p>On writing a table, any blank rows are automatically moved to the bottom, and only the non-blank rows are written; on reading a file back in, any rows left spare at the foot of the table are automatically blanked. On the other hand if the file is too large to fit into the table - with too many columns or too many rows - a run-time problem is produced.
+<p>might be compiled to
 <p>
-<p>One unfortunate restriction must be kept in mind. Some of what is stored in tables is solid information whose meaning never changes: the number 342, for instance, means the same to everyone. But other information depends entirely on the current location of certain structures in memory - for instance, a rule is internally referred to by its memory location. This potentially changes each time Go or Replay is clicked, and so it is not safe to pass it from one copy to another, or from one project to another. The only tables which Inform allows us to write into files are those containing &quot;safe&quot; data: numbers, units, times of day and kinds of value with named alternatives. Text, in particular, is not allowed, and nor are scenes, rules or rulebooks.
+<blockquote><font color="#000080">print O17_basket.capacity;
+</font></blockquote><p>
+<p>
+<p>because &quot;{something}&quot; is expanded to &quot;capacity of the basket&quot; (I7 code) and then translated to &quot;O17_basket.capacity&quot; (I6 code), which is then spliced into the original I6 definition &quot;print {something};&quot;.
+<p>
+<p>Braces &quot;{&quot; are of course significant in I6. A real brace can be obtained by making the character following it a space, and then I7 will not attempt to read it as a request for substitution.
+<p>
+<p>Finally, note that while a normal I7 phrase definition can give a kind as what must be matched, e.g.,
+<p>
+<blockquote><font color="#000080">To release wild tigers into (arena - a room): ...
+</font></blockquote><p>
+<p>
+<p>it is in general a bad idea, and will result in inefficient code, for an phrase defined using I6 to do this. Instead, if possible, match against &quot;object&quot;, where any room, region, thing or direction will be a valid match:
+<p>
+<blockquote><font color="#000080">To release wild tigers into (arena - an object): ...
+</font></blockquote><p>
 <p>
 <p><hr><p>
+<a name="e115"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex115.html#e115 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>381</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex115.html#e115 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Odins</font></b></a><br>Making [is-are] and [it-they] say tokens that will choose appropriately based on the last object mentioned.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex115.html#e115 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e221"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc326.html#e221 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>341</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc326.html#e221 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Alien Invasion Part 23</font></b></a><br>Keeping a preference file that could be loaded by any game in a series.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex221.html#e221 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e221"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc375.html#e221 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>382</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc375.html#e221 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Pink or Blue</font></b></a><br>Asking the player to select a gender to begin play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex221.html#e221 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose that we have a series of games each of which allows the player to select a puzzle difficulty level. When the player plays a new game in the series, we want him to start out by default with the same difficulty level he faced earlier on, so we store this information in a small preferences file, as follows:
+<p>Suppose we would like to allow the player to choose a gender for the main character. We'd also like this to happen at the beginning of the game and outside the main parsing sequence. &quot;When play begins&quot; seems like a good place to put this.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode430(code) {
+function pasteCode471(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Alien Invasion Part 23"\n\nA difficulty is a kind of value. The difficulties are easy, moderate, hard, and fiendish.\n\nUnderstand "use [difficulty] puzzles" as selecting difficulty. Selecting difficulty is an action out of world, applying to one difficulty.\n\nCarry out selecting difficulty:\n\tchoose row 1 in the Table of Preference Settings;\n\tchange challenge level entry to difficulty understood;\n\tsay "Puzzles will be [challenge level entry] from now on."\n\nThe File of Preferences is called "prefs".\n\nWhen play begins:\n\tif File of Preferences exists\n\tbegin;\n\t\tread File of Preferences into the Table of Preference Settings;\n\t\tchoose row 1 in the Table of Preference Settings;\n\t\tsay "(The current puzzle difficulty is set to [challenge level entry].)";\n\tend if.\n\nCheck quitting the game:\n\twrite File of Preferences from the Table of Preference Settings;\n\nTable of Preference Settings\nchallenge level\neasy\n\nThe Sewer Junction is a room.\n\n');
+    myProject.pasteCode('"Pink or Blue"\n\nWhen play begins:\n\tsay "Should your character be male or female? >";\n\tif men win, now the player is male;\n\totherwise now the player is female;\n\tsay paragraph break.\n\n[Now a piece of Inform 6 code handles the unusual input. It\'s not necessary to understand this to use it, and the code should work for any question you\'d like to ask the player. The first three words in quotation marks (\'male\', \'M\', \'man\'...) correspond to positive feedback; the later three words correspond to negative feedback. So "to decide whether men win" will be true if the player types one of the first three, and false if he types one of the last three.]\n\nTo decide whether men win:\n\t(- Question(\'male\',\'M//\',\'man\',\'female\',\'F//\',\'woman\') -)\n\nInclude (-\n\n[ Question pos1 pos2 pos3 neg1 neg2 neg3 i;\n\tfor (::)\n\t{   if (location == nothing || parent(player) == nothing) read buffer parse;\n\t\telse read buffer parse DrawStatusLine;\n\t\ti=parse-->1;\n\t\tif (i==pos1 or pos2 or pos3) rtrue;\n\t\tif (i==neg1 or neg2 or neg3) rfalse;\n\t\tprint "Please choose ", (address) pos1, " or ", (address) neg1, ". > ";\n\t}\n];\n\n-)\n\nInstead of examining the player when the player is female:\n\tsay "Congratulations, you are a girl!"\n\nInstead of examining the player when the player is male:\n\tsay "Congratulations, you are a boy!"\n\nThe Room of Self-Knowledge is a room. "Mirrors cover every available wall-surface of this hexagonal chamber, allowing you to examine yourself from all angles."\n');
 }
 </script>
-<a href="javascript:pasteCode430()"><img border=0 src=../doc_images/paste.png></a> &quot;Alien Invasion Part 23&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A difficulty is a kind of value. The difficulties are easy, moderate, hard, and fiendish.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;use [difficulty] puzzles&quot; as selecting difficulty. Selecting difficulty is an action out of world, applying to one difficulty.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out selecting difficulty:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row 1 in the Table of Preference Settings;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change challenge level entry to difficulty understood;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Puzzles will be [challenge level entry] from now on.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The File of Preferences is called &quot;prefs&quot;.
+<a href="javascript:pasteCode471()"><img border=0 src=../doc_images/paste.png></a> &quot;Pink or Blue&quot;
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if File of Preferences exists
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read File of Preferences into the Table of Preference Settings;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row 1 in the Table of Preference Settings;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(The current puzzle difficulty is set to [challenge level entry].)&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Should your character be male or female? >&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if men win, now the player is male;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the player is female;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check quitting the game:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;write File of Preferences from the Table of Preference Settings;
+<p>Now a piece of Inform 6 code handles the unusual input. It's not necessary to understand this to use it, and the code should work for any question you'd like to ask the player. The first three words in quotation marks ('male', 'M', 'man'...) correspond to positive feedback; the later three words correspond to negative feedback. So &quot;to decide whether men win&quot; will be true if the player types one of the first three, and false if he types one of the last three.
+<p>
+<blockquote><font color="#000080">To decide whether men win:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- Question('male','M//','man','female','F//','woman') -)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Preference Settings
-<br>challenge level
-<br>easy
+<blockquote><font color="#000080">Include (-
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Sewer Junction is a room.
+<blockquote><font color="#000080">[ Question pos1 pos2 pos3 neg1 neg2 neg3 i;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;for (::)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;{   if (location == nothing || parent(player) == nothing) read buffer parse;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else read buffer parse DrawStatusLine;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i=parse-->1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (i==pos1 or pos2 or pos3) rtrue;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (i==neg1 or neg2 or neg3) rfalse;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print &quot;Please choose &quot;, (address) pos1, &quot; or &quot;, (address) neg1, &quot;. > &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;}
+<br>];
 </font></blockquote><p>
 <p>
-<p>Our preference file is restricted to a single option here for simplicity's sake, but we could keep track of more information -- whether the player preferred verbose or brief room descriptions, screen configurations, and so on.
+<blockquote><font color="#000080">-)
+</font></blockquote><p>
 <p>
-<p>If we were disposed to be somewhat crueler, we could use a similar method to make the player finish each episode of the series in order to &quot;unlock&quot; the next. All we would need to do is store a numerical password in our preferences file when the player finished a given level; the next level would check, say, the Table of Completed Levels for that password, and refuse to play unless the right number were present.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc326.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Instead of examining the player when the player is female:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you are a girl!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining the player when the player is male:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you are a boy!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Room of Self-Knowledge is a room. &quot;Mirrors cover every available wall-surface of this hexagonal chamber, allowing you to examine yourself from all angles.&quot;
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc375.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e341"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex341.html#e341 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>342</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex341.html#e341 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Labyrinth of Ghosts</font></b></a><br>Remembering the fates of all previous explorers of the labyrinth.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex341.html#e341 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc325.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc327.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc374.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc376.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

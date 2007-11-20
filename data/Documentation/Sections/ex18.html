@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.25. The location of something</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.13. Writing, reading and appending text to files</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,82 +19,142 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Van Helsing" -->
-<!-- SEARCH SECTION "Ex 36" -->
-<!-- SEARCH SORT "Ex 003-025-036" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc50.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc52.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.25. The location of something</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Fourth Body" -->
+<!-- SEARCH SECTION "Ex 373" -->
+<!-- SEARCH SORT "Ex 020-013-373" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc336.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc338.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.13. Writing, reading and appending text to files</b></font></td></tr></table>
 <p>
-<p>The model world created by Inform is partitioned into rooms. This means that everything which exists in the model world, exists in one of the rooms. If we write a sentence such as
+<p>Text can also be saved to a file, and again all file-handling is automatic:
 <p>
-<blockquote><font color="#000080">Professor Wilderspin is a man.
+<blockquote><font color="#000080">write &quot;Jackdaws love my big sphinx of quartz.&quot; to the file of Abecedary Wisdom;
+<br>append &quot;Jinxed wizards pluck ivy from the big quilt.&quot; to the file of Abecedary Wisdom;
 </font></blockquote><p>
 <p>
-<p>and say nothing more about Wilderspin, then he does not physically exist at the start of the game: he is said to be &quot;out of play&quot;, and stays that way until we move him into one of the rooms. A better metaphor might be that he is waiting in the wings, ready to come onto the stage.
+<p>The difference between &quot;write&quot; and &quot;append&quot; here is that &quot;write&quot; makes this text the entire contents of the file, whereas &quot;append&quot; adds it the end (creating the file if it did not previously exist).
 <p>
-<p>Every thing is either out of play, or can be found in one of the rooms, and the property &quot;location of X&quot; gives us the room in question. The following condition tests, in effect, whether Wilderspin is in play:
+<p>The quoted text can, of course, contain substitutions, so can be long and complex if need be.
 <p>
-<blockquote><font color="#000080">if the location of Wilderspin is a room, ...
+<p>Text from a file is printed back with the text substitution:
+<p>
+<blockquote><font color="#000080">&quot;[text of the File of Abecedary Wisdom]&quot;
 </font></blockquote><p>
 <p>
-<p>The &quot;location of the player&quot; is simply called the &quot;location&quot;, and as the player is always in play, this is always a room. If the player stands in Biblioll College and wears a waistcoat, inside which is a fob watch, then &quot;location of the fob watch&quot; is Biblioll College.
+<p>To copy one file to another, for instance,
 <p>
-<p>In general, a thing cannot be in two rooms at once, but there are two exceptions: (two-sided) doors, present on both sides, and backdrops. The &quot;location of&quot; a door is its front side, whether it is one-sided or two-sided; but a backdrop is deemed to have no location, in the sense above. (Objects which are not things at all, such as rooms and directions, also have no location.)
-<p>
-<p>The idea of indirect containment is useful enough to have a name: Inform calls it &quot;enclosure&quot;. A thing encloses whatever is a part of itself, or inside itself, or on top of itself, and it also encloses anything that they enclose. And when something moves around, anything it encloses will move with it. In the example above, Biblioll College (a room) and the player (a person) both enclose the fob watch and the waistcoat. (The small print: a door is enclosed by the rooms on both sides; a backdrop is never enclosed.)
-<p>
-<p>Enclosure is only useful when being used as a question. So the following is fine:
-<p>
-<blockquote><font color="#000080">if the player encloses the fob watch, ...
+<blockquote><font color="#000080">write &quot;[text of the file of Abecedary Wisdom]&quot; to the file of Secondary Wisdom;
 </font></blockquote><p>
-<p>
-<p>But these will produce problem messages:
-<p>
-<blockquote><font color="#000080">The player encloses the fob watch. The location of the trilobite is the Museum.
-</font></blockquote><p>
-<p>
-<p>because they are too vague. Inform needs to know exactly where the fob watch and the trilobite will begin the game, whereas these sentences leave room for doubt about who or what is actually holding them.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e18"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc51.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>36</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc51.html#e18 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Van Helsing</font></b></a><br>A character who approaches the player, then follows him from room to room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex18.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e18"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc337.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>373</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc337.html#e18 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Fourth Body</font></b></a><br>Notebooks in which the player can record assorted notes throughout play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex18.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to write a character who tries to be in the same room as the player. We will do this by testing every turn whether the character's location and the player's location are the same; if the answer is no, the character will look for a path to the player's location, then try to move along that path. (We will learn more about finding paths and giving characters instructions later.)
+<p>Some mystery games supply the player with an in-game system for taking notes, in case he doesn't want to rely on scraps of paper next to the computer. One way of doing this is to write out all the player's notes and observations into a notebook file, whose contents can be retrieved during play (or, indeed, after it).
 <p>
-<p>The result will be that if the player ever moves to another location, the character will automatically pursue him.
+<p>We'll first invent a general system for writing text into notebooks, by creating a new kind called jotter. Each individual jotter will have its own disc file, and there will be basically three things which can be done with jotters: erasing, reading and writing.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode116(code) {
+function pasteCode462(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Van Helsing"\n\nThe Drawbridge is a room. North of the Drawbridge is the Immensely Enormous Entry Hall. West of the Entry Hall is the Vast Dining Area. North of the Vast Dining Area is the Colossal Kitchen. The Spooky Guano-filled Attic is above the Entry Hall.\n\nCount Dracula is a man in the Attic.\n\n[In the following condition, we could also have written "if the location of Count Dracula is not the location", because "location" by itself is always understood to be the player\'s location. But it seemed better for clarity to write it this way:]\n\nEvery turn:\n\tif the location of Count Dracula is not the location of the player\n\tbegin;\n\t\tlet the way be the best route from the location of Count Dracula to the location of the player, using doors;\n\t\ttry Count Dracula going the way;\n\totherwise;\n\t\tsay "\'Muhahaha,\' says Count Dracula.";\n\tend if.\n\nTest me with "z / z / n / w / e / u / z / d".\n\n');
+    myProject.pasteCode('"The Fourth Body"\n\nA jotter is a kind of thing. A jotter has an external-file called the text file. A jotter can be fresh or used. A jotter is usually fresh. A jotter has a text called the heading.\n\nThe currently erased jotter is an object that varies.\nTo erase (pad - a jotter):\n\tnow the currently erased jotter is the pad;\n\twrite "[heading of the currently erased jotter][paragraph break]" to the text file of the pad;\n\tnow the pad is fresh.\n\nTo write in (pad - a jotter):\n\tappend "[the time of day]: [topic understood][line break]" to the text file of the pad;\n\tnow the pad is used.\n\nTo read (pad - a jotter):\n\tsay "You read: [paragraph break][text of the text file of the pad]".\n\n[This is all as might be expected, except perhaps for the business of the "currently erased jotter". Why copy "pad" into this - why not simply write "[heading of the pad]"? The answer is that "pad" is a temporary "let" value, and cannot be used inside other phrases, such as the "write ... to ..." phrase.]\n\n[We want to erase any jotters when play begins, as otherwise text left over from any previous games will still be visible:]\n\nWhen play begins:\n\trepeat with pad running through jotters\n\tbegin;\n\t\terase the pad;\n\tend repeat.\n\n[Now we need to create rules to allow the player to control reading, writing and erasing. Reading we will handle with the ordinary examining action, but we create new actions for writing and erasing. A nice little trick allows WRITE WHATEVER to default to writing WHATEVER in a notebook being carried.]\n\nInstead of examining a used jotter (called the pad):\n\tread the pad.\n\nInstead of examining a fresh jotter (called the pad):\n\tsay "There is nothing of note in [the pad]."\n\nUnderstand "write [text] in [something preferably held]" as writing it in. Understand "write [text]" as writing it in. Writing it in is an action applying to a topic and one thing. Rule for supplying a missing second noun while writing: if a jotter (called the pad) is carried, change the second noun to the pad; otherwise say "You will have to specify what to write that it."\n\nCheck writing it in:\n\tif the second noun is not a jotter, say "It would be better to write in a notebook." instead.\n\nCarry out writing it in:\n\twrite in the second noun.\n\nReport writing it in:\n\tsay "Under the current time, you write \'[the topic understood]\' into [the second noun]."\n\nUnderstand "erase [something preferably held]" as erasing. Erasing is an action applying to one carried thing.\n\nCheck erasing:\n\tif the noun is not a jotter, say "It\'s hard to see how." instead.\n\nCarry out erasing:\n\terase the noun.\n\nReport erasing:\n\tsay "You scrub out all the entries in [the noun]."\n\n[That completes a general-purpose implementation of jotters, and we put it to use:]\n\nThe player carries a jotter called your notebook. The file of Player\'s Observations is called "notebook". The text file of your notebook is the file of Player\'s Observations. The heading of your notebook is "Observations in the Pottingham Green Case".\n\nThe Damp Hillside is a room. "It is just after dawn: among the trees there is misty and pale blue light. [if Havers is in the location]The only saturated color in view is the orange-and-yellow jacket of [Detective Havers]. She is trying unsuccessfully to light a cigarette. [end if][paragraph break]The body itself is further down, closer to the bottom of the ravine. It would be foolish to speculate before seeing it, but the odds are that the corpse was rolled down after death. The ground is not steep enough for the fall itself to be deadly."\n\nDetective Havers is a woman in the Damp Hillside. The description is "She gives you a weak smile when you look at her: you know she hasn\'t slept more than three hours any of the last few nights." Havers is scenery.\n\nHavers is carrying a jotter called Barbara\'s notebook. The file of Barbara\'s Observations is called "barbara". The text file of Barbara\'s notebook is the file of Barbara\'s Observations. The heading of Barbara\'s notebook is "I could murder a cup of tea".\n\nThe time of day is 6:32 AM.\n\nInstead of examining your notebook when your notebook is fresh:\n\tsay "Your notebook is blank. Back in the office, of course, there are a stack of others. But you brought a fresh notebook in a kind of weary hope. You\'re going to pretend, just for now, that this body might be unrelated to the graphic string of murders you\'re already investigating."\n');
 }
 </script>
-<a href="javascript:pasteCode116()"><img border=0 src=../doc_images/paste.png></a> &quot;Van Helsing&quot;
+<a href="javascript:pasteCode462()"><img border=0 src=../doc_images/paste.png></a> &quot;The Fourth Body&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Drawbridge is a room. North of the Drawbridge is the Immensely Enormous Entry Hall. West of the Entry Hall is the Vast Dining Area. North of the Vast Dining Area is the Colossal Kitchen. The Spooky Guano-filled Attic is above the Entry Hall.
+<blockquote><font color="#000080">A jotter is a kind of thing. A jotter has an external-file called the text file. A jotter can be fresh or used. A jotter is usually fresh. A jotter has a text called the heading.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Count Dracula is a man in the Attic.
+<blockquote><font color="#000080">The currently erased jotter is an object that varies.
+<br>To erase (pad - a jotter):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the currently erased jotter is the pad;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write &quot;[heading of the currently erased jotter][paragraph break]&quot; to the text file of the pad;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pad is fresh.
 </font></blockquote><p>
 <p>
-<p>In the following condition, we could also have written &quot;if the location of Count Dracula is not the location&quot;, because &quot;location&quot; by itself is always understood to be the player's location. But it seemed better for clarity to write it this way:
+<blockquote><font color="#000080">To write in (pad - a jotter):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;append &quot;[the time of day]: [topic understood][line break]&quot; to the text file of the pad;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pad is used.
+</font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location of Count Dracula is not the location of the player
+<blockquote><font color="#000080">To read (pad - a jotter):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You read: [paragraph break][text of the text file of the pad]&quot;.
+</font></blockquote><p>
+<p>
+<p>This is all as might be expected, except perhaps for the business of the &quot;currently erased jotter&quot;. Why copy &quot;pad&quot; into this - why not simply write &quot;[heading of the pad]&quot;? The answer is that &quot;pad&quot; is a temporary &quot;let&quot; value, and cannot be used inside other phrases, such as the &quot;write ... to ...&quot; phrase.
+<p>
+<p>We want to erase any jotters when play begins, as otherwise text left over from any previous games will still be visible:
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with pad running through jotters
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location of Count Dracula to the location of the player, using doors;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try Count Dracula going the way;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Muhahaha,' says Count Dracula.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;erase the pad;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;z / z / n / w / e / u / z / d&quot;.
+<p>Now we need to create rules to allow the player to control reading, writing and erasing. Reading we will handle with the ordinary examining action, but we create new actions for writing and erasing. A nice little trick allows WRITE WHATEVER to default to writing WHATEVER in a notebook being carried.
+<p>
+<blockquote><font color="#000080">Instead of examining a used jotter (called the pad):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;read the pad.
 </font></blockquote><p>
 <p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc51.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Instead of examining a fresh jotter (called the pad):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There is nothing of note in [the pad].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;write [text] in [something preferably held]&quot; as writing it in. Understand &quot;write [text]&quot; as writing it in. Writing it in is an action applying to a topic and one thing. Rule for supplying a missing second noun while writing: if a jotter (called the pad) is carried, change the second noun to the pad; otherwise say &quot;You will have to specify what to write that it.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check writing it in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not a jotter, say &quot;It would be better to write in a notebook.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out writing it in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write in the second noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report writing it in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Under the current time, you write '[the topic understood]' into [the second noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;erase [something preferably held]&quot; as erasing. Erasing is an action applying to one carried thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check erasing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a jotter, say &quot;It's hard to see how.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out erasing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;erase the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report erasing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You scrub out all the entries in [the noun].&quot;
+</font></blockquote><p>
+<p>
+<p>That completes a general-purpose implementation of jotters, and we put it to use:
+<p>
+<blockquote><font color="#000080">The player carries a jotter called your notebook. The file of Player's Observations is called &quot;notebook&quot;. The text file of your notebook is the file of Player's Observations. The heading of your notebook is &quot;Observations in the Pottingham Green Case&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Damp Hillside is a room. &quot;It is just after dawn: among the trees there is misty and pale blue light. [if Havers is in the location]The only saturated color in view is the orange-and-yellow jacket of [Detective Havers]. She is trying unsuccessfully to light a cigarette. [end if][paragraph break]The body itself is further down, closer to the bottom of the ravine. It would be foolish to speculate before seeing it, but the odds are that the corpse was rolled down after death. The ground is not steep enough for the fall itself to be deadly.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Detective Havers is a woman in the Damp Hillside. The description is &quot;She gives you a weak smile when you look at her: you know she hasn't slept more than three hours any of the last few nights.&quot; Havers is scenery.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Havers is carrying a jotter called Barbara's notebook. The file of Barbara's Observations is called &quot;barbara&quot;. The text file of Barbara's notebook is the file of Barbara's Observations. The heading of Barbara's notebook is &quot;I could murder a cup of tea&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The time of day is 6:32 AM.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining your notebook when your notebook is fresh:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your notebook is blank. Back in the office, of course, there are a stack of others. But you brought a fresh notebook in a kind of weary hope. You're going to pretend, just for now, that this body might be unrelated to the graphic string of murders you're already investigating.&quot;
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc337.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc50.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc52.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e138"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex138.html#e138 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>374</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex138.html#e138 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Fifth Body</font></b></a><br>An expansion on the notebook, allowing the player somewhat more room in which to type his recorded remark.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex138.html#e138 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc336.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc338.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -52,6 +52,14 @@ Global touch_persona;
 	return OIU_Core(parent(OIU_Core(o)));
 ];
 
+[ OIU_Location o;
+	while (o) {
+		if (o ofclass K1_room) return o;
+		o = OIU_Core(parent(OIU_Core(o)));
+	}
+	return nothing;
+];
+
 [ OIU_CommonAncestor o1 o2 i j;
 	!  Find the nearest object indirectly containing o1 and o2,
 	!  or return 0 if there is no common ancestor.
@@ -74,10 +82,12 @@ Global touch_persona;
 	p = touch_persona; if (p == 0) p = actor;
 
 	ancestor = OIU_CommonAncestor(p, untouchable_object);
-!  if (ancestor == 0) {
-!		RulebookFails(); ! Wholly different locations
-!		rtrue;
-!  }
+	if ((ancestor == 0) && (OIU_Location(untouchable_object) == nothing)
+		&& ((untouchable_object ofclass K4_door or K7_backdrop) == false)) {
+		if (touch_persona == 0) GL__M(##Take,8,untouchable_object);
+		RulebookFails();
+		rtrue;
+	}
 !  print "Doing OIU barriers for ", (the) p, " and ", (the) untouchable_object,
 !		": common ancestor is ", (the) ancestor, ".^";
 
@@ -294,6 +304,18 @@ Global touch_persona;
 	if (p ofclass K9_region) return p;
 	return nothing;
 ];
+[ I7_InWhatR obj e f;
+	if (obj ofclass K9_region) {
+		objectloop (f ofclass K1_room && f.I7_Map_Region == obj)
+			if (f > e) return f;
+		return nothing;
+	}
+	if (obj ofclass K5_container or K1_room) {
+		if (e == nothing) return child(obj);
+		return sibling(e);
+	}
+	return nothing;
+];
 [ I7_OnWhat obj p; p = parent(obj);
 	if (p == nothing) return nothing;
 	if (p ofclass K6_supporter) return p;
@@ -393,13 +415,18 @@ Global touch_persona;
 	}
 	return rv;
 ];
-[ I7_DirectionFrom dr from sl rv;
+[ I7_DirectionFrom dr from sl rv obj;
 	if (dr ofclass K4_door) {
 		sl = location; location = I7_RoomOf(from);
 		rv = dr.door_dir();
 		location = sl;
+		if (rv) {
+			objectloop (obj in compass)
+				if (obj.door_dir == rv)
+					return obj;
+		}
 	}
-	return rv;
+	return nothing;
 ];
 [ I7_ChangeExit r1 dir r2 pr;
 	pr = dir.door_dir;
@@ -439,7 +466,7 @@ Global touch_persona;
 [ I7_ChangePlayer O;
 	! Previously K27_player_character
 	if (O ofclass K8_person) return ChangePlayer(O);
-	RunTimeProblem(RTP_CANTCHANGE);
+	RunTimeProblem(RTP_CANTCHANGE, O);
 ];
 [ I7_FrontSide D; if (~~(D ofclass K4_door)) rfalse;
 	if (D provides found_in) return (D.&found_in)-->0;

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.4. A simple example extension</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.18. Improving the index map</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,46 +19,30 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "A simple example extension" -->
-<!-- SEARCH SECTION "21.4" -->
-<!-- SEARCH SORT "021-004-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc355.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc357.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.4. A simple example extension</b></font></td></tr></table>
+<!-- SEARCH TITLE "Improving the index map" -->
+<!-- SEARCH SECTION "21.18" -->
+<!-- SEARCH SORT "021-018-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc355.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Publishing</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc357.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.18. Improving the index map</b></font></td></tr></table>
 <p>
-<p>Extensions are plain text files, and can be created with any text editor. (It is sometimes said that &quot;there is no such thing as plain text&quot;, there being so many ways to represent exotic characters: so to be precise, an extension is a text file with the Unicode UTF-8 encoding, either with or without a BOM marker, using any of the possible forms of line-ending (Unix, Windows, Macintosh, or Unicode line divider). This is a detail which will only matter if the extension contains accented letters or other exotica.) To become available to Inform, an extension must be installed in the user's extensions folder: see Chapter 2.
+<p>As we have seen, &quot;Release along with...&quot; allows us to package up a work of IF with all manner of extra materials. But what are these to be? One popular option is to produce a map - sometimes partial, sometimes obfuscated - and supply that with the game: besides, there are some IF competitions where the rules require that the referee is supplied with a map even if the players are not, and failing that, it is sometimes nice to be able to print out a map of a work in progress.
 <p>
-<p>Extensions look very much like passages of Inform source, because except for a special introductory and concluding sentence, and one convention, that is all they are:
+<p>The World map in the Index tab is heavily stylised and cartoonish, intended to be clicked on or moused over, and viewed in a browser: although it is, in fact, possible to print it, the results are not very good. Fortunately, the same underlying map mechanism can be used to output something more useful and very much more customisable, as we shall see.
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode78(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('The Ducking Action by Graham Nelson begins here.\n\n"An action for ducking one\'s head."\n\nDucking is an action applying to nothing. Report ducking: say "You duck!" Understand "duck" as ducking.\n\nThe Ducking Action ends here.\n\n');
-}
-</script>
-<a href="javascript:pasteCode78()"><img border=0 src=../doc_images/paste.png></a> The Ducking Action by Graham Nelson begins here.
+<p>The map-maker is one of the most complex parts of Inform, even though it actually contributes nothing to the final story file: the problem of how to draw up a &quot;correct&quot; map from the source text is by no means easy to solve. Inform tries, but it often gets things wrong. Its general practice is to place rooms on a square grid (actually a cubic lattice, as it works in three dimensions), but not all conceptual maps fit well onto this, and Inform often annoyingly puts a particular room in the &quot;wrong&quot; place. For instance, suppose Inform puts &quot;Didcot&quot; east of &quot;Abingdon&quot; and this makes the geometry look different to what we had in mind. We can correct with:
+<p>
+<blockquote><font color="#000080">Index map with Didcot mapped southeast of Abingdon.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">&quot;An action for ducking one's head.&quot;
+<p>Note that this says nothing about exits from any room to any other room, and changes the final work of IF not at all: it simply helps Inform to draw the map index. (Instructions like this one are treated as being almost certainly true, but Inform does not quite always obey: it will never allow two rooms to be superimposed at the same grid position, no matter what we have asked in &quot;Index map with...&quot; instructions.) The same trick is useful if we have a situation like so:
+<p>
+<blockquote><font color="#000080">Inside of Sweeping Sands is Beach Hut Interior.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Ducking is an action applying to nothing. Report ducking: say &quot;You duck!&quot; Understand &quot;duck&quot; as ducking.
+<p>&quot;Beach Hut Interior&quot; is a single room which does not connect to the rest of the map by any of the ten spatial directions, so Inform does not place it on the main map but instead moves it off out of the way in a map of its own. Given that it's just a single room, however, we might prefer to put into a convenient otherwise empty grid position like so:
+<p>
+<blockquote><font color="#000080">Index map with Beach Hut Interior mapped west of Sweeping Sands.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Ducking Action ends here.
-</font></blockquote><p>
+<p>Finally, note that this trick also ensures that the two locations are mapped on the same level vertically, and can be useful in cases where room A is both north of and above room B: Inform will want A to be higher up than B, but we can insist otherwise.
 <p>
-<p>Not a useful or interesting extension, but those few words add a whole new action and everything needed to make it work. It is Inform's ability to mix up rooms, things, kinds, grammar, phrases and rules, in more or less any order, which makes it possible for extensions to work.
-<p>
-<p>The introductory sentence must be placed as the only content of line 1 of the file, which must not contain comments, and has to be written in exactly the correct form. Inform checks this very carefully when performing its census of installed extensions, on each translation of the text. (In case the extension's title is a plural, we are allowed to write &quot;begin&quot; and &quot;end&quot; instead of &quot;begins&quot; and &quot;ends&quot;. For instance, the last line of the standard rules is &quot;The Standard Rules end here.&quot;)
-<p>
-<p>The &quot;one convention&quot; mentioned above is that if a double-quoted text is placed immediately after the beginning sentence (and with no intervening comments), then it is taken to be a short description of the extension's content called the &quot;rubric&quot;. Hence the line:
-<p>
-<blockquote><font color="#000080">&quot;An action for ducking one's head.&quot;
-</font></blockquote><p>
-<p>
-<p>Providing a rubric is helpful, because it enables Inform to give a meaningful listing even for an as-yet unused and unindexed extension, and because it helps the Inform website to produce better directories. Note the word &quot;short&quot;: such text is likely to be truncated if it exceeds 250 characters.
-<p>
-<p><hr><p>
-<a name="e295"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex295.html#e295 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>350</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex295.html#e295 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Modern Conveniences</font></b></a><br>Exemplifying the kind of source we might use in writing extensions for kitchen and bathroom appliances.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex295.html#e295 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc355.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc357.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

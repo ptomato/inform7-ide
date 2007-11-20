@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.8. Declaring and playing back sounds</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.7. Indexed text in variables, properties and tables</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,38 +19,83 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Declaring and playing back sounds" -->
-<!-- SEARCH SECTION "19.8" -->
-<!-- SEARCH SORT "019-008-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc321.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc323.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.8. Declaring and playing back sounds</b></font></td></tr></table>
+<!-- SEARCH TITLE "Indexed text in variables, properties and tables" -->
+<!-- SEARCH SECTION "19.7" -->
+<!-- SEARCH SORT "019-007-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc321.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc323.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.7. Indexed text in variables, properties and tables</b></font></td></tr></table>
 <p>
-<p>Sound effects are accommodated on the same basis as illustrations. The relevant media files need to be placed in a subfolder of the project's Materials folder, but this time called Sounds rather than Figures, so for instance:
+<p>So far we have been able to ignore the difference between &quot;text&quot; and &quot;indexed text&quot; because Inform has always been able to convert the former to the latter when needed. But the reverse conversion cannot be made. Ordinary text is stored in a specially compacted, read-only form: it's really part of the program, not part of the data.
 <p>
-<blockquote><font color="#000080">Example.inform
-<br>Example Materials
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Figures
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Woodlands.png
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Blackberry.jpg
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Red Admiral Butterfly.png
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Sounds
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rustling leaves.ogg
+<p>The upshot of this is that if we need a variable to contain text which can be internally altered during play, then we must declare this. Instead of writing
+<p>
+<blockquote><font color="#000080">The player's forename is a text that varies.
 </font></blockquote><p>
 <p>
-<p>Again, these must be declared in the source text:
+<p>we must write:
 <p>
-<blockquote><font color="#000080">Sound of rustling leaves is the file &quot;Rustling leaves.ogg&quot;.
+<blockquote><font color="#000080">The player's forename is an indexed text that varies.
 </font></blockquote><p>
 <p>
-<p>And they can be played using the phrase:
+<p>Similarly for a property:
 <p>
-<blockquote><font color="#000080">play the sound of rustling leaves;
+<blockquote><font color="#000080">A person has an indexed text called nickname.
 </font></blockquote><p>
 <p>
-<p>As an option, we could also write
+<p>For a named &quot;let&quot; value, we have a dilemma. These are normally created by writing something like:
 <p>
-<blockquote><font color="#000080">play the sound of rustling leaves, one time only;
+<blockquote><font color="#000080">let the target be 17;
 </font></blockquote><p>
 <p>
-<p>which causes the sound effect to be played back the first time this phrase is reached.
+<p>and Inform looks at the value - here 17, a number - to deduce that the new value, called &quot;target&quot;, must be a number. So if we write:
 <p>
+<blockquote><font color="#000080">let the target be &quot;excellent&quot;;
+</font></blockquote><p>
+<p>
+<p>the result is that &quot;target&quot; is just a text, not an indexed text. We get around this by writing instead:
+<p>
+<blockquote><font color="#000080">let the target be an indexed text;
+</font></blockquote><p>
+<p>
+<p>which creates the value, initially having the empty text as contents, and then
+<p>
+<blockquote><font color="#000080">let the target be &quot;excellent&quot;;
+</font></blockquote><p>
+<p>
+<p>to subsequently set its initial state.
+<p>
+<p>The same issue arises for table columns, because we are allowed to simply write out values in table columns, and let Inform work out what kind they are. If there are blank entries, we can always write in the kind of value by hand, but suppose the entries are initially all filled in? The answer is that we can imitate this:
+<p>
+<blockquote><font color="#000080">Table of Neptune's Moons
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">moon</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">surface (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Nereid&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;utterly unknown&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Triton&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cryovolcanic ridges&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Proteus&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highly irregular and sooty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<p>Here the two columns are called &quot;moon&quot; and &quot;surface&quot;, so we can talk about the &quot;moon entry&quot; and the &quot;surface entry&quot; once a row has been chosen: but the moon entry is text, and the surface entry is indexed text.
+<p>
+<p>Lastly, suppose we want to define new phrases which deal with text. Here we have two things to remember. First, we need to say that the value decided is indexed text, not text; secondly, that text converts to indexed text by magic, but not vice versa. So:
+<p>
+<blockquote><font color="#000080">To decide what indexed text is (T - text) doubled:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on &quot;[T][T]&quot;.
+</font></blockquote><p>
+<p>
+<p>works fine so long as we only want to pass text to it, but would not let us double indexed text. This, on the other hand, handles both:
+<p>
+<blockquote><font color="#000080">To decide what indexed text is (T - indexed text) doubled:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on &quot;[T][T]&quot;.
+</font></blockquote><p>
+<p>
+<p>So for instance:
+<p>
+<blockquote><font color="#000080">say &quot;Neptune&quot; doubled.
+</font></blockquote><p>
+<p>
+<p>prints &quot;NeptuneNeptune&quot; because Inform automatically converts &quot;Neptune&quot; to indexed text when &quot;doubled&quot; is used on it.
+<p>
+<p><hr><p>
+<a name="e133"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex133.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>362</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex133.html#e133 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Identity Theft</font></b></a><br>Allowing the player to enter a name to be used for the player character during the game.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex133.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e38"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex38.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>363</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex38.html#e38 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mirror, Mirror</font></b></a><br>The sorcerer's mirror can, when held up high, form an impression of its surroundings which it then preserves.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex38.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e217"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex217.html#e217 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>364</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex217.html#e217 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Cow Exonerated</font></b></a><br>Creating a class of matches that burn for a time and then go out, with elegant reporting when several matches go out at once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex217.html#e217 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc321.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc323.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

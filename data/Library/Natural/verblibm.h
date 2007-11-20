@@ -971,7 +971,6 @@ Global I7_wlf_sp;
         BeginActivity(DETAILS_ACT);
         if (ForActivity(DETAILS_ACT) == false) {
         #ifnot;
-        ! JM: don't use the 'invent' property for room listings in I7
         if (o.invent && RunRoutines(o, invent)) {
             if (c_style & NEWLINE_BIT) new_line;
             rtrue;
@@ -1158,7 +1157,7 @@ Global I7_wlf_sp;
     ch = 1;
     #Endif;
     i = ch * (lines+7);
-    @split_window i;
+	StatusLineHeight(i);
     i = HDR_SCREENWCHARS->0;
     if (i == 0) i = 80;
     @set_window 1;
@@ -1217,7 +1216,7 @@ Global I7_wlf_sp;
             EntryR.call();
 
             @erase_window $ffff;
-            @split_window ch;
+			StatusLineHeight(ch);
             i = HDR_SCREENWCHARS->0; if ( i== 0) i = 80;
             @set_window 1; @set_cursor 1 1; style reverse; spaces(i);
             j=1+(i/2-item_width)*cw;
@@ -2349,11 +2348,16 @@ Global I7_wlf_sp;
             #ifdef NI_BUILD_COUNT;
             say__p = ssp;
             #endif;
-            #Ifndef MANUAL_PRONOUNS;
+            #ifndef NI_BUILD_COUNT;
+            #ifndef MANUAL_PRONOUNS;
             PronounNotice(o);
-            #Endif;
+            #endif;
+            #endif;
             if (o hasnt scenery) {
                 #ifdef NI_BUILD_COUNT;
+	            #ifndef MANUAL_PRONOUNS;
+	            PronounNotice(o);
+	            #endif;
                 I7_DivideParagraph(); ssp = false;
                 #endif;
                 give o workflag; k++;

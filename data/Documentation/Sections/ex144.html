@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.5. Assemblies and body parts</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.7. New actions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,129 +19,236 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Model Shop" -->
-<!-- SEARCH SECTION "Ex 43" -->
-<!-- SEARCH SORT "Ex 004-005-043" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc57.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc59.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.5. Assemblies and body parts</b></font></td></tr></table>
+<!-- SEARCH TITLE "Frizz" -->
+<!-- SEARCH SECTION "Ex 178" -->
+<!-- SEARCH SORT "Ex 012-007-178" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc178.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc180.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.7. New actions</b></font></td></tr></table>
 <p>
-<p>In the previous chapter, we saw that it was possible to make sub-parts of things. For instance,
+<p>It is not often that we need to create new actions, but a large work of interactive fiction with no novelty actions is a flavourless dish. Here we shall create an action for photographing things.
 <p>
-<blockquote><font color="#000080">The white door is in the Drawing Room. The handle is part of the white door.
+<blockquote><font color="#000080">The Ruins is a room. &quot;You find this clearing in the rainforest oddly familiar.&quot; The camera is in the Ruins. &quot;Your elephantine camera hangs from a convenient branch.&quot;
 </font></blockquote><p>
 <p>
-<p>creates a door with an attached handle. But what if we want to say that not just this door, but every door, should have a handle? To do this we first need to create a kind called &quot;handle&quot;, since there will clearly need to be many handles. The solution is:
-<p>
-<blockquote><font color="#000080">A handle is a kind of thing. A handle is part of every door.
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
 </font></blockquote><p>
 <p>
-<p>&quot;Every&quot; is a loaded word and best used sparingly. A sentence like &quot;A handle is part of every handle&quot; would, if taken literally, mean that a handle takes forever to make and is never finished. Inform will reject this, but the moral is clear: we should think about what we are doing with &quot;every&quot;. Another restriction is it is not safe to meddle with the three fundamental kinds &quot;room&quot;, &quot;container&quot; or &quot;supporter&quot; by making them into assemblies, but in fact this one can be got around quite easily, like so -
+<p>In theory that text is already sufficient to make the new action, but what we have so far is rudimentary to say the least. The two qualifications give Inform the useful information that we cannot photograph in the dark, and that we need to be photographing something - not, as in the case of waiting or taking inventory, acting without reference to any particular thing external to ourselves.
 <p>
-<blockquote><font color="#000080">A silver coin is a kind of thing. A banking room is a kind of room. Five silver coins are in every banking room.
+<p>The word &quot;visible&quot; here tells Inform that we do not need to be able to touch the thing in question: a line of sight is good enough. These two stipulations were necessary because the default arrangement is that any object must be in touching range, and that most actions can be performed in darkness. (Also, note that if you invent an action which needs to apply to directions like &quot;north&quot; or &quot;south&quot;, you need to make this apply to visible things, because the object used inside Inform to represent the idea of &quot;north&quot; can be seen but not touched. So for understanding purposes, &quot;visible thing&quot; is understood as meaning any visible thing or direction: it's more general than &quot;thing&quot;, not more specific.) Occasionally, when writing general rules about actions, it can be useful to find out what the current action's requirements are: the following conditions do what they suggest.
+<p>
+<blockquote><font color="#000080">if the action requires a touchable noun...
+<br>if the action requires a touchable second noun...
+<br>if the action requires light...
 </font></blockquote><p>
 <p>
-<p>The effect of sentences like these is to make what we might call &quot;assemblies&quot; instead of single things. When a banking room is created, so are five more silver coins; when a door is created, so is another handle. Such sentences act not only on items created later on in the source text, but also on all those created so far.
+<p>For instance, if we are currently examining something, then the first condition will be untrue, because that requires only a visible noun.
 <p>
-<p>This is especially useful for body parts. If we would like to explore Voltaire's suggestion that history would have been very different if only Cleopatra's nose had been shorter, we will need noses:
+<p>As further examples, here we create &quot;blinking&quot; and &quot;scraping X with Y&quot;. Note the use of &quot;it&quot; to indicate that the name of an object should go here.
 <p>
-<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person.
+<blockquote><font color="#000080">Blinking is an action applying to nothing. Scraping it with is an action applying to two things.
 </font></blockquote><p>
 <p>
-<p>Something to bear in mind, though, is that in play the following may well happen:
+<p>The photographing action now exists, but with two provisos: (a) it never happens, because Inform does not know what commands by the player should cause it, and (b) even if it were to happen, nothing would follow, because Inform does not know what to do. (There are no check, carry out or report rules yet.)
 <p>
-<blockquote><font color="#000080">>examine nose
-<br>Which do you mean, your nose, Antony's nose or Cleopatra's nose?
+<p>The first problem is easily overcome:
+<p>
+<blockquote><font color="#000080">Understand &quot;photograph [something]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>...because the player, being also a &quot;person&quot;, is as susceptible to the invention of noses as anyone else.
+<p>We will return to the whole subject of parsing, as this process of understanding the player's commands is called, later. But this gives the gist of it.
 <p>
-<p>Note that Inform names the otherwise nameless noses after their owners. It will always do this unless there are multiple indistinguishable things being created, as in the &quot;five silver coins are in every banking room&quot; example: those will all just be called &quot;silver coin&quot;.
-<p>
-<p>Something to watch out for is that if we write:
-<p>
-<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person. Antony and Cleopatra are people.
-</font></blockquote><p>
-<p>
-<p>then we can begin talking about &quot;Antony's nose&quot; and &quot;Cleopatra's nose&quot;: but it is not safe to discuss these before the sentence &quot;A nose is part of every person&quot; which creates them. Another pitfall is that if we then write:
-<p>
-<blockquote><font color="#000080">Marcus Tullius Cicero is a person.
-</font></blockquote><p>
-<p>
-<p>then although &quot;Marcus Tullius Cicero's nose&quot; and &quot;Cicero's nose&quot; are both valid names for the consular nose, &quot;Marcus's nose&quot; is not.
-<p>
+<a href=doc243.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Understand</b></font></a><i> for the full story</i><p><p>
 <p><hr><p>
-<a name="e45"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex45.html#e45 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>42</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex45.html#e45 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Being Prepared</font></b></a><br>A kind for jackets, which always includes a container called a pocket.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex45.html#e45 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e207"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex207.html#e207 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>177</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex207.html#e207 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">DIAGNOSE command</font></b></a><br>A DIAGNOSE command which allows the player to check on the health of someone.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex207.html#e207 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e144"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc58.html#e144 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>43</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc58.html#e144 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Model Shop</font></b></a><br>An "on/off button" which controls whatever device it is part of.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex144.html#e144 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e144"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc179.html#e144 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>178</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc179.html#e144 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Frizz</font></b></a><br>Liquid flows within containers and soaks objects that are not waterproof; any contact with a wet object can dampen our gloves.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex144.html#e144 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we're particularly mechanically-minded and would like a game in which all of our mechanical devices have buttons to turn them on and off.
+<p>Suppose we have some items that get wet in contact with other damp things; in particular, if we touch anything wet while wearing a pair of gloves, the gloves too get damp. This requires that we be systematic about detecting all cases where contact occurs. So:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode127(code) {
+function pasteCode268(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Model Shop"\n\nAn on/off button is a kind of thing.\n\nInstead of pushing an on/off button which is part of a switched off device (called the machine):\n\ttry switching on the machine.\n\n[Here we are making a rule about how our hypothetical buttons will interact with the machines to which they belong. Instead of pushing... is a rule that pertains to actions, and we will learn more about these in the chapter on actions. "...which is part of a switched off device" provides a specific circumstance - this is only to apply to buttons that are stuck to a machines that can be turned on or off. "(called the machine)" tells Inform that if it finds such a device, it should thereafter refer to it as "the machine." (The called syntax is explained further in the chapter on Change.)]\n\n[A set of three more rules will complete our instructions about using buttons to control devices:]\n\nInstead of pushing an on/off button which is part of a switched on device (called the machine):\n\ttry switching off the machine.\n\nInstead of switching on a button which is part of a device (called the machine):\n\ttry switching on the machine.\n\nInstead of switching off a button which is part of a device (called the machine):\n\ttry switching off the machine.\n\n[Then we hand out buttons with a free hand:]\n\nOne on/off button is part of every device.\n\nThe Model Shop is a room. A model train is a fixed in place device in the Model Shop. A toy elephant is a device in the Model Shop.\n\nEvery turn when the model train is switched on:\n\tsay "The model train circles your feet, blowing small puffs of steam."\n\nEvery turn when the toy elephant is switched on:\n\tsay "The toy elephant waves its trunk at you."\n\nTest me with "push model train\'s button / push elephant\'s button / g / switch off model train\'s button".\n\n[And now the game will have a model train\'s button and a toy elephant\'s button.]\n\n[It may be that we want (as an added nuance) to add other names for these items. While we would want an assembly to create objects such as "Lucy\'s hand" and not "Lucy hand", it is entirely reasonable to want to talk about the model train button or the elephant button. We could define these additional names like so:]\n\nUnderstand "elephant button" or "button on elephant" as the elephant\'s button.\n\nUnderstand "model train" or "model" or "train" as "[train]". Understand "[train] button" or  "button on [train]" as the model train\'s button.\n\n');
+    myProject.pasteCode('"Frizz"\n\nA thing can be waterproof or porous. A container is usually waterproof. An animal is usually waterproof.\n\nA thing can be sodden or dry.\n\nA container can be waterfilled or empty.\n\nBefore printing the name of a sodden thing: say "sodden ". Understand the sodden property as describing a thing.\n\nThe player wears a pair of woolly gloves. Instead of wearing a sodden thing: say "You dubiously contemplate [the noun], and decide it\'s best to wear dry clothing."\n\nEvery turn:\n\tfollow the liquid distribution rules.\n\nThe liquid distribution rules is a rulebook.\n\nA liquid distribution rule:\n\trepeat with item running through containers\n\tbegin;\n\t\tif the item is open and the item is empty and the item is in a waterfilled container\n\t\tbegin;\n\t\t\tnow the item is waterfilled;\n\t\t\tif the player can see the item, say "[The item] fills up with water, of course.";\n\t\tend if;\n\tend repeat.\n\nA liquid distribution rule:\n\trepeat with item running through things in a waterfilled container\n\tbegin;\n\t\tif the item is porous and the item is dry\n\t\tbegin;\n\t\t\tif the player can see the item, say "[The item] soaks through.";\n\t\t\tnow the item is sodden;\n\t\tend if;\n\tend repeat.\n\nA liquid distribution rule:\n\trepeat with item running through sodden things in the airing cupboard\n\tbegin;\n\t\tif the item is not The Last Man, now the item is dry;\n\tend repeat.\n\nThe last liquid distribution rule:\n\tif the player carries a dry copy of The Last Man, end the game in victory.\n\nInstead of examining a waterfilled container:\n\tsay "[The noun] is full of water[if the noun contains something visible]; it also contains [the list of things in the noun][end if]."\n\nInstead of examining a container:\n\tsay "Dry inside[if the noun contains something visible], and containing [a list of things in the noun]."\n\nA book is a kind of thing. Instead of examining a sodden book, say "[The noun] is too soaked to read, thanks to someone\'s carelessness." Understand "book" as a book.\n\nThe copy of The Last Man is a book. The description of The Last Man is "Mary Shelley\'s very own original copy, loaned to you under the strictest of agreements[if the pond encloses the copy]. How it came to be in its present position is a long story, and not important at the moment: the critical thing is not to blame oneself - who could have anticipated the cricket bat, anyway? - but to fix it immediately, before anything worse occurs[end if]." The The Last Man is in the ziploc bag. The ziploc bag is waterproof and empty. It is openable, transparent, and closed.\n\nThe Back Garden is a room. The Back Garden contains a pond. The pond is a waterfilled container. In the pond is the ziploc bag. A carp is in the pond. The carp is an animal. Instead of taking the carp, say "You\'re not fast enough."\n\nRule for writing a paragraph about the pond:\n\tif the pond encloses the Last Man\n\tbegin;\n\t\tsay "It is a beautiful day just at the end of spring and beginning of summer. The sun shines, the trees blossom, the world conspires in Edenic cheerfulness. You can take in none of it. Your eye is on [the Last Man].";\n\totherwise;\n\t\tsay "The pond[if something is in the pond] (containing [the list of things in the pond])[end if] remains a figure of menace in an otherwise lushly verdant landscape.";\n\tend if.\n\nBefore printing the name of the Last Man when the Last Man is enclosed by the Pond: if the Last Man is dry, say "delicate, valuable ".\n\nAfter printing the name of something (called the target) while writing a paragraph about something:\n\tif the Last Man is enclosed by the Pond\n\tbegin;\n\t\tif the target is in something (called the parent), say " - which is in [the parent]";\n\tend if.\n\nThe Kitchen is west of the Back Garden. "Not in any sense your province: Mrs Peaswell gets agitated if anyone besides herself so much as boils a kettle. In general it is best to sneak through, disturbing as little as possible and preserving the cosy domestic fiction that academics cannot cook.\n\nThe nearby stairwell leads up to the second floor."\n\nThe Stairwell is above the Kitchen. "Halfway up and halfway down." The airing cupboard is a container in the Stairwell. "An airing cupboard here contains the heating system, and is the ideal place for restoring wet items to a dry state." The airing cupboard is fixed in place.\n\nThis is the dry glove rule:\n\tif we get wet\n\tbegin;\n\t\tif the player wears the gloves and the gloves are dry\n\t\tbegin;\n\t\t\tnow the gloves are sodden;\n\t\t\tsay "(soaking your gloves in the process)";\n\t\tend if;\n\tend if;\n\tcontinue the action;\n\nThis is the wet glove rule:\n\tif the player wears the sodden gloves\n\tbegin;\n\t\tif the The Last Man must be touched and the Last Man is not sodden\n\t\tbegin;\n\t\t\tsay "(soaking the parched pages of The Last Man with the rude touch of your sodden gloves)";\n\t\t\tnow the The Last Man is sodden;\n\t\tend if;\n\t\tcontinue the action;\n\tend if.\n\nThe wet glove rule is listed first in the carry out taking rulebook. The wet glove rule is listed first in the carry out touching rulebook. The wet glove rule is listed first in the carry out pushing rulebook. The wet glove rule is listed first in the carry out pulling rulebook. The wet glove rule is listed first in the carry out turning rulebook. The wet glove rule is listed first in the carry out dropping rulebook. The wet glove rule is listed first in the carry out wearing rulebook.\n\nThe dry glove rule is listed first in the carry out taking rulebook. The dry glove rule is listed first in the carry out touching rulebook. The dry glove rule is listed first in the carry out pushing rulebook. The dry glove rule is listed first in the carry out pulling rulebook. The dry glove rule is listed first in the carry out turning rulebook. The dry glove rule is listed first in the carry out dropping rulebook. The dry glove rule is listed first in the carry out wearing rulebook.\n\nBefore doing something when the player does not wear the gloves:\n\tif The Last Man must be touched\n\tbegin;\n\t\tif The Last Man is dry, say "[The The Last Man] is too precious to endanger when you are not wearing gloves." instead;\n\t\totherwise say "You hesitate instinctively, then recollect that you can hardly harm [The The Last Man] any more than it has already been harmed...";\n\tend if.\n\nTo decide whether we get wet:\n\tif the noun is not a thing, no;\n\tif the noun dampens us, yes;\n\tif the second noun is not a thing, no;\n\tif the second noun dampens us, yes;\n\tno.\n\nTo decide whether (item - a thing) dampens us:\n\tif the item is not liquiferous, no;\n\tif item must be touched, yes;\n\tno.\n\nTo decide whether (item - a thing) must be touched:\n\tif the item is the noun and the action requires a touchable noun, yes;\n\tif the item is the second noun and the action requires a touchable second noun, yes;\n\tno.\n\nDefinition: a thing is liquiferous:\n\tif it is sodden, yes;\n\tif it is in a waterfilled container, yes;\n\tno.\n\nTest me with "x book / x bag / get bag / take off gloves / w / u / put gloves in cupboard / z / open bag / touch book / push book / turn book / get gloves / wear gloves / get book".\n\nTest disaster with "open bag".\n\nTest mishandling with "get bag / open bag / get book".\n');
 }
 </script>
-<a href="javascript:pasteCode127()"><img border=0 src=../doc_images/paste.png></a> &quot;Model Shop&quot;
+<a href="javascript:pasteCode268()"><img border=0 src=../doc_images/paste.png></a> &quot;Frizz&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">An on/off button is a kind of thing.
+<blockquote><font color="#000080">A thing can be waterproof or porous. A container is usually waterproof. An animal is usually waterproof.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of pushing an on/off button which is part of a switched off device (called the machine):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try switching on the machine.
+<blockquote><font color="#000080">A thing can be sodden or dry.
 </font></blockquote><p>
 <p>
-<p>Here we are making a rule about how our hypothetical buttons will interact with the machines to which they belong. Instead of pushing... is a rule that pertains to actions, and we will learn more about these in the chapter on actions. &quot;...which is part of a switched off device&quot; provides a specific circumstance - this is only to apply to buttons that are stuck to a machines that can be turned on or off. &quot;(called the machine)&quot; tells Inform that if it finds such a device, it should thereafter refer to it as &quot;the machine.&quot; (The called syntax is explained further in the chapter on Change.)
-<p>
-<p>A set of three more rules will complete our instructions about using buttons to control devices:
-<p>
-<blockquote><font color="#000080">Instead of pushing an on/off button which is part of a switched on device (called the machine):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try switching off the machine.
+<blockquote><font color="#000080">A container can be waterfilled or empty.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of switching on a button which is part of a device (called the machine):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try switching on the machine.
+<blockquote><font color="#000080">Before printing the name of a sodden thing: say &quot;sodden &quot;. Understand the sodden property as describing a thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of switching off a button which is part of a device (called the machine):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try switching off the machine.
+<blockquote><font color="#000080">The player wears a pair of woolly gloves. Instead of wearing a sodden thing: say &quot;You dubiously contemplate [the noun], and decide it's best to wear dry clothing.&quot;
 </font></blockquote><p>
 <p>
-<p>Then we hand out buttons with a free hand:
-<p>
-<blockquote><font color="#000080">One on/off button is part of every device.
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the liquid distribution rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Model Shop is a room. A model train is a fixed in place device in the Model Shop. A toy elephant is a device in the Model Shop.
+<blockquote><font color="#000080">The liquid distribution rules is a rulebook.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when the model train is switched on:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The model train circles your feet, blowing small puffs of steam.&quot;
+<blockquote><font color="#000080">A liquid distribution rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through containers
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is open and the item is empty and the item is in a waterfilled container
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the item is waterfilled;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player can see the item, say &quot;[The item] fills up with water, of course.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when the toy elephant is switched on:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The toy elephant waves its trunk at you.&quot;
+<blockquote><font color="#000080">A liquid distribution rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things in a waterfilled container
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is porous and the item is dry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player can see the item, say &quot;[The item] soaks through.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the item is sodden;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;push model train's button / push elephant's button / g / switch off model train's button&quot;.
+<blockquote><font color="#000080">A liquid distribution rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through sodden things in the airing cupboard
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is not The Last Man, now the item is dry;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>And now the game will have a model train's button and a toy elephant's button.
-<p>
-<p>It may be that we want (as an added nuance) to add other names for these items. While we would want an assembly to create objects such as &quot;Lucy's hand&quot; and not &quot;Lucy hand&quot;, it is entirely reasonable to want to talk about the model train button or the elephant button. We could define these additional names like so:
-<p>
-<blockquote><font color="#000080">Understand &quot;elephant button&quot; or &quot;button on elephant&quot; as the elephant's button.
+<blockquote><font color="#000080">The last liquid distribution rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries a dry copy of The Last Man, end the game in victory.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;model train&quot; or &quot;model&quot; or &quot;train&quot; as &quot;[train]&quot;. Understand &quot;[train] button&quot; or  &quot;button on [train]&quot; as the model train's button.
+<blockquote><font color="#000080">Instead of examining a waterfilled container:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is full of water[if the noun contains something visible]; it also contains [the list of things in the noun][end if].&quot;
 </font></blockquote><p>
 <p>
-<p>In the second case, we are defining [train] to mean any of the three phrases &quot;train&quot;, &quot;model&quot;, and &quot;model train&quot;; so &quot;[train] button&quot; will match &quot;model train button&quot; or &quot;train button&quot; or &quot;model button&quot; equally well. See the chapter on Understanding for more on how to create alternative phrasings for the player to use.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc58.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Instead of examining a container:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Dry inside[if the noun contains something visible], and containing [a list of things in the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A book is a kind of thing. Instead of examining a sodden book, say &quot;[The noun] is too soaked to read, thanks to someone's carelessness.&quot; Understand &quot;book&quot; as a book.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The copy of The Last Man is a book. The description of The Last Man is &quot;Mary Shelley's very own original copy, loaned to you under the strictest of agreements[if the pond encloses the copy]. How it came to be in its present position is a long story, and not important at the moment: the critical thing is not to blame oneself - who could have anticipated the cricket bat, anyway? - but to fix it immediately, before anything worse occurs[end if].&quot; The The Last Man is in the ziploc bag. The ziploc bag is waterproof and empty. It is openable, transparent, and closed.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Back Garden is a room. The Back Garden contains a pond. The pond is a waterfilled container. In the pond is the ziploc bag. A carp is in the pond. The carp is an animal. Instead of taking the carp, say &quot;You're not fast enough.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for writing a paragraph about the pond:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the pond encloses the Last Man
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is a beautiful day just at the end of spring and beginning of summer. The sun shines, the trees blossom, the world conspires in Edenic cheerfulness. You can take in none of it. Your eye is on [the Last Man].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The pond[if something is in the pond] (containing [the list of things in the pond])[end if] remains a figure of menace in an otherwise lushly verdant landscape.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before printing the name of the Last Man when the Last Man is enclosed by the Pond: if the Last Man is dry, say &quot;delicate, valuable &quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After printing the name of something (called the target) while writing a paragraph about something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the Last Man is enclosed by the Pond
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the target is in something (called the parent), say &quot; - which is in [the parent]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Kitchen is west of the Back Garden. &quot;Not in any sense your province: Mrs Peaswell gets agitated if anyone besides herself so much as boils a kettle. In general it is best to sneak through, disturbing as little as possible and preserving the cosy domestic fiction that academics cannot cook.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The nearby stairwell leads up to the second floor.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Stairwell is above the Kitchen. &quot;Halfway up and halfway down.&quot; The airing cupboard is a container in the Stairwell. &quot;An airing cupboard here contains the heating system, and is the ideal place for restoring wet items to a dry state.&quot; The airing cupboard is fixed in place.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">This is the dry glove rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if we get wet
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player wears the gloves and the gloves are dry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the gloves are sodden;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(soaking your gloves in the process)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">This is the wet glove rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player wears the sodden gloves
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the The Last Man must be touched and the Last Man is not sodden
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(soaking the parched pages of The Last Man with the rude touch of your sodden gloves)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the The Last Man is sodden;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The wet glove rule is listed first in the carry out taking rulebook. The wet glove rule is listed first in the carry out touching rulebook. The wet glove rule is listed first in the carry out pushing rulebook. The wet glove rule is listed first in the carry out pulling rulebook. The wet glove rule is listed first in the carry out turning rulebook. The wet glove rule is listed first in the carry out dropping rulebook. The wet glove rule is listed first in the carry out wearing rulebook.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The dry glove rule is listed first in the carry out taking rulebook. The dry glove rule is listed first in the carry out touching rulebook. The dry glove rule is listed first in the carry out pushing rulebook. The dry glove rule is listed first in the carry out pulling rulebook. The dry glove rule is listed first in the carry out turning rulebook. The dry glove rule is listed first in the carry out dropping rulebook. The dry glove rule is listed first in the carry out wearing rulebook.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before doing something when the player does not wear the gloves:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if The Last Man must be touched
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if The Last Man is dry, say &quot;[The The Last Man] is too precious to endanger when you are not wearing gloves.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You hesitate instinctively, then recollect that you can hardly harm [The The Last Man] any more than it has already been harmed...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide whether we get wet:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a thing, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun dampens us, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not a thing, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun dampens us, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide whether (item - a thing) dampens us:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is not liquiferous, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if item must be touched, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide whether (item - a thing) must be touched:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is the noun and the action requires a touchable noun, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is the second noun and the action requires a touchable second noun, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is liquiferous:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is sodden, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is in a waterfilled container, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x book / x bag / get bag / take off gloves / w / u / put gloves in cupboard / z / open bag / touch book / push book / turn book / get gloves / wear gloves / get book&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test disaster with &quot;open bag&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test mishandling with &quot;get bag / open bag / get book&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc179.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e50"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex50.html#e50 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>44</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex50.html#e50 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Night Before</font></b></a><br>Instructing Inform to prefer different interpretations of EXAMINE NOSE, depending on whether the player is alone, in company, or with Rudolph the Red-nosed Reindeer.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex50.html#e50 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e7"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex7.html#e7 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>45</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex7.html#e7 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> U-Stor-It</font></b></a><br>A "chest" kind which consists of a container which has a lid as a supporter.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex7.html#e7 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc57.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc178.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc180.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

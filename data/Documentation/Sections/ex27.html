@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.8. Action- vs object-based-rulebooks</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.16. Randomness</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,210 +19,116 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Flotation" -->
-<!-- SEARCH SECTION "Ex 327" -->
-<!-- SEARCH SORT "Ex 018-008-327" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc302.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc304.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.8. Action- vs object-based-rulebooks</b></font></td></tr></table>
+<!-- SEARCH TITLE "Lanista 1" -->
+<!-- SEARCH SECTION "Ex 119" -->
+<!-- SEARCH SORT "Ex 008-016-119" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc124.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc126.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.16. Randomness</b></font></td></tr></table>
 <p>
-<p>The example of the appraisal rules, earlier in the chapter, was a rulebook whose rules were not tied to any specific action or item. We simply created rules for this rulebook by writing &quot;An appraisal rule: ...&quot; But most Inform rules do apply to either actions (&quot;Instead of drinking the wine: ...&quot;) or items (&quot;Rule for reaching inside the flask: ...&quot;); and these two sorts of rule belong to two sorts of rulebooks. For instance, the Before, Instead and After rulebooks are based on actions, while the rulebooks associated with activities (as used by rules like &quot;Rule for printing the name of: ...&quot;) are based on items. (As it turns out, the appraisal rulebook was action-based: it simply happened that we never specified any requirements on the action.)
+<p>Sometimes we want to introduce random behaviour into play. We usually do this by generating random values, and then acting differently depending on what they are. The following:
 <p>
-<p>We have seen that the preamble for a rule can be quite complicated, but when we strip away the optional ways to limit its applicability, give it a name, and so forth, we are left with
-<p>
-<blockquote><font color="#000080">...rulebook name... [about/for/of/on/rule] [...what to apply to...]
+<blockquote><font color="#000080">a random number from 2 to 5
 </font></blockquote><p>
 <p>
-<p>where the square-bracketed parts are optional. If the rulebook is object-based, the &quot;...what to apply to...&quot; should be a description, like &quot;a container&quot;; if action-based, it should be an action, like &quot;examining an open door&quot;.
+<p>produces, as it suggests, a random number drawn from the choices 2, 3, 4 or 5, each of which is equally likely to come up.
 <p>
-<p><b>1. Action-based rulebooks.</b> We have already mentioned before, after and instead. Other action-based rulebooks include the check, carry out, and report rules; general rulebooks such as every turn rules, the procedural rules, the visibility rules, the turn sequence rules; and rules specially for dealing with the actions of other characters, such as the persuasion and unsuccessful attempt rules. So the following would all be valid:
+<p>We can also use random conditions:
 <p>
-<blockquote><font color="#000080">An every turn rule on kissing Clark:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lois glares in your direction.&quot;
+<blockquote><font color="#000080">if a random chance of 2 in 3 succeeds then ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Procedural rule about someone taking the hat:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;ignore the can't take people's possessions rule.
+<p>Here is a rule which applies only 15% of the time:
+<p>
+<blockquote><font color="#000080">Instead of waiting when a random chance of 15 in 100 succeeds: ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Visibility rule for looking under something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is carrying a lit thing (called lamp)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You shine [the lamp] under [the noun]...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;there is sufficient light;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;there is insufficient light.
+<p>If we make a new kind of value, we can also take random values from it:
+<p>
+<blockquote><font color="#000080">A cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.
 </font></blockquote><p>
 <p>
-<p>...all of which will take place on the occasions when these rulebooks would ordinarily be used, but take effect only if the action is the one specified.
+<p>The value &quot;a random cloud pattern&quot; then produces a random choice from the seven cloud patterns, each equally likely.
 <p>
-<p>The persuasion rules are dependent on the current action, but, since they will only be consulted when we ask someone to do something, it is only useful to write rules like
-<p>
-<blockquote><font color="#000080">Persuasion rule for asking Kent to try going: ...
-<br>Persuasion rule: ...
-</font></blockquote><p>
-<p>
-<p>and not
-<p>
-<blockquote><font color="#000080">Persuasion rule for taking the blue egg-cup: ...
-</font></blockquote><p>
-<p>
-<p>Theoretically, the when play begins and when play ends rules could be written as things such as &quot;When play begins rule for looking: ...&quot;, but this is not useful in any way: actions are not happening then, so such rules would never take effect.
-<p>
-<p>Because action-based rulebooks tend to be the more useful of the two types of rulebook under most circumstances, this is the kind of rule created by default if we say:
-<p>
-<blockquote><font color="#000080">The judgment rules are a rulebook.
-</font></blockquote><p>
-<p>
-<p>Having done this, we would now be allowed to write
-<p>
-<blockquote><font color="#000080">A judgment rule for listening to the music:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh, Mozart is really too tedious to endure.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A judgment rule about Kent Taylor kissing the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Well, he's no Clark Gable, let's put it that way.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Judgment rule on eating Kraft dinner:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Bright orange and in no way related to real cheeses.&quot;
-</font></blockquote><p>
-<p>
-<p><b>2. Object-parametrized rulebooks.</b> Each activity creates three of these. For instance:
-<p>
-<blockquote><font color="#000080">Rule for printing the name of ...something...
-</font></blockquote><p>
-<p>
-<p>and equivalently, though less elegantly,
-<p>
-<blockquote><font color="#000080">Rule for printing the name ...something...
-<br>Rule for printing the name for ...something...
-</font></blockquote><p>
-<p>
-<p>Each activity also generates a before and after rulebook, as we've also seen. The reaching inside and reaching outside rules are also object-based rulebooks.
-<p>
-<p>We may make new object-based rulebooks in the process of making new activities, of course, but sometimes a whole new activity is overkill, since an activity produces three rulebooks (before, for, after). We can instead create a simple rulebook so:
-<p>
-<blockquote><font color="#000080">The flotation rules are an object-based-rulebook.
-</font></blockquote><p>
-<p>
-<p>Having done this, we would be allowed to write
-<p>
-<blockquote><font color="#000080">A flotation rule for the cork: rule succeeds.
-<br>A flotation rule for an inflated thing: rule succeeds.
-<br>A flotation rule: rule fails.
-</font></blockquote><p>
-<p>
-<p>And we might use the flotation rules in a circumstance like this:
-<p>
-<blockquote><font color="#000080">After inserting something into the well:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;consider the flotation rules for the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the rule succeeded
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] bobs on the surface.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] sinks out of sight.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p><hr><p>
-<!-- EXAMPLE START -->
-<a name="e27"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc303.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>327</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc303.html#e27 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Flotation</font></b></a><br>Objects that can sink or float in a well, depending on their own properties and the state of the surrounding environment.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex27.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Here we want a rulebook to determine whether objects float or sink, so we create an object-based rulebook for the purpose. The more specific rules here, pertaining to corks and to inflated things, will be consulted first; then, as a default, the general flotation rule.
-<p>
-<p>We also want a switch that can turn flotation off at will. The rule about the big switch will be observed before the others because the when... clause makes it more specific than the other rules in the flotation rulebook.
-<p>
-<p>If we wanted, we could also put these rules into a rulebook in an explicit order, overriding Inform's automatic sorting by specificity.
+<p>Testing IF which makes random choices can be rather frustrating, because a problem showing up on one attempt may not show up on another. To ease testing, the following sentence will &quot;fix&quot; the process of generating these random numbers so that they are not random at all - the same sequence of random numbers will be produced on each run.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode413(code) {
+function pasteCode19(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Flotation"\n\nThe Pumping House is a room.\n\nA well is a fixed in place container in the Pumping House. The description of the well is "[if something is in the well]On the surface of the water you can see [a list of things in the well][otherwise]There is nothing on the surface of the water, nor can you see into the depths[end if]."\n\nThe well bottom is a container.\n\nThe cork, the rubber ring and a lead ingot are in the Pumping House.\n\nA big switch is a fixed in place device in the Pumping House. "A big switch labelled \'MAKE EVERYTHING SINK\' is mounted on one wall[if switched on]. It crackles with electricity[otherwise]. It is currently switched off and silent[end if]."\n\nA thing can be inflated or uninflated. A thing is usually uninflated. Before printing the name of an inflated thing: say "inflated ".\n\nThe rubber ring is inflated.\n\nThe flotation rules are an object-based-rulebook.\n\nA flotation rule for the cork: rule succeeds.\nA flotation rule for an inflated thing: rule succeeds.\nA flotation rule when the big switch is switched on: rule fails.\n\nAfter inserting something into the well:\n\tconsider the flotation rules for the noun;\n\tif the rule succeeded\n\tbegin;\n\t\tsay "[The noun] bobs on the surface.";\n\totherwise;\n\t\tmove the noun to the well bottom;\n\t\tsay "[The noun] sinks out of sight.";\n\tend if.\n\nA thing can be sinking, rising, or static. A thing is usually static.\n\nDefinition: a thing is wet:\n\tif it is in the well, yes;\n\tif it is in the well bottom, yes;\n\tno.\n\nEvery turn:\n\tnow every thing is static;\n\trepeat with item running through wet things\n\tbegin;\n\t\tconsider the flotation rules for the item;\n\t\tif the rule failed and the item is in the well, now the item is sinking;\n\t\tif the rule succeeded and the item is in the well bottom, now the item is rising;\n\tend repeat;\n\tnow every rising thing is in the well;\n\tnow every sinking thing is in the well bottom;\n\tif something is rising, say "[The list of rising things] rise[if the number of rising things is 1]s[end if] to the surface of the well.";\n\tif something is sinking, say "[The list of sinking things] sink[if the number of sinking things is 1]s[end if] out of sight."\n\n[And finally a few description rules to make things look prettier:]\n\nRule for writing a paragraph about the well when the well contains something:\n\tsay "The chief feature of the room is a concrete-sided well in which there float[if the number of things in the well is 1]s[end if] [a list of things in the well]."\n\nRule for writing a paragraph about the well:\n\tsay "The chief feature of the room is a concrete-sided well full of water."\n\n[As we recall from the chapter on activities, "writing a paragraph about..." is an activity; activities are themselves structured as sets of object-based rulebooks. The activity "writing a paragraph about" uses three object-based rulebooks (before writing..., for writing..., after writing...). We could have made a flotation activity as well, but in general it is overkill to make an activity to make success/failure decisions. For that purpose an object-based rulebook is sufficient.]\n\nTest me with "get all / put cork in well / put ring in well / put ingot in well / x well / get cork / get ring / switch switch on / put cork in well / put ring in well / x well / switch switch off / switch switch on".\n');
+    myProject.pasteCode('When play begins, seed the random-number generator with 1234.\n\n');
 }
 </script>
-<a href="javascript:pasteCode413()"><img border=0 src=../doc_images/paste.png></a> &quot;Flotation&quot;
+<a href="javascript:pasteCode19()"><img border=0 src=../doc_images/paste.png></a> When play begins, seed the random-number generator with 1234.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Pumping House is a room.
+<p>The seed value &quot;1234&quot; can be anything positive; a different sequence of random numbers will be produced for each different seed value. A seed value of 0 restores the RNG to properly random behaviour again.
+<p>
+<p><hr><p>
+<a name="e146"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex146.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>118</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex146.html#e146 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Do Pass Go</font></b></a><br>A pair of dice which can be rolled, and are described with their current total when not carried, and have individual scores when examined.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex146.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e27"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc125.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>119</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc125.html#e27 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Lanista 1</font></b></a><br>Very simple randomized combat in which characters hit one another for a randomized amount of damage.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex27.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode207(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Lanista, Part One"\n\nThe Arena is a room. "Sand, blood, iron. These festivals are normally held on hot days, but the sun has gone behind a cloud and fat drops of rain now and then spatter the arena floor." The gladiator is a man in the Arena. "A bare-chested Scythian gladiator faces you, wielding a trident."\n\n[We start by recording, for each person, a maximum number of points of damage the person can sustain when starting from health, and the current number of points remaining. In the tradition of role-playing games, these are referred to as hit points.]\n\nA person has a number called maximum hit points. A person has a number called current hit points.\n\nThe maximum hit points of the player is 35. The maximum hit points of the gladiator is 25.\n\nThe current hit points of the player is 35. The current hit points of the gladiator is 25.\n\n[Now our rule for the actual attack. We want first to calculate how much damage the player\'s attack does, inflict that damage, and remove the enemy if he\'s dead; then, if he doesn\'t die, the enemy counter-attacks, also for a randomized amount of damage, and if this kills the player, the game ends in defeat.]\n\nInstead of attacking someone:\n\tlet the damage be a random number between 2 and 10;\n\tsay "You attack [the noun], causing [damage] points of damage!";\n\tdecrease the current hit points of the noun by the damage;\n\tif the current hit points of the noun is less than 0\n\tbegin;\n\t\tsay "[line break][The noun] expires, and is immediately carried away by the Arena slaves!";\n\t\tremove the noun from play;\n\t\tend the game in victory;\n\t\tstop the action;\n\tend if;\n\tlet the enemy damage be a random number between 2 and 10;\n\tsay "[line break][The noun] attacks you, causing [enemy damage] points of damage!";\n\tdecrease the current hit points of the player by the enemy damage;\n\tif the current hit points of the player is less than 0\n\tbegin;\n\t\tsay "[line break]You expire!";\n\t\tend the game in death;\n\tend if.\n\n[This last bit is a refinement to help the player keep track of how the contest is going:]\n\nWhen play begins:\n\tchange the left hand status line to "You: [current hit points of player]";\n\tchange the right hand status line to "Gladiator: [current hit points of gladiator]".\n\nTest me with "hit gladiator / g / g / g".\n\n');
+}
+</script>
+<a href="javascript:pasteCode207()"><img border=0 src=../doc_images/paste.png></a> &quot;Lanista, Part One&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A well is a fixed in place container in the Pumping House. The description of the well is &quot;[if something is in the well]On the surface of the water you can see [a list of things in the well][otherwise]There is nothing on the surface of the water, nor can you see into the depths[end if].&quot;
+<blockquote><font color="#000080">The Arena is a room. &quot;Sand, blood, iron. These festivals are normally held on hot days, but the sun has gone behind a cloud and fat drops of rain now and then spatter the arena floor.&quot; The gladiator is a man in the Arena. &quot;A bare-chested Scythian gladiator faces you, wielding a trident.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The well bottom is a container.
+<p>We start by recording, for each person, a maximum number of points of damage the person can sustain when starting from health, and the current number of points remaining. In the tradition of role-playing games, these are referred to as hit points.
+<p>
+<blockquote><font color="#000080">A person has a number called maximum hit points. A person has a number called current hit points.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The cork, the rubber ring and a lead ingot are in the Pumping House.
+<blockquote><font color="#000080">The maximum hit points of the player is 35. The maximum hit points of the gladiator is 25.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A big switch is a fixed in place device in the Pumping House. &quot;A big switch labelled 'MAKE EVERYTHING SINK' is mounted on one wall[if switched on]. It crackles with electricity[otherwise]. It is currently switched off and silent[end if].&quot;
+<blockquote><font color="#000080">The current hit points of the player is 35. The current hit points of the gladiator is 25.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be inflated or uninflated. A thing is usually uninflated. Before printing the name of an inflated thing: say &quot;inflated &quot;.
-</font></blockquote><p>
+<p>Now our rule for the actual attack. We want first to calculate how much damage the player's attack does, inflict that damage, and remove the enemy if he's dead; then, if he doesn't die, the enemy counter-attacks, also for a randomized amount of damage, and if this kills the player, the game ends in defeat.
 <p>
-<blockquote><font color="#000080">The rubber ring is inflated.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The flotation rules are an object-based-rulebook.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A flotation rule for the cork: rule succeeds.
-<br>A flotation rule for an inflated thing: rule succeeds.
-<br>A flotation rule when the big switch is switched on: rule fails.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After inserting something into the well:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;consider the flotation rules for the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the rule succeeded
+<blockquote><font color="#000080">Instead of attacking someone:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the damage be a random number between 2 and 10;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You attack [the noun], causing [damage] points of damage!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decrease the current hit points of the noun by the damage;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current hit points of the noun is less than 0
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] bobs on the surface.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the well bottom;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] sinks out of sight.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break][The noun] expires, and is immediately carried away by the Arena slaves!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the enemy damage be a random number between 2 and 10;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break][The noun] attacks you, causing [enemy damage] points of damage!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decrease the current hit points of the player by the enemy damage;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current hit points of the player is less than 0
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break]You expire!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in death;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be sinking, rising, or static. A thing is usually static.
+<p>This last bit is a refinement to help the player keep track of how the contest is going:
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the left hand status line to &quot;You: [current hit points of player]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot;Gladiator: [current hit points of gladiator]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a thing is wet:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is in the well, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is in the well bottom, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+<blockquote><font color="#000080">Test me with &quot;hit gladiator / g / g / g&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing is static;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through wet things
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;consider the flotation rules for the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the rule failed and the item is in the well, now the item is sinking;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the rule succeeded and the item is in the well bottom, now the item is rising;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every rising thing is in the well;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every sinking thing is in the well bottom;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if something is rising, say &quot;[The list of rising things] rise[if the number of rising things is 1]s[end if] to the surface of the well.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if something is sinking, say &quot;[The list of sinking things] sink[if the number of sinking things is 1]s[end if] out of sight.&quot;
-</font></blockquote><p>
-<p>
-<p>And finally a few description rules to make things look prettier:
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about the well when the well contains something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The chief feature of the room is a concrete-sided well in which there float[if the number of things in the well is 1]s[end if] [a list of things in the well].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about the well:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The chief feature of the room is a concrete-sided well full of water.&quot;
-</font></blockquote><p>
-<p>
-<p>As we recall from the chapter on activities, &quot;writing a paragraph about...&quot; is an activity; activities are themselves structured as sets of object-based rulebooks. The activity &quot;writing a paragraph about&quot; uses three object-based rulebooks (before writing..., for writing..., after writing...). We could have made a flotation activity as well, but in general it is overkill to make an activity to make success/failure decisions. For that purpose an object-based rulebook is sufficient.
-<p>
-<blockquote><font color="#000080">Test me with &quot;get all / put cork in well / put ring in well / put ingot in well / x well / get cork / get ring / switch switch on / put cork in well / put ring in well / x well / switch switch off / switch switch on&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc303.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc125.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc302.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc304.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e285"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex285.html#e285 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>120</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex285.html#e285 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Weathering</font></b></a><br>The automatic weather station atop Mt. Pisgah shows randomly fluctuating temperature, pressure and cloud cover.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex285.html#e285 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e343"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex343.html#e343 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>121</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex343.html#e343 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uptown Girls</font></b></a><br>A stream of random pedestrians who go by the player.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex343.html#e343 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc124.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc126.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

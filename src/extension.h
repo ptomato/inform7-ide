@@ -23,7 +23,7 @@
 #include <gtksourceview/gtksourcebuffer.h>
 #include <libgnomevfs/gnome-vfs.h>
 
-struct extension {
+typedef struct {
     /* The toplevel window in which this extension is being edited */
     GtkWidget *window;
     /* This extension's filename */
@@ -32,15 +32,15 @@ struct extension {
     GnomeVFSMonitorHandle *monitor;
     /* The program code */
     GtkSourceBuffer *buffer;
-};
+} Extension;
 
-struct extension *new_ext();
-void delete_ext(struct extension *oldext);
-struct extension *get_ext(GtkWidget *widget);
-void set_ext_filename(struct extension *ext, gchar *filename);
+Extension *new_ext();
+void delete_ext(Extension *oldext);
+Extension *get_ext(GtkWidget *widget);
+void set_ext_filename(Extension *ext, gchar *filename);
 void for_each_extension_window(void (*func)(GtkWidget *));
 void for_each_extension_window_idle(GSourceFunc func);
 void for_each_extension_buffer(void (*func)(GtkSourceBuffer *));
-struct extension *get_extension_if_open(gchar *filename);
+Extension *get_extension_if_open(gchar *filename);
 
 #endif

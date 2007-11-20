@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.7. Adjacent rooms and routes through the map</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.12. Arithmetic with units</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,98 +19,224 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Hotel Stechelberg" -->
-<!-- SEARCH SECTION "Ex 71" -->
-<!-- SEARCH SORT "Ex 006-007-071" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc86.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap6.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 6: Descriptions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc88.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.7. Adjacent rooms and routes through the map</b></font></td></tr></table>
+<!-- SEARCH TITLE "Savannah" -->
+<!-- SEARCH SECTION "Ex 234" -->
+<!-- SEARCH SORT "Ex 014-012-234" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc219.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc221.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.12. Arithmetic with units</b></font></td></tr></table>
 <p>
-<p>Another useful adjective built into Inform is &quot;adjacent&quot;. Two rooms are said to be adjacent if there is a map connection between them which does not pass through some barrier such as a door. This is easily tested:
-<p>
-<blockquote><font color="#000080">if the Hallway is adjacent to the Study ...
-</font></blockquote><p>
-<p>
-<p>We usually want to know about the places adjacent to the current scene of the action, so that is what the adjective &quot;adjacent&quot; means when applied to rooms. For instance:
-<p>
-<blockquote><font color="#000080">if somebody is in an adjacent room, ...
-</font></blockquote><p>
-<p>
-<p>As with the case of &quot;visible&quot;, the adjective is a cut-down version of the more general relationship. This often happens: &quot;worn&quot; and &quot;carried&quot;, for instance, imply &quot;by the player&quot; unless something else is specified.
-<p>
-<p>If we want to ask a more direct question, we can obtain specific map connections like so:
-<p>
-<blockquote><font color="#000080">say &quot;You look north into [the room north from the Garden].&quot;
-</font></blockquote><p>
-<p>
-<p>since &quot;the room D from A&quot; produces the room which lies in direction D from room A. We need to be a little careful here. What if there is no map connection this way? In that case, &quot;the room ... from ...&quot; produces the special value &quot;nothing&quot;. Thus:
-<p>
-<blockquote><font color="#000080">if the room north from the Garden is nothing, say &quot;The grass leads nowhere.&quot;
-</font></blockquote><p>
-<p>
-<p>While on the subject of navigating the map, the phrase &quot;the best route from A to B&quot; gives a direction to take in order to get from A to B by the shortest number of movements between rooms - if there is any way through at all. For example, here is a lure:
-<p>
-<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room].&quot;
-</font></blockquote><p>
-<p>
-<p>Best routes are ordinarily forbidden to go through doors, but if the suffix &quot;using doors&quot; is added as an option then any open or openable and unlocked door may be used on the way; and if &quot;using even locked doors&quot; is given, then any door at all will do. Since magnetism is no respecter of property, that seems right here:
-<p>
-<blockquote><font color="#000080">The description of the brass compass is &quot;The dial points quiveringly to [best route from the location to the Lodestone Room, using even locked doors].&quot;
-</font></blockquote><p>
-<p>
-<p>The phrase &quot;the best route from A to B&quot; gives the direction to take next, if we are at A and want to end up at B. Suppose this is east. We can find out where we go next by looking up &quot;the room east from A&quot;: similarly for any other direction, of course. (This can see through any doors, locked or not.)
-<p>
-<p>We can also stipulate that only certain rooms may be used for the journey, as in the following example:
-<p>
-<blockquote><font color="#000080">best route from the Drawbridge to the Keep through visited rooms
-</font></blockquote><p>
-<p>
-<p>The condition - in this case, that &quot;visited rooms&quot; must be used - also applies to both ends of the journey. (Also, saying something like &quot;...through containers&quot; would mean there is never a route, since it is only rooms which appear on the map.)
-<p>
-<p>Lastly, we can find out how long the journey would be:
-<p>
-<blockquote><font color="#000080">The description of the proximity gadget is &quot;You are now [number of moves from the location to the Sundial] moves from the Sundial.&quot;;
-</font></blockquote><p>
-<p>
-<p>This number is, of course, 0 if the location is already the Sundial. If there is no way at all to get to the Sundial, the number is -1.
-<p>
-<p><hr><p>
-<a name="e156"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex156.html#e156 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>69</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex156.html#e156 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> All Roads Lead to Mars</font></b></a><br>Layout where the player is allowed to wander any direction he likes, and the map will arrange itself in order so that he finds the correct "next" location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex156.html#e156 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e43"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex43.html#e43 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>70</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex43.html#e43 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mistress of Animals</font></b></a><br>A person who moves randomly between rooms of the map.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex43.html#e43 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<!-- EXAMPLE START -->
-<a name="e333"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc87.html#e333 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>71</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc87.html#e333 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Hotel Stechelberg</font></b></a><br>Signposts such as those provided on hiking paths in the Swiss Alps, which show the correct direction and hiking time to all other locations.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex333.html#e333 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>The following rule appends a paragraph to every room description. We need not worry about doors (despite the pass in the Bernese Oberland known figuratively as the &quot;Little Door&quot;).
+<p>Inform allows us to perform arithmetic on units only where that would make sense, and it keeps track of the results. For instance,
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode154(code) {
+function pasteCode33(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('After looking:\n\tsay "Yellow arms on the signpost point:-[line break]";\n\trepeat with destination running through rooms begin;\n\t\tlet the way be the best route from the location to the destination;\n\t\tif the way is a direction, say "  [way] for [the destination]: [number of moves from the location to the destination] Std.";\n\tend repeat.\n\n');
+    myProject.pasteCode('The Weighbridge is a room. "A sign declares that the maximum load is [100kg multiplied by 3]."\n\n');
 }
 </script>
-<a href="javascript:pasteCode154()"><img border=0 src=../doc_images/paste.png></a> After looking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Yellow arms on the signpost point:-[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with destination running through rooms begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location to the destination;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the way is a direction, say &quot;  [way] for [the destination]: [number of moves from the location to the destination] Std.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<a href="javascript:pasteCode33()"><img border=0 src=../doc_images/paste.png></a> The Weighbridge is a room. &quot;A sign declares that the maximum load is [100kg multiplied by 3].&quot;
 </font></blockquote><p>
 <p>
-<p>The result might be:
+<p>...will produce the text &quot;A sign declares that the maximum load is 300kg.&quot; Here Inform knows that it makes sense to multiply a weight by 3, and that the result will be a weight. Similarly, Inform allows us to add and subtract weights, and several different forms of division are allowed:
 <p>
-<blockquote><font color="#000080">Hotel Stechelberg
-<br>The wooden hiking inn at the end of the road, with flowerboxes, canton flags, outdoor tables and a triangular paddock for the cows contesting the annual Miss Stechelberg competition. Otto and Marianne do cheerful innkeeper things, while the sun blazes from a gentian-blue sky.
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode34(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('The blackboard is in the Weighbridge. "A blackboard propped against one wall reads: \'122 / 10 is [122 divided by 10] remainder [remainder after dividing 122 by 10]; but 122kg / 10kg is [122kg divided by 10kg] remainder [remainder after dividing 122kg by 10kg]; and 122kg / 10 is [122kg divided by 10] remainder [remainder after dividing 122kg by 10].\'"\n\n');
+}
+</script>
+<a href="javascript:pasteCode34()"><img border=0 src=../doc_images/paste.png></a> The blackboard is in the Weighbridge. &quot;A blackboard propped against one wall reads: '122 / 10 is [122 divided by 10] remainder [remainder after dividing 122 by 10]; but 122kg / 10kg is [122kg divided by 10kg] remainder [remainder after dividing 122kg by 10kg]; and 122kg / 10 is [122kg divided by 10] remainder [remainder after dividing 122kg by 10].'&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Yellow arms on the signpost point:-
-<br>&nbsp;&nbsp;&nbsp;&nbsp;north for Lauterbrunnen: 2 Std.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;west for Sefinental: 2 Std.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;west for Schilthorn: 6 Std.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;southeast for Trachsellauenen: 1 Std.
-<br>&nbsp;&nbsp;&nbsp;&nbsp;southeast for Oberhornsee: 3 Std.
+<p>When we visit the Weighbridge, we find:
+<p>
+<blockquote><font color="#000080">A blackboard propped against one wall reads: &quot;122 / 10 is 12 remainder 2; but 122kg / 10kg is 12 remainder 2kg; and 122kg / 10 is 12kg remainder 2kg.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc87.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<p>Whereas we are not allowed to divide 122 by 10kg: that would make no sense, since 122 is a number and not made up of kilograms. Inform will produce a problem message if we try.
+<p>
+<p><hr><p>
+<a name="e310"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex310.html#e310 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>231</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex310.html#e310 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Frozen Assets</font></b></a><br>A treatment of money which keeps track of how much the player has on him, and a BUY command which lets him go shopping.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex310.html#e310 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e351"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex351.html#e351 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>232</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex351.html#e351 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Money for Nothing</font></b></a><br>An OFFER price FOR command, allowing the player to bargain with a flexible seller.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex351.html#e351 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e256"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex256.html#e256 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>233</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex256.html#e256 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lemonade</font></b></a><br>Containers for liquid which keep track of how much liquid they are holding and of what kind, and allow quantities to be moved from one container to another.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex256.html#e256 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e333"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc220.html#e333 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>234</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc220.html#e333 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Savannah</font></b></a><br>Using the liquid implementation demonstrated in Lemonade for putting out fires.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex333.html#e333 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>Here we build very slightly on the existing liquid implementation to add a puzzle where the player puts out a fire with a bucket of water. Most of the liquid implementation remains the same as before, but we are now in a position to understand the line at the end of section 1, where we understand the names of containers according to the liquids they contain.
+<p>
+<p>The new material, pertaining to extinguishing fires, is at the bottom in section 2.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode319(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('"Savannah"\n\nSection 1 - Essentials of Liquid\n\nA volume is a kind of value. 15.9 fl oz specifies a volume with parts ounces and tenths (optional, preamble optional).\n\nA fluid container is a kind of container. A fluid container has a volume called a fluid capacity. A fluid container has a volume called current volume.\n\nThe fluid capacity of a fluid container is usually 12.0 fl oz. The current volume of a fluid container is usually 0.0 fl oz.\n\nLiquid is a kind of value. A fluid container has a liquid.\n\nInstead of examining a fluid container:\n\tif the noun is empty,\n\t\tsay "You catch just a hint of [the liquid of the noun] at the bottom.";\n\totherwise\n\t\tsay "[The noun] contains [current volume of the noun in rough terms] of [liquid of the noun]."\n\nTo say (amount - a volume) in rough terms:\n\tif the amount is less than 0.5 fl oz\n\tbegin;\n\t\tsay "a swallow or two";\n\totherwise if tenths part of amount is greater than 3 and tenths part of amount is less than 7;\n\t\tlet estimate be ounces part of amount;\n\t\tsay "[estimate in words] or [estimate plus 1 in words] fluid ounces";\n\totherwise;\n\t\tif tenths part of amount is greater than 6, increase amount by 1.0 fl oz;\n\t\tsay "about [ounces part of amount in words] fluid ounce[s]";\n\tend if.\n\nBefore printing the name of a fluid container (called the target) while not drinking:\n\tif the target is empty\n\tbegin;\n\t\tsay "empty ";\n\totherwise;\n\t\tdo nothing;\n\tend if.\n\nAfter printing the name of a fluid container (called the target) while not examining:\n\tif the target is empty\n\tbegin;\n\t\tdo nothing;\n\totherwise;\n\t\tsay " of [liquid of the target]";\n\t\tomit contents in listing;\n\tend if.\n\nInstead of inserting something into a fluid container:\n\tsay "[The second noun] has too narrow a mouth to accept anything but liquids."\n\nDefinition: a fluid container is empty if the current volume of it is 0.0 fl oz. Definition: a fluid container is full if the current volume of it is the fluid capacity of it.\n\nUnderstand "drink from [fluid container]" as drinking.\n\nInstead of drinking a fluid container:\n\tif the noun is empty\n\tbegin;\n\t\tsay "There is no more [liquid of the noun] within." instead;\n\totherwise;\n\t\tdecrease the current volume of the noun by 0.2 fl oz;\n\t\tif the current volume of the noun is less than 0.0 fl oz, change the current volume of the noun to 0.0 fl oz;\n\t\tsay "You take a sip of [the liquid of the noun][if the noun is empty], leaving [the noun] empty[end if].";\n\tend if.\n\nUnderstand the command "fill" as something new.\n\nUnderstand "pour [fluid container] in/into/on/onto [fluid container]" as pouring it into. Understand "empty [fluid container] into [fluid container]" as pouring it into. Understand "fill [fluid container] with/from [fluid container]" as pouring it into (with nouns reversed).\n\nUnderstand "pour [something] in/into/on/onto [something]" as pouring it into. Understand "empty [something] into [something]" as pouring it into. Understand "fill [something] with/from [something]" as pouring it into (with nouns reversed).\n\nPouring it into is an action applying to two things.\n\nCheck pouring it into:\n\tif the noun is not a fluid container, say "You can\'t pour [the noun]." instead;\n\tif the second noun is not a fluid container, say "You can\'t pour liquids into [the second noun]." instead;\n\tif the noun is the second noun, say "You can hardly pour [the noun] into itself." instead;\n\tif the liquid of the noun is not the liquid of the second noun\n\tbegin;\n\t\tif the second noun is empty, change the liquid of the second noun to the liquid of the noun;\n\t\totherwise say "Mixing [the liquid of the noun] with [the liquid of the second noun] would give unsavory results." instead;\n\tend if;\n\tif the noun is empty, say "No more [liquid of the noun] remains in [the noun]." instead;\n\tif the second noun is full, say "[The second noun] cannot contain any more than it already holds." instead.\n\nCarry out pouring it into:\n\tlet available capacity be the fluid capacity of the second noun minus the current volume of the second noun;\n\tif the available capacity is greater than the current volume of the noun, change the available capacity to the current volume of the noun;\n\tincrease the current volume of the second noun by available capacity;\n\tdecrease the current volume of the noun by available capacity.\n\nReport pouring it into:\n\tsay "[if the noun is empty][The noun] is now empty;[otherwise][The noun] now contains [current volume of the noun in rough terms] of [liquid of the noun]; [end if]";\n\tsay "[the second noun] contains [current volume of the second noun in rough terms] of [liquid of the second noun][if the second noun is full], and is now full[end if]."\n\nUnderstand the liquid property as describing a fluid container. Understand "of" as a fluid container.\n\nSection 2 - Putting Out Fires\n\nThe Beach is a room. "The Atlantic stretches east to the horizon, though it is at low tide at the moment. It is dawn: time to pack up and go home."\n\n[We will skip implementing the Pacific ocean itself, though the example Lakeside Living shows how to incorporate large bodies of water into our liquid simulation.]\n\nThe liquids are seawater. [We could include others, but for the moment...]\n\nInstead of drinking a fluid container when the liquid of the noun is seawater:\n\tsay "Blech!"\n\nThe bucket is a fluid container carried by the player. The liquid of the bucket is seawater. The current volume of the bucket is 64.0 fl oz.\n\nThe fire is a fixed in place thing in the beach. "A low fire crackles here, left over from an attempt at s\'mores much earlier in the evening."\n\nInstead of touching or rubbing or taking the fire, say "You\'re not such a glutton for punishment."\n\nInstead of pouring something into the fire:\n\tremove the fire from play;\n\tchange the current volume of the noun to 0.0 fl oz;\n\tsay "[The second noun] goes out in a great hiss."\n\nTest me with "drink seawater / pour seawater on fire / x bucket / i".\n\n');
+}
+</script>
+<a href="javascript:pasteCode319()"><img border=0 src=../doc_images/paste.png></a> &quot;Savannah&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Section 1 - Essentials of Liquid
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A volume is a kind of value. 15.9 fl oz specifies a volume with parts ounces and tenths (optional, preamble optional).
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A fluid container is a kind of container. A fluid container has a volume called a fluid capacity. A fluid container has a volume called current volume.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The fluid capacity of a fluid container is usually 12.0 fl oz. The current volume of a fluid container is usually 0.0 fl oz.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Liquid is a kind of value. A fluid container has a liquid.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining a fluid container:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is empty,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You catch just a hint of [the liquid of the noun] at the bottom.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] contains [current volume of the noun in rough terms] of [liquid of the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say (amount - a volume) in rough terms:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the amount is less than 0.5 fl oz
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;a swallow or two&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if tenths part of amount is greater than 3 and tenths part of amount is less than 7;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let estimate be ounces part of amount;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[estimate in words] or [estimate plus 1 in words] fluid ounces&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if tenths part of amount is greater than 6, increase amount by 1.0 fl oz;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;about [ounces part of amount in words] fluid ounce[s]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before printing the name of a fluid container (called the target) while not drinking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the target is empty
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;empty &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do nothing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After printing the name of a fluid container (called the target) while not examining:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the target is empty
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do nothing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; of [liquid of the target]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;omit contents in listing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of inserting something into a fluid container:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The second noun] has too narrow a mouth to accept anything but liquids.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a fluid container is empty if the current volume of it is 0.0 fl oz. Definition: a fluid container is full if the current volume of it is the fluid capacity of it.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;drink from [fluid container]&quot; as drinking.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of drinking a fluid container:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is empty
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There is no more [liquid of the noun] within.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decrease the current volume of the noun by 0.2 fl oz;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current volume of the noun is less than 0.0 fl oz, change the current volume of the noun to 0.0 fl oz;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You take a sip of [the liquid of the noun][if the noun is empty], leaving [the noun] empty[end if].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand the command &quot;fill&quot; as something new.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;pour [fluid container] in/into/on/onto [fluid container]&quot; as pouring it into. Understand &quot;empty [fluid container] into [fluid container]&quot; as pouring it into. Understand &quot;fill [fluid container] with/from [fluid container]&quot; as pouring it into (with nouns reversed).
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;pour [something] in/into/on/onto [something]&quot; as pouring it into. Understand &quot;empty [something] into [something]&quot; as pouring it into. Understand &quot;fill [something] with/from [something]&quot; as pouring it into (with nouns reversed).
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Pouring it into is an action applying to two things.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check pouring it into:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a fluid container, say &quot;You can't pour [the noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not a fluid container, say &quot;You can't pour liquids into [the second noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the second noun, say &quot;You can hardly pour [the noun] into itself.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the liquid of the noun is not the liquid of the second noun
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is empty, change the liquid of the second noun to the liquid of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Mixing [the liquid of the noun] with [the liquid of the second noun] would give unsavory results.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is empty, say &quot;No more [liquid of the noun] remains in [the noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is full, say &quot;[The second noun] cannot contain any more than it already holds.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out pouring it into:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let available capacity be the fluid capacity of the second noun minus the current volume of the second noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the available capacity is greater than the current volume of the noun, change the available capacity to the current volume of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;increase the current volume of the second noun by available capacity;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decrease the current volume of the noun by available capacity.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report pouring it into:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[if the noun is empty][The noun] is now empty;[otherwise][The noun] now contains [current volume of the noun in rough terms] of [liquid of the noun]; [end if]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[the second noun] contains [current volume of the second noun in rough terms] of [liquid of the second noun][if the second noun is full], and is now full[end if].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand the liquid property as describing a fluid container. Understand &quot;of&quot; as a fluid container.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Section 2 - Putting Out Fires
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Beach is a room. &quot;The Atlantic stretches east to the horizon, though it is at low tide at the moment. It is dawn: time to pack up and go home.&quot;
+</font></blockquote><p>
+<p>
+<p>We will skip implementing the Pacific ocean itself, though the example Lakeside Living shows how to incorporate large bodies of water into our liquid simulation.
+<p>
+<blockquote><font color="#000080">The liquids are seawater. [We could include others, but for the moment...]
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of drinking a fluid container when the liquid of the noun is seawater:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Blech!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The bucket is a fluid container carried by the player. The liquid of the bucket is seawater. The current volume of the bucket is 64.0 fl oz.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The fire is a fixed in place thing in the beach. &quot;A low fire crackles here, left over from an attempt at s'mores much earlier in the evening.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of touching or rubbing or taking the fire, say &quot;You're not such a glutton for punishment.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of pouring something into the fire:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the fire from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the current volume of the noun to 0.0 fl oz;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The second noun] goes out in a great hiss.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;drink seawater / pour seawater on fire / x bucket / i&quot;.
+</font></blockquote><p>
+<p>
+<p>This is still a specific implementation: if we wanted to weave liquids together with a full-scale burning model (as in &quot;In Fire or in Flood&quot;), where pretty much any object in the game can be flaming (currently on fire) or damp (extinguished), we might generalize our rule to
+<p>
+<blockquote><font color="#000080">Instead of pouring something into a flaming thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the second noun is damp;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the current volume of the noun to 0.0 fl oz;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The second noun] goes out in a great hiss.&quot;
+</font></blockquote><p>
+<p>
+<p>Of course, the merging of fire and liquids also raises the possibility of gasoline and explosives, of heating and boiling liquids, etc.: as always, it's wise to incorporate a simulation that is only as detailed as the game's interactions really justify.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc220.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e140"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex140.html#e140 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>72</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex140.html#e140 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A View of Green Hills</font></b></a><br>A LOOK [direction] command which allows the player to see descriptions of the nearby landscape.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex140.html#e140 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc86.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc88.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc219.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc221.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

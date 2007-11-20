@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.16. The value after and the value before</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.7. Understanding any, understanding rooms</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,74 +19,105 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "The Hang of Thursdays" -->
-<!-- SEARCH SECTION "Ex 165" -->
-<!-- SEARCH SORT "Ex 011-016-165" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc168.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc170.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.16. The value after and the value before</b></font></td></tr></table>
+<!-- SEARCH TITLE "Actaeon" -->
+<!-- SEARCH SECTION "Ex 268" -->
+<!-- SEARCH SORT "Ex 016-007-268" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc248.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc250.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.7. Understanding any, understanding rooms</b></font></td></tr></table>
 <p>
-<p>Arithmetic is fundamental to most systems for computer programming: with Inform that is less true, so we only now come to the first mention of the addition of numbers. As might be expected, &quot;+&quot; can be used to combine two number values into one:
+<p>Ordinarily, if we write
 <p>
-<blockquote><font color="#000080">change the score to the score + 4
+<blockquote><font color="#000080">Understand &quot;manipulate [something]&quot;.
 </font></blockquote><p>
 <p>
-<p>(This can also be spelled out &quot;plus&quot;: or we could have written &quot;increase the score by 4&quot;. Similarly, we can &quot;decrease&quot;.) Inform generally expects to apply addition only to two numbers, so we cannot normally apply &quot;+&quot; to values like these:
+<p>then the &quot;[something]&quot; will only match what is within reach or sight: this is the concept of &quot;scope&quot;, which is what prevents a player from spookily acting on objects from a distance. The parser itself prevents the manipulation rules from ever being invoked on such distant items, which is as it should be.
 <p>
-<blockquote><font color="#000080">Colour is a kind of value. The colours are red, orange, yellow, green, blue, indigo and violet.
+<p>Sometimes, though, we positively want to allow this possibility. If we use the special word &quot;any&quot;, as in
+<p>
+<blockquote><font color="#000080">Understand &quot;manipulate [any door]&quot;.
 </font></blockquote><p>
 <p>
-<p>There will be more about arithmetic on new kinds of value in the chapter on Units, but it may be useful to note that although we cannot (ordinarily) add up colours, we do automatically have two ways to make new colours from old:
+<p>then any door, anywhere in the model world, can be allowed in the player's command. (Of course, the manipulation rules may not do what the player hopes: all that has happened is that the command is now possible to type.) The &quot;any&quot; can be followed by any description of items or rooms, and the latter opens up new possibilities, since rooms are ordinarily never allowed to be named in the player's commands.
 <p>
-<blockquote><font color="#000080">the colour after C
-<br>the colour before C
+<p>For example, the following gives the player the ability to walk between rooms without giving explicit directions of movement.
+<p>
+<blockquote><font color="#000080">Going by name is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<p>produce the next, and the previous colour respectively, in order of their declaration. Thus &quot;the colour after red&quot; is orange; &quot;the colour before blue&quot; is green. The values wrap around, that is, &quot;the colour before red&quot; is violet and &quot;the colour after violet&quot; is red.
+<blockquote><font color="#000080">Carry out going by name: say &quot;You walk to [the noun].&quot;; move the player to the noun.
+</font></blockquote><p>
 <p>
-<p>We are also allowed to use number-like comparisons with new kinds of value. Thus &quot;red < yellow&quot; is true, while &quot;green >= violet&quot; is not. Again, more on comparisons in the chapter on units.
+<blockquote><font color="#000080">Understand &quot;go to [any adjacent visited room]&quot; as going by name.
+</font></blockquote><p>
+<p>
+<p>(This is really only a sketch: in a finished work, &quot;go to&quot; would produce helpful errors if non-adjacent but visited rooms were named, and we might also worry about rules applying to movement, because the method above will circumvent them.)
 <p>
 <p><hr><p>
-<a name="e16"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex16.html#e16 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>164</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex16.html#e16 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Entropy</font></b></a><br>All objects in the game have a heat, but if not kept insulated they will tend toward room temperature (and at a somewhat exaggerated rate).<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex16.html#e16 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e5"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex5.html#e5 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>267</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex5.html#e5 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> One of Those Mornings</font></b></a><br>A FIND command that allows the player to find a lost object anywhere<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex5.html#e5 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e155"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc169.html#e155 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>165</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc169.html#e155 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Hang of Thursdays</font></b></a><br>Turns take a quarter day each, and the game rotates through the days of the week.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex155.html#e155 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e155"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc249.html#e155 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>268</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc249.html#e155 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Actaeon</font></b></a><br>A FOLLOW command allowing the player to pursue a person who has just left the room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex155.html#e155 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Suppose we want the player to be able to go after characters who are moving around the map. The trick, of course, is that once characters are gone they are no longer visible to &quot;follow [person]&quot;, so we need &quot;follow [any person]&quot; to find them.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode254(code) {
+function pasteCode355(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"The Hang of Thursdays"\n\nThe Stage is a room. Rule for printing the name of the stage: say "[current weekday] [current time period]" instead.\n\nA weekday is a kind of value. The weekdays are Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday. The current weekday is a weekday that varies. The current weekday is Saturday.\n\nA time period is a kind of value. The time periods are morning, afternoon, evening, night. The current time period is a time period that varies. The current time period is afternoon.\n\nThis is the new advance time rule:\n\tif the current time period is less than night\n\tbegin;\n\t\tchange the current time period to the time period after the current time period;\n\totherwise;\n\t\tchange the current time period to morning;\n\t\tchange the current weekday to the weekday after the current weekday;\n\tend if.\n\n[Now we need to borrow from a later chapter to make these instructions apply to the passage of time:]\n\nThe new advance time rule is listed instead of the advance time rule in the turn sequence rules.\n\nTest me with "z / z / z / z / z".\n');
+    myProject.pasteCode('"Actaeon"\n\nA person has a room called last location.\n\nUnderstand "follow [any person]" as following. Understand the commands "chase" and "pursue" as "follow".\n\nFollowing is an action applying to one visible thing.\n\nCheck following:\n\tif the noun is the player, say "Wherever you go, there you are." instead;\n\tif the noun is visible, say "[The noun] is right here." instead;\n\tif the last location of the noun is not the location, say "It\'s not clear where [the noun] has gone." instead.\n\n[Here again the best route comes in handy:]\n\nCarry out following:\n\tlet the destination be the location of the noun;\n\tif the destination is not a room, say "[The noun] isn\'t anywhere you can follow." instead;\n\tlet aim be the best route from the location to the destination;\n\tsay "(heading [aim])[line break]";\n\ttry going aim.\n\nCorinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.\n\nArtemis is a woman in Corinth.\n\n[We do also have to make sure that whenever we move a person from room to room, we record where they were moved from; otherwise, our clever restrictions about whom the player can pursue will not work properly.]\n\nTo move (pawn - a person) tidily to (target - a room):\n\tchange the last location of the pawn to the holder of the pawn;\n\tmove the pawn to the target.\n\nEvery turn:\n\tlet current location be the location of Artemis;\n\tlet next location be a random room which is adjacent to the current location;\n\tif Artemis is visible, say "Artemis heads to [the next location].";\n\tmove Artemis tidily to next location;\n\tif Artemis is visible, say "Artemis arrives from [the current location]."\n\nTest me with "wait / follow artemis / follow artemis / follow artemis".\n');
 }
 </script>
-<a href="javascript:pasteCode254()"><img border=0 src=../doc_images/paste.png></a> &quot;The Hang of Thursdays&quot;
+<a href="javascript:pasteCode355()"><img border=0 src=../doc_images/paste.png></a> &quot;Actaeon&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Stage is a room. Rule for printing the name of the stage: say &quot;[current weekday] [current time period]&quot; instead.
+<blockquote><font color="#000080">A person has a room called last location.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A weekday is a kind of value. The weekdays are Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday, Friday. The current weekday is a weekday that varies. The current weekday is Saturday.
+<blockquote><font color="#000080">Understand &quot;follow [any person]&quot; as following. Understand the commands &quot;chase&quot; and &quot;pursue&quot; as &quot;follow&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A time period is a kind of value. The time periods are morning, afternoon, evening, night. The current time period is a time period that varies. The current time period is afternoon.
+<blockquote><font color="#000080">Following is an action applying to one visible thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">This is the new advance time rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current time period is less than night
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the current time period to the time period after the current time period;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the current time period to morning;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the current weekday to the weekday after the current weekday;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Check following:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the player, say &quot;Wherever you go, there you are.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is visible, say &quot;[The noun] is right here.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last location of the noun is not the location, say &quot;It's not clear where [the noun] has gone.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>Now we need to borrow from a later chapter to make these instructions apply to the passage of time:
+<p>Here again the best route comes in handy:
 <p>
-<blockquote><font color="#000080">The new advance time rule is listed instead of the advance time rule in the turn sequence rules.
+<blockquote><font color="#000080">Carry out following:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the destination be the location of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the destination is not a room, say &quot;[The noun] isn't anywhere you can follow.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let aim be the best route from the location to the destination;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(heading [aim])[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try going aim.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;z / z / z / z / z&quot;.
+<blockquote><font color="#000080">Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc169.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Artemis is a woman in Corinth.
+</font></blockquote><p>
+<p>
+<p>We do also have to make sure that whenever we move a person from room to room, we record where they were moved from; otherwise, our clever restrictions about whom the player can pursue will not work properly.
+<p>
+<blockquote><font color="#000080">To move (pawn - a person) tidily to (target - a room):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last location of the pawn to the holder of the pawn;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the pawn to the target.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let current location be the location of Artemis;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let next location be a random room which is adjacent to the current location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis heads to [the next location].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move Artemis tidily to next location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis arrives from [the current location].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;wait / follow artemis / follow artemis / follow artemis&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc249.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc168.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc170.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc248.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc250.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

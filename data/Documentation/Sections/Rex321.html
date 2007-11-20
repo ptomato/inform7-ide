@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.15. Social Groups</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.4. Volume, Height, Weight</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,433 +19,163 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "The Abolition of Love" -->
-<!-- SEARCH SECTION "Ex 206" -->
-<!-- SEARCH SORT "Ex 007-015-206" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc50.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap7.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 7: Other Characters</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc52.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.15. Social Groups</b></font></td></tr></table>
+<!-- SEARCH TITLE "Depth" -->
+<!-- SEARCH SECTION "Ex 235" -->
+<!-- SEARCH SORT "Ex 010-004-235" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc74.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap10.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 10: Physics: Substances, Ropes, Energy and Weight</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc76.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.4. Volume, Height, Weight</b></font></td></tr></table>
 <p>
-<p>Crowds of characters introduce new challenges, because we often want to show them interacting with one another, or to describe individuals in less detail when a whole group is present.
+<p>What should fit into what? Inform has basically three sizes: small, person-sized, and room-sized. The difference between &quot;small&quot; and &quot;person-sized&quot; doesn't appear much, but it's the difference between an ordinary container and an enterable container; the fact that a person cannot get inside an ordinary container is one of the few size-related rules built into Inform. It will not object to, say, a fishing rod being put inside a matchbox.
 <p>
-<p><b>Strictly Ballroom</b> gives us a set of characters who pair off each turn, making sure to mention each one once, and leaving one unfortunate person behind as a wallflower: this exemplifies how we might use a behavioral rule not to dictate the behavior of each individual separately but rather to model a whole group together. <b>Happy Hour</b> does calculate movements for characters individually, but then collates the descriptions, creating a single paragraph to describe whatever group is currently in the room.
+<p>Inform does have one built-in measure of the size of a container: its &quot;capacity&quot;. This is a maximum number of contents:
 <p>
-<p>Characters can also have complicated attitudes to one another, and it can be helpful to use relations to track these. <b>Unthinkable Alliances</b> demonstrates the grouping of characters into alliance factions, while <b>The Abolition of Love</b> provides a host of relations to track love affairs, marriages, memberships in families, and mere mutual respect.
+<blockquote><font color="#000080">The capacity of the rucksack is 3.
+</font></blockquote><p>
 <p>
-<p><b>Emma</b> combines these two effects: its characters move between social groups depending on how they feel about the others in their particular talking circle, and descriptions change depending on who is where in the room.
+<p>This of course allows three anvils, while forbidding four postage stamps. To do better, we need units of measurement, and <b>Dimensions</b> demonstrates setting these up.
 <p>
-<a href=Rdoc48.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Traveling Characters</b></font></a><i> for groups of characters who move around and have their movements collated into a joint description</i><p><p>
+<p>To be fully realistic in what will fit into what, we need sophisticated three-dimensional models of shapes, both of the items being carried and of the free space remaining inside containers. <b>Depth</b> elegantly simplifies this by approximating items as cuboids, with a given width, length and height: these multiply to give a volume. To fit in a container, a new item's volume must not exceed the volume remaining inside the container, and in addition its three dimensions must also fit in one of the possible arrangements at right angles to the sides. (So this system would indeed prevent a 1x1x100 fishing rod from being put inside a 5x2x1 matchbox, but would also prevent a 12x1x1 pencil from being put into a 10x10x1 box, because it would need to be turned diagonally to fit.)
+<p>
+<p><b>Lead Cuts Paper</b> provides a different constraint: here we do not let light-weight containers hold heavy objects.
+<p>
+<p>Weight comes in a different way into <b>Swerve left? Swerve right? Or think about it and die?</b>, which exploits up/down map connections to work out which way gravity would take a rolling marble.
+<p>
+<a href=Rdoc73.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Liquids</b></font></a><i> for containers with liquid capacity</i><p><p>
 <p><hr><p>
-<a name="e37"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex37.html#e37 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>157</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex37.html#e37 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Strictly Ballroom</font></b></a><br>People who select partners for dance lessons each turn.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex37.html#e37 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e39"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex39.html#e39 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>298</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex39.html#e39 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Happy Hour</font></b></a><br>Listing visible characters as a group, then giving some followup details in the same paragraph about specific ones.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex39.html#e39 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e127"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex127.html#e127 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>203</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex127.html#e127 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Unthinkable Alliances</font></b></a><br>People are to be grouped into alliances. To kiss someone is to join his or her faction, which may make a grand alliance; to strike them is to give notice of quitting, and to become a lone wolf.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex127.html#e127 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e157"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex157.html#e157 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>237</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex157.html#e157 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Dimensions</font></b></a><br>This example draws together the previous snippets into a working implementation of the weighbridge.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex157.html#e157 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e321"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc51.html#e321 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>206</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc51.html#e321 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Abolition of Love</font></b></a><br>A thorough exploration of all the kinds of relations established so far, with the syntax to set and unset them.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex321.html#e321 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e321"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc75.html#e321 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>235</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc75.html#e321 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Depth</font></b></a><br>Receptacles that calculate internal volume and the amount of room available, and  cannot be overfilled.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex321.html#e321 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we are modeling a complex society seething with interpersonal relations of every kind.
+<p>In the following, we pretend that every item has a cuboidal shape. Every thing has a length, width and depth, while a &quot;measured container&quot; also has interior dimensions. (Thus a 10x10x10 container with 1cm-thick sides might have interior dimensions 9x9x9.)
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode659(code) {
+function pasteCode716(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"The Abolition of Love"\n\nSection 1 - Relation types\n\nLoving relates one person to one person.\n\nNoticing relates various people to one person.\n\nImpressing relates one person to various people.\n\nFancying relates various people to various people.\n\nAcquaintance relates people to each other.\n\nMarriage relates one person to another.\n\nAlliance relates people to each other in groups.\n\nThe Chapel is a room. Elizabeth, Wickham and Darcy are people in the Chapel. Mr Bennett and Mrs Bennett are people in the Chapel. Georgiana is a person in the Chapel.\n\nThe verb to love (he loves, they love, he loved, he is loved) implies the loving relation.\n\nThe verb to notice (he notices, they notice, he noticed, he is noticed) implies the noticing relation.\n\nThe verb to impress (he impresses, they impress, he impressed, he is impressed) implies the impressing relation.\n\nThe verb to fancy (he fancies, they fancy, he fancied, he is fancied) implies the fancying relation.\n\nThe verb to know (he knows, they know, he knew, he is known) implies the acquaintance relation.\n\nThe verb to be married to implies the marriage relation.\n\nThe verb to be related to implies the alliance relation.\n\nElizabeth loves Darcy. Elizabeth fancies Darcy. Elizabeth notices Darcy. Elizabeth impresses Darcy.\n\nMr Bennett is related to Mrs Bennett and Elizabeth. Mr Bennett is married to Mrs Bennett.\n\nGeorgiana is related to Darcy.\n\n[Now we want ways to set and unset all of these relations. (In the interests of thoroughness, we may get a bit far-fetched here. It is not recommended in practice that we make the player guess the verb "traduce".)]\n\nSection 2 - Setting and Unsetting Love (1-1)\n\nUnderstand "infatuate [someone] with [someone]" as infatuating it with. Infatuating it with is an action applying to two visible things.\n\nCarry out infatuating it with:\n\tnow the noun loves the second noun.\n\nReport infatuating it with:\n\tsay "Now [the noun] loves [a random person loved by the noun][if the second noun loves someone], while [the second noun] loves [a random person loved by the second noun][end if]."\n\nUnderstand "embitter [someone] toward [someone]" as embittering it toward. Embittering it toward is an action applying to two visible things.\n\nCarry out embittering it toward:\n\tnow the noun does not love the second noun.\n\nReport embittering it toward:\n\tsay "[The noun] sees [the second noun] in a different light and no longer feels any affection."\n\n[Because love is a 1-1 relation, a person cannot love more than one other character at a time. Whenever we set a character to love a new person, that person ceases to love the character loved before. It is a fickle world.]\n\n[One to various relations are a bit more open: we can say someone impresses multiple other characters, and our additions to the list do not override the initial ones.]\n\nSection 3 - Setting and Unsetting Impressed (1-V)\n\nUnderstand "commend [someone] to [someone]" as commending it to. Commending it to is an action applying to two visible things.\n\nCarry out commending it to:\n\tnow the noun impresses the second noun.\n\nReport commending it to:\n\tsay "[The second noun] takes a very decided interest in [the noun]."\n\n\nUnderstand "traduce [someone] to [someone]" as traducing it to. Traducing it to is an action applying to two visible things.\n\nCarry out traducing it to:\n\tnow the noun does not impress the second noun.\n\nReport traducing it to:\n\tsay "[The second noun], hearing your story, decides not to be at all impressed with [the noun]."\n\n[And because this is a one-to-various relation, we can also make statements which set multiple relations at once, so:]\n\nUnderstand "celebrate [someone]" as celebrating. Celebrating is an action applying to one visible thing.\n\nCarry out celebrating:\n\tnow the noun impresses every person.\n\nReport celebrating:\n\tsay "[The list of people who are impressed by the noun] take a very decided interest in [the noun]."\n\n\nUnderstand "slander [someone]" as slandering to. Slandering to is an action applying to one visible thing.\n\nCarry out slandering to:\n\tnow every person is not impressed by the noun.\n\nReport slandering to:\n\tsay "Now [the noun] impresses [the list of people who are impressed by the noun]."\n\n[Note that the above unsetting is not equivalent to "now the noun does not impress every person" -- which would be ambiguous in spoken English, as well. Various-to-one relations are similar:]\n\nSection 4 - Setting and Unsetting Noticing (V-1)\n\nUnderstand "draw the attention of [someone] to [someone]" as drawing the attention of it to. Drawing the attention of it to is an action applying to two visible things.\n\nCarry out drawing the attention of it to:\n\tnow the noun notices the second noun.\n\nReport drawing the attention of it to:\n\tsay "[The noun] glances thoughtfully in the direction of [the second noun]."\n\nUnderstand "distract [someone] from [someone]" as distracting it from. Distracting it from is an action applying to two visible things.\n\nCarry out distracting it from:\n\tnow the noun does not notice the second noun.\n\nReport distracting it from:\n\tsay "You distract [the noun] from [the second noun]."\n\n\nUnderstand "draw attention to [someone]" as drawing attention to. Drawing attention to is an action applying to one visible thing.\n\nCarry out drawing attention to:\n\tnow every person notices the noun.\n\nReport drawing attention to:\n\tsay "You quickly cause everyone to attend to [the noun]."\n\n\nUnderstand "outshine [someone]" as outshining. Outshining is an action applying to one visible thing.\n\nCarry out outshining:\n\tnow every person does not notice the noun.\n\nReport outshining:\n\tsay "You quickly distract everyone from [the noun]."\n\n\nSection 5 - Setting and Unsetting Fancying (V-V)\n\nUnderstand "flatter [someone]" as flattering. Flattering is an action applying to one thing.\n\nCarry out flattering:\n\tnow every person fancies the noun.\n\nReport flattering:\n\tsay "You draw down universal admiration for [the noun] by casting him or her in a flattering light."\n\n\nUnderstand "unflatter [someone]" as unflattering. [Okay, okay, but it\'s four am.] Unflattering is an action applying to one thing.\n\nCarry out unflattering:\n\tnow every person does not fancy the noun.\n\nReport unflattering:\n\tsay "[The noun] gives everyone a universal disgust."\n\n\nUnderstand "admire [someone]" as admiring. Admiring is an action applying to one thing.\n\nCarry out admiring: now the player fancies the noun.\n\nReport admiring: say "You find you rather fancy [the noun]."\n\n\nUnderstand "loathe [someone]" as loathing. Loathing is an action applying to one thing.\n\nCarry out loathing: now the player does not fancy the noun.\n\nReport loathing: say "You take [the noun] in disgust."\n\n[Note that we cannot say "now every person fancies every person" or "now every person is not fancied by every person". Variables on each side of the "now" statement are too much for Inform 7 to interpret usefully; we would need to write such a loop by hand, as in]\n\nUnderstand "cause chaos" as causing chaos. Causing chaos is an action applying to nothing.\n\nCarry out causing chaos:\n\trepeat with victim running through people\n\tbegin;\n\t\tnow the victim fancies every person;\n\tend repeat.\n\nReport causing chaos: say "Now everyone fancies everyone else, which is quite an inconvenient state of affairs."\n\nUnderstand "relieve chaos" as relieving chaos. Relieving chaos is an action applying to nothing.\n\nCarry out relieving chaos:\n\trepeat with victim running through people\n\tbegin;\n\t\tnow every person is not fancied by the victim;\n\tend repeat.\n\nReport relieving chaos: say "Now no one fancies anyone, which is safe but tedious."\n\n[Our options for setting and unsetting symmetrical relations are more limited again:]\n\nSection 6 - Setting and Unsetting Marriage (1-1 Symmetrical)\n\nUnderstand "marry [someone] to [someone]" as uniting it in matrimony with. Uniting it in matrimony with is an action applying to two visible things.\n\nCarry out uniting it in matrimony with:\n\tnow the noun is married to the second noun.\n\nReport uniting it in matrimony with:\n\tsay "You perform the marriage of [the noun] to [the second noun], joining them to the family of [a list of people related to the noun]."\n\nUnderstand "divorce [someone] from [someone]" as divorcing it from. Divorcing it from is an action applying to two visible things.\n\nCheck divorcing it from:\n\tif the noun is not married to the second noun, say "[The noun] is not married to [the second noun] anyway." instead.\n\nCarry out divorcing it from:\n\tnow the noun is not married to the second noun.\n\nReport divorcing it from:\n\tsay "[The noun] is now not married to [the second noun]."\n\n[When we unset the symmetrical relation on one side, it is automatically set or unset on the other. It is not necessary to say "the second noun is married to the noun" or "the second noun is not married to the noun", even though that is the case.]\n\nSection 7 - Setting and Unsetting Acquaintance (V-V Symmetrical)\n\nUnderstand "introduce [someone] to [someone]" as introducing it to. Introducing it to is an action applying to two visible things.\n\nCarry out introducing it to:\n\tnow the noun knows the second noun.\n\nReport introducing it to:\n\tsay "You introduce [the noun] to [the second noun]. Now [the noun] is acquainted with [the list of people who are known by the noun], and [the second noun] is acquainted with [the list of people who are known by the second noun]."\n\n\nUnderstand "announce [someone]" as announcing. Announcing is an action applying to one visible thing.\n\nCarry out announcing:\n\tnow every person knows the noun.\n\nReport announcing:\n\tsay "You announce [the noun] to the whole assembled company."\n\n\nUnderstand "ostracise [someone]" as ostracising. Ostracising is an action applying to one visible thing.\n\nCarry out ostracising:\n\tnow every person does not know the noun.\n\nReport ostracising:\n\tsay "You cause everyone present to forget and pretend not to be acquainted at all with [the noun]."\n\n[And finally, setting groups:]\n\nSection 8 - Setting and Unsetting Familial Relations (Groups)\n\nUnderstand "make [someone] adopt [someone]" as forcing it to adopt. Forcing it to adopt is an action applying to two visible things.\n\nCarry out forcing it to adopt:\n\tnow the noun is related to the second noun.\n\nReport forcing it to adopt:\n\tsay "Now [the second noun] is related to [the list of people related to the second noun]."\n\nUnderstand "make [someone] disown [someone]" as forcing it to disown. Forcing it to disown is an action applying to two visible things.\n\nCarry out forcing it to disown:\n\tnow the second noun is not related to the noun.\n\nReport forcing it to disown:\n\tsay "Now [the second noun] is related to [the list of people who are related to the second noun], and [the noun] is related to [the list of people who are related to the noun]."\n\n[Notice that when we say "the second noun is not related", we remove that person from the group: they are now in a separate group of their own, while the rest of the group\'s members remain related to one another.]\n\n[And finally, a long litany of test cases, complete with the relations lists:]\n\nTest acquaintance with "relations / introduce darcy to elizabeth / introduce darcy to wickham / announce mr bennett / relations / ostracise wickham / introduce georgiana to wickham / relations".\n\nTest impression with "commend georgiana to elizabeth / relations / celebrate Mrs bennett / relations / traduce mrs bennett to darcy / relations / slander mrs bennett / relations".\n\nTest notice with "draw the attention of darcy to elizabeth / relations / draw attention to mr bennett / relations / distract darcy from mr bennett / relations / outshine mr bennett / relations".\n\nTest love with "embitter elizabeth toward darcy / relations / infatuate elizabeth with wickham / relations".\n\nTest marriage with "marry elizabeth to darcy / relations / divorce elizabeth from darcy / relations".\n\nTest alliance with "make mr bennett adopt georgiana / relations / make mrs bennett disown georgiana / relations".\n\nTest fancying with "admire elizabeth / relations / loathe elizabeth / relations / flatter elizabeth / relations / unflatter elizabeth / relations / cause chaos / relations / relieve chaos / relations".\n\nTest me with "test acquaintance / test impression / test notice / test love / test alliance / test fancying / test marriage".\n\n');
+    myProject.pasteCode('"Depth"\n\nA length is a kind of value. 10 cm specifies a length. An area is a kind of value. 10 sq cm specifies an area. A length times a length specifies an area. A volume is a kind of value. 10 cu cm specifies a volume. A length times an area specifies a volume.\n\nA thing has a length called height. A thing has a length called width. A thing has a length called depth. The height of a thing is usually 10 cm. The width of a thing is usually 10 cm. The depth of a thing is usually 10 cm.\n\nTo decide what volume is the exterior volume of (item - a thing):\n\tlet base area be the height of the item multiplied by the width of the item;\n\tlet base volume be the base area multiplied by the depth of the item;\n\tdecide on the base volume.\n\n[In order to see how these shapes might fit together spatially, we need to work out the three dimensions in order of size. (If we were only dealing with portable objects, we could simply insist that the length always be greater than the width which in turn must be greater than the depth, because we could always turn them over in our hands until this was so: but some of the things we deal with may be fixed in place.) A clever way to do this might be to put them in a table of three rows and sort it, but we will write the calculation out longhand:]\n\nTo decide what length is the largest dimension of (item - a thing):\n\tlet long side be the height of item;\n\tif the width of the item is greater than the long side, change the long side to the width of the item;\n\tif the depth of the item is greater than the long side, change the long side to the depth of the item;\n\tdecide on the long side.\n\nTo decide what length is the middling dimension of (item - a thing):\n\tif the width of the item is greater than the height of the item\n\tbegin;\n\t\tlet shorter side be the height of item;\n\t\tlet longer side be the width of item;\n\totherwise;\n\t\tlet longer side be the height of item;\n\t\tlet shorter side be the width of item;\n\tend if;\n\tif the depth of the item is greater than the longer side, decide on the longer side;\n\tif the depth of the item is less than the shorter side, decide on the shorter side;\n\tdecide on the depth of the item.\n\nTo decide what length is the shortest dimension of (item - a thing):\n\tlet short side be the height of item;\n\tif the width of the item is less than the short side, change the short side to the width of the item;\n\tif the depth of the item is less than the short side, change the short side to the depth of the item;\n\tdecide on the short side.\n\n[When testing this example, the author made use of the following: it\'s no longer needed, but may be useful to anyone else planning elaborations.]\n\nTo test the dimensions of (item - a thing):\n\tsay "[the item] - height [height of the item], width [width of the item], depth [depth of the item].";\n\tsay "largest side [largest dimension of the item], middling [middling dimension of the item], smallest [shortest dimension of the item]."\n\n[We now introduce a new kind: a measured container, which not only has exterior dimensions - the height, width and depth which every thing now has - but also interior measurements. A convenient way to do calculations with the hollow interior is to regard it as if it were a solid shape in its own right, and we do this with the aid of something out of world, which the player never sees: the "imaginary cuboid", which is made into the shape of whatever measured container\'s interior is being thought about.]\n\nA measured container is a kind of container. A measured container has a length called interior height. A measured container has a length called interior width. A measured container has a length called interior depth.\n\nThe imaginary cuboid is a thing.\n\nTo imagine the interior of (receptacle - a measured container) as a cuboid:\n\tnow the height of the imaginary cuboid is the interior height of the receptacle;\n\tnow the width of the imaginary cuboid is the interior width of the receptacle;\n\tnow the depth of the imaginary cuboid is the interior depth of the receptacle.\n\nTo decide what volume is the interior volume of (receptacle - a measured container):\n\timagine the interior of the receptacle as a cuboid;\n\tdecide on the exterior volume of the imaginary cuboid.\n\n[If we assume that we could always pack items into a measured container with perfect ease, never wasting any space, then the only volume constraint will be that the total volume of the contents must not exceed the volume of the inside of the container. So we need to calculate the available volume.]\n\nTo decide what volume is the available volume of (receptacle - a measured container):\n\tlet the remaining space be the interior volume of the receptacle;\n\trepeat with item running through things in the receptacle\n\tbegin;\n\t\tdecrease the remaining space by the exterior volume of the item;\n\tend repeat;\n\tif the remaining space is less than 0 cu cm, decide on 0 cu cm;\n\tdecide on the remaining space.\n\n[If we only constrained volume, a 140 cm-long fishing rod could fit into a 12 cm by 12 cm compact disc box. So we also insist the basic shape must fit, in some orientation perpendicular to one of the sides (i.e.: we can turn the item over in any of its three sides, but not turn it diagonally or wedge it in at a tilt). This requires the longest side of the item to be less than the longest side of the receptacle, and the middle-length side, and also the shortest side. The number of these conditions to fail gives us a clue as to how we can best describe the reason why the shape won\'t squeeze in.]\n\nCheck inserting something (called the item) into a measured container (called the receptacle):\n\tif the exterior volume of the item is greater than the interior volume of the receptacle, say "[The item] will never fit inside [the receptacle]." instead;\n\tif the exterior volume of the item is greater than the available volume of the receptacle, say "[The item] will not fit into [the receptacle] with [the list of things in the receptacle]." instead;\n\timagine the interior of the receptacle as a cuboid;\n\tif the largest dimension of the item is greater than the largest dimension of the imaginary cuboid, say "[The item] is too long to fit into [the receptacle]." instead;\n\tif the middling dimension of the item is greater than the middling dimension of the imaginary cuboid, say "[The item] is too wide to fit into [the receptacle]." instead;\n\tif the shortest dimension of the item is greater than the shortest dimension of the imaginary cuboid, say "[The item] is too bulky to fit into [the receptacle]." instead.\n\n[And finally a situation to try out these rules.]\n\nThe Cubist Lab is a room. "A laboratory which, as the art critic Louis Vauxcelles said about Braque\'s paintings in 1908, is full of little cubes: everyday objects rendered as if cuboidal."\n\nThe box is a measured container. The interior height is 10 cm. The interior depth is 5 cm. The interior width is 6 cm. The player carries the box.\n\nA pebble is a kind of thing. The height is usually 2 cm. The depth is usually 2 cm. The width is usually 2 cm. The player carries 25 pebbles.\n\nA red rubber ball is carried by the player. The depth is 5 cm. The width is 5 cm. The height is 5 cm.\nAn arrow is carried by the player. The height is 40 cm. The width is 1 cm. The depth is 1 cm.\nA crusty baguette is carried by the player. The height is 80 cm. The width is 4 cm. The depth is 5 cm.\nA child\'s book is carried by the player. The height is 1 cm. The width is 9 cm. The depth is 9 cm.\nA featureless white cube is carried by the player. The height is 6 cm. The width is 6 cm. The depth is 6 cm.\n\nTest me with "put arrow in box / put book in box / put cube in box / put ball in box / put baguette in box / put pebbles in box".\n\n');
 }
 </script>
-<a href="javascript:pasteCode659()"><img border=0 src=../doc_images/paste.png></a> &quot;The Abolition of Love&quot;
+<a href="javascript:pasteCode716()"><img border=0 src=../doc_images/paste.png></a> &quot;Depth&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 1 - Relation types
+<blockquote><font color="#000080">A length is a kind of value. 10 cm specifies a length. An area is a kind of value. 10 sq cm specifies an area. A length times a length specifies an area. A volume is a kind of value. 10 cu cm specifies a volume. A length times an area specifies a volume.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Loving relates one person to one person.
+<blockquote><font color="#000080">A thing has a length called height. A thing has a length called width. A thing has a length called depth. The height of a thing is usually 10 cm. The width of a thing is usually 10 cm. The depth of a thing is usually 10 cm.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Noticing relates various people to one person.
+<blockquote><font color="#000080">To decide what volume is the exterior volume of (item - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let base area be the height of the item multiplied by the width of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let base volume be the base area multiplied by the depth of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the base volume.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Impressing relates one person to various people.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Fancying relates various people to various people.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Acquaintance relates people to each other.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Marriage relates one person to another.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Alliance relates people to each other in groups.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Chapel is a room. Elizabeth, Wickham and Darcy are people in the Chapel. Mr Bennett and Mrs Bennett are people in the Chapel. Georgiana is a person in the Chapel.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The verb to love (he loves, they love, he loved, he is loved) implies the loving relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The verb to notice (he notices, they notice, he noticed, he is noticed) implies the noticing relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The verb to impress (he impresses, they impress, he impressed, he is impressed) implies the impressing relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The verb to fancy (he fancies, they fancy, he fancied, he is fancied) implies the fancying relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The verb to know (he knows, they know, he knew, he is known) implies the acquaintance relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The verb to be married to implies the marriage relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The verb to be related to implies the alliance relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Elizabeth loves Darcy. Elizabeth fancies Darcy. Elizabeth notices Darcy. Elizabeth impresses Darcy.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Mr Bennett is related to Mrs Bennett and Elizabeth. Mr Bennett is married to Mrs Bennett.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Georgiana is related to Darcy.
-</font></blockquote><p>
-<p>
-<p>Now we want ways to set and unset all of these relations. (In the interests of thoroughness, we may get a bit far-fetched here. It is not recommended in practice that we make the player guess the verb &quot;traduce&quot;.)
-<p>
-<blockquote><font color="#000080">Section 2 - Setting and Unsetting Love (1-1)
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;infatuate [someone] with [someone]&quot; as infatuating it with. Infatuating it with is an action applying to two visible things.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out infatuating it with:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun loves the second noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report infatuating it with:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Now [the noun] loves [a random person loved by the noun][if the second noun loves someone], while [the second noun] loves [a random person loved by the second noun][end if].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;embitter [someone] toward [someone]&quot; as embittering it toward. Embittering it toward is an action applying to two visible things.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out embittering it toward:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun does not love the second noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report embittering it toward:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] sees [the second noun] in a different light and no longer feels any affection.&quot;
-</font></blockquote><p>
-<p>
-<p>Because love is a 1-1 relation, a person cannot love more than one other character at a time. Whenever we set a character to love a new person, that person ceases to love the character loved before. It is a fickle world.
-<p>
-<p>One to various relations are a bit more open: we can say someone impresses multiple other characters, and our additions to the list do not override the initial ones.
-<p>
-<blockquote><font color="#000080">Section 3 - Setting and Unsetting Impressed (1-V)
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;commend [someone] to [someone]&quot; as commending it to. Commending it to is an action applying to two visible things.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out commending it to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun impresses the second noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report commending it to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The second noun] takes a very decided interest in [the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Understand &quot;traduce [someone] to [someone]&quot; as traducing it to. Traducing it to is an action applying to two visible things.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out traducing it to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun does not impress the second noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report traducing it to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The second noun], hearing your story, decides not to be at all impressed with [the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>And because this is a one-to-various relation, we can also make statements which set multiple relations at once, so:
-<p>
-<blockquote><font color="#000080">Understand &quot;celebrate [someone]&quot; as celebrating. Celebrating is an action applying to one visible thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out celebrating:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun impresses every person.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report celebrating:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The list of people who are impressed by the noun] take a very decided interest in [the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Understand &quot;slander [someone]&quot; as slandering to. Slandering to is an action applying to one visible thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out slandering to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every person is not impressed by the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report slandering to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Now [the noun] impresses [the list of people who are impressed by the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>Note that the above unsetting is not equivalent to &quot;now the noun does not impress every person&quot; -- which would be ambiguous in spoken English, as well. Various-to-one relations are similar:
-<p>
-<blockquote><font color="#000080">Section 4 - Setting and Unsetting Noticing (V-1)
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;draw the attention of [someone] to [someone]&quot; as drawing the attention of it to. Drawing the attention of it to is an action applying to two visible things.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out drawing the attention of it to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun notices the second noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report drawing the attention of it to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] glances thoughtfully in the direction of [the second noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;distract [someone] from [someone]&quot; as distracting it from. Distracting it from is an action applying to two visible things.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out distracting it from:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun does not notice the second noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report distracting it from:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You distract [the noun] from [the second noun].&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Understand &quot;draw attention to [someone]&quot; as drawing attention to. Drawing attention to is an action applying to one visible thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out drawing attention to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every person notices the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report drawing attention to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You quickly cause everyone to attend to [the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Understand &quot;outshine [someone]&quot; as outshining. Outshining is an action applying to one visible thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out outshining:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every person does not notice the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report outshining:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You quickly distract everyone from [the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Section 5 - Setting and Unsetting Fancying (V-V)
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;flatter [someone]&quot; as flattering. Flattering is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out flattering:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every person fancies the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report flattering:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You draw down universal admiration for [the noun] by casting him or her in a flattering light.&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Understand &quot;unflatter [someone]&quot; as unflattering. [Okay, okay, but it's four am.] Unflattering is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out unflattering:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every person does not fancy the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report unflattering:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] gives everyone a universal disgust.&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Understand &quot;admire [someone]&quot; as admiring. Admiring is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out admiring: now the player fancies the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report admiring: say &quot;You find you rather fancy [the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Understand &quot;loathe [someone]&quot; as loathing. Loathing is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out loathing: now the player does not fancy the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report loathing: say &quot;You take [the noun] in disgust.&quot;
-</font></blockquote><p>
-<p>
-<p>Note that we cannot say &quot;now every person fancies every person&quot; or &quot;now every person is not fancied by every person&quot;. Variables on each side of the &quot;now&quot; statement are too much for Inform 7 to interpret usefully; we would need to write such a loop by hand, as in
+<p>In order to see how these shapes might fit together spatially, we need to work out the three dimensions in order of size. (If we were only dealing with portable objects, we could simply insist that the length always be greater than the width which in turn must be greater than the depth, because we could always turn them over in our hands until this was so: but some of the things we deal with may be fixed in place.) A clever way to do this might be to put them in a table of three rows and sort it, but we will write the calculation out longhand:
 <p>
-<blockquote><font color="#000080">Understand &quot;cause chaos&quot; as causing chaos. Causing chaos is an action applying to nothing.
+<blockquote><font color="#000080">To decide what length is the largest dimension of (item - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let long side be the height of item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the width of the item is greater than the long side, change the long side to the width of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the depth of the item is greater than the long side, change the long side to the depth of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the long side.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out causing chaos:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with victim running through people
+<blockquote><font color="#000080">To decide what length is the middling dimension of (item - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the width of the item is greater than the height of the item
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the victim fancies every person;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let shorter side be the height of item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let longer side be the width of item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let longer side be the height of item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let shorter side be the width of item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the depth of the item is greater than the longer side, decide on the longer side;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the depth of the item is less than the shorter side, decide on the shorter side;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the depth of the item.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report causing chaos: say &quot;Now everyone fancies everyone else, which is quite an inconvenient state of affairs.&quot;
+<blockquote><font color="#000080">To decide what length is the shortest dimension of (item - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let short side be the height of item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the width of the item is less than the short side, change the short side to the width of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the depth of the item is less than the short side, change the short side to the depth of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the short side.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;relieve chaos&quot; as relieving chaos. Relieving chaos is an action applying to nothing.
+<p>When testing this example, the author made use of the following: it's no longer needed, but may be useful to anyone else planning elaborations.
+<p>
+<blockquote><font color="#000080">To test the dimensions of (item - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[the item] - height [height of the item], width [width of the item], depth [depth of the item].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;largest side [largest dimension of the item], middling [middling dimension of the item], smallest [shortest dimension of the item].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out relieving chaos:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with victim running through people
+<p>We now introduce a new kind: a measured container, which not only has exterior dimensions - the height, width and depth which every thing now has - but also interior measurements. A convenient way to do calculations with the hollow interior is to regard it as if it were a solid shape in its own right, and we do this with the aid of something out of world, which the player never sees: the &quot;imaginary cuboid&quot;, which is made into the shape of whatever measured container's interior is being thought about.
+<p>
+<blockquote><font color="#000080">A measured container is a kind of container. A measured container has a length called interior height. A measured container has a length called interior width. A measured container has a length called interior depth.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The imaginary cuboid is a thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To imagine the interior of (receptacle - a measured container) as a cuboid:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the height of the imaginary cuboid is the interior height of the receptacle;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the width of the imaginary cuboid is the interior width of the receptacle;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the depth of the imaginary cuboid is the interior depth of the receptacle.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what volume is the interior volume of (receptacle - a measured container):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;imagine the interior of the receptacle as a cuboid;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the exterior volume of the imaginary cuboid.
+</font></blockquote><p>
+<p>
+<p>If we assume that we could always pack items into a measured container with perfect ease, never wasting any space, then the only volume constraint will be that the total volume of the contents must not exceed the volume of the inside of the container. So we need to calculate the available volume.
+<p>
+<blockquote><font color="#000080">To decide what volume is the available volume of (receptacle - a measured container):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the remaining space be the interior volume of the receptacle;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things in the receptacle
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now every person is not fancied by the victim;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decrease the remaining space by the exterior volume of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the remaining space is less than 0 cu cm, decide on 0 cu cm;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the remaining space.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report relieving chaos: say &quot;Now no one fancies anyone, which is safe but tedious.&quot;
+<p>If we only constrained volume, a 140 cm-long fishing rod could fit into a 12 cm by 12 cm compact disc box. So we also insist the basic shape must fit, in some orientation perpendicular to one of the sides (i.e.: we can turn the item over in any of its three sides, but not turn it diagonally or wedge it in at a tilt). This requires the longest side of the item to be less than the longest side of the receptacle, and the middle-length side, and also the shortest side. The number of these conditions to fail gives us a clue as to how we can best describe the reason why the shape won't squeeze in.
+<p>
+<blockquote><font color="#000080">Check inserting something (called the item) into a measured container (called the receptacle):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the exterior volume of the item is greater than the interior volume of the receptacle, say &quot;[The item] will never fit inside [the receptacle].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the exterior volume of the item is greater than the available volume of the receptacle, say &quot;[The item] will not fit into [the receptacle] with [the list of things in the receptacle].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;imagine the interior of the receptacle as a cuboid;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the largest dimension of the item is greater than the largest dimension of the imaginary cuboid, say &quot;[The item] is too long to fit into [the receptacle].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the middling dimension of the item is greater than the middling dimension of the imaginary cuboid, say &quot;[The item] is too wide to fit into [the receptacle].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the shortest dimension of the item is greater than the shortest dimension of the imaginary cuboid, say &quot;[The item] is too bulky to fit into [the receptacle].&quot; instead.
 </font></blockquote><p>
 <p>
-<p>Our options for setting and unsetting symmetrical relations are more limited again:
+<p>And finally a situation to try out these rules.
 <p>
-<blockquote><font color="#000080">Section 6 - Setting and Unsetting Marriage (1-1 Symmetrical)
+<blockquote><font color="#000080">The Cubist Lab is a room. &quot;A laboratory which, as the art critic Louis Vauxcelles said about Braque's paintings in 1908, is full of little cubes: everyday objects rendered as if cuboidal.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;marry [someone] to [someone]&quot; as uniting it in matrimony with. Uniting it in matrimony with is an action applying to two visible things.
+<blockquote><font color="#000080">The box is a measured container. The interior height is 10 cm. The interior depth is 5 cm. The interior width is 6 cm. The player carries the box.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out uniting it in matrimony with:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is married to the second noun.
+<blockquote><font color="#000080">A pebble is a kind of thing. The height is usually 2 cm. The depth is usually 2 cm. The width is usually 2 cm. The player carries 25 pebbles.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report uniting it in matrimony with:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You perform the marriage of [the noun] to [the second noun], joining them to the family of [a list of people related to the noun].&quot;
+<blockquote><font color="#000080">A red rubber ball is carried by the player. The depth is 5 cm. The width is 5 cm. The height is 5 cm.
+<br>An arrow is carried by the player. The height is 40 cm. The width is 1 cm. The depth is 1 cm.
+<br>A crusty baguette is carried by the player. The height is 80 cm. The width is 4 cm. The depth is 5 cm.
+<br>A child's book is carried by the player. The height is 1 cm. The width is 9 cm. The depth is 9 cm.
+<br>A featureless white cube is carried by the player. The height is 6 cm. The width is 6 cm. The depth is 6 cm.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;divorce [someone] from [someone]&quot; as divorcing it from. Divorcing it from is an action applying to two visible things.
+<blockquote><font color="#000080">Test me with &quot;put arrow in box / put book in box / put cube in box / put ball in box / put baguette in box / put pebbles in box&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check divorcing it from:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not married to the second noun, say &quot;[The noun] is not married to [the second noun] anyway.&quot; instead.
-</font></blockquote><p>
+<p>Several warnings about this. First, the numbers can't go very high (if the Settings for the project set the story file format to the Z-machine): while the volume can in theory go to 32,767, in practice this equates to an object 32 cm on a side, which is not very large. One way to avoid this is to use the Glulx format, allowing for sizes in excess of 10 m on a side: or we could simply scale the dimensions to suit our purposes, using a decimeter (10 cm) as the basic unit of measurement, for instance.
 <p>
-<blockquote><font color="#000080">Carry out divorcing it from:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is not married to the second noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report divorcing it from:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is now not married to [the second noun].&quot;
-</font></blockquote><p>
-<p>
-<p>When we unset the symmetrical relation on one side, it is automatically set or unset on the other. It is not necessary to say &quot;the second noun is married to the noun&quot; or &quot;the second noun is not married to the noun&quot;, even though that is the case.
-<p>
-<blockquote><font color="#000080">Section 7 - Setting and Unsetting Acquaintance (V-V Symmetrical)
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;introduce [someone] to [someone]&quot; as introducing it to. Introducing it to is an action applying to two visible things.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out introducing it to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun knows the second noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report introducing it to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You introduce [the noun] to [the second noun]. Now [the noun] is acquainted with [the list of people who are known by the noun], and [the second noun] is acquainted with [the list of people who are known by the second noun].&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Understand &quot;announce [someone]&quot; as announcing. Announcing is an action applying to one visible thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out announcing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every person knows the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report announcing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You announce [the noun] to the whole assembled company.&quot;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Understand &quot;ostracise [someone]&quot; as ostracising. Ostracising is an action applying to one visible thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out ostracising:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every person does not know the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report ostracising:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You cause everyone present to forget and pretend not to be acquainted at all with [the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>And finally, setting groups:
-<p>
-<blockquote><font color="#000080">Section 8 - Setting and Unsetting Familial Relations (Groups)
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;make [someone] adopt [someone]&quot; as forcing it to adopt. Forcing it to adopt is an action applying to two visible things.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out forcing it to adopt:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is related to the second noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report forcing it to adopt:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Now [the second noun] is related to [the list of people related to the second noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;make [someone] disown [someone]&quot; as forcing it to disown. Forcing it to disown is an action applying to two visible things.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out forcing it to disown:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the second noun is not related to the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report forcing it to disown:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Now [the second noun] is related to [the list of people who are related to the second noun], and [the noun] is related to [the list of people who are related to the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>Notice that when we say &quot;the second noun is not related&quot;, we remove that person from the group: they are now in a separate group of their own, while the rest of the group's members remain related to one another.
-<p>
-<p>And finally, a long litany of test cases, complete with the relations lists:
-<p>
-<blockquote><font color="#000080">Test acquaintance with &quot;relations / introduce darcy to elizabeth / introduce darcy to wickham / announce mr bennett / relations / ostracise wickham / introduce georgiana to wickham / relations&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test impression with &quot;commend georgiana to elizabeth / relations / celebrate Mrs bennett / relations / traduce mrs bennett to darcy / relations / slander mrs bennett / relations&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test notice with &quot;draw the attention of darcy to elizabeth / relations / draw attention to mr bennett / relations / distract darcy from mr bennett / relations / outshine mr bennett / relations&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test love with &quot;embitter elizabeth toward darcy / relations / infatuate elizabeth with wickham / relations&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test marriage with &quot;marry elizabeth to darcy / relations / divorce elizabeth from darcy / relations&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test alliance with &quot;make mr bennett adopt georgiana / relations / make mrs bennett disown georgiana / relations&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test fancying with &quot;admire elizabeth / relations / loathe elizabeth / relations / flatter elizabeth / relations / unflatter elizabeth / relations / cause chaos / relations / relieve chaos / relations&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;test acquaintance / test impression / test notice / test love / test alliance / test fancying / test marriage&quot;.
-</font></blockquote><p>
-<p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc51.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Second, the system will require a height, width, and depth for every portable object in the game, which is a large commitment to data entry; it may become tiresome. So it is probably not worth bothering with this kind of simulation unless it is going to be genuinely significant.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc75.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e258"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex258.html#e258 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>296</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex258.html#e258 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Emma</font></b></a><br>Social dynamics in which groups of people form and circulate during a party.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex258.html#e258 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc50.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc52.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e296"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex296.html#e296 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>238</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex296.html#e296 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lead Cuts Paper</font></b></a><br>To give every container a breaking strain, that is, a maximum weight of contents which it can bear - so that to put the lead pig into a paper bag invites disaster.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex296.html#e296 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e197"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex197.html#e197 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>214</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex197.html#e197 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Swerve left? Swerve right? Or think about it and die?</font></b></a><br>Building a marble chute track in which a dropped marble will automatically roll downhill.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex197.html#e197 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc74.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc76.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
