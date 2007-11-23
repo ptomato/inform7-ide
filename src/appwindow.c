@@ -397,12 +397,9 @@ after_notebook_l_switch_page           (GtkNotebook     *notebook,
         default:
             history_push_tab(thestory, LEFT, page_num);
     }
-    
-#ifdef I_LIKE_SKEIN
     /* Redraw the skein if we are switching to it and it needs updating */
     if(page_num == TAB_SKEIN && thestory->drawflag[SKEIN_LEFT])
         skein_schedule_redraw(thestory->theskein, thestory);
-#endif /* I_LIKE_SKEIN */
 }
 
 
@@ -462,12 +459,9 @@ after_notebook_r_switch_page           (GtkNotebook     *notebook,
         default:
             history_push_tab(thestory, RIGHT, page_num);
     }
-
-#ifdef I_LIKE_SKEIN
     /* Redraw the skein if we are switching to it and it needs updating */
     if(page_num == TAB_SKEIN && thestory->drawflag[SKEIN_RIGHT])
         skein_schedule_redraw(thestory->theskein, thestory);
-#endif /* I_LIKE_SKEIN */
 }
 
 

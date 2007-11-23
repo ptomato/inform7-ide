@@ -317,7 +317,7 @@ static gchar *get_i6_compiler_switches(gboolean release, int format) {
     if(release)
         debug_switches = g_strdup("~S~D");
     else
-        debug_switches = g_strdup("SD");
+        debug_switches = g_strdup("kSD");
     /* Pick the appropriate virtual machine version */
     switch(format) {
     case FORMAT_GLULX:
@@ -334,7 +334,9 @@ static gchar *get_i6_compiler_switches(gboolean release, int format) {
         version_switches = g_strdup("v5");
     }
     
-    retval = g_strconcat("-kE2w", debug_switches, version_switches, "x", NULL);
+    retval = g_strconcat("-wE2", debug_switches, version_switches, "x", NULL);
+    g_free(debug_switches);
+    g_free(version_switches);
     return retval;
 }
 
@@ -351,17 +353,18 @@ static void start_i6_compiler(Story *thestory) {
     
     /* Build the command line */
     gchar *working_dir = g_build_filename(thestory->filename, "Build", NULL);
-    gchar **commandline = g_new(gchar *, 7);
+    gchar **commandline = g_new(gchar *, 8);
     gchar *libdir = get_datafile_path_va("Library", "Natural", NULL);
     commandline[0] = get_datafile_path_va("Compilers", "inform-6.31-biplatform",
       NULL);
     commandline[1] = get_i6_compiler_switches(
       thestory->action == COMPILE_RELEASE, thestory->story_format);
     commandline[2] = g_strconcat("+", libdir, NULL);
-    commandline[3] = g_strdup("auto.inf");
-    commandline[4] = g_strdup("-o");
-    commandline[5] = g_strconcat("output.", get_story_extension(thestory),NULL);
-    commandline[6] = NULL;
+    commandline[3] = g_strdup("$huge");
+    commandline[4] = g_strdup("auto.inf");
+    commandline[5] = g_strdup("-o");
+    commandline[6] = g_strconcat("output.", get_story_extension(thestory),NULL);
+    commandline[7] = NULL;
 
     GtkProgressBar *progress = gnome_appbar_get_progress(
       GNOME_APPBAR(lookup_widget(thestory->window, "main_appbar")));

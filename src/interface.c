@@ -1044,6 +1044,7 @@ create_app_window (void)
   gtk_label_set_angle (GTK_LABEL (label10), 270);
 
   vbox3 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox3);
   gtk_container_add (GTK_CONTAINER (notebook_l), vbox3);
 
   toolbar8 = gtk_toolbar_new ();
@@ -1650,6 +1651,7 @@ create_app_window (void)
   gtk_label_set_angle (GTK_LABEL (label37), 270);
 
   vbox6 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox6);
   gtk_container_add (GTK_CONTAINER (notebook_r), vbox6);
 
   toolbar9 = gtk_toolbar_new ();
@@ -2501,6 +2503,7 @@ create_about_window (void)
   GdkPixbuf *about_window_logo_pixbuf;
 
   about_window = gtk_about_dialog_new ();
+  gtk_container_set_border_width (GTK_CONTAINER (about_window), 5);
   gtk_window_set_destroy_with_parent (GTK_WINDOW (about_window), TRUE);
   gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (about_window), VERSION);
   gtk_about_dialog_set_name (GTK_ABOUT_DIALOG (about_window), _("GNOME Inform 7"));
@@ -4514,7 +4517,9 @@ create_inspector_window (void)
   gtk_expander_set_label_widget (GTK_EXPANDER (headings_inspector), label84);
 
   skein_inspector = gtk_expander_new (NULL);
+  gtk_widget_show (skein_inspector);
   gtk_box_pack_start (GTK_BOX (vbox34), skein_inspector, TRUE, TRUE, 0);
+  gtk_expander_set_expanded (GTK_EXPANDER (skein_inspector), TRUE);
 
   skein_inspector_scroll = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (skein_inspector_scroll);

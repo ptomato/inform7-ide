@@ -176,14 +176,12 @@ static void show_inspector(int which, gboolean show) {
       case INSPECTOR_HEADINGS:
         inspector = lookup_widget(inspector_window, "headings_inspector");
         break;
-#ifdef I_LIKE_SKEIN
       case INSPECTOR_SKEIN:
         inspector = lookup_widget(inspector_window, "skein_inspector");
         if(show && !GTK_WIDGET_VISIBLE(inspector)
            && inspecting->drawflag[SKEIN_INSPECTOR])
             skein_schedule_redraw(inspecting->theskein, inspecting);
         break;
-#endif /* I_LIKE_SKEIN */
       case INSPECTOR_SEARCH_FILES:
         inspector = lookup_widget(inspector_window, "search_inspector");
         break;
@@ -207,10 +205,8 @@ void update_inspectors() {
       config_file_get_bool("Inspectors", "Notes"));
     show_inspector(INSPECTOR_HEADINGS,
       config_file_get_bool("Inspectors", "Headings"));
-#ifdef I_LIKE_SKEIN
     show_inspector(INSPECTOR_SKEIN,
       config_file_get_bool("Inspectors", "Skein"));
-#endif /* I_LIKE_SKEIN */
     show_inspector(INSPECTOR_SEARCH_FILES,
       config_file_get_bool("Inspectors", "Search"));
 }
@@ -249,9 +245,7 @@ void refresh_inspector(Story *thestory) {
     }
     
     /* Refresh the skein inspector */
-#ifdef I_LIKE_SKEIN
     skein_schedule_redraw(inspecting->theskein, inspecting);
-#endif /* I_LIKE_SKEIN */
 }
 
 /* Get the position of the inspector window and save it for the next run */

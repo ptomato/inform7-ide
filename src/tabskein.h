@@ -19,8 +19,6 @@
 #ifndef _TABSKEIN_H
 #define _TABSKEIN_H
 
-#ifdef I_LIKE_SKEIN
-
 #include <gnome.h>
 #include <libgnomecanvas/libgnomecanvas.h>
 
@@ -33,8 +31,6 @@ void skein_schedule_redraw(Skein *skein, Story *thestory);
 gboolean skein_redraw(Story *thestory);
 void show_node(Skein *skein, guint why, GNode *node, Story *thestory);
 void play_to_node(Skein *skein, GNode *node, Story *thestory);
-
-#endif /* I_LIKE_SKEIN */
 
 #endif /* _TABSKEIN_H */
 

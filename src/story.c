@@ -73,7 +73,6 @@ Story *new_story() {
         newstory->skeingroup[foo] = NULL;
         newstory->drawflag[foo] = FALSE;
     }
-#ifdef I_LIKE_SKEIN
     g_signal_connect(G_OBJECT(newstory->theskein), "tree-changed",
                      G_CALLBACK(skein_layout_and_redraw), (gpointer)newstory);
     g_signal_connect(G_OBJECT(newstory->theskein), "node-text-changed",
@@ -88,7 +87,6 @@ Story *new_story() {
                      G_CALLBACK(skein_schedule_redraw), (gpointer)newstory);
     g_signal_connect(G_OBJECT(newstory->theskein), "show-node",
                      G_CALLBACK(show_node), (gpointer)newstory);
-#endif /* I_LIKE_SKEIN */
     
     /* Initialize the navigation history */
     for(foo = 0; foo < 2; foo++) {

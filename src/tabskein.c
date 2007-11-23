@@ -17,7 +17,6 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef I_LIKE_SKEIN
 
 #include <math.h>
 #include <gnome.h>
@@ -48,8 +47,6 @@ typedef struct {
     Story *story;
     GNode *node;
     GnomeCanvasGroup *nodegroup;
-    GnomeCanvasItem *nodetext;
-    GnomeCanvasItem *labeltext;
 } ClickedNode;
 
 static void
@@ -66,12 +63,25 @@ skein_popup_play_to_here(GtkMenuItem *menuitem, ClickedNode *clickednode)
 }
 
 static void
-stop_editing_node(GtkEntry *entry, ClickedNode *clicked)
+finished_editing_node(GtkEntry *entry, ClickedNode *clicked)
 {
     clicked->story->editingskein = FALSE;
-    skein_set_line(clicked->story->theskein, clicked->node, 
-                   gtk_entry_get_text(entry));
-    /* the Entry will be destroyed in the next redraw */
+	skein_set_line(clicked->story->theskein, clicked->node, 
+				   gtk_entry_get_text(entry));
+	/* The Entry is destroyed in the redraw */
+}
+
+static void
+finished_editing_label(GtkEntry *entry, ClickedNode *clicked)
+{
+	clicked->story->editingskein = FALSE;
+	skein_set_label(clicked->story->theskein, clicked->node,
+					gtk_entry_get_text(entry));
+	/* Lock the thread containing the affected node */
+	skein_lock(clicked->story->theskein, 
+			   skein_get_thread_bottom(clicked->story->theskein,
+									   clicked->node));
+	/* The Entry is destroyed in the redraw */
 }
 
 static gboolean
@@ -93,45 +103,88 @@ cancel_editing(GtkWidget *entry, GdkEventKey *event, Story *thestory)
 }
 
 static void
-edit_node(Skein *skein, gboolean label, ClickedNode *clicked)
+edit_node(Skein *skein, gboolean label, Story *thestory, GNode *thenode,
+		  int whichcanvas)
 {
-    clicked->story->editingskein = TRUE;
+	show_node(skein, GOT_USER_ACTION, thenode, thestory);
+    thestory->editingskein = TRUE;
     GtkWidget *entry = gtk_entry_new();
     gtk_entry_set_text(GTK_ENTRY(entry), 
-                       label? node_get_label(clicked->node) :
-                       node_get_line(clicked->node));
+                       label? 
+                       (node_has_label(thenode)? node_get_label(thenode) : "")
+					   : node_get_line(thenode));
     gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
     
-    double height = 0.0, width = 0.0;
-    g_object_get(G_OBJECT(label? clicked->labeltext : clicked->nodetext), 
-                 "text-width", &width, 
-                 "text-height", &height, 
-                 NULL);
-    gnome_canvas_item_new(clicked->nodegroup, gnome_canvas_widget_get_type(),
-                          "anchor", GTK_ANCHOR_CENTER,
-                          "x", 0.0, "y", 0.0,
-                          "width", width, "height", height * 1.5,
-                          "widget", entry,
-                          NULL);
+	double x = node_get_x(thenode);
+	double y = VERTICAL_SPACING * (double)(g_node_depth(thenode) - 1);
+	GtkRequisition req = { 0, 0 };
+	gtk_widget_size_request(entry, &req);
+    GnomeCanvasItem *editbox = 
+        gnome_canvas_item_new(thestory->skeingroup[whichcanvas], 
+							  gnome_canvas_widget_get_type(),
+                              "anchor", GTK_ANCHOR_CENTER,
+							  "x", x, "y", y,
+							  "width", (double)(req.width),
+							  "height", (double)(req.height),
+                              "widget", entry,
+                              NULL);
+	if(label) {
+		double height = 0.0;
+		g_object_get(G_OBJECT(editbox), "height", &height, NULL);
+    	gnome_canvas_item_set(editbox, 
+							  "y", y - height * VERTICAL_NODE_FILL_FACTOR * 
+							  	   LABEL_MULTIPLIER,
+							  NULL);
+	}
     gtk_widget_show(entry);
     gtk_widget_grab_focus(entry);
-    g_signal_connect(G_OBJECT(entry), "activate", G_CALLBACK(stop_editing_node),
-                     clicked);
+	
+	/* This is so ugly. But the old clickednode structure doesn't persist
+    into this function call */
+    ClickedNode *nodedata = g_new0(ClickedNode, 1);
+    nodedata->story = thestory;
+    nodedata->node = thenode;
+    nodedata->nodegroup = NULL;
+    g_signal_connect_data(G_OBJECT(entry), "activate", 
+                          G_CALLBACK(label? finished_editing_label : 
+									 finished_editing_node),
+						  nodedata, clicked_node_free, 0);
     g_signal_connect(G_OBJECT(entry), "focus-out-event",
-                     G_CALLBACK(editing_lose_focus), clicked->story);
+                     G_CALLBACK(editing_lose_focus), thestory);
     g_signal_connect(G_OBJECT(entry), "key-press-event",
-                     G_CALLBACK(cancel_editing), clicked->story);
+                     G_CALLBACK(cancel_editing), thestory);
+}
+
+
+static int
+find_out_what_canvas_this_group_is_on(Story *thestory, GnomeCanvasGroup *group)
+{
+	GnomeCanvasItem *parentgroup = NULL;
+	g_object_get(G_OBJECT(group), "parent", &parentgroup, NULL);
+	int foo;
+	for(foo = 0; foo < NUM_SKEINS; foo++) {
+		if(GNOME_CANVAS_GROUP(parentgroup) == thestory->skeingroup[foo])
+			return foo;
+	}
+	return -1;
 }
 
 static void
 skein_popup_edit(GtkMenuItem *menuitem, ClickedNode *clickednode)
 {
-    edit_node(clickednode->story->theskein, FALSE, clickednode);
+	int which = find_out_what_canvas_this_group_is_on(clickednode->story, 
+													  clickednode->nodegroup);
+    edit_node(clickednode->story->theskein, FALSE, clickednode->story,
+			  clickednode->node, which);
 }
 
 static void
 skein_popup_add_label(GtkMenuItem *menuitem, ClickedNode *clickednode)
 {
+	int which = find_out_what_canvas_this_group_is_on(clickednode->story, 
+													  clickednode->nodegroup);
+    edit_node(clickednode->story->theskein, TRUE, clickednode->story,
+			  clickednode->node, which);
 }
 
 static void
@@ -159,11 +212,36 @@ skein_popup_lock_thread(GtkMenuItem *menuitem, ClickedNode *clickednode)
 static void
 skein_popup_new_thread(GtkMenuItem *menuitem, ClickedNode *clickednode)
 {
+	/* JEEZ I am so sick of GnomeCanvas, it SUCKS ASS */
+	/* Have to copy everything out of clickednode, because it gets invalidated
+	in the redraw */
+	Skein *theskein = clickednode->story->theskein;
+	Story *thestory = clickednode->story;
+	GNode *thenode = clickednode->node;
+	int which = find_out_what_canvas_this_group_is_on(thestory, 
+													  clickednode->nodegroup);
+	GNode *newnode = skein_add_new(theskein, thenode);
+	skein_layout(theskein, HORIZONTAL_SPACING);
+	skein_redraw(thestory);
+	
+	edit_node(theskein, FALSE, thestory, newnode, which);
 }
 
 static void
 skein_popup_insert_knot(GtkMenuItem *menuitem, ClickedNode *clickednode)
 {
+	/* Have to copy everything out of clickednode, because it gets invalidated
+	in the redraw */
+	Skein *theskein = clickednode->story->theskein;
+	Story *thestory = clickednode->story;
+	GNode *thenode = clickednode->node;
+	int which = find_out_what_canvas_this_group_is_on(thestory, 
+													  clickednode->nodegroup);
+	GNode *newnode = skein_add_new_parent(theskein, thenode);
+	skein_layout(theskein, HORIZONTAL_SPACING);
+	skein_redraw(thestory);
+	
+	edit_node(theskein, FALSE, thestory, newnode, which);
 }
 
 static gboolean
@@ -665,8 +743,6 @@ draw_node(GNode *node, Story *thestory)
     nodedata->story = thestory;
     nodedata->node = node;
     nodedata->nodegroup = nodegroup;
-    nodedata->nodetext = command;
-    nodedata->labeltext = label;
     g_signal_connect_data(GNOME_CANVAS_ITEM(nodegroup), "event", 
                           G_CALLBACK(on_canvas_item_event), nodedata, 
                           clicked_node_free, 0);
@@ -684,9 +760,7 @@ skein_layout_and_redraw(Skein *skein, Story *thestory)
 void
 skein_schedule_redraw(Skein *skein, Story *thestory)
 {
-    g_printerr("Got message to schedule redraw\n");
     if(thestory->redrawingskein == FALSE) {
-        g_printerr("Scheduling redraw\n");
         thestory->redrawingskein = TRUE;
         g_idle_add((GSourceFunc)skein_redraw, thestory);
     }
@@ -695,7 +769,6 @@ skein_schedule_redraw(Skein *skein, Story *thestory)
 gboolean
 skein_redraw(Story *thestory)
 {
-    g_printerr("Started redraw\n");
     Skein *skein = thestory->theskein;
     
     /* Load the skein bitmaps into memory */
@@ -748,10 +821,8 @@ skein_redraw(Story *thestory)
         }
 
         /* Create a new canvas group for the skein */
-        if(thestory->skeingroup[foo]) {
+        if(thestory->skeingroup[foo])
             gtk_object_destroy(GTK_OBJECT(thestory->skeingroup[foo]));
-            g_printerr("Deleted old skein group #%d\n", foo);
-        }
         thestory->skeingroup[foo] = GNOME_CANVAS_GROUP(
             gnome_canvas_item_new(gnome_canvas_root(canvas),
                                   gnome_canvas_group_get_type(),
@@ -880,4 +951,3 @@ find_node_by_coordinates(GNode *node, double x, double y)
     return NULL;
 }
 */
-#endif /* I_LIKE_SKEIN */
