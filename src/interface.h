@@ -11,3 +11,5 @@ GtkWidget* create_new_dialog (void);
 GtkWidget* create_prefs_dialog (void);
 GtkWidget* create_inspector_window (void);
 GtkWidget* create_search_window (void);
+GtkWidget* create_skein_spacing_dialog (void);
+GtkWidget* create_skein_trim_dialog (void);

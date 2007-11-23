@@ -294,6 +294,74 @@ on_xcheck_spelling_activate            (GtkMenuItem     *menuitem,
         gtkspell_recheck_all(spellchecker);
 }
 
+void
+on_xshift_selection_right_activate     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    /* Adapted from gtksourceview.c */
+    Extension *ext = get_ext(GTK_WIDGET(menuitem));
+    GtkTextBuffer *buffer = GTK_TEXT_BUFFER(ext->buffer);
+    GtkTextIter start, end;
+    gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
+    gint start_line = gtk_text_iter_get_line(&start);
+    gint end_line = gtk_text_iter_get_line(&end);
+    gint i;
+
+    /* if the end of the selection is before the first character on a line,
+    don't indent it */
+    if((gtk_text_iter_get_visible_line_offset(&end) == 0)
+      && (end_line > start_line))
+        end_line--;
+
+    gtk_text_buffer_begin_user_action(buffer);
+    for(i = start_line; i <= end_line; i++) {
+        GtkTextIter iter;
+        gtk_text_buffer_get_iter_at_line(buffer, &iter, i);
+
+        /* don't add indentation on empty lines */
+        if(gtk_text_iter_ends_line(&iter))
+            continue;
+
+        gtk_text_buffer_insert(buffer, &iter, "\t", -1);
+	}
+	gtk_text_buffer_end_user_action(buffer);
+}
+
+
+void
+on_xshift_selection_left_activate      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+    /* Adapted from gtksourceview.c */
+    Extension *ext = get_ext(GTK_WIDGET(menuitem));
+    GtkTextBuffer *buffer = GTK_TEXT_BUFFER(ext->buffer);
+    GtkTextIter start, end;
+    gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
+    gint start_line = gtk_text_iter_get_line(&start);
+    gint end_line = gtk_text_iter_get_line(&end);
+    gint i;
+
+    /* if the end of the selection is before the first character on a line,
+    don't indent it */
+	if((gtk_text_iter_get_visible_line_offset(&end) == 0)
+      && (end_line > start_line))
+        end_line--;
+
+    gtk_text_buffer_begin_user_action(buffer);
+    for(i = start_line; i <= end_line; i++) {
+        GtkTextIter iter, iter2;
+
+        gtk_text_buffer_get_iter_at_line(buffer, &iter, i);
+
+        if(gtk_text_iter_get_char(&iter) == '\t') {
+            iter2 = iter;
+            gtk_text_iter_forward_char(&iter2);
+            gtk_text_buffer_delete(buffer, &iter, &iter2);
+        }
+    }
+    gtk_text_buffer_end_user_action(buffer);
+}
+
 /* Save window size */
 static void
 save_ext_window_size(GtkWindow *window)

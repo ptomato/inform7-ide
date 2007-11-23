@@ -340,9 +340,9 @@ static gchar *get_i6_compiler_switches(gboolean release, int format) {
     return retval;
 }
 
-static void display_i6_status(gpointer data, gchar *text) {
+static void display_i6_status(GtkProgressBar *progressbar, gchar *text) {
     if(strchr(text, '#'))
-        gtk_progress_bar_pulse((GtkProgressBar *)data);
+        gtk_progress_bar_pulse(progressbar);
 }
 
 /* Run the I6 compiler */
@@ -369,14 +369,13 @@ static void start_i6_compiler(Story *thestory) {
     GtkProgressBar *progress = gnome_appbar_get_progress(
       GNOME_APPBAR(lookup_widget(thestory->window, "main_appbar")));
     GPid child_pid = run_command_hook(working_dir, commandline, buffer,
-      display_i6_status, progress, TRUE, FALSE);
+      (IOHookFunc *)display_i6_status, progress, TRUE, TRUE);
     /* set up a watch for the exit status */
     g_child_watch_add(child_pid, (GChildWatchFunc)finish_i6_compiler, thestory);
     
     g_strfreev(commandline);
     g_free(working_dir);
     g_free(libdir);
-        
 }
 
 /* Display any errors from Inform 6 and decide what to do next */
@@ -403,7 +402,7 @@ static void finish_i6_compiler(GPid pid, gint status, Story *thestory) {
     gchar *loadfile = NULL;
 
     /* Display the appropriate HTML error pages */
-    for(line = gtk_text_buffer_get_line_count(buffer) - 1; line >= 0; line--) {
+    for(line = gtk_text_buffer_get_line_count(buffer); line >= 0; line--) {
         gchar *msg, *pos;
         gtk_text_buffer_get_iter_at_line(buffer, &start, line);
         end = start;
@@ -435,6 +434,9 @@ static void finish_i6_compiler(GPid pid, gint status, Story *thestory) {
         }
         g_free(msg);
     }
+    if(!loadfile && exit_code)
+        loadfile = get_datafile_path_va("Documentation", "Sections", 
+                                        "ErrorI6.html", NULL);
     if(loadfile) {
         html_load_file(GTK_HTML(lookup_widget(thestory->window, "problems_l")),
           loadfile);

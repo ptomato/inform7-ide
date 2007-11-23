@@ -651,14 +651,17 @@ skein_remove_single(Skein *skein, GNode *node)
 {
     if(!G_NODE_IS_ROOT(node)) {
         gboolean in_current = in_current_thread(skein, node);
-        int i;
-        for(i = g_node_n_children(node) - 1; i >= 0; i--) {
-            GNode *iter = g_node_nth_child(node, i);
-            g_node_unlink(iter);
-            g_node_insert_after(node->parent, node, iter);
-        }
+
+		if(!G_NODE_IS_LEAF(node)) {
+			int i;
+        	for(i = g_node_n_children(node) - 1; i >= 0; i--) {
+				GNode *iter = g_node_nth_child(node, i);
+				g_node_unlink(iter);
+				g_node_insert_after(node->parent, node, iter);
+			}
+		}	
         node_destroy(node);
-        
+		
         if(in_current) {
             I7_SKEIN_PRIVATE(skein)->current = I7_SKEIN_PRIVATE(skein)->root;
             I7_SKEIN_PRIVATE(skein)->played = I7_SKEIN_PRIVATE(skein)->root;
@@ -936,7 +939,7 @@ node_get_changed(GNode *node)
 gboolean
 node_get_temporary(GNode *node)
 {
-    return ((NodeData *)(node->data))->temp;
+    return ((NodeData *)node->data)->temp;
 }
 
 void
@@ -948,7 +951,7 @@ node_set_played(GNode *node)
 void
 node_set_temporary(GNode *node, gboolean temp)
 {
-    ((NodeData *)(node->data))->temp = temp;
+    ((NodeData *)node->data)->temp = temp;
 }
 
 void

@@ -31,6 +31,15 @@ void skein_schedule_redraw(Skein *skein, Story *thestory);
 gboolean skein_redraw(Story *thestory);
 void show_node(Skein *skein, guint why, GNode *node, Story *thestory);
 void play_to_node(Skein *skein, GNode *node, Story *thestory);
+void on_skein_layout_clicked(GtkToolButton *toolbutton, gpointer user_data);
+void on_skein_trim_clicked(GtkToolButton *toolbutton, gpointer user_data);
+void on_skein_play_all_clicked(GtkToolButton *toolbutton, gpointer user_data);
+void on_skein_spacing_use_defaults_clicked(GtkButton *button, 
+                                           gpointer user_data);
+void on_skein_spacing_cancel_clicked(GtkButton *button, gpointer user_data);
+void on_skein_spacing_ok_clicked(GtkButton *button, gpointer user_data);
+void on_skein_trim_cancel_clicked(GtkButton *button, gpointer user_data);
+void on_skein_trim_ok_clicked(GtkButton *button, gpointer user_data);
 
 #endif /* _TABSKEIN_H */
 

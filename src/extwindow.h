@@ -81,6 +81,14 @@ void
 on_xautocheck_spelling_activate        (GtkMenuItem     *menuitem,
                                         gpointer         user_data);
 
+void
+on_xshift_selection_right_activate     (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
+void
+on_xshift_selection_left_activate      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data);
+
 gboolean
 on_ext_window_delete_event             (GtkWidget       *widget,
                                         GdkEvent        *event,

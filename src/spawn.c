@@ -29,6 +29,67 @@ typedef struct {
     gpointer *data;
 } IOHookData;
 
+
+/* The callback for writing data from the IO channel to the buffer */
+static gboolean 
+write_channel_to_buffer(GIOChannel *ioc, GIOCondition cond, 
+                        GtkTextBuffer *buffer) 
+{
+    /* data for us to read? */
+    if(cond & (G_IO_IN | G_IO_PRI)) {
+        GIOStatus result;
+        gchar scratch[BUFSIZE];
+        gsize chars_read = 0;
+        
+        memset(scratch, 0, BUFSIZE); /* clear the buffer */
+        result = g_io_channel_read_chars(ioc, scratch, BUFSIZE, &chars_read,
+          NULL);
+        
+        if (chars_read <= 0 || result != G_IO_STATUS_NORMAL)
+            return FALSE;
+        
+        GtkTextIter iter;
+        gtk_text_buffer_get_end_iter(buffer, &iter);
+        gtk_text_buffer_insert(buffer, &iter, scratch, chars_read);
+    }
+    
+    if (cond & (G_IO_ERR | G_IO_HUP | G_IO_NVAL))
+        return FALSE;
+    return TRUE;
+}
+
+/* The callback for writing data from the IO channel to the buffer */
+static gboolean
+write_channel_hook(GIOChannel *ioc, GIOCondition cond, IOHookData *data) 
+{
+    GtkTextBuffer *textbuffer = data->output;
+    IOHookFunc *callback = data->callback;
+    gpointer funcdata = data->data;
+    /* data for us to read? */
+    if(cond & (G_IO_IN | G_IO_PRI)) {
+        GIOStatus result;
+        gchar scratch[BUFSIZE];
+        gsize chars_read = 0;
+        
+        memset(scratch, 0, BUFSIZE); /* clear the buffer */
+        result = g_io_channel_read_chars(ioc, scratch, BUFSIZE, &chars_read,
+          NULL);
+        
+        if (chars_read <= 0 || result != G_IO_STATUS_NORMAL)
+            return FALSE;
+        
+        GtkTextIter iter;
+        gtk_text_buffer_get_end_iter(textbuffer, &iter);
+        gtk_text_buffer_insert(textbuffer, &iter, scratch, chars_read);
+        
+        (*callback)(funcdata, scratch);
+    }
+    
+    if (cond & (G_IO_ERR | G_IO_HUP | G_IO_NVAL))
+        return FALSE;
+    return TRUE;
+}
+
 /*
  * The following three functions are adapted from Tim-Philipp Mueller's example
  * From http://scentric.net/tmp/spawn-async-with-pipes-gtk.c 
@@ -36,7 +97,9 @@ typedef struct {
 
 /* Runs a command (in argv[0]) with working directory wd, and pipes the output
 to a GtkTextBuffer */
-GPid run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output) {
+GPid 
+run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output)
+{
     GError *err = NULL;
     GPid child_pid;
     gint stdout_fd, stderr_fd;
@@ -68,47 +131,27 @@ GPid run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output) {
 }
 
 /* Set up an IO channel from a file descriptor to a GtkTextBuffer */
-void set_up_io_channel(gint fd, GtkTextBuffer *output) {
+void
+set_up_io_channel(gint fd, GtkTextBuffer *output)
+{
     GIOChannel *ioc = g_io_channel_unix_new(fd);
     g_io_channel_set_encoding(ioc, NULL, NULL); /* enc. NULL = binary data? */
     g_io_channel_set_buffered(ioc, FALSE);
     g_io_channel_set_close_on_unref(ioc, TRUE);
-    g_io_add_watch(ioc, G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL, 
-      write_channel_to_buffer, (gpointer)output);
+    g_io_add_watch_full(ioc, G_PRIORITY_HIGH,
+                        G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL, 
+                        (GIOFunc)write_channel_to_buffer, (gpointer)output,
+                        NULL);
 	g_io_channel_unref(ioc);
-}
-
-/* The callback for writing data from the IO channel to the buffer */
-gboolean write_channel_to_buffer(GIOChannel *ioc, GIOCondition cond,
-gpointer buffer) {
-    /* data for us to read? */
-    if(cond & (G_IO_IN | G_IO_PRI)) {
-        GIOStatus result;
-        gchar scratch[BUFSIZE];
-        gsize chars_read = 0;
-        
-        memset(scratch, 0, BUFSIZE); /* clear the buffer */
-        result = g_io_channel_read_chars(ioc, scratch, BUFSIZE, &chars_read,
-          NULL);
-        
-        if (chars_read <= 0 || result != G_IO_STATUS_NORMAL)
-            return FALSE;
-        
-        GtkTextIter iter;
-        gtk_text_buffer_get_end_iter((GtkTextBuffer *)buffer, &iter);
-        gtk_text_buffer_insert((GtkTextBuffer *)buffer, &iter, scratch,
-          chars_read);
-    }
-    
-    if (cond & (G_IO_ERR | G_IO_HUP | G_IO_NVAL))
-        return FALSE;
-    return TRUE;
 }
 
 /* Runs a command (in argv[0]) with working directory wd, pipes the output
 to a GtkTextBuffer, and also to a hook function */
-GPid run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output,
-  IOHookFunc *callback, gpointer data, gboolean get_out, gboolean get_err) {
+GPid
+run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output, 
+                 IOHookFunc *callback, gpointer data, gboolean get_out,
+                 gboolean get_err) 
+{
     GError *err = NULL;
     GPid child_pid;
     gint stdout_fd, stderr_fd;
@@ -146,13 +189,17 @@ GPid run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output,
 }
 
 /* Free the hook data */
-static void free_hook_data(gpointer data) {
+static void
+free_hook_data(gpointer data) 
+{
     g_free(data);
 }
 
 /* Set up an IO channel from a file descriptor to a GtkTextBuffer */
-void set_up_io_channel_hook(gint fd, GtkTextBuffer *output,
-  IOHookFunc *callback, gpointer data) {
+void 
+set_up_io_channel_hook(gint fd, GtkTextBuffer *output, IOHookFunc *callback,
+                       gpointer data)
+{
     GIOChannel *ioc = g_io_channel_unix_new(fd);
     g_io_channel_set_encoding(ioc, NULL, NULL); /* enc. NULL = binary data? */
     g_io_channel_set_buffered(ioc, FALSE);
@@ -163,39 +210,9 @@ void set_up_io_channel_hook(gint fd, GtkTextBuffer *output,
     hook_data->callback = callback;
     hook_data->data = data;
     
-    g_io_add_watch_full(ioc, G_PRIORITY_DEFAULT_IDLE,
+    g_io_add_watch_full(ioc, G_PRIORITY_HIGH,
       G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL, 
-      write_channel_hook, (gpointer)hook_data, free_hook_data);
+      (GIOFunc)write_channel_hook, (gpointer)hook_data, free_hook_data);
 	g_io_channel_unref(ioc);
 }
 
-/* The callback for writing data from the IO channel to the buffer */
-gboolean write_channel_hook(GIOChannel *ioc, GIOCondition cond,
-gpointer data) {
-    GtkTextBuffer *textbuffer = ((IOHookData *)data)->output;
-    IOHookFunc *callback = ((IOHookData *)data)->callback;
-    gpointer funcdata = ((IOHookData *)data)->data;
-    /* data for us to read? */
-    if(cond & (G_IO_IN | G_IO_PRI)) {
-        GIOStatus result;
-        gchar scratch[BUFSIZE];
-        gsize chars_read = 0;
-        
-        memset(scratch, 0, BUFSIZE); /* clear the buffer */
-        result = g_io_channel_read_chars(ioc, scratch, BUFSIZE, &chars_read,
-          NULL);
-        
-        if (chars_read <= 0 || result != G_IO_STATUS_NORMAL)
-            return FALSE;
-        
-        GtkTextIter iter;
-        gtk_text_buffer_get_end_iter(textbuffer, &iter);
-        gtk_text_buffer_insert(textbuffer, &iter, scratch, chars_read);
-        
-        (*callback)(funcdata, scratch);
-    }
-    
-    if (cond & (G_IO_ERR | G_IO_HUP | G_IO_NVAL))
-        return FALSE;
-    return TRUE;
-}

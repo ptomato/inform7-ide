@@ -23,6 +23,7 @@
 #include <libgnomecanvas/libgnomecanvas.h>
 #include "gtkterp/gtkterp.h"
 
+#include "interface.h"
 #include "support.h"
 
 #include "appmenu.h"
@@ -265,24 +266,29 @@ can_remove(GNode *node)
 static void
 skein_popup_delete(GtkMenuItem *menuitem, ClickedNode *clickednode)
 {
-    if(can_remove(clickednode->node))
-        skein_remove_single(clickednode->story->theskein, clickednode->node);
+	Skein *theskein = clickednode->story->theskein;
+	GNode *thenode = clickednode->node;
+    if(can_remove(thenode))
+        skein_remove_single(theskein, thenode);
 }
 
 static void
 skein_popup_delete_below(GtkMenuItem *menuitem, ClickedNode *clickednode)
 {
-    if(can_remove(clickednode->node))
-        skein_remove_all(clickednode->story->theskein, clickednode->node, TRUE);
+	Skein *theskein = clickednode->story->theskein;
+	GNode *thenode = clickednode->node;
+    if(can_remove(thenode))
+        skein_remove_all(theskein, thenode, TRUE);
 }
 
 static void
 skein_popup_delete_thread(GtkMenuItem *menuitem, ClickedNode *clickednode)
 {
-    GNode *topnode = skein_get_thread_top(clickednode->story->theskein,
-                                          clickednode->node);
+	Skein *theskein = clickednode->story->theskein;
+	GNode *thenode = clickednode->node;
+    GNode *topnode = skein_get_thread_top(theskein, thenode);
     if(can_remove(topnode))
-        skein_remove_all(clickednode->story->theskein, topnode, TRUE);
+        skein_remove_all(theskein, topnode, TRUE);
 }
 
 static gboolean
@@ -951,3 +957,59 @@ find_node_by_coordinates(GNode *node, double x, double y)
     return NULL;
 }
 */
+
+void
+on_skein_layout_clicked(GtkToolButton *toolbutton, gpointer user_data)
+{
+	GtkWidget *dialog = create_skein_spacing_dialog();
+	Story *thestory = get_story(GTK_WIDGET(toolbutton));
+	g_signal_connect_swapped(lookup_widget(dialog, "skein_spacing_cancel"), 
+							 "clicked", G_CALLBACK(gtk_widget_destroy), dialog);
+	g_signal_connect(lookup_widget(dialog, "skein_spacing_use_defaults"),
+					 "clicked",
+					 G_CALLBACK(on_skein_spacing_use_defaults_clicked),
+					 thestory);
+	g_signal_connect(lookup_widget(dialog, "skein_spacing_ok"), "clicked",
+					 G_CALLBACK(on_skein_spacing_ok_clicked), thestory);
+	gtk_widget_show(dialog);
+}
+
+void
+on_skein_trim_clicked(GtkToolButton *toolbutton, gpointer user_data)
+{
+	GtkWidget *dialog = create_skein_trim_dialog();
+	Story *thestory = get_story(GTK_WIDGET(toolbutton));
+	g_signal_connect_swapped(lookup_widget(dialog, "skein_trim_cancel"), 
+							 "clicked", G_CALLBACK(gtk_widget_destroy), dialog);
+	g_signal_connect(lookup_widget(dialog, "skein_trim_ok"), "clicked",
+					 G_CALLBACK(on_skein_trim_ok_clicked), thestory);
+	gtk_widget_show(dialog);
+}
+
+void
+on_skein_play_all_clicked(GtkToolButton *toolbutton, gpointer user_data)
+{
+	
+}
+
+
+void
+on_skein_spacing_use_defaults_clicked(GtkButton *button, gpointer user_data)
+{
+
+}
+
+
+void
+on_skein_spacing_ok_clicked(GtkButton *button, gpointer user_data)
+{
+    /* Close the dialog */
+    gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+}
+
+void
+on_skein_trim_ok_clicked(GtkButton *button, gpointer user_data)
+{
+    /* Close the dialog */
+    gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+}

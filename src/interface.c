@@ -1087,6 +1087,7 @@ create_app_window (void)
   skein_layout_l = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Layout..."));
   gtk_widget_show (skein_layout_l);
   gtk_container_add (GTK_CONTAINER (toolbar8), skein_layout_l);
+  gtk_tool_item_set_is_important (GTK_TOOL_ITEM (skein_layout_l), TRUE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-cut", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
@@ -1094,6 +1095,7 @@ create_app_window (void)
   gtk_widget_show (skein_trim_l);
   gtk_container_add (GTK_CONTAINER (toolbar8), skein_trim_l);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (skein_trim_l), tooltips, _("Remove all knots that have not been locked"), NULL);
+  gtk_tool_item_set_is_important (GTK_TOOL_ITEM (skein_trim_l), TRUE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-media-play", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
@@ -1694,6 +1696,7 @@ create_app_window (void)
   skein_layout_r = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Layout..."));
   gtk_widget_show (skein_layout_r);
   gtk_container_add (GTK_CONTAINER (toolbar9), skein_layout_r);
+  gtk_tool_item_set_is_important (GTK_TOOL_ITEM (skein_layout_r), TRUE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-cut", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
@@ -1701,6 +1704,7 @@ create_app_window (void)
   gtk_widget_show (skein_trim_r);
   gtk_container_add (GTK_CONTAINER (toolbar9), skein_trim_r);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (skein_trim_r), tooltips, _("Remove all knots that have not been locked"), NULL);
+  gtk_tool_item_set_is_important (GTK_TOOL_ITEM (skein_trim_r), TRUE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-media-play", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
@@ -2030,6 +2034,15 @@ create_app_window (void)
   g_signal_connect ((gpointer) skein_forward_l, "clicked",
                     G_CALLBACK (on_forward_l_clicked),
                     NULL);
+  g_signal_connect ((gpointer) skein_layout_l, "clicked",
+                    G_CALLBACK (on_skein_layout_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) skein_trim_l, "clicked",
+                    G_CALLBACK (on_skein_trim_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) skein_play_all_l, "clicked",
+                    G_CALLBACK (on_skein_play_all_clicked),
+                    NULL);
   g_signal_connect ((gpointer) transcript_back_l, "clicked",
                     G_CALLBACK (on_back_l_clicked),
                     NULL);
@@ -2110,6 +2123,15 @@ create_app_window (void)
                     NULL);
   g_signal_connect ((gpointer) skein_forward_r, "clicked",
                     G_CALLBACK (on_forward_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) skein_layout_r, "clicked",
+                    G_CALLBACK (on_skein_layout_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) skein_trim_r, "clicked",
+                    G_CALLBACK (on_skein_trim_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) skein_play_all_r, "clicked",
+                    G_CALLBACK (on_skein_play_all_clicked),
                     NULL);
   g_signal_connect ((gpointer) transcript_back_r, "clicked",
                     G_CALLBACK (on_back_r_clicked),
@@ -2754,7 +2776,7 @@ create_find_dialog (void)
   gtk_entry_set_invisible_char (GTK_ENTRY (find_text), 8226);
   gtk_entry_set_activates_default (GTK_ENTRY (find_text), TRUE);
 
-  label46 = gtk_label_new (_("Replace with: "));
+  label46 = gtk_label_new_with_mnemonic (_("R_eplace with: "));
   gtk_widget_show (label46);
   gtk_table_attach (GTK_TABLE (table1), label46, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
@@ -2767,7 +2789,7 @@ create_find_dialog (void)
                     (GtkAttachOptions) (0), 0, 0);
   gtk_entry_set_invisible_char (GTK_ENTRY (find_replace_text), 8226);
 
-  label45 = gtk_label_new (_("Search for: "));
+  label45 = gtk_label_new_with_mnemonic (_("_Search for: "));
   gtk_widget_show (label45);
   gtk_table_attach (GTK_TABLE (table1), label45, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
@@ -2777,12 +2799,12 @@ create_find_dialog (void)
   gtk_widget_show (hbox25);
   gtk_box_pack_start (GTK_BOX (vbox12), hbox25, FALSE, FALSE, 0);
 
-  find_ignore_case = gtk_check_button_new_with_mnemonic (_("Ignore case"));
+  find_ignore_case = gtk_check_button_new_with_mnemonic (_("_Ignore case"));
   gtk_widget_show (find_ignore_case);
   gtk_box_pack_start (GTK_BOX (hbox25), find_ignore_case, TRUE, TRUE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (find_ignore_case), TRUE);
 
-  find_wrap = gtk_check_button_new_with_mnemonic (_("Wrap around"));
+  find_wrap = gtk_check_button_new_with_mnemonic (_("_Wrap around"));
   gtk_widget_show (find_wrap);
   gtk_box_pack_start (GTK_BOX (hbox25), find_wrap, TRUE, TRUE, 0);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (find_wrap), TRUE);
@@ -2798,7 +2820,7 @@ create_find_dialog (void)
   gtk_widget_show (dialog_action_area3);
   gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area3), GTK_BUTTONBOX_END);
 
-  find_replace_all = gtk_button_new_with_mnemonic (_("Replace all"));
+  find_replace_all = gtk_button_new_with_mnemonic (_("Replace _all"));
   gtk_widget_show (find_replace_all);
   gtk_dialog_add_action_widget (GTK_DIALOG (find_dialog), find_replace_all, 0);
   gtk_widget_set_sensitive (find_replace_all, FALSE);
@@ -2824,7 +2846,7 @@ create_find_dialog (void)
   gtk_widget_show (image109);
   gtk_box_pack_start (GTK_BOX (hbox26), image109, FALSE, FALSE, 0);
 
-  label82 = gtk_label_new_with_mnemonic (_("Replace"));
+  label82 = gtk_label_new_with_mnemonic (_("_Replace"));
   gtk_widget_show (label82);
   gtk_box_pack_start (GTK_BOX (hbox26), label82, FALSE, FALSE, 0);
 
@@ -2847,7 +2869,7 @@ create_find_dialog (void)
   gtk_widget_show (image100);
   gtk_box_pack_start (GTK_BOX (hbox22), image100, FALSE, FALSE, 0);
 
-  label80 = gtk_label_new_with_mnemonic (_("Previous"));
+  label80 = gtk_label_new_with_mnemonic (_("_Previous"));
   gtk_widget_show (label80);
   gtk_box_pack_start (GTK_BOX (hbox22), label80, FALSE, FALSE, 0);
 
@@ -2870,7 +2892,7 @@ create_find_dialog (void)
   gtk_widget_show (image101);
   gtk_box_pack_start (GTK_BOX (hbox23), image101, FALSE, FALSE, 0);
 
-  label81 = gtk_label_new_with_mnemonic (_("Next"));
+  label81 = gtk_label_new_with_mnemonic (_("_Next"));
   gtk_widget_show (label81);
   gtk_box_pack_start (GTK_BOX (hbox23), label81, FALSE, FALSE, 0);
 
@@ -2889,6 +2911,9 @@ create_find_dialog (void)
   g_signal_connect ((gpointer) find_close, "clicked",
                     G_CALLBACK (on_find_close_clicked),
                     NULL);
+
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label46), find_replace_text);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label45), find_text);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (find_dialog, find_dialog, "find_dialog");
@@ -3006,6 +3031,25 @@ static GnomeUIInfo xedit_menu_uiinfo[] =
   GNOMEUIINFO_END
 };
 
+static GnomeUIInfo xformat_menu_uiinfo[] =
+{
+  {
+    GNOME_APP_UI_ITEM, N_("Shift Selection _Right"),
+    NULL,
+    (gpointer) on_xshift_selection_right_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_bracketright, (GdkModifierType) GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM, N_("Shift Selection _Left"),
+    NULL,
+    (gpointer) on_xshift_selection_left_activate, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    GDK_bracketleft, (GdkModifierType) GDK_CONTROL_MASK, NULL
+  },
+  GNOMEUIINFO_END
+};
+
 static GnomeUIInfo xwindows_menu_uiinfo[] =
 {
   {
@@ -3023,6 +3067,13 @@ static GnomeUIInfo menubar2_uiinfo[] =
 {
   GNOMEUIINFO_MENU_FILE_TREE (xfile_menu_uiinfo),
   GNOMEUIINFO_MENU_EDIT_TREE (xedit_menu_uiinfo),
+  {
+    GNOME_APP_UI_SUBTREE, N_("_Format"),
+    NULL,
+    xformat_menu_uiinfo, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    0, (GdkModifierType) 0, NULL
+  },
   GNOMEUIINFO_MENU_WINDOWS_TREE (xwindows_menu_uiinfo),
   GNOMEUIINFO_END
 };
@@ -3109,7 +3160,10 @@ create_ext_window (void)
   GLADE_HOOKUP_OBJECT (ext_window, xspelling_menu_uiinfo[1].widget, "xcheck_spelling");
   GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[10].widget, "separator24");
   GLADE_HOOKUP_OBJECT (ext_window, xedit_menu_uiinfo[11].widget, "xpreferences");
-  GLADE_HOOKUP_OBJECT (ext_window, menubar2_uiinfo[2].widget, "xwindows");
+  GLADE_HOOKUP_OBJECT (ext_window, menubar2_uiinfo[2].widget, "xformat");
+  GLADE_HOOKUP_OBJECT (ext_window, xformat_menu_uiinfo[0].widget, "xshift_selection_right1");
+  GLADE_HOOKUP_OBJECT (ext_window, xformat_menu_uiinfo[1].widget, "xshift_selection_left");
+  GLADE_HOOKUP_OBJECT (ext_window, menubar2_uiinfo[3].widget, "xwindows");
   GLADE_HOOKUP_OBJECT (ext_window, xwindows_menu_uiinfo[0].widget, "xshow_inspectors");
   GLADE_HOOKUP_OBJECT (ext_window, xwindows_menu_uiinfo[1].widget, "separator22");
   GLADE_HOOKUP_OBJECT (ext_window, scrolledwindow34, "scrolledwindow34");
@@ -3460,10 +3514,12 @@ create_new_dialog (void)
                     G_CALLBACK (on_new_druid_inform6_page_finish),
                     NULL);
 
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label7), new_directory);
   gtk_label_set_mnemonic_widget (GTK_LABEL (label5), new_name);
   gtk_label_set_mnemonic_widget (GTK_LABEL (label6), new_author);
-  gtk_label_set_mnemonic_widget (GTK_LABEL (label52), new_name);
-  gtk_label_set_mnemonic_widget (GTK_LABEL (label53), new_author);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label51), new_ext_directory);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label52), new_ext_name);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label53), new_ext_author);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (new_dialog, new_dialog, "new_dialog");
@@ -3672,19 +3728,19 @@ create_prefs_dialog (void)
   gtk_widget_show (table2);
   gtk_box_pack_start (GTK_BOX (vbox20), table2, FALSE, TRUE, 0);
 
-  label61 = gtk_label_new (_("Font styling: "));
+  label61 = gtk_label_new_with_mnemonic (_("Font st_yling: "));
   gtk_widget_show (label61);
   gtk_table_attach (GTK_TABLE (table2), label61, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  label62 = gtk_label_new (_("Font size: "));
+  label62 = gtk_label_new_with_mnemonic (_("Font si_ze: "));
   gtk_widget_show (label62);
   gtk_table_attach (GTK_TABLE (table2), label62, 0, 1, 2, 3,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  label59 = gtk_label_new (_("Font set: "));
+  label59 = gtk_label_new_with_mnemonic (_("Font _set: "));
   gtk_widget_show (label59);
   gtk_table_attach (GTK_TABLE (table2), label59, 0, 1, 3, 4,
                     (GtkAttachOptions) (GTK_FILL),
@@ -3728,7 +3784,7 @@ create_prefs_dialog (void)
   gtk_font_button_set_show_size (GTK_FONT_BUTTON (prefs_custom_font), FALSE);
   gtk_font_button_set_use_font (GTK_FONT_BUTTON (prefs_custom_font), TRUE);
 
-  label60 = gtk_label_new (_("Custom font: "));
+  label60 = gtk_label_new_with_mnemonic (_("Custom _font: "));
   gtk_widget_show (label60);
   gtk_table_attach (GTK_TABLE (table2), label60, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
@@ -3757,7 +3813,7 @@ create_prefs_dialog (void)
   gtk_widget_show (table3);
   gtk_box_pack_start (GTK_BOX (vbox21), table3, FALSE, TRUE, 0);
 
-  label65b = gtk_label_new (_("Color set: "));
+  label65b = gtk_label_new_with_mnemonic (_("_Color set: "));
   gtk_widget_show (label65b);
   gtk_table_attach (GTK_TABLE (table3), label65b, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
@@ -3772,7 +3828,7 @@ create_prefs_dialog (void)
   gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_color_set), _("Standard"));
   gtk_combo_box_append_text (GTK_COMBO_BOX (prefs_color_set), _("Psychedelic"));
 
-  label64 = gtk_label_new (_("Change colors: "));
+  label64 = gtk_label_new_with_mnemonic (_("Chan_ge colors: "));
   gtk_widget_show (label64);
   gtk_table_attach (GTK_TABLE (table3), label64, 0, 1, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
@@ -3820,7 +3876,7 @@ create_prefs_dialog (void)
   GTK_WIDGET_UNSET_FLAGS (tab_example, GTK_CAN_DEFAULT);
   gtk_tooltips_set_tip (tooltips, tab_example, _("This shows a preview of the tab width setting you have chosen above"), NULL);
 
-  label79 = gtk_label_new (_("<b>Tab width</b>"));
+  label79 = gtk_label_new_with_mnemonic (_("<b>Tab _width</b>"));
   gtk_widget_show (label79);
   gtk_frame_set_label_widget (GTK_FRAME (frame12), label79);
   gtk_label_set_use_markup (GTK_LABEL (label79), TRUE);
@@ -3869,26 +3925,26 @@ create_prefs_dialog (void)
   gtk_widget_show (vbox31);
   gtk_container_add (GTK_CONTAINER (alignment18), vbox31);
 
-  prefs_notes_toggle = gtk_check_button_new_with_mnemonic (_("Notes"));
+  prefs_notes_toggle = gtk_check_button_new_with_mnemonic (_("_Notes"));
   gtk_widget_show (prefs_notes_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_notes_toggle, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, prefs_notes_toggle, _("The notes inspector provides a text editor that you can use to store notes about the game you are writing"), NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_notes_toggle), TRUE);
 
-  prefs_headings_toggle = gtk_check_button_new_with_mnemonic (_("Headings"));
+  prefs_headings_toggle = gtk_check_button_new_with_mnemonic (_("_Headings"));
   gtk_widget_show (prefs_headings_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_headings_toggle, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, prefs_headings_toggle, _("The headings inspector shows a table of contents of the current story, and allows you to jump quickly to each section"), NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_headings_toggle), TRUE);
 
-  prefs_skein_toggle = gtk_check_button_new_with_mnemonic (_("Skein"));
+  prefs_skein_toggle = gtk_check_button_new_with_mnemonic (_("S_kein"));
   gtk_widget_show (prefs_skein_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_skein_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_skein_toggle, FALSE);
   gtk_tooltips_set_tip (tooltips, prefs_skein_toggle, _("The skein inspector displays the story's current skein"), NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_skein_toggle), TRUE);
 
-  prefs_search_toggle = gtk_check_button_new_with_mnemonic (_("Search"));
+  prefs_search_toggle = gtk_check_button_new_with_mnemonic (_("_Search"));
   gtk_widget_show (prefs_search_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_search_toggle, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, prefs_search_toggle, _("The search inspector provides a small search dialog."), NULL);
@@ -3912,18 +3968,18 @@ create_prefs_dialog (void)
   gtk_widget_show (vbox32);
   gtk_container_add (GTK_CONTAINER (alignment19), vbox32);
 
-  prefs_project_files_toggle = gtk_check_button_new_with_mnemonic (_("Project files"));
+  prefs_project_files_toggle = gtk_check_button_new_with_mnemonic (_("_Project files"));
   gtk_widget_show (prefs_project_files_toggle);
   gtk_box_pack_start (GTK_BOX (vbox32), prefs_project_files_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_project_files_toggle, FALSE);
   gtk_tooltips_set_tip (tooltips, prefs_project_files_toggle, _("The project files inspector shows a list of the available files in the current project, and allows you to switch between them"), NULL);
 
-  prefs_watchpoints_toggle = gtk_check_button_new_with_mnemonic (_("Watchpoints"));
+  prefs_watchpoints_toggle = gtk_check_button_new_with_mnemonic (_("_Watchpoints"));
   gtk_widget_show (prefs_watchpoints_toggle);
   gtk_box_pack_start (GTK_BOX (vbox32), prefs_watchpoints_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_watchpoints_toggle, FALSE);
 
-  prefs_breakpoints_toggle = gtk_check_button_new_with_mnemonic (_("Breakpoints"));
+  prefs_breakpoints_toggle = gtk_check_button_new_with_mnemonic (_("_Breakpoints"));
   gtk_widget_show (prefs_breakpoints_toggle);
   gtk_box_pack_start (GTK_BOX (vbox32), prefs_breakpoints_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_breakpoints_toggle, FALSE);
@@ -4056,23 +4112,23 @@ create_prefs_dialog (void)
   gtk_widget_show (vbox26);
   gtk_container_add (GTK_CONTAINER (prefs_notebook), vbox26);
 
-  prefs_enable_highlighting_toggle = gtk_check_button_new_with_mnemonic (_("Enable syntax highlighting"));
+  prefs_enable_highlighting_toggle = gtk_check_button_new_with_mnemonic (_("_Enable syntax highlighting"));
   gtk_widget_show (prefs_enable_highlighting_toggle);
   gtk_box_pack_start (GTK_BOX (vbox26), prefs_enable_highlighting_toggle, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, prefs_enable_highlighting_toggle, _("Syntax highlighting will automatically color and style your source code to indicate what different parts do. If you have a slow computer, you may see a performance benefit by turning this off."), NULL);
 
-  prefs_indent_toggle = gtk_check_button_new_with_mnemonic (_("Indent wrapped lines"));
+  prefs_indent_toggle = gtk_check_button_new_with_mnemonic (_("_Indent wrapped lines"));
   gtk_widget_show (prefs_indent_toggle);
   gtk_box_pack_start (GTK_BOX (vbox26), prefs_indent_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_indent_toggle, FALSE);
   gtk_tooltips_set_tip (tooltips, prefs_indent_toggle, _("If this option is checked, Inform will indent wrapped lines by half a tab-stop. This makes it easier to see where a line-break happened because of a long line."), NULL);
 
-  prefs_auto_indent_toggle = gtk_check_button_new_with_mnemonic (_("Auto-indent after newline"));
+  prefs_auto_indent_toggle = gtk_check_button_new_with_mnemonic (_("_Auto-indent after newline"));
   gtk_widget_show (prefs_auto_indent_toggle);
   gtk_box_pack_start (GTK_BOX (vbox26), prefs_auto_indent_toggle, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, prefs_auto_indent_toggle, _("If this option is selected, Inform will track the number of tabs at the beginning of the last line and automatically indent the next line accordingly when you insert a new line by pressing return."), NULL);
 
-  prefs_follow_symbols_toggle = gtk_check_button_new_with_mnemonic (_("'Intelligently' follow symbols in source file"));
+  prefs_follow_symbols_toggle = gtk_check_button_new_with_mnemonic (_("'Intelligently' _follow symbols in source file"));
   gtk_widget_show (prefs_follow_symbols_toggle);
   gtk_box_pack_start (GTK_BOX (vbox26), prefs_follow_symbols_toggle, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, prefs_follow_symbols_toggle, _("Inform can keep track of important items in your source files as you type. Enabling this option will allow it to automatically track sections in Natural Inform files."), NULL);
@@ -4086,12 +4142,12 @@ create_prefs_dialog (void)
   gtk_widget_show (vbox27);
   gtk_container_add (GTK_CONTAINER (alignment14), vbox27);
 
-  prefs_intelligent_inspector_toggle = gtk_check_button_new_with_mnemonic (_("Use intelligent headings inspector"));
+  prefs_intelligent_inspector_toggle = gtk_check_button_new_with_mnemonic (_("_Use intelligent headings inspector"));
   gtk_widget_show (prefs_intelligent_inspector_toggle);
   gtk_box_pack_start (GTK_BOX (vbox27), prefs_intelligent_inspector_toggle, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, prefs_intelligent_inspector_toggle, _("If this option is checked, the headings inspector will show a real-time display of the sections in your source file. If it is unchecked, it will display the last index calculated by the Natural Inform compiler, i.e. the state of the index at the last time you compiled or ran the story."), NULL);
 
-  prefs_auto_number_toggle = gtk_check_button_new_with_mnemonic (_("Auto-number sections"));
+  prefs_auto_number_toggle = gtk_check_button_new_with_mnemonic (_("Auto-_number sections"));
   gtk_widget_show (prefs_auto_number_toggle);
   gtk_box_pack_start (GTK_BOX (vbox27), prefs_auto_number_toggle, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, prefs_auto_number_toggle, _("If you check this option, Inform will automatically renumber sections when you insert a new one. It will also automatically insert a section number as you type: if you type \"Part \", Inform will insert \"2 - \" and renumber the previous Part 2 to Part 3 and so on."), NULL);
@@ -4100,7 +4156,7 @@ create_prefs_dialog (void)
   gtk_widget_show (hseparator3);
   gtk_box_pack_start (GTK_BOX (vbox26), hseparator3, FALSE, FALSE, 5);
 
-  label73 = gtk_label_new (_("Preferred author's name for Inform 7 projects"));
+  label73 = gtk_label_new_with_mnemonic (_("_Preferred author's name for Inform 7 projects"));
   gtk_widget_show (label73);
   gtk_box_pack_start (GTK_BOX (vbox26), label73, FALSE, FALSE, 0);
   gtk_misc_set_alignment (GTK_MISC (label73), 0, 0.5);
@@ -4133,7 +4189,7 @@ create_prefs_dialog (void)
   gtk_widget_show (vbox29);
   gtk_container_add (GTK_CONTAINER (alignment15), vbox29);
 
-  prefs_clean_build_toggle = gtk_check_button_new_with_mnemonic (_("Clean build files from projects before closing"));
+  prefs_clean_build_toggle = gtk_check_button_new_with_mnemonic (_("_Clean build files from projects before closing"));
   gtk_widget_show (prefs_clean_build_toggle);
   gtk_box_pack_start (GTK_BOX (vbox29), prefs_clean_build_toggle, FALSE, FALSE, 0);
   gtk_tooltips_set_tip (tooltips, prefs_clean_build_toggle, _("Build files are files that are generated while turning your story into a game file. Selecting this option will ensure that they are deleted when you close or save a project. These files can grow quite large (many times the size of your source code), so deleting them is a good idea if you are planning to send a project to someone else."), NULL);
@@ -4143,7 +4199,7 @@ create_prefs_dialog (void)
   gtk_box_pack_start (GTK_BOX (vbox29), alignment16, FALSE, TRUE, 0);
   gtk_alignment_set_padding (GTK_ALIGNMENT (alignment16), 0, 0, 20, 0);
 
-  prefs_clean_index_toggle = gtk_check_button_new_with_mnemonic (_("Also clean out index files"));
+  prefs_clean_index_toggle = gtk_check_button_new_with_mnemonic (_("_Also clean out index files"));
   gtk_widget_show (prefs_clean_index_toggle);
   gtk_container_add (GTK_CONTAINER (alignment16), prefs_clean_index_toggle);
   gtk_tooltips_set_tip (tooltips, prefs_clean_index_toggle, _("Selecting this option will cause Inform to additionally clean out the project's various index files. These are generated by the Inform 7 compiler and can be safely deleted, though they may be useful the next time you open the project."), NULL);
@@ -4167,11 +4223,11 @@ create_prefs_dialog (void)
   gtk_widget_show (vbox30);
   gtk_container_add (GTK_CONTAINER (alignment17), vbox30);
 
-  prefs_show_log_toggle = gtk_check_button_new_with_mnemonic (_("Show debugging log and Inform 6 intermediate\ncode"));
+  prefs_show_log_toggle = gtk_check_button_new_with_mnemonic (_("_Show debugging log and Inform 6 intermediate\ncode"));
   gtk_widget_show (prefs_show_log_toggle);
   gtk_box_pack_start (GTK_BOX (vbox30), prefs_show_log_toggle, FALSE, FALSE, 0);
 
-  prefs_rebuild_compiler_toggle = gtk_check_button_new_with_mnemonic (_("Rebuild I7 compiler as needed (only for\nmaintainers of Inform)"));
+  prefs_rebuild_compiler_toggle = gtk_check_button_new_with_mnemonic (_("_Rebuild I7 compiler as needed (only for\nmaintainers of Inform)"));
   gtk_widget_show (prefs_rebuild_compiler_toggle);
   gtk_box_pack_start (GTK_BOX (vbox30), prefs_rebuild_compiler_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_rebuild_compiler_toggle, FALSE);
@@ -4301,6 +4357,15 @@ create_prefs_dialog (void)
   g_signal_connect ((gpointer) prefs_close, "clicked",
                     G_CALLBACK (on_prefs_close_clicked),
                     NULL);
+
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label61), prefs_font_styling);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label62), prefs_font_size);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label59), prefs_font_set);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label60), prefs_custom_font);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label65b), prefs_color_set);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label64), prefs_change_colors);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label79), tab_ruler);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label73), prefs_author);
 
   /* Store pointers to all widgets, for use by lookup_widget(). */
   GLADE_HOOKUP_OBJECT_NO_REF (prefs_dialog, prefs_dialog, "prefs_dialog");
@@ -4735,5 +4800,247 @@ create_search_window (void)
   GLADE_HOOKUP_OBJECT_NO_REF (search_window, tooltips, "tooltips");
 
   return search_window;
+}
+
+GtkWidget*
+create_skein_spacing_dialog (void)
+{
+  GtkWidget *skein_spacing_dialog;
+  GdkPixbuf *skein_spacing_dialog_icon_pixbuf;
+  GtkWidget *dialog_vbox5;
+  GtkWidget *vbox51;
+  GtkWidget *label94;
+  GtkWidget *table4;
+  GtkWidget *skein_vertical_spacing;
+  GtkWidget *skein_horizontal_spacing;
+  GtkWidget *label95;
+  GtkWidget *label96;
+  GtkWidget *dialog_action_area5;
+  GtkWidget *skein_spacing_use_defaults;
+  GtkWidget *alignment24;
+  GtkWidget *hbox30;
+  GtkWidget *image275;
+  GtkWidget *label93;
+  GtkWidget *skein_spacing_cancel;
+  GtkWidget *skein_spacing_ok;
+
+  skein_spacing_dialog = gtk_dialog_new ();
+  gtk_container_set_border_width (GTK_CONTAINER (skein_spacing_dialog), 3);
+  gtk_window_set_title (GTK_WINDOW (skein_spacing_dialog), _("Skein spacing options"));
+  gtk_window_set_position (GTK_WINDOW (skein_spacing_dialog), GTK_WIN_POS_CENTER);
+  skein_spacing_dialog_icon_pixbuf = create_pixbuf ("gnome-inform7/Inform.png");
+  if (skein_spacing_dialog_icon_pixbuf)
+    {
+      gtk_window_set_icon (GTK_WINDOW (skein_spacing_dialog), skein_spacing_dialog_icon_pixbuf);
+      gdk_pixbuf_unref (skein_spacing_dialog_icon_pixbuf);
+    }
+  gtk_window_set_type_hint (GTK_WINDOW (skein_spacing_dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
+
+  dialog_vbox5 = GTK_DIALOG (skein_spacing_dialog)->vbox;
+  gtk_widget_show (dialog_vbox5);
+
+  vbox51 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox51);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox5), vbox51, TRUE, TRUE, 0);
+
+  label94 = gtk_label_new (_("<b>Edit the spacing for items in the skein</b>"));
+  gtk_widget_show (label94);
+  gtk_box_pack_start (GTK_BOX (vbox51), label94, FALSE, TRUE, 0);
+  gtk_label_set_use_markup (GTK_LABEL (label94), TRUE);
+  gtk_label_set_justify (GTK_LABEL (label94), GTK_JUSTIFY_CENTER);
+  gtk_label_set_line_wrap (GTK_LABEL (label94), TRUE);
+  gtk_misc_set_padding (GTK_MISC (label94), 0, 5);
+
+  table4 = gtk_table_new (2, 2, FALSE);
+  gtk_widget_show (table4);
+  gtk_box_pack_start (GTK_BOX (vbox51), table4, TRUE, FALSE, 0);
+
+  skein_vertical_spacing = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 200, 5, 0, 0)));
+  gtk_widget_show (skein_vertical_spacing);
+  gtk_table_attach (GTK_TABLE (table4), skein_vertical_spacing, 1, 2, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_scale_set_draw_value (GTK_SCALE (skein_vertical_spacing), FALSE);
+
+  skein_horizontal_spacing = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 100, 5, 0, 0)));
+  gtk_widget_show (skein_horizontal_spacing);
+  gtk_table_attach (GTK_TABLE (table4), skein_horizontal_spacing, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_scale_set_draw_value (GTK_SCALE (skein_horizontal_spacing), FALSE);
+
+  label95 = gtk_label_new_with_mnemonic (_("_Horizontal spacing"));
+  gtk_widget_show (label95);
+  gtk_table_attach (GTK_TABLE (table4), label95, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label95), 0, 1);
+
+  label96 = gtk_label_new_with_mnemonic (_("_Vertical spacing"));
+  gtk_widget_show (label96);
+  gtk_table_attach (GTK_TABLE (table4), label96, 1, 2, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label96), 0, 1);
+
+  dialog_action_area5 = GTK_DIALOG (skein_spacing_dialog)->action_area;
+  gtk_widget_show (dialog_action_area5);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area5), GTK_BUTTONBOX_END);
+
+  skein_spacing_use_defaults = gtk_button_new ();
+  gtk_widget_show (skein_spacing_use_defaults);
+  gtk_dialog_add_action_widget (GTK_DIALOG (skein_spacing_dialog), skein_spacing_use_defaults, GTK_RESPONSE_REJECT);
+  GTK_WIDGET_SET_FLAGS (skein_spacing_use_defaults, GTK_CAN_DEFAULT);
+
+  alignment24 = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_widget_show (alignment24);
+  gtk_container_add (GTK_CONTAINER (skein_spacing_use_defaults), alignment24);
+
+  hbox30 = gtk_hbox_new (FALSE, 2);
+  gtk_widget_show (hbox30);
+  gtk_container_add (GTK_CONTAINER (alignment24), hbox30);
+
+  image275 = gtk_image_new_from_stock ("gtk-revert-to-saved", GTK_ICON_SIZE_BUTTON);
+  gtk_widget_show (image275);
+  gtk_box_pack_start (GTK_BOX (hbox30), image275, FALSE, FALSE, 0);
+
+  label93 = gtk_label_new_with_mnemonic (_("_Use defaults"));
+  gtk_widget_show (label93);
+  gtk_box_pack_start (GTK_BOX (hbox30), label93, FALSE, FALSE, 0);
+
+  skein_spacing_cancel = gtk_button_new_from_stock ("gtk-cancel");
+  gtk_widget_show (skein_spacing_cancel);
+  gtk_dialog_add_action_widget (GTK_DIALOG (skein_spacing_dialog), skein_spacing_cancel, GTK_RESPONSE_CANCEL);
+  GTK_WIDGET_SET_FLAGS (skein_spacing_cancel, GTK_CAN_DEFAULT);
+
+  skein_spacing_ok = gtk_button_new_from_stock ("gtk-ok");
+  gtk_widget_show (skein_spacing_ok);
+  gtk_dialog_add_action_widget (GTK_DIALOG (skein_spacing_dialog), skein_spacing_ok, GTK_RESPONSE_OK);
+  GTK_WIDGET_SET_FLAGS (skein_spacing_ok, GTK_CAN_DEFAULT);
+
+  g_signal_connect ((gpointer) skein_spacing_dialog, "delete_event",
+                    G_CALLBACK (gtk_widget_destroy),
+                    NULL);
+
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label95), skein_horizontal_spacing);
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label96), skein_vertical_spacing);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (skein_spacing_dialog, skein_spacing_dialog, "skein_spacing_dialog");
+  GLADE_HOOKUP_OBJECT_NO_REF (skein_spacing_dialog, dialog_vbox5, "dialog_vbox5");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, vbox51, "vbox51");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, label94, "label94");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, table4, "table4");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, skein_vertical_spacing, "skein_vertical_spacing");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, skein_horizontal_spacing, "skein_horizontal_spacing");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, label95, "label95");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, label96, "label96");
+  GLADE_HOOKUP_OBJECT_NO_REF (skein_spacing_dialog, dialog_action_area5, "dialog_action_area5");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, skein_spacing_use_defaults, "skein_spacing_use_defaults");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, alignment24, "alignment24");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, hbox30, "hbox30");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, image275, "image275");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, label93, "label93");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, skein_spacing_cancel, "skein_spacing_cancel");
+  GLADE_HOOKUP_OBJECT (skein_spacing_dialog, skein_spacing_ok, "skein_spacing_ok");
+
+  return skein_spacing_dialog;
+}
+
+GtkWidget*
+create_skein_trim_dialog (void)
+{
+  GtkWidget *skein_trim_dialog;
+  GdkPixbuf *skein_trim_dialog_icon_pixbuf;
+  GtkWidget *dialog_vbox6;
+  GtkWidget *vbox52;
+  GtkWidget *label97;
+  GtkWidget *hbox31;
+  GtkWidget *label98;
+  GtkWidget *label99;
+  GtkWidget *skein_trim_scale;
+  GtkWidget *dialog_action_area6;
+  GtkWidget *skein_trim_cancel;
+  GtkWidget *skein_trim_ok;
+
+  skein_trim_dialog = gtk_dialog_new ();
+  gtk_container_set_border_width (GTK_CONTAINER (skein_trim_dialog), 3);
+  gtk_window_set_title (GTK_WINDOW (skein_trim_dialog), _("Trim the skein?"));
+  gtk_window_set_position (GTK_WINDOW (skein_trim_dialog), GTK_WIN_POS_CENTER);
+  skein_trim_dialog_icon_pixbuf = create_pixbuf ("gnome-inform7/Inform.png");
+  if (skein_trim_dialog_icon_pixbuf)
+    {
+      gtk_window_set_icon (GTK_WINDOW (skein_trim_dialog), skein_trim_dialog_icon_pixbuf);
+      gdk_pixbuf_unref (skein_trim_dialog_icon_pixbuf);
+    }
+  gtk_window_set_type_hint (GTK_WINDOW (skein_trim_dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
+
+  dialog_vbox6 = GTK_DIALOG (skein_trim_dialog)->vbox;
+  gtk_widget_show (dialog_vbox6);
+
+  vbox52 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox52);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox6), vbox52, TRUE, TRUE, 0);
+
+  label97 = gtk_label_new (_("This will remove nodes from the skein and transcript that have not been visited recently, and which have not been locked. Drag the slider to the right to increase the number of nodes that will be deleted.\n\nThis operation cannot be undone."));
+  gtk_widget_show (label97);
+  gtk_box_pack_start (GTK_BOX (vbox52), label97, FALSE, FALSE, 0);
+  gtk_label_set_line_wrap (GTK_LABEL (label97), TRUE);
+  gtk_misc_set_alignment (GTK_MISC (label97), 0, 0.5);
+
+  hbox31 = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox31);
+  gtk_box_pack_start (GTK_BOX (vbox52), hbox31, TRUE, TRUE, 0);
+
+  label98 = gtk_label_new_with_mnemonic (_("_Trim a little"));
+  gtk_widget_show (label98);
+  gtk_box_pack_start (GTK_BOX (hbox31), label98, TRUE, TRUE, 0);
+  gtk_misc_set_alignment (GTK_MISC (label98), 0, 1);
+
+  label99 = gtk_label_new (_("Trim a lot"));
+  gtk_widget_show (label99);
+  gtk_box_pack_start (GTK_BOX (hbox31), label99, TRUE, TRUE, 0);
+  gtk_label_set_justify (GTK_LABEL (label99), GTK_JUSTIFY_RIGHT);
+  gtk_misc_set_alignment (GTK_MISC (label99), 1, 1);
+
+  skein_trim_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 100, 1, 0, 0)));
+  gtk_widget_show (skein_trim_scale);
+  gtk_box_pack_start (GTK_BOX (vbox52), skein_trim_scale, FALSE, TRUE, 0);
+  gtk_scale_set_draw_value (GTK_SCALE (skein_trim_scale), FALSE);
+
+  dialog_action_area6 = GTK_DIALOG (skein_trim_dialog)->action_area;
+  gtk_widget_show (dialog_action_area6);
+  gtk_button_box_set_layout (GTK_BUTTON_BOX (dialog_action_area6), GTK_BUTTONBOX_END);
+
+  skein_trim_cancel = gtk_button_new_from_stock ("gtk-cancel");
+  gtk_widget_show (skein_trim_cancel);
+  gtk_dialog_add_action_widget (GTK_DIALOG (skein_trim_dialog), skein_trim_cancel, GTK_RESPONSE_CANCEL);
+  GTK_WIDGET_SET_FLAGS (skein_trim_cancel, GTK_CAN_DEFAULT);
+
+  skein_trim_ok = gtk_button_new_from_stock ("gtk-ok");
+  gtk_widget_show (skein_trim_ok);
+  gtk_dialog_add_action_widget (GTK_DIALOG (skein_trim_dialog), skein_trim_ok, GTK_RESPONSE_OK);
+  GTK_WIDGET_SET_FLAGS (skein_trim_ok, GTK_CAN_DEFAULT);
+
+  g_signal_connect ((gpointer) skein_trim_dialog, "delete_event",
+                    G_CALLBACK (gtk_widget_destroy),
+                    NULL);
+
+  gtk_label_set_mnemonic_widget (GTK_LABEL (label98), skein_trim_scale);
+
+  /* Store pointers to all widgets, for use by lookup_widget(). */
+  GLADE_HOOKUP_OBJECT_NO_REF (skein_trim_dialog, skein_trim_dialog, "skein_trim_dialog");
+  GLADE_HOOKUP_OBJECT_NO_REF (skein_trim_dialog, dialog_vbox6, "dialog_vbox6");
+  GLADE_HOOKUP_OBJECT (skein_trim_dialog, vbox52, "vbox52");
+  GLADE_HOOKUP_OBJECT (skein_trim_dialog, label97, "label97");
+  GLADE_HOOKUP_OBJECT (skein_trim_dialog, hbox31, "hbox31");
+  GLADE_HOOKUP_OBJECT (skein_trim_dialog, label98, "label98");
+  GLADE_HOOKUP_OBJECT (skein_trim_dialog, label99, "label99");
+  GLADE_HOOKUP_OBJECT (skein_trim_dialog, skein_trim_scale, "skein_trim_scale");
+  GLADE_HOOKUP_OBJECT_NO_REF (skein_trim_dialog, dialog_action_area6, "dialog_action_area6");
+  GLADE_HOOKUP_OBJECT (skein_trim_dialog, skein_trim_cancel, "skein_trim_cancel");
+  GLADE_HOOKUP_OBJECT (skein_trim_dialog, skein_trim_ok, "skein_trim_ok");
+
+  return skein_trim_dialog;
 }
 
