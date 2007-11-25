@@ -39,9 +39,15 @@ static glui32 protect_pos = 0;
 static glui32 protect_len = 0;
 
 static glui32 write_memstate(dest_t *dest);
+static glui32 write_heapstate(dest_t *dest, int portable);
 static glui32 write_stackstate(dest_t *dest, int portable);
 static glui32 read_memstate(dest_t *dest, glui32 chunklen);
+static glui32 read_heapstate(dest_t *dest, glui32 chunklen, int portable,
+  glui32 *sumlen, glui32 **summary);
 static glui32 read_stackstate(dest_t *dest, glui32 chunklen, int portable);
+static glui32 write_heapstate_sub(glui32 sumlen, glui32 *sumarray,
+  dest_t *dest, int portable);
+static int sort_heap_summary(void *p1, void *p2);
 static int write_long(dest_t *dest, glui32 val);
 static int read_long(dest_t *dest, glui32 *val);
 static int write_byte(dest_t *dest, unsigned char val);
@@ -70,12 +76,13 @@ glui32 perform_saveundo()
 {
   dest_t dest;
   glui32 res;
-  glui32 memstart, memlen, stackstart, stacklen;
+  glui32 memstart, memlen, heapstart, heaplen, stackstart, stacklen;
 
   /* The format for undo-saves is simpler than for saves on disk. We
-     just have a memory chunk followed by a stack chunk, and we skip
-     the IFF chunk headers (although the size fields are still there.)
-     We also don't bother with IFF's 16-bit alignment. */
+     just have a memory chunk, a heap chunk, and a stack chunk, in
+     that order. We skip the IFF chunk headers (although the size
+     fields are still there.) We also don't bother with IFF's 16-bit
+     alignment. */
 
   if (undo_chain_size == 0)
     return 1;
@@ -99,10 +106,19 @@ glui32 perform_saveundo()
     res = write_long(&dest, 0); /* space for chunk length */
   }
   if (res == 0) {
+    heapstart = dest.pos;
+    res = write_heapstate(&dest, FALSE);
+    heaplen = dest.pos - heapstart;
+  }
+  if (res == 0) {
+    res = write_long(&dest, 0); /* space for chunk length */
+  }
+  if (res == 0) {
     stackstart = dest.pos;
     res = write_stackstate(&dest, FALSE);
     stacklen = dest.pos - stackstart;
   }
+
   if (res == 0) {
     /* Trim it down to the perfect size. */
     dest.ptr = glulx_realloc(dest.ptr, dest.pos);
@@ -114,6 +130,12 @@ glui32 perform_saveundo()
   }
   if (res == 0) {
     res = write_long(&dest, memlen);
+  }
+  if (res == 0) {
+    res = reposition_write(&dest, heapstart-4);
+  }
+  if (res == 0) {
+    res = write_long(&dest, heaplen);
   }
   if (res == 0) {
     res = reposition_write(&dest, stackstart-4);
@@ -153,6 +175,8 @@ glui32 perform_restoreundo()
 {
   dest_t dest;
   glui32 res, val;
+  glui32 heapsumlen = 0;
+  glui32 *heapsumarr = NULL;
 
   if (undo_chain_size == 0 || undo_chain_num == 0)
     return 1;
@@ -174,10 +198,21 @@ glui32 perform_restoreundo()
     res = read_long(&dest, &val);
   }
   if (res == 0) {
+    res = read_heapstate(&dest, val, FALSE, &heapsumlen, &heapsumarr);
+  }
+  if (res == 0) {
+    res = read_long(&dest, &val);
+  }
+  if (res == 0) {
     res = read_stackstate(&dest, val, FALSE);
   }
-  /* ### really, many of the failure modes of those two calls ought to
+  /* ### really, many of the failure modes of those calls ought to
      cause fatal errors. The stack or main memory may be damaged now. */
+
+  if (res == 0) {
+    if (heapsumarr)
+      res = heap_apply_summary(heapsumlen, heapsumarr);
+  }
 
   if (res == 0) {
     /* It worked. */
@@ -205,7 +240,8 @@ glui32 perform_save(strid_t str)
   dest_t dest;
   int ix;
   glui32 res, lx, val;
-  glui32 memstart, memlen, stackstart, stacklen, filestart, filelen;
+  glui32 memstart, memlen, stackstart, stacklen, heapstart, heaplen;
+  glui32 filestart, filelen;
 
   stream_get_iosys(&val, &lx);
   if (val != 2) {
@@ -266,6 +302,20 @@ glui32 perform_save(strid_t str)
     res = write_byte(&dest, 0);
   }
 
+  /* Heap chunk. */
+  if (res == 0) {
+    res = write_long(&dest, IFFID('M', 'A', 'l', 'l'));
+  }
+  if (res == 0) {
+    res = write_long(&dest, 0); /* space for chunk length */
+  }
+  if (res == 0) {
+    heapstart = dest.pos;
+    res = write_heapstate(&dest, TRUE);
+    heaplen = dest.pos - heapstart;
+  }
+  /* Always even, so no padding necessary. */
+
   /* Stack chunk. */
   if (res == 0) {
     res = write_long(&dest, IFFID('S', 't', 'k', 's'));
@@ -290,6 +340,12 @@ glui32 perform_save(strid_t str)
   }
   if (res == 0) {
     res = write_long(&dest, memlen);
+  }
+  if (res == 0) {
+    res = reposition_write(&dest, heapstart-4);
+  }
+  if (res == 0) {
+    res = write_long(&dest, heaplen);
   }
   if (res == 0) {
     res = reposition_write(&dest, stackstart-4);
@@ -321,6 +377,8 @@ glui32 perform_restore(strid_t str)
   int ix;
   glui32 lx, res, val;
   glui32 filestart, filelen;
+  glui32 heapsumlen = 0;
+  glui32 *heapsumarr = NULL;
 
   stream_get_iosys(&val, &lx);
   if (val != 2) {
@@ -388,6 +446,9 @@ glui32 perform_restore(strid_t str)
     else if (chunktype == IFFID('C', 'M', 'e', 'm')) {
       res = read_memstate(&dest, chunklen);
     }
+    else if (chunktype == IFFID('M', 'A', 'l', 'l')) {
+      res = read_heapstate(&dest, chunklen, TRUE, &heapsumlen, &heapsumarr);
+    }
     else if (chunktype == IFFID('S', 't', 'k', 's')) {
       res = read_stackstate(&dest, chunklen, TRUE);
     }
@@ -407,6 +468,16 @@ glui32 perform_restore(strid_t str)
       if (res == 0) {
         res = read_byte(&dest, &dummy);
       }
+    }
+  }
+
+  if (res == 0) {
+    if (heapsumarr) {
+      /* The summary might have come from any interpreter, so it could
+         be out of order. We'll sort it. */
+      glulx_sort(heapsumarr+2, (heapsumlen-2)/2, 2*sizeof(glui32),
+        &sort_heap_summary);
+      res = heap_apply_summary(heapsumlen, heapsumarr);
     }
   }
 
@@ -577,11 +648,13 @@ static glui32 read_memstate(dest_t *dest, glui32 chunklen)
   int runlen;
   unsigned char ch, ch2;
 
+  heap_clear();
+
   res = read_long(dest, &newlen);
   if (res)
     return res;
 
-  res = change_memsize(newlen);
+  res = change_memsize(newlen, FALSE);
   if (res)
     return res;
 
@@ -626,6 +699,107 @@ static glui32 read_memstate(dest_t *dest, glui32 chunklen)
 
     MemW1(pos, ch);
   }
+
+  return 0;
+}
+
+static glui32 write_heapstate(dest_t *dest, int portable)
+{
+  glui32 res;
+  glui32 sumlen;
+  glui32 *sumarray;
+
+  res = heap_get_summary(&sumlen, &sumarray);
+  if (res)
+    return res;
+
+  if (!sumarray)
+    return 0; /* no heap */
+
+  res = write_heapstate_sub(sumlen, sumarray, dest, portable);
+
+  glulx_free(sumarray);
+  return res;
+}
+
+static glui32 write_heapstate_sub(glui32 sumlen, glui32 *sumarray,
+  dest_t *dest, int portable) 
+{
+  glui32 res, lx;
+
+  /* If we're storing for the purpose of undo, we don't need to do any
+     byte-swapping, because the result will only be used by this session. */
+  if (!portable) {
+    res = write_buffer(dest, (void *)sumarray, sumlen*sizeof(glui32));
+    if (res)
+      return res;
+    return 0;
+  }
+
+  for (lx=0; lx<sumlen; lx++) {
+    res = write_long(dest, sumarray[lx]);
+    if (res)
+      return res;
+  }
+
+  return 0;
+}
+
+static int sort_heap_summary(void *p1, void *p2)
+{
+  glui32 *v1 = (glui32 *)p1;
+  glui32 *v2 = (glui32 *)p2;
+
+  if (v1 < v2)
+    return -1;
+  if (v1 > v2)
+    return 1;
+  return 0;
+}
+
+static glui32 read_heapstate(dest_t *dest, glui32 chunklen, int portable,
+  glui32 *sumlen, glui32 **summary)
+{
+  glui32 res, count, lx;
+  glui32 *arr;
+
+  *sumlen = 0;
+  *summary = NULL;
+
+  if (chunklen == 0)
+    return 0; /* no heap */
+
+  if (!portable) {
+    count = chunklen / sizeof(glui32);
+
+    arr = glulx_malloc(chunklen);
+    if (!arr)
+      return 1;
+
+    res = read_buffer(dest, (void *)arr, chunklen);
+    if (res)
+      return res;
+
+    *sumlen = count;
+    *summary = arr;
+
+    return 0;
+  }
+
+  count = chunklen / 4;
+
+  arr = glulx_malloc(count * sizeof(glui32));
+  if (!arr)
+    return 1;
+  
+  for (lx=0; lx<count; lx++) {
+    res = read_long(dest, arr+lx);
+    if (res)
+      return res;
+  }
+
+  *sumlen = count;
+  *summary = arr;
 
   return 0;
 }

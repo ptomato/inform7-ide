@@ -134,6 +134,7 @@
 #define glk_gc 63
 #define getstringtbl_gc 64
 #define setstringtbl_gc 65
+#define streamunichar_gc 66
 
 typedef struct opcode_struct
 {  
@@ -144,7 +145,7 @@ typedef struct opcode_struct
   int no;           /* Number of operands */
 } opcode_t;
 
-#define St	1     /* Store (last operand is store-mode) */
+#define St      1     /* Store (last operand is store-mode) */
 #define Br      2     /* Branch (last operand is a label) */
 #define Rf      4     /* "Return flag": execution never continues after this
                          opcode (e.g., is a return or unconditional jump) */
@@ -152,72 +153,73 @@ typedef struct opcode_struct
 
 static opcode_t opcodes_table[] = 
 {
-  { (uchar *) "nop",		0x00,  0, 0, 0 },
-  { (uchar *) "add",		0x10, St, 0, 3 },
-  { (uchar *) "sub",		0x11, St, 0, 3 },
-  { (uchar *) "mul",		0x12, St, 0, 3 },
-  { (uchar *) "div",		0x13, St, 0, 3 },
-  { (uchar *) "mod",		0x14, St, 0, 3 },
-  { (uchar *) "neg",		0x15, St, 0, 2 },
-  { (uchar *) "bitand",		0x18, St, 0, 3 },
-  { (uchar *) "bitor",		0x19, St, 0, 3 },
-  { (uchar *) "bitxor",		0x1A, St, 0, 3 },
-  { (uchar *) "bitnot",		0x1B, St, 0, 2 },
-  { (uchar *) "shiftl", 	0x1C, St, 0, 3 },
-  { (uchar *) "sshiftr", 	0x1D, St, 0, 3 },
-  { (uchar *) "ushiftr", 	0x1E, St, 0, 3 },
-  { (uchar *) "jump",		0x20, Br|Rf, 0, 1 },
-  { (uchar *) "jz",		0x22, Br, 0, 2 },
-  { (uchar *) "jnz",		0x23, Br, 0, 2 },
-  { (uchar *) "jeq",		0x24, Br, 0, 3 },
-  { (uchar *) "jne",		0x25, Br, 0, 3 },
-  { (uchar *) "jlt",		0x26, Br, 0, 3 },
-  { (uchar *) "jge",		0x27, Br, 0, 3 },
-  { (uchar *) "jgt",		0x28, Br, 0, 3 },
-  { (uchar *) "jle",		0x29, Br, 0, 3 },
-  { (uchar *) "call",		0x30, St, 0, 3 },
-  { (uchar *) "return",		0x31, Rf, 0, 1 },
-  { (uchar *) "catch", 		0x32, Br|St, 0, 2 },
-  { (uchar *) "throw", 		0x33, Rf, 0, 2 },
-  { (uchar *) "tailcall",	0x34, Rf, 0, 2 },
-  { (uchar *) "copy",		0x40, St, 0, 2 },
-  { (uchar *) "copys",		0x41, St, 0, 2 },
-  { (uchar *) "copyb",		0x42, St, 0, 2 },
-  { (uchar *) "sexs",		0x44, St, 0, 2 },
-  { (uchar *) "sexb",		0x45, St, 0, 2 },
-  { (uchar *) "aload",		0x48, St, 0, 3 },
-  { (uchar *) "aloads",		0x49, St, 0, 3 },
-  { (uchar *) "aloadb",		0x4A, St, 0, 3 },
-  { (uchar *) "aloadbit",	0x4B, St, 0, 3 },
-  { (uchar *) "astore",		0x4C,  0, 0, 3 },
-  { (uchar *) "astores",	0x4D,  0, 0, 3 },
-  { (uchar *) "astoreb",	0x4E,  0, 0, 3 },
-  { (uchar *) "astorebit",	0x4F,  0, 0, 3 },
-  { (uchar *) "stkcount", 	0x50, St, 0, 1 },
-  { (uchar *) "stkpeek", 	0x51, St, 0, 2 },
-  { (uchar *) "stkswap", 	0x52,  0, 0, 0 },
-  { (uchar *) "stkroll", 	0x53,  0, 0, 2 },
-  { (uchar *) "stkcopy", 	0x54,  0, 0, 1 },
-  { (uchar *) "streamchar",	0x70,  0, 0, 1 },
-  { (uchar *) "streamnum",	0x71,  0, 0, 1 },
-  { (uchar *) "streamstr",	0x72,  0, 0, 1 },
-  { (uchar *) "gestalt", 	0x0100, St, 0, 3 },
-  { (uchar *) "debugtrap", 	0x0101, 0, 0, 1 },
-  { (uchar *) "getmemsize", 	0x0102, St, 0, 1 },
-  { (uchar *) "setmemsize", 	0x0103, St, 0, 2 },
-  { (uchar *) "random",		0x0110, St, 0, 2 },
-  { (uchar *) "setrandom",	0x0111,  0, 0, 1 },
-  { (uchar *) "quit", 		0x0120,  0, 0, 0 },
-  { (uchar *) "verify", 	0x0121, St, 0, 1 },
-  { (uchar *) "restart", 	0x0122,  0, 0, 0 },
-  { (uchar *) "save", 		0x0123, St, 0, 2 },
-  { (uchar *) "restore", 	0x0124, St, 0, 2 },
-  { (uchar *) "saveundo", 	0x0125, St, 0, 1 },
-  { (uchar *) "restoreundo", 	0x0126, St, 0, 1 },
-  { (uchar *) "protect", 	0x0127,  0, 0, 2 },
-  { (uchar *) "glk", 		0x0130, St, 0, 3 },
-  { (uchar *) "getstringtbl",	0x0140, St, 0, 1 },
-  { (uchar *) "setstringtbl",	0x0141, 0, 0, 1 },
+  { (uchar *) "nop",            0x00,  0, 0, 0 },
+  { (uchar *) "add",            0x10, St, 0, 3 },
+  { (uchar *) "sub",            0x11, St, 0, 3 },
+  { (uchar *) "mul",            0x12, St, 0, 3 },
+  { (uchar *) "div",            0x13, St, 0, 3 },
+  { (uchar *) "mod",            0x14, St, 0, 3 },
+  { (uchar *) "neg",            0x15, St, 0, 2 },
+  { (uchar *) "bitand",         0x18, St, 0, 3 },
+  { (uchar *) "bitor",          0x19, St, 0, 3 },
+  { (uchar *) "bitxor",         0x1A, St, 0, 3 },
+  { (uchar *) "bitnot",         0x1B, St, 0, 2 },
+  { (uchar *) "shiftl",         0x1C, St, 0, 3 },
+  { (uchar *) "sshiftr",        0x1D, St, 0, 3 },
+  { (uchar *) "ushiftr",        0x1E, St, 0, 3 },
+  { (uchar *) "jump",           0x20, Br|Rf, 0, 1 },
+  { (uchar *) "jz",             0x22, Br, 0, 2 },
+  { (uchar *) "jnz",            0x23, Br, 0, 2 },
+  { (uchar *) "jeq",            0x24, Br, 0, 3 },
+  { (uchar *) "jne",            0x25, Br, 0, 3 },
+  { (uchar *) "jlt",            0x26, Br, 0, 3 },
+  { (uchar *) "jge",            0x27, Br, 0, 3 },
+  { (uchar *) "jgt",            0x28, Br, 0, 3 },
+  { (uchar *) "jle",            0x29, Br, 0, 3 },
+  { (uchar *) "call",           0x30, St, 0, 3 },
+  { (uchar *) "return",         0x31, Rf, 0, 1 },
+  { (uchar *) "catch",          0x32, Br|St, 0, 2 },
+  { (uchar *) "throw",          0x33, Rf, 0, 2 },
+  { (uchar *) "tailcall",       0x34, Rf, 0, 2 },
+  { (uchar *) "copy",           0x40, St, 0, 2 },
+  { (uchar *) "copys",          0x41, St, 0, 2 },
+  { (uchar *) "copyb",          0x42, St, 0, 2 },
+  { (uchar *) "sexs",           0x44, St, 0, 2 },
+  { (uchar *) "sexb",           0x45, St, 0, 2 },
+  { (uchar *) "aload",          0x48, St, 0, 3 },
+  { (uchar *) "aloads",         0x49, St, 0, 3 },
+  { (uchar *) "aloadb",         0x4A, St, 0, 3 },
+  { (uchar *) "aloadbit",       0x4B, St, 0, 3 },
+  { (uchar *) "astore",         0x4C,  0, 0, 3 },
+  { (uchar *) "astores",        0x4D,  0, 0, 3 },
+  { (uchar *) "astoreb",        0x4E,  0, 0, 3 },
+  { (uchar *) "astorebit",      0x4F,  0, 0, 3 },
+  { (uchar *) "stkcount",       0x50, St, 0, 1 },
+  { (uchar *) "stkpeek",        0x51, St, 0, 2 },
+  { (uchar *) "stkswap",        0x52,  0, 0, 0 },
+  { (uchar *) "stkroll",        0x53,  0, 0, 2 },
+  { (uchar *) "stkcopy",        0x54,  0, 0, 1 },
+  { (uchar *) "streamchar",     0x70,  0, 0, 1 },
+  { (uchar *) "streamnum",      0x71,  0, 0, 1 },
+  { (uchar *) "streamstr",      0x72,  0, 0, 1 },
+  { (uchar *) "gestalt",        0x0100, St, 0, 3 },
+  { (uchar *) "debugtrap",      0x0101, 0, 0, 1 },
+  { (uchar *) "getmemsize",     0x0102, St, 0, 1 },
+  { (uchar *) "setmemsize",     0x0103, St, 0, 2 },
+  { (uchar *) "random",         0x0110, St, 0, 2 },
+  { (uchar *) "setrandom",      0x0111,  0, 0, 1 },
+  { (uchar *) "quit",           0x0120,  0, 0, 0 },
+  { (uchar *) "verify",         0x0121, St, 0, 1 },
+  { (uchar *) "restart",        0x0122,  0, 0, 0 },
+  { (uchar *) "save",           0x0123, St, 0, 2 },
+  { (uchar *) "restore",        0x0124, St, 0, 2 },
+  { (uchar *) "saveundo",       0x0125, St, 0, 1 },
+  { (uchar *) "restoreundo",    0x0126, St, 0, 1 },
+  { (uchar *) "protect",        0x0127,  0, 0, 2 },
+  { (uchar *) "glk",            0x0130, St, 0, 3 },
+  { (uchar *) "getstringtbl",   0x0140, St, 0, 1 },
+  { (uchar *) "setstringtbl",   0x0141, 0, 0, 1 },
+  { (uchar *) "streamunichar",  0x73,  0, 0, 1 },
 };
 
 static int read_header(FILE *fl);
@@ -277,8 +279,8 @@ int main(int argc, char *argv[])
     else if (!strcmp(argv[ix], "-a")) {
       ix++;
       if (ix >= argc || (val = strtol(argv[ix], NULL, 16)) == 0) {
-	printf("-a must be followed by address.\n");
-	exit(1);
+        printf("-a must be followed by address.\n");
+        exit(1);
       }
       posactiontbl = val;
       dumpactiontbl = TRUE;
@@ -286,8 +288,8 @@ int main(int argc, char *argv[])
     else if (!strcmp(argv[ix], "-d")) {
       ix++;
       if (ix >= argc || (val = strtol(argv[ix], NULL, 16)) == 0) {
-	printf("-d must be followed by address.\n");
-	exit(1);
+        printf("-d must be followed by address.\n");
+        exit(1);
       }
       posdicttbl = val;
       dumpdicttbl = TRUE;
@@ -295,8 +297,8 @@ int main(int argc, char *argv[])
     else if (!strcmp(argv[ix], "-g")) {
       ix++;
       if (ix >= argc || (val = strtol(argv[ix], NULL, 16)) == 0) {
-	printf("-g must be followed by address.\n");
-	exit(1);
+        printf("-g must be followed by address.\n");
+        exit(1);
       }
       posgrammartbl = val;
       dumpgrammartbl = TRUE;
@@ -318,7 +320,7 @@ int main(int argc, char *argv[])
     dumpheader = TRUE;
   }
 
-  fl = fopen(filename, "rb");
+  fl = fopen(filename, "r");
   if (!fl) {
     perror("unable to open file");
     exit(1);
@@ -416,24 +418,24 @@ void dump_ram()
     }
     else if (ch == 0xE0) {
       if (dumpstrings) {
-	printf("String (%08lx): ", startpos);
-	pos++;
-	while (1) {
-	  ch = Mem1(pos);
-	  pos++;
-	  if (ch == '\0')
-	    break;
-	  putchar(ch);
-	}
-	printf("\n");
+        printf("String (%08lx): ", startpos);
+        pos++;
+        while (1) {
+          ch = Mem1(pos);
+          pos++;
+          if (ch == '\0')
+            break;
+          putchar(ch);
+        }
+        printf("\n");
       }
       else {
-	while (1) {
-	  ch = Mem1(pos);
+        while (1) {
+          ch = Mem1(pos);
           pos++;
-	  if (ch == '\0')
-	    break;
-	}
+          if (ch == '\0')
+            break;
+        }
       }
     }
     else if (ch == 0xC0 || ch == 0xC1) {
@@ -453,9 +455,9 @@ void dump_ram()
 
       while (1) {
         loctype = Mem1(pos);
-	pos++;
+        pos++;
         locnum = Mem1(pos);
-	pos++;
+        pos++;
         if (loctype == 0)
           break;
         printf(" %d %d-byte local%s,", locnum, loctype,
@@ -468,115 +470,115 @@ void dump_ram()
       exstart = pos;
 
       while (ch != 0xC0 && ch != 0xC1 && ch != 0xE0) {
-	/* wrong, but the hell with it */
+        /* wrong, but the hell with it */
 
-	/* Get the opcode */
-	if ((ch & 0x80) == 0) {
-	  opcode = ch;
-	}
-	else if ((ch & 0x40) == 0) {
-	  opcode = (ch & 0x7F);
-	  ch = Mem1(pos); pos++;
-	  opcode = (opcode << 8) | ch;
-	}
-	else {
-	  opcode = (ch & 0x3F);
-	  ch = Mem1(pos); pos++;
-	  opcode = (opcode << 8) | ch;
-	  ch = Mem1(pos); pos++;
-	  opcode = (opcode << 8) | ch;
-	  ch = Mem1(pos); pos++;
-	  opcode = (opcode << 8) | ch;
-	}
-	opco = &opcodes_table[findopcode(opcode)];
-	printf("  %08lx: %12s ", pos-exstart, opco->name);
+        /* Get the opcode */
+        if ((ch & 0x80) == 0) {
+          opcode = ch;
+        }
+        else if ((ch & 0x40) == 0) {
+          opcode = (ch & 0x7F);
+          ch = Mem1(pos); pos++;
+          opcode = (opcode << 8) | ch;
+        }
+        else {
+          opcode = (ch & 0x3F);
+          ch = Mem1(pos); pos++;
+          opcode = (opcode << 8) | ch;
+          ch = Mem1(pos); pos++;
+          opcode = (opcode << 8) | ch;
+          ch = Mem1(pos); pos++;
+          opcode = (opcode << 8) | ch;
+        }
+        opco = &opcodes_table[findopcode(opcode)];
+        printf("  %08lx: %12s ", pos-exstart, opco->name);
 
-	for (jx=0; jx<opco->no; jx+=2) {
-	  ch = Mem1(pos); pos++;
-	  opmodes[jx+0] = (ch & 0x0F);
-	  opmodes[jx+1] = ((ch >> 4) & 0x0F);
-	}
+        for (jx=0; jx<opco->no; jx+=2) {
+          ch = Mem1(pos); pos++;
+          opmodes[jx+0] = (ch & 0x0F);
+          opmodes[jx+1] = ((ch >> 4) & 0x0F);
+        }
 
-	for (jx=0; jx<opco->no; jx++) {
-	  int val = 0;
-	  printf(" ");
-	  switch (opmodes[jx]) {
-	  case 0:
-	    printf("zero");
-	    break;
-	  case 8:
-	    printf("stackptr");
-	    break;
-	  case 1:
-	  case 5:
-	  case 9:
-	  case 13:
-	    if ((opmodes[jx] & 0x0C) == 4)
-	      printf("*");
-	    else if ((opmodes[jx] & 0x0C) == 8)
-	      printf("Fr:");
-	    else if ((opmodes[jx] & 0x0C) == 12)
-	      printf("*R:");
-	    ch = Mem1(pos); pos++;
-	    val = ch;
-	    if (val & 0x80)
-	      val |= 0xFFFFFF00;
-	    printf("%02x", val & 0xFF);
-	    break;
-	  case 2:
-	  case 6:
-	  case 10:
-	  case 14:
-	    if ((opmodes[jx] & 0x0C) == 4)
-	      printf("*");
-	    else if ((opmodes[jx] & 0x0C) == 8)
-	      printf("Fr:");
-	    else if ((opmodes[jx] & 0x0C) == 12)
-	      printf("*R:");
-	    ch = Mem1(pos); pos++;
-	    val = ch;
-	    if (val & 0x80)
-	      val |= 0xFFFFFF00;
-	    ch = Mem1(pos); pos++;
-	    val = (val << 8) | ch;
-	    printf("%04x", val & 0xFFFF);
-	    break;
-	  case 3:
-	  case 7:
-	  case 11:
-	  case 15:
-	    if ((opmodes[jx] & 0x0C) == 4)
-	      printf("*");
-	    else if ((opmodes[jx] & 0x0C) == 8)
-	      printf("Fr:");
-	    else if ((opmodes[jx] & 0x0C) == 12)
-	      printf("*R:");
-	    ch = Mem1(pos); pos++;
-	    val = ch;
-	    ch = Mem1(pos); pos++;
-	    val = (val << 8) | ch;
-	    ch = Mem1(pos); pos++;
-	    val = (val << 8) | ch;
-	    ch = Mem1(pos); pos++;
-	    val = (val << 8) | ch;
-	    printf("%08x", val);
-	    break;
-	  }
-	  if ((opco->flags & Br) && (jx == opco->no-1)) {
-	    if (val == 0) {
-	      printf(" (rfalse)");
-	    }
-	    else if (val == 1) {
-	      printf(" (rtrue)");
-	    }
-	    else {
-	      printf(" (%08lx)", (pos-exstart)+val-2+1);
-	    }
-	  }
-	}
-	printf("\n");
-	
-	ch = Mem1(pos); pos++;
+        for (jx=0; jx<opco->no; jx++) {
+          int val = 0;
+          printf(" ");
+          switch (opmodes[jx]) {
+          case 0:
+            printf("zero");
+            break;
+          case 8:
+            printf("stackptr");
+            break;
+          case 1:
+          case 5:
+          case 9:
+          case 13:
+            if ((opmodes[jx] & 0x0C) == 4)
+              printf("*");
+            else if ((opmodes[jx] & 0x0C) == 8)
+              printf("Fr:");
+            else if ((opmodes[jx] & 0x0C) == 12)
+              printf("*R:");
+            ch = Mem1(pos); pos++;
+            val = ch;
+            if (val & 0x80)
+              val |= 0xFFFFFF00;
+            printf("%02x", val & 0xFF);
+            break;
+          case 2:
+          case 6:
+          case 10:
+          case 14:
+            if ((opmodes[jx] & 0x0C) == 4)
+              printf("*");
+            else if ((opmodes[jx] & 0x0C) == 8)
+              printf("Fr:");
+            else if ((opmodes[jx] & 0x0C) == 12)
+              printf("*R:");
+            ch = Mem1(pos); pos++;
+            val = ch;
+            if (val & 0x80)
+              val |= 0xFFFFFF00;
+            ch = Mem1(pos); pos++;
+            val = (val << 8) | ch;
+            printf("%04x", val & 0xFFFF);
+            break;
+          case 3:
+          case 7:
+          case 11:
+          case 15:
+            if ((opmodes[jx] & 0x0C) == 4)
+              printf("*");
+            else if ((opmodes[jx] & 0x0C) == 8)
+              printf("Fr:");
+            else if ((opmodes[jx] & 0x0C) == 12)
+              printf("*R:");
+            ch = Mem1(pos); pos++;
+            val = ch;
+            ch = Mem1(pos); pos++;
+            val = (val << 8) | ch;
+            ch = Mem1(pos); pos++;
+            val = (val << 8) | ch;
+            ch = Mem1(pos); pos++;
+            val = (val << 8) | ch;
+            printf("%08x", val);
+            break;
+          }
+          if ((opco->flags & Br) && (jx == opco->no-1)) {
+            if (val == 0) {
+              printf(" (rfalse)");
+            }
+            else if (val == 1) {
+              printf(" (rtrue)");
+            }
+            else {
+              printf(" (%08lx)", (pos-exstart)+val-2+1);
+            }
+          }
+        }
+        printf("\n");
+        
+        ch = Mem1(pos); pos++;
       }
 
       pos--;
@@ -637,6 +639,7 @@ static int findopcode(int opnum)
   case op_stkroll: return stkroll_gc;
   case op_stkcopy: return stkcopy_gc;
   case op_streamchar: return streamchar_gc;
+  case op_streamunichar: return streamunichar_gc;
   case op_streamnum: return streamnum_gc;
   case op_streamstr: return streamstr_gc;
   case op_gestalt: return gestalt_gc;
@@ -679,15 +682,15 @@ void dump_objs()
       ch = Mem1(pos); pos++; 
       printf(" ");
       for (jx=0; jx<8; jx++) {
-	printf("%c", (ch&1) ? '1' : '0');
-	ch >>= 1;
+        printf("%c", (ch&1) ? '1' : '0');
+        ch >>= 1;
       }
     }
     printf("\n");
 
     for (ix=0; ix<6; ix++) {
       static char *labellist[6] = {
-	"next", "name", "props", "parent", "sibling", "child"
+        "next", "name", "props", "parent", "sibling", "child"
       };
       long val;
       ch = Mem1(pos); pos++;
@@ -702,15 +705,15 @@ void dump_objs()
       printf("%08lx", val);
       switch (ix) {
       case 0:
-	nextstartpos = val;
-	break;
+        nextstartpos = val;
+        break;
       case 1:
-	printf("  ");
-	print_string(val);
-	break;
+        printf("  ");
+        print_string(val);
+        break;
       case 2:
-	proptablepos = val;
-	break;
+        proptablepos = val;
+        break;
       }
       printf("\n");
     }
@@ -802,7 +805,7 @@ void dump_dict_table()
     for (ix=0; ix<9; ix++) {
       ch = Mem1(addr+1+ix);
       if (ch == '\0')
-	ch = ' ';
+        ch = ' ';
       printf("%c", ch);
     }
     printf(" : ");
@@ -842,15 +845,15 @@ void dump_grammar_table()
       addr++;
       printf("    ac %04lx; fl %02lx :", action, val);
       while (1) {
-	toktype = Mem1(addr);
-	addr++;
-	if (toktype == 15) {
-	  printf(" .\n");
-	  break;
-	}
-	tokdata = Mem4(addr);
-	addr += 4;
-	printf(" %02lx(%04lx)", toktype, tokdata);
+        toktype = Mem1(addr);
+        addr++;
+        if (toktype == 15) {
+          printf(" .\n");
+          break;
+        }
+        tokdata = Mem4(addr);
+        addr += 4;
+        printf(" %02lx(%04lx)", toktype, tokdata);
       }
     }
   }

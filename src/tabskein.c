@@ -963,8 +963,6 @@ on_skein_layout_clicked(GtkToolButton *toolbutton, gpointer user_data)
 {
 	GtkWidget *dialog = create_skein_spacing_dialog();
 	Story *thestory = get_story(GTK_WIDGET(toolbutton));
-	g_signal_connect_swapped(lookup_widget(dialog, "skein_spacing_cancel"), 
-							 "clicked", G_CALLBACK(gtk_widget_destroy), dialog);
 	g_signal_connect(lookup_widget(dialog, "skein_spacing_use_defaults"),
 					 "clicked",
 					 G_CALLBACK(on_skein_spacing_use_defaults_clicked),
@@ -979,8 +977,6 @@ on_skein_trim_clicked(GtkToolButton *toolbutton, gpointer user_data)
 {
 	GtkWidget *dialog = create_skein_trim_dialog();
 	Story *thestory = get_story(GTK_WIDGET(toolbutton));
-	g_signal_connect_swapped(lookup_widget(dialog, "skein_trim_cancel"), 
-							 "clicked", G_CALLBACK(gtk_widget_destroy), dialog);
 	g_signal_connect(lookup_widget(dialog, "skein_trim_ok"), "clicked",
 					 G_CALLBACK(on_skein_trim_ok_clicked), thestory);
 	gtk_widget_show(dialog);

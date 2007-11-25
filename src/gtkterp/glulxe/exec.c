@@ -308,10 +308,10 @@ void execute_loop()
         pop_callstub(inst.value[0]);
         break;
       case op_tailcall:
-	value = inst.value[1];
-	arglist = pop_arguments(value, 0);
-	leave_function();
-	enter_function(inst.value[0], value, arglist);
+        value = inst.value[1];
+        arglist = pop_arguments(value, 0);
+        leave_function();
+        enter_function(inst.value[0], value, arglist);
         break;
 
       case op_catch:
@@ -499,12 +499,16 @@ void execute_loop()
         value = inst.value[0] & 0xFF;
         (*stream_char_handler)(value);
         break;
+      case op_streamunichar:
+        value = inst.value[0];
+        (*stream_unichar_handler)(value);
+        break;
       case op_streamnum:
         vals0 = inst.value[0];
         stream_num(vals0, FALSE, 0);
         break;
       case op_streamstr:
-        stream_string(inst.value[0], FALSE, 0);
+        stream_string(inst.value[0], 0, 0);
         break;
 
       default:
@@ -516,63 +520,63 @@ void execute_loop()
       switch (opcode) {
 
       case op_gestalt:
-	value = do_gestalt(inst.value[0], inst.value[1]);
-	store_operand(inst.desttype, inst.value[2], value);
-	break;
+        value = do_gestalt(inst.value[0], inst.value[1]);
+        store_operand(inst.desttype, inst.value[2], value);
+        break;
 
       case op_debugtrap:
         fatal_error_i("user debugtrap encountered.", inst.value[0]);
 
       case op_jumpabs:
-	pc = inst.value[0];
-	break;
+        pc = inst.value[0];
+        break;
 
       case op_callf:
         push_callstub(inst.desttype, inst.value[1]);
         enter_function(inst.value[0], 0, arglistfix);
         break;
       case op_callfi:
-	arglistfix[0] = inst.value[1];
+        arglistfix[0] = inst.value[1];
         push_callstub(inst.desttype, inst.value[2]);
         enter_function(inst.value[0], 1, arglistfix);
         break;
       case op_callfii:
-	arglistfix[0] = inst.value[1];
-	arglistfix[1] = inst.value[2];
+        arglistfix[0] = inst.value[1];
+        arglistfix[1] = inst.value[2];
         push_callstub(inst.desttype, inst.value[3]);
         enter_function(inst.value[0], 2, arglistfix);
         break;
       case op_callfiii:
-	arglistfix[0] = inst.value[1];
-	arglistfix[1] = inst.value[2];
-	arglistfix[2] = inst.value[3];
+        arglistfix[0] = inst.value[1];
+        arglistfix[1] = inst.value[2];
+        arglistfix[2] = inst.value[3];
         push_callstub(inst.desttype, inst.value[4]);
         enter_function(inst.value[0], 3, arglistfix);
         break;
 
       case op_getmemsize:
-	store_operand(inst.desttype, inst.value[0], endmem);
-	break;
+        store_operand(inst.desttype, inst.value[0], endmem);
+        break;
       case op_setmemsize:
-	value = change_memsize(inst.value[0]);
-	store_operand(inst.desttype, inst.value[1], value);
+        value = change_memsize(inst.value[0], FALSE);
+        store_operand(inst.desttype, inst.value[1], value);
         break;
 
       case op_getstringtbl:
-	value = stream_get_table();
-	store_operand(inst.desttype, inst.value[0], value);
-	break;
+        value = stream_get_table();
+        store_operand(inst.desttype, inst.value[0], value);
+        break;
       case op_setstringtbl:
-	stream_set_table(inst.value[0]);
+        stream_set_table(inst.value[0]);
         break;
 
       case op_getiosys:
-	stream_get_iosys(&val0, &val1);
-	store_operand(inst.desttype, inst.value[0], val0);
-	store_operand(inst.desttype, inst.value[1], val1);
-	break;
+        stream_get_iosys(&val0, &val1);
+        store_operand(inst.desttype, inst.value[0], val0);
+        store_operand(inst.desttype, inst.value[1], val1);
+        break;
       case op_setiosys:
-	stream_set_iosys(inst.value[0], inst.value[1]);
+        stream_set_iosys(inst.value[0], inst.value[1]);
         break;
 
       case op_glk:
@@ -606,15 +610,15 @@ void execute_loop()
         break;
 
       case op_protect:
-	val0 = inst.value[0];
-	val1 = val0 + inst.value[1];
-	if (val0 == val1) {
-	  val0 = 0;
-	  val1 = 0;
-	}
-	protectstart = val0;
-	protectend = val1;
-	break;
+        val0 = inst.value[0];
+        val1 = val0 + inst.value[1];
+        if (val0 == val1) {
+          val0 = 0;
+          val1 = 0;
+        }
+        protectstart = val0;
+        protectend = val1;
+        break;
 
       case op_save:
         push_callstub(inst.desttype, inst.value[1]);
@@ -663,20 +667,58 @@ void execute_loop()
         break;
 
       case op_linearsearch:
-	value = linear_search(inst.value[0], inst.value[1], inst.value[2], 
-	  inst.value[3], inst.value[4], inst.value[5], inst.value[6]);
-	store_operand(inst.desttype, inst.value[7], value);
-	break;
+        value = linear_search(inst.value[0], inst.value[1], inst.value[2], 
+          inst.value[3], inst.value[4], inst.value[5], inst.value[6]);
+        store_operand(inst.desttype, inst.value[7], value);
+        break;
       case op_binarysearch:
-	value = binary_search(inst.value[0], inst.value[1], inst.value[2], 
-	  inst.value[3], inst.value[4], inst.value[5], inst.value[6]);
-	store_operand(inst.desttype, inst.value[7], value);
-	break;
+        value = binary_search(inst.value[0], inst.value[1], inst.value[2], 
+          inst.value[3], inst.value[4], inst.value[5], inst.value[6]);
+        store_operand(inst.desttype, inst.value[7], value);
+        break;
       case op_linkedsearch:
-	value = linked_search(inst.value[0], inst.value[1], inst.value[2], 
-	  inst.value[3], inst.value[4], inst.value[5]);
-	store_operand(inst.desttype, inst.value[6], value);
-	break;
+        value = linked_search(inst.value[0], inst.value[1], inst.value[2], 
+          inst.value[3], inst.value[4], inst.value[5]);
+        store_operand(inst.desttype, inst.value[6], value);
+        break;
+
+      case op_mzero: {
+        glui32 lx;
+        glui32 count = inst.value[0];
+        addr = inst.value[1];
+        for (lx=0; lx<count; lx++, addr++) {
+          MemW1(addr, 0);
+        }
+        }
+        break;
+      case op_mcopy: {
+        glui32 lx;
+        glui32 count = inst.value[0];
+        glui32 addrsrc = inst.value[1];
+        glui32 addrdest = inst.value[2];
+        if (addrdest < addrsrc) {
+          for (lx=0; lx<count; lx++, addrsrc++, addrdest++) {
+            value = Mem1(addrsrc);
+            MemW1(addrdest, value);
+          }
+        }
+        else {
+          addrsrc += (count-1);
+          addrdest += (count-1);
+          for (lx=0; lx<count; lx++, addrsrc--, addrdest--) {
+            value = Mem1(addrsrc);
+            MemW1(addrdest, value);
+          }
+        }
+        }
+        break;
+      case op_malloc:
+        value = heap_alloc(inst.value[0]);
+        store_operand(inst.desttype, inst.value[1], value);
+        break;
+      case op_mfree:
+        heap_free(inst.value[0]);
+        break;
 
       default:
         fatal_error_i("Executed unknown opcode.", opcode);

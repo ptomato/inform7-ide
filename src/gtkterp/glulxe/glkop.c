@@ -17,6 +17,12 @@
      memory, whose actual address can be computed by the macro
      AddressOfArray(addr). Again, addr is a VM address from the argument
      list.
+   - An integer array is a sequence of integers somewhere in VM memory.
+     The array can be turned into a C integer array by the macro
+     CaptureIArray(addr, len), and released by ReleaseIArray().
+     These macros are responsible for fixing byte-order and alignment
+     (if the C ABI does not match the VM's). The passin, passout hints
+     may be used to avoid unnecessary copying.
    - A Glk structure (such as event_t) is a set of integers somewhere
      in VM memory, which can be read and written with the macros
      ReadStructField(addr, fieldnum) and WriteStructField(addr, fieldnum).
@@ -25,6 +31,9 @@
      ptr = DecodeVMString(addr). After the string is used, this code
      calls ReleaseVMString(ptr), which should free any memory that
      DecodeVMString allocates.
+   - A VM Unicode string can be turned into a zero-terminated array
+     of 32-bit integers, in the same way, with DecodeVMUstring
+     and ReleaseVMUstring.
 
      To work this code over for a new VM, just diddle the macros.
 */
@@ -39,8 +48,10 @@
       : (MemW4((addr), (val))))
 #define AddressOfArray(addr)  \
     (memmap + (addr))
-#define AddressOfIArray(addr)  \
-    (memmap + (addr))
+#define CaptureIArray(addr, len, passin)  \
+    (grab_temp_array(addr, len, passin))
+#define ReleaseIArray(ptr, addr, len, passout)  \
+    (release_temp_array(ptr, addr, len, passout))
 #define ReadStructField(addr, fieldnum)  \
     (((addr) == 0xffffffff) \
       ? (stackptr -= 4, Stk4(stackptr)) \
@@ -53,6 +64,10 @@
     (make_temp_string(addr))
 #define ReleaseVMString(ptr)  \
     (free_temp_string(ptr))
+#define DecodeVMUstring(addr)  \
+    (make_temp_ustring(addr))
+#define ReleaseVMUstring(ptr)  \
+    (free_temp_ustring(ptr))
 
 #include "glk.h"
 #include "glulxe.h"
@@ -66,6 +81,23 @@ typedef struct dispatch_splot_struct {
   int numvargs;
   glui32 *retval;
 } dispatch_splot_t;
+
+/* We maintain a linked list of arrays being used for Glk calls. It is
+   only used for integer (glui32) arrays -- char arrays are handled in
+   place. It's not worth bothering with a hash table, since most
+   arrays appear here only momentarily. */
+
+typedef struct arrayref_struct arrayref_t;
+struct arrayref_struct {
+  void *array;
+  glui32 addr;
+  glui32 elemsize;
+  glui32 len; /* elements */
+  int retained;
+  arrayref_t *next;
+};
+
+static arrayref_t *arrays = NULL;
 
 /* We maintain a hash table for each opaque Glk class. classref_t are the
     nodes of the table, and classtable_t are the tables themselves. */
@@ -97,6 +129,13 @@ static gidispatch_rock_t glulxe_classtable_register(void *obj,
   glui32 objclass);
 static void glulxe_classtable_unregister(void *obj, glui32 objclass, 
   gidispatch_rock_t objrock);
+static gidispatch_rock_t glulxe_retained_register(void *array,
+  glui32 len, char *typecode);
+static void glulxe_retained_unregister(void *array, glui32 len, 
+  char *typecode, gidispatch_rock_t objrock);
+
+static glui32 *grab_temp_array(glui32 addr, glui32 len, int passin);
+static void release_temp_array(glui32 *arr, glui32 addr, glui32 len, int passout);
 
 static void prepare_glk_args(char *proto, dispatch_splot_t *splot);
 static void parse_glk_args(dispatch_splot_t *splot, char **proto, int depth,
@@ -127,6 +166,8 @@ int init_dispatch()
   /* Set up the two callbacks. */
   gidispatch_set_object_registry(&glulxe_classtable_register, 
     &glulxe_classtable_unregister);
+  gidispatch_set_retained_registry(&glulxe_retained_register, 
+    &glulxe_retained_unregister);
     
   return TRUE;
 }
@@ -314,7 +355,7 @@ static void prepare_glk_args(char *proto, dispatch_splot_t *splot)
     else if (*cx == 'Q') {
       cx += 2;
     }
-    else if (*cx == 'S') {
+    else if (*cx == 'S' || *cx == 'U') {
       cx += 1;
     }
     else if (*cx == '[') {
@@ -435,7 +476,7 @@ static void parse_glk_args(dispatch_splot_t *splot, char **proto, int depth,
           cx++;
           break;
         case 'I':
-          garglist[gargnum].array = AddressOfIArray(varglist[ix]);
+          garglist[gargnum].array = CaptureIArray(varglist[ix], varglist[ix+1], passin);
           gargnum++;
           ix++;
           garglist[gargnum].uint = varglist[ix];
@@ -509,8 +550,14 @@ static void parse_glk_args(dispatch_splot_t *splot, char **proto, int depth,
           break;
         case 'S':
           garglist[gargnum].charstr = DecodeVMString(thisval);
-	  gargnum++;
+          gargnum++;
           break;
+#ifdef GLK_MODULE_UNICODE
+        case 'U':
+          garglist[gargnum].unicharstr = DecodeVMUstring(thisval);
+          gargnum++;
+          break;
+#endif /* GLK_MODULE_UNICODE */
         default:
           fatal_error("Illegal format string.");
           break;
@@ -535,7 +582,7 @@ static void parse_glk_args(dispatch_splot_t *splot, char **proto, int depth,
           cx++;
         }
       }
-      else if (typeclass == 'S') {
+      else if (typeclass == 'S' || typeclass == 'U') {
         /* leave it */
       }
       else {
@@ -619,7 +666,13 @@ static void unparse_glk_args(dispatch_splot_t *splot, char **proto, int depth,
 
         switch (typeclass) {
         case 'C':
+          gargnum++;
+          ix++;
+          gargnum++;
+          cx++;
+          break;
         case 'I':
+          ReleaseIArray(garglist[gargnum].array, varglist[ix], varglist[ix+1], passout);
           gargnum++;
           ix++;
           gargnum++;
@@ -633,64 +686,71 @@ static void unparse_glk_args(dispatch_splot_t *splot, char **proto, int depth,
       else {
         /* a plain value or a reference to one. */
 
-	if (isreturn || (depth > 0 && subpassout) || (isref && passout)) {
-	  skipval = FALSE;
-	}
-	else {
-	  skipval = TRUE;
-	}
+        if (isreturn || (depth > 0 && subpassout) || (isref && passout)) {
+          skipval = FALSE;
+        }
+        else {
+          skipval = TRUE;
+        }
 
-	switch (typeclass) {
-	case 'I':
-	  if (!skipval) {
-	    if (*cx == 'u')
-	      thisval = (glui32)garglist[gargnum].uint;
-	    else if (*cx == 's')
-	      thisval = (glui32)garglist[gargnum].sint;
-	    else
-	      fatal_error("Illegal format string.");
-	  }
-	  gargnum++;
-	  cx++;
-	  break;
-	case 'Q':
-	  if (!skipval) {
-	    opref = garglist[gargnum].opaqueref;
-	    if (opref) {
-	      gidispatch_rock_t objrock = 
-		gidispatch_get_objrock(opref, *cx-'a');
-	      thisval = ((classref_t *)objrock.ptr)->id;
-	    }
-	    else {
-	      thisval = 0;
-	    }
-	  }
-	  gargnum++;
-	  cx++;
-	  break;
-	case 'C':
-	  if (!skipval) {
-	    if (*cx == 'u') 
-	      thisval = (glui32)garglist[gargnum].uch;
-	    else if (*cx == 's')
-	      thisval = (glui32)garglist[gargnum].sch;
-	    else if (*cx == 'n')
-	      thisval = (glui32)garglist[gargnum].ch;
-	    else
-	      fatal_error("Illegal format string.");
-	  }
-	  gargnum++;
-	  cx++;
-	  break;
-	case 'S':
-	  if (garglist[gargnum].charstr)
-	    ReleaseVMString(garglist[gargnum].charstr);
-	  gargnum++;
-	  break;
-	default:
-	  fatal_error("Illegal format string.");
-	  break;
-	}
+        switch (typeclass) {
+        case 'I':
+          if (!skipval) {
+            if (*cx == 'u')
+              thisval = (glui32)garglist[gargnum].uint;
+            else if (*cx == 's')
+              thisval = (glui32)garglist[gargnum].sint;
+            else
+              fatal_error("Illegal format string.");
+          }
+          gargnum++;
+          cx++;
+          break;
+        case 'Q':
+          if (!skipval) {
+            opref = garglist[gargnum].opaqueref;
+            if (opref) {
+              gidispatch_rock_t objrock = 
+                gidispatch_get_objrock(opref, *cx-'a');
+              thisval = ((classref_t *)objrock.ptr)->id;
+            }
+            else {
+              thisval = 0;
+            }
+          }
+          gargnum++;
+          cx++;
+          break;
+        case 'C':
+          if (!skipval) {
+            if (*cx == 'u') 
+              thisval = (glui32)garglist[gargnum].uch;
+            else if (*cx == 's')
+              thisval = (glui32)garglist[gargnum].sch;
+            else if (*cx == 'n')
+              thisval = (glui32)garglist[gargnum].ch;
+            else
+              fatal_error("Illegal format string.");
+          }
+          gargnum++;
+          cx++;
+          break;
+        case 'S':
+          if (garglist[gargnum].charstr)
+            ReleaseVMString(garglist[gargnum].charstr);
+          gargnum++;
+          break;
+#ifdef GLK_MODULE_UNICODE
+        case 'U':
+          if (garglist[gargnum].unicharstr)
+            ReleaseVMUstring(garglist[gargnum].unicharstr);
+          gargnum++;
+          break;
+#endif /* GLK_MODULE_UNICODE */
+        default:
+          fatal_error("Illegal format string.");
+          break;
+        }
 
         if (isreturn) {
           *(splot->retval) = thisval;
@@ -724,7 +784,7 @@ static void unparse_glk_args(dispatch_splot_t *splot, char **proto, int depth,
           cx++;
         }
       }
-      else if (typeclass == 'S') {
+      else if (typeclass == 'S' || typeclass == 'U') {
         /* leave it */
       }
       else {
@@ -862,5 +922,133 @@ static void glulxe_classtable_unregister(void *obj, glui32 objclass,
   gidispatch_rock_t objrock)
 {
   classes_remove(objclass, obj);
+}
+
+static glui32 *grab_temp_array(glui32 addr, glui32 len, int passin)
+{
+  arrayref_t *arref = NULL;
+  glui32 *arr = NULL;
+  glui32 ix, addr2;
+
+  if (len) {
+    arr = (glui32 *)glulx_malloc(len * sizeof(glui32));
+    arref = (arrayref_t *)glulx_malloc(sizeof(arrayref_t));
+    if (!arr || !arref) 
+      fatal_error("Unable to allocate space for array argument to Glk call.");
+
+    arref->array = arr;
+    arref->addr = addr;
+    arref->elemsize = 4;
+    arref->retained = FALSE;
+    arref->len = len;
+    arref->next = arrays;
+    arrays = arref;
+
+    if (passin) {
+      for (ix=0, addr2=addr; ix<len; ix++, addr2+=4) {
+        arr[ix] = Mem4(addr2);
+      }
+    }
+  }
+
+  return arr;
+}
+
+static void release_temp_array(glui32 *arr, glui32 addr, glui32 len, int passout)
+{
+  arrayref_t *arref = NULL;
+  arrayref_t **aptr;
+  glui32 ix, val, addr2;
+
+  if (arr) {
+    for (aptr=(&arrays); (*aptr); aptr=(&((*aptr)->next))) {
+      if ((*aptr)->array == arr)
+        break;
+    }
+    arref = *aptr;
+    if (!arref)
+      fatal_error("Unable to re-find array argument in Glk call.");
+    if (arref->addr != addr || arref->len != len)
+      fatal_error("Mismatched array argument in Glk call.");
+
+    if (arref->retained) {
+      return;
+    }
+
+    *aptr = arref->next;
+    arref->next = NULL;
+
+    if (passout) {
+      for (ix=0, addr2=addr; ix<len; ix++, addr2+=4) {
+        val = arr[ix];
+        MemW4(addr2, val);
+      }
+    }
+    glulx_free(arr);
+    glulx_free(arref);
+  }
+}
+
+gidispatch_rock_t glulxe_retained_register(void *array,
+  glui32 len, char *typecode)
+{
+  gidispatch_rock_t rock;
+  arrayref_t *arref = NULL;
+  arrayref_t **aptr;
+
+  if (typecode[4] != 'I' || array == NULL) {
+    /* We only retain integer arrays. */
+    rock.ptr = NULL;
+    return rock;
+  }
+
+  for (aptr=(&arrays); (*aptr); aptr=(&((*aptr)->next))) {
+    if ((*aptr)->array == array)
+      break;
+  }
+  arref = *aptr;
+  if (!arref)
+    fatal_error("Unable to re-find array argument in Glk call.");
+  if (arref->elemsize != 4 || arref->len != len)
+    fatal_error("Mismatched array argument in Glk call.");
+
+  arref->retained = TRUE;
+
+  rock.ptr = arref;
+  return rock;
+}
+
+void glulxe_retained_unregister(void *array, glui32 len, 
+  char *typecode, gidispatch_rock_t objrock)
+{
+  arrayref_t *arref = NULL;
+  arrayref_t **aptr;
+  glui32 ix, addr2, val;
+
+  if (typecode[4] != 'I' || array == NULL) {
+    /* We only retain integer arrays. */
+    return;
+  }
+
+  for (aptr=(&arrays); (*aptr); aptr=(&((*aptr)->next))) {
+    if ((*aptr)->array == array)
+      break;
+  }
+  arref = *aptr;
+  if (!arref)
+    fatal_error("Unable to re-find array argument in Glk call.");
+  if (arref != objrock.ptr)
+    fatal_error("Mismatched array reference in Glk call.");
+  if (!arref->retained)
+    fatal_error("Unretained array reference in Glk call.");
+  if (arref->elemsize != 4 || arref->len != len)
+    fatal_error("Mismatched array argument in Glk call.");
+
+  for (ix=0, addr2=arref->addr; ix<arref->len; ix++, addr2+=4) {
+    val = ((glui32 *)array)[ix];
+    MemW4(addr2, val);
+  }
+  glulx_free(array);
+  glulx_free(arref);
 }
 

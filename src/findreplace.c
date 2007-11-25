@@ -206,16 +206,6 @@ on_find_text_changed                   (GtkEditable     *editable,
       lookup_widget(GTK_WIDGET(editable), "find_replace_all"), text_not_empty);
 }
 
-
-void
-on_find_close_clicked                  (GtkButton       *button,
-                                        gpointer         user_data)
-{
-    /* Close the dialog */
-    gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
-}
-
-
 /* Callback for when "Find Next" is clicked from a Find dialog that was
   started from an Inform 7 project */
 void

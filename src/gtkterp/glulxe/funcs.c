@@ -231,7 +231,7 @@ void pop_callstub(glui32 returnvalue)
   case 0x10:
     /* This call stub was pushed during a string-decoding operation!
        We have to restart it. (Note that the return value is discarded.) */
-    stream_string(pc, 2, destaddr); 
+    stream_string(pc, 0xE1, destaddr); 
     break;
 
   case 0x12:
@@ -243,7 +243,13 @@ void pop_callstub(glui32 returnvalue)
   case 0x13:
     /* This call stub was pushed during a C-string printing operation.
        We have to restart it. (Note that the return value is discarded.) */
-    stream_string(pc, 1, destaddr); 
+    stream_string(pc, 0xE0, destaddr); 
+    break;
+
+  case 0x14:
+    /* This call stub was pushed during a Unicode printing operation.
+       We have to restart it. (Note that the return value is discarded.) */
+    stream_string(pc, 0xE2, destaddr); 
     break;
 
   default:

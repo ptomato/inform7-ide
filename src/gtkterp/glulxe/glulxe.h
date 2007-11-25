@@ -125,6 +125,7 @@ extern glui32 endmem;
 extern glui32 protectstart, protectend;
 
 extern void (*stream_char_handler)(unsigned char ch);
+extern void (*stream_unichar_handler)(glui32 ch);
 
 /* main.c */
 extern void fatal_error_handler(char *str, char *arg, int useval, glsi32 val);
@@ -134,7 +135,7 @@ extern void nonfatal_warning_handler(char *str, char *arg, int useval, glsi32 va
 #define fatal_error_i(s, v)  (fatal_error_handler((s), NULL, TRUE, (v)))
 #define nonfatal_warning(s) (nonfatal_warning_handler((s), NULL, FALSE, 0))
 #define nonfatal_warning_2(s1, s2) (nonfatal_warning_handler((s1), (s2), FALSE, 0))
-#define nonfatal_warning_i(s) (nonfatal_warning_handler((s), NULL, TRUE, (v)))
+#define nonfatal_warning_i(s, v) (nonfatal_warning_handler((s), NULL, TRUE, (v)))
 
 /* files.c */
 extern int is_gamefile_valid(void);
@@ -144,7 +145,7 @@ extern int locate_gamefile(int isblorb);
 extern void setup_vm(void);
 extern void finalize_vm(void);
 extern void vm_restart(void);
-extern glui32 change_memsize(glui32 newlen);
+extern glui32 change_memsize(glui32 newlen, int internal);
 extern glui32 *pop_arguments(glui32 count, glui32 addr);
 
 /* exec.c */
@@ -174,7 +175,19 @@ extern void stream_set_table(glui32 addr);
 extern void stream_get_iosys(glui32 *mode, glui32 *rock);
 extern void stream_set_iosys(glui32 mode, glui32 rock);
 extern char *make_temp_string(glui32 addr);
+extern glui32 *make_temp_ustring(glui32 addr);
 extern void free_temp_string(char *str);
+extern void free_temp_ustring(glui32 *str);
+
+/* heap.c */
+extern void heap_clear(void);
+extern int heap_is_active(void);
+extern glui32 heap_get_start(void);
+extern glui32 heap_alloc(glui32 len);
+extern void heap_free(glui32 addr);
+extern int heap_get_summary(glui32 *valcount, glui32 **summary);
+extern int heap_apply_summary(glui32 valcount, glui32 *summary);
+extern void heap_sanity_check(void);
 
 /* serial.c */
 extern int init_serial(void);
@@ -201,6 +214,8 @@ extern void *glulx_realloc(void *ptr, glui32 len);
 extern void glulx_free(void *ptr);
 extern void glulx_setrandom(glui32 seed);
 extern glui32 glulx_random(void);
+extern void glulx_sort(void *addr, int count, int size, 
+  int (*comparefunc)(void *p1, void *p2));
 
 /* gestalt.c */
 extern glui32 do_gestalt(glui32 val, glui32 val2);

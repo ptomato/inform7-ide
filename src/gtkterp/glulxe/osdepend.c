@@ -182,3 +182,14 @@ static void lo_seed_random(glui32 seed)
 }
 
 #endif /* COMPILE_RANDOM_CODE */
+
+#include <stdlib.h>
+
+/* I'm putting a wrapper for qsort() here, in case I ever have to
+   worry about a platform without it. But I am not worrying at
+   present. */
+void glulx_sort(void *addr, int count, int size, 
+  int (*comparefunc)(void *p1, void *p2))
+{
+  qsort(addr, count, size, (int (*)(const void *, const void *))comparefunc);
+}

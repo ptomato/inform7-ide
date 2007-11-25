@@ -2908,9 +2908,9 @@ create_find_dialog (void)
   g_signal_connect ((gpointer) find_text, "changed",
                     G_CALLBACK (on_find_text_changed),
                     NULL);
-  g_signal_connect ((gpointer) find_close, "clicked",
-                    G_CALLBACK (on_find_close_clicked),
-                    NULL);
+  g_signal_connect_swapped ((gpointer) find_close, "clicked",
+                            G_CALLBACK (gtk_widget_destroy),
+                            GTK_OBJECT (find_dialog));
 
   gtk_label_set_mnemonic_widget (GTK_LABEL (label46), find_replace_text);
   gtk_label_set_mnemonic_widget (GTK_LABEL (label45), find_text);
@@ -3242,6 +3242,7 @@ create_new_dialog (void)
   gtk_widget_show (new_druid);
   gtk_container_add (GTK_CONTAINER (new_dialog), new_druid);
   gtk_container_set_border_width (GTK_CONTAINER (new_druid), 4);
+  GTK_WIDGET_SET_FLAGS (new_druid, GTK_CAN_DEFAULT);
 
   new_druid_type_page = gnome_druid_page_standard_new ();
   gtk_widget_show_all (new_druid_type_page);
@@ -3569,6 +3570,7 @@ create_new_dialog (void)
   GLADE_HOOKUP_OBJECT_NO_REF (new_dialog, tooltips, "tooltips");
 
   gtk_widget_grab_focus (new_name);
+  gtk_widget_grab_default (new_druid);
   return new_dialog;
 }
 
@@ -4806,7 +4808,6 @@ GtkWidget*
 create_skein_spacing_dialog (void)
 {
   GtkWidget *skein_spacing_dialog;
-  GdkPixbuf *skein_spacing_dialog_icon_pixbuf;
   GtkWidget *dialog_vbox5;
   GtkWidget *vbox51;
   GtkWidget *label94;
@@ -4828,12 +4829,6 @@ create_skein_spacing_dialog (void)
   gtk_container_set_border_width (GTK_CONTAINER (skein_spacing_dialog), 3);
   gtk_window_set_title (GTK_WINDOW (skein_spacing_dialog), _("Skein spacing options"));
   gtk_window_set_position (GTK_WINDOW (skein_spacing_dialog), GTK_WIN_POS_CENTER);
-  skein_spacing_dialog_icon_pixbuf = create_pixbuf ("gnome-inform7/Inform.png");
-  if (skein_spacing_dialog_icon_pixbuf)
-    {
-      gtk_window_set_icon (GTK_WINDOW (skein_spacing_dialog), skein_spacing_dialog_icon_pixbuf);
-      gdk_pixbuf_unref (skein_spacing_dialog_icon_pixbuf);
-    }
   gtk_window_set_type_hint (GTK_WINDOW (skein_spacing_dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 
   dialog_vbox5 = GTK_DIALOG (skein_spacing_dialog)->vbox;
@@ -4921,6 +4916,9 @@ create_skein_spacing_dialog (void)
   g_signal_connect ((gpointer) skein_spacing_dialog, "delete_event",
                     G_CALLBACK (gtk_widget_destroy),
                     NULL);
+  g_signal_connect_swapped ((gpointer) skein_spacing_cancel, "clicked",
+                            G_CALLBACK (gtk_widget_destroy),
+                            GTK_OBJECT (skein_spacing_dialog));
 
   gtk_label_set_mnemonic_widget (GTK_LABEL (label95), skein_horizontal_spacing);
   gtk_label_set_mnemonic_widget (GTK_LABEL (label96), skein_vertical_spacing);
@@ -5025,6 +5023,9 @@ create_skein_trim_dialog (void)
   g_signal_connect ((gpointer) skein_trim_dialog, "delete_event",
                     G_CALLBACK (gtk_widget_destroy),
                     NULL);
+  g_signal_connect_swapped ((gpointer) skein_trim_cancel, "clicked",
+                            G_CALLBACK (gtk_widget_destroy),
+                            GTK_OBJECT (skein_trim_dialog));
 
   gtk_label_set_mnemonic_widget (GTK_LABEL (label98), skein_trim_scale);
 

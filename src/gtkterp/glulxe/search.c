@@ -72,32 +72,32 @@ glui32 linear_search(glui32 key, glui32 keysize,
     int match = TRUE;
     if (keysize <= 4) {
       for (ix=0; match && ix<keysize; ix++) {
-	if (Mem1(start + keyoffset + ix) != keybuf[ix])
-	  match = FALSE;
+        if (Mem1(start + keyoffset + ix) != keybuf[ix])
+          match = FALSE;
       }
     }
     else {
       for (ix=0; match && ix<keysize; ix++) {
-	if (Mem1(start + keyoffset + ix) != Mem1(key + ix))
-	  match = FALSE;
+        if (Mem1(start + keyoffset + ix) != Mem1(key + ix))
+          match = FALSE;
       }
     }
 
     if (match) {
       if (retindex)
-	return count;
+        return count;
       else
-	return start;
+        return start;
     }
 
     if (zeroterm) {
       match = TRUE;
       for (ix=0; match && ix<keysize; ix++) {
-	if (Mem1(start + keyoffset + ix) != 0)
-	  match = FALSE;
+        if (Mem1(start + keyoffset + ix) != 0)
+          match = FALSE;
       }
       if (match) {
-	break;
+        break;
       }
     }
   }
@@ -138,30 +138,30 @@ glui32 binary_search(glui32 key, glui32 keysize,
 
     if (keysize <= 4) {
       for (ix=0; (!cmp) && ix<keysize; ix++) {
-	byte = Mem1(addr + keyoffset + ix);
-	byte2 = keybuf[ix];
-	if (byte < byte2)
-	  cmp = -1;
-	else if (byte > byte2)
-	  cmp = 1;
+        byte = Mem1(addr + keyoffset + ix);
+        byte2 = keybuf[ix];
+        if (byte < byte2)
+          cmp = -1;
+        else if (byte > byte2)
+          cmp = 1;
       }
     }
     else {
       for (ix=0; (!cmp) && ix<keysize; ix++) {
-	byte = Mem1(addr + keyoffset + ix);
-	byte2 = Mem1(key + ix);
-	if (byte < byte2)
-	  cmp = -1;
-	else if (byte > byte2)
-	  cmp = 1;
+        byte = Mem1(addr + keyoffset + ix);
+        byte2 = Mem1(key + ix);
+        if (byte < byte2)
+          cmp = -1;
+        else if (byte > byte2)
+          cmp = 1;
       }
     }
 
     if (!cmp) {
       if (retindex)
-	return val;
+        return val;
       else
-	return addr;
+        return addr;
     }
 
     if (cmp < 0) {
@@ -200,14 +200,14 @@ glui32 linked_search(glui32 key, glui32 keysize,
     int match = TRUE;
     if (keysize <= 4) {
       for (ix=0; match && ix<keysize; ix++) {
-	if (Mem1(start + keyoffset + ix) != keybuf[ix])
-	  match = FALSE;
+        if (Mem1(start + keyoffset + ix) != keybuf[ix])
+          match = FALSE;
       }
     }
     else {
       for (ix=0; match && ix<keysize; ix++) {
-	if (Mem1(start + keyoffset + ix) != Mem1(key + ix))
-	  match = FALSE;
+        if (Mem1(start + keyoffset + ix) != Mem1(key + ix))
+          match = FALSE;
       }
     }
 
@@ -218,11 +218,11 @@ glui32 linked_search(glui32 key, glui32 keysize,
     if (zeroterm) {
       match = TRUE;
       for (ix=0; match && ix<keysize; ix++) {
-	if (Mem1(start + keyoffset + ix) != 0)
-	  match = FALSE;
+        if (Mem1(start + keyoffset + ix) != 0)
+          match = FALSE;
       }
       if (match) {
-	break;
+        break;
       }
     }
     
@@ -246,7 +246,7 @@ static void fetchkey(unsigned char *keybuf, glui32 key, glui32 keysize,
   if (options & serop_KeyIndirect) {
     if (keysize <= 4) {
       for (ix=0; ix<keysize; ix++)
-	keybuf[ix] = Mem1(key+ix);
+        keybuf[ix] = Mem1(key+ix);
     }
   }
   else {

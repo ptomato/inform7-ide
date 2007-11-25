@@ -7,8 +7,6 @@
 #include "glulxe.h"
 #include "glkstart.h" /* This comes with the Glk library. */
 
-#include "string.h"
-
 /* The only command-line argument is the filename. */
 glkunix_argumentlist_t glkunix_arguments[] = {
   { "", glkunix_arg_ValueFollows, "filename: The game file to load." },
@@ -23,17 +21,9 @@ int glkunix_startup_code(glkunix_startup_t *data)
   unsigned char buf[12];
   int res;
 
-#ifdef GARGLK
-  garglk_set_program_name("Glulxe 0.3.5");
-  garglk_set_program_info("Glulxe 0.3.5 by Andrew Plotkin");
-#endif
-
   if (data->argc <= 1) {
     init_err = "You must supply the name of a game file.";
-#ifdef GARGLK
-    return TRUE; /* Hack! but I want error message in glk window */
-#endif
-	return FALSE;
+    return FALSE;
   }
   cx = data->argv[1];
     
@@ -43,12 +33,6 @@ int glkunix_startup_code(glkunix_startup_t *data)
     init_err2 = cx;
     return TRUE;
   }
-
-#ifdef GARGLK
-  cx = strrchr(data->argv[1], '/');
-  if (!cx) cx = strrchr(data->argv[1], '\\');
-  garglk_set_story_name(cx ? cx + 1 : data->argv[1]);
-#endif
 
   /* Now we have to check to see if it's a Blorb file. */
 

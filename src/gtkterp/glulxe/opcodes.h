@@ -65,6 +65,7 @@
 #define op_streamchar   (0x70)
 #define op_streamnum    (0x71)
 #define op_streamstr    (0x72)
+#define op_streamunichar (0x73)
 
 #define op_gestalt      (0x100)
 #define op_debugtrap    (0x101)
@@ -99,6 +100,11 @@
 #define op_callfi       (0x161)
 #define op_callfii      (0x162)
 #define op_callfiii     (0x163)
+
+#define op_mzero        (0x170)
+#define op_mcopy        (0x171)
+#define op_malloc       (0x178)
+#define op_mfree        (0x179)
 
 #endif /* _OPCODES_H */
 

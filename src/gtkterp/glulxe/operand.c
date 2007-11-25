@@ -148,6 +148,7 @@ operandlist_t *lookup_operandlist(glui32 opcode)
     return &list_L;
 
   case op_streamchar:
+  case op_streamunichar:
   case op_streamnum:
   case op_streamstr:
     return &list_L;
@@ -210,6 +211,15 @@ operandlist_t *lookup_operandlist(glui32 opcode)
     return &list_LLLS;
   case op_callfiii:
     return &list_LLLLS;
+
+  case op_mzero:
+    return &list_LL;
+  case op_mcopy:
+    return &list_LLL;
+  case op_malloc:
+    return &list_LS;
+  case op_mfree:
+    return &list_L;
 
   default: 
     return NULL;
@@ -286,37 +296,37 @@ void parse_operands(instruction_t *inst, operandlist_t *oplist)
         break;
 
       case 15: /* main memory RAM, four-byte address */
-	addr = Mem4(pc);
+        addr = Mem4(pc);
         addr += ramstart;
-	pc += 4;
-	goto MainMemAddr; 
+        pc += 4;
+        goto MainMemAddr; 
 
       case 14: /* main memory RAM, two-byte address */
-	addr = (glui32)Mem2(pc);
+        addr = (glui32)Mem2(pc);
         addr += ramstart;
-	pc += 2;
-	goto MainMemAddr; 
+        pc += 2;
+        goto MainMemAddr; 
 
       case 13: /* main memory RAM, one-byte address */
         addr = (glui32)(Mem1(pc));
         addr += ramstart;
         pc++;
-	goto MainMemAddr; 
-	
+        goto MainMemAddr; 
+        
       case 7: /* main memory, four-byte address */
-	addr = Mem4(pc);
-	pc += 4;
-	goto MainMemAddr;
+        addr = Mem4(pc);
+        pc += 4;
+        goto MainMemAddr;
 
       case 6: /* main memory, two-byte address */
-	addr = (glui32)Mem2(pc);
-	pc += 2;
-	goto MainMemAddr;
+        addr = (glui32)Mem2(pc);
+        pc += 2;
+        goto MainMemAddr;
 
       case 5: /* main memory, one-byte address */
         addr = (glui32)(Mem1(pc));
         pc++;
-	/* fall through */
+        /* fall through */
 
       MainMemAddr:
         /* cases 5, 6, 7, 13, 14, 15 all wind up here. */
@@ -332,19 +342,19 @@ void parse_operands(instruction_t *inst, operandlist_t *oplist)
         break;
 
       case 11: /* locals, four-byte address */
-	addr = Mem4(pc);
-	pc += 4;
-	goto LocalsAddr;
+        addr = Mem4(pc);
+        pc += 4;
+        goto LocalsAddr;
 
       case 10: /* locals, two-byte address */
-	addr = (glui32)Mem2(pc);
-	pc += 2;
-	goto LocalsAddr; 
+        addr = (glui32)Mem2(pc);
+        pc += 2;
+        goto LocalsAddr; 
 
       case 9: /* locals, one-byte address */
         addr = (glui32)(Mem1(pc));
         pc++;
-	/* fall through */
+        /* fall through */
 
       LocalsAddr:
         /* cases 9, 10, 11 all wind up here. It's illegal for addr to not
@@ -385,37 +395,37 @@ void parse_operands(instruction_t *inst, operandlist_t *oplist)
         break;
 
       case 15: /* main memory RAM, four-byte address */
-	addr = Mem4(pc);
+        addr = Mem4(pc);
         addr += ramstart;
-	pc += 4;
-	goto WrMainMemAddr; 
+        pc += 4;
+        goto WrMainMemAddr; 
 
       case 14: /* main memory RAM, two-byte address */
-	addr = (glui32)Mem2(pc);
+        addr = (glui32)Mem2(pc);
         addr += ramstart;
-	pc += 2;
-	goto WrMainMemAddr; 
+        pc += 2;
+        goto WrMainMemAddr; 
 
       case 13: /* main memory RAM, one-byte address */
         addr = (glui32)(Mem1(pc));
         addr += ramstart;
         pc++;
-	goto WrMainMemAddr; 
+        goto WrMainMemAddr; 
 
       case 7: /* main memory, four-byte address */
-	addr = Mem4(pc);
-	pc += 4;
-	goto WrMainMemAddr;
+        addr = Mem4(pc);
+        pc += 4;
+        goto WrMainMemAddr;
 
       case 6: /* main memory, two-byte address */
-	addr = (glui32)Mem2(pc);
-	pc += 2;
-	goto WrMainMemAddr;
+        addr = (glui32)Mem2(pc);
+        pc += 2;
+        goto WrMainMemAddr;
 
       case 5: /* main memory, one-byte address */
         addr = (glui32)(Mem1(pc));
         pc++;
-	/* fall through */
+        /* fall through */
 
       WrMainMemAddr:
         /* cases 5, 6, 7 all wind up here. */
@@ -424,19 +434,19 @@ void parse_operands(instruction_t *inst, operandlist_t *oplist)
         break;
 
       case 11: /* locals, four-byte address */
-	addr = Mem4(pc);
-	pc += 4;
-	goto WrLocalsAddr;
+        addr = Mem4(pc);
+        pc += 4;
+        goto WrLocalsAddr;
 
       case 10: /* locals, two-byte address */
-	addr = (glui32)Mem2(pc);
-	pc += 2;
-	goto WrLocalsAddr; 
+        addr = (glui32)Mem2(pc);
+        pc += 2;
+        goto WrLocalsAddr; 
 
       case 9: /* locals, one-byte address */
         addr = (glui32)(Mem1(pc));
         pc++;
-	/* fall through */
+        /* fall through */
 
       WrLocalsAddr:
         /* cases 9, 10, 11 all wind up here. It's illegal for addr to not
