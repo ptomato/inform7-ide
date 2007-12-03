@@ -18,8 +18,11 @@
  */
 
 
-#include <math.h>
+
 #include <gnome.h>
+
+#ifdef I_LIKE_SKEIN
+#include <math.h>
 #include <libgnomecanvas/libgnomecanvas.h>
 #include "gtkterp/gtkterp.h"
 
@@ -957,10 +960,12 @@ find_node_by_coordinates(GNode *node, double x, double y)
     return NULL;
 }
 */
+#endif /*I_LIKE_SKEIN*/
 
 void
 on_skein_layout_clicked(GtkToolButton *toolbutton, gpointer user_data)
 {
+#ifdef I_LIKE_SKEIN
 	GtkWidget *dialog = create_skein_spacing_dialog();
 	Story *thestory = get_story(GTK_WIDGET(toolbutton));
 	g_signal_connect(lookup_widget(dialog, "skein_spacing_use_defaults"),
@@ -970,16 +975,19 @@ on_skein_layout_clicked(GtkToolButton *toolbutton, gpointer user_data)
 	g_signal_connect(lookup_widget(dialog, "skein_spacing_ok"), "clicked",
 					 G_CALLBACK(on_skein_spacing_ok_clicked), thestory);
 	gtk_widget_show(dialog);
+#endif /*I_LIKE_SKEIN*/
 }
 
 void
 on_skein_trim_clicked(GtkToolButton *toolbutton, gpointer user_data)
 {
+#ifdef I_LIKE_SKEIN
 	GtkWidget *dialog = create_skein_trim_dialog();
 	Story *thestory = get_story(GTK_WIDGET(toolbutton));
 	g_signal_connect(lookup_widget(dialog, "skein_trim_ok"), "clicked",
 					 G_CALLBACK(on_skein_trim_ok_clicked), thestory);
 	gtk_widget_show(dialog);
+#endif /*I_LIKE_SKEIN*/
 }
 
 void
@@ -988,7 +996,7 @@ on_skein_play_all_clicked(GtkToolButton *toolbutton, gpointer user_data)
 	
 }
 
-
+#ifdef I_LIKE_SKEIN
 void
 on_skein_spacing_use_defaults_clicked(GtkButton *button, gpointer user_data)
 {
@@ -1009,3 +1017,4 @@ on_skein_trim_ok_clicked(GtkButton *button, gpointer user_data)
     /* Close the dialog */
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 }
+#endif /*I_LIKE_SKEIN*/

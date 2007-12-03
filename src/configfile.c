@@ -156,7 +156,6 @@ check_config_file()
     config_file_default_bool("Cleaning", "BuildFiles", TRUE);
     config_file_default_bool("Cleaning", "IndexFiles", FALSE);
     config_file_default_bool("Debugging", "ShowLog", FALSE);
-    config_file_default_bool("Debugging", "RebuildCompiler", FALSE);
     config_file_default_int("Skein", "HorizontalSpacing", 40);
     config_file_default_int("Skein", "VerticalSpacing", 75);
 }

@@ -176,12 +176,14 @@ static void show_inspector(int which, gboolean show) {
       case INSPECTOR_HEADINGS:
         inspector = lookup_widget(inspector_window, "headings_inspector");
         break;
+#ifdef I_LIKE_SKEIN
       case INSPECTOR_SKEIN:
         inspector = lookup_widget(inspector_window, "skein_inspector");
         if(show && !GTK_WIDGET_VISIBLE(inspector)
            && inspecting->drawflag[SKEIN_INSPECTOR])
             skein_schedule_redraw(inspecting->theskein, inspecting);
         break;
+#endif /* I_LIKE_SKEIN */
       case INSPECTOR_SEARCH_FILES:
         inspector = lookup_widget(inspector_window, "search_inspector");
         break;
@@ -215,11 +217,13 @@ void update_inspectors() {
    are already displaying the data from the same story, because this function is
    also called when we just want to refresh the data. */
 void refresh_inspector(Story *thestory) {
+#ifdef I_LIKE_SKEIN
     /* Erase the previous story's Skein canvas */
     if(thestory->skeingroup[SKEIN_INSPECTOR]) {
         gtk_object_destroy(GTK_OBJECT(thestory->skeingroup[SKEIN_INSPECTOR]));
         thestory->skeingroup[SKEIN_INSPECTOR] = NULL;
     }
+#endif /* I_LIKE_SKEIN */
     
     /* Set the story we are currently inspecting */
     inspecting = thestory;
@@ -243,9 +247,10 @@ void refresh_inspector(Story *thestory) {
               GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
         }
     }
-    
+#ifdef I_LIKE_SKEIN    
     /* Refresh the skein inspector */
     skein_schedule_redraw(inspecting->theskein, inspecting);
+#endif /* I_LIKE_SKEIN */
 }
 
 /* Get the position of the inspector window and save it for the next run */

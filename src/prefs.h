@@ -238,10 +238,6 @@ on_prefs_show_log_toggle_toggled       (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
-on_prefs_rebuild_compiler_toggle_toggled
-                                        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-void
 on_prefs_close_clicked                 (GtkButton       *button,
                                         gpointer         user_data);
                                         

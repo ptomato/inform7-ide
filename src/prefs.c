@@ -327,9 +327,6 @@ on_prefs_dialog_realize                (GtkWidget       *widget,
     trash = lookup_widget(widget, "prefs_show_log_toggle");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
       config_file_get_bool("Debugging", "ShowLog"));
-    trash = lookup_widget(widget, "prefs_rebuild_compiler_toggle");
-    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(trash),
-      config_file_get_bool("Debugging", "RebuildCompiler"));
     
     /* List all the installed extensions in the extension widgets */
     populate_extension_lists(widget);
@@ -908,16 +905,6 @@ on_prefs_show_log_toggle_toggled       (GtkToggleButton *togglebutton,
         config_file_set_bool("Debugging", "ShowLog", setting);
         for_each_story_window(setting? add_debug_tabs : remove_debug_tabs);
     }
-}
-
-
-void
-on_prefs_rebuild_compiler_toggle_toggled
-                                        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-    config_file_set_bool("Debugging", "RebuildCompiler",
-      gtk_toggle_button_get_active(togglebutton));
 }
 
 

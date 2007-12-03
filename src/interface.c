@@ -493,7 +493,7 @@ create_app_window (void)
   GtkWidget *separatortoolitem8;
   GtkWidget *transcript_bless_all_l;
   GtkWidget *scrolledwindow9;
-  GtkWidget *canvas3;
+  GtkWidget *treeview1;
   GtkWidget *label12;
   GtkWidget *vbox50;
   GtkWidget *toolbar12;
@@ -601,7 +601,7 @@ create_app_window (void)
   GtkWidget *separatortoolitem9;
   GtkWidget *transcript_bless_all_r;
   GtkWidget *scrolledwindow10;
-  GtkWidget *canvas4;
+  GtkWidget *treeview2;
   GtkWidget *label39;
   GtkWidget *vbox49;
   GtkWidget *toolbar13;
@@ -1044,7 +1044,6 @@ create_app_window (void)
   gtk_label_set_angle (GTK_LABEL (label10), 270);
 
   vbox3 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_show (vbox3);
   gtk_container_add (GTK_CONTAINER (notebook_l), vbox3);
 
   toolbar8 = gtk_toolbar_new ();
@@ -1084,14 +1083,14 @@ create_app_window (void)
 
   tmp_image = gtk_image_new_from_stock ("gtk-preferences", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  skein_layout_l = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Layout..."));
+  skein_layout_l = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Layout"));
   gtk_widget_show (skein_layout_l);
   gtk_container_add (GTK_CONTAINER (toolbar8), skein_layout_l);
   gtk_tool_item_set_is_important (GTK_TOOL_ITEM (skein_layout_l), TRUE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-cut", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  skein_trim_l = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Trim..."));
+  skein_trim_l = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Trim"));
   gtk_widget_show (skein_trim_l);
   gtk_container_add (GTK_CONTAINER (toolbar8), skein_trim_l);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (skein_trim_l), tooltips, _("Remove all knots that have not been locked"), NULL);
@@ -1161,10 +1160,9 @@ create_app_window (void)
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow9), GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow9), GTK_SHADOW_IN);
 
-  canvas3 = gnome_canvas_new ();
-  gtk_widget_show (canvas3);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow9), canvas3);
-  gnome_canvas_set_scroll_region (GNOME_CANVAS (canvas3), 0, 0, 100, 100);
+  treeview1 = gtk_tree_view_new ();
+  gtk_widget_show (treeview1);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow9), treeview1);
 
   label12 = gtk_label_new (_("Transcript"));
   gtk_widget_show (label12);
@@ -1653,7 +1651,6 @@ create_app_window (void)
   gtk_label_set_angle (GTK_LABEL (label37), 270);
 
   vbox6 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_show (vbox6);
   gtk_container_add (GTK_CONTAINER (notebook_r), vbox6);
 
   toolbar9 = gtk_toolbar_new ();
@@ -1693,14 +1690,14 @@ create_app_window (void)
 
   tmp_image = gtk_image_new_from_stock ("gtk-preferences", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  skein_layout_r = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Layout..."));
+  skein_layout_r = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Layout"));
   gtk_widget_show (skein_layout_r);
   gtk_container_add (GTK_CONTAINER (toolbar9), skein_layout_r);
   gtk_tool_item_set_is_important (GTK_TOOL_ITEM (skein_layout_r), TRUE);
 
   tmp_image = gtk_image_new_from_stock ("gtk-cut", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
-  skein_trim_r = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Trim..."));
+  skein_trim_r = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Trim"));
   gtk_widget_show (skein_trim_r);
   gtk_container_add (GTK_CONTAINER (toolbar9), skein_trim_r);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (skein_trim_r), tooltips, _("Remove all knots that have not been locked"), NULL);
@@ -1770,10 +1767,9 @@ create_app_window (void)
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow10), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow10), GTK_SHADOW_IN);
 
-  canvas4 = gnome_canvas_new ();
-  gtk_widget_show (canvas4);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow10), canvas4);
-  gnome_canvas_set_scroll_region (GNOME_CANVAS (canvas4), 0, 0, 100, 100);
+  treeview2 = gtk_tree_view_new ();
+  gtk_widget_show (treeview2);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow10), treeview2);
 
   label39 = gtk_label_new (_("Transcript"));
   gtk_widget_show (label39);
@@ -2345,7 +2341,7 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, separatortoolitem8, "separatortoolitem8");
   GLADE_HOOKUP_OBJECT (app_window, transcript_bless_all_l, "transcript_bless_all_l");
   GLADE_HOOKUP_OBJECT (app_window, scrolledwindow9, "scrolledwindow9");
-  GLADE_HOOKUP_OBJECT (app_window, canvas3, "canvas3");
+  GLADE_HOOKUP_OBJECT (app_window, treeview1, "treeview1");
   GLADE_HOOKUP_OBJECT (app_window, label12, "label12");
   GLADE_HOOKUP_OBJECT (app_window, vbox50, "vbox50");
   GLADE_HOOKUP_OBJECT (app_window, toolbar12, "toolbar12");
@@ -2452,7 +2448,7 @@ create_app_window (void)
   GLADE_HOOKUP_OBJECT (app_window, separatortoolitem9, "separatortoolitem9");
   GLADE_HOOKUP_OBJECT (app_window, transcript_bless_all_r, "transcript_bless_all_r");
   GLADE_HOOKUP_OBJECT (app_window, scrolledwindow10, "scrolledwindow10");
-  GLADE_HOOKUP_OBJECT (app_window, canvas4, "canvas4");
+  GLADE_HOOKUP_OBJECT (app_window, treeview2, "treeview2");
   GLADE_HOOKUP_OBJECT (app_window, label39, "label39");
   GLADE_HOOKUP_OBJECT (app_window, vbox49, "vbox49");
   GLADE_HOOKUP_OBJECT (app_window, toolbar13, "toolbar13");
@@ -3678,7 +3674,6 @@ create_prefs_dialog (void)
   GtkWidget *alignment17;
   GtkWidget *vbox30;
   GtkWidget *prefs_show_log_toggle;
-  GtkWidget *prefs_rebuild_compiler_toggle;
   GtkWidget *label76;
   GtkWidget *label75;
   GtkWidget *label69;
@@ -3940,7 +3935,6 @@ create_prefs_dialog (void)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_headings_toggle), TRUE);
 
   prefs_skein_toggle = gtk_check_button_new_with_mnemonic (_("S_kein"));
-  gtk_widget_show (prefs_skein_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_skein_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_skein_toggle, FALSE);
   gtk_tooltips_set_tip (tooltips, prefs_skein_toggle, _("The skein inspector displays the story's current skein"), NULL);
@@ -3958,7 +3952,6 @@ create_prefs_dialog (void)
   gtk_label_set_use_markup (GTK_LABEL (label77), TRUE);
 
   frame11 = gtk_frame_new (NULL);
-  gtk_widget_show (frame11);
   gtk_box_pack_start (GTK_BOX (vbox22), frame11, FALSE, TRUE, 0);
 
   alignment19 = gtk_alignment_new (0.5, 0.5, 1, 1);
@@ -3971,18 +3964,15 @@ create_prefs_dialog (void)
   gtk_container_add (GTK_CONTAINER (alignment19), vbox32);
 
   prefs_project_files_toggle = gtk_check_button_new_with_mnemonic (_("_Project files"));
-  gtk_widget_show (prefs_project_files_toggle);
   gtk_box_pack_start (GTK_BOX (vbox32), prefs_project_files_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_project_files_toggle, FALSE);
   gtk_tooltips_set_tip (tooltips, prefs_project_files_toggle, _("The project files inspector shows a list of the available files in the current project, and allows you to switch between them"), NULL);
 
   prefs_watchpoints_toggle = gtk_check_button_new_with_mnemonic (_("_Watchpoints"));
-  gtk_widget_show (prefs_watchpoints_toggle);
   gtk_box_pack_start (GTK_BOX (vbox32), prefs_watchpoints_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_watchpoints_toggle, FALSE);
 
   prefs_breakpoints_toggle = gtk_check_button_new_with_mnemonic (_("_Breakpoints"));
-  gtk_widget_show (prefs_breakpoints_toggle);
   gtk_box_pack_start (GTK_BOX (vbox32), prefs_breakpoints_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_breakpoints_toggle, FALSE);
 
@@ -4229,12 +4219,7 @@ create_prefs_dialog (void)
   gtk_widget_show (prefs_show_log_toggle);
   gtk_box_pack_start (GTK_BOX (vbox30), prefs_show_log_toggle, FALSE, FALSE, 0);
 
-  prefs_rebuild_compiler_toggle = gtk_check_button_new_with_mnemonic (_("_Rebuild I7 compiler as needed (only for\nmaintainers of Inform)"));
-  gtk_widget_show (prefs_rebuild_compiler_toggle);
-  gtk_box_pack_start (GTK_BOX (vbox30), prefs_rebuild_compiler_toggle, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (prefs_rebuild_compiler_toggle, FALSE);
-
-  label76 = gtk_label_new (_("These options are intended only for advanced users\nof Inform 7. They are most useful to people\ninvolved with maintaining the compiler, although\nthe Inform 6 intermediate code may be of interest\nto especially advanced extension authors."));
+  label76 = gtk_label_new (_("This option is intended only for advanced users\nof Inform 7. It is most useful to people\ninvolved with maintaining the compiler, although\nthe Inform 6 intermediate code may be of interest\nto especially advanced extension authors."));
   gtk_widget_show (label76);
   gtk_box_pack_start (GTK_BOX (vbox30), label76, FALSE, FALSE, 5);
   gtk_misc_set_alignment (GTK_MISC (label76), 0, 0.5);
@@ -4353,9 +4338,6 @@ create_prefs_dialog (void)
   g_signal_connect ((gpointer) prefs_show_log_toggle, "toggled",
                     G_CALLBACK (on_prefs_show_log_toggle_toggled),
                     NULL);
-  g_signal_connect ((gpointer) prefs_rebuild_compiler_toggle, "toggled",
-                    G_CALLBACK (on_prefs_rebuild_compiler_toggle_toggled),
-                    NULL);
   g_signal_connect ((gpointer) prefs_close, "clicked",
                     G_CALLBACK (on_prefs_close_clicked),
                     NULL);
@@ -4470,7 +4452,6 @@ create_prefs_dialog (void)
   GLADE_HOOKUP_OBJECT (prefs_dialog, alignment17, "alignment17");
   GLADE_HOOKUP_OBJECT (prefs_dialog, vbox30, "vbox30");
   GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_show_log_toggle, "prefs_show_log_toggle");
-  GLADE_HOOKUP_OBJECT (prefs_dialog, prefs_rebuild_compiler_toggle, "prefs_rebuild_compiler_toggle");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label76, "label76");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label75, "label75");
   GLADE_HOOKUP_OBJECT (prefs_dialog, label69, "label69");
@@ -4584,7 +4565,6 @@ create_inspector_window (void)
   gtk_expander_set_label_widget (GTK_EXPANDER (headings_inspector), label84);
 
   skein_inspector = gtk_expander_new (NULL);
-  gtk_widget_show (skein_inspector);
   gtk_box_pack_start (GTK_BOX (vbox34), skein_inspector, TRUE, TRUE, 0);
   gtk_expander_set_expanded (GTK_EXPANDER (skein_inspector), TRUE);
 
