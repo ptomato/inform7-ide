@@ -1,0 +1,128 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.14. Goal-Seeking Characters</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
+-->
+</STYLE>
+<body bgcolor="#FFFFE0">
+<!-- SEARCH TITLE "IQ Test" -->
+<!-- SEARCH SECTION "Ex 175" -->
+<!-- SEARCH SORT "Ex 007-014-175" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc52.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap7.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 7: Other Characters</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc54.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.14. Goal-Seeking Characters</b></font></td></tr></table>
+<p>
+<p>Goal-seeking characters are the most advanced IF life-form: they want to achieve specific outcomes, and they are able to work out plans of approach in order to bring these things about. They walk to rooms, open containers to search for things, use keys and tools, and ask leading questions in conversation.
+<p>
+<p>A really advanced implementation of goal-seeking behavior is beyond the scope of our examples (though extensions exist that treat the problem more thoroughly). We can accomplish a surprising amount without heavy customization, though, if we keep in mind three points of technique:
+<p>
+<p>First: it helps to think abstractly and to create broadly-defined actions as a first step to more specific tasks. For instance, a character's goal might be to eat some dinner. He'd be equally satisfied with spaghetti carbonara or with braised lamb shanks, but he needs to figure out which is available. So we might have our every turn rule (or whatever we're using to activate the character) say something like
+<p>
+<blockquote><font color="#000080">Every turn when Clark is hungry:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try Clark dining.
+</font></blockquote><p>
+<p>
+<p>Dining would then be an action we've defined specially, which looks around Clark's environment for suitable food; if it finds food, it issues a
+<p>
+<blockquote><font color="#000080">try Clark eating the suitable food;
+</font></blockquote><p>
+<p>
+<p>command; but if not, it sends Clark off to look for something likely. <b>The Man of Steel</b> demonstrates the use of this.
+<p>
+<p>Second: though it doesn't actually contribute to the goal-seeking per se, lively reporting brings characters' generated behavior to life.
+<p>
+<blockquote><font color="#000080">Clark eats a donut.
+</font></blockquote><p>
+<p>
+<p>doesn't characterize Clark very much, even though the eating may be part of a subtle, intelligent plan to seduce Lois Lane. We'll do better if we replace a lot of the character reporting rules: to that end, see the example <b>Reporting rules for other characters' behavior</b>.
+<p>
+<p>Third: goal-seeking characters notice when something is in the way of the action they want to perform. When that happens, they form a plan about how to remove the obstacle. We've already seen this kind of implementation on the player's behalf: the player will pick up items before eating them, say. We can use Before rules to do similar things for other characters, as in
+<p>
+<blockquote><font color="#000080">Before Clark eating the wrapped candy:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try Clark unwrapping the candy;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the candy is wrapped, stop the action.
+</font></blockquote><p>
+<p>
+<p>Here we've set things up so that if Clark tries to eat the wrapped candy, he'll be interrupted by this other command; and if his unwrapping-the-candy attempt fails, he won't go on and eat the thing. <b>IQ Test</b> demonstrates a character who shows this kind of planning intelligence.
+<p>
+<p>Because before-rules chain neatly, we can trigger whole plans of behavior if we have a sensible set, as in
+<p>
+<blockquote><font color="#000080">Before someone entering a closed container: try the person asked opening the noun.
+<br>Before someone opening a locked container: try the person asked unlocking the noun.
+<br>Before someone unlocking a locked container: ...
+</font></blockquote><p>
+<p>
+<p>We must exercise a little bit of care if it is possible for the chain of actions to produce an endless loop - e.g., the character trying to take a key that is inside the transparent, locked box that it opens might repeatedly try to open the box, first unlocking the box, first taking the key, first opening the box, ... <b>Boston Cream</b> is a fully-worked scenario that deals with such a set of conundra.
+<p>
+<a href=Rdoc51.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Traveling Characters</b></font></a><i> for characters who plan routes to locations and travel towards them</i><p><p>
+<a href=Rdoc18.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Event Scheduling</b></font></a><i> for characters who follow a pre-written schedule of activities</i><p><p>
+<a href=Rdoc21.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Plot Management</b></font></a><i> for having a central function direct all the characters in order to further the plot</i><p><p>
+<p><hr><p>
+<a name="e70"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex70.html#e70 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>188</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex70.html#e70 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Man of Steel</font></b></a><br>An escaping action which means "go to any room you can reach from here", and is only useful to non-player characters.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex70.html#e70 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e23"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex23.html#e23 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>193</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex23.html#e23 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Reporting rules for other characters' behavior</font></b></a><br>Elaborating the report rules to be more interesting than "Clark goes west."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex23.html#e23 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e393"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc53.html#e393 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>175</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc53.html#e393 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> IQ Test</font></b></a><br>Introducing Ogg, a person who will unlock and open a container when the player tells him to get something inside.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex393.html#e393 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>We have already seen how Before... rules can generate implicit actions for the player, so that the player will, for instance, open doors before trying to walk through them. The same can be done for characters other than the player; so for instance:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode672(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode(' [=0x0022=]IQ Test[=0x0022=][=0x000A=][=0x000A=]The Donut Shop is a room. [=0x0022=]Vibrantly decorated in donut colors: pink, brown, and cream.[=0x0022=][=0x000A=][=0x000A=]Ogg is a man in the Donut Shop. [=0x0022=]Ogg is slumped in the corner[if Ogg carries something] with [a list of things carried by Ogg][end if]. He wears a nametag which says [=0x0027=]HELLO MY NAME IS OG.[=0x0027=][=0x0022=] Understand [=0x0022=]og[=0x0022=] as Ogg. Ogg wears a nametag. The description of the nametag is [=0x0022=]Sadly misspelled.[=0x0022=][=0x000A=][=0x000A=]The Donut Shop contains a transparent closed openable locked lockable container called a case. The case contains some cake donuts. The donuts are edible.[=0x000A=][=0x000A=]The matching key of the case is a silver key. The silver key is carried by Ogg.[=0x000A=][=0x000A=]A persuasion rule for asking someone to try doing something:[=0x000A=][=0x0009=]persuasion succeeds.[=0x000A=][=0x000A=]Before someone opening a locked thing (called the sealed chest):[=0x000A=][=0x0009=]if the person asked is carrying the matching key of the sealed chest, try the person asked unlocking the sealed chest with the matching key of the sealed chest;[=0x000A=][=0x0009=]if the sealed chest is locked, stop the action.[=0x000A=][=0x000A=]Before someone taking something which is in a closed container (called the shut chest):[=0x000A=][=0x0009=]try the person asked opening the shut chest;[=0x000A=][=0x0009=]if the shut chest is closed, stop the action.[=0x000A=][=0x000A=]The block giving rule is not listed in the check giving it to rules.[=0x000A=][=0x000A=]Test me with [=0x0022=]open case / get donuts / og, get donuts / og, give me the donuts / eat donuts[=0x0022=].[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode672()"><img border=0 src=../doc_images/paste.png></a>  &quot;IQ Test&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Donut Shop is a room. &quot;Vibrantly decorated in donut colors: pink, brown, and cream.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Ogg is a man in the Donut Shop. &quot;Ogg is slumped in the corner[if Ogg carries something] with [a list of things carried by Ogg][end if]. He wears a nametag which says 'HELLO MY NAME IS OG.'&quot; Understand &quot;og&quot; as Ogg. Ogg wears a nametag. The description of the nametag is &quot;Sadly misspelled.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Donut Shop contains a transparent closed openable locked lockable container called a case. The case contains some cake donuts. The donuts are edible.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The matching key of the case is a silver key. The silver key is carried by Ogg.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A persuasion rule for asking someone to try doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;persuasion succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before someone opening a locked thing (called the sealed chest):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is carrying the matching key of the sealed chest, try the person asked unlocking the sealed chest with the matching key of the sealed chest;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the sealed chest is locked, stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before someone taking something which is in a closed container (called the shut chest):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked opening the shut chest;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the shut chest is closed, stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The block giving rule is not listed in the check giving it to rules.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;open case / get donuts / og, get donuts / og, give me the donuts / eat donuts&quot;.
+</font></blockquote><p>
+<p>
+<p>(A more detailed set of before rules for people using doors and locks is provided in Emily Short's Locksmith extension.) Procedural rules like the one above are allowed to alter the built-in rules of Inform: this one lifts the restriction on people giving each other things (a restriction imposed since, generally, it requires the consent of both parties and not just the donor), and enables Ogg to hand over the dough.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc53.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<a name="e64"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex64.html#e64 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>176</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex64.html#e64 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Boston Cream</font></b></a><br>A fuller implementation of Ogg, giving him a motivation of his own and allowing him to react to the situation created by the player.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex64.html#e64 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc52.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc54.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

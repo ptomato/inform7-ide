@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>22.13. Defining phrases in Inform 6</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.12. New tokens</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,107 +19,85 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Odins" -->
-<!-- SEARCH SECTION "Ex 381" -->
-<!-- SEARCH SORT "Ex 022-013-381" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc374.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap22.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 22: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc376.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>22.13. Defining phrases in Inform 6</b></font></td></tr></table>
+<!-- SEARCH TITLE "Lies" -->
+<!-- SEARCH SECTION "Ex 275" -->
+<!-- SEARCH SORT "Ex 016-012-275" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc253.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc255.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.12. New tokens</b></font></td></tr></table>
 <p>
-<p>The phrases described in this documentation, such as &quot;end the game in death&quot;, are all defined in the Standard Rules, and are for the most part defined not in terms of other I7 phrases but instead reduced to equivalents in I6. For instance:
+<p>We have now made good use of square-bracketed tokens, such as &quot;[something]&quot;, in a variety of &quot;Understand...&quot; sentences. It is sometimes convenient to create new tokens of our own, to match whatever grammar we choose: this enables complicated knots of grammar to be used in many different &quot;Understand...&quot; sentences without having to write it all out each time.
 <p>
-<blockquote><font color="#000080">To end the game in death: (- deadflag=1; -).
+<p>For instance, here are new tokens: one for each of two groups of alternative prepositions.
+<p>
+<blockquote><font color="#000080">Understand &quot;beneath/under/by/near/beside/alongside/against&quot; or &quot;next to&quot; or &quot;in front of&quot; as &quot;[beside]&quot;.
 </font></blockquote><p>
 <p>
-<p>The notation &quot;(-&quot; and &quot;-)&quot; indicates that what comes in between is I6 code. The minus sign is supposed to be a mnemonic for the decrease from 7 to 6: later we shall use &quot;(+&quot; and &quot;+)&quot; to go back up the other way, from 6 to 7.
-<p>
-<p>When a phrase is defined as containing only a single command, and that command is defined using I6 - as here - it is compiled in-line. This means that the phrase &quot;end the game in death&quot; will always be translated as &quot;deadflag=1;&quot;, rather than being translated into a call to a suitable function whose only statement is &quot;deadflag=1;&quot;.
-<p>
-<p>This is an easy case since the wording never varies. More typical examples would be:
-<p>
-<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
-<br>To sort (T - table-name) in (TC - table-column) order:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
+<blockquote><font color="#000080">Understand &quot;on/in/inside&quot; or &quot;on top of&quot; as &quot;[within]&quot;.
 </font></blockquote><p>
 <p>
-<p>When the braced name of one of the variables in the phrase preamble appears, this is compiled to the corresponding I6 expression at the relevant position in the I6 code. So, for instance,
+<p>Again, note that the slash indicates a choice between words only, not between entire phrases. For instance,
 <p>
-<blockquote><font color="#000080">say the capacity of the basket
+<blockquote><font color="#000080">Understand &quot;red bird/robin&quot; as &quot;[robin]&quot;.
 </font></blockquote><p>
 <p>
-<p>might be compiled to
+<p>breaks down to understanding either &quot;red bird&quot; or &quot;red robin&quot;, not &quot;red bird&quot; or &quot;robin&quot;. By contrast,
 <p>
-<blockquote><font color="#000080">print O17_basket.capacity;
+<blockquote><font color="#000080">Understand &quot;red bird&quot; or &quot;robin&quot; as &quot;[robin]&quot;.
 </font></blockquote><p>
 <p>
-<p>because &quot;{something}&quot; is expanded to &quot;capacity of the basket&quot; (I7 code) and then translated to &quot;O17_basket.capacity&quot; (I6 code), which is then spliced into the original I6 definition &quot;print {something};&quot;.
+<p>will understand either &quot;red bird&quot; or &quot;robin&quot; but not &quot;red robin&quot;. If we want to capture all three forms, we might define
 <p>
-<p>Braces &quot;{&quot; are of course significant in I6. A real brace can be obtained by making the character following it a space, and then I7 will not attempt to read it as a request for substitution.
-<p>
-<p>Finally, note that while a normal I7 phrase definition can give a kind as what must be matched, e.g.,
-<p>
-<blockquote><font color="#000080">To release wild tigers into (arena - a room): ...
-</font></blockquote><p>
-<p>
-<p>it is in general a bad idea, and will result in inefficient code, for an phrase defined using I6 to do this. Instead, if possible, match against &quot;object&quot;, where any room, region, thing or direction will be a valid match:
-<p>
-<blockquote><font color="#000080">To release wild tigers into (arena - an object): ...
+<blockquote><font color="#000080">Understand &quot;red bird/robin&quot; or &quot;robin&quot; as &quot;[robin]&quot;.
 </font></blockquote><p>
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e115"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc375.html#e115 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>381</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc375.html#e115 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Odins</font></b></a><br>Making [is-are] and [it-they] say tokens that will choose appropriately based on the last object mentioned.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex115.html#e115 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e115"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc254.html#e115 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>275</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc254.html#e115 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Lies</font></b></a><br>Commands to allow the player to lie down in three different ways.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex115.html#e115 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The faithful reader may recall this example from the previous chapter. It was always a bit flawed, though, because it didn't account very well for the possibility that our game might contain some intrinsically plural items. Here we define a &quot;to say is-are&quot; ability, checking the appropriate either/or property - &quot;plural-named&quot;.
+<p>To set the scene, and make new actions to provide for two of these ways:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode470(code) {
+function pasteCode362(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Odins"\n\nThe House of a Mortal Farmer is a room. "Having two separate rooms, this house bespeaks considerable wealth and success at agriculture."\n\nThe Bedroom is inside from the House.\n\nA chair is a kind of supporter. A chair is always enterable.\n\nIn the House are a table, two chairs, a basket, and a hearth. On the table is a loaf of bread. Some shoes are on the table.\n\nThe description of a thing is usually "You give [the noun] a glance, but [it-they] [is-are] plainly beneath your attention."\n\nThe infant is a man in the basket. The description of the infant is "So strong and fat that you wonder whether one of your fellow gods is acquainted with the mistress of the house-- but it\'s no concern of yours, of course."\n\nThe last mentioned thing is a thing that varies.\n\nAfter printing the name of something (called the target):\n\tchange the last mentioned thing to the target.\n\nTo say is-are:\n\tif the last mentioned thing is plural-named, say "are";\n\totherwise say "is".\n\nTo say it-they:\n\tif the last mentioned thing is plural-named, say "they";\n\totherwise say "it".\n\nTest me with "x chair / x basket / x infant / x shoes".\n');
+    myProject.pasteCode('[=0x0022=]Lies[=0x0022=][=0x000A=][=0x000A=]The Laundry is a room. [=0x0022=]An old Limehouse haunt, the Chinese laundry used by the down-trodden wives of the Tong of the Black Scorpion.[=0x0022=] The vast marble sink is here. [=0x0022=]There is nothing obviously oriental about the vast marble sink, which is large enough to lie down inside. A wooden-rack floor, equipped for easy drainage, turns out also to be equipped for snagging the shoes of passers-by.[=0x0022=] The sink is an enterable container, fixed in place.[=0x000A=][=0x000A=]Lying down is an action applying to nothing. Report lying down: say [=0x0022=]You lie down for a while in the middle of the Laundry, wondering about the point of existence, then get up again.[=0x0022=][=0x000A=][=0x000A=]Lying near is an action applying to one thing. Report lying near: say [=0x0022=]You lie down next to [the noun] for a while, mumbling to yourself.[=0x0022=][=0x000A=][=0x000A=]Instead of lying near the sink, say [=0x0022=]Lying down close to the cool butcher[=0x0027=]s marble slabs of the sink, your attention is caught by the sight of coolie shoes through a floor-level grille for ventilation. The game is afoot![=0x0022=][=0x000A=][=0x000A=][So far, so good. Now for the grammar, where we create two new tokens: one for each of two groups of alternative prepositions.][=0x000A=][=0x000A=]Understand [=0x0022=]beneath/under/by/near/beside/alongside/against[=0x0022=] or [=0x0022=]next to[=0x0022=] or [=0x0022=]in front of[=0x0022=] as [=0x0022=][beside][=0x0022=].[=0x000A=][=0x000A=]Understand [=0x0022=]on/in/inside[=0x0022=] or [=0x0022=]on top of[=0x0022=] as [=0x0022=][within][=0x0022=].[=0x000A=][=0x000A=]Understand [=0x0022=]lie down[=0x0022=] as lying down.[=0x000A=][=0x000A=]Understand [=0x0022=]lie down [within] [something][=0x0022=] as entering.[=0x000A=][=0x000A=]Understand [=0x0022=]lie [beside] [something][=0x0022=] or [=0x0022=]lie down [beside] [something][=0x0022=] as lying near.[=0x000A=][=0x000A=]Test me with [=0x0022=]lie down / lie down on top of the sink / get out / lie down inside the sink / get out / lie down in front of the sink[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode470()"><img border=0 src=../doc_images/paste.png></a> &quot;Odins&quot;
+<a href="javascript:pasteCode362()"><img border=0 src=../doc_images/paste.png></a> &quot;Lies&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The House of a Mortal Farmer is a room. &quot;Having two separate rooms, this house bespeaks considerable wealth and success at agriculture.&quot;
+<blockquote><font color="#000080">The Laundry is a room. &quot;An old Limehouse haunt, the Chinese laundry used by the down-trodden wives of the Tong of the Black Scorpion.&quot; The vast marble sink is here. &quot;There is nothing obviously oriental about the vast marble sink, which is large enough to lie down inside. A wooden-rack floor, equipped for easy drainage, turns out also to be equipped for snagging the shoes of passers-by.&quot; The sink is an enterable container, fixed in place.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Bedroom is inside from the House.
+<blockquote><font color="#000080">Lying down is an action applying to nothing. Report lying down: say &quot;You lie down for a while in the middle of the Laundry, wondering about the point of existence, then get up again.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A chair is a kind of supporter. A chair is always enterable.
+<blockquote><font color="#000080">Lying near is an action applying to one thing. Report lying near: say &quot;You lie down next to [the noun] for a while, mumbling to yourself.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">In the House are a table, two chairs, a basket, and a hearth. On the table is a loaf of bread. Some shoes are on the table.
+<blockquote><font color="#000080">Instead of lying near the sink, say &quot;Lying down close to the cool butcher's marble slabs of the sink, your attention is caught by the sight of coolie shoes through a floor-level grille for ventilation. The game is afoot!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of a thing is usually &quot;You give [the noun] a glance, but [it-they] [is-are] plainly beneath your attention.&quot;
+<p>So far, so good. Now for the grammar, where we create two new tokens: one for each of two groups of alternative prepositions.
+<p>
+<blockquote><font color="#000080">Understand &quot;beneath/under/by/near/beside/alongside/against&quot; or &quot;next to&quot; or &quot;in front of&quot; as &quot;[beside]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The infant is a man in the basket. The description of the infant is &quot;So strong and fat that you wonder whether one of your fellow gods is acquainted with the mistress of the house-- but it's no concern of yours, of course.&quot;
+<blockquote><font color="#000080">Understand &quot;on/in/inside&quot; or &quot;on top of&quot; as &quot;[within]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The last mentioned thing is a thing that varies.
+<blockquote><font color="#000080">Understand &quot;lie down&quot; as lying down.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After printing the name of something (called the target):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last mentioned thing to the target.
+<blockquote><font color="#000080">Understand &quot;lie down [within] [something]&quot; as entering.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say is-are:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last mentioned thing is plural-named, say &quot;are&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;is&quot;.
+<blockquote><font color="#000080">Understand &quot;lie [beside] [something]&quot; or &quot;lie down [beside] [something]&quot; as lying near.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say it-they:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last mentioned thing is plural-named, say &quot;they&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;it&quot;.
+<blockquote><font color="#000080">Test me with &quot;lie down / lie down on top of the sink / get out / lie down inside the sink / get out / lie down in front of the sink&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x chair / x basket / x infant / x shoes&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc375.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc254.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e221"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex221.html#e221 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>382</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex221.html#e221 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Pink or Blue</font></b></a><br>Asking the player to select a gender to begin play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex221.html#e221 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc374.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc376.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc253.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc255.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

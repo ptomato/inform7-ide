@@ -59,6 +59,7 @@ Constant RS_USE			= 6;
 Constant RS_SUBSTITUTE	= 7;
 Constant RS_SUCCEEDS	= 8;
 Constant RS_FAILS		= 9;
+Constant RS_NEITHER		= 10;
 
 ! (iii) To "follow" a rulebook, we start a new frame, process the
 ! procedural rules, then process the rulebook, then clear the frame back off
@@ -111,6 +112,18 @@ Constant RS_FAILS		= 9;
 	ss = self; if (o) self = o;
 	rv = FollowRulebook(R, o, true);
 	self = ss; return rv;
+];
+
+[ ConsiderRulebook rulebook par bits rv;
+	!print "[Considering rb ", rulebook, " for ", (the) par, "]^";
+	rv = ProcessRulebook(rulebook, par, bits);
+	!print "[Considered rb ", rulebook, " for ", (the) par, " outcome ", rv, "]^";
+	return rv;
+];
+
+[ AbideByRulebook rulebook par bits rv;
+	rv = ProcessRulebook(rulebook, par, bits);
+	return rv;
 ];
 
 ! (iv) The main rulebook processing routine is
@@ -269,6 +282,10 @@ Global debugging_rules = false;
 ];
 [ RulebookFails valueflag value;
 	PushRuleChange(RS_FAILS, valueflag, value);
+	rulechange_sp = rulechange_sp - 3;
+];
+[ RuleHasNoOutcome;
+	PushRuleChange(RS_NEITHER, 0, 0);
 	rulechange_sp = rulechange_sp - 3;
 ];
 [ RulebookSucceeded;

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>22.25. To say one of</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.7. Begin and end</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,124 +19,78 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Uncommon Ground" -->
-<!-- SEARCH SECTION "Ex 386" -->
-<!-- SEARCH SORT "Ex 022-025-386" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc386.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap22.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 22: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc388.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>22.25. To say one of</b></font></td></tr></table>
+<!-- SEARCH TITLE "Matreshka" -->
+<!-- SEARCH SECTION "Ex 158" -->
+<!-- SEARCH SORT "Ex 011-007-158" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc159.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc161.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.7. Begin and end</b></font></td></tr></table>
 <p>
-<p>Many of the invocation syntaxes described in the previous section are used in the definition by the Standard Rules of the &quot;[one of] ... [or] ... [purely at random]&quot; construction, so it makes a good example of how they can be used.
+<p>In practice it is not enough to apply &quot;if&quot; or &quot;while&quot; to a single phrase alone: we want to give a whole list of phrases to be followed repeatedly, or to be followed only if a condition holds.
 <p>
-<p>First, this is a segmented substitution with a single possible beginning (&quot;[one of]&quot;), a single possible middle (&quot;[or]&quot;) but a choice of many possible endings. Almost everything is compiled by the invocation of the beginning:
+<p>We do this using &quot;begin&quot; and &quot;end&quot;, as in the following examples.
 <p>
-<blockquote><font color="#000080">To say one of -- beginning say_one_of:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-allocate-storage:say_one_of}I7_ST_say_one_of-->{-counter:say_one_of}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;= {-final-segment-marker}(I7_ST_say_one_of-->{-counter:say_one_of}, {-segment-count});
-<br>switch((I7_ST_say_one_of-->{-advance-counter:say_one_of})%({-segment-count}+1) - 1) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;0: -).
-<br>To say or -- continuing say_one_of:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-segment-count}: -).
-<br>To say purely at random -- ending say_one_of with marker I7_SOO_PAR:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-close-brace} -).
+<blockquote><font color="#000080">To comment upon (whatever - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is transparent then say &quot;I see right through this!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is an open door begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Oh look, an open door!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if whatever is openable then say &quot;But you could always shut it.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<p>The 3rd invocation of this (say) might compile the following:
+<p>Here we group two phrases together under the same &quot;if&quot;. Note that the &quot;then&quot; has been replaced by &quot;begin&quot;, and that the end is marked by &quot;end if&quot;.
 <p>
-<blockquote><font color="#000080">I7_ST_say_one_of-->2 = I7_SOO_PAR(I7_ST_say_one_of-->2, 4);
-<br>switch((I7_ST_say_one_of-->2)%5 - 1) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;0: ... first text ...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;1: ... second text ...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;2: ... third text ...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;3: ... fourth text ...
-<br>}
+<p>Similarly for while:
+<p>
+<blockquote><font color="#000080">while (condition) begin; (... phrases ...); end while
 </font></blockquote><p>
 <p>
-<p>First, we notified Inform that it needs to allocate an array (I7_ST_say_one_of) providing storage associated with the counter &quot;say_one_of&quot;. This we used to count off individual invocations of &quot;[one of]&quot;, so that each would have its own word of storage - for the 3rd invocation, I7_ST_say_one_of-->2. We then call a state-changing routine, in this case I7_SOO_PAR, which is allowed to know the previous state and also the number of options available, and which returns the new state. The state is supposed to be the option chosen last time, but that means that there are not 4, but 5 possibilities: 0 for &quot;there was no last time&quot;, then 1 to 4 for the possible outcomes. We reduce the state mod 5 to obtain the decision this time, and subtract 1 because it happens to be convenient to make the switch statement run from 0 to 3 rather than 1 to 4. (The reason we reduce the state mod 5 is to allow the state-changer to squirrel away secret information in the upper bits of the state, if it wants to. Note that subtracting one means that the switch value might be -1, which results in no text being printed: thus if the state-changer chooses 0, it can decide on none of the above.)
-<p>
-<p>In this design, the marker attached to the choice of ending substitution is the name of the I6 state-changer: here is the I7_SOO_PAR routine.
-<p>
-<blockquote><font color="#000080">[ I7_SOO_PAR oldval count; if (count <= 1) return count; return random(count); ];
-</font></blockquote><p>
-<p>
-<p>As it happens, this ignores the old value: after all, it is meant to be purely at random, and nothing could be less pure than taking the last outcome into consideration when choosing the next.
-<p>
-<p>Note that the counter say_one_of is advanced in invocation of the head. It might seem that the tidier design, somehow, would be to advance the counter in the invocation of the tails, but this is not a good idea. In general it is not safe to assume that the counter will have the same value when the tail is invoked that it had when the head was invoked, because segmented say constructions can legally be nested in Inform strings. Because of this, it is best to deal with a counter entirely in a single invocation, either of the beginning or the ending.
-<p>
-<p>Because &quot;[one of] ... [or] ...&quot; is such a useful construction - switching between alternative forms of text, which writers of IF very often do - the above implementation is intentionally left open for new endings to be added, and the examples below show how easily this can be done.
+<p>The &quot;begin&quot; of an &quot;if&quot; must of course match an &quot;end if&quot;, not an &quot;end while&quot;, and so on.
 <p>
 <p><hr><p>
-<a name="e126"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex126.html#e126 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>385</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex126.html#e126 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Blink</font></b></a><br>Making a "by atmosphere" token, allowing us to design our own text variations such as "[one of]normal[or]gloomy[or]scary[by atmosphere]".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex126.html#e126 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e131"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex131.html#e131 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>157</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex131.html#e131 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Princess and the Pea</font></b></a><br>The player is unable to sleep on a mattress (or stack of mattresses) because the bottom one has something uncomfortable under it.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex131.html#e131 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e191"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc387.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>386</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc387.html#e191 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Uncommon Ground</font></b></a><br>Making a "by viewpoint" token, allowing us to design our own text variations such as "[show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show]" depending on the identity of the player at the moment.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex191.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e191"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc160.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>158</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc160.html#e191 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Matreshka</font></b></a><br>A SEARCH [room] action that will open every container the player can see, stopping only when there don't remain any that are closed, unlocked, and openable.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex191.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>A slightly more challenging case than the &quot;by atmosphere&quot; example is one in which we want to create text variations depending on the identity of our player character.
-<p>
-<p>What we want to do is build a switch statement in I6, one that looks something like
-<p>
-<blockquote><font color="#000080">switch(player)
-<br>{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;yourself: print &quot;quaint&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Lolita: print &quot;thrilling&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;default: print &quot;squalid&quot;;
-<br>}
-</font></blockquote><p>
-<p>
-<p>out of I7 that looks like this:
-<p>
-<blockquote><font color="#000080">say &quot;[show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show]&quot;.
-</font></blockquote><p>
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode475(code) {
+function pasteCode248(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Uncommon Ground"\n\nThe Mud Village is a room. "You stand at the center of a [show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show] mud village."\n\nLeforge is a man in the Mud Village. Lolita is a woman in the Mud Village.\n\nInstead of waiting:\n\tif the player is Lolita, change the player to Leforge;\n\tif the player is yourself, change the player to Lolita;\n\tsay "You jump bodies. Whoops!"\n\nTo say show to (N - a person) -- beginning say_seen_by:\n\t(-\n\t\tswitch(player)\n\t\t{-open-brace}\n\t\t{N}:\n\t-);\n\nTo say to (N - a person) -- continuing say_seen_by:\n\t(-\n\t\t{N}:\n\t-);\n\nTo say to everyone else -- continuing say_seen_by:\n\t(-\n\t\tdefault:\n\t-)\n\nTo say end show -- ending say_seen_by:\n\t(-\n\t\t{-close-brace}\n\t-)\n\nTest me with "look / z / look / z / look".\n');
+    myProject.pasteCode('[=0x0022=]Matreshka[=0x0022=][=0x000A=][=0x000A=]Ransacking is an action applying to one thing.[=0x000A=][=0x000A=]Check ransacking:[=0x000A=][=0x0009=]if the noun is not the location, say [=0x0022=]You can hardly search [the noun] from here.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out ransacking:[=0x000A=][=0x0009=]while the player can see a closed openable unlocked container (called target)[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][target]: [run paragraph on][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]try opening the target;[=0x000A=][=0x0009=]end while.[=0x000A=][=0x000A=]Report ransacking:[=0x000A=][=0x0009=]say [=0x0022=]You can see nothing further worth searching.[=0x0022=][=0x000A=][=0x000A=]The Russian Gift Shop is a room. In the Russian Gift Shop is a large wooden doll. It is closed and openable. In the large wooden doll is a medium wooden doll. It is closed and openable. In the medium wooden doll is a small wooden doll. It is closed and openable. In the small wooden doll is a tiny solid wooden doll.[=0x000A=][=0x000A=][And now we need to borrow from a later chapter for the command that will make this work:][=0x000A=][=0x000A=]Understand [=0x0022=]search [any visited room][=0x0022=] as ransacking.[=0x000A=][=0x000A=]Test me with [=0x0022=]search gift shop[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode475()"><img border=0 src=../doc_images/paste.png></a> &quot;Uncommon Ground&quot;
+<a href="javascript:pasteCode248()"><img border=0 src=../doc_images/paste.png></a> &quot;Matreshka&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Mud Village is a room. &quot;You stand at the center of a [show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show] mud village.&quot;
+<blockquote><font color="#000080">Ransacking is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Leforge is a man in the Mud Village. Lolita is a woman in the Mud Village.
+<blockquote><font color="#000080">Check ransacking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not the location, say &quot;You can hardly search [the noun] from here.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of waiting:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is Lolita, change the player to Leforge;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is yourself, change the player to Lolita;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You jump bodies. Whoops!&quot;
+<blockquote><font color="#000080">Carry out ransacking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;while the player can see a closed openable unlocked container (called target)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[target]: [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try opening the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end while.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say show to (N - a person) -- beginning say_seen_by:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch(player)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{-open-brace}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{N}:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;-);
+<blockquote><font color="#000080">Report ransacking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can see nothing further worth searching.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say to (N - a person) -- continuing say_seen_by:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{N}:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;-);
+<blockquote><font color="#000080">The Russian Gift Shop is a room. In the Russian Gift Shop is a large wooden doll. It is closed and openable. In the large wooden doll is a medium wooden doll. It is closed and openable. In the medium wooden doll is a small wooden doll. It is closed and openable. In the small wooden doll is a tiny solid wooden doll.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say to everyone else -- continuing say_seen_by:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;-)
+<p>And now we need to borrow from a later chapter for the command that will make this work:
+<p>
+<blockquote><font color="#000080">Understand &quot;search [any visited room]&quot; as ransacking.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say end show -- ending say_seen_by:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{-close-brace}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;-)
+<blockquote><font color="#000080">Test me with &quot;search gift shop&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;look / z / look / z / look&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc387.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc160.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc386.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc388.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc159.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc161.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

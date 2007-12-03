@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.14. What are relations for?</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.12. Writing and reading tables to external files</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,216 +19,188 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "What Not To Wear" -->
-<!-- SEARCH SECTION "Ex 221" -->
-<!-- SEARCH SORT "Ex 013-014-221" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc206.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc208.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.14. What are relations for?</b></font></td></tr></table>
+<!-- SEARCH TITLE "Rubies" -->
+<!-- SEARCH SECTION "Ex 383" -->
+<!-- SEARCH SORT "Ex 021-012-383" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc345.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc347.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.12. Writing and reading tables to external files</b></font></td></tr></table>
 <p>
-<p>It is easy to say what verbs are for: they are to express relations. But what are relations for?
+<p>The main use for files is to store and retrieve data, and the most flexible form of data used by Inform is the Table, so facilities are provided which make it as easy as possible to write and read the contents of a table to files.
 <p>
-<p>Inform 7's focus on relations between objects is unusual as an approach to interactive fiction; the concept does not exist in most design systems, or rather, it does but is submerged. Traditional design systems do, after all, have the spatial relations of being inside, on top of, and so on. It could well be said that these are the only relationships that inanimate objects ever have. A stone can be on top of a table, and if so then that expresses their entire association.
+<p>To save the contents of a table to a file, we use the phrase:
 <p>
-<p>This is because the stone, and the table, have no opinions, emotions, knowledge or memory. If the stone is taken away and then put back, nothing has changed. People, on the other hand, tend to remember having met each other before; they like being in some places, but not others; their behaviour depends on who, or what, is nearby. Being conscious, they have internal states, unlike the stone. Relations are a simple but powerful way to express and talk about such connections, and although they have numerous uses in physical contexts too, they are at their most powerful when helping to make the characters of interactive fiction come alive.
+<blockquote><font color="#000080">write File of Glaciation Data from the Table of Antarctic Reserves
+</font></blockquote><p>
+<p>
+<p>naming the file (which should be one already declared) and specifying which table it should come from. To load a file back into a table,
+<p>
+<blockquote><font color="#000080">read File of Glaciation Data into the Table of Antarctic Reserves
+</font></blockquote><p>
+<p>
+<p>We can check if a file already exists using:
+<p>
+<blockquote><font color="#000080">if File of Glaciation Data exists, ...
+</font></blockquote><p>
+<p>
+<p>On writing a table, any blank rows are automatically moved to the bottom, and only the non-blank rows are written; on reading a file back in, any rows left spare at the foot of the table are automatically blanked. On the other hand if the file is too large to fit into the table - with too many columns or too many rows - a run-time problem is produced.
+<p>
+<p>One unfortunate restriction must be kept in mind. Some of what is stored in tables is solid information whose meaning never changes: the number 342, for instance, means the same to everyone. But other information depends entirely on the current location of certain structures in memory - for instance, a rule is internally referred to by its memory location. This potentially changes each time Go or Replay is clicked, and so it is not safe to pass it from one copy to another, or from one project to another. The only tables which Inform allows us to write into files are those containing &quot;safe&quot; data: numbers, units, times of day and kinds of value with named alternatives. Scenes, rules or rulebooks, in particular, are not allowed.
+<p>
+<p>And nor is text - but we can easily get around that, because indexed text (see the previous chapter) is. For instance, the following table can legally be written out to a file, weareas it would have thrown up a run-time problem if we tried it with the surface column defined simply as text:
+<p>
+<blockquote><font color="#000080">Table of Neptune's Moons
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">moon</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">surface (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;utterly unknown&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cryovolcanic ridges&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highly irregular and sooty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
 <p>
 <p><hr><p>
+<a name="e250"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex250.html#e250 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>381</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex250.html#e250 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alien Invasion Part 23</font></b></a><br>Keeping a preference file that could be loaded by any game in a series.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex250.html#e250 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e381"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex381.html#e381 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>382</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex381.html#e381 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Labyrinth of Ghosts</font></b></a><br>Remembering the fates of all previous explorers of the labyrinth.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex381.html#e381 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e32"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc207.html#e32 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>221</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc207.html#e32 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> What Not To Wear</font></b></a><br>A general-purpose clothing system that handles a variety of different clothing items layered in different combinations over different areas of the body.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex32.html#e32 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e32"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc346.html#e32 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>383</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc346.html#e32 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Rubies</font></b></a><br>A scoreboard that keeps track of the ten highest-scoring players from one playthrough to the next, adding the player's name if he has done well enough.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex32.html#e32 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>The trick here is that we need a table with indexed text in order to keep track of the players' names.
+<p>
+<p>Part 1 largely replicates the source from &quot;Identity Theft&quot;; new material starts at Part 2.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode308(code) {
+function pasteCode472(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"What Not To Wear"\n\nSection 1 - Overlying and Underlying\n\n[We start by borrowing some of the same ideas from the Bogart example.]\n\nUnderlying relates various thing to various things. The verb to underlie (it underlies, they underlie, it is underlying, it is underlaid) implies the underlying relation. The verb to be under implies the underlying relation.\n\nCheck taking off:\n\tif the noun underlies something (called the impediment) which is worn by the player, say "[The impediment] is in the way." instead.\n\nCarry out taking off:\n\tnow the noun is not underlaid by anything.\n\nReport taking off something:\n\tsay "You are now wearing [a list of uppermost things worn by the player]." instead.\n\nDefinition: a thing is uppermost if it is not under something opaque.\n\n[Here we\'ve expanded on the previous ideas of \'uppermost\' because it is possible for an upper layer to reveal what lies beneath: a tie, a clear plastic trenchcoat, an open-knit sweater, etc. We\'ll make such items transparent.]\n\nBefore taking off something which underlies something which is worn by the player:\n\twhile the noun underlies something (called the impediment) which is worn by the player\n\tbegin;\n\t\tsay "(first removing [the impediment])[command clarification break]";\n\t\tsilently try taking off the impediment;\n\t\tif the noun underlies the impediment, stop the action;\n\tend while;\n\nOverlying relates various things to various things. The verb to overlie (it overlies, they overlie, it is overlying) implies the overlying relation.\n\nCovering relates a thing (called A) to a thing (called B) when the number of steps via the overlying relation from A to B is greater than 0. The verb to cover (it covers, they cover, it is covering, it is covered) implies the covering relation.\n\nBefore wearing something when something which covers the noun is worn by the player:\n\twhile the player wears something (called the impediment) which covers the noun\n\tbegin;\n\t\tsay "(first removing [the impediment])[command clarification break]";\n\t\tsilently try taking off the impediment;\n\t\tif the player is wearing the impediment, stop the action;\n\tend while.\n\nCarry out wearing:\n\trepeat with hidden item running through things worn by the player\n\tbegin;\n\t\tif the noun covers the hidden item, now the hidden item underlies the noun;\n\tend repeat.\n\nInstead of looking under something which is worn by the player:\n\tif something (called the underwear) underlies the noun, say "You peek at [the underwear]. Yup, still there.";\n\totherwise say "Just you in there."\n\nInstead of taking inventory:\n\tsay "You\'re carrying [a list of things carried by the player][if the player wears something]. You are wearing [a list of uppermost things worn by the player][end if]."\n\nSection 2 - Regional Coverage\n\n[Here we draw in the idea that different clothes go over different areas of the body, and that they should be in competition with each other only if both sets of clothes belong at the same level over the same body area.]\n\nBefore wearing something:\n\tlet N be the layering depth of the noun;\n\trepeat with item running through things worn by the player\n\tbegin;\n\t\tif the layering depth of the item is N and the item covers a body-part which is covered by the noun\n\t\tbegin;\n\t\t\tsay "(first taking off [the item])[command clarification break]";\n\t\t\tsilently try taking off the item;\n\t\t\tif the player wears the item, stop the action;\n\t\tend if;\n\tend repeat.\n\n[This may seem like overkill, but it allows us to create garments that cover different subsets of the body -- pants and shirt vs. a dress, for instance.]\n\nTo decide what number is the layering depth of (chosen garment - a thing):\n\tlet N be 0;\n\tif the chosen garment covers a body-part (called base)\n\tbegin;\n\t\tlet N be the number of steps via the overlying relation from the chosen garment to the base;\n\tend if;\n\tdecide on N.\n\n[To help with modeling, we\'ll give everyone body parts, broken down according to their relevance to clothing:]\n\nA body-part is a kind of thing. A torso, a seat, a head, pair of legs, and pair of feet are kinds of body-part.\n\n[If we wanted to allow gloves, we might put in hands as well; but this is enough for now.]\n\nOne head is part of every person. One torso is part of every person. One pair of legs is part of every person. One pair of feet is part of every person. One seat is part of every person.\n\n[And now we make some categories of clothing:]\n\nA pair of pants, a pair of underpants, a foundation garment, a pair of socks, a pair of shoes, a jacket, a hat, a dress, and a shirt are kinds of thing.\n\nThe plural of pair of pants is pairs of pants. The plural of pair of underpants is pairs of underpants. The plural of pair of socks is pairs of socks. The plural of pair of shoes is pairs of shoes.\n\nA pair of pants, a pair of underpants, a foundation garment, a pair of socks, a pair of shoes, a jacket, a hat, a dress, and a shirt are usually wearable.\n\n[It would be nice to be able to say "now every pair of socks overlies every pair of feet", but this involves too many implicit loops for Inform to deal with at once; so we are forced on a somewhat less elegant solution:]\n\nWhen play begins:\n\trepeat with item running through pairs of socks\n\tbegin;\n\t\tnow item overlies every pair of feet;\n\tend repeat;\n\trepeat with item running through pairs of shoes\n\tbegin;\n\t\tnow item overlies every pair of socks;\n\tend repeat;\n\trepeat with item running through pairs of underpants\n\tbegin;\n\t\tnow item overlies every seat;\n\tend repeat;\n\trepeat with item running through pairs of pants\n\tbegin;\n\t\tnow item overlies every pair of underpants;\n\tend repeat;\n\trepeat with item running through foundation garments\n\tbegin;\n\t\tnow item overlies every torso;\n\tend repeat;\n\trepeat with item running through shirts\n\tbegin;\n\t\tnow item overlies every foundation garment;\n\tend repeat;\n\trepeat with item running through jackets\n\tbegin;\n\t\tnow item overlies every shirt;\n\t\tnow item overlies every dress;\n\tend repeat;\n\trepeat with item running through hats\n\tbegin;\n\t\tnow item overlies every head;\n\tend repeat;\n\trepeat with item running through dresses\n\tbegin;\n\t\tnow item overlies every foundation garment;\n\t\tnow item overlies every pair of underpants;\n\tend repeat;\n\nSection 2 - The Scenario\n\nThe Dressing Room is a room.\n\nThe player carries some capris, some jeans, a corset, a plunge bra, a thong, boy-shorts, black satin D\'Orsay pumps, brown leather boots, a camisole, a cocktail dress, a bolero, a cashmere shrug, a sheer wrap, and a linen tunic.\n\nThe woolly socks are a pair of socks.\nThe D\'Orsay pumps and the brown leather boots are pairs of shoes.\nThe thong and the boy-shorts are pairs of underpants.\nThe capris and the jeans are pairs of pants.\nThe tunic is a shirt.\nThe camisole, the corset, and the plunge bra are foundation garments.\nThe cocktail dress is a dress.\nThe bolero, the cashmere shrug, and the sheer wrap are jackets. The shrug and the wrap are transparent.\n\nTest me with "wear capris / wear jeans / i / wear thong / i / wear dress / wear corset / wear dress / i / wear wrap / i / wear boots / wear pumps / i".\n\n');
+    myProject.pasteCode(' [=0x0022=]Rubies[=0x0022=][=0x000A=][=0x000A=]Part 1 - Collecting Names[=0x000A=][=0x000A=]The player[=0x0027=]s forename is an indexed text that varies. The player[=0x0027=]s full name is an indexed text that varies.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]change the command prompt to [=0x0022=]What is your name? [=0x003E=] [=0x0022=][=0x000A=][=0x000A=]To decide whether collecting names:[=0x000A=][=0x0009=]if the command prompt is [=0x0022=]What is your name? [=0x003E=] [=0x0022=], yes;[=0x000A=][=0x0009=]no.[=0x000A=][=0x000A=]After reading a command when collecting names:[=0x000A=][=0x0009=]if the number of words in the player[=0x0027=]s command is greater than 5[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][paragraph break]Who are you, a member of the British royal family? No one has that many names. Let[=0x0027=]s try this again.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]reject the player[=0x0027=]s command;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]change the player[=0x0027=]s full name to the player[=0x0027=]s command;[=0x000A=][=0x0009=]change the player[=0x0027=]s forename to word number 1 in the player[=0x0027=]s command;[=0x000A=][=0x0009=]change the command prompt to [=0x0022=][=0x003E=][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=]Hi, [player[=0x0027=]s forename]![=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=][banner text][=0x0022=];[=0x000A=][=0x0009=]move the player to the location;[=0x000A=][=0x0009=]reject the player[=0x0027=]s command.[=0x000A=][=0x000A=]Instead of looking when collecting names: do nothing.[=0x000A=][=0x000A=]Rule for printing the banner text when collecting names: do nothing.[=0x000A=][=0x000A=]Rule for constructing the status line when collecting names: do nothing.[=0x000A=][=0x000A=]Procedural rule: if collecting names, ignore the turn sequence rules.[=0x000A=][=0x000A=]Part 2 - Adding the Leaderboard[=0x000A=][=0x000A=]File of Leaderboard is called [=0x0022=]leaderboard[=0x0022=].[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]if the File of Leaderboard exists[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]read File of Leaderboard into the Table of Leaders;[=0x000A=][=0x0009=][=0x0009=]sort the Table of Leaders in reverse scored amount order;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x000A=]When play ends:[=0x000A=][=0x0009=]choose row 10 in the Table of Leaders; [we[=0x0027=]ve sorted the table, so the lowest score will be the one at the bottom][=0x000A=][=0x0009=]if the score is greater than scored amount entry[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]change name entry to the player[=0x0027=]s forename;[=0x000A=][=0x0009=][=0x0009=]change the scored amount entry to the score;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]show leaderboard;[=0x000A=][=0x0009=]write the File of Leaderboard from the Table of Leaders.[=0x000A=][=0x000A=]To show leaderboard:[=0x000A=][=0x0009=]sort the Table of Leaders in reverse scored amount order;[=0x000A=][=0x0009=]say [=0x0022=]Current leading scores: [paragraph break][=0x0022=];[=0x000A=][=0x0009=]say fixed letter spacing;[=0x000A=][=0x0009=]repeat through Table of Leaders[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if scored amount entry is greater than 0[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]  [name entry][=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let N be 25 minus the number of characters in name entry; [here we want to space out the scores so they make a neat column][=0x000A=][=0x0009=][=0x0009=][=0x0009=]if N is less than 1, change N to 1;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say N spaces;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][scored amount entry][line break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=]say variable letter spacing.[=0x000A=][=0x000A=]To say (N - a number) spaces:[=0x000A=][=0x0009=]repeat with index running from 1 to N[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=] [=0x0022=];[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]Table of Leaders[=0x000A=]scored amount[=0x0009=]name (indexed text)[=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=]0[=0x0009=][=0x0022=]Smithee[=0x0022=][=0x000A=][=0x000A=][And now we introduce a scenario that allows different players to come up with different scores -- admittedly not a very interesting scenario, but it will do for now:][=0x000A=][=0x000A=]Part 3 - Scenario[=0x000A=][=0x000A=]Carry out taking something which is not handled:[=0x000A=][=0x0009=]increase score by 1.[=0x000A=][=0x000A=]The Big Treasure Chamber is a room. It contains a ruby, an emerald, a gold tooth, an antique katana, and a silver coin.[=0x000A=][=0x000A=]Instead of waiting, end the game in victory.[=0x000A=][=0x000A=]Test me with [=0x0022=]get ruby / z[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode308()"><img border=0 src=../doc_images/paste.png></a> &quot;What Not To Wear&quot;
+<a href="javascript:pasteCode472()"><img border=0 src=../doc_images/paste.png></a>  &quot;Rubies&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 1 - Overlying and Underlying
+<blockquote><font color="#000080">Part 1 - Collecting Names
 </font></blockquote><p>
 <p>
-<p>We start by borrowing some of the same ideas from the Bogart example.
-<p>
-<blockquote><font color="#000080">Underlying relates various thing to various things. The verb to underlie (it underlies, they underlie, it is underlying, it is underlaid) implies the underlying relation. The verb to be under implies the underlying relation.
+<blockquote><font color="#000080">The player's forename is an indexed text that varies. The player's full name is an indexed text that varies.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check taking off:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun underlies something (called the impediment) which is worn by the player, say &quot;[The impediment] is in the way.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out taking off:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is not underlaid by anything.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report taking off something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are now wearing [a list of uppermost things worn by the player].&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a thing is uppermost if it is not under something opaque.
-</font></blockquote><p>
-<p>
-<p>Here we've expanded on the previous ideas of 'uppermost' because it is possible for an upper layer to reveal what lies beneath: a tie, a clear plastic trenchcoat, an open-knit sweater, etc. We'll make such items transparent.
-<p>
-<blockquote><font color="#000080">Before taking off something which underlies something which is worn by the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while the noun underlies something (called the impediment) which is worn by the player
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first removing [the impediment])[command clarification break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silently try taking off the impediment;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the noun underlies the impediment, stop the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end while;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Overlying relates various things to various things. The verb to overlie (it overlies, they overlie, it is overlying) implies the overlying relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Covering relates a thing (called A) to a thing (called B) when the number of steps via the overlying relation from A to B is greater than 0. The verb to cover (it covers, they cover, it is covering, it is covered) implies the covering relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before wearing something when something which covers the noun is worn by the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while the player wears something (called the impediment) which covers the noun
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first removing [the impediment])[command clarification break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silently try taking off the impediment;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player is wearing the impediment, stop the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end while.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out wearing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with hidden item running through things worn by the player
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the noun covers the hidden item, now the hidden item underlies the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of looking under something which is worn by the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if something (called the underwear) underlies the noun, say &quot;You peek at [the underwear]. Yup, still there.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Just you in there.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of taking inventory:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're carrying [a list of things carried by the player][if the player wears something]. You are wearing [a list of uppermost things worn by the player][end if].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 2 - Regional Coverage
-</font></blockquote><p>
-<p>
-<p>Here we draw in the idea that different clothes go over different areas of the body, and that they should be in competition with each other only if both sets of clothes belong at the same level over the same body area.
-<p>
-<blockquote><font color="#000080">Before wearing something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be the layering depth of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things worn by the player
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the layering depth of the item is N and the item covers a body-part which is covered by the noun
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking off [the item])[command clarification break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silently try taking off the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player wears the item, stop the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<p>This may seem like overkill, but it allows us to create garments that cover different subsets of the body -- pants and shirt vs. a dress, for instance.
-<p>
-<blockquote><font color="#000080">To decide what number is the layering depth of (chosen garment - a thing):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be 0;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the chosen garment covers a body-part (called base)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let N be the number of steps via the overlying relation from the chosen garment to the base;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on N.
-</font></blockquote><p>
-<p>
-<p>To help with modeling, we'll give everyone body parts, broken down according to their relevance to clothing:
-<p>
-<blockquote><font color="#000080">A body-part is a kind of thing. A torso, a seat, a head, pair of legs, and pair of feet are kinds of body-part.
-</font></blockquote><p>
-<p>
-<p>If we wanted to allow gloves, we might put in hands as well; but this is enough for now.
-<p>
-<blockquote><font color="#000080">One head is part of every person. One torso is part of every person. One pair of legs is part of every person. One pair of feet is part of every person. One seat is part of every person.
-</font></blockquote><p>
-<p>
-<p>And now we make some categories of clothing:
-<p>
-<blockquote><font color="#000080">A pair of pants, a pair of underpants, a foundation garment, a pair of socks, a pair of shoes, a jacket, a hat, a dress, and a shirt are kinds of thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The plural of pair of pants is pairs of pants. The plural of pair of underpants is pairs of underpants. The plural of pair of socks is pairs of socks. The plural of pair of shoes is pairs of shoes.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A pair of pants, a pair of underpants, a foundation garment, a pair of socks, a pair of shoes, a jacket, a hat, a dress, and a shirt are usually wearable.
-</font></blockquote><p>
-<p>
-<p>It would be nice to be able to say &quot;now every pair of socks overlies every pair of feet&quot;, but this involves too many implicit loops for Inform to deal with at once; so we are forced on a somewhat less elegant solution:
 <p>
 <blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through pairs of socks
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now item overlies every pair of feet;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through pairs of shoes
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now item overlies every pair of socks;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through pairs of underpants
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now item overlies every seat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through pairs of pants
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now item overlies every pair of underpants;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through foundation garments
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now item overlies every torso;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through shirts
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now item overlies every foundation garment;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through jackets
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now item overlies every shirt;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now item overlies every dress;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through hats
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now item overlies every head;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through dresses
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now item overlies every foundation garment;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now item overlies every pair of underpants;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;What is your name? > &quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 2 - The Scenario
+<blockquote><font color="#000080">To decide whether collecting names:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the command prompt is &quot;What is your name? > &quot;, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Dressing Room is a room.
+<blockquote><font color="#000080">After reading a command when collecting names:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of words in the player's command is greater than 5
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[paragraph break]Who are you, a member of the British royal family? No one has that many names. Let's try this again.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the player's full name to the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the player's forename to word number 1 in the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;>&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Hi, [player's forename]!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[banner text]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries some capris, some jeans, a corset, a plunge bra, a thong, boy-shorts, black satin D'Orsay pumps, brown leather boots, a camisole, a cocktail dress, a bolero, a cashmere shrug, a sheer wrap, and a linen tunic.
+<blockquote><font color="#000080">Instead of looking when collecting names: do nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The woolly socks are a pair of socks.
-<br>The D'Orsay pumps and the brown leather boots are pairs of shoes.
-<br>The thong and the boy-shorts are pairs of underpants.
-<br>The capris and the jeans are pairs of pants.
-<br>The tunic is a shirt.
-<br>The camisole, the corset, and the plunge bra are foundation garments.
-<br>The cocktail dress is a dress.
-<br>The bolero, the cashmere shrug, and the sheer wrap are jackets. The shrug and the wrap are transparent.
+<blockquote><font color="#000080">Rule for printing the banner text when collecting names: do nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;wear capris / wear jeans / i / wear thong / i / wear dress / wear corset / wear dress / i / wear wrap / i / wear boots / wear pumps / i&quot;.
+<blockquote><font color="#000080">Rule for constructing the status line when collecting names: do nothing.
 </font></blockquote><p>
 <p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc207.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Procedural rule: if collecting names, ignore the turn sequence rules.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Part 2 - Adding the Leaderboard
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">File of Leaderboard is called &quot;leaderboard&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the File of Leaderboard exists
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read File of Leaderboard into the Table of Leaders;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Leaders in reverse scored amount order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play ends:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row 10 in the Table of Leaders; [we've sorted the table, so the lowest score will be the one at the bottom]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the score is greater than scored amount entry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change name entry to the player's forename;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the scored amount entry to the score;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;show leaderboard;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write the File of Leaderboard from the Table of Leaders.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To show leaderboard:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Leaders in reverse scored amount order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Current leading scores: [paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say fixed letter spacing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Leaders
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if scored amount entry is greater than 0
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [name entry]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let N be 25 minus the number of characters in name entry; [here we want to space out the scores so they make a neat column]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if N is less than 1, change N to 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say N spaces;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[scored amount entry][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say variable letter spacing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say (N - a number) spaces:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with index running from 1 to N
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Leaders
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">scored amount</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">name (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<p>And now we introduce a scenario that allows different players to come up with different scores -- admittedly not a very interesting scenario, but it will do for now:
+<p>
+<blockquote><font color="#000080">Part 3 - Scenario
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out taking something which is not handled:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;increase score by 1.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Big Treasure Chamber is a room. It contains a ruby, an emerald, a gold tooth, an antique katana, and a silver coin.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of waiting, end the game in victory.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get ruby / z&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc346.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e348"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex348.html#e348 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>222</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex348.html#e348 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Murder on the Orient Express</font></b></a><br>A number of sleuths (the player among them) find themselves aboard the Orient Express, where a murder has taken place, and one of them is apparently the culprit. Naturally they do not agree on whom, but there is physical evidence which may change their minds...<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex348.html#e348 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e2"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex2.html#e2 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>223</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex2.html#e2 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Mathematical view of relations</font></b></a><br>Some notes on relations from a mathematical point of view, provided only to clarify some technicalities for those who are interested.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex2.html#e2 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e251"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex251.html#e251 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>224</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex251.html#e251 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Graph-theory view of relations</font></b></a><br>Some notes on relations from the point of view of graph theory.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex251.html#e251 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc206.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc208.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc345.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc347.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

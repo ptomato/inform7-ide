@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.12. Writing and reading tables to external files</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>5.3. Text with numbers</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,151 +19,91 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Labyrinth of Ghosts" -->
-<!-- SEARCH SECTION "Ex 371" -->
-<!-- SEARCH SORT "Ex 020-012-371" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc335.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc337.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.12. Writing and reading tables to external files</b></font></td></tr></table>
+<!-- SEARCH TITLE "Ballpark" -->
+<!-- SEARCH SECTION "Ex 55" -->
+<!-- SEARCH SORT "Ex 005-003-055" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc68.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap5.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 5: Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc70.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>5.3. Text with numbers</b></font></td></tr></table>
 <p>
-<p>The main use for files is to store and retrieve data, and the most flexible form of data used by Inform is the Table, so facilities are provided which make it as easy as possible to write and read the contents of a table to files.
+<p>When a numerical value is given in a square-bracketed substitution, it is ordinarily printed out in digits. Thus:
 <p>
-<p>To save the contents of a table to a file, we use the phrase:
-<p>
-<blockquote><font color="#000080">write File of Glaciation Data from the Table of Antarctic Reserves
+<blockquote><font color="#000080">&quot;You've been wandering around for [turn count] turns now.&quot;
 </font></blockquote><p>
 <p>
-<p>naming the file (which should be one already declared) and specifying which table it should come from. To load a file back into a table,
+<p>might print as &quot;You've been wandering around for 213 turns now.&quot;, if the game has been played out for exactly that many commands. Alternatively, we can add &quot;...in words&quot;, thus:
 <p>
-<blockquote><font color="#000080">read File of Glaciation Data into the Table of Antarctic Reserves
+<blockquote><font color="#000080">&quot;You've been wandering around for [turn count in words] turns now.&quot;
 </font></blockquote><p>
 <p>
-<p>We can check if a file already exists using:
+<p>to get the more conversational &quot;You've been wandering around for two hundred and thirteen turns now.&quot;
 <p>
-<blockquote><font color="#000080">if File of Glaciation Data exists, ...
+<p>Either way, though, there is some risk of the following:
+<p>
+<blockquote><font color="#000080">You've been wandering around for one turns now.
 </font></blockquote><p>
 <p>
-<p>On writing a table, any blank rows are automatically moved to the bottom, and only the non-blank rows are written; on reading a file back in, any rows left spare at the foot of the table are automatically blanked. On the other hand if the file is too large to fit into the table - with too many columns or too many rows - a run-time problem is produced.
+<p>We can avoid this using the special substitution &quot;[s]&quot;, which prints a letter &quot;s&quot; unless the last number printed was 1. So:
 <p>
-<p>One unfortunate restriction must be kept in mind. Some of what is stored in tables is solid information whose meaning never changes: the number 342, for instance, means the same to everyone. But other information depends entirely on the current location of certain structures in memory - for instance, a rule is internally referred to by its memory location. This potentially changes each time Go or Replay is clicked, and so it is not safe to pass it from one copy to another, or from one project to another. The only tables which Inform allows us to write into files are those containing &quot;safe&quot; data: numbers, units, times of day and kinds of value with named alternatives. Scenes, rules or rulebooks, in particular, are not allowed.
-<p>
-<p>And nor is text - but we can easily get around that, because indexed text (see the previous chapter) is. For instance, the following table can legally be written out to a file, weareas it would have thrown up a run-time problem if we tried it with the surface column defined simply as text:
-<p>
-<blockquote><font color="#000080">Table of Neptune's Moons
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">moon</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">surface (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;utterly unknown&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cryovolcanic ridges&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highly irregular and sooty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">&quot;You've been wandering around for [turn count in words] turn[s] now.&quot;
 </font></blockquote><p>
+<p>
+<p>will produce &quot;... for one turn now.&quot; or &quot;... for two turns now.&quot; as appropriate. This only solves one case (what about all the other plural endings, from &quot;women&quot; to &quot;cherubim&quot;?), and as we shall see we can get the same effect and very much more using the methods in the next section, so &quot;[s]&quot; is something of an anomaly. But it's memorable, and even if it only solves one small need, this is a need which turns up often.
 <p>
 <p><hr><p>
-<a name="e244"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex244.html#e244 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>370</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex244.html#e244 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alien Invasion Part 23</font></b></a><br>Keeping a preference file that could be loaded by any game in a series.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex244.html#e244 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e370"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc336.html#e370 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>371</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc336.html#e370 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Labyrinth of Ghosts</font></b></a><br>Remembering the fates of all previous explorers of the labyrinth.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex370.html#e370 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e370"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc69.html#e370 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>55</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc69.html#e370 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Ballpark</font></b></a><br>A new "to say" definition which allows the author to say "[a number in round numbers]" and get verbal descriptions like "a couple of" or "a few" as a result.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex370.html#e370 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>A tradition among Nethack-like computer games of the old school is that a player's death in a given place leaves a ghost behind to haunt subsequent players. Information about past lives is sometimes stored in a &quot;bones file&quot;, and in this example we do exactly that, for a grievously unfair little dungeon.
-<p>
-<p>To begin with, the labyrinth itself. We create a kind of value to remember possible means of death in these tunnels, and we assign a coordinate position in some grid to each location. (We do this because grid positions can safely be stored in tables saved out to external files, whereas room names cannot - they represent data which changes each time we amend the source.)
+<p>Sometimes it is more sensible to describe numbers roughly than in exact terms. For instance, we might want to have our player perceive &quot;many people&quot; rather than &quot;forty-two people&quot; on entering a room. To achieve this, we might write our own &quot;to say&quot; phrase.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode460(code) {
+function pasteCode140(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Labyrinth of Ghosts"\n\nA demise is a kind of value. The demises are drowned, buried by a rockfall, pierced by an arrow and slain. The latest demise is a demise that varies.\n\nA grid location is a kind of value. (1,19) specifies a grid location. A room has a grid location called coordinates.\n\nThe Gateway is a room. "For the foolhardy adventurer, the perilous labyrinth lies north, east or south." The coordinates are (6,6). The Tomb is east of the Gateway. The coordinates are (7,6). The Rockfall Cave is north of the Gateway. "This partly fallen cave may perhaps extend further north." The coordinates are (6,5). Instead of going north in the Rockfall Cave, have the player buried by a rockfall. The Archery Canyon is south of the Gateway. "No telling why this canyon is named after archery, but perhaps if you wait around you\'ll find out." The coordinates are (6,7). Instead of waiting in the Archery Canyon, have the player pierced by an arrow. The Rock Pool is east of the Tomb. The coordinates are (8,6). The cold mountain pool is in the Rock Pool. The cold pool is fixed in place. Instead of entering the cold mountain pool, have the player drowned.\n\nEvery turn when a random chance of 1 in 10 succeeds:\n\tsay "A dwarf appears out of nowhere, and throws a nasty little knife.";\n\thave the player slain.\n\n[And as compensation for these hazards:]\n\nSome silver bars are in the Tomb. The emerald is in the Rock Pool. The platinum pyramid is in the Canyon.\n\nTable of Point Values\nitem \t  \tscore\nsilver bars\t3\nplatinum pyramid\t10\nemerald\t4\n\nReport taking an item listed in the Table of Point Values:\n\taward score entry points;\n\tblank out the whole row.\n\n[We are now ready for the actual undertaking. The Table of Ghostly Presences holds up to twenty death notices, and is initially blank. Deaths are sequentially numbered, and this number is stored in the sequence column.]\n\nTable of Ghostly Presences\nhaunted position\tscore at death\tturns at death\tmanner of death\tsequence\na grid location\ta number\ta number\ta demise\ta number\nwith 19 blank rows.\n\n[As the story file starts up, we look to see if a ghosts file already exists. If one does, we load up the Table of Ghostly Presences with it: and if not, as will be the case the first time the player explores, we leave the table blank. We sort the table so that it has earlier deaths (lower sequence numbers) first.]\n\nThe File of Ghosts is called "ghosts".\n\nWhen play begins:\n\tif the File of Ghosts exists, read File of Ghosts into the Table of Ghostly Presences;\n\tsort the Table of Ghostly Presences in sequence order.\n\n[How will ghosts manifest themselves? Because this is only a small example, we will simply tell the player that he senses something. If several ghosts are present in the same place, the most aggrieved (that is, the most recent) is sensed first...]\n\nAfter looking:\n\trepeat through the Table of Ghostly Presences in reverse sequence order\n\tbegin;\n\t\tif the haunted position entry is the coordinates of the location, say "You sense the ghostly presence of an adventurer, [manner of death entry] with a score of [score at death entry] in [turns at death entry] turns.";\n\tend repeat.\n\n[(For instance, "You sense the ghostly presence of an adventurer, buried by a rockfall with a score of 10 in 5 turns.") That just leaves the rule for bumping off the player. When the Table is full, and there are already 20 ghosts, the one who died longest ago (with the lowest sequence count) is eliminated, and his row blanked out. (This will always be row 1 since we sorted the table in sequence order on reading it in.)]\n\nTo have the player (sticky end - a demise):\n\tlet the new sequence number be 0;\n\trepeat through the Table of Ghostly Presences\n\tbegin;\n\t\tlet S be the sequence entry;\n\t\tif S is greater than the new sequence number, let the new sequence number be S;\n\tend repeat;\n\tincrease the new sequence number by 1;\n\tif the number of blank rows in the Table of Ghostly Presences is 0\n\tbegin;\n\t\tchoose row 1 in the Table of Ghostly Presences;\n\t\tblank out the whole row;\n\tend if;\n\tchoose a blank row in the Table of Ghostly Presences;\n\tchange the sequence entry to the new sequence number;\n\tchange the manner of death entry to the sticky end;\n\tchange the turns at death entry to the turn count;\n\tchange the score at death entry to the score;\n\tchange the haunted position entry to the coordinates of the location;\n\twrite the File of Ghosts from the Table of Ghostly Presences;\n\tchange the latest demise to the sticky end;\n\tend the game saying "You have been [latest demise]".\n\n');
+    myProject.pasteCode('[=0x0022=]Ballpark[=0x0022=][=0x000A=][=0x000A=]To say (count - a number) in round numbers:[=0x000A=][=0x0009=]repeat through the Table of Numerical Approximation[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if count is less than threshold entry[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][approximation entry][=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]rule succeeds;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=][Phrases will be explained more thoroughly in a later chapter, but as we have already seen in the examples, we can make a [=0x0022=]To say...[=0x0022=] phrase that will allow us to create our own text substitutions. In this case, we are going to replace the specific number with a vaguer one chosen from a chart, so:][=0x000A=][=0x000A=]Table of Numerical Approximation[=0x000A=]threshold[=0x0009=]approximation[=0x000A=]1[=0x0009=][=0x0022=]no[=0x0022=][=0x000A=]2[=0x0009=][=0x0022=]one[=0x0022=][=0x000A=]3[=0x0009=][=0x0022=]a couple of[=0x0022=][=0x000A=]6[=0x0009=][=0x0022=]a few[=0x0022=][=0x000A=]11[=0x0009=][=0x0022=]some[=0x0022=][=0x000A=]21[=0x0009=][=0x0022=]many[=0x0022=][=0x000A=]1000[=0x0009=][=0x0022=]lots and lots of[=0x0022=][=0x000A=][=0x000A=][The idea here is that we will work our way through the table until we hit a line where the threshold number is higher than the number we want to express, and then print that output: so if we have less than one item, we[=0x0027=]ll print [=0x0022=]no[=0x0022=]; if we have more than none but less than two, we[=0x0027=]ll print [=0x0022=]one[=0x0022=]; if we have less than three, we[=0x0027=]ll print [=0x0022=]a couple of[=0x0022=]; if we have three, four, or five (but not six), we[=0x0027=]ll print [=0x0022=]a few.[=0x0022=]][=0x000A=][=0x000A=]A room has a number called the population. The population of a room is usually 0. The description of a room is usually [=0x0022=]You observe [population of the location in round numbers] [if population of the location is 1]person [otherwise]people [end if]here.[=0x0022=].[=0x000A=][=0x000A=]The Stadium is a room. The Hot Dog Stand is west of the Stadium. The Women[=0x0027=]s Restroom is south of the Stadium.[=0x000A=][=0x000A=]The population of the Stadium is 500. The population of the Hot Dog Stand is 3. The population of the Restroom is 750.[=0x000A=][=0x000A=]Test me with [=0x0022=]w / e / s[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode460()"><img border=0 src=../doc_images/paste.png></a> &quot;Labyrinth of Ghosts&quot;
+<a href="javascript:pasteCode140()"><img border=0 src=../doc_images/paste.png></a> &quot;Ballpark&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A demise is a kind of value. The demises are drowned, buried by a rockfall, pierced by an arrow and slain. The latest demise is a demise that varies.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A grid location is a kind of value. (1,19) specifies a grid location. A room has a grid location called coordinates.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Gateway is a room. &quot;For the foolhardy adventurer, the perilous labyrinth lies north, east or south.&quot; The coordinates are (6,6). The Tomb is east of the Gateway. The coordinates are (7,6). The Rockfall Cave is north of the Gateway. &quot;This partly fallen cave may perhaps extend further north.&quot; The coordinates are (6,5). Instead of going north in the Rockfall Cave, have the player buried by a rockfall. The Archery Canyon is south of the Gateway. &quot;No telling why this canyon is named after archery, but perhaps if you wait around you'll find out.&quot; The coordinates are (6,7). Instead of waiting in the Archery Canyon, have the player pierced by an arrow. The Rock Pool is east of the Tomb. The coordinates are (8,6). The cold mountain pool is in the Rock Pool. The cold pool is fixed in place. Instead of entering the cold mountain pool, have the player drowned.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when a random chance of 1 in 10 succeeds:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A dwarf appears out of nowhere, and throws a nasty little knife.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;have the player slain.
-</font></blockquote><p>
-<p>
-<p>And as compensation for these hazards:
-<p>
-<blockquote><font color="#000080">Some silver bars are in the Tomb. The emerald is in the Rock Pool. The platinum pyramid is in the Canyon.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Point Values
-<br>item 	  	score
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">silver bars</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">platinum pyramid</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">emerald</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report taking an item listed in the Table of Point Values:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;award score entry points;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row.
-</font></blockquote><p>
-<p>
-<p>We are now ready for the actual undertaking. The Table of Ghostly Presences holds up to twenty death notices, and is initially blank. Deaths are sequentially numbered, and this number is stored in the sequence column.
-<p>
-<blockquote><font color="#000080">Table of Ghostly Presences
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">haunted position</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">score at death</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">turns at death</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">manner of death</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">sequence</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a grid location</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a demise</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">with 19 blank rows.</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<p>As the story file starts up, we look to see if a ghosts file already exists. If one does, we load up the Table of Ghostly Presences with it: and if not, as will be the case the first time the player explores, we leave the table blank. We sort the table so that it has earlier deaths (lower sequence numbers) first.
-<p>
-<blockquote><font color="#000080">The File of Ghosts is called &quot;ghosts&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the File of Ghosts exists, read File of Ghosts into the Table of Ghostly Presences;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Ghostly Presences in sequence order.
-</font></blockquote><p>
-<p>
-<p>How will ghosts manifest themselves? Because this is only a small example, we will simply tell the player that he senses something. If several ghosts are present in the same place, the most aggrieved (that is, the most recent) is sensed first...
-<p>
-<blockquote><font color="#000080">After looking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Ghostly Presences in reverse sequence order
+<blockquote><font color="#000080">To say (count - a number) in round numbers:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Numerical Approximation
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the haunted position entry is the coordinates of the location, say &quot;You sense the ghostly presence of an adventurer, [manner of death entry] with a score of [score at death entry] in [turns at death entry] turns.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if count is less than threshold entry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[approximation entry]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>(For instance, &quot;You sense the ghostly presence of an adventurer, buried by a rockfall with a score of 10 in 5 turns.&quot;) That just leaves the rule for bumping off the player. When the Table is full, and there are already 20 ghosts, the one who died longest ago (with the lowest sequence count) is eliminated, and his row blanked out. (This will always be row 1 since we sorted the table in sequence order on reading it in.)
+<p>Phrases will be explained more thoroughly in a later chapter, but as we have already seen in the examples, we can make a &quot;To say...&quot; phrase that will allow us to create our own text substitutions. In this case, we are going to replace the specific number with a vaguer one chosen from a chart, so:
 <p>
-<blockquote><font color="#000080">To have the player (sticky end - a demise):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the new sequence number be 0;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Ghostly Presences
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let S be the sequence entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if S is greater than the new sequence number, let the new sequence number be S;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;increase the new sequence number by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of blank rows in the Table of Ghostly Presences is 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row 1 in the Table of Ghostly Presences;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose a blank row in the Table of Ghostly Presences;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the sequence entry to the new sequence number;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the manner of death entry to the sticky end;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the turns at death entry to the turn count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the score at death entry to the score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the haunted position entry to the coordinates of the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;write the File of Ghosts from the Table of Ghostly Presences;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the latest demise to the sticky end;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;You have been [latest demise]&quot;.
+<blockquote><font color="#000080">Table of Numerical Approximation
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">threshold</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">approximation</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;no&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;one&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;a couple of&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">6</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;a few&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;some&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">21</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;many&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1000</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;lots and lots of&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<p>Strictly speaking we ought to worry that after 2,147,483,647 deaths, the sequence numbers would grow too large to store in a single value, and then the sequence of ghosts will be erratic. But it seems unlikely that anyone will play this example 2.1 billion times.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc336.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>The idea here is that we will work our way through the table until we hit a line where the threshold number is higher than the number we want to express, and then print that output: so if we have less than one item, we'll print &quot;no&quot;; if we have more than none but less than two, we'll print &quot;one&quot;; if we have less than three, we'll print &quot;a couple of&quot;; if we have three, four, or five (but not six), we'll print &quot;a few.&quot;
+<p>
+<blockquote><font color="#000080">A room has a number called the population. The population of a room is usually 0. The description of a room is usually &quot;You observe [population of the location in round numbers] [if population of the location is 1]person [otherwise]people [end if]here.&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Stadium is a room. The Hot Dog Stand is west of the Stadium. The Women's Restroom is south of the Stadium.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The population of the Stadium is 500. The population of the Hot Dog Stand is 3. The population of the Restroom is 750.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;w / e / s&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc69.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e31"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex31.html#e31 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>372</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex31.html#e31 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Rubies</font></b></a><br>A scoreboard that keeps track of the ten highest-scoring players from one playthrough to the next, adding the player's name if he has done well enough.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex31.html#e31 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc335.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc337.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc68.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc70.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.9. Removing things from play</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.22. Deciding the scope of something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,75 +19,439 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Spring Cleaning" -->
-<!-- SEARCH SECTION "Ex 114" -->
-<!-- SEARCH SORT "Ex 008-009-114" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc117.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc119.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.9. Removing things from play</b></font></td></tr></table>
+<!-- SEARCH TITLE "Stately Gardens" -->
+<!-- SEARCH SECTION "Ex 317" -->
+<!-- SEARCH SORT "Ex 017-022-317" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc283.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc285.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.22. Deciding the scope of something</b></font></td></tr></table>
 <p>
-<p>Some things will occasionally be in a limbo state called being &quot;off-stage&quot;: like actors or props not needed in Act II, but perhaps to be brought back on-stage later, they wait on the sidelines. Anything created with no apparent location will start the game off-stage, as in the case of the lamp here:
+<p><b>1. When it happens.</b> &quot;Scope&quot; is a term of art in interactive fiction programming: it means the collection of things which can be interacted with at any given moment, which depends on who you are and where you are. Commands typed by the player will only be allowed to go forward into actions if the things they refer to are &quot;in scope&quot;. Inform also needs to determine scope at other times, too: for instance, when deciding whether a rule conditional on being &quot;in the presence of&quot; something is valid. It is a bad idea to say anything during this activity.
 <p>
-<blockquote><font color="#000080">Aladdin's Cave is a room. The genie's lamp is a container.
+<p><b>2. The default behaviour.</b> Is complicated: see the Inform Designer's Manual, 4th edition, page 227. Briefly, the scope for someone consists of everything in the same place as them, unless it is dark.
+<p>
+<p><b>3. Examples.</b> (a) We very rarely want to forbid the player to refer to things close at hand, but often want to allow references to distant ones. For instance, a mirage of something which is not present at all:
+<p>
+<blockquote><font color="#000080">After deciding the scope of the player while in the Shrine: place the holy grail in scope.
 </font></blockquote><p>
 <p>
-<p>(Such things are easy to see in the World index because they are listed after all of the rooms and their contents, not belonging inside any room.)
+<p>The special phrase &quot;place ... in scope&quot; does what it suggests. Ordinarily if something is placed in scope, then so are its parts and (in the case of a supporter or a transparent or open container) its contents; but we can also &quot;place the box in scope, but not its contents&quot; if we really need to place just the box itself in scope.
 <p>
-<p>To move something back on-stage, we simply &quot;move&quot; it back onto the stage set, so to speak: back to a room, or into, onto, or made part of something else which is currently on-stage. To remove something, we use the phrase:
-<p>
-<blockquote><font color="#000080">remove the gold coin from play
-</font></blockquote><p>
-<p>
-<p>(We are not permitted to remove rooms, or doors, or the player, from play.) We can test whether something is on-stage or off-stage with:
-<p>
-<blockquote><font color="#000080">if the gold coin is on-stage, ...
-<br>if the gold coin is off-stage, ...
-</font></blockquote><p>
-<p>
-<p>or could, for instance, write
-<p>
-<blockquote><font color="#000080">say &quot;Ah, so many absent friends. Who now remembers [list of off-stage people]?&quot;
-</font></blockquote><p>
-<p>
-<p>&quot;On-stage&quot; and &quot;off-stage&quot; are adjectives, like &quot;visible&quot; or &quot;touchable&quot;, and they apply only to things. Rooms, directions and regions are the stage itself: so it makes no sense to ask the question of whether they are &quot;on-&quot; or &quot;off-&quot;. Doors are always on-stage; backdrops are on-stage unless they have been explicitly removed using the &quot;remove... from play&quot; phrase.
-<p>
-<p><hr><p>
-<a name="e372"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex372.html#e372 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>113</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex372.html#e372 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Beverage Service</font></b></a><br>A potion that the player can drink.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex372.html#e372 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<!-- EXAMPLE START -->
-<a name="e55"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc118.html#e55 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>114</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc118.html#e55 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Spring Cleaning</font></b></a><br>A character who sulks over objects that the player has broken (and which are now off-stage).<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex55.html#e55 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Here we have a destruction action that allows the player to break any fragile items. Once destroyed, these things are removed from play, but we can still refer to them: they are now off-stage. This makes it easy for our sulking character to list the ones that have been destroyed:
+<p>(b) Another useful device is to be able to see, but not touch, another room:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode202(code) {
+function pasteCode64(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Spring Cleaning"\n\nA thing can be tough or fragile. A thing is usually tough.\n\nInstead of attacking something fragile:\n\tsay "You smash [the noun] to smithereens!";\n\tremove the noun from play.\n\nA knick-knack is a kind of thing which is fragile.\n\nEvery turn when a knick-knack is off-stage and Granny Blue can see the player:\n\tsay "\'Ohh,\' whimpers Granny to herself softly. \'How I will miss [the list of off-stage knick-knacks]!\'"\n\nThe Parlor is a room. Granny Blue is a woman in the Parlor. A china lamb, a porcelain milkmaid, a frolicking Dutch cow, and a crystal unicorn are knick-knacks in the Parlor.\n\nTest me with "break lamb / break milkmaid / break cow / break unicorn".\n');
+    myProject.pasteCode('The Cloakroom is a room. [=0x0022=]This is just a cloakroom, but through a vague, misty mirror-window you can make out the Beyond.[=0x0022=] After looking in the Cloakroom, say [=0x0022=]In the mirror you can see [list of things in the Beyond].[=0x0022=][=0x000A=][=0x000A=]After deciding the scope of the player while in the Cloakroom: place the Beyond in scope.[=0x000A=][=0x000A=]The Beyond is a room. Johnny Depp is a man in the Beyond.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode202()"><img border=0 src=../doc_images/paste.png></a> &quot;Spring Cleaning&quot;
+<a href="javascript:pasteCode64()"><img border=0 src=../doc_images/paste.png></a> The Cloakroom is a room. &quot;This is just a cloakroom, but through a vague, misty mirror-window you can make out the Beyond.&quot; After looking in the Cloakroom, say &quot;In the mirror you can see [list of things in the Beyond].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be tough or fragile. A thing is usually tough.
+<blockquote><font color="#000080">After deciding the scope of the player while in the Cloakroom: place the Beyond in scope.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of attacking something fragile:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You smash [the noun] to smithereens!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play.
+<blockquote><font color="#000080">The Beyond is a room. Johnny Depp is a man in the Beyond.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A knick-knack is a kind of thing which is fragile.
+<p>(This must, however, also be a mirage, as at time of writing Mr Depp is alive and as well as can be expected following the reviews of &quot;Charlie and the Chocolate Factory&quot;.) When a room is placed in scope, this is understood as placing its contents in scope rather than the room-object itself. So &quot;place the Ballroom in scope&quot; allows the player to talk about the dancers, the chamber musicians and so forth, but not to &quot;EXAMINE BALLROOM&quot; as such. (This is sensible because actions like examining apply to things: and a room, unlike a container or a supporter, is not a kind of thing.)
+<p>
+<p>(c) In darkness, the scope of someone is ordinarily restricted to his or her possessions (and body), but we can override that:
+<p>
+<blockquote><font color="#000080">After deciding the scope of the player while in darkness: place the location in scope.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when a knick-knack is off-stage and Granny Blue can see the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Ohh,' whimpers Granny to herself softly. 'How I will miss [the list of off-stage knick-knacks]!'&quot;
+<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows the action it would be taking if the current line of command grammar were to be accepted, but it does not yet know to what objects that command would be applied. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
+<p>
+<p><hr><p>
+<a name="e268"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex268.html#e268 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>313</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex268.html#e268 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Scope for listening different from scope for seeing</font></b></a><br>Using "deciding the scope" to change the content of lists such as "the list of audible things which can be touched by the player".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex268.html#e268 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e277"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex277.html#e277 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>314</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex277.html#e277 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Peeled</font></b></a><br>Two different approaches to adjusting what the player can interact with, compared.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex277.html#e277 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e305"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex305.html#e305 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>315</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex305.html#e305 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ginger Beer</font></b></a><br>A portable magic telescope which allows the player to view items in another room of his choice.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex305.html#e305 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e326"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex326.html#e326 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>316</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex326.html#e326 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Rock Garden</font></b></a><br>A simple open landscape where the player can see between rooms and will automatically move to touch things in distant rooms.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex326.html#e326 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e55"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc284.html#e55 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>317</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc284.html#e55 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Stately Gardens</font></b></a><br>An open landscape where the player can see landmarks in nearby areas, with somewhat more complex room descriptions than the previous example, and in which we also account for size differences between things seen at a distance.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex55.html#e55 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>This time we're going to assume that the player can see into any room that is on a line of sight within one or two steps of travel.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode405(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Stately Gardens[=0x0022=][=0x000A=][=0x000A=]Chapter 1 - Laying Out Rooms[=0x000A=][=0x000A=]A room can be indoors or outdoors.[=0x000A=][=0x000A=]Use full-length room descriptions.[=0x000A=][=0x000A=]After deciding the scope of the player:[=0x000A=][=0x0009=]repeat with the way running through directions[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]let first step be the room the way from the location;[=0x000A=][=0x0009=][=0x0009=]if the first step is a room[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]place the first step in scope;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let second step be the room the way from the first step;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if the second step is a room, place the second step in scope;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=]place the obelisk in scope.[=0x000A=][=0x000A=][The obelisk is so large that it can be seen from every room. If we had a number of such large monuments we might want to write a systematic routine to handle them, but this will do for now.][=0x000A=][=0x000A=]The room description heading rule is not listed in the carry out looking rules.[=0x000A=][=0x000A=][Now, we set things up so that the surrounding areas are described automatically as part of the room description:][=0x000A=][=0x000A=]After looking when the location is an outdoors room:[=0x000A=][=0x0009=]change count of sentences to 0;[=0x000A=][=0x0009=]repeat with way running through directions[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]let space be the room way from the location;[=0x000A=][=0x0009=][=0x0009=]if space is an outdoors room, silently try looking toward space;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=]if the obelisk is not in the location and the obelisk is unmentioned[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let the way be the best route from location to the Upper Terrace;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if the way is a direction, say [=0x0022=][The obelisk] is proudly visible on [the way] horizon. [run paragraph on][=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]increase the count of sentences by 1;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]say paragraph break.[=0x000A=][=0x000A=][But perhaps there are a few rooms where we do not wish that to happen, so we[=0x0027=]ll build in exceptions for those.][=0x000A=][=0x000A=]After looking in the rose garden:[=0x000A=][=0x0009=]say [=0x0022=]Otherwise, you are quite cut off.[=0x0022=].[=0x000A=][=0x000A=]After looking in the Ha-ha:[=0x000A=][=0x0009=]do nothing.[=0x000A=][=0x000A=][And suppose we want to allow the player to look in any direction:][=0x000A=][=0x000A=]Understand [=0x0022=]look [direction][=0x0022=] or [=0x0022=]look to/toward [direction][=0x0022=] as facing.[=0x000A=][=0x000A=]Facing is an action applying to one visible thing.[=0x000A=][=0x000A=]Carry out facing:[=0x000A=][=0x0009=]let the viewed item be the room noun from the location;[=0x000A=][=0x0009=]if the viewed item is not a room[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the location is indoors, say [=0x0022=]Your view is restricted by the lack of doors or windows in that direction.[=0x0022=] instead;[=0x000A=][=0x0009=][=0x0009=]otherwise say [=0x0022=]You can[=0x0027=]t see anything promising that way.[=0x0022=] instead;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]try looking toward the viewed item.[=0x000A=][=0x000A=]Instead of facing up:[=0x000A=][=0x0009=]say [=0x0022=]Above you is bright sky.[=0x0022=][=0x000A=][=0x000A=][We also need to tell distant rooms how to describe themselves.][=0x000A=][=0x000A=]Understand [=0x0022=]look toward [any adjacent room][=0x0022=] as looking toward.[=0x000A=][=0x000A=]Looking toward is an action applying to one visible thing.[=0x000A=][=0x000A=]Carry out looking toward:[=0x000A=][=0x0009=]change the chosen direction to the best route from the location to the noun;[=0x000A=][=0x0009=]change the second noun to the room the chosen direction from the noun;[=0x000A=][=0x0009=]if the noun contains something mentionable[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]repeat with item running through mentionable things in the noun[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]carry out the writing a distant paragraph about activity with the item;[=0x000A=][=0x0009=][=0x0009=]end repeat;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]if the noun contains something mentionable[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]increase the count of sentences by 1;[=0x000A=][=0x0009=][=0x0009=]choose row count of sentences in the Table of Distance Sentences;[=0x000A=][=0x0009=][=0x0009=]if the second noun is an outdoors room and the second noun contains something mentionable, say [=0x0022=][both entry] [run paragraph on][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]otherwise say [=0x0022=][here entry] [run paragraph on][=0x0022=];[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]if the second noun is an outdoors room and the second noun contains something mentionable[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]increase the count of sentences by 1;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]choose row count of sentences in the Table of Distance Sentences;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][there entry] [run paragraph on][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x000A=][And again, some exception needs to be made for seeing what[=0x0027=]s in the dip in the ground:][=0x000A=][=0x000A=]Instead of looking toward the Ha-ha:[=0x000A=][=0x0009=]change the chosen direction to the best route from the location to the noun;[=0x000A=][=0x0009=]change the second noun to the room the chosen direction from the noun;[=0x000A=][=0x0009=]if the second noun is an outdoors room and the second noun contains something mentionable[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]increase the count of sentences by 1;[=0x000A=][=0x0009=][=0x0009=]choose row count of sentences in the Table of Distance Sentences;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][there entry] [run paragraph on][=0x0022=];[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=][This is arguably an unnecessary refinement, but the listing of items in the distance gets a bit repetitive unless we vary the sentence structure.][=0x000A=][=0x000A=]Chosen direction is a direction that varies.[=0x000A=][=0x000A=]Count of sentences is a number that varies.[=0x000A=][=0x000A=]Table of Distance Sentences[=0x000A=]both[=0x0009=]here[=0x0009=]there[=0x000A=][=0x0022=]From here, you make out [a list of mentionable things in the noun] a little way [chosen direction], and, further on, [a list of mentionable things in the second noun].[=0x0022=][=0x0009=][=0x0022=]From here, you make out [a list of mentionable things in the noun] [if the noun is not adjacent to the location]some distance [end if]to [the chosen direction].[=0x0022=][=0x0009=][=0x0022=]From here, you make out [a list of mentionable things in the second noun] some distance [chosen direction].[=0x0022=][=0x000A=][=0x0022=]To [the chosen direction] there [is-are a list of mentionable things in the noun], partly obscuring your further view of [a list of mentionable things in the second noun].[=0x0022=][=0x0009=][=0x0022=]To [the chosen direction] there [is-are a list of mentionable things in the noun].[=0x0022=][=0x0009=][=0x0022=]Quite a way [chosen direction] [is-are a list of mentionable things in the second noun].[=0x0022=][=0x000A=][=0x0022=]Then [chosen direction] [is-are a list of mentionable things in the noun], and beyond [a list of mentionable things in the second noun].[=0x0022=][=0x0009=][=0x0022=]Meanwhile, to [the chosen direction] [is-are a list of mentionable things in the noun].[=0x0022=][=0x0009=][=0x0022=]Meanwhile, [chosen direction] in the middle distance [is-are a list of mentionable things in the second noun].[=0x0022=][=0x000A=][=0x0022=]When you turn [chosen direction], you see [a list of mentionable things in the noun], and somewhat further on [a list of mentionable things in the second noun].[=0x0022=][=0x0009=][=0x0022=]When you turn [chosen direction], you see [a list of mentionable things in the noun].[=0x0022=][=0x0009=][=0x0022=]If you turn [chosen direction], you see [a list of mentionable things in the second noun] some way off.[=0x0022=][=0x000A=][=0x0022=]Somewhere generally [chosen direction] [is-are a list of mentionable things in the noun], beyond which, [a list of mentionable things in the second noun].[=0x0022=][=0x0009=][=0x0022=]Roughly [chosen direction] [is-are a list of mentionable things in the noun].[=0x0022=][=0x0009=][=0x0022=]Moreover, in the [chosen direction] distance [is-are a list of mentionable things in the second noun].[=0x0022=][=0x000A=][=0x0022=][The chosen direction] shows [a list of mentionable things in the noun] and then [a list of mentionable things in the second noun].[=0x0022=][=0x0009=][=0x0022=]And to [the chosen direction] [a list of mentionable things in the noun].[=0x0022=][=0x0009=][=0x0022=]Meanwhile, [chosen direction] in the middle distance [is-are a list of mentionable things in the second noun].[=0x0022=][=0x000A=][=0x0022=]Then, [chosen direction], [is-are a list of mentionable things in the noun], and beyond [a list of mentionable things in the second noun].[=0x0022=][=0x0009=][=0x0022=]Meanwhile, to [the chosen direction] [is-are a list of mentionable things in the noun].[=0x0022=][=0x0009=][=0x0022=]Meanwhile, [chosen direction] in the middle distance [is-are a list of mentionable things in the second noun].[=0x0022=][=0x000A=][=0x0022=]Finally, [chosen direction], [is-are a list of mentionable things in the noun], somewhat nearer than [a list of mentionable things in the second noun].[=0x0022=][=0x0009=][=0x0022=]Finally, to [the chosen direction] [is-are a list of mentionable things in the noun].[=0x0022=][=0x0009=][=0x0022=]Finally, [chosen direction] in the middle distance [is-are a list of mentionable things in the second noun].[=0x0022=][=0x000A=][=0x000A=][Now, our ability to view things at a distance should be determined by the size of the things we[=0x0027=]re trying to see:][=0x000A=][=0x000A=]Chapter 2 - Height[=0x000A=][=0x000A=]A height is a kind of value. 10 feet 11 inches specifies a height. 10 feet 11 specifies a height. The verb to stand (it stands, they stand, it is standing) implies the height property. The verb to measure (it measures, they measure) implies the height property. A thing has a height. The height of a thing is usually 3 feet 0.[=0x000A=][=0x000A=]Definition: a thing is tiny if its height is 0 feet 6 inches or less.[=0x000A=][=0x000A=]Definition: a thing is short if its height is 3 feet 0 or less.[=0x000A=][=0x000A=]Definition: a thing is tall if its height is 6 feet 0 or more.[=0x000A=][=0x000A=]The height of a man is usually 5 feet 10 inches. The height of a woman is usually 5 feet 6 inches.[=0x000A=][=0x000A=]Definition: a thing is monumental if it is taller than 25 feet 0 inches.[=0x000A=][=0x000A=]Definition: a thing is mentionable if it stands tall enough to see.[=0x000A=][=0x000A=]To decide whether (item - a thing) stands tall enough to see:[=0x000A=][=0x0009=]if the item is in the Rose Garden and the item is shorter than the roses, no;[=0x000A=][=0x0009=]if the item is mentioned, no;[=0x000A=][=0x0009=]if the item is in an adjacent room and item is taller than 2 feet 0, yes;[=0x000A=][=0x0009=]if the item is taller than 4 feet 0, yes;[=0x000A=][=0x0009=]no.[=0x000A=][=0x000A=]Instead of examining something which is within a room (called the space) which is not the location:[=0x000A=][=0x0009=]if the location is adjacent to the space[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the noun is tiny, say [=0x0022=]It is too far from here for you to make out much detail about [the noun].[=0x0022=] instead;[=0x000A=][=0x0009=][=0x0009=]let way be the best route from the location to the space;[=0x000A=][=0x0009=][=0x0009=]if the way is a direction, say [=0x0022=]You gaze off [way] at [the noun]...[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]continue the action;[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]if the noun is short, say [=0x0022=]It is too far from here for you to make out much detail about [the noun].[=0x0022=] instead;[=0x000A=][=0x0009=][=0x0009=]let way be the best route from the location to the space;[=0x000A=][=0x0009=][=0x0009=]if the way is a direction, say [=0x0022=]You gaze off [way] into the distance at [the noun]...[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]continue the action;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=][We might also want to be able to override, manually, the way distant things are described.][=0x000A=][=0x000A=]Writing a distant paragraph about something is an activity.[=0x000A=][=0x000A=]Rule for writing a distant paragraph about the lily pond:[=0x000A=][=0x0009=]if the second noun is a room and something mentionable is in the second noun, say [=0x0022=]A [lily pond], [chosen direction], patchily reflects [a list of mentionable things in the second noun] on the far side. [run paragraph on][=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]To [the chosen direction], [a lily pond] shimmers in the sunlight. [run paragraph on][=0x0022=][=0x000A=][=0x000A=]Rule for writing a distant paragraph about the roses:[=0x000A=][=0x0009=]if something in the Rose Garden is taller than the roses,[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Over the tops of [the roses], [chosen direction], you see [a list of mentionable things in the rose garden]. [run paragraph on][=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]Immediately [chosen direction] is [the roses]. [run paragraph on][=0x0022=][=0x000A=][=0x000A=]Rule for writing a distant paragraph about the obelisk:[=0x000A=][=0x0009=]if a mentionable thing in the Upper Terrace is shorter than the obelisk,[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]A stupidly grand [obelisk], [chosen direction], towers over [a list of mentionable things in the Upper Terrace]. [run paragraph on][=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]To [the chosen direction], you can[=0x0027=]t help noticing [the obelisk], which is much larger than any object really needs to be. [run paragraph on][=0x0022=].[=0x000A=][=0x000A=]After writing a distant paragraph about something:[=0x000A=][=0x0009=]increase the count of sentences by 1.[=0x000A=][=0x000A=][Moreover, proximate things might have special descriptions too.][=0x000A=][=0x000A=]Rule for writing a paragraph about something tiny when the location is outdoors:[=0x000A=][=0x0009=]if the location is the Gravel Circle,[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Abandoned in the gravel [is-are a list of unmentioned tiny things in the location]. [run paragraph on][=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]Half trampled into the grass, and easy to miss, [is-are a list of unmentioned tiny things in the location]. [run paragraph on][=0x0022=][=0x000A=][=0x000A=]Before doing something other than examining or approaching to something which is not within the location:[=0x000A=][=0x0009=]if the player has the noun, continue the action;[=0x000A=][=0x0009=]say [=0x0022=](first going over to [the noun])[line break][=0x0022=];[=0x000A=][=0x0009=]try approaching the noun;[=0x000A=][=0x0009=]if the noun is not within the location, stop the action.[=0x000A=][=0x000A=]Understand [=0x0022=]go toward/to/towards/near [something][=0x0022=] or [=0x0022=]approach [something][=0x0022=] as approaching.[=0x000A=][=0x000A=]Approaching is an action applying to one visible thing.[=0x000A=][=0x000A=]Check approaching:[=0x000A=][=0x0009=]if the player is not in a room, say [=0x0022=]You[=0x0027=]ll have to get up.[=0x0022=] instead;[=0x000A=][=0x0009=]if the noun is within the location, say [=0x0022=]You[=0x0027=]re as close to [the noun] as you can get.[=0x0022=] instead;[=0x000A=][=0x0009=]let space be the location of the noun;[=0x000A=][=0x0009=]if the space is not a room, say [=0x0022=]You don[=0x0027=]t quite see how to get there.[=0x0022=] instead;[=0x000A=][=0x0009=]let way be the best route from the location to the space;[=0x000A=][=0x0009=]if way is a direction, do nothing;[=0x000A=][=0x0009=]otherwise say [=0x0022=]You can[=0x0027=]t see how to get over there from here.[=0x0022=] instead.[=0x000A=][=0x000A=]To head to (space - a room):[=0x000A=][=0x0009=]let the way be the best route from the location to the space;[=0x000A=][=0x0009=]if the space is adjacent to the location,[=0x000A=][=0x0009=][=0x0009=]try going way;[=0x000A=][=0x0009=]otherwise silently try going way.[=0x000A=][=0x000A=]Carry out approaching:[=0x000A=][=0x0009=]let space be the location of the noun;[=0x000A=][=0x0009=]while the space is not the location repeatedly head to space.[=0x000A=][=0x000A=][This is a bit primitive, since if we had an occasion where going was blocked, we could get stuck in a loop. So we would need to be careful, but for this example it won[=0x0027=]t arise.][=0x000A=][=0x000A=]Going state is a truth state that varies. Going state is false.[=0x000A=][=0x000A=]Check going:[=0x000A=][=0x0009=]now going state is true.[=0x000A=][=0x000A=]The description of a room is usually [=0x0022=][if going state is true]You drift [noun] across the open lawn[direction relative to obelisk]. [end if]An absolutely phenomenal quantity of manicured turf stretches from where you stand in almost every direction.[=0x0022=][=0x000A=][=0x000A=]Before reading a command:[=0x000A=][=0x0009=]now going state is false.[=0x000A=][=0x000A=]To say direction relative to obelisk:[=0x000A=][=0x0009=]if obelisk is in the location[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=], as though drawn magnetically to the foot of the monument[=0x0022=];[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]let way be the best route from the location to the Upper Terrace;[=0x000A=][=0x0009=][=0x0009=]if way is the noun, say [=0x0022=], drawn towards [the obelisk][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]if the way is the opposite of the noun, say [=0x0022=], keeping [the obelisk] more or less at your back[=0x0022=];[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]Chapter 3 - The Grounds[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]change the left hand status line to [=0x0022=]Idyllic[=0x0022=];[=0x000A=][=0x0009=]change the right hand status line to [=0x0022=] [=0x0022=].[=0x000A=][=0x000A=]The Gravel Circle, the Ha-ha, the Sheep Field, the Open Lawn, the Croquet Ground, the Rose Garden, the Upper Terrace, the Middle Terrace, and the Lower Terrace are outdoors.[=0x000A=][=0x000A=]The Middle Terrace is north of the Lower Terrace and south of the Upper Terrace. The lily pond is fixed in place in the Middle Terrace.[=0x0022=]You [if going state is true]come to[otherwise]are at[end if] the north edge of a perfectly round lily pond, bordered with stones. Its surface patchily reflects [the marble anteater] on the south bank.[=0x0022=] A tent peg and a wilted orchid are in the Middle Terrace. The tent peg measures 0 feet 6. The orchid measures 0 feet 4.[=0x000A=][=0x000A=]The description of the Lower Terrace is [=0x0022=][if going state is true]You climb [noun] up a small hillock[direction relative to obelisk][otherwise]You stand on a short, round, entirely artificial hillock[end if].[=0x0022=][=0x000A=][=0x000A=]The marble anteater is a fixed in place thing in the Lower Terrace. The height of marble anteater is 6 feet 2 inches.[=0x0022=]A marble anteater stands on a pedestal at the top of the hill. In the bright sunlight the white marble makes a striking contrast with [the obelisk] in the distance.[=0x0022=] The description is [=0x0022=]The anteater is very much more than life-size.[=0x0022=][=0x000A=][=0x000A=]The obelisk of black granite is a fixed in place thing in the Upper Terrace.[=0x0022=]Now that you are at the foot of it, you can properly appreciate the stupid immensity of the obelisk, pointing stonily at heaven.[=0x0022=] The height of the obelisk is 50 feet 0 inches. The description of the obelisk is [=0x0022=]It stands ridiculously tall, and has an inscription on the face.[=0x0022=][=0x000A=][=0x000A=]The inscription is part of the obelisk. The height of the inscription is 0 feet 3 inches. The description of the inscription is [=0x0022=]You can[=0x0027=]t read the squirming, pointed letters, but they make you uneasy.[=0x0022=].[=0x000A=][=0x000A=]The Gravel Circle is west of the Upper Terrace, northwest of the Middle Terrace, and north of the Croquet Ground. The description of the Gravel Circle is [=0x0022=][if going state is true]You head [noun] until the lawn thins and[otherwise]Here the lawn[end if] gives way to a circle of raked gravel, which crunches pleasingly beneath you.[=0x0022=][=0x000A=][=0x000A=]Instead of going northwest in the Upper Terrace, try going north.[=0x000A=][=0x000A=]The Ha-ha is north of the Gravel Circle and northwest of the Upper Terrace. The description of the Ha-ha is [=0x0022=][if going state is true]The land dips here so suddenly that you do not know the dip is there until you[=0x0027=]re in it; but it prevents livestock from crossing barriers, and that is the important thing[otherwise]You are at the base of a steep-sided depression, so the lawn continues north and south more or less at the level of your head[end if].[=0x000A=][=0x000A=]The tip of [the obelisk] is the only thing you can make out from this depression, off to the southeast.[=0x0022=]. North of the Ha-ha is the Sheep Field. In the Sheep Field is an animal called a black sheep. The black sheep stands 4 feet 3 inches.[=0x0022=]A black sheep grazes placidly nearby.[=0x0022=] The description of the black sheep is [=0x0022=]It reminds you of your Uncle Tim.[=0x0022=][=0x000A=][=0x000A=]Before going from the Ha-ha:[=0x000A=][=0x0009=]say [=0x0022=]It[=0x0027=]s a bit of a scramble to get back up the side of the depression, and you keep slipping in the damp grass. But you manage at last.[=0x0022=][=0x000A=][=0x000A=]The Rose Garden is  southwest of the Lower Terrace. The thicket of red roses is a fixed in place thing in the Rose Garden. The thicket stands 4 feet 2 inches.[=0x0022=]Heavy red roses grow over a roughly horseshoe-shaped wall around you. Over this barrier, the head of [the marble anteater] is visible to the northwest, and the tip of [the obelisk] in the distance.[=0x0022=][=0x000A=][=0x000A=]The description of the Rose Garden is [=0x0022=][if going state is true]You slip [noun] into the enclosure of the rose garden. [end if]The rest of the park, and the world, seems muted and quiet.[=0x0022=][=0x000A=][=0x000A=]Instead of smelling the rose garden: try smelling the roses. Instead of smelling the roses, say [=0x0022=]The smell tickles the back of your throat and makes you want to cough.[=0x0022=][=0x000A=][=0x000A=]Instead of listening to the rose garden:[=0x000A=][=0x0009=]say [=0x0022=]You can[=0x0027=]t hear anything at all.[=0x0022=][=0x000A=][=0x000A=]The Open Lawn is north of the Rose Garden, west of the Lower Terrace, and southwest of the Middle Terrace. The Croquet Ground is north of the Open Lawn, west of the Middle Terrace, southwest of the Upper Terrace, and northwest of the Lower Terrace.[=0x000A=][=0x000A=]A discarded champagne cork is in the Open Lawn. It stands 0 feet 2 inches.[=0x000A=][=0x000A=]A stone bench is an enterable supporter in the Croquet Ground. It stands 3 feet 8 inches.[=0x0022=]There is a stone bench here -- a sort of stone sofa, really, with nymphs disporting themselves on the arms and back.[=0x0022=] The description of the bench is [=0x0022=]It used to be a Roman sarcophagus -- hence the nymphs -- but someone has thoughtfully recarved it as lawn furniture.[=0x0022=][=0x000A=][=0x000A=]The half-size Bentley is a vehicle in the Gravel Circle.[=0x0022=]A sort of child[=0x0027=]s-toy version of a Bentley is parked [if something parkable is in the location]beside [the tallest parkable thing in the location][otherwise]close at hand[end if].[=0x0022=] The description of the half-size Bentley is [=0x0022=]Of beautiful and unambiguously luxurious lines, but sized down to hold only one or (at a stretch) two people, and powered by electricity.[=0x0022=] The half-size Bentley stands 3 feet 6 inches.[=0x000A=][=0x000A=]Definition: a thing is parkable if it is not a person and it is not the Bentley.[=0x000A=][=0x000A=]Instead of touching the obelisk, say [=0x0022=]Though it is black stone in sunlight, the obelisk is very cold to the touch.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]s / s / e / sw / ne / n / n / w / n / n / examine obelisk / touch obelisk / read inscription[=0x0022=].[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode405()"><img border=0 src=../doc_images/paste.png></a> &quot;Stately Gardens&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Parlor is a room. Granny Blue is a woman in the Parlor. A china lamb, a porcelain milkmaid, a frolicking Dutch cow, and a crystal unicorn are knick-knacks in the Parlor.
+<blockquote><font color="#000080">Chapter 1 - Laying Out Rooms
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;break lamb / break milkmaid / break cow / break unicorn&quot;.
+<blockquote><font color="#000080">A room can be indoors or outdoors.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc118.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Use full-length room descriptions.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After deciding the scope of the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with the way running through directions
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let first step be the room the way from the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the first step is a room
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;place the first step in scope;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let second step be the room the way from the first step;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the second step is a room, place the second step in scope;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;place the obelisk in scope.
+</font></blockquote><p>
+<p>
+<p>The obelisk is so large that it can be seen from every room. If we had a number of such large monuments we might want to write a systematic routine to handle them, but this will do for now.
+<p>
+<blockquote><font color="#000080">The room description heading rule is not listed in the carry out looking rules.
+</font></blockquote><p>
+<p>
+<p>Now, we set things up so that the surrounding areas are described automatically as part of the room description:
+<p>
+<blockquote><font color="#000080">After looking when the location is an outdoors room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change count of sentences to 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with way running through directions
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let space be the room way from the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if space is an outdoors room, silently try looking toward space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the obelisk is not in the location and the obelisk is unmentioned
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from location to the Upper Terrace;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the way is a direction, say &quot;[The obelisk] is proudly visible on [the way] horizon. [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase the count of sentences by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
+</font></blockquote><p>
+<p>
+<p>But perhaps there are a few rooms where we do not wish that to happen, so we'll build in exceptions for those.
+<p>
+<blockquote><font color="#000080">After looking in the rose garden:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Otherwise, you are quite cut off.&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After looking in the Ha-ha:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;do nothing.
+</font></blockquote><p>
+<p>
+<p>And suppose we want to allow the player to look in any direction:
+<p>
+<blockquote><font color="#000080">Understand &quot;look [direction]&quot; or &quot;look to/toward [direction]&quot; as facing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Facing is an action applying to one visible thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out facing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the viewed item be the room noun from the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the viewed item is not a room
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the location is indoors, say &quot;Your view is restricted by the lack of doors or windows in that direction.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You can't see anything promising that way.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try looking toward the viewed item.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of facing up:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Above you is bright sky.&quot;
+</font></blockquote><p>
+<p>
+<p>We also need to tell distant rooms how to describe themselves.
+<p>
+<blockquote><font color="#000080">Understand &quot;look toward [any adjacent room]&quot; as looking toward.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Looking toward is an action applying to one visible thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out looking toward:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the chosen direction to the best route from the location to the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the second noun to the room the chosen direction from the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun contains something mentionable
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through mentionable things in the noun
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;carry out the writing a distant paragraph about activity with the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun contains something mentionable
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase the count of sentences by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row count of sentences in the Table of Distance Sentences;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is an outdoors room and the second noun contains something mentionable, say &quot;[both entry] [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[here entry] [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is an outdoors room and the second noun contains something mentionable
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase the count of sentences by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row count of sentences in the Table of Distance Sentences;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[there entry] [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+</font></blockquote><p>
+<p>
+<p>And again, some exception needs to be made for seeing what's in the dip in the ground:
+<p>
+<blockquote><font color="#000080">Instead of looking toward the Ha-ha:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the chosen direction to the best route from the location to the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the second noun to the room the chosen direction from the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is an outdoors room and the second noun contains something mentionable
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase the count of sentences by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row count of sentences in the Table of Distance Sentences;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[there entry] [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<p>This is arguably an unnecessary refinement, but the listing of items in the distance gets a bit repetitive unless we vary the sentence structure.
+<p>
+<blockquote><font color="#000080">Chosen direction is a direction that varies.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Count of sentences is a number that varies.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Distance Sentences
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">both</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">here</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">there</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;From here, you make out [a list of mentionable things in the noun] a little way [chosen direction], and, further on, [a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;From here, you make out [a list of mentionable things in the noun] [if the noun is not adjacent to the location]some distance [end if]to [the chosen direction].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;From here, you make out [a list of mentionable things in the second noun] some distance [chosen direction].&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;To [the chosen direction] there [is-are a list of mentionable things in the noun], partly obscuring your further view of [a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;To [the chosen direction] there [is-are a list of mentionable things in the noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Quite a way [chosen direction] [is-are a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Then [chosen direction] [is-are a list of mentionable things in the noun], and beyond [a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Meanwhile, to [the chosen direction] [is-are a list of mentionable things in the noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Meanwhile, [chosen direction] in the middle distance [is-are a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;When you turn [chosen direction], you see [a list of mentionable things in the noun], and somewhat further on [a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;When you turn [chosen direction], you see [a list of mentionable things in the noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;If you turn [chosen direction], you see [a list of mentionable things in the second noun] some way off.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Somewhere generally [chosen direction] [is-are a list of mentionable things in the noun], beyond which, [a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Roughly [chosen direction] [is-are a list of mentionable things in the noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Moreover, in the [chosen direction] distance [is-are a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[The chosen direction] shows [a list of mentionable things in the noun] and then [a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;And to [the chosen direction] [a list of mentionable things in the noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Meanwhile, [chosen direction] in the middle distance [is-are a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Then, [chosen direction], [is-are a list of mentionable things in the noun], and beyond [a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Meanwhile, to [the chosen direction] [is-are a list of mentionable things in the noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Meanwhile, [chosen direction] in the middle distance [is-are a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Finally, [chosen direction], [is-are a list of mentionable things in the noun], somewhat nearer than [a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Finally, to [the chosen direction] [is-are a list of mentionable things in the noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Finally, [chosen direction] in the middle distance [is-are a list of mentionable things in the second noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<p>Now, our ability to view things at a distance should be determined by the size of the things we're trying to see:
+<p>
+<blockquote><font color="#000080">Chapter 2 - Height
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A height is a kind of value. 10 feet 11 inches specifies a height. 10 feet 11 specifies a height. The verb to stand (it stands, they stand, it is standing) implies the height property. The verb to measure (it measures, they measure) implies the height property. A thing has a height. The height of a thing is usually 3 feet 0.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is tiny if its height is 0 feet 6 inches or less.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is short if its height is 3 feet 0 or less.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is tall if its height is 6 feet 0 or more.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The height of a man is usually 5 feet 10 inches. The height of a woman is usually 5 feet 6 inches.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is monumental if it is taller than 25 feet 0 inches.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is mentionable if it stands tall enough to see.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide whether (item - a thing) stands tall enough to see:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is in the Rose Garden and the item is shorter than the roses, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is mentioned, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is in an adjacent room and item is taller than 2 feet 0, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is taller than 4 feet 0, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining something which is within a room (called the space) which is not the location:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is adjacent to the space
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the noun is tiny, say &quot;It is too far from here for you to make out much detail about [the noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from the location to the space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the way is a direction, say &quot;You gaze off [way] at [the noun]...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the noun is short, say &quot;It is too far from here for you to make out much detail about [the noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from the location to the space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the way is a direction, say &quot;You gaze off [way] into the distance at [the noun]...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<p>We might also want to be able to override, manually, the way distant things are described.
+<p>
+<blockquote><font color="#000080">Writing a distant paragraph about something is an activity.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for writing a distant paragraph about the lily pond:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is a room and something mentionable is in the second noun, say &quot;A [lily pond], [chosen direction], patchily reflects [a list of mentionable things in the second noun] on the far side. [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;To [the chosen direction], [a lily pond] shimmers in the sunlight. [run paragraph on]&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for writing a distant paragraph about the roses:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if something in the Rose Garden is taller than the roses,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Over the tops of [the roses], [chosen direction], you see [a list of mentionable things in the rose garden]. [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Immediately [chosen direction] is [the roses]. [run paragraph on]&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for writing a distant paragraph about the obelisk:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if a mentionable thing in the Upper Terrace is shorter than the obelisk,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A stupidly grand [obelisk], [chosen direction], towers over [a list of mentionable things in the Upper Terrace]. [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;To [the chosen direction], you can't help noticing [the obelisk], which is much larger than any object really needs to be. [run paragraph on]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After writing a distant paragraph about something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;increase the count of sentences by 1.
+</font></blockquote><p>
+<p>
+<p>Moreover, proximate things might have special descriptions too.
+<p>
+<blockquote><font color="#000080">Rule for writing a paragraph about something tiny when the location is outdoors:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is the Gravel Circle,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Abandoned in the gravel [is-are a list of unmentioned tiny things in the location]. [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Half trampled into the grass, and easy to miss, [is-are a list of unmentioned tiny things in the location]. [run paragraph on]&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before doing something other than examining or approaching to something which is not within the location:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player has the noun, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first going over to [the noun])[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try approaching the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not within the location, stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;go toward/to/towards/near [something]&quot; or &quot;approach [something]&quot; as approaching.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Approaching is an action applying to one visible thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check approaching:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not in a room, say &quot;You'll have to get up.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is within the location, say &quot;You're as close to [the noun] as you can get.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let space be the location of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the space is not a room, say &quot;You don't quite see how to get there.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from the location to the space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if way is a direction, do nothing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You can't see how to get over there from here.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To head to (space - a room):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location to the space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the space is adjacent to the location,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try going way;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise silently try going way.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out approaching:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let space be the location of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;while the space is not the location repeatedly head to space.
+</font></blockquote><p>
+<p>
+<p>This is a bit primitive, since if we had an occasion where going was blocked, we could get stuck in a loop. So we would need to be careful, but for this example it won't arise.
+<p>
+<blockquote><font color="#000080">Going state is a truth state that varies. Going state is false.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check going:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now going state is true.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of a room is usually &quot;[if going state is true]You drift [noun] across the open lawn[direction relative to obelisk]. [end if]An absolutely phenomenal quantity of manicured turf stretches from where you stand in almost every direction.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now going state is false.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say direction relative to obelisk:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if obelisk is in the location
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;, as though drawn magnetically to the foot of the monument&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from the location to the Upper Terrace;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if way is the noun, say &quot;, drawn towards [the obelisk]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the way is the opposite of the noun, say &quot;, keeping [the obelisk] more or less at your back&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Chapter 3 - The Grounds
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the left hand status line to &quot;Idyllic&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot; &quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Gravel Circle, the Ha-ha, the Sheep Field, the Open Lawn, the Croquet Ground, the Rose Garden, the Upper Terrace, the Middle Terrace, and the Lower Terrace are outdoors.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Middle Terrace is north of the Lower Terrace and south of the Upper Terrace. The lily pond is fixed in place in the Middle Terrace.&quot;You [if going state is true]come to[otherwise]are at[end if] the north edge of a perfectly round lily pond, bordered with stones. Its surface patchily reflects [the marble anteater] on the south bank.&quot; A tent peg and a wilted orchid are in the Middle Terrace. The tent peg measures 0 feet 6. The orchid measures 0 feet 4.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the Lower Terrace is &quot;[if going state is true]You climb [noun] up a small hillock[direction relative to obelisk][otherwise]You stand on a short, round, entirely artificial hillock[end if].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The marble anteater is a fixed in place thing in the Lower Terrace. The height of marble anteater is 6 feet 2 inches.&quot;A marble anteater stands on a pedestal at the top of the hill. In the bright sunlight the white marble makes a striking contrast with [the obelisk] in the distance.&quot; The description is &quot;The anteater is very much more than life-size.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The obelisk of black granite is a fixed in place thing in the Upper Terrace.&quot;Now that you are at the foot of it, you can properly appreciate the stupid immensity of the obelisk, pointing stonily at heaven.&quot; The height of the obelisk is 50 feet 0 inches. The description of the obelisk is &quot;It stands ridiculously tall, and has an inscription on the face.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The inscription is part of the obelisk. The height of the inscription is 0 feet 3 inches. The description of the inscription is &quot;You can't read the squirming, pointed letters, but they make you uneasy.&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Gravel Circle is west of the Upper Terrace, northwest of the Middle Terrace, and north of the Croquet Ground. The description of the Gravel Circle is &quot;[if going state is true]You head [noun] until the lawn thins and[otherwise]Here the lawn[end if] gives way to a circle of raked gravel, which crunches pleasingly beneath you.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going northwest in the Upper Terrace, try going north.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Ha-ha is north of the Gravel Circle and northwest of the Upper Terrace. The description of the Ha-ha is &quot;[if going state is true]The land dips here so suddenly that you do not know the dip is there until you're in it; but it prevents livestock from crossing barriers, and that is the important thing[otherwise]You are at the base of a steep-sided depression, so the lawn continues north and south more or less at the level of your head[end if].
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The tip of [the obelisk] is the only thing you can make out from this depression, off to the southeast.&quot;. North of the Ha-ha is the Sheep Field. In the Sheep Field is an animal called a black sheep. The black sheep stands 4 feet 3 inches.&quot;A black sheep grazes placidly nearby.&quot; The description of the black sheep is &quot;It reminds you of your Uncle Tim.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before going from the Ha-ha:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It's a bit of a scramble to get back up the side of the depression, and you keep slipping in the damp grass. But you manage at last.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Rose Garden is  southwest of the Lower Terrace. The thicket of red roses is a fixed in place thing in the Rose Garden. The thicket stands 4 feet 2 inches.&quot;Heavy red roses grow over a roughly horseshoe-shaped wall around you. Over this barrier, the head of [the marble anteater] is visible to the northwest, and the tip of [the obelisk] in the distance.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the Rose Garden is &quot;[if going state is true]You slip [noun] into the enclosure of the rose garden. [end if]The rest of the park, and the world, seems muted and quiet.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of smelling the rose garden: try smelling the roses. Instead of smelling the roses, say &quot;The smell tickles the back of your throat and makes you want to cough.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of listening to the rose garden:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't hear anything at all.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Open Lawn is north of the Rose Garden, west of the Lower Terrace, and southwest of the Middle Terrace. The Croquet Ground is north of the Open Lawn, west of the Middle Terrace, southwest of the Upper Terrace, and northwest of the Lower Terrace.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A discarded champagne cork is in the Open Lawn. It stands 0 feet 2 inches.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A stone bench is an enterable supporter in the Croquet Ground. It stands 3 feet 8 inches.&quot;There is a stone bench here -- a sort of stone sofa, really, with nymphs disporting themselves on the arms and back.&quot; The description of the bench is &quot;It used to be a Roman sarcophagus -- hence the nymphs -- but someone has thoughtfully recarved it as lawn furniture.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The half-size Bentley is a vehicle in the Gravel Circle.&quot;A sort of child's-toy version of a Bentley is parked [if something parkable is in the location]beside [the tallest parkable thing in the location][otherwise]close at hand[end if].&quot; The description of the half-size Bentley is &quot;Of beautiful and unambiguously luxurious lines, but sized down to hold only one or (at a stretch) two people, and powered by electricity.&quot; The half-size Bentley stands 3 feet 6 inches.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is parkable if it is not a person and it is not the Bentley.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of touching the obelisk, say &quot;Though it is black stone in sunlight, the obelisk is very cold to the touch.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;s / s / e / sw / ne / n / n / w / n / n / examine obelisk / touch obelisk / read inscription&quot;.
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc284.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc117.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc119.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc283.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc285.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

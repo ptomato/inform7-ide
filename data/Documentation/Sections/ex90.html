@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.11. Phrases which use descriptions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.26. Reading a command</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,80 +19,193 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Curare" -->
-<!-- SEARCH SECTION "Ex 162" -->
-<!-- SEARCH SORT "Ex 011-011-162" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc163.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc165.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.11. Phrases which use descriptions</b></font></td></tr></table>
+<!-- SEARCH TITLE "Complimentary Peanuts" -->
+<!-- SEARCH SECTION "Ex 326" -->
+<!-- SEARCH SORT "Ex 017-026-326" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc287.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc289.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.26. Reading a command</b></font></td></tr></table>
 <p>
-<p>In the chapter on Descriptions, we saw that a description can be any source text which describes one or more objects: it might be as simple as &quot;the Corn Market&quot;, or as complicated as &quot;open containers which are in dark rooms&quot;. (More or less the only restriction is that it must be unambiguous as to what counts and what does not: &quot;three containers&quot; is ambiguous as a description because it does not say which three.)
+<p><b>1. When it happens.</b> When reading a command from the keyboard.
 <p>
-<p>In the last section, we saw that it is possible to repeat phrases with a temporary name running through all the things matching a description. Other tricks with descriptions have also turned up: in fact, if D is a description, then
+<p><b>2. The default behaviour.</b> Print the prompt text; wait for the player to type something and press return. Reject an entirely blank line, and treat a command beginning &quot;oops&quot; as a correction to the previous one. This is a fairly complicated business, so it is probably best not to change the &quot;for&quot; rules for this activity: &quot;before&quot;, and especially &quot;after&quot;, are another matter. (Note, however, that if Inform does reject a blank line and ask for another then this all happens inside the &quot;for&quot; rules: no &quot;after&quot; occurs after the blank line, nor does a &quot;before&quot; happen before the second attempt by the player. It is all a single round of the activity, not two.)
 <p>
-<blockquote><font color="#000080">say &quot;You gaze mournfully at [the list of D].&quot;;
-<br>let the tally be the number of D;
-<br>let the surprise prize be a random D;
-<br>repeat with item running through D begin; ...; end repeat;
+<p><b>3. Examples.</b> (a) To lead absolute beginners in gently:
+<p>
+<blockquote><font color="#000080">Before reading a command while the turn count is 1, say &quot;(This is your chance to say what the protagonist should do next. After the '>', try typing 'take inventory'.)&quot;
 </font></blockquote><p>
 <p>
-<p>are all standard things to do. These examples make it look as if it must be possible to define phrases which act on descriptions, and in fact it is. For instance:
-<p>
-<blockquote><font color="#000080">To enumerate (collection - a description):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with the item running through the collection
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;-- [The item].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<p>This makes &quot;enumerate lighted rooms&quot; run off a list of lighted rooms in a textual format different from the standard one produced by &quot;say the list of lighted rooms&quot;. Inside the definition, &quot;collection&quot; can be used wherever a description might be used: here, for instance, we use it as the range for the repeat loop.
-<p>
-<p>Purely as a convenience, we can also write &quot;member of&quot; or &quot;members of&quot; in this context. For instance, in the enumerate definition, it would have been just as good to write &quot;...running through the members of the collection...&quot; in the repeat. (Similarly, we could write &quot;number of members of the collection&quot; or &quot;a random member of the collection&quot;, which looks grammatically tidier than writing &quot;number of the collection&quot; or &quot;random of the collection&quot; - though in fact both of these do work.)
-<p>
-<p><hr><p>
-<!-- EXAMPLE START -->
-<a name="e90"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc164.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>162</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc164.html#e90 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Curare</font></b></a><br>A phrase that chooses and names the least-recently selected item from the collection given, allowing the text to cycle semi-randomly through a group of objects.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex90.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>(b) The following responds politely but firmly if the player tries to type &quot;please look&quot;, say, instead of just &quot;look&quot;:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode252(code) {
+function pasteCode66(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Curare"\n\nA thing has a number called the last use. The last use of a thing is usually 0.\n\nDefinition: a thing is old if its last use is 12 or less.\n\n[The actual number chosen in this definition is pretty much irrelevant: the main thing is that we want to establish relative values. The lower the "last use" number of an item, the older that item should be understood to be, as we see here:]\n\nTo decide which thing is cyclically random (collection - a description):\n\tlet choice be the oldest member of the collection;\n\tchange the last use of the choice to the turn count;\n\tdecide on choice.\n\n[This phrase will select, from the collection of objects passed to it, the one that has been mentioned least recently. This means that if we consult it repeatedly about the same collection, it will begin to cycle predictably; but if new items are added to the collection, it will mention these first before returning to the previous cycle. Now we can use this:]\n\nAfter taking inventory:\n\tsay "You stare morosely at [the cyclically random thing carried by the player], wondering what you\'re ever going to find to do with it."\n\n[We could have said "You stare morosely at [the oldest thing carried by the player]" here, but doing so would not have set the "last use" property correctly, so we would not get the cycling behavior that we\'re looking for.]\n\nThe Evidence Room is a room. Some shelves are scenery supporters in the Evidence Room. A box is a kind of container which is open and not openable. On the shelves is a box.  It contains a deformed bullet and a driver\'s license.\n\nThe player carries a steel fish hook, a Chinese passport, a tube of synthetic curare, and an envelope full of Euros.\n\nTest me with "i / i / i / i / i / i / get all from box / i / i / i".\n');
+    myProject.pasteCode('After reading a command:[=0x000A=][=0x0009=]if the player[=0x0027=]s command includes [=0x0022=]please[=0x0022=] begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Please do not say please.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]reject the player[=0x0027=]s command;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode252()"><img border=0 src=../doc_images/paste.png></a> &quot;Curare&quot;
+<a href="javascript:pasteCode66()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Please do not say please.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing has a number called the last use. The last use of a thing is usually 0.
+<p>To explain. Fragments of what the player has typed are called snippets: &quot;the player's command&quot; is the entire thing. We can test if a snippet matches a given pattern like so:
+<p>
+<blockquote><font color="#000080">if the player's command matches &quot;room [number]&quot;, ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a thing is old if its last use is 12 or less.
+<p>This requires an exact match: the weaker condition &quot;includes&quot; only means that the pattern occurs somewhere in the given snippet, so that
+<p>
+<blockquote><font color="#000080">if the player's command includes &quot;please&quot;, ...
 </font></blockquote><p>
 <p>
-<p>The actual number chosen in this definition is pretty much irrelevant: the main thing is that we want to establish relative values. The lower the &quot;last use&quot; number of an item, the older that item should be understood to be, as we see here:
+<p>matches &quot;please look&quot; or &quot;look please&quot;, etc. Lastly, the phrase
 <p>
-<blockquote><font color="#000080">To decide which thing is cyclically random (collection - a description):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let choice be the oldest member of the collection;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last use of the choice to the turn count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on choice.
+<blockquote><font color="#000080">reject the player's command
 </font></blockquote><p>
 <p>
-<p>This phrase will select, from the collection of objects passed to it, the one that has been mentioned least recently. This means that if we consult it repeatedly about the same collection, it will begin to cycle predictably; but if new items are added to the collection, it will mention these first before returning to the previous cycle. Now we can use this:
+<p>tells Inform not to bother analysing the text further, but to go back to the keyboard. (No time passes; no turn elapses; nothing happens in the simulated world.)
 <p>
-<blockquote><font color="#000080">After taking inventory:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You stare morosely at [the cyclically random thing carried by the player], wondering what you're ever going to find to do with it.&quot;
+<p>(c) An improved version takes commands like &quot;please drop the coin&quot; and strips &quot;please&quot; from them, but then allows them to proceed normally:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode67(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('After reading a command:[=0x000A=][=0x0009=]if the player[=0x0027=]s command includes [=0x0022=]please[=0x0022=] begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=](Quelle politesse! But no need to say please.)[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]cut the matched text;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode67()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(Quelle politesse! But no need to say please.)&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cut the matched text;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<p>We could have said &quot;You stare morosely at [the oldest thing carried by the player]&quot; here, but doing so would not have set the &quot;last use&quot; property correctly, so we would not get the cycling behavior that we're looking for.
+<p>&quot;Matched text&quot; is a snippet containing the words which matched against the pattern in the most recent &quot;includes&quot; condition, so in this case it contains just the single word &quot;please&quot;. Two phrases allow snippets to be altered:
 <p>
-<blockquote><font color="#000080">The Evidence Room is a room. Some shelves are scenery supporters in the Evidence Room. A box is a kind of container which is open and not openable. On the shelves is a box.  It contains a deformed bullet and a driver's license.
+<blockquote><font color="#000080">replace (... snippet ...) with (... text ...)
+<br>cut (...snippet ...)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries a steel fish hook, a Chinese passport, a tube of synthetic curare, and an envelope full of Euros.
+<p>Note that &quot;replace&quot; and &quot;cut&quot; can only be used in &quot;after reading a command&quot; rules: not when an action has been chosen and has gone ahead into its rulebooks. Once the reading a command activity has finished, the command is final.
+<p>
+<p>(d) To make the word &quot;grab&quot; an abbreviation for &quot;take all&quot;:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode68(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('After reading a command:[=0x000A=][=0x0009=]if the player[=0x0027=]s command matches [=0x0022=]grab[=0x0022=], replace the player[=0x0027=]s command with [=0x0022=]take all[=0x0022=].[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode68()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command matches &quot;grab&quot;, replace the player's command with &quot;take all&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;i / i / i / i / i / i / get all from box / i / i / i&quot;.
+<p>(&quot;Snippet&quot; is actually a kind of value, so we could say &quot;Ah, you typed '[the player's command]'!&quot; or some such if we liked. But in practice only three snippets are likely to be useful: the two mentioned above, &quot;player's command&quot; and &quot;matched text&quot;, and the &quot;topic understood&quot;, used when matching the &quot;[text]&quot; token in command grammar.)
+<p>
+<p>(e) Finally, we can make still more detailed alterations to the text of the command using the techniques for indexed text presented in the Advanced Text chapter. For instance:
+<p>
+<blockquote><font color="#000080">After reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let T be indexed text;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let T be the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;replace the regular expression &quot;\p&quot; in T with &quot;&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the text of the player's command to T.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc164.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<p>This converts the player's command to indexed text, which is then manipulated by searching for any punctuation mark and replacing it with blank text (that is, deleted), and then put back again as the new command.
+<p>
+<p><hr><p>
+<a name="e354"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex354.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>323</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex354.html#e354 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fore</font></b></a><br>Understand "fore", "aft", "port", and "starboard", but only when the player is on a vessel.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex354.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e110"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex110.html#e110 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>324</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex110.html#e110 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fragment of a Greek Tragedy</font></b></a><br>Responding to the player's input based on keywords only, and overriding the original parser entirely.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex110.html#e110 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e174"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex174.html#e174 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>325</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex174.html#e174 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloves</font></b></a><br>Accepting adverbs anywhere in a command, registering what the player typed but then cutting them out before interpreting the command.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex174.html#e174 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e90"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc288.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>326</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc288.html#e90 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Complimentary Peanuts</font></b></a><br>A character who responds to keywords in the player's instructions and remarks, even if there are other words included.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex90.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>The &quot;reading a command&quot; activity is not the only point at which we can interact with snippets, as it happens; it is merely the most useful. &quot;The player's command&quot; can be consulted at other points, however, as in this example of your somewhat deaf (or distracted, or simply cussed) Aunt:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode414(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Complimentary Peanuts[=0x0022=][=0x000A=][=0x000A=]Instead of asking Aunt Martha to try doing something:[=0x000A=][=0x0009=]repeat through Table of Aunt Martha[=0x0027=]s Commentary[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if player[=0x0027=]s command includes topic entry[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][commentary entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]rule succeeds;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]Hmmf,[=0x0027=] says Aunt Martha.[=0x0022=][=0x000A=][=0x000A=][The topic understood is also a snippet, so that whenever one has been generated, we can treat it in the same way as [=0x0022=]the player[=0x0027=]s command[=0x0022=]:][=0x000A=][=0x000A=]Asking someone about something is speech.[=0x000A=]Telling someone about something is speech.[=0x000A=]Answering someone that something is speech.[=0x000A=]Asking someone for something is speech.[=0x000A=][=0x000A=]Instead of speech when the noun is Aunt Martha:[=0x000A=][=0x0009=]repeat through Table of Aunt Martha[=0x0027=]s commentary[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the topic understood includes topic entry[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][commentary entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]rule succeeds;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]Hmmf,[=0x0027=] says Aunt Martha.[=0x0022=][=0x000A=][=0x000A=][This is superior to checking [=0x0022=]the player[=0x0027=]s command[=0x0022=] because we do not want ASK MARTHA ABOUT FRENCH FRIES to trigger the [=0x0022=]Martha[=0x0022=] keyword, only the [=0x0022=]french fries[=0x0022=] keywords.][=0x000A=][=0x000A=]The Empyrean Shuttle Bay is a room. [=0x0022=]From here you have an excellent view of the colony world, which looks... well, it looks discouragingly orange. But terraforming is in progress.[=0x0022=][=0x000A=][=0x000A=]Aunt Martha is a woman in the Empyrean Shuttle Bay. A gleaming shuttle and a stack of rations are in the Shuttle Bay. The shuttle is a vehicle. [=0x0022=]Your shuttle awaits.[=0x0022=][=0x000A=][=0x000A=]Table of Aunt Martha[=0x0027=]s Commentary[=0x000A=]topic[=0x0009=]commentary[=0x000A=][=0x0022=]shuttle[=0x0022=][=0x0009=][=0x0022=][=0x0027=]Shuttles! I hate shuttles,[=0x0027=] Aunt Martha grumbles. [=0x0027=]Give me an airplane! AIRPLANE.[=0x0027=][=0x0022=][=0x000A=][=0x0022=]airplane/airport[=0x0022=][=0x0009=][=0x0022=][=0x0027=]Those were the days,[=0x0027=] Aunt Martha agrees, plainly reliving the days when she wore a blue-and-white uniform and passed out packets of salted pretzels.[=0x0022=][=0x000A=][=0x0022=]rations[=0x0022=][=0x0009=][=0x0022=][=0x0027=]Do you think there are any peanuts in there?[=0x0027=] she asks in a wistful tone.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]martha, get in the shuttle / martha, for pity[=0x0027=]s sake, do you see an airplane around here? / martha, pass me the rations[=0x0022=].[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode414()"><img border=0 src=../doc_images/paste.png></a> &quot;Complimentary Peanuts&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of asking Aunt Martha to try doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Aunt Martha's Commentary
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if player's command includes topic entry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[commentary entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Hmmf,' says Aunt Martha.&quot;
+</font></blockquote><p>
+<p>
+<p>The topic understood is also a snippet, so that whenever one has been generated, we can treat it in the same way as &quot;the player's command&quot;:
+<p>
+<blockquote><font color="#000080">Asking someone about something is speech.
+<br>Telling someone about something is speech.
+<br>Answering someone that something is speech.
+<br>Asking someone for something is speech.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of speech when the noun is Aunt Martha:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Aunt Martha's commentary
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the topic understood includes topic entry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[commentary entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Hmmf,' says Aunt Martha.&quot;
+</font></blockquote><p>
+<p>
+<p>This is superior to checking &quot;the player's command&quot; because we do not want ASK MARTHA ABOUT FRENCH FRIES to trigger the &quot;Martha&quot; keyword, only the &quot;french fries&quot; keywords.
+<p>
+<blockquote><font color="#000080">The Empyrean Shuttle Bay is a room. &quot;From here you have an excellent view of the colony world, which looks... well, it looks discouragingly orange. But terraforming is in progress.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Aunt Martha is a woman in the Empyrean Shuttle Bay. A gleaming shuttle and a stack of rations are in the Shuttle Bay. The shuttle is a vehicle. &quot;Your shuttle awaits.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Table of Aunt Martha's Commentary
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">commentary</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;shuttle&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Shuttles! I hate shuttles,' Aunt Martha grumbles. 'Give me an airplane! AIRPLANE.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;airplane/airport&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Those were the days,' Aunt Martha agrees, plainly reliving the days when she wore a blue-and-white uniform and passed out packets of salted pretzels.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;rations&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Do you think there are any peanuts in there?' she asks in a wistful tone.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;martha, get in the shuttle / martha, for pity's sake, do you see an airplane around here? / martha, pass me the rations&quot;.
+</font></blockquote><p>
+<p>
+<p>This means that Martha will respond to keywords regardless of the setting in which they occur. For instance:
+<p>
+<blockquote><font color="#000080">>martha, get in the shuttle
+<br>&quot;Shuttles! I hate shuttles,&quot; Aunt Martha grumbles. &quot;Give me an airplane! AIRPLANE.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">>martha, for pity's sake, do you see an airplane around here?
+<br>&quot;Those were the days,&quot; Aunt Martha agrees, plainly reliving the days when she wore a blue-and-white uniform and passed out packets of salted peanuts.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">>martha, pass me the rations
+<br>&quot;Do you think there are any peanuts in there?&quot; she asks in a wistful tone.
+</font></blockquote><p>
+<p>
+<p>This is not the stuff of which Loebner-winning chatbots are made, admittedly, but it is occasionally a useful alternative to stricter modes of command-parsing.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc288.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc163.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc165.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc287.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc289.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

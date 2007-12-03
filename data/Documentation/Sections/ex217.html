@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.7. Indexed text in variables, properties and tables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.18. Changing reachability</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,323 +19,106 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "The Cow Exonerated" -->
-<!-- SEARCH SECTION "Ex 364" -->
-<!-- SEARCH SORT "Ex 019-007-364" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc321.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc323.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.7. Indexed text in variables, properties and tables</b></font></td></tr></table>
+<!-- SEARCH TITLE "Dinner is Served" -->
+<!-- SEARCH SECTION "Ex 200" -->
+<!-- SEARCH SORT "Ex 012-018-200" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc189.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc191.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.18. Changing reachability</b></font></td></tr></table>
 <p>
-<p>So far we have been able to ignore the difference between &quot;text&quot; and &quot;indexed text&quot; because Inform has always been able to convert the former to the latter when needed. But the reverse conversion cannot be made. Ordinary text is stored in a specially compacted, read-only form: it's really part of the program, not part of the data.
+<p>The question of what the player can, and cannot, reach to touch is important in interactive fiction. It contains some of the subtlest ideas in the model world, though they often go unnoticed. For instance, if a key is on a shelf which is part of a closed box, can we reach for the key? This comes down to whether the shelf, described only as &quot;part of&quot; the box, is on the inside or the outside: and in fact, because it cannot know which is the case, Inform allows either. So in general it is best to regard &quot;parts&quot; as being exterior parts, but to avoid having parts on containers that might in the course of play be closed up with the player inside.
 <p>
-<p>The upshot of this is that if we need a variable to contain text which can be internally altered during play, then we must declare this. Instead of writing
+<p>We can, if we wish, change the principles of what can be touched by writing new reaching inside or reaching outside rules. Returning to the example of the conical flask:
 <p>
-<blockquote><font color="#000080">The player's forename is a text that varies.
+<blockquote><font color="#000080">A rule for reaching inside the flask: say &quot;Your hand passes through the glass as if it were not there, chilling you to the bone.&quot;; allow access.
 </font></blockquote><p>
 <p>
-<p>we must write:
+<p>(Or this could equally be called &quot;a reaching inside rule for the flask&quot;.) More generally, we could give the usual flexible description of what the rule applies to:
 <p>
-<blockquote><font color="#000080">The player's forename is an indexed text that varies.
+<blockquote><font color="#000080">A rule for reaching inside open containers: say &quot;Your hands seem enigmatically too large for [the container in question].&quot;; deny access.
 </font></blockquote><p>
 <p>
-<p>Similarly for a property:
+<p>The &quot;container in question&quot; is the one to which the rule is being applied. Note that a reaching inside rule can &quot;deny access&quot; (stopping with fail), or &quot;allow access&quot; (stopping with success), or neither, in which case the decision is left up to any subsequent rules in the rulebook to make. If none of them decide, access is allowed.
 <p>
-<blockquote><font color="#000080">A person has an indexed text called nickname.
+<p>If it seems possible that these rules will be employed by people other than the player, then we need to write them a little more carefully, and in particular we need to ensure that they print nothing for other people. In the first case below, anybody can reach through the glass; in the second case, only the player cannot reach into open containers.
+<p>
+<blockquote><font color="#000080">A rule for reaching inside the flask:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person reaching is the player, say &quot;Your hand passes through the glass as if it were not there, chilling you to the bone.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;allow access.
 </font></blockquote><p>
 <p>
-<p>For a named &quot;let&quot; value, we have a dilemma. These are normally created by writing something like:
-<p>
-<blockquote><font color="#000080">let the target be 17;
-</font></blockquote><p>
-<p>
-<p>and Inform looks at the value - here 17, a number - to deduce that the new value, called &quot;target&quot;, must be a number. So if we write:
-<p>
-<blockquote><font color="#000080">let the target be &quot;excellent&quot;;
-</font></blockquote><p>
-<p>
-<p>the result is that &quot;target&quot; is just a text, not an indexed text. We get around this by writing instead:
-<p>
-<blockquote><font color="#000080">let the target be an indexed text;
-</font></blockquote><p>
-<p>
-<p>which creates the value, initially having the empty text as contents, and then
-<p>
-<blockquote><font color="#000080">let the target be &quot;excellent&quot;;
-</font></blockquote><p>
-<p>
-<p>to subsequently set its initial state.
-<p>
-<p>The same issue arises for table columns, because we are allowed to simply write out values in table columns, and let Inform work out what kind they are. If there are blank entries, we can always write in the kind of value by hand, but suppose the entries are initially all filled in? The answer is that we can imitate this:
-<p>
-<blockquote><font color="#000080">Table of Neptune's Moons
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">moon</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">surface (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Nereid&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;utterly unknown&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Triton&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cryovolcanic ridges&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Proteus&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highly irregular and sooty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<p>Here the two columns are called &quot;moon&quot; and &quot;surface&quot;, so we can talk about the &quot;moon entry&quot; and the &quot;surface entry&quot; once a row has been chosen: but the moon entry is text, and the surface entry is indexed text.
-<p>
-<p>Lastly, suppose we want to define new phrases which deal with text. Here we have two things to remember. First, we need to say that the value decided is indexed text, not text; secondly, that text converts to indexed text by magic, but not vice versa. So:
-<p>
-<blockquote><font color="#000080">To decide what indexed text is (T - text) doubled:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on &quot;[T][T]&quot;.
-</font></blockquote><p>
-<p>
-<p>works fine so long as we only want to pass text to it, but would not let us double indexed text. This, on the other hand, handles both:
-<p>
-<blockquote><font color="#000080">To decide what indexed text is (T - indexed text) doubled:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on &quot;[T][T]&quot;.
-</font></blockquote><p>
-<p>
-<p>So for instance:
-<p>
-<blockquote><font color="#000080">say &quot;Neptune&quot; doubled.
-</font></blockquote><p>
-<p>
-<p>prints &quot;NeptuneNeptune&quot; because Inform automatically converts &quot;Neptune&quot; to indexed text when &quot;doubled&quot; is used on it.
-<p>
-<p><hr><p>
-<a name="e133"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex133.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>362</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex133.html#e133 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Identity Theft</font></b></a><br>Allowing the player to enter a name to be used for the player character during the game.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex133.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e38"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex38.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>363</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex38.html#e38 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mirror, Mirror</font></b></a><br>The sorcerer's mirror can, when held up high, form an impression of its surroundings which it then preserves.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex38.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<!-- EXAMPLE START -->
-<a name="e217"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc322.html#e217 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>364</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc322.html#e217 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Cow Exonerated</font></b></a><br>Creating a class of matches that burn for a time and then go out, with elegant reporting when several matches go out at once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex217.html#e217 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Here we create a class of matches that can be used to burn other objects. Our objectives are as follow:
-<p>
-<p>Burned objects other than matches should be removed from play instantly (just as edible objects are instantly eaten). We could give everything its own burning duration, but that complicates matters and allows for fire to spread from one object to another; for an example of how to do that, see the example &quot;In Fire or in Flood&quot;.
-<p>
-<p>Matches should be described to show whether they are burning or extinguished, and when the parser chooses one of several identical matches, it should make very clear which match it has selected.
-<p>
-<p>The game must sensibly select and, if necessary, automatically light new matches to carry out a >BURN THING command.
-<p>
-<p>The matches must burn for a set number of turns before going out, never to be used again.
-<p>
-<p>And finally, the part for which the indexed text will be useful: when several matches go out in the same turn, we want the game to print
-<p>
-<blockquote><font color="#000080">Four matches go out.
-</font></blockquote><p>
-<p>
-<p>rather than
-<p>
-<blockquote><font color="#000080">A match goes out.
-<br>A match goes out.
-<br>A match goes out.
-<br>A match goes out.
-</font></blockquote><p>
-<p>
-<p>This last function appears down in Section 3, if we wish to skip ahead and look at it.
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode453(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode(' "The Cow Exonerated"\n\nSection 1 - Simple Burning\n\nUnderstand the commands "light" and "burn" as something new.\n\nUnderstand "burn [something] with [strikable-match]" as burning it with. Understand "burn [something] with [something preferably held]" as burning it with. Burning it with is an action applying to one thing and one carried thing.\n\nUnderstand the command "light" as "burn".\n\nA thing can be flammable or impervious. A thing is usually impervious.\n\nCheck burning something with something (this is the burn only with flaming matches rule):\n\tif the second noun is not a strikable-match, say "You can only light things with matches." instead;\n\tif the second noun is not flaming, say "[The second noun] needs to be burning first." instead.\n\nCheck burning something with something (this is the burn only flammable things rule):\n\tif the noun is impervious, say "[The noun] cannot be burned." instead.\n\nCheck burning something with something (this is the burn only things not held rule):\n\tsay "[one of]It occurs to you to set down [the noun] before burning, just for safety\'s sake. [or]Again, you decide to put down [the noun] prior to burning. [or]You try setting down [the noun] as usual. [stopping][run paragraph on]";\n\tsilently try the player dropping the noun;\n\tif the player encloses the noun, stop the action.\n\nCarry out burning something with something (this is the simplistic burning rule):\n\tremove the noun from play.\n\nReport burning something with something:\n\tsay "You burn up [the noun]."\n\nRule for implicitly taking the second noun while burning something with something which is not a strikable-match:\n\tsay "You can only light things with matches.";\n\tstop the action.\n\nSection 2 - Matches\n\n[The word "matches" is used by Inform to compare snippets of text (see "Reading a command" in the Activities chapter). This can sometimes cause awkwardness if we also have a kind called "match", so for the occasion we will give our matches a more specialized name, never visible to the player:]\n\nA strikable-match is a kind of thing. The plural of strikable-match is s-matches.\n\nA strikable-match has a number called duration. The duration of a strikable-match is usually 3.\n\nRule for printing the name of a strikable-match: say "match".\nRule for printing the plural name of a strikable-match: say "matches".\n\nUnderstand "match" as a strikable-match. Understand "matches" as a strikable-match.\n\nFlame-state is a kind of value. The flame-states are burnt, flaming, and new. Understand "burning" or "lit" as flaming. Understand "unused" as new.\n\nA strikable-match has a flame-state. A strikable-match is usually new. Understand the flame-state property as describing a strikable-match.\n\nBefore printing the name of a strikable-match while asking which do you mean:\n\tsay "[flame-state] ".\n\nBefore printing the name of a strikable-match while taking inventory:\n\tsay "[flame-state] ".\nBefore printing the plural name of a strikable-match while taking inventory:\n\tsay "[flame-state] ".\n\nBefore printing the name of a strikable-match while clarifying the parser\'s choice of something:\n\tif not taking inventory, say "[flame-state] ".\n\nAfter printing the name of a strikable-match (called special-target) while clarifying the parser\'s choice of something:\n\tif the player carries the special-target\n\tbegin;\n\t\tsay " you\'re carrying";\n\totherwise if the special-target is in the location;\n\t\tsay " on the ground";\n\totherwise;\n\t\tsay " [if the holder of the special-target is a container]in[otherwise]on[end if] [the holder of the special-target]";\n\tend if;\n\nUnderstand "strike [something]" as attacking.\n\nUnderstand "strike [strikable-match]" as striking. Striking is an action applying to one carried thing.\n\nUnderstand "burn [strikable-match]" as striking.\n\nDoes the player mean striking a new strikable-match:\n\tit is very likely.\n\nDoes the player mean striking a burnt strikable-match:\n\tit is unlikely.\n\nCheck striking a strikable-match (this is the strike only new matches rule):\n\tif the noun is burnt, say "[The noun] has already burnt down and cannot be relit." instead;\n\tif the noun is flaming, say "[The noun] is already burning." instead.\n\nCarry out striking a strikable-match (this is the standard striking rule):\n\tnow the noun is flaming;\n\tnow the noun is lit.\n\nReport striking a strikable-match (this is the standard report striking rule):\n\tsay "You light [the noun]."\n\nBefore burning something with a new strikable-match (this is the prior lighting rule):\n\tsay "(first [if the player does not carry the second noun]taking and [end if]lighting [the second noun])[command clarification break]";\n\tsilently try striking the second noun;\n\tif the second noun is not flaming, stop the action.\n\nRule for implicitly taking a strikable-match (called target) while striking:\n\ttry silently taking the target.\n\nDoes the player mean burning something with a flaming strikable-match:\n\tit is very likely.\n\nDoes the player mean burning something with a new strikable-match:\n\tit is likely.\n\nDoes the player mean burning something with a burnt strikable-match:\n\tit is unlikely.\n\nInstead of burning a burnt strikable-match with something:\n\tsay "[The noun] is completely consumed and cannot be relit."\n\nSection 3 - Putting the Matches Out\n\nEvery turn:\n\tlet N be 0; [here we track how many matches are being put out during this turn, so that we don\'t have to mention each match individually if several go out during the same move]\n\trepeat with item running through flaming s-matches\n\tbegin;\n\t\tdecrease the duration of the item by 1;\n\t\tif the duration of the item is 0\n\t\tbegin;\n\t\t\tnow the item is burnt; now the item is unlit;\n\t\t\tif the item is visible, increase N by 1;\n\t\tend if;\n\tend repeat;\n\tif N is 1\n\tbegin;\n\t\tsay "[if the number of visible flaming s-matches is greater than 0]One of the matches [otherwise if the number of burnt visible s-matches is greater than 0]Your last burning match [otherwise]The match [end if]goes out.";\n\totherwise if N is greater than 1;\n\t\tlet enumeration be indexed text;\n\t\tlet enumeration be "[N in words]";\n\t\tif N is the number of visible s-matches\n\t\tbegin;\n\t\t\tif N is two, say "Both";\n\t\t\totherwise say "All [enumeration]";\n\t\totherwise;\n\t\t\tsay "[enumeration in title case]";\n\t\tend if;\n\t\tsay " matches go out[if a visible strikable-match is flaming], leaving [number of visible flaming s-matches in words] still lit[end if].";\n\tend if.\n\nSection 4 - Scenario\n\nOld Chicago is a room.\n\nThe player carries a flammable thing called a log. Understand "wooden" and "wood" as the log.\n\nThe player carries two s-matches. The matchbox is an open openable container. It contains five s-matches. The player carries the matchbox.\n\nWhen play begins:\n\tnow every strikable-match carried by the player is flaming;\n\tnow every strikable-match carried by the player is lit.\n\nTest me with "i / burn match / i / i / burn log with match / burn matchbox with match / i".\n');
-}
-</script>
-<a href="javascript:pasteCode453()"><img border=0 src=../doc_images/paste.png></a>  &quot;The Cow Exonerated&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 1 - Simple Burning
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand the commands &quot;light&quot; and &quot;burn&quot; as something new.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;burn [something] with [strikable-match]&quot; as burning it with. Understand &quot;burn [something] with [something preferably held]&quot; as burning it with. Burning it with is an action applying to one thing and one carried thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand the command &quot;light&quot; as &quot;burn&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A thing can be flammable or impervious. A thing is usually impervious.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check burning something with something (this is the burn only with flaming matches rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not a strikable-match, say &quot;You can only light things with matches.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not flaming, say &quot;[The second noun] needs to be burning first.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check burning something with something (this is the burn only flammable things rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is impervious, say &quot;[The noun] cannot be burned.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check burning something with something (this is the burn only things not held rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[one of]It occurs to you to set down [the noun] before burning, just for safety's sake. [or]Again, you decide to put down [the noun] prior to burning. [or]You try setting down [the noun] as usual. [stopping][run paragraph on]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try the player dropping the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player encloses the noun, stop the action.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out burning something with something (this is the simplistic burning rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report burning something with something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You burn up [the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for implicitly taking the second noun while burning something with something which is not a strikable-match:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can only light things with matches.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 2 - Matches
-</font></blockquote><p>
-<p>
-<p>The word &quot;matches&quot; is used by Inform to compare snippets of text (see &quot;Reading a command&quot; in the Activities chapter). This can sometimes cause awkwardness if we also have a kind called &quot;match&quot;, so for the occasion we will give our matches a more specialized name, never visible to the player:
-<p>
-<blockquote><font color="#000080">A strikable-match is a kind of thing. The plural of strikable-match is s-matches.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A strikable-match has a number called duration. The duration of a strikable-match is usually 3.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for printing the name of a strikable-match: say &quot;match&quot;.
-<br>Rule for printing the plural name of a strikable-match: say &quot;matches&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;match&quot; as a strikable-match. Understand &quot;matches&quot; as a strikable-match.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Flame-state is a kind of value. The flame-states are burnt, flaming, and new. Understand &quot;burning&quot; or &quot;lit&quot; as flaming. Understand &quot;unused&quot; as new.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A strikable-match has a flame-state. A strikable-match is usually new. Understand the flame-state property as describing a strikable-match.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before printing the name of a strikable-match while asking which do you mean:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[flame-state] &quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before printing the name of a strikable-match while taking inventory:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[flame-state] &quot;.
-<br>Before printing the plural name of a strikable-match while taking inventory:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[flame-state] &quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before printing the name of a strikable-match while clarifying the parser's choice of something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if not taking inventory, say &quot;[flame-state] &quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After printing the name of a strikable-match (called special-target) while clarifying the parser's choice of something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries the special-target
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; you're carrying&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if the special-target is in the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; on the ground&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; [if the holder of the special-target is a container]in[otherwise]on[end if] [the holder of the special-target]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;strike [something]&quot; as attacking.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;strike [strikable-match]&quot; as striking. Striking is an action applying to one carried thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;burn [strikable-match]&quot; as striking.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Does the player mean striking a new strikable-match:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;it is very likely.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Does the player mean striking a burnt strikable-match:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;it is unlikely.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check striking a strikable-match (this is the strike only new matches rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is burnt, say &quot;[The noun] has already burnt down and cannot be relit.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is flaming, say &quot;[The noun] is already burning.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out striking a strikable-match (this is the standard striking rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is flaming;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is lit.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report striking a strikable-match (this is the standard report striking rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You light [the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before burning something with a new strikable-match (this is the prior lighting rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first [if the player does not carry the second noun]taking and [end if]lighting [the second noun])[command clarification break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try striking the second noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not flaming, stop the action.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for implicitly taking a strikable-match (called target) while striking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try silently taking the target.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Does the player mean burning something with a flaming strikable-match:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;it is very likely.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Does the player mean burning something with a new strikable-match:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;it is likely.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Does the player mean burning something with a burnt strikable-match:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;it is unlikely.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of burning a burnt strikable-match with something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is completely consumed and cannot be relit.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 3 - Putting the Matches Out
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be 0; [here we track how many matches are being put out during this turn, so that we don't have to mention each match individually if several go out during the same move]
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through flaming s-matches
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decrease the duration of the item by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the duration of the item is 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the item is burnt; now the item is unlit;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item is visible, increase N by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if N is 1
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[if the number of visible flaming s-matches is greater than 0]One of the matches [otherwise if the number of burnt visible s-matches is greater than 0]Your last burning match [otherwise]The match [end if]goes out.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if N is greater than 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let enumeration be indexed text;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let enumeration be &quot;[N in words]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if N is the number of visible s-matches
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if N is two, say &quot;Both&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;All [enumeration]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[enumeration in title case]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; matches go out[if a visible strikable-match is flaming], leaving [number of visible flaming s-matches in words] still lit[end if].&quot;;
+<blockquote><font color="#000080">A rule for reaching inside open containers:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person reaching is the player begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your hands seem enigmatically too large for [the container in question].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deny access.
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 4 - Scenario
+<p>The &quot;person reaching&quot; is, as its name suggests, the person trying to reach through the barrier in question.
+<p>
+<p><hr><p>
+<a name="e232"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex232.html#e232 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>199</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex232.html#e232 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Magneto's Revenge</font></b></a><br>Kitty Pryde of the X-Men is able to reach through solid objects, so we might implement her with special powers that the player does not have...<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex232.html#e232 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e217"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc190.html#e217 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>200</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc190.html#e217 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Dinner is Served</font></b></a><br>A window between two locations. When the window is open, the player can reach through into the other location; when it isn't, access is barred.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex217.html#e217 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode288(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Dinner is Served[=0x0022=][=0x000A=][=0x000A=]Street in Kolonaki is a room. [=0x0022=]There is a single round table out on the street here, and a window more or less at knee level looks down into the Olive Tree Gyro Shop, which is partly basement.[=0x0022=][=0x000A=][=0x000A=]The Street contains a round table. The table is scenery. On the round table is a plate. On the plate are a gyro and a mound of fresh potates. The plate is portable. The potates and the gyro are edible. The description of potates is [=0x0022=]They[=0x0027=]d be called french fries, at home, but these are steak-cut and fried in olive oil.[=0x0022=] The description of the gyro is [=0x0022=]Dripping garlic-yogurt sauce.[=0x0022=][=0x000A=][=0x000A=]Olive Tree Gyro Shop is inside from Street in Kolonaki. Kostis is a man in the Gyro Shop. In the Shop is a stand. On the stand is a rotating column of cooking lamb flesh. In the shop is a closed, openable container called a drinks refrigerator. The refrigerator contains a can of Mythos beer and a can of Coke Light.[=0x000A=][=0x000A=][Here[=0x0027=]s the part that allows reaching through the window:][=0x000A=][=0x000A=]A procedural rule: if the window is open, ignore the can[=0x0027=]t reach inside rooms rule; otherwise substitute the can[=0x0027=]t reach through closed window rule for the can[=0x0027=]t reach inside rooms rule.[=0x000A=][=0x000A=]This is the can[=0x0027=]t reach through closed window rule:[=0x000A=][=0x0009=]if the container in question is a room and the container in question is not the location[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You can[=0x0027=]t reach through the closed window.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]rule fails;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=][And the rest is window-dressing.][=0x000A=][=0x000A=]After looking when a room (called the next room) is adjacent:[=0x000A=][=0x0009=]try examining the next room.[=0x000A=][=0x000A=]Instead of examining a supporter, say [=0x0022=]On [the noun] [is-are a list of things on the noun].[=0x0022=] Instead of examining an open container, say [=0x0022=]In [the noun] [is-are a list of things in the noun].[=0x0022=][=0x000A=][=0x000A=]The window is a backdrop. It is in the Street and the Shop. The window can be openable. The window can be open. The window is openable, transparent, and closed. Instead of searching the window in the Street: try examining the shop. Instead of searching the window in the Shop: try examining the street.[=0x000A=][=0x000A=]Understand [=0x0022=]examine [any adjacent room][=0x0022=] as examining.[=0x000A=][=0x000A=]Instead of examining a room:[=0x000A=][=0x0009=]say [=0x0022=]Over in [the noun], you can see [a list of visible things in the noun].[=0x0022=][=0x000A=][=0x000A=]After deciding the scope of the player:[=0x000A=][=0x0009=]if the player is in the Street, place the Shop in scope;[=0x000A=][=0x0009=]if the player is in the Shop, place the Street in scope.[=0x000A=][=0x000A=]Test me with [=0x0022=]examine shop / open refrigerator / open window / examine shop / open refrigerator / get beer / in / examine street / out / get gyro / close window / put gyro in refrigerator / open window / put gyro in refrigerator[=0x0022=].[=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode288()"><img border=0 src=../doc_images/paste.png></a> &quot;Dinner is Served&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Old Chicago is a room.
+<blockquote><font color="#000080">Street in Kolonaki is a room. &quot;There is a single round table out on the street here, and a window more or less at knee level looks down into the Olive Tree Gyro Shop, which is partly basement.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries a flammable thing called a log. Understand &quot;wooden&quot; and &quot;wood&quot; as the log.
+<blockquote><font color="#000080">The Street contains a round table. The table is scenery. On the round table is a plate. On the plate are a gyro and a mound of fresh potates. The plate is portable. The potates and the gyro are edible. The description of potates is &quot;They'd be called french fries, at home, but these are steak-cut and fried in olive oil.&quot; The description of the gyro is &quot;Dripping garlic-yogurt sauce.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries two s-matches. The matchbox is an open openable container. It contains five s-matches. The player carries the matchbox.
+<blockquote><font color="#000080">Olive Tree Gyro Shop is inside from Street in Kolonaki. Kostis is a man in the Gyro Shop. In the Shop is a stand. On the stand is a rotating column of cooking lamb flesh. In the shop is a closed, openable container called a drinks refrigerator. The refrigerator contains a can of Mythos beer and a can of Coke Light.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every strikable-match carried by the player is flaming;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every strikable-match carried by the player is lit.
+<p>Here's the part that allows reaching through the window:
+<p>
+<blockquote><font color="#000080">A procedural rule: if the window is open, ignore the can't reach inside rooms rule; otherwise substitute the can't reach through closed window rule for the can't reach inside rooms rule.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;i / burn match / i / i / burn log with match / burn matchbox with match / i&quot;.
+<blockquote><font color="#000080">This is the can't reach through closed window rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the container in question is a room and the container in question is not the location
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't reach through the closed window.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule fails;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc322.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<p>And the rest is window-dressing.
+<p>
+<blockquote><font color="#000080">After looking when a room (called the next room) is adjacent:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the next room.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining a supporter, say &quot;On [the noun] [is-are a list of things on the noun].&quot; Instead of examining an open container, say &quot;In [the noun] [is-are a list of things in the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The window is a backdrop. It is in the Street and the Shop. The window can be openable. The window can be open. The window is openable, transparent, and closed. Instead of searching the window in the Street: try examining the shop. Instead of searching the window in the Shop: try examining the street.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;examine [any adjacent room]&quot; as examining.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining a room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Over in [the noun], you can see [a list of visible things in the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After deciding the scope of the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Street, place the Shop in scope;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Shop, place the Street in scope.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;examine shop / open refrigerator / open window / examine shop / open refrigerator / get beer / in / examine street / out / get gyro / close window / put gyro in refrigerator / open window / put gyro in refrigerator&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc190.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc321.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc323.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc189.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc191.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

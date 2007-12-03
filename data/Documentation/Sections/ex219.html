@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.3. One-way connections</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.13. The past and perfect tenses</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,70 +19,135 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "The Unbuttoned Elevator Affair" -->
-<!-- SEARCH SECTION "Ex 8" -->
-<!-- SEARCH SORT "Ex 003-003-008" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc28.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc30.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.3. One-way connections</b></font></td></tr></table>
+<!-- SEARCH TITLE "Bruneseau's Journey" -->
+<!-- SEARCH SECTION "Ex 138" -->
+<!-- SEARCH SORT "Ex 009-013-138" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc139.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc141.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.13. The past and perfect tenses</b></font></td></tr></table>
 <p>
-<p>Connections are ordinarily two-way, but do not have to be. One of the map connections in the Mammoth Cave simulation was made by the sentence:
+<p>The remaining sections of this chapter go into more technical ways to think about the progress of the game through time, and can be skipped at a first reading.
 <p>
-<blockquote><font color="#000080">The Debris Room is west of the Crawl.
+<p>Conditions are clauses which require Inform to make a decision: is such-and-such true, or not true? We have already seen conditions attached to rules using &quot;when&quot;:
+<p>
+<blockquote><font color="#000080">Instead of waiting when the Sorting Hat is in the Hall: ...
 </font></blockquote><p>
 <p>
-<p>Besides reading this sentence at face value, Inform also deduced that the Crawl was probably meant to be east of the Debris Room: in other words, that the path between them is a two-way one. When Inform makes guesses like this, it treats them as being less certain than anything explicitly stated in the source. Inform will quietly overturn its assumption if information comes to hand which shows that it was wrong. That might happen in this case if another sentence read:
+<p>and, as we shall later see, we will often want to write instructions like:
 <p>
-<blockquote><font color="#000080">The Hidden Alcove is east of the Debris Room.
+<blockquote><font color="#000080">if the Sorting Hat is in the Hall then say &quot;Hermione blinks apprehensively.&quot;
 </font></blockquote><p>
 <p>
-<p>These two sentences are not contradictory: Inform allows them both, simply accepting that the world is more complicated than it first assumed. There are relatively few situations where Inform has to make educated guesses, but when it does, it tries always to follow Occam's Razor by constructing the simplest model world consistent with the information in the Source text.
+<p>The condition is &quot;the Sorting Hat is in the Hall&quot;, and during play this will sometimes be true and sometimes false.
 <p>
-<p>We can even explicitly make a route which turns around as it leads between two rooms:
+<p>A condition in the form &quot;X is Y&quot; is of course written the present tense, and refers to the current state of affairs. Three other tenses are allowed. First, the present perfect:
 <p>
-<blockquote><font color="#000080">West of the Garden is south of the Meadow.
+<blockquote><font color="#000080">if X has been Y ...
 </font></blockquote><p>
 <p>
-<p>Finally, if we want to establish a route which cannot be retraced at all, we can specify that a particular direction leads nowhere:
+<p>is true if it has ever been the case that &quot;X is Y&quot; at the start of any turn (or any action). So, for instance,
 <p>
-<blockquote><font color="#000080">East of the Debris Room is nowhere.
+<blockquote><font color="#000080">if the gate has been open ...
 </font></blockquote><p>
+<p>
+<p>will be valid if and only if the gate has ever been made open by any action (even if it is closed now), or if it started out by being open when play began.
+<p>
+<p>Next is the past tense:
+<p>
+<blockquote><font color="#000080">if X was Y ...
+</font></blockquote><p>
+<p>
+<p>holds if and only if &quot;X is Y&quot; was true at the start of the most recent action. This is convenient when trying to describe what has changed in the course of the action, but sometimes also when making the action itself happen. For instance:
+<p>
+<blockquote><font color="#000080">if the lantern was switched on then change the lantern to switched off;
+<br>if the lantern was switched off then change the lantern to switched on;
+</font></blockquote><p>
+<p>
+<p>Completing the set is the past perfect:
+<p>
+<blockquote><font color="#000080">if X had been Y ...
+</font></blockquote><p>
+<p>
+<p>which records whether &quot;X has been Y&quot; was true at the start of the most recent action. All these verbs can of course be negated (though &quot;wasn't&quot; and &quot;hadn't&quot; are disallowed as poor style: we use &quot;was not&quot; and &quot;had not&quot; instead). So for example,
+<p>
+<blockquote><font color="#000080">if the player had not been in the Ballroom ...
+</font></blockquote><p>
+<p>
+<p>is true if the player hadn't visited the Ballroom at the start of the most recent action.
+<p>
+<p>Something we must watch out for is that variables might not have the same values in the past that they have now. As a result, writing conditions such as &quot;if the noun has been open&quot; is a bad idea, because in the past &quot;the noun&quot; very likely referred to something different. It is really only safe to talk in the past tense about definite, fixed things: &quot;if the Great Gates of Kiev have been open&quot; would be fine.
 <p>
 <p><hr><p>
-<a name="e116"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex116.html#e116 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>7</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex116.html#e116 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Port Royal 2</font></b></a><br>Another part of Port Royal, with less typical map connections.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex116.html#e116 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e65"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex65.html#e65 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>137</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex65.html#e65 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Tense Boxing</font></b></a><br>An overview of all the variations of past and present tenses, and how they might be used.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex65.html#e65 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e219"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc29.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>8</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc29.html#e219 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Unbuttoned Elevator Affair</font></b></a><br>A simple elevator connecting two floors which is operated simply by walking in and out, and has no buttons or fancy doors.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex219.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e219"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc140.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>138</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc140.html#e219 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bruneseau's Journey</font></b></a><br>A candle which reacts to lighting and blowing actions differently depending on whether it has already been lit once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex219.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>This is very simple. The interior of the elevator is a single room, but which is mapped east of both of its termini. The reverse map connection, west from the elevator, can only go to a single room, and that's what determines which floor the elevator is on.
+<blockquote><font color="#000080">&quot;Sire,&quot; said the Minister of the Interior to Napoleon, &quot;yesterday I saw the most intrepid man in your Empire.&quot; - &quot;What man is that?&quot; said the Emperor brusquely, &quot;and what has he done?&quot; - &quot;He wants to do something, Sire.&quot; - &quot;What is it?&quot; - &quot;To visit the sewers of Paris.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">This man existed and his name was Bruneseau.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">- Victor Hugo, Les Miserables
+</font></blockquote><p>
+<p>
+<p>Let's say that our intrepid explorer has a candle that can be lit and blown out again, and should accordingly appear unlit, burning, or partly burnt:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode88(code) {
+function pasteCode228(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"The Unbuttoned Elevator Affair"\n\nUNCLE Headquarters is a room. "The steel nerve-center of the free world\'s battle against the Technological Hierarchy for the Removal of Undesirables and the Subjugation of Humanity. Being against technology, we have only a very simple elevator to the east."\n\nDel Floria\'s Tailor Shop is a room. "Only trained anti-THRUSH agents recognise the booth in the east wall as a secret elevator."\n\nThe Secret Elevator is east of UNCLE Headquarters. The Secret Elevator is east of Del Floria\'s Tailor Shop.\n\nAfter going to the Secret Elevator:\n\tsay "The doors automatically close, there is a rush of motion, and they open again.";\n\tif UNCLE Headquarters is mapped west of the Secret Elevator, now Del Floria\'s Tailor Shop is mapped west of the Secret Elevator;\n\totherwise now UNCLE Headquarters is mapped west of the Secret Elevator;\n\tcontinue the action.\n\nTest me with "east / west / east / west".\n');
+    myProject.pasteCode('[=0x0022=]Bruneseau[=0x0027=]s Journey[=0x0022=][=0x000A=][=0x000A=]The Sewer Beneath St Denis is a room. [=0x0022=]A narrow, stone-lined passageway, with only a little ledge to walk above the level of the refuse that flows down towards the Seine.[=0x0022=][=0x000A=][=0x000A=]The candle is carried by the player. The description of the candle is [=0x0022=]A candle, [if the candle has been lit]partially burnt[otherwise]still in pristine condition with untouched wick[end if].[=0x0022=][=0x000A=][=0x000A=]Instead of examining the lit candle, say [=0x0022=]It burns with a pure heart.[=0x0022=][=0x000A=][=0x000A=]The block burning rule is not listed in the check burning rules.[=0x000A=][=0x000A=]Instead of burning the lit candle:[=0x000A=][=0x0009=]say [=0x0022=]The candle is already lit.[=0x0022=][=0x000A=][=0x000A=]Check burning:[=0x000A=][=0x0009=]if the noun is not the candle, say [=0x0022=][The noun] cannot profitably be set on fire.[=0x0022=][=0x000A=][=0x000A=]Carry out burning the candle:[=0x000A=][=0x0009=]now the candle is lit.[=0x000A=][=0x000A=]Report burning:[=0x000A=][=0x0009=]if the candle had been lit, say [=0x0022=]You relight the candle.[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]You light the candle for the first time.[=0x0022=].[=0x000A=][=0x000A=]Understand [=0x0022=]blow out [something][=0x0022=] as blowing out. Understand [=0x0022=]blow [something] out[=0x0022=] as blowing out. Blowing out is an action applying to one thing.[=0x000A=][=0x000A=]Carry out blowing out the candle:[=0x000A=][=0x0009=]now the candle is unlit.[=0x000A=][=0x000A=]Report blowing out:[=0x000A=][=0x0009=]if the noun is the candle and the candle was lit, say [=0x0022=]You blow out [the noun].[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]You blow on [the noun], to little effect.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]x candle / light candle / x candle / blow out candle / x candle[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode88()"><img border=0 src=../doc_images/paste.png></a> &quot;The Unbuttoned Elevator Affair&quot;
+<a href="javascript:pasteCode228()"><img border=0 src=../doc_images/paste.png></a> &quot;Bruneseau's Journey&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">UNCLE Headquarters is a room. &quot;The steel nerve-center of the free world's battle against the Technological Hierarchy for the Removal of Undesirables and the Subjugation of Humanity. Being against technology, we have only a very simple elevator to the east.&quot;
+<blockquote><font color="#000080">The Sewer Beneath St Denis is a room. &quot;A narrow, stone-lined passageway, with only a little ledge to walk above the level of the refuse that flows down towards the Seine.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Del Floria's Tailor Shop is a room. &quot;Only trained anti-THRUSH agents recognise the booth in the east wall as a secret elevator.&quot;
+<blockquote><font color="#000080">The candle is carried by the player. The description of the candle is &quot;A candle, [if the candle has been lit]partially burnt[otherwise]still in pristine condition with untouched wick[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Secret Elevator is east of UNCLE Headquarters. The Secret Elevator is east of Del Floria's Tailor Shop.
+<blockquote><font color="#000080">Instead of examining the lit candle, say &quot;It burns with a pure heart.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After going to the Secret Elevator:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The doors automatically close, there is a rush of motion, and they open again.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if UNCLE Headquarters is mapped west of the Secret Elevator, now Del Floria's Tailor Shop is mapped west of the Secret Elevator;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now UNCLE Headquarters is mapped west of the Secret Elevator;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+<blockquote><font color="#000080">The block burning rule is not listed in the check burning rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;east / west / east / west&quot;.
+<blockquote><font color="#000080">Instead of burning the lit candle:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The candle is already lit.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc29.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Check burning:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not the candle, say &quot;[The noun] cannot profitably be set on fire.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out burning the candle:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the candle is lit.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report burning:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the candle had been lit, say &quot;You relight the candle.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You light the candle for the first time.&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;blow out [something]&quot; as blowing out. Understand &quot;blow [something] out&quot; as blowing out. Blowing out is an action applying to one thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out blowing out the candle:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the candle is unlit.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report blowing out:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the candle and the candle was lit, say &quot;You blow out [the noun].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You blow on [the noun], to little effect.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x candle / light candle / x candle / blow out candle / x candle&quot;.
+</font></blockquote><p>
+<p>
+<p>We must be careful: &quot;if the noun was lit&quot; would throw errors because past-tense rules can only be applied to specific items, not to variables that could be anything.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc140.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc28.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc30.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc139.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc141.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

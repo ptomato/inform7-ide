@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.10. Action variables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.3. Changing the status line</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,120 +19,73 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "The Second Oldest Problem" -->
-<!-- SEARCH SECTION "Ex 184" -->
-<!-- SEARCH SORT "Ex 012-010-184" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc181.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc183.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.10. Action variables</b></font></td></tr></table>
+<!-- SEARCH TITLE "Centered" -->
+<!-- SEARCH SECTION "Ex 107" -->
+<!-- SEARCH SORT "Ex 008-003-107" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc111.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc113.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.3. Changing the status line</b></font></td></tr></table>
 <p>
-<p>For some complex situations, it can be useful to keep track of a few values throughout the processing of the action. This is not an everyday occurrence: in the Standard Rules, for instance, only two or three out of 90 actions need to do this. But suppose we want to write a more deluxe version of our &quot;photographing&quot; action. This time, rather than having a single thing called the &quot;camera&quot;, we will provide a whole range of possible cameras, varying in quality:
+<p>The status line is the black bar along the top of a game being played, which ordinarily displays the current position, score and number of moves taken. Like the command prompt, it is not fixed but results from values which can be changed: the &quot;left hand status line&quot; and &quot;right hand status line&quot;.
 <p>
-<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light. Understand &quot;photograph [something]&quot; as photographing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Studio is a room. Sally is a woman in the Studio. A foam-lined tote bag is in the Studio.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A camera is a kind of thing. A camera has a number called picture quality. The digital SLR camera is a camera in the tote bag. The player carries a camera called the instant one-shot camera. The picture quality of the SLR camera is 10. The picture quality of the one-shot is 2. Definition: a camera is sharp if its picture quality is 5 or more.
-</font></blockquote><p>
-<p>
-<p>And we will want the photographing action to have the player use the best-quality camera which comes to hand. We will give the action a variable called the 'camera photographed with', thus:
-<p>
-<blockquote><font color="#000080">The photographing action has an object called the camera photographed with.
-</font></blockquote><p>
-<p>
-<p>This value is created when the action begins, and disappears when the action ends. (If the action should happen a second time before the first time was completed, a second copy of the value is created, leaving the original undisturbed.) When the action begins, the value starts out as something neutral - so if it is a number, it starts out as 0, if a text, it starts out as the blank text &quot;&quot;, and so on. Here it is an object, so it starts out as nothing - the value meaning no object at all. But of course we want to give it a value ourselves. We can do that using the &quot;setting action variables&quot; rulebook. For instance:
-<p>
-<blockquote><font color="#000080">Setting action variables for photographing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the camera photographed with is the sharpest camera which is carried by the actor.
-</font></blockquote><p>
-<p>
-<p>The &quot;setting action variables&quot; rulebook is run through before even the before rules, and it has no power to stop or change the action. Its rules should say nothing and do nothing other than to set rulebook variables like this one. Note that it is intended to work for any actor, not only the player: so rather than referring to the player as the performer of the action, we need to write &quot;the actor&quot;, as in the example above. (See subsequent sections for more on actors.)
-<p>
-<p>We can now write rules such as:
-<p>
-<blockquote><font color="#000080">A check photographing rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the camera photographed with is nothing then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
-</font></blockquote><p>
-<p>
-<p>Only rules to do with the photographing action - before, instead, after, check, carry out, or report rules, and so on - are allowed to see the 'camera photographed with' value: it's the private property of the action.
-<p>
-<p>A further elaboration allows us to make rules about photographing neater to write. If we create our variable like so:
-<p>
-<blockquote><font color="#000080">The photographing action has an object called the camera photographed with (matched as &quot;using&quot;).
-</font></blockquote><p>
-<p>
-<p>...then we are now allowed to add an optional 'using ...' clause onto a description of the action. For instance, we could write rules such as
-<p>
-<blockquote><font color="#000080">Instead of photographing something using the one-shot camera:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;But you promised to give this to Sally's nephew.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check photographing something using the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That would require some sort of contraption with mirrors.&quot; instead.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Report photographing something using a sharp camera:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You feel cool and important as the shutter clicks.&quot;
-</font></blockquote><p>
-<p>
-<p>(This is the method used by the Standard Rules to attach optional clauses such as 'to', 'with' and 'through' to the going action.)
-<p>
-<p><hr><p>
-<a name="e100"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex100.html#e100 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>183</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex100.html#e100 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Further Reasons Why All Poets Are Liars</font></b></a><br>The young William Wordsworth, pushing a box about in his room, must struggle to achieve a Romantic point of view.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex100.html#e100 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<!-- EXAMPLE START -->
-<a name="e165"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc182.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>184</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc182.html#e165 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Second Oldest Problem</font></b></a><br>Adapting the going action so that something special can happen when going from a dark room to another dark room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex165.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Text in this example is drawn from Will Crowther's original 1976 FORTRAN implementation of ADVENTURE, the founding work of the genre, whose source code was rediscovered by Dennis R. Jerz in 2007. Note the capitals: the program ran on an early computer without lower case lettering. They look a little mimsy now, but picture them glowing green on an old-style cathode ray tube monitor in a darkened room late at night.
-<p>
-<p>The problem alluded to is that the player is forbidden to walk between two dark rooms, so that he must always have light to see by from at least one end of any movement. Writing source text to achieve this is tricky to get right in every case, because the determination of light is hard to do. Here we interleave the necessary rules into the existing &quot;going&quot; action, using a new action variable to record the number of ends which are dark as experienced by the player, which might be 0, 1 or 2:
+<p>The default values are &quot;[the player's surroundings]&quot; for the left hand status line and &quot;[score]/[turn count]&quot; for the right hand status line. Score and turn count are numbers which vary in play (there will be much more about scoring later); &quot;[the player's surroundings]&quot; expands to a succinct description of where the player is, be this in darkness, in a lighted room or inside an opaque container such as a large packing case. These make useful elements to juggle in redesigning the status line, as in the following example:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode274(code) {
+function pasteCode18(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"THE SECOND OLDEST PROBLEM"\n\nThe going action has a number called the dark terminus count.\nSetting action variables for going:\n\tnow the dark terminus count is 0;\n\tif in darkness, increase the dark terminus count by 1.\nThe last carry out going rule:\n\tif in darkness, increase the dark terminus count by 1;\n\tif the dark terminus count is 2, end the game saying "YOU FELL INTO A PIT AND BROKE EVERY BONE IN YOUR BODY!" instead.\n\n[And now three early rooms to try this out.]\n\nCOBBLE CRAWL is a room. "YOU ARE CRAWLING OVER COBBLES IN A LOW PASSAGE. THERE IS A DIM LIGHT AT THE EAST END OF THE PASSAGE."\n\nDEBRIS ROOM is west of COBBLE CRAWL. "YOU ARE IN A DEBRIS ROOM, FILLED WITH STUFF WASHED IN FROM THE SURFACE. A LOW WIDE PASSAGE WITH COBBLES BECOMES PLUGGED WITH MUD AND DEBRIS HERE,BUT AN AWKWARD CANYON LEADS UPWARD AND WEST."\n\nAWKWARD CANYON is west of DEBRIS ROOM. "YOU ARE IN AN AWKWARD SLOPING EAST/WEST CANYON."\n\nDEBRIS ROOM and AWKWARD CANYON are dark.\n\nRule for printing the name of a dark room: say "DARKNESS" instead.\nRule for printing the description of a dark room: say "IT IS NOW PITCH BLACK. IF YOU PROCEED YOU WILL LIKELY FALL INTO A PIT." instead.\n\nTest me with "w / e / w / w".\n\n');
+    myProject.pasteCode('When play begins:[=0x000A=][=0x0009=]change the left hand status line to[=0x000A=][=0x0009=][=0x0009=][=0x0022=][the player[=0x0027=]s surroundings] / [turn count] / [score][=0x0022=];[=0x000A=][=0x0009=]change the right hand status line to [=0x0022=]Time: [time of day][=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode274()"><img border=0 src=../doc_images/paste.png></a> &quot;THE SECOND OLDEST PROBLEM&quot;
+<a href="javascript:pasteCode18()"><img border=0 src=../doc_images/paste.png></a> When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the left hand status line to
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;[the player's surroundings] / [turn count] / [score]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot;Time: [time of day]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The going action has a number called the dark terminus count.
-<br>Setting action variables for going:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the dark terminus count is 0;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if in darkness, increase the dark terminus count by 1.
-<br>The last carry out going rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if in darkness, increase the dark terminus count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the dark terminus count is 2, end the game saying &quot;YOU FELL INTO A PIT AND BROKE EVERY BONE IN YOUR BODY!&quot; instead.
+<p>The text in the right hand status line should be kept no more than 14 letters long, including any spaces. The left hand status line has more leeway, but should still be kept brief.
+<p>
+<a href=doc129.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Awarding points</b></font></a><i> for scoring</i><p><p>
+<p><hr><p>
+<a name="e172"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex172.html#e172 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>106</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex172.html#e172 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Politics as Usual</font></b></a><br>Have the status line indicate the current region of the map.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex172.html#e172 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e165"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc112.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>107</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc112.html#e165 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Centered</font></b></a><br>Replacing the two-part status line with one that centers only the room name at the top of the screen.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex165.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>If we want to lay out the status line in some other way than with left-hand and right-hand entries, it is possible to do this as well. Later we will learn about the &quot;rule for constructing the status line&quot;, but here is a basic effect using this rule and an Inform extension included as part of the standard distribution, called Basic Screen Effects.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode194(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Centered[=0x0022=][=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]say [=0x0022=]After months of boring through the Earth[=0x0027=]s crust in this metal-jawed vehicle, you break through...[=0x0022=][=0x000A=][=0x000A=]The Hollow Core is a room. [=0x0022=]Truly a magnificent sight: the land curves up away from you in every direction, covered with the cities and fields of the Core People. Molten rock runs in the canals, bringing heat and light to every home.[=0x000A=][=0x000A=]At the center of the Earth hangs a dense black sun.[=0x0022=][=0x000A=][=0x000A=]Include Basic Screen Effects by Emily Short.[=0x000A=][=0x000A=]Rule for constructing the status line:[=0x000A=][=0x0009=]center [=0x0022=][location][=0x0022=] at row 1;[=0x000A=][=0x0009=]rule succeeds.[=0x000A=][=0x000A=]Test me with [=0x0022=]look[=0x0022=].[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode194()"><img border=0 src=../doc_images/paste.png></a> &quot;Centered&quot;
 </font></blockquote><p>
 <p>
-<p>And now three early rooms to try this out.
-<p>
-<blockquote><font color="#000080">COBBLE CRAWL is a room. &quot;YOU ARE CRAWLING OVER COBBLES IN A LOW PASSAGE. THERE IS A DIM LIGHT AT THE EAST END OF THE PASSAGE.&quot;
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;After months of boring through the Earth's crust in this metal-jawed vehicle, you break through...&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">DEBRIS ROOM is west of COBBLE CRAWL. &quot;YOU ARE IN A DEBRIS ROOM, FILLED WITH STUFF WASHED IN FROM THE SURFACE. A LOW WIDE PASSAGE WITH COBBLES BECOMES PLUGGED WITH MUD AND DEBRIS HERE,BUT AN AWKWARD CANYON LEADS UPWARD AND WEST.&quot;
+<blockquote><font color="#000080">The Hollow Core is a room. &quot;Truly a magnificent sight: the land curves up away from you in every direction, covered with the cities and fields of the Core People. Molten rock runs in the canals, bringing heat and light to every home.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">AWKWARD CANYON is west of DEBRIS ROOM. &quot;YOU ARE IN AN AWKWARD SLOPING EAST/WEST CANYON.&quot;
+<blockquote><font color="#000080">At the center of the Earth hangs a dense black sun.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">DEBRIS ROOM and AWKWARD CANYON are dark.
+<blockquote><font color="#000080">Include Basic Screen Effects by Emily Short.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for printing the name of a dark room: say &quot;DARKNESS&quot; instead.
-<br>Rule for printing the description of a dark room: say &quot;IT IS NOW PITCH BLACK. IF YOU PROCEED YOU WILL LIKELY FALL INTO A PIT.&quot; instead.
+<blockquote><font color="#000080">Rule for constructing the status line:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;center &quot;[location]&quot; at row 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;w / e / w / w&quot;.
+<blockquote><font color="#000080">Test me with &quot;look&quot;.
 </font></blockquote><p>
 <p>
-<p>This is only the second oldest problem in the IF literature: the earliest puzzle is unlocking the steel grate which bars entrance to the cave.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc182.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Basic Screen Effects also provides a mechanism for building complicated status lines of more than one row. To read its documentation, we include the extension, press Go!, and then consult the contents index that results.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc112.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e354"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex354.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>185</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex354.html#e354 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Removal</font></b></a><br>TAKE expanded to give responses such as "You take the book from the shelf." or "You pick up the toy from the ground."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex354.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e164"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex164.html#e164 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>186</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex164.html#e164 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Puff of Orange Smoke</font></b></a><br>A system in which every character has a body, which is left behind when the person dies; attempts to do something to the body are redirected to the person while the person is alive.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex164.html#e164 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e9"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>187</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex9.html#e9 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Croft</font></b></a><br>Adding special reporting and handling for objects dropped when the player is on a supporter, and special entering rules for moving from one supporter to another.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc181.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc183.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc111.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc113.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.14. Exchanging files with other programs</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.5. The text token</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,124 +19,92 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Flathead News Network" -->
-<!-- SEARCH SECTION "Ex 375" -->
-<!-- SEARCH SORT "Ex 020-014-375" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc337.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc339.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.14. Exchanging files with other programs</b></font></td></tr></table>
+<!-- SEARCH TITLE "Ish." -->
+<!-- SEARCH SECTION "Ex 262" -->
+<!-- SEARCH SORT "Ex 016-005-262" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc246.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc248.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.5. The text token</b></font></td></tr></table>
 <p>
-<p>Provided we declare the files in the right way, it is easy for one project to read a file created by another project.
+<p>Most actions involve items: taking a vase, perhaps. As we shall see, they might also involve values, or a mixture of the two: turning a dial to 17 would involve both a thing (the dial) and a number (17). A few of Inform's built-in actions, however, can act on any text at all. For instance, asking the Sybil about the Persian army would involve a thing (the Sybil) and some text (&quot;Persian army&quot;). Inform does not try to understand automatically what that text might mean, or to relate it to any items, places or values it knows about: instead, Inform leaves that to the specific story to work out for itself, since the answer is bound to depend on the context. (In the chapter on Tables, we saw ways to compile tables of responses to particular topics of conversation.)
 <p>
-<p>But if we want more rapid communication, between two projects which are each playing at the same time, we need to be more careful. What if project A tries to read the file at the same moment that project B is writing it?
+<p>The token for &quot;accept any text here&quot; is just &quot;[text]&quot;. For instance, if we create an action with:
 <p>
-<p>To avoid this, we have a concept of files being &quot;ready&quot;. A file is ready if it exists, and is completely written, and not in use elsewhere. The following conditions can be used:
-<p>
-<blockquote><font color="#000080">if the file of Invariants exists...
-<br>if ready to read the file of Invariants...
+<blockquote><font color="#000080">Getting help about is an action applying to one topic.
 </font></blockquote><p>
 <p>
-<p>A file cannot be ready to read if it does not exist, so this is a stronger condition. If A and B are attempting communication in real time, both running at once, then Project A should check that an external file owned by B is ready before it tries to read it. Files can also be marked as ready or not ready, in effect claiming them, thus:
+<p>We can then provide grammar for this action like so:
 <p>
-<blockquote><font color="#000080">mark the file of Invariants as ready to read;
-<br>mark the file of Invariants as not ready to read;
+<blockquote><font color="#000080">Understand &quot;help on [text]&quot; as getting help about.
 </font></blockquote><p>
 <p>
-<p>Possibilities really begin to open up when project A is our story file, but B is not another story file at all: it is some external program such as a Web service, say. (Of course this is harder to set up, since the player needs to have both A and B running at the same time, but for games running on an Internet server this can all be made seamless.)
-<p>
-<p>When Inform begins writing a table, or text, to a file, it initially marks the file as not ready: only when the table or text is completely written and the file about to close is the file marked as ready.
-<p>
-<p>In order to write non-story-file programs as B, communicating with story files as A, we need to know the file format used by Inform. An Inform file is currently a Unix text file (with 10 as the line division character), encoded as ASCII Latin-1. (We would like to use Unicode at some point in the future, but the Glk and Glulx layers are still not fully converted to Unicode.) It opens with a single header line in the form:
-<p>
-<blockquote><font color="#000080">* //IFID// leafname
-</font></blockquote><p>
-<p>
-<p>The opening character is an asterisk if the file is currently ready, a hyphen if the file is currently not ready. The IFID between the slashes is the IFID number of the project which last wrote to the file. (Marking &quot;ready&quot; or &quot;not ready&quot; does not count as a write for this purpose.) If an external program wrote the file, it should call itself something which will not clash with any story file's IFID. The leafname is the filename text used inside the story file where the file was declared. For instance:
-<p>
-<blockquote><font color="#000080">* //4122DDA8-A153-46BC-8F57-42220F9D8795// ice
-</font></blockquote><p>
+<p>When text like this is successfully matched, it is placed in a value called &quot;the topic understood&quot;. (The term &quot;topic&quot; is used traditionally, really: most of the times one needs this feature, it's for a topic of conversation, or a topic being looked up in a book.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e54"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc338.html#e54 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>375</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc338.html#e54 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Flathead News Network</font></b></a><br>Using external files, together with a simple Unix script running in the background, to provide live news headlines inside a story file.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex54.html#e54 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e54"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc247.html#e54 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>262</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc247.html#e54 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Ish.</font></b></a><br>A (very) simple HELP command, using tokens to accept and interpret the player's  text whatever it might be.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex54.html#e54 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>This example can only work if we have a separate program running in the background while the story file is being played, and as such it will only work if we set things up in a special way. Exactly how to do this will vary from platform to platform.
-<p>
-<p>First, the source text for the Inform end of the communication line:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode464(code) {
+function pasteCode349(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Flathead News Network"\n\nThe file of RSS Requests is called "rssrequest".\n\nThe file of RSS Responses (owned by project "RSS-SCRIPT") is called "rssreply".\n\nTo request (RSS feed address - text):\n\tmark the file of RSS Responses as not ready to read;\n\twrite the RSS feed address to the file of RSS Requests.\n\nNewsroom is a room. "This is the secret nerve-centre of FNN, the Flathead News Network."\n\nThe BBC button is in the Newsroom. Instead of pushing the BBC button: say "Bong!"; request "newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml".\n\nThe NASA button is in the Newsroom. Instead of pushing the NASA button: say "Bang!"; request "www.nasa.gov/rss/breaking_news.rss".\n\nThe WHO button is in the Newsroom. Instead of pushing the WHO button: say "Bing!"; request "www.gallifreyone.com/news.xml".\n\nA screen is in the Newsroom.\n\nInstead of examining the screen:\n\tif ready to read the file of RSS Responses, say "From the screen you read:[line break][text of the file of RSS Responses]";\n\totherwise say "The screen remains blank for now."\n\n');
+    myProject.pasteCode('[=0x0022=]Ish.[=0x0022=][=0x000A=][=0x000A=]Ichiro[=0x0027=]s Dubious Sushi Hut is a room.  [=0x0022=]Despite the allure of the dusty plastic sushi models in the window, you[=0x0027=]re beginning to have second thoughts about the selection of this particular restaurant for your rendezvous with Agent Fowler.  There are no other patrons, for one thing. Afternoon sunlight filters lazily through the window and illuminates a number of empty glass-topped tables, at each of which is a chopstick dispenser (in form of cute ceramic cat) and a pitcher of soy sauce (sticky).[=0x000A=][=0x000A=]The sushi bar itself is what gives the most pause, however. Behind it sits an angry-looking Japanese woman, aggressively eating a Quarter Pounder with Cheese.[=0x0022=][=0x000A=][=0x000A=][We can, when necessary, accept any text at all as a token:][=0x000A=][=0x000A=]Understand [=0x0022=]help [text][=0x0022=] or [=0x0022=]help about [text][=0x0022=] as getting help about. Understand the commands [=0x0022=]instructions[=0x0022=] or [=0x0022=]hint[=0x0022=] or [=0x0022=]hints[=0x0022=] or [=0x0022=]menu[=0x0022=] or [=0x0022=]info[=0x0022=] or [=0x0022=]about[=0x0022=] as [=0x0022=]help[=0x0022=].[=0x000A=][=0x000A=]Getting help about is an action applying to one topic.[=0x000A=][=0x000A=][After that, we can use [=0x0022=]the topic understood[=0x0022=] to refer to the text we read:][=0x000A=][=0x000A=]Carry out getting help about:[=0x000A=][=0x0009=]if the topic understood is a topic listed in the Table of Standard Help[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][explanation entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You[=0x0027=]re out of ideas.[=0x0022=];[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]Table of Standard Help[=0x000A=]topic[=0x0009=]title[=0x0009=]summary[=0x0009=]explanation[=0x000A=][=0x0022=]sushi[=0x0022=][=0x0009=][=0x0022=]sushi[=0x0022=][=0x0009=][=0x0022=]Really it[=0x0027=]s just vinegary rice[=0x0022=][=0x0009=][=0x0022=]Popular misconception says that sushi inevitably entails raw fish, but it is in fact just rice with rice vinegar on it.  It[=0x0027=]s just that the really good kinds have raw fish in.[=0x0022=][=0x000A=][=0x0022=]cucumber roll[=0x0022=] or [=0x0022=]cucumber[=0x0022=][=0x0009=][=0x0022=]Cucumber roll[=0x0022=][=0x0009=][=0x0022=]Sushi for people who are afraid of sushi[=0x0022=][=0x0009=][=0x0022=]It is just rice and slivers of cucumber in the middle, and as long as you don[=0x0027=]t go too crazy with the wasabi, all should be well.[=0x0022=][=0x000A=][=0x0022=]california roll[=0x0022=] or [=0x0022=]california[=0x0022=][=0x0009=][=0x0022=]California roll[=0x0022=][=0x0009=][=0x0022=]Travesty of the sushi concept[=0x0022=][=0x0009=][=0x0022=]It[=0x0027=]s. Fake. Crab.[=0x0022=][=0x000A=][=0x0022=]monkfish liver[=0x0022=][=0x0009=][=0x0022=]monkfish liver[=0x0022=][=0x0009=][=0x0022=]Expert eaters only[=0x0022=][=0x0009=][=0x0022=]The odds of Ichiro[=0x0027=]s having this unusual delicacy is near zero.[=0x0022=][=0x000A=][=0x0022=]microdot[=0x0022=][=0x0009=][=0x0022=]microdot[=0x0022=][=0x0009=][=0x0022=]What you came here to deliver[=0x0022=][=0x0009=][=0x0022=]There[=0x0027=]ll be time enough for that later. If Fowler ever turns up. Where is she, anyway?[=0x0022=][=0x000A=][=0x000A=][Since the player may not know what all the help options are, we might as well let him get an overview, as well.][=0x000A=][=0x000A=]Understand [=0x0022=]help[=0x0022=] as summoning help.  Summoning help is an action applying to nothing.[=0x000A=][=0x000A=]Carry out summoning help:[=0x000A=][=0x0009=]say [=0x0022=]Help is available about the following topics.  Typing HELP followed by the name of a topic will give further information.[paragraph break][=0x0022=];[=0x000A=][=0x0009=]repeat through the Table of Standard Help[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]  [title entry]: [summary entry][line break][=0x0022=];[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]Test me with [=0x0022=]help / help about microdot / help cucumber / help california roll[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode464()"><img border=0 src=../doc_images/paste.png></a> &quot;Flathead News Network&quot;
+<a href="javascript:pasteCode349()"><img border=0 src=../doc_images/paste.png></a> &quot;Ish.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The file of RSS Requests is called &quot;rssrequest&quot;.
+<blockquote><font color="#000080">Ichiro's Dubious Sushi Hut is a room.  &quot;Despite the allure of the dusty plastic sushi models in the window, you're beginning to have second thoughts about the selection of this particular restaurant for your rendezvous with Agent Fowler.  There are no other patrons, for one thing. Afternoon sunlight filters lazily through the window and illuminates a number of empty glass-topped tables, at each of which is a chopstick dispenser (in form of cute ceramic cat) and a pitcher of soy sauce (sticky).
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The file of RSS Responses (owned by project &quot;RSS-SCRIPT&quot;) is called &quot;rssreply&quot;.
+<blockquote><font color="#000080">The sushi bar itself is what gives the most pause, however. Behind it sits an angry-looking Japanese woman, aggressively eating a Quarter Pounder with Cheese.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To request (RSS feed address - text):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;mark the file of RSS Responses as not ready to read;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;write the RSS feed address to the file of RSS Requests.
+<p>We can, when necessary, accept any text at all as a token:
+<p>
+<blockquote><font color="#000080">Understand &quot;help [text]&quot; or &quot;help about [text]&quot; as getting help about. Understand the commands &quot;instructions&quot; or &quot;hint&quot; or &quot;hints&quot; or &quot;menu&quot; or &quot;info&quot; or &quot;about&quot; as &quot;help&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Newsroom is a room. &quot;This is the secret nerve-centre of FNN, the Flathead News Network.&quot;
+<blockquote><font color="#000080">Getting help about is an action applying to one topic.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The BBC button is in the Newsroom. Instead of pushing the BBC button: say &quot;Bong!&quot;; request &quot;newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml&quot;.
+<p>After that, we can use &quot;the topic understood&quot; to refer to the text we read:
+<p>
+<blockquote><font color="#000080">Carry out getting help about:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the topic understood is a topic listed in the Table of Standard Help
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[explanation entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're out of ideas.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The NASA button is in the Newsroom. Instead of pushing the NASA button: say &quot;Bang!&quot;; request &quot;www.nasa.gov/rss/breaking_news.rss&quot;.
+<blockquote><font color="#000080">Table of Standard Help
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">title</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">summary</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">explanation</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;sushi&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;sushi&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Really it's just vinegary rice&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Popular misconception says that sushi inevitably entails raw fish, but it is in fact just rice with rice vinegar on it.  It's just that the really good kinds have raw fish in.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cucumber roll&quot; or &quot;cucumber&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Cucumber roll&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Sushi for people who are afraid of sushi&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;It is just rice and slivers of cucumber in the middle, and as long as you don't go too crazy with the wasabi, all should be well.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;california roll&quot; or &quot;california&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;California roll&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Travesty of the sushi concept&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;It's. Fake. Crab.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;monkfish liver&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;monkfish liver&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Expert eaters only&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;The odds of Ichiro's having this unusual delicacy is near zero.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;microdot&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;microdot&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;What you came here to deliver&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;There'll be time enough for that later. If Fowler ever turns up. Where is she, anyway?&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The WHO button is in the Newsroom. Instead of pushing the WHO button: say &quot;Bing!&quot;; request &quot;www.gallifreyone.com/news.xml&quot;.
+<p>Since the player may not know what all the help options are, we might as well let him get an overview, as well.
+<p>
+<blockquote><font color="#000080">Understand &quot;help&quot; as summoning help.  Summoning help is an action applying to nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A screen is in the Newsroom.
+<blockquote><font color="#000080">Carry out summoning help:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Help is available about the following topics.  Typing HELP followed by the name of a topic will give further information.[paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Standard Help
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [title entry]: [summary entry][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining the screen:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if ready to read the file of RSS Responses, say &quot;From the screen you read:[line break][text of the file of RSS Responses]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;The screen remains blank for now.&quot;
+<blockquote><font color="#000080">Test me with &quot;help / help about microdot / help cucumber / help california roll&quot;.
 </font></blockquote><p>
-<p>
-<p>As far as the story file is concerned, then, it sends a request down the communication line by writing the chosen RSS feed to the file named &quot;rssrequest&quot;, and expects a reply to come back down the line by being written to the file &quot;rssreply&quot;. However, the story file needs to expect that this might take some time. (Maybe forever, if there is no program responding, or if the Internet connection is not working.) The story file marks the &quot;rssreply&quot; file as not ready before it makes a request; if it subsequently finds that the file is now ready, that must mean that the other program has done the honours, and that all is well. In the mean time, &quot;The screen remains blank for now.&quot;
-<p>
-<p>Now for the RSS-SCRIPT program. The following provides a crude but workable program suitable for running as a Perl script on a system which provides the standard Internet fetching program &quot;curl&quot;: Mac OS X, for instance. (If you have OS X, you can paste the following into a (Unix-format) text file called &quot;rss-script.pl&quot;, place it in your home folder, open the Terminal utility, type &quot;perl rss-script.pl&quot;, and then hide the Terminal window again.)
-<p>
-<blockquote><font color="#000080">for (;;) { # repeat forever:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;system(&quot;sleep 1&quot;); # wait 1 second
-<br>&nbsp;&nbsp;&nbsp;&nbsp;open REQUEST, &quot;rssrequest.glkdata&quot; or next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;# the request file has been detected:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;$header_line = &lt;REQUEST&gt;; # the header line
-<br>&nbsp;&nbsp;&nbsp;&nbsp;$rss_feed = &lt;REQUEST&gt;; # the actual content - the RSS feed URL
-<br>&nbsp;&nbsp;&nbsp;&nbsp;close REQUEST;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if ($header_line =~ m/^\*/) { # if the request file is marked ready
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$rss = system(&quot;curl $rss_feed &gt;rawrss.txt&quot;); # download the RSS feed
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# read the RSS XML into a single Perl string:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open RAWRSS, &quot;rawrss.txt&quot; or next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$raw = &quot;&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while ($nl = &lt;RAWRSS&gt;) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$raw = $raw.&quot; &quot;.$nl;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close RAWRSS;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# look for the title and description of the first item:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ($raw =~ m/\&lt;item\&gt;\&lt;title.*?\&gt;(.*?)\&lt;\/title\&gt;.*?\&lt;description.*?\&gt;(.*?)\&lt;\/description\&gt;/) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# write the reply:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open REPLY, &quot;&gt;rssreply.glkdata&quot; or next;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print REPLY &quot;* //RSS-SCRIPT// rssreply\n&quot;, $1, &quot;\n&quot;, $2, &quot;\n&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close REPLY;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# request safely dealt with, so we can remove it:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system(&quot;rm 'rssrequest.glkdata'&quot;);
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>}
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc338.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc247.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc337.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc339.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e77"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex77.html#e77 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>263</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex77.html#e77 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Nameless</font></b></a><br>ASKing someone about an object rather than about a topic.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex77.html#e77 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc246.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc248.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

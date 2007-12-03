@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.2. Named rules and rulebooks</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.10. Action variables</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,83 +19,120 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Delayed Gratification" -->
-<!-- SEARCH SECTION "Ex 334" -->
-<!-- SEARCH SORT "Ex 018-002-334" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc297.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc299.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.2. Named rules and rulebooks</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Second Oldest Problem" -->
+<!-- SEARCH SECTION "Ex 184" -->
+<!-- SEARCH SORT "Ex 012-010-184" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc181.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc183.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.10. Action variables</b></font></td></tr></table>
 <p>
-<p>Most of the rules built into Inform have names. For instance, a rule called &quot;the advance time rule&quot; is the one which increments the number of turns - usually visible on the &quot;status line&quot; displayed above the window of a game in progress - and advances the clock, which is usually not visible, but ticking away behind the scenes.
+<p>For some complex situations, it can be useful to keep track of a few values throughout the processing of the action. This is not an everyday occurrence: in the Standard Rules, for instance, only two or three out of 90 actions need to do this. But suppose we want to write a more deluxe version of our &quot;photographing&quot; action. This time, rather than having a single thing called the &quot;camera&quot;, we will provide a whole range of possible cameras, varying in quality:
 <p>
-<p>A rulebook is a list of rules to be followed in sequence until one of them makes a decision. For instance, when actions get to the &quot;instead&quot; stage, each &quot;instead&quot; rule is tried until one of them chooses to do something. If the source text contains the rules
-<p>
-<blockquote><font color="#000080">Instead of taking something: say &quot;You have no particular need just now.&quot;
-<br>Instead of taking a fish: say &quot;It's all slimy.&quot;
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light. Understand &quot;photograph [something]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>and a command to TAKE something is tried, then only one of these rules will have any effect. The &quot;instead&quot; rulebook contains:
-<p>
-<blockquote><font color="#000080">Rule (1) to be applied if the action matches &quot;taking a fish&quot;
-<br>Rule (2) to be applied if the action matches &quot;taking something&quot;
+<blockquote><font color="#000080">The Studio is a room. Sally is a woman in the Studio. A foam-lined tote bag is in the Studio.
 </font></blockquote><p>
 <p>
-<p>Inside their rulebook, the rules are not listed in the order of definition in the source text. Rule (1) comes before rule (2) because it applies in more specific circumstances. This is the main idea: a rulebook gathers together rules about making some decision, or taking some action, and sorts them in order to give the more specific rules first choice about whether they want to intervene.
-<p>
-<p>Whereas only some rules are named (the two &quot;instead&quot; rules above have no name, for instance), every rulebook has a name. For convenience, the following forms of rule and rulebook name are synonymous:
-<p>
-<blockquote><font color="#000080">advance time = the advance time rule
+<blockquote><font color="#000080">A camera is a kind of thing. A camera has a number called picture quality. The digital SLR camera is a camera in the tote bag. The player carries a camera called the instant one-shot camera. The picture quality of the SLR camera is 10. The picture quality of the one-shot is 2. Definition: a camera is sharp if its picture quality is 5 or more.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">the instead rules = instead rulebook = instead
+<p>And we will want the photographing action to have the player use the best-quality camera which comes to hand. We will give the action a variable called the 'camera photographed with', thus:
+<p>
+<blockquote><font color="#000080">The photographing action has an object called the camera photographed with.
 </font></blockquote><p>
 <p>
-<p>The names of built-in rules have been chosen as descriptively as possible: the &quot;can't go through closed doors rule&quot;, for instance. Names for rules tend to be verbose, but this is a situation where clarity is very much better than brevity.
+<p>This value is created when the action begins, and disappears when the action ends. (If the action should happen a second time before the first time was completed, a second copy of the value is created, leaving the original undisturbed.) When the action begins, the value starts out as something neutral - so if it is a number, it starts out as 0, if a text, it starts out as the blank text &quot;&quot;, and so on. Here it is an object, so it starts out as nothing - the value meaning no object at all. But of course we want to give it a value ourselves. We can do that using the &quot;setting action variables&quot; rulebook. For instance:
+<p>
+<blockquote><font color="#000080">Setting action variables for photographing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the camera photographed with is the sharpest camera which is carried by the actor.
+</font></blockquote><p>
+<p>
+<p>The &quot;setting action variables&quot; rulebook is run through before even the before rules, and it has no power to stop or change the action. Its rules should say nothing and do nothing other than to set rulebook variables like this one. Note that it is intended to work for any actor, not only the player: so rather than referring to the player as the performer of the action, we need to write &quot;the actor&quot;, as in the example above. (See subsequent sections for more on actors.)
+<p>
+<p>We can now write rules such as:
+<p>
+<blockquote><font color="#000080">A check photographing rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the camera photographed with is nothing then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
+</font></blockquote><p>
+<p>
+<p>Only rules to do with the photographing action - before, instead, after, check, carry out, or report rules, and so on - are allowed to see the 'camera photographed with' value: it's the private property of the action.
+<p>
+<p>A further elaboration allows us to make rules about photographing neater to write. If we create our variable like so:
+<p>
+<blockquote><font color="#000080">The photographing action has an object called the camera photographed with (matched as &quot;using&quot;).
+</font></blockquote><p>
+<p>
+<p>...then we are now allowed to add an optional 'using ...' clause onto a description of the action. For instance, we could write rules such as
+<p>
+<blockquote><font color="#000080">Instead of photographing something using the one-shot camera:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;But you promised to give this to Sally's nephew.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check photographing something using the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That would require some sort of contraption with mirrors.&quot; instead.
+</font></blockquote><p>
+<p>
+<p>
+<blockquote><font color="#000080">Report photographing something using a sharp camera:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You feel cool and important as the shutter clicks.&quot;
+</font></blockquote><p>
+<p>
+<p>(This is the method used by the Standard Rules to attach optional clauses such as 'to', 'with' and 'through' to the going action.)
 <p>
 <p><hr><p>
-<a name="e242"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex242.html#e242 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>333</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex242.html#e242 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Nine AM Appointment</font></b></a><br>A WAIT [number] MINUTES command which advances through an arbitrary number of turns.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex242.html#e242 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e104"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex104.html#e104 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>183</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex104.html#e104 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Further Reasons Why All Poets Are Liars</font></b></a><br>The young William Wordsworth, pushing a box about in his room, must struggle to achieve a Romantic point of view.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex104.html#e104 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e169"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc298.html#e169 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>334</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc298.html#e169 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Delayed Gratification</font></b></a><br>A WAIT UNTIL [time] command which advances until the game clock reaches the correct hour.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex169.html#e169 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e169"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc182.html#e169 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>184</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc182.html#e169 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Second Oldest Problem</font></b></a><br>Adapting the going action so that something special can happen when going from a dark room to another dark room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex169.html#e169 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Text in this example is drawn from Will Crowther's original 1976 FORTRAN implementation of ADVENTURE, the founding work of the genre, whose source code was rediscovered by Dennis R. Jerz in 2007. Note the capitals: the program ran on an early computer without lower case lettering. They look a little mimsy now, but picture them glowing green on an old-style cathode ray tube monitor in a darkened room late at night.
+<p>
+<p>The problem alluded to is that the player is forbidden to walk between two dark rooms, so that he must always have light to see by from at least one end of any movement. Writing source text to achieve this is tricky to get right in every case, because the determination of light is hard to do. Here we interleave the necessary rules into the existing &quot;going&quot; action, using a new action variable to record the number of ends which are dark as experienced by the player, which might be 0, 1 or 2:
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode422(code) {
+function pasteCode274(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Delayed Gratification"\n\nHanging around until is an action applying to one time.\n\nCheck hanging around until:\n\tif the time of day is the time understood, say "It is [time understood] now!" instead;\n\tif the time of day is after the time understood, say "It is too late for that now." instead.\n\nCarry out hanging around until:\n\twhile the time of day is before time understood repeatedly follow the turn sequence rules.\n\nReport hanging around until:\n\tsay "You yawn until [time understood]."\n\nUnderstand "wait until [time]" as hanging around until.\n\nThe Empty Field is a room. "It\'s an ordinary empty field. Nothing to see here at all-- yet. Wait until 11:45 PM, though."\n\nAt 11:45 PM:\n\tsay "Suddenly the air is filled with light and the sounds of an approaching band. Over the crest of the hill comes a parade of singing, stomping, hooting people: and not just people, but dogs, horses, elephants, giraffes... There are banners, and candles, and a flag that glows eerie-green in the dark; there is a float shaped like an enormous turtle, its shell covered with winking green lights; there is an old man dressed as a skeleton, carried in a litter, his neck garlanded with dried chiles. There are small girls throwing rose petals from a basket, and grown women half-naked carrying the emblems of Bacchic revelry, and two little boys each with a silver basin of clear water. All these go by in procession, and you join on at the end.";\n\tend the game in victory.\n\nTest me with "look / z / z / wait until 11:45 PM".\n');
+    myProject.pasteCode('[=0x0022=]THE SECOND OLDEST PROBLEM[=0x0022=][=0x000A=][=0x000A=]The going action has a number called the dark terminus count.[=0x000A=]Setting action variables for going:[=0x000A=][=0x0009=]now the dark terminus count is 0;[=0x000A=][=0x0009=]if in darkness, increase the dark terminus count by 1.[=0x000A=]The last carry out going rule:[=0x000A=][=0x0009=]if in darkness, increase the dark terminus count by 1;[=0x000A=][=0x0009=]if the dark terminus count is 2, end the game saying [=0x0022=]YOU FELL INTO A PIT AND BROKE EVERY BONE IN YOUR BODY![=0x0022=] instead.[=0x000A=][=0x000A=][And now three early rooms to try this out.][=0x000A=][=0x000A=]COBBLE CRAWL is a room. [=0x0022=]YOU ARE CRAWLING OVER COBBLES IN A LOW PASSAGE. THERE IS A DIM LIGHT AT THE EAST END OF THE PASSAGE.[=0x0022=][=0x000A=][=0x000A=]DEBRIS ROOM is west of COBBLE CRAWL. [=0x0022=]YOU ARE IN A DEBRIS ROOM, FILLED WITH STUFF WASHED IN FROM THE SURFACE. A LOW WIDE PASSAGE WITH COBBLES BECOMES PLUGGED WITH MUD AND DEBRIS HERE,BUT AN AWKWARD CANYON LEADS UPWARD AND WEST.[=0x0022=][=0x000A=][=0x000A=]AWKWARD CANYON is west of DEBRIS ROOM. [=0x0022=]YOU ARE IN AN AWKWARD SLOPING EAST/WEST CANYON.[=0x0022=][=0x000A=][=0x000A=]DEBRIS ROOM and AWKWARD CANYON are dark.[=0x000A=][=0x000A=]Rule for printing the name of a dark room: say [=0x0022=]DARKNESS[=0x0022=] instead.[=0x000A=]Rule for printing the description of a dark room: say [=0x0022=]IT IS NOW PITCH BLACK. IF YOU PROCEED YOU WILL LIKELY FALL INTO A PIT.[=0x0022=] instead.[=0x000A=][=0x000A=]Test me with [=0x0022=]w / e / w / w[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode422()"><img border=0 src=../doc_images/paste.png></a> &quot;Delayed Gratification&quot;
+<a href="javascript:pasteCode274()"><img border=0 src=../doc_images/paste.png></a> &quot;THE SECOND OLDEST PROBLEM&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Hanging around until is an action applying to one time.
+<blockquote><font color="#000080">The going action has a number called the dark terminus count.
+<br>Setting action variables for going:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the dark terminus count is 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if in darkness, increase the dark terminus count by 1.
+<br>The last carry out going rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if in darkness, increase the dark terminus count by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the dark terminus count is 2, end the game saying &quot;YOU FELL INTO A PIT AND BROKE EVERY BONE IN YOUR BODY!&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check hanging around until:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the time of day is the time understood, say &quot;It is [time understood] now!&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the time of day is after the time understood, say &quot;It is too late for that now.&quot; instead.
+<p>And now three early rooms to try this out.
+<p>
+<blockquote><font color="#000080">COBBLE CRAWL is a room. &quot;YOU ARE CRAWLING OVER COBBLES IN A LOW PASSAGE. THERE IS A DIM LIGHT AT THE EAST END OF THE PASSAGE.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out hanging around until:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while the time of day is before time understood repeatedly follow the turn sequence rules.
+<blockquote><font color="#000080">DEBRIS ROOM is west of COBBLE CRAWL. &quot;YOU ARE IN A DEBRIS ROOM, FILLED WITH STUFF WASHED IN FROM THE SURFACE. A LOW WIDE PASSAGE WITH COBBLES BECOMES PLUGGED WITH MUD AND DEBRIS HERE,BUT AN AWKWARD CANYON LEADS UPWARD AND WEST.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report hanging around until:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You yawn until [time understood].&quot;
+<blockquote><font color="#000080">AWKWARD CANYON is west of DEBRIS ROOM. &quot;YOU ARE IN AN AWKWARD SLOPING EAST/WEST CANYON.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;wait until [time]&quot; as hanging around until.
+<blockquote><font color="#000080">DEBRIS ROOM and AWKWARD CANYON are dark.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Empty Field is a room. &quot;It's an ordinary empty field. Nothing to see here at all-- yet. Wait until 11:45 PM, though.&quot;
+<blockquote><font color="#000080">Rule for printing the name of a dark room: say &quot;DARKNESS&quot; instead.
+<br>Rule for printing the description of a dark room: say &quot;IT IS NOW PITCH BLACK. IF YOU PROCEED YOU WILL LIKELY FALL INTO A PIT.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">At 11:45 PM:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Suddenly the air is filled with light and the sounds of an approaching band. Over the crest of the hill comes a parade of singing, stomping, hooting people: and not just people, but dogs, horses, elephants, giraffes... There are banners, and candles, and a flag that glows eerie-green in the dark; there is a float shaped like an enormous turtle, its shell covered with winking green lights; there is an old man dressed as a skeleton, carried in a litter, his neck garlanded with dried chiles. There are small girls throwing rose petals from a basket, and grown women half-naked carrying the emblems of Bacchic revelry, and two little boys each with a silver basin of clear water. All these go by in procession, and you join on at the end.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
+<blockquote><font color="#000080">Test me with &quot;w / e / w / w&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look / z / z / wait until 11:45 PM&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc298.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>This is only the second oldest problem in the IF literature: the earliest puzzle is unlocking the steel grate which bars entrance to the cave.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc182.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc297.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc299.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e365"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex365.html#e365 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>185</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex365.html#e365 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Removal</font></b></a><br>TAKE expanded to give responses such as "You take the book from the shelf." or "You pick up the toy from the ground."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex365.html#e365 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e168"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>186</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex168.html#e168 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Puff of Orange Smoke</font></b></a><br>A system in which every character has a body, which is left behind when the person dies; attempts to do something to the body are redirected to the person while the person is alive.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e9"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>187</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex9.html#e9 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Croft</font></b></a><br>Adding special reporting and handling for objects dropped when the player is on a supporter, and special entering rules for moving from one supporter to another.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc181.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc183.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

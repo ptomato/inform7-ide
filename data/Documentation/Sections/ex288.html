@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.15. Kinds of action</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.13. Let and temporary variables</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,117 +19,80 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Mimicry" -->
-<!-- SEARCH SECTION "Ex 102" -->
-<!-- SEARCH SORT "Ex 007-015-102" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc104.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc106.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.15. Kinds of action</b></font></td></tr></table>
+<!-- SEARCH TITLE "M. Melmoth's Duel" -->
+<!-- SEARCH SECTION "Ex 164" -->
+<!-- SEARCH SORT "Ex 011-013-164" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc165.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc167.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.13. Let and temporary variables</b></font></td></tr></table>
 <p>
-<p>Especially when people need to react to events going on around them, it is helpful to be able to categorise actions into whole areas of behaviour. For instance:
+<p>A variable, as we have seen, is a name for a value which changes, though always remaining of the same kind. For instance, if &quot;target&quot; is a number variable (or &quot;number that varies&quot;) then it may change value from 2 to 4, but not from 2 to &quot;fishknife&quot;.
 <p>
-<blockquote><font color="#000080">Kissing Mr Carr is unmaidenly behaviour.
-<br>Doing something to the painting is unmaidenly behaviour.
+<p>To make complicated decisions, phrases often need to remember values on a temporary basis. We have already seen this for the counter in a &quot;repeat&quot; loop, which exists only inside that loop, and then is no longer needed. Now we define named values which exist only inside the current phrase. For instance:
+<p>
+<blockquote><font color="#000080">let outer bull be 25;
+<br>let the current appearance be &quot;reddish brown&quot;;
+<br>let the special room be Marley Wood;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of unmaidenly behaviour in the Inn, say &quot;How unmaidenly!&quot;
+<p>creates temporary variables &quot;outer bull&quot;, &quot;current appearance&quot; and &quot;special room&quot;. The kinds of these are deduced from the values given, so that, for instance,
+<p>
+<blockquote><font color="#000080">say &quot;The outer bull scores [the outer bull in words] when you practice archery in [special room].&quot;
 </font></blockquote><p>
 <p>
-<p>Here a new kind of action called &quot;unmaidenly behaviour&quot; has been created and then used in the description of an instead rule. The convenience of this approach is that when further actions suddenly occur to us as also being unmaidenly - say, attacking Mr Carr - we only need to add a single line:
+<p>produces
 <p>
-<blockquote><font color="#000080">Attacking Mr Carr is unmaidenly behaviour.
+<blockquote><font color="#000080">The outer bull scores twenty-five when you practice archery in Marley Wood.
 </font></blockquote><p>
 <p>
-<p>And this will automatically be reflected in any rules which concern the consequences of failing to be ladylike.
+<p>Temporary variables made by &quot;let&quot; are only temporarily in existence while a phrase is being carried out. Their values often change: we could say
 <p>
-<p>(Note that we were only allowed to say that &quot;Kissing Mr Carr is unmaidenly behaviour.&quot; because Inform already knew from earlier sentences - see the example below - that Mr Carr was a person, and therefore that &quot;kissing Mr Carr&quot; made sense as a description of an action.)
+<blockquote><font color="#000080">let x be 10;
+<br>change x to 11;
+</font></blockquote><p>
+<p>
+<p>for instance, or indeed we could &quot;let x be 10&quot; and then &quot;let x be 11&quot;. But although we are allowed to change the value, we are not allowed to change the kind of value. The name &quot;x&quot; must always have the same kind of value throughout the phrase to which it belongs, so the following will not be allowed:
+<p>
+<blockquote><font color="#000080">let x be 45;
+<br>change x to &quot;Norway&quot;;
+</font></blockquote><p>
+<p>
+<p>(The difference between &quot;let&quot; and &quot;change&quot; is that &quot;let&quot; can create a new temporary variable, whereas &quot;change&quot; can only alter one which already exists: on the other hand, &quot;change&quot; can change many other things as well, whereas &quot;let&quot; applies only to temporary variables.)
 <p>
 <p><hr><p>
-<a name="e303"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex303.html#e303 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>101</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex303.html#e303 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Dearth and the Maiden</font></b></a><br>Our heroine, fallen among gentleman highwaymen, is restrained by her own modesty and seemliness.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex303.html#e303 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e288"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc105.html#e288 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>102</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc105.html#e288 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Mimicry</font></b></a><br>People who must be greeted before conversation can begin.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex288.html#e288 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e288"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc166.html#e288 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>164</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc166.html#e288 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> M. Melmoth's Duel</font></b></a><br>Three basic ways to inject random or not-so-random variations into text.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex288.html#e288 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to add a sense of some conversational flow, so that the player is forced to acknowledge the presence of people before beginning detailed conversations with them. We collect all speech actions into a single category:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode189(code) {
+function pasteCode254(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Mimicry"\n\nAsking someone about something is speech. Telling someone about something is speech. Answering someone that something is speech. Asking someone for something is speech.\n\n[And then write a general rule.]\n\nBefore speech in the presence of an ungreeted person: try waving hands.\n\n[One complication is that "asking someone to try doing something", which describes commands such as FRED, GO SOUTH, cannot be made into a kind of action. This requires its own rule:]\n\nBefore asking someone to try doing something in the presence of an ungreeted person: try waving hands.\n\n[Now we define what greetings are going to look like:]\n\nCheck waving hands:\n\tif the player can see someone who is not the player, do nothing;\n\totherwise say "You are alone." instead.\n\nCarry out waving hands:\n\tsay "You nod hello to [the list of ungreeted people who can be seen by the player].";\n\tnow every ungreeted person who can be seen by the player is greeted.\n\nThe block waving hands rule is not listed in the check waving hands rulebook.\n\n[Because of the way we\'ve defined the command, this will now also work if the player waves.]\n\nA person can be greeted or ungreeted. A person is usually ungreeted. The player is greeted.\n\n[And now the scenario:]\n\nThe International Convention of Mimes is a room. Lester, Harold, Geoff, Kwame, and Peter are men in the Convention. Elouise is a woman in the Convention. The Invisible Box is an enterable container in the Convention. "You can detect, from the way people keep leaning on it, an invisible box in the middle of the room."\n\nLester carries a bowler hat.\n\nInstead of speech in the presence of someone:\n\tdescribe poor reception.\n\nDefinition: a person is other if it is not the player.\n\nAt 9:01 AM:\n\tmove Phineas to the location; say "A mime called Phineas appears from the non-existent bathroom."\n\nPhineas is a man.\n\nA persuasion rule:\n\tdescribe poor reception;\n\tpersuasion fails.\n\nTo describe poor reception:\n\tif the player is in the Invisible box,\n\t\tsay "Everyone convulses with silent laughter as you try to shout from within the invisible box.";\n\totherwise\n\t\tsay "You attempt to convey your meaning with gesture and interpretive dance, but [the list of visible other people] scorn[if the number of visible other people is 1]s[end if] your performance, refusing to respond."\n\nTest me with "ask lester about work / lester, east / ask lester for bowler / lester, nice not talking to you / get in box / ask lester for hat / phineas, east".\n');
+    myProject.pasteCode('[=0x0022=]M. Melmoth[=0x0027=]s Duel[=0x0022=][=0x000A=][=0x000A=]Saint-Germain-des-Prés is a room. [=0x0022=]Haunt of artists, of the coffee-drinking sort, and of cafés, of the artist-haunted sort, you once again find yourself outside M. Melmoth[=0x0027=]s hotel. Today [one of]the recently-fallen rain runs down the gutters of the 6th[or]sunlight glints even off the blackened windows of the Abbey[or]crowds of vulgar children play chase around the lampposts[at random], and you long to be indoors.[=0x0022=][=0x000A=][=0x000A=]The Hôtel d[=0x0027=]Alsace is inside from Saint-Germain-des-Prés. [=0x0022=]Typical. Oscar writes you a letter announcing his own imminent demise - [=0x0027=]My wallpaper and I are fighting a duel to the death. One or other of us has got to go.[=0x0027=] - and then you get there and he[=0x0027=]s out, no doubt procuring paint the colour of absinthe, if he isn[=0x0027=]t procuring the painter.[=0x0022=][=0x000A=][=0x000A=]Tint is a kind of value. The tints are green, aquamarine and darkish purple.[=0x000A=][=0x000A=]The wallpaper is fixed in place in the Hôtel. The wallpaper has a tint. [=0x0022=]In this light, the wallpaper has a distinctly [tint of the wallpaper] wash. [if the tint of the wallpaper is darkish purple]You particularly dislike purple.[end if][=0x0022=][=0x000A=][=0x000A=]Before going to the Hôtel: now the wallpaper is a random tint.[=0x000A=][=0x000A=]After going from the Hôtel, say [=0x0022=]You leave, shaking your head. But within twenty-four hours, you are back, as you always knew you would be.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]in / out / look / in / out / look[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode189()"><img border=0 src=../doc_images/paste.png></a> &quot;Mimicry&quot;
+<a href="javascript:pasteCode254()"><img border=0 src=../doc_images/paste.png></a> &quot;M. Melmoth's Duel&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Asking someone about something is speech. Telling someone about something is speech. Answering someone that something is speech. Asking someone for something is speech.
+<blockquote><font color="#000080">Saint-Germain-des-Prés is a room. &quot;Haunt of artists, of the coffee-drinking sort, and of cafés, of the artist-haunted sort, you once again find yourself outside M. Melmoth's hotel. Today [one of]the recently-fallen rain runs down the gutters of the 6th[or]sunlight glints even off the blackened windows of the Abbey[or]crowds of vulgar children play chase around the lampposts[at random], and you long to be indoors.&quot;
 </font></blockquote><p>
 <p>
-<p>And then write a general rule.
-<p>
-<blockquote><font color="#000080">Before speech in the presence of an ungreeted person: try waving hands.
+<blockquote><font color="#000080">The Hôtel d'Alsace is inside from Saint-Germain-des-Prés. &quot;Typical. Oscar writes you a letter announcing his own imminent demise - 'My wallpaper and I are fighting a duel to the death. One or other of us has got to go.' - and then you get there and he's out, no doubt procuring paint the colour of absinthe, if he isn't procuring the painter.&quot;
 </font></blockquote><p>
 <p>
-<p>One complication is that &quot;asking someone to try doing something&quot;, which describes commands such as FRED, GO SOUTH, cannot be made into a kind of action. This requires its own rule:
-<p>
-<blockquote><font color="#000080">Before asking someone to try doing something in the presence of an ungreeted person: try waving hands.
+<blockquote><font color="#000080">Tint is a kind of value. The tints are green, aquamarine and darkish purple.
 </font></blockquote><p>
 <p>
-<p>Now we define what greetings are going to look like:
-<p>
-<blockquote><font color="#000080">Check waving hands:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player can see someone who is not the player, do nothing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You are alone.&quot; instead.
+<blockquote><font color="#000080">The wallpaper is fixed in place in the Hôtel. The wallpaper has a tint. &quot;In this light, the wallpaper has a distinctly [tint of the wallpaper] wash. [if the tint of the wallpaper is darkish purple]You particularly dislike purple.[end if]&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out waving hands:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You nod hello to [the list of ungreeted people who can be seen by the player].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every ungreeted person who can be seen by the player is greeted.
+<blockquote><font color="#000080">Before going to the Hôtel: now the wallpaper is a random tint.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The block waving hands rule is not listed in the check waving hands rulebook.
+<blockquote><font color="#000080">After going from the Hôtel, say &quot;You leave, shaking your head. But within twenty-four hours, you are back, as you always knew you would be.&quot;
 </font></blockquote><p>
 <p>
-<p>Because of the way we've defined the command, this will now also work if the player waves.
-<p>
-<blockquote><font color="#000080">A person can be greeted or ungreeted. A person is usually ungreeted. The player is greeted.
+<blockquote><font color="#000080">Test me with &quot;in / out / look / in / out / look&quot;.
 </font></blockquote><p>
-<p>
-<p>And now the scenario:
-<p>
-<blockquote><font color="#000080">The International Convention of Mimes is a room. Lester, Harold, Geoff, Kwame, and Peter are men in the Convention. Elouise is a woman in the Convention. The Invisible Box is an enterable container in the Convention. &quot;You can detect, from the way people keep leaning on it, an invisible box in the middle of the room.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Lester carries a bowler hat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of speech in the presence of someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;describe poor reception.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a person is other if it is not the player.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">At 9:01 AM:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move Phineas to the location; say &quot;A mime called Phineas appears from the non-existent bathroom.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Phineas is a man.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A persuasion rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;describe poor reception;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;persuasion fails.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To describe poor reception:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Invisible box,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Everyone convulses with silent laughter as you try to shout from within the invisible box.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You attempt to convey your meaning with gesture and interpretive dance, but [the list of visible other people] scorn[if the number of visible other people is 1]s[end if] your performance, refusing to respond.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;ask lester about work / lester, east / ask lester for bowler / lester, nice not talking to you / get in box / ask lester for hat / phineas, east&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc105.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc166.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc104.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc106.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc165.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc167.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

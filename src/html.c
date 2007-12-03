@@ -119,6 +119,38 @@ static gchar *get_base_name(const gchar *url) {
     return newbase;
 }
 
+/* Change escapes of the type [=0xNNNN=] to their UTF8 character equivalents.
+Returns a newly-allocated string */
+static gchar *
+unescape_unicode(const gchar *source)
+{
+    const gchar *p = source;
+    gchar *dest = g_malloc(strlen(source) + 1); 
+    /* no need to allocate more, because every ten-character escape code only 
+    translates to at most six utf8 characters */
+    gchar *q = dest;
+  
+    while(*p) {
+        if(*p == '[' && *(p+1) == '=') {
+            gunichar code;
+            if(sscanf(p, "[=0x%4X=]", &code) != 1) {
+                g_warning("unescape_unicode: Incorrect character escape!");
+                *q = '\0';
+                return dest;
+            }
+            p += 10; /* length of [=0xNNNN=] */
+            gchar buffer[6];
+            gint length = g_unichar_to_utf8(code, buffer);
+            int foo;
+            for(foo = 0; foo < length; foo++)
+                *q++ = buffer[foo];
+        } else
+            *q++ = *p++;
+    }
+    *q = '\0';
+    return dest;
+}
+
 /* Find the code to be pasted within one of the pasteCode134, etc. javascript
 functions */
 static gchar *javascript_find_paste_code(const gchar *source,
@@ -147,7 +179,7 @@ const gchar *function_call) {
         gchar *temp = g_strdup(strstr(result, "pasteCode('")
           + strlen("pasteCode('"));
         *(strstr(temp, "');")) = '\0';
-        retval = g_strcompress(temp);
+        retval = unescape_unicode(temp);
         g_free(temp);
     } else
         retval = javascript_find_paste_code(endptr, function_call);

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.16. Consider is not the same as follow</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.6. Regular expression matching</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,1002 +19,258 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Patient Zero" -->
-<!-- SEARCH SECTION "Ex 354" -->
-<!-- SEARCH SORT "Ex 018-016-354" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc311.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc313.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.16. Consider is not the same as follow</b></font></td></tr></table>
+<!-- SEARCH TITLE "About Inform's regular expression support" -->
+<!-- SEARCH SECTION "Ex 360" -->
+<!-- SEARCH SORT "Ex 019-006-360" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc320.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc322.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.6. Regular expression matching</b></font></td></tr></table>
 <p>
-<p>&quot;Consider&quot; looks as if it duplicates the effect of &quot;follow&quot;, but in fact it is a simpler business altogether. Unlike &quot;follow&quot;, it doesn't get side-tracked into consulting the procedural rules, with all of the resultant change which might result from that. This is a finicky but important distinction. A great many rules and rulebooks make use of each other when actions are being processed, but we only want the procedural rules to be looked at once, right at the start.
+<p>When playing around with text, we tend to get into longer and trickier wrangles of matching - we find that we want to look not for simple text like &quot;gold&quot;, but for &quot;gold&quot; used only as a separate word, or for a date in YYYY-MM-DD format, or for a seemingly endless range of other possibilities. What we need is not just for Inform to provide a highly flexible matching program, but also a good notation in which to describe what we want.
 <p>
-<p>A general guideline here is that if rule A needs to use rule B, and both are engaged in the same basic activity - for instance both are basically processing actions - then A should use &quot;consider B&quot;. Only if B is something entirely unrelated should A use &quot;follow B&quot;. Thus:
+<p>Fortunately, such a notation already exists. This is the &quot;regular expression&quot; notation, named for a 1950s mathematical model by the logician Stephen Kleene, applied to computing in the late 60s by Ken Thompson, borrowed almost at once by the early Unix tools of the 70s, and developed further by Henry Spencer in the 80s and Philip Hazel in the 90s. The glue holding the Internet together - the Apache web-server, the scripting languages Perl and Python, and so forth - makes indispensable use of regular expressions.
 <p>
-<blockquote><font color="#000080">Instead of switching on the machine, follow the appraisal rules.
+<p>As might be expected from the previous section, we simply have to describe the FIND text as &quot;regular expression&quot; rather than &quot;text&quot; and then the same facilities are available:
+<p>
+<blockquote><font color="#000080">WHATEVER matches the regular expression FIND
+<br>WHATEVER matches the regular expression FIND, case insensitively
+<br>WHATEVER exactly matches the regular expression FIND
+<br>WHATEVER exactly matches the regular expression FIND, case insensitively
+<br>number of times WHATEVER matches the regular expression FIND
+<br>number of times WHATEVER matches the regular expression FIND, case insensitively
 </font></blockquote><p>
 <p>
-<p>...is a case where rule A, the one about processing the &quot;switch on the machine&quot; action, is engaged in a completely different activity to rule B, which is all about telling the player what a wonderful amount of progress has been made so far. &quot;Follow&quot; is therefore appropriate.
+<p>Perhaps fairly, perhaps not, regular expressions have a reputation for being inscrutable. The basic idea is that although alphanumeric characters (letters, numbers and spaces) mean just what they look like, punctuation characters are commands with sometimes dramatic effects. Thus:
+<p>
+<blockquote><font color="#000080">if WHATEVER matches the regular expression &quot;fish&quot;, ...
+<br>if WHATEVER matches the regular expression &quot;f.*h&quot;, ...
+</font></blockquote><p>
+<p>
+<p>behave very differently. The first is just like matching the text &quot;fish&quot;, but the second matches on any sequence of characters starting with an &quot;f&quot; and ending with an &quot;h&quot;. This is not at all obvious at first sight: reading regular expressions is a skill which must be learned, like reading a musical score. A really complex regular expression can look like a soup of punctuation and even an expert will blink for a few minutes before telling you what it does - but a beginner can pick up the basics very quickly. Newcomers might like to try out and become comfortable with the features a few at a time, reading down the following list.
+<p>
+<p><b>1. Golden rule</b>. Don't try to remember all the characters with weird effects. Instead, if you actually mean any symbol other than a letter, digit or space to be taken literally, place a backslash &quot;\&quot; in front of it. For instance, matching the regular expression
+<p>
+<blockquote><font color="#000080">&quot;\*A\* of the Galactic Patrol&quot;
+</font></blockquote><p>
+<p>
+<p>is the same as matching the text &quot;*A* of the Galactic Patrol&quot;, because the asterisks are robbed of their normal powers. This includes backslash itself: &quot;\\&quot; means a literal backslash. (Don't backslash letters or digits - that turns out to have a meaning all its own, but anyway, there is never any need.)
+<p>
+<p><b>2. Alternatives</b>. The vertical stroke &quot;|&quot; - not a letter I or L, nor the digit 1 - divides alternatives. Thus
+<p>
+<blockquote><font color="#000080">&quot;the fish|fowl|crawling thing&quot;
+</font></blockquote><p>
+<p>
+<p>is the same as saying match &quot;the fish&quot;, or &quot;fowl&quot;, or &quot;crawling thing&quot;.
+<p>
+<p><b>3. Dividing with brackets</b>. Round brackets &quot;(&quot; and &quot;)&quot; group parts of the expression together.
+<p>
+<blockquote><font color="#000080">&quot;the (fish|fowl|crawling thing) in question&quot;
+</font></blockquote><p>
+<p>
+<p>is the same as saying match &quot;the fish in question&quot;, or &quot;the fowl in question&quot;, or &quot;the crawling thing in question&quot;. Note that the &quot;|&quot; ranges outwards only as far as the group it is in.
+<p>
+<p><b>4. Any character</b>. The period &quot;.&quot; means any single character. So
+<p>
+<blockquote><font color="#000080">&quot;a...z&quot;
+</font></blockquote><p>
+<p>
+<p>matches on any sequence of five characters so long as the first is &quot;a&quot; and the last is &quot;z&quot;.
+<p>
+<p><b>5. Character alternatives</b>. The angle brackets &quot;&lt;&quot; and &quot;&gt;&quot; are a more concise way of specifying alternatives for a single character. Thus
+<p>
+<blockquote><font color="#000080">&quot;b&lt;aeiou&gt;b&quot;
+</font></blockquote><p>
+<p>
+<p>matches on &quot;bab&quot;, &quot;beb&quot;, &quot;bib&quot;, &quot;bob&quot; or &quot;bub&quot;, but not &quot;baob&quot; or &quot;beeb&quot; - any single character within the angle brackets is accepted. Beginning the range with &quot;^&quot; means &quot;any single character so long as it is not one of these&quot;: thus
+<p>
+<blockquote><font color="#000080">&quot;b&lt;^aeiou&gt;b&quot;
+</font></blockquote><p>
+<p>
+<p>matches on &quot;blb&quot; but not &quot;bab&quot;, &quot;beb&quot;, etc., nor on &quot;blob&quot; or &quot;bb&quot;. Because long runs like this can be a little tiresome, we are also allowed to use &quot;-&quot; to indicate whole ranges. Thus
+<p>
+<blockquote><font color="#000080">&quot;b&lt;a-z&gt;b&quot;
+</font></blockquote><p>
+<p>
+<p>matches a &quot;b&quot;, then any lower case English letter, then another &quot;b&quot;.
+<p>
+<p>In traditional regular expression language, square brackets rather than angle brackets are used for character ranges. In fact Inform does understand this notation (it treats square and angle brackets equally for this purpose), but square brackets would be annoying to type, since they already have a meaning in quoted text - for text substitutions.
+<p>
+<p><b>6. Popular character ranges</b>. The range &quot;&lt;0-9&gt;&quot;, matching any decimal digit, is needed so often that it has an abbreviation: &quot;\d&quot;. Thus
+<p>
+<blockquote><font color="#000080">&quot;\d\d\d\d-\d\d-\d\d&quot;
+</font></blockquote><p>
+<p>
+<p>matches, say, &quot;2006-12-03&quot;. Similarly, &quot;\s&quot; means &quot;any spacing character&quot; - a space, tab or line break. &quot;\p&quot; is a punctuation character, in the same sense used for word division in the previous section: it actually matches any of
+<p>
+<blockquote><font color="#000080">. , ! ? - / &quot; : ; ( ) [ ] { }
+</font></blockquote><p>
+<p>
+<p>&quot;\w&quot; means &quot;any character appearing in a word&quot;, and Inform defines it as anything not matching &quot;\s&quot; or &quot;\p&quot;.
+<p>
+<p>&quot;\l&quot; and &quot;\u&quot; match lower and upper case letters, respectively. These are much stronger than &quot;&lt;a-z&gt;&quot; and &quot;&lt;A-Z&gt;&quot;, since they use the complete definition in the Unicode 4.0.0 standard, so that letter-forms from all languages are catered for: for example &quot;δ&quot; matches &quot;\l&quot; and &quot;Δ&quot; matches &quot;\u&quot;.
+<p>
+<p>The reverse of these is achieved by capitalising the letter. So &quot;\D&quot; means &quot;anything not a digit&quot;, &quot;\P&quot; means &quot;anything not punctuation&quot;, &quot;\W&quot; means &quot;anything not a word character&quot;, &quot;\L&quot; means &quot;anything not a lower case letter&quot; and so on.
+<p>
+<p><b>7. Positional restrictions</b>. The notation &quot;^&quot; does not match anything, as such, but instead requires that we be positioned at the start of the text. Thus
+<p>
+<blockquote><font color="#000080">&quot;^fish&quot;
+</font></blockquote><p>
+<p>
+<p>matches only &quot;fish&quot; at the start of the text, not occurring anywhere later on. Similarly, &quot;$&quot; requires that the position be the end of the text. So
+<p>
+<blockquote><font color="#000080">&quot;fish$&quot;
+</font></blockquote><p>
+<p>
+<p>matches only if the last four characters are &quot;fish&quot;. Matching &quot;^fish$&quot; is the same thing as what Inform calls exactly matching &quot;fish&quot;.
+<p>
+<p>Another useful notation is &quot;\b&quot;, which matches a word boundary: that is, it matches no actual text, but requires the position to be a junction between a word character and a non-word character (a &quot;\w&quot; and a &quot;\W&quot;) or vice versa. Thus
+<p>
+<blockquote><font color="#000080">&quot;\bfish\b&quot;
+</font></blockquote><p>
+<p>
+<p>matches &quot;fish&quot; in &quot;some fish&quot; and also &quot;some fish, please!&quot;, but not in &quot;shellfish&quot;. (The regular expression &quot;\w*fish\b&quot; catches all words ending in &quot;fish&quot;, as we will see below.) As usual, the capitalised version &quot;\B&quot; negates this, and means &quot;not at a word boundary&quot;.
+<p>
+<p><b>8. Line break and tab</b>. The notations &quot;\n&quot; and &quot;\t&quot; are used for a line break (&quot;n&quot; for &quot;new line&quot;) and tab, respectively. Tabs normally do not occur in Inform strings, but can do when reading from files. It makes no sense to reverse these, so &quot;\N&quot; and &quot;\T&quot; produce errors.
+<p>
+<p><b>9. Repetition</b>. Placing a number in braces &quot;{&quot; and &quot;}&quot; after something says that it should be repeated that many times. Thus
+<p>
+<blockquote><font color="#000080">&quot;ax{25}&quot;
+</font></blockquote><p>
+<p>
+<p>matches only on &quot;axxxxxxxxxxxxxxxxxxxxxxxxx&quot;. More usefully, perhaps, we can specify a range of the number of repetitions:
+<p>
+<blockquote><font color="#000080">&quot;ax{2,6}&quot;
+</font></blockquote><p>
+<p>
+<p>matches only on &quot;axx&quot;, &quot;axxx&quot;, &quot;axxxx&quot;, &quot;axxxxx&quot;, &quot;axxxxxx&quot;. And we can leave the top end open: &quot;ax{2,}&quot; means &quot;a&quot; followed by at least two &quot;x&quot;s.
+<p>
+<p>Note that the braces attach only to most recent thing - so &quot;ax{2}&quot; means &quot;a&quot; followed by two of &quot;x&quot; - but, as always, we can use grouping brackets to change that. So &quot;(ax){2,}&quot; matches &quot;axax&quot;, &quot;axaxax&quot;, &quot;axaxaxax&quot;,...
+<p>
+<p>(It's probably best not to use Inform to try to match the human genome against &quot;&lt;acgt&gt;{3000000000}&quot;, but one of the most important practical uses of regular expression matching in science is in treating DNA as a string of amino acids represented by the letters &quot;a&quot;, &quot;c&quot;, &quot;g&quot;, &quot;t&quot;, and looking for patterns.)
+<p>
+<p><b>10. Popular repetitions.</b> Three cases are so often needed that they have standard short forms:
+<p>
+<p>&quot;{0,1}&quot;, which means 0 or 1 repetition of something - in other words, doesn't so much repeat it as make it optional - is written &quot;?&quot;. Thus &quot;ax?y&quot; matches only on &quot;ay&quot; or &quot;axy&quot;.
+<p>
+<p>&quot;{0,}&quot;, which means 0 or more repetitions - in other words, any number at all - is written &quot;*&quot;. Thus &quot;ax*y&quot; matches on &quot;ay&quot;, &quot;axy&quot;, &quot;axxy&quot;, &quot;axxxy&quot;, ... and the omnivorous &quot;.*&quot; - which means &quot;anything, any number of times&quot; - matches absolutely every text.
+<p>
+<p>&quot;{1,}&quot;, which means 1 or more repetitions, is written &quot;+&quot;. So &quot;\d+&quot; matches any run of digits, for instance.
+<p>
+<p><b>11. Greedy vs lazy.</b> Once we allow things to repeat an unknown number of times, we run into an ambiguity. Sure, &quot;\d+&quot; matches the text &quot;16339b&quot;. But does it look only as far as the &quot;1&quot;, then reason that it now has one or more digits in a row, and stop? Or does it run onward devouring digits until it can do so no longer, so matching the &quot;16339&quot; part? These two strategies are called &quot;lazy&quot; and &quot;greedy&quot; respectively.
+<p>
+<p>Do we care? Well, the strategy used makes no difference to whether there is a match, but it does affect what part of the text is matched, and the number of matches there are. Unless we mark for it, all repetitions are greedy. Usually this is good, but it means that, for instance,
+<p>
+<blockquote><font color="#000080">&quot;-.+-&quot;
+</font></blockquote><p>
+<p>
+<p>applied to &quot;-alpha- -beta- -gamma-&quot; will match the whole text, because &quot;.+&quot; picks up all of &quot;alpha- -beta- -gamma&quot;. To get around this, we can mark any of the repetition operators as lazy by adding a question mark &quot;?&quot;. Thus:
+<p>
+<blockquote><font color="#000080">&quot;-.+?-&quot;
+</font></blockquote><p>
+<p>
+<p>applied to &quot;-alpha- -beta- -gamma-&quot; matches three times, producing &quot;-alpha-&quot; then &quot;-beta-&quot; then &quot;-gamma-&quot;.
+<p>
+<p>A logical but sometimes confusing consequence is that a doubled question mark &quot;??&quot; means &quot;repeat 0 or 1 times, but prefer 0 matches to 1 if both are possibilities&quot;: whereas a single question mark &quot;?&quot;, being greedy, means &quot;repeat 0 or 1 times, but prefer 1 match to 0 if both are possibilities&quot;.
+<p>
+<p><b>12. Numbered groups.</b> We have already seen that round brackets are useful to clump together parts of the regular expression - to choose within them, or repeat them. In fact, Inform numbers these from 1 upwards as they are used from left to right, and we can subsequently refer back to their contents with the notation &quot;\1&quot;, &quot;\2&quot;, ... For instance:
+<p>
+<blockquote><font color="#000080">&quot;(\w)\w*\1&quot;
+</font></blockquote><p>
+<p>
+<p>matches any run of two or more word-characters, subject to the restriction that the last one has to be the same as the first - so it matches &quot;xerox&quot; but not &quot;alphabet&quot;. When Inform matches this against &quot;xerox&quot;, first it matches the initial &quot;x&quot; against the group &quot;(\w)&quot;. It then matches &quot;\w*&quot; (&quot;any number of word-characters&quot;) against &quot;ero&quot;, so that the &quot;*&quot; runs up to 3 repetitions. It then matches &quot;\1&quot; against the final &quot;x&quot;, because &quot;\1&quot; requires it to match against whatever last matched in sub-expression 1 - which was an &quot;x&quot;.
+<p>
+<p>Numbered groups allow wicked tricks in matching, it's true, but really come into their own when it comes to replacing - as we shall see.
+<p>
+<p><b>13. Switching case sensitivity on and off.</b> The special notations &quot;(?i)&quot; and &quot;(?-i)&quot; switch sensitivity to upper vs. lower case off and on, mid-expression. Thus &quot;a(?i)bcd(?-i)e&quot; matches &quot;abcde&quot;, &quot;aBcDe&quot;, etc., but not &quot;Abcde&quot; or &quot;abcdE&quot;.
+<p>
+<p><b>14. Groups with special meanings.</b> This is the last of the special syntaxes: but it's a doozy. A round-bracketed group can be marked to behave in a special way by following the open bracket by a symbol with a special meaning. Groups like this have no number and are not counted as part of \1, \2, and so forth - they are intended not to gather up material but to have some effect of their own.
+<p>
+<blockquote><font color="#000080">&quot;(# ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Is a comment, that is, causes the group to do nothing and match against anything.
+<p>
+<blockquote><font color="#000080">&quot;(?= ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Is a lookahead: it is a form of positional requirement, like &quot;\b&quot; or &quot;^&quot;, but one which requires that the text ahead of us matches whatever is in the brackets. (It doesn't consume that text - only checks to see that it's there.) For instance &quot;\w+(?=;)&quot; matches a word followed by a semicolon, but does not match the semicolon itself.
+<p>
+<blockquote><font color="#000080">&quot;(?! ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Is the same but negated: it requires that the text ahead of us does not match the material given. For instance, &quot;a+(?!z)&quot; matches any run of &quot;a&quot;s not followed by a &quot;z&quot;.
+<p>
+<blockquote><font color="#000080">&quot;(?<= ...)&quot; and &quot;(?&lt;! ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Are the same but looking behind (hence the &quot;<&quot;), not forward. These are restricted to cases where Inform can determine that the material to be matched has a definite known width. For instance, &quot;(?&lt;!shell)fish&quot; matches any &quot;fish&quot; not occurring in &quot;shellfish&quot;.
+<p>
+<blockquote><font color="#000080">&quot;(> ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Is a possessive, that is, causes the material to be matched and, once matched, never lets go. No matter what subsequently turns out to be convenient, it will never change its match. For instance, &quot;\d+8&quot; matches against &quot;768&quot; because Inform realises that &quot;\d+&quot; cannot be allowed to eat the &quot;8&quot; if there is to be a match, and stops it. But &quot;(>\d+)8&quot; does not match against &quot;768&quot; because now the &quot;\d+&quot;, which initially eats &quot;768&quot;, is possessive and refuses to give up the &quot;8&quot; once taken.
+<p>
+<blockquote><font color="#000080">&quot;(?(1)...)&quot; and &quot;(?(1)...|...)&quot;
+</font></blockquote><p>
+<p>
+<p>Are conditionals. These require us to match the material given if \1 has successfully matched already; in the second version, the material after the &quot;|&quot; must be matched if \1 has not successfully matched yet. And the same for 2, 3, ..., 9, of course.
+<p>
+<p>Finally, conditionals can also use lookaheads or lookbehinds as their conditions. So for instance:
+<p>
+<blockquote><font color="#000080">&quot;(?(?=\d)\d\d\d\d|AY-\d\d\d\d)&quot;
+</font></blockquote><p>
+<p>
+<p>means if you start with a digit, match four digits; otherwise match &quot;AY-&quot; followed by four digits. There are easier ways to do this, of course, but the really juicy uses of conditionals are only borderline legible and make poor examples - perhaps this is telling us something.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e141"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc312.html#e141 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>354</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc312.html#e141 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Patient Zero</font></b></a><br>People who wander around the map performing various errands, and in the process spread a disease which only the player can eradicate.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex141.html#e141 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e141"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc321.html#e141 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>360</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc321.html#e141 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">About Inform's regular expression support</font></b></a><br>Some footnotes on Inform's regular expressions, and how they compare to those of other programming languages.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex141.html#e141 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode444(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Patient Zero"\n\nUse the serial comma and no scoring.\n\nUnderstand "about" as asking for information. Asking for information is an action out of world.\n\nCarry out asking for information: say "An implementation of the following creative brief:\n\nPeople wander around some small map, on errands. One, sad to tell, has Gelato\'s Syndrome, a tragic condition turning one\'s skin the colour of a random flavour of ice cream (raspberry ripple, neapolitan, etc.). When two people are in the same room, there\'s a 1/3 chance that an infected person will infect a non-infected one. The player can cure any single person: victory condition - to stamp out the disease."\n\nWhen play begins:\n\tsay "Gelato\'s Syndrome. It\'s struck, and it\'s struck hard. In these sticky summer months, there\'s no telling who will contract the disease next.";\n\tchange the command prompt to "[if the destination of the player is not blank](heading to [destination of the player]) [end if]>".\n\nSection 1 - Errands\n\nThe current actor is a person which varies. The current owner is a person which varies.\n\nEvery turn:\n\tif player is active, follow the character movement rules.\n\nEvery turn:\n\tchange the last person named to the player;\n\tchange the last thing named to the player;\n\tnow every person is active.\n\nA person can be active or passive. The player is passive.\n\nThe character movement rules are a rulebook.\n\nThe first character movement rule:\n\tchange group size to 1;\n\tchange the last person named to the player;\n\tchange the last thing named to the player;\n\tnow the player is passive.\n\nA character movement rule:\n\trepeat with mover running through innocent people\n\tbegin;\n\t\tchange the current actor to the mover;\n\t\tconsider the shopper rules;\n\t\tnow the current actor is passive;\n\tend repeat;\n\tconsider the movement reporting rule.\n\nA character movement rule:\n\trepeat with next mover running through mercantile people\n\tbegin;\n\t\tchange the current owner to the next mover;\n\t\tconsider the shopowner rules;\n\t\tnow the current owner is passive;\n\tend repeat;\n\tconsider the infection rule.\n\nTo decide whether movement has not yet occurred:\n\tif the player is passive, no;\n\tyes.\n\nDefinition: a person is mercantile if it owns a room. Definition: a person is innocent if it is not mercantile and it is not the player.\n\nThe shopowner rules is a rulebook.\n\nA shopowner rule:\n\tlet the shop be a random room owned by the current owner;\n\tif the shop is air-conditioned and an open door (called the escape) protects the shop, try the current owner closing the escape instead.\n\nReport someone closing a door when the person asked owns the location:\n\tsay "[The person asked], muttering darkly about air-conditioning and electricity, closes [the noun]." instead.\n\nReport Vanessa closing the metal door when the metal door is visible:\n\tif Vanessa is visible, say "Vanessa watches serenely as the metal door slides automatically back in place, sealing Cold Comfort." instead;\n\totherwise say "The metal door slides heavily back into place." instead.\n\nA shopowner rule:\n\tif the location of the current owner encloses a submitted artwork (called the target)\n\tbegin;\n\t\ttry the current owner filing the target;\n\tend if.\n\nFiling is an action applying to one thing.\n\nBefore someone filing something which is not carried by the person asked:\n\ttry the person asked taking the noun instead.\n\nCarry out someone filing:\n\tif the person asked does not carry the noun and the person asked is visible, say "[The person asked] tries unsuccessfully to get [the noun]." instead;\n\tremove the noun from play.\n\nReport someone filing:\n\tsay "[The person asked] registers [the noun] and files it away."\n\nThe shopper rules is a rulebook.\n\nA shopper rule:\n\tif the current actor carries something (called the problem), try the current actor resolving the problem instead.\n\nA shopper rule:\n\tif the current actor is not in the pool hall and the air conditioner is switched on\n\tbegin;\n\t\ttry the current actor approaching the pool hall;\n\totherwise;\n\t\tlet way be a random direction;\n\t\ttry the current actor going the way;\n\tend if.\n\n\nDefinition: a room is air-conditioned:\n\tif it is outdoors, no;\n\tif it is the Pool Hall and the air conditioner is switched off, no;\n\tif it is protected by a door, yes;\n\tno.\n\nProtection relates a door (called X) to a room (called Y) when the front side of X is Y or the back side of X is Y. The verb to protect (it protects, they protect, it protected, it is protected) implies the protection relation.\n\nOwnership relates one person to various rooms. The verb to own (he owns, they own, he owned, it is owned) implies the ownership relation.\n\nResolving is an action applying to one thing.\n\nAn artwork is a kind of thing. Before printing the name of an artwork, say italic type. After printing the name of an artwork, say roman type. An artwork can be submitted or reserved.\n\nA book is a kind of artwork.\n\nBefore someone resolving a book when the person asked is not in the Public Library:\n\ttry the person asked approaching the Public Library instead.\n\nCarry out someone resolving a book:\n\tmove the noun to the Public Library;\n\tnow the noun is submitted.\n\nReport someone resolving a book:\n\tsay "[The person asked] turns in [the noun]."\n\nBefore listing contents: group books together.\n\nBefore grouping together books: say "books entitled ".\n\n\nA stamped envelope is a kind of thing.\n\nBefore someone resolving a stamped envelope when the person asked is not in the Post Office:\n\ttry the person asked approaching the Post Office instead.\n\nCarry out someone resolving a stamped envelope:\n\tremove the noun from play.\n\nReport someone resolving a stamped envelope:\n\tsay "[The person asked] slips [a noun] into the outgoing mail slot."\n\nInstead of someone resolving a stamped envelope when the person asked carries at least two stamped envelopes:\nif the person asked is visible, say "[The person asked] shoves into the mail slot [a list of stamped envelopes carried by the person asked].";\n\trepeat with item running through stamped envelopes carried by the person asked\n\tbegin;\n\t\tremove item from play;\n\tend repeat.\n\n\nA DVD is a kind of artwork.\n\nBefore someone resolving a DVD when the person asked is not in the Rental Store:\n\ttry the person asked approaching the Rental Store instead.\n\nCarry out someone resolving a DVD:\n\tnow the noun is submitted;\n\tmove the noun to the Movie Rental Store.\n\nReport someone resolving a DVD:\n\tsay "[The person asked] returns [the noun]."\n\nInstead of someone resolving a DVD when the person asked carries at least two DVDs:\n\tif the person asked is visible, say "[The person asked] turns in [a list of DVDs carried by the person asked].";\n\tnow every DVD carried by the person asked is submitted;\n\tnow every DVD carried by the person asked is in the location of the person asked.\n\nBefore listing contents: group DVDs together.\n\nBefore grouping together DVDs: say "DVDs of ".\n\n\nApproaching is an action applying to one thing.\n\nCarry out someone approaching:\n\tlet the way be the best route from the location of the person asked to the noun, using doors;\n\tif the way is a direction, try the person asked going the way;\n\totherwise stop the action.\n\n\nA coupon is a kind of thing.\n\nCarry out someone resolving a coupon:\n\ttry the person asked giving the noun to Vanessa.\n\nProcedural rule:\n\tif the person asked is not the player, ignore the block giving rule.\n\nBefore someone resolving a coupon when the person asked is not in Cold Comfort:\n\ttry the person asked approaching Cold Comfort instead.\n\nAfter someone giving a coupon to Vanessa:\n\tlet the reward be a random ice cream cone;\n\tlet the new flavor be a random infection color;\n\tchange the infection color of the reward to the new flavor;\n\tmove the reward to the person asked;\n\tremove the noun from play;\n\tif Vanessa is visible, say "[The person asked] trades in [the noun] and receives [a reward] from Vanessa."\n\nInfection color is a kind of value. The infection colors are french vanilla, whole-bean vanilla, mint, chocolate, dark chocolate, chocolate chip, chocolate fudge, mint chocolate chip, chocolate chocolate chip, triple chocolate, white chocolate, white chocolate chip, aztec cocoa-chili, raspberry ripple, neapolitan, rum raisin, dulce de leche, strawberry chunk, rocky road, blackberry sorbet, lemon sherbet, lime ice, caramel swirl, mango, saffron silk, and cookie dough cream.\n\nTo say list of flavors:\n\tlet current color be french vanilla;\n\twhile current color is not cookie dough cream\n\tbegin;\n\t\tsay "[current color], ";\n\t\tchange current color to the infection color after the current color;\n\tend while;\n\tsay "and [current color]".\n\nUnderstand "ask vanessa for [flavored ice cream]" as buying the flavor. Understand "buy [flavored ice cream]" as buying the flavor.\n\nBuying the flavor is an action applying to one infection color.\n\nCheck buying the flavor: if the player can see Vanessa, do nothing; otherwise say "It would help if you were in the presence of an ice cream salesperson." instead.\n\nCarry out buying the flavor: say "\'Do you have a coupon?\' Vanessa demands. You admit you do not. \'No [infection color understood] for you!\'"\n\nUnderstand "ice cream" or "cream" or "ice" or "sherbet" or "sorbet" as "[ice cream]".\n\nUnderstand "[infection color]" or "[infection color] [ice cream]" as "[flavored ice cream]".\n\nAn ice cream cone is a kind of thing. An ice cream cone is always edible. An ice cream cone has an infection color. An ice cream cone can be half-eaten or fresh. Understand the infection color property as referring to an ice cream cone.\n\nCarry out someone resolving an ice cream cone:\n\ttry the person asked eating the noun instead.\n\nInstead of someone eating a fresh ice cream cone:\n\tchange the noun to half-eaten;\n\tif the person asked is visible, say "[The person asked] licks [the noun]."\n\nReport someone eating an ice cream cone:\n\tsay "[The person asked] pops the end of [the noun] into [if the person asked is female]her[otherwise]his[end if] mouth and swallows." instead.\n\nBefore printing the name of an ice cream cone:\n\tsay "[if half-eaten]half-eaten [end if][infection color] ".\n\nSection 2 - Infection Rules\n\nThis is the infection rule:\n\tif an infected person (called typhoid mary) can see a clean person (called random bystander) and a random chance of 1 in 3 succeeds\n\tbegin;\n\t\ttry typhoid mary sneezing on the random bystander;\n\tend if.\n\nA person can be infected or clean. A person has an infection color.\n\nEvery turn:\n\tif the player is infected, say "You feel itchy."\n\nDefinition: a person is other if it is not the player. Definition: a person is another if it is other.\n\nWhen play begins: change right hand status line to "Sick: [number of infected people]/[number of people]".\n\nEvery turn:\n\tif every person is infected, end the game saying "Everyone succumbs";\n\tif every person is clean, end the game saying "The Syndrome is eradicated".\n\nUnderstand "sneeze on [something]" as sneezing on. Sneezing on is an action applying to one thing.\n\nCheck sneezing on:\n\tif the player is clean, say "You\'re not sickly." instead;\n\tif the noun is the player, say "Ew." instead;\n\tif the noun is not a person, say "[The noun] cannot be infected." instead.\n\nCarry out sneezing on:\n\tnow the noun is infected;\n\tchange the infection color of the noun to a random infection color.\n\nCarry out someone sneezing on:\n\tnow the noun is infected;\n\tchange the infection color of the noun to a random infection color.\n\nReport sneezing on:\n\tsay  "Unable to control yourself, you sneeze on [noun].";\n\nReport someone sneezing on:\n\tsay "[The person asked] sneezes on [if the noun is the player]you[otherwise][noun][end if]!";\n\n\nUnderstand "inject [someone] with [something]" as injecting it with. Understand "inject [someone] with [syringe]" as injecting it with. Understand "use [syringe] on [someone]" as injecting it with. Understand the commands "innoculate" and "vaccinate" as "inject".\n\nInjecting it with is an action applying to two things.\n\nCheck injecting it with:\n\tif the second noun is not the syringe, say "[The second noun] cannot inject anything." instead;\n\tif the noun is clean\n\tbegin;\n\t\tif the noun is the player, say "You\'re not infected yet." instead;\n\t\tsay "[The noun] is not infected, and the syringe contains a cure, not a vaccine." instead;\n\tend if.\n\nCarry out injecting it with: now the noun is clean.\n\nAfter injecting the player with something: say "You inject yourself, wincing at the sting. But the itching fades almost at once."\n\nReport injecting it with: say "You inject [the noun], who is now cured (but could easily be reinfected)."\n\nSection 3 - Geography\n\nTo decide what direction is the way through (frame - a door):\n\tlet far side be the other side of frame;\n\tlet way be the best route from the location to the far side, using even locked doors;\n\tif way is a direction, decide on the way;\n\tdecide on inside.\n\nInclude Locksmith by Emily Short.\n\nUnderstand "go to/toward/into [any room]" as going toward.  Understand "enter [any room]" as going toward.\n\nA person has a room called the destination.\n\nGoing toward is an action applying to one thing.\n\nCheck going toward:\n\tif the noun is the location, say "You\'re already in [the location]." instead.\n\nCarry out going toward:\n\tchange the destination of the player to the noun;\n\tlet heading be the best route from the location to the noun, using even locked doors;\n\tif heading is not a direction, say "You can\'t think how to get there from here." instead;\n\ttry going heading;\n\tif the location is the destination of the player, change the destination of the player to blank.\n\nInstead of waiting when the destination of the player is not blank:\n\tif the destination of the player is the location\n\tbegin;\n\t\tchange the destination of the player to blank;\n\totherwise;\n\t\ttry going toward destination of the player;\n\t\tif the location is the destination of the player, change the destination of the player to blank;\n\tend if.\n\nUnderstand "stop" or "cease" as stopping. Stopping is an action applying to nothing. Carry out stopping: change the destination of the player to blank. Report stopping: say "You stop in your tracks."\n\nAfter going to an air-conditioned room:\n\tsay "You step into the mercifully air-conditioned surroundings of...";\n\tcontinue the action.\n\nAfter going from an air-conditioned room:\n\tsay "You emerge from the air-conditioning into heat like a wall...";\n\tcontinue the action.\n\nInstead of listening to an air-conditioned room:\n\tsay "The air-conditioning hums softly."\n\nThe Alfred Cralle Pool Hall is a room. "The town\'s most popular gathering-place, the pool hall is decorated in honor of the inventor of the ice cream scoop." The air conditioner is a device in the Pool Hall. "[if switched off]An air conditioner sits in the corner, unhappily inert[otherwise]The air conditioner hums briskly[end if]."\n\nThe felt door is west of the Pool Hall. The felt door is a door. The felt door is open. The felt door is lockable and unlocked. The key to the city unlocks the felt door. The description of the felt door is "It has a prominent lock, designed for an old-fashioned key."\n\nAfter locking a door with something in the presence of an other person (called audience):\n\tsay "[The audience] looks a little non-plussed when you lock [the noun], but shrugs."\n\nNancy Johnson Memorial Square is west of the felt door. The description of Nancy Johnson Memorial Square is "Waves of August heat rise from the pavement: more than once you\'ve had the fancy that your shoes are simply going to stick. At the center of the square, rubbed to a brownish polish by many adoring hands, is the statue of Mrs. Nancy Johnson of New Jersey."\n\nThe statue is scenery in Memorial Square. Understand "nancy" or "johnson" or "mrs" as the statue. The description of the statue is "Mrs. Johnson is pictured with a hand-cranked ice cream freezer tucked under one arm. Her other hand grips an ice cream scoop, ready to serve frozen dessert to the huddled masses." A hand-cranked ice cream freezer is part of the statue. The description is "The hand-cranked ice cream freezer was Mrs. Johnson\'s invention in 1846, though it was William Young who had the sense to patent the thing in 1848." The scoop is part of the statue. The description of the scoop is "An anachronism: Alfred Cralle would not invent the tool until 1897."\n\nThe Post Office is northwest of Nancy Johnson Memorial Square. "Service at the post office is on the slow side since everything went automated." The slot is scenery in the post office. The slot is a container. Carry out inserting something into the slot: remove the noun from play. Report inserting something into the slot: say "[The noun] falls out of sight, and you know you will never see it again."\n\nHamwi Street is northeast of an iron gate. "A U-shaped street running from Main Street around to the Memorial Square, Hamwi Street was recently added by ambitious city planners. The small and straggly line of trees has yet to grow enough to provide perceptible shade, so the street is even hotter and more unforgiving than the other parts of town."\n\nThe iron gate is northeast of Nancy Johnson Memorial Square. The iron gate is a door. It is lockable and unlocked.\n\nBefore printing the name of the iron gate while not opening or closing or locking or unlocking:\n\tif the person asked is the player\n\tbegin;\n\t\tif the gate is open, say "open ";\n\totherwise if the gate is locked;\n\t\tsay "locked ";\n\totherwise if the gate is closed;\n\t\tsay "closed ";\n\tend if.\n\nCold Comfort Ice Cream is north of a metal door. The metal door is north of Hamwi Street. A poster is fixed in place in Cold Comfort. "A poster fills one wall with the blazing promise of treats to come." The description of the poster is "Coming soon! Thai ice creams! Durian, jackfruit, taro, and coconut flavors!"\n\nThe metal door is a door. "A frosty metallic door separates [the location] from [the other side of the metal door]." The metal door is lockable and unlocked. The key to the city unlocks the metal door.\n\n\nMarciony Street is southeast of Nancy Johnson Memorial Square. "A semi-circular terrace, named somewhat fancifully after one claimant to the invention of the ice cream cone -- though Hamwi Street competes for the same honor. There are wedges of cool shadow here and there thanks to the buildings, but for the most part the southern exposure keeps Marciony unpleasantly hot."\n\nThe Movie Rental Store is west of a glass door. The glass door is a door. It is west of Marciony Street.  The glass door is lockable and unlocked. The key to the city unlocks the glass door.\n\nMain Street is southeast of Hamwi Street. Main Street is northeast of some bronze gates.\n\nThe emergency box is in Main Street. The emergency box is fixed in place. "A fire-red box with a glass front faces the sidewalk, with \'In case of emergency, BREAK GLASS\' lettered on it." The emergency box is closed and transparent. Understand "glass" as the box. Instead of attacking the closed emergency box: say "You hit the emergency box, which shatters open."; change the emergency box to open. Instead of attacking the open emergency box: say "The glass has already been thoroughly broken."\n\nThe syringe is in the emergency box. The description of the syringe is "It contains the cure for Gelato\'s Syndrome. You can inject anyone you like with it."\n\nThe bronze gates are northeast of Marciony Street. The bronze gates are a door. The bronze gates are lockable and unlocked.  The description of the bronze gates is "Erected during the milk-taint revolution of 1937, they were designed to keep Main Street safe from the depredations of dairy-starved rioters."\n\nThe Public Library is east of Main Street. "Built in the 1920s during the height of the dairy boom, the public library has lush pink velvet seats, marble walls the color of fresh cream, and a motif of cherries carved around every doorframe. An incongruous sign hangs from the ceiling." The incongruous sign is scenery in the Public Library. The description of the incongruous sign is "Eating and drinking in the library is STRICTLY PROHIBITED."\n\nTown Hall is southeast of Main Street. "Town Hall was built during the slow days of the ice-cream bust, and therefore it is as joyless and utilitarian as the Public Library is ridiculous. Unwilling to be reminded of their pain, the inhabitants steered clear of any decoration that might remotely be construed to resemble a scoop of anything: so there are no curves, only disciplined right angles." The key to the city is in Town Hall. It unlocks the iron gate. It unlocks the bronze gates.  The description of the key to the city is "A skeleton key."\n\nA room can be indoors or outdoors. The Post Office, the Alfred Cralle Pool Hall, the Store, Cold Comfort, Town Hall, and the Library are indoors.\n\nUse full-length room descriptions.\n\nAfter looking in an outdoors room:\n\tlet started printing be false;\n\tif an indoors room is adjacent\n\tbegin;\n\t\tlet started printing be true;\n\t\tsay "From here you can head into [the list of adjacent indoors rooms][if a door is unmentioned], or go through [the list of visible unmentioned doors]. [run paragraph on]";\n\tend if;\n\tif an outdoors room is adjacent\n\tbegin;\n\t\tsay "You could[if started printing is true] also[end if] go ";\n\t\tlet count be the number of adjacent outdoors rooms;\n\t\tlet index be count;\n\t\trepeat with next room running through adjacent outdoors rooms\n\t\tbegin;\n\t\t\tlet way be the best route from the location to the next room;\n\t\t\tsay "[way] to [the next room]";\n\t\t\tdecrease index by 1;\n\t\t\tmake delimiter index of count;\n\t\tend repeat;\n\totherwise;\n\t\tif started printing is true, say paragraph break;\n\tend if.\n\nBefore exiting when the player is in an indoors room:\n\tif the player can see a door (called nearest exit), try entering the nearest exit instead;\n\trepeat with way running through directions\n\tbegin;\n\t\tlet next room be the room way from the location;\n\t\tif the next room is a room, try going way instead;\n\tend repeat.\n\nBlank is a room. The destination of the player is Blank. Blank contains 15 ice cream cones.\n\n\nSection 4 - Other Players\n\nVanessa is a woman in Cold Comfort. Vanessa owns Cold Comfort.\n\nFrancine is a woman in the Public Library. Francine carries a book called Phlox for Phyllis. Francine carries a stamped envelope called a pink stamped envelope.\n\nLewis is a man in the Alfred Cralle Pool Hall. Lewis carries 3 stamped envelopes. Lewis carries a book called Idiot\'s Guide to Dating. Lewis carries a book called How to Meet Women. Lewis carries a book called Seduction in Three Easy Steps. Lewis carries a DVD called Sleepless in Seattle.\n\nGene is a man in Nancy Johnson Memorial Square. Gene carries a stamped envelope. Gene carries a DVD called Casablanca. Gene carries a coupon.\n\nRhoda is a woman in Marciony Street. Rhoda carries a book called The Marciony Street Murders. Rhoda carries a DVD called Unsolved Serial Killings XVIII. Rhoda carries a stamped envelope called a squashy package.\n\nMartin is a man in Main Street. Martin carries a DVD called The Lifecycle of the South Sea Tortoise. Martin carries a coupon.\n\nAntony is a man in Movie Rental. Antony carries a coupon. Antony carries a stamped envelope called a postcard.\n\nShelby is a man in the Town Hall. Shelby carries a DVD called  Conducting An Orderly Meeting. Shelby carries 5 stamped envelopes. Shelby carries an ice cream cone. Shelby carries a coupon.\n\nChristopher is a man in the Library. Christopher owns the Library.\n\nLinnea is a woman in the Alfred Cralle Pool Hall. Linnea owns the Alfred Cralle Pool Hall.\n\nNed is a man in the Movie Rental Store. Ned owns the Movie Rental.\n\nAfter printing the name of someone (called target) while listing contents: if the target owns the location of the target, say " (the owner)".\n\nThe description of a person is usually "[The noun] [if the noun is clean]looks healthy[otherwise]is the color of [infection color of the noun][end if]."\n\nAfter examining another person who is carrying something: say "[if the noun is female]She[otherwise]He[end if] is carrying [a list of things carried by the noun]."\n\nWhen play begins: let Patient Zero be a random other person; now patient zero is infected.\n\n[This is a light variation of a previous example, but we use it here because it is convenient:]\n\nSection 5 - Conversation\n\nA person has a table-name called conversation.\n\nInstead of asking someone about something:\n\tlet the source be the conversation of the noun;\n\tif topic understood is a topic listed in source\n\tbegin;\n\t\tif there is a turn stamp entry\n\t\tbegin;\n\t\t\tsay "You have already heard that [summary entry].";\n\t\totherwise;\n\t\t\tchange turn stamp entry to the turn count;\n\t\t\tchange the character entry to the noun;\n\t\t\tsay "[reply entry][paragraph break]";\n\t\tend if;\n\totherwise;\n\t\tsay "[The noun] stares at you blankly.";\n\tend if.\n\nInstead of telling someone about something:\n\ttry asking the noun about it.\n\nUnderstand "recap" or "recall" or "review" as recalling conversations.\n\nRecalling conversations is an action applying to nothing.\n\nCarry out recalling conversations:\n\trepeat with speaker running through other people\n\tbegin;\n\t\tlet source be the conversation of the speaker;\n\t\tsort source in turn stamp order;\n\t\tsay "[The speaker] has so far told you: [line break]";\n\t\tlet index be 0;\n\t\trepeat through source\n\t\tbegin;\n\t\t\tif there is a turn stamp entry and the speaker is character entry\n\t\t\tbegin;\n\t\t\t\tlet index be 1;\n\t\t\t\tsay "  [summary entry][line break]";\n\t\tend if;\n\t\tend repeat;\n\t\tif index is 0, say "  absolutely nothing[line break]";\n\t\tsay line break;\n\tend repeat.\n\nThe conversation of a person is usually Table of General ChitChat.\n\nTable of General ChitChat\ntopic\treply\tsummary\tturn stamp\tcharacter\n"weather/heat/warmth"\t"\'It\'s appalling, isn\'t it? You\'d think we didn\'t pay our taxes.\'"\t"that the weather is appalling"\ta number\ta person\n"sun/sunlight"\t"\'Good thing the town mostly switched to solar power, har, har.\'"\t"that the town is mostly relying on solar power"\n"rain"\t"\'Nope, there isn\'t going to be rain for 132 days,\' replies [the noun]."\t"that rain is not expected for another 132 days"\n"snow/hail/ice"\t"This hilarious sally is greeted with hoots of laughter only."\t"that the concept of snow is downright laughable"\n"disease/sickness/illness/syndrome"\t"You get a cold, fixed stare in response. \'That\'s not funny,\' [the noun] replies finally."\t"that discussing the disease is more or less taboo"\n"cold comfort"\t"\'If you haven\'t tried it, you should,\' says [the noun]. \'Best ice cream in town, and that\'s saying something, you bet.\'"\t"that Cold Comfort has the best ice cream in town"\n"town/city/village"\t"\'Yeah, it\'s a mite odd,\' allows [the noun]. \'Not to everyone\'s taste, like...\' [the noun as pronoun] considers for a moment. \'Like ginger ice cream. Big pieces of crystallized ginger... not everyone likes that.\'"\t"that the town is a mite odd"\n"forecast/weatherman" or "weather forecast/man"\t"\'Oh, the weather man\'s gotten a lot more reliable since the gummint started making it for us,\' says [the noun]. \'Now he just reads off the schedule on the air every morning. Pretty much takes the fun right out of the news, if you ask me.\'"\t"that the weather is all generated by schedule"\n"taxes/tax" or "weather tax"\t"A snort. \'You\'d think for the rates we pay we\'d get something a little pleasanter, don\'t you?\'"\t"that the weather tax really ought to be paying for something nicer than what you get"\n"job/employment/work"\t"\'[if the noun owns a room (called the shop)]I own [the shop],\' replies [the noun][otherwise]Work at the creamery, like most folk around here,\' answers [the noun]."\t"this and that about employment in town"\n"book/books/reading"\t"\'The Public Library has a good selection, excepting only the cookbook section,\' says [the noun]. \'That got censored way back when-- well, way back.\'"\t"that the Public Library has a good collection, except for the cookbook section"\n\nThe conversation of Vanessa is the Table of Vanessa Chatter.\n\nTable of Vanessa Chatter\ntopic\treply\tsummary\tturn stamp\tcharacter\n"ice cream" or "sorbet/sherbet/flavor/flavors/flavour/flavours/ice/ices"\t"\'The flavors are [list of flavors],\' she responds promptly, without needing to draw breath."\t"that the flavors are [list of flavors]"\ta number\ta person\n\nAfter reading a command:\n\twhile player\'s command includes "the", cut the matched text.\n\n[This strips \'the\' out of the command, so that ASK PERSON ABOUT THE RAIN will be understood as well as ASK PERSON ABOUT RAIN.]\n\n[Now we try something a bit unusual. Inform on its own will report each action on its own line, so that each character who walks into or out of a room will be described in a separate paragraph. This is usually fine, but in a game with a lot of characters moving around simultaneously, it can become a bit overwhelming. Instead, we may want to condense these reports into a single line, such as "Ben and Jerry enter from the south". The following accomplishes that goal by replacing some of the reporting rules, storing the information in a table, and then reading the table back later, once all the character movement has been resolved and the reports can usefully be collated:]\n\nSection 6 - Movement Description\n\nA person has some text called walk style. The walk style of a man is usually "stride". The walk style of a woman is usually "strut". The walk style of Gene is "[one of]wander[or]stroll[purely at random]". The walk style of Francine is "waddle". The walk style of Antony is "scamper". The walk style of Rhoda is "sashay".\n\nTable of Visible Exits\ncharacter\tsecond\tthird\theading chosen\ttotal\na person\ta person\ta person\ta direction\ta number\nwith 10 blank rows.\n\nTable of Visible Entrances\ncharacter\tsecond\tthird\theading chosen\ttotal\na person\ta person\ta person\ta direction\ta number\nwith 10 blank rows.\n\nTo clear (current table - a table-name):\n\trepeat through current table\n\tbegin;\n\t\tblank out the whole row;\n\tend repeat;\n\nTo tidy departures of (current table - a table-name):\n\tlet next direction be up;\n\trepeat through current table\n\tbegin;\n\t\tif heading chosen entry is next direction\n\t\tbegin;\n\t\t\tlet accomplice be character entry;\n\t\t\tchoose row with heading chosen of next direction in the current table;\n\t\t\tif total entry is 1\n\t\t\tbegin;\n\t\t\t\tchange second entry to accomplice;\n\t\t\t\tchange total entry to 2;\n\t\t\tend if;\n\t\t\tif total entry is 2\n\t\t\tbegin;\n\t\t\t\tif second entry is accomplice\n\t\t\t\tbegin;\n\t\t\t\t\tdo nothing;\n\t\t\t\totherwise;\n\t\t\t\t\tchange third entry to accomplice;\n\t\t\t\t\tchange total entry to 3;\n\t\t\t\tend if;\n\t\t\tend if;\n\t\t\tchoose row with character of accomplice in the current table;\n\t\t\tblank out the whole row;\n\t\totherwise;\n\t\t\tlet next direction be heading chosen entry;\n\t\tend if;\n\tend repeat.\n\nA door has a person called last opener.\n\nReport someone opening a door:\n\tchange group size to 1;\n\tchange the last opener of the noun to the person asked;\n\tif the person asked is visible, say "[The person asked] opens [the noun]. [run paragraph on]" instead;\n\totherwise say "[The noun] opens from the other side. [run paragraph on]" instead.\n\nReport someone going through a door (called route):\n\tif the person asked is not the last opener of the route, continue the action;\n\tif the person asked is the last person named, say "[The person asked as pronoun]";\n\totherwise say "[The person asked]";\n\tsay " [if the person asked is in the location]comes[otherwise]goes[end if] through[if the last thing named is not the route] [the route][end if]." instead.\n\nThe last thing named is a thing that varies. Before printing the name of something (called target) which is not a person: change the last thing named to the target.\n\nReport someone going a direction:\n\tif the person asked is in the location,\n\t\tchoose a blank row in the table of visible entrances;\n\totherwise choose a blank row in the table of visible exits;\n\tchange character entry to the person asked;\n\tchange total entry to 1;\n\tif the person asked is in the location,\n\t\tchange heading chosen entry to the opposite of the noun;\n\totherwise change heading chosen entry to the noun;\n\tstop the action.\n\nThis is the movement reporting rule:\n\tsort the Table of Visible Entrances in heading chosen order;\n\ttidy departures of the table of visible entrances;\n\tsort the Table of Visible exits in heading chosen order;\n\ttidy departures of the table of visible exits;\n\tlet total row count be the number of filled rows in the Table of Visible Entrances plus the number of filled rows in the Table of Visible Exits;\n\tif total row count is 0, rule succeeds;\n\tgenerate descriptions from the Table of Visible Entrances;\n\tgenerate descriptions from the Table of Visible Exits;\n\tclear the Table of Visible Entrances; clear the Table of Visible Exits.\n\nTo generate descriptions from (current table - a table-name):\n\tlet count be the number of filled rows in the current table;\n\tif count is 0, rule succeeds;\n\tlet index be count;\n\trepeat through the current table\n\tbegin;\n\t\tlet accomplice be character entry;\n\t\tif character entry is a person, change character entry to marked for listing;\n\t\tif there is a second entry and second entry is a person, change second entry to marked for listing;\n\t\tif there is a third entry and third entry is a person, change third entry to marked for listing;\n\t\tlet target be the room the heading chosen entry from the location;\n\t\tif total entry is 3, say "[The character entry], [the second entry][optional comma] and [the third entry] ";\n\t\tif total entry is 2, say "[The character entry] and [the second entry] ";\n\t\tif total entry is 1\n\t\tbegin;\n\t\t\tif the character entry is the last person named, say "[The character entry as pronoun] ";\n\t\t\totherwise say "[The character entry] ";\n\t\tend if;\n\t\tif total entry is 1, say "[walk style of the character entry]s ";\n\t\totherwise say "walk[if total entry is 1]s[end if] ";\n\t\tif the character entry is in the location\n\t\tbegin;\n\t\t\tif location is indoors and target is indoors, say "over from ";\n\t\t\tif location is outdoors and target is indoors, say "out of ";\n\t\t\tif location is indoors and target is outdoors, say "in from ";\n\t\t\tif location is outdoors and target is outdoors, say "over from ";\n\t\totherwise;\n\t\t\tif location is indoors and target is indoors, say "over to ";\n\t\t\tif location is outdoors and target is indoors, say "into ";\n\t\t\tif location is indoors and target is outdoors, say "out [if a door is visible][the random visible door][end if] to ";\n\t\t\tif location is outdoors and target is outdoors, say "over to ";\n\t\tend if;\n\t\tif target is outdoors, say "[the heading chosen entry]";\n\t\totherwise say "[the target]";\n\t\tif the total entry is 1 and count is 1 and accomplice carries something, say ", carrying [a list of things carried by the accomplice]";\n\t\tdecrease index by 1;\n\t\tmake delimiter index of count, continuing;\n\t\tchange group size to total entry;\n\tend repeat;\n\tif a marked for listing person is infected\n\tbegin;\n\t\t[eliminate the case in which we have already seen this description because we just typed LOOK and the patient was in the room at the time]\n\t\tif looking and a marked for listing person is not in the location\n\t\tbegin;\n\t\t\tclear marked people;\n\t\t\tsay paragraph break;\n\t\totherwise;\n\t\t\tdescribe patients;\n\t\tend if;\n\totherwise;\n\t\tclear marked people;\n\t\tsay paragraph break;\n\tend if.\n\nThe last person named is a person that varies. Before printing the name of a person (called target): change the last person named to the target. Group size is a number that varies. Group size is 1.\n\nTo clear marked people:\n\trepeat with named party running through people\n\tbegin;\n\t\tchange the named party to not marked for listing;\n\tend repeat.\n\nBefore listing nondescript items:\n\tif the number of people who are marked for listing is 0, make no decision;\n\tsay "You can see [a list of people who are marked for listing] here. ";\n\tchange group size to the number of people who are marked for listing;\n\tdescribe patients.\n\nTo describe patients:\n\tif every marked for listing person is infected and at least three people are marked for listing\n\tbegin;\n\t\tsay "They are all sick as dogs, every one.";\n\t\tclear marked people;\n\t\trule succeeds;\n\totherwise;\n\t\tif the number of people who are marked for listing is greater than two and the number of infected people who are marked for listing is greater than the number of clean people who are marked for listing\n\t\tbegin;\n\t\t\tsay "Only [the list of clean people who are marked for listing] currently remain[if the number of clean people who are marked for listing is 1]s[end if] untainted.";\n\t\t\tclear marked people;\n\t\t\trule succeeds;\n\t\tend if;\n\tend if;\n\tlet count be the number of marked for listing other people who are infected;\n\tif count is 0\n\tbegin;\n\t\tsay paragraph break; make no decision;\n\tend if;\n\tlet index be count;\n\trepeat with patient running through marked for listing other people who are infected\n\tbegin;\n\t\tif index is count\n\t\tbegin;\n\t\t\tif count is 1 and the patient is the last person named\n\t\t\tbegin;\n\t\t\t\tsay "[The patient as pronoun]";\n\t\t\totherwise;\n\t\t\t\t\tsay "[The patient]";\n\t\t\tend if;\n\t\totherwise;\n\t\t\tsay "[the patient]";\n\t\tend if;\n\t\tsay " [looks as though dipped in for index] [infection color of the patient]";\n\t\tdecrease index by 1;\n\t\tmake delimiter index of count;\n\tend repeat;\n\tclear marked people.\n\nTo say (named character - a man) as pronoun:\n\tif group size is 1, say "He"; if group size is 2, say "The latter"; if group size is greater than 2, say "The last".\n\nTo say (named character - a woman) as pronoun: if group size is 1, say "She"; if group size is 2, say "The latter"; if group size is greater than 2, say "The last".\n\nTo say looks as though dipped in for (index - a number):\n\tlet divider be the number of filled rows in the Table of Dipping Phrases;\n\tif index is greater than 4, let index be the remainder after dividing index by divider;\n\tchoose row index in the Table of Dipping Phrases;\n\tsay dipping entry.\n\nTable of Dipping Phrases\ndipping\n"looks as though dipped in"\n"could have been rolling in"\n"has a bad case of"\n"suffers from"\n"contracted a virulent"\n\nA door is usually scenery.\n\n[The next part could be simpler, but for rigor we will write it in such a way that it will work whether or not the serial comma is in use. This requires some extra work; feel free to skip down to the scenario if you prefer.]\n\nTo make delimiter (index - a number) of (count - a number), continuing or halting:\n\tif index is 0\n\tbegin;\n\t\tif continuing, say ". [run paragraph on]";\n\t\totherwise say ".";\n\totherwise if index is 1;\n\t\tif count is 2, say " and ";\n\t\totherwise say "[optional comma] and ";\n\totherwise;\n\t\tsay ", ";\n\tend if.\n\nTo say optional comma:\n\tif using the serial comma option, say ",";\n\totherwise do nothing.\n\nTest me with "go to cold comfort / z / z / z / z / ask vanessa for french vanilla / ask vanessa for chocolate / ask vanessa about flavors / ask vanessa for chocolate chocolate chip".\n\n');
-}
-</script>
-<a href="javascript:pasteCode444()"><img border=0 src=../doc_images/paste.png></a> &quot;Patient Zero&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Use the serial comma and no scoring.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;about&quot; as asking for information. Asking for information is an action out of world.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out asking for information: say &quot;An implementation of the following creative brief:
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">People wander around some small map, on errands. One, sad to tell, has Gelato's Syndrome, a tragic condition turning one's skin the colour of a random flavour of ice cream (raspberry ripple, neapolitan, etc.). When two people are in the same room, there's a 1/3 chance that an infected person will infect a non-infected one. The player can cure any single person: victory condition - to stamp out the disease.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Gelato's Syndrome. It's struck, and it's struck hard. In these sticky summer months, there's no telling who will contract the disease next.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;[if the destination of the player is not blank](heading to [destination of the player]) [end if]>&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 1 - Errands
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The current actor is a person which varies. The current owner is a person which varies.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if player is active, follow the character movement rules.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last person named to the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last thing named to the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every person is active.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A person can be active or passive. The player is passive.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The character movement rules are a rulebook.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The first character movement rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change group size to 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last person named to the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last thing named to the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is passive.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A character movement rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with mover running through innocent people
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the current actor to the mover;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;consider the shopper rules;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the current actor is passive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;consider the movement reporting rule.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A character movement rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with next mover running through mercantile people
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the current owner to the next mover;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;consider the shopowner rules;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the current owner is passive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;consider the infection rule.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide whether movement has not yet occurred:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is passive, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;yes.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a person is mercantile if it owns a room. Definition: a person is innocent if it is not mercantile and it is not the player.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The shopowner rules is a rulebook.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A shopowner rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the shop be a random room owned by the current owner;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the shop is air-conditioned and an open door (called the escape) protects the shop, try the current owner closing the escape instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report someone closing a door when the person asked owns the location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The person asked], muttering darkly about air-conditioning and electricity, closes [the noun].&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report Vanessa closing the metal door when the metal door is visible:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Vanessa is visible, say &quot;Vanessa watches serenely as the metal door slides automatically back in place, sealing Cold Comfort.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;The metal door slides heavily back into place.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A shopowner rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location of the current owner encloses a submitted artwork (called the target)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try the current owner filing the target;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Filing is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before someone filing something which is not carried by the person asked:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked taking the noun instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out someone filing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked does not carry the noun and the person asked is visible, say &quot;[The person asked] tries unsuccessfully to get [the noun].&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report someone filing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The person asked] registers [the noun] and files it away.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The shopper rules is a rulebook.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A shopper rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current actor carries something (called the problem), try the current actor resolving the problem instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A shopper rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current actor is not in the pool hall and the air conditioner is switched on
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try the current actor approaching the pool hall;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let way be a random direction;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try the current actor going the way;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Definition: a room is air-conditioned:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is outdoors, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is the Pool Hall and the air conditioner is switched off, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is protected by a door, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Protection relates a door (called X) to a room (called Y) when the front side of X is Y or the back side of X is Y. The verb to protect (it protects, they protect, it protected, it is protected) implies the protection relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Ownership relates one person to various rooms. The verb to own (he owns, they own, he owned, it is owned) implies the ownership relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Resolving is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">An artwork is a kind of thing. Before printing the name of an artwork, say italic type. After printing the name of an artwork, say roman type. An artwork can be submitted or reserved.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A book is a kind of artwork.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before someone resolving a book when the person asked is not in the Public Library:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked approaching the Public Library instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out someone resolving a book:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the Public Library;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is submitted.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report someone resolving a book:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The person asked] turns in [the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before listing contents: group books together.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before grouping together books: say &quot;books entitled &quot;.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">A stamped envelope is a kind of thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before someone resolving a stamped envelope when the person asked is not in the Post Office:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked approaching the Post Office instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out someone resolving a stamped envelope:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report someone resolving a stamped envelope:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The person asked] slips [a noun] into the outgoing mail slot.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of someone resolving a stamped envelope when the person asked carries at least two stamped envelopes:
-<br>if the person asked is visible, say &quot;[The person asked] shoves into the mail slot [a list of stamped envelopes carried by the person asked].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through stamped envelopes carried by the person asked
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove item from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">A DVD is a kind of artwork.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before someone resolving a DVD when the person asked is not in the Rental Store:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked approaching the Rental Store instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out someone resolving a DVD:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is submitted;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the Movie Rental Store.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report someone resolving a DVD:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The person asked] returns [the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of someone resolving a DVD when the person asked carries at least two DVDs:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is visible, say &quot;[The person asked] turns in [a list of DVDs carried by the person asked].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every DVD carried by the person asked is submitted;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every DVD carried by the person asked is in the location of the person asked.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before listing contents: group DVDs together.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before grouping together DVDs: say &quot;DVDs of &quot;.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Approaching is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out someone approaching:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the location of the person asked to the noun, using doors;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the way is a direction, try the person asked going the way;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise stop the action.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">A coupon is a kind of thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out someone resolving a coupon:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked giving the noun to Vanessa.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Procedural rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is not the player, ignore the block giving rule.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before someone resolving a coupon when the person asked is not in Cold Comfort:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked approaching Cold Comfort instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After someone giving a coupon to Vanessa:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the reward be a random ice cream cone;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the new flavor be a random infection color;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the infection color of the reward to the new flavor;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the reward to the person asked;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Vanessa is visible, say &quot;[The person asked] trades in [the noun] and receives [a reward] from Vanessa.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Infection color is a kind of value. The infection colors are french vanilla, whole-bean vanilla, mint, chocolate, dark chocolate, chocolate chip, chocolate fudge, mint chocolate chip, chocolate chocolate chip, triple chocolate, white chocolate, white chocolate chip, aztec cocoa-chili, raspberry ripple, neapolitan, rum raisin, dulce de leche, strawberry chunk, rocky road, blackberry sorbet, lemon sherbet, lime ice, caramel swirl, mango, saffron silk, and cookie dough cream.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say list of flavors:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let current color be french vanilla;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while current color is not cookie dough cream
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[current color], &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change current color to the infection color after the current color;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end while;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;and [current color]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;ask vanessa for [flavored ice cream]&quot; as buying the flavor. Understand &quot;buy [flavored ice cream]&quot; as buying the flavor.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Buying the flavor is an action applying to one infection color.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check buying the flavor: if the player can see Vanessa, do nothing; otherwise say &quot;It would help if you were in the presence of an ice cream salesperson.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out buying the flavor: say &quot;'Do you have a coupon?' Vanessa demands. You admit you do not. 'No [infection color understood] for you!'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;ice cream&quot; or &quot;cream&quot; or &quot;ice&quot; or &quot;sherbet&quot; or &quot;sorbet&quot; as &quot;[ice cream]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;[infection color]&quot; or &quot;[infection color] [ice cream]&quot; as &quot;[flavored ice cream]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">An ice cream cone is a kind of thing. An ice cream cone is always edible. An ice cream cone has an infection color. An ice cream cone can be half-eaten or fresh. Understand the infection color property as referring to an ice cream cone.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out someone resolving an ice cream cone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try the person asked eating the noun instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of someone eating a fresh ice cream cone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the noun to half-eaten;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is visible, say &quot;[The person asked] licks [the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report someone eating an ice cream cone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The person asked] pops the end of [the noun] into [if the person asked is female]her[otherwise]his[end if] mouth and swallows.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before printing the name of an ice cream cone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[if half-eaten]half-eaten [end if][infection color] &quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 2 - Infection Rules
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">This is the infection rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if an infected person (called typhoid mary) can see a clean person (called random bystander) and a random chance of 1 in 3 succeeds
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try typhoid mary sneezing on the random bystander;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A person can be infected or clean. A person has an infection color.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is infected, say &quot;You feel itchy.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a person is other if it is not the player. Definition: a person is another if it is other.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins: change right hand status line to &quot;Sick: [number of infected people]/[number of people]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if every person is infected, end the game saying &quot;Everyone succumbs&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if every person is clean, end the game saying &quot;The Syndrome is eradicated&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;sneeze on [something]&quot; as sneezing on. Sneezing on is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check sneezing on:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is clean, say &quot;You're not sickly.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the player, say &quot;Ew.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a person, say &quot;[The noun] cannot be infected.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out sneezing on:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is infected;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the infection color of the noun to a random infection color.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out someone sneezing on:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is infected;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the infection color of the noun to a random infection color.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report sneezing on:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say  &quot;Unable to control yourself, you sneeze on [noun].&quot;;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report someone sneezing on:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The person asked] sneezes on [if the noun is the player]you[otherwise][noun][end if]!&quot;;
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Understand &quot;inject [someone] with [something]&quot; as injecting it with. Understand &quot;inject [someone] with [syringe]&quot; as injecting it with. Understand &quot;use [syringe] on [someone]&quot; as injecting it with. Understand the commands &quot;innoculate&quot; and &quot;vaccinate&quot; as &quot;inject&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Injecting it with is an action applying to two things.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check injecting it with:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not the syringe, say &quot;[The second noun] cannot inject anything.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is clean
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the player, say &quot;You're not infected yet.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is not infected, and the syringe contains a cure, not a vaccine.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out injecting it with: now the noun is clean.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After injecting the player with something: say &quot;You inject yourself, wincing at the sting. But the itching fades almost at once.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report injecting it with: say &quot;You inject [the noun], who is now cured (but could easily be reinfected).&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 3 - Geography
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To decide what direction is the way through (frame - a door):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let far side be the other side of frame;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from the location to the far side, using even locked doors;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if way is a direction, decide on the way;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on inside.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Include Locksmith by Emily Short.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;go to/toward/into [any room]&quot; as going toward.  Understand &quot;enter [any room]&quot; as going toward.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A person has a room called the destination.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Going toward is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check going toward:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the location, say &quot;You're already in [the location].&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out going toward:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the destination of the player to the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let heading be the best route from the location to the noun, using even locked doors;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if heading is not a direction, say &quot;You can't think how to get there from here.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try going heading;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is the destination of the player, change the destination of the player to blank.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of waiting when the destination of the player is not blank:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the destination of the player is the location
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the destination of the player to blank;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try going toward destination of the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the location is the destination of the player, change the destination of the player to blank;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;stop&quot; or &quot;cease&quot; as stopping. Stopping is an action applying to nothing. Carry out stopping: change the destination of the player to blank. Report stopping: say &quot;You stop in your tracks.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After going to an air-conditioned room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You step into the mercifully air-conditioned surroundings of...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After going from an air-conditioned room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You emerge from the air-conditioning into heat like a wall...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of listening to an air-conditioned room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The air-conditioning hums softly.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Alfred Cralle Pool Hall is a room. &quot;The town's most popular gathering-place, the pool hall is decorated in honor of the inventor of the ice cream scoop.&quot; The air conditioner is a device in the Pool Hall. &quot;[if switched off]An air conditioner sits in the corner, unhappily inert[otherwise]The air conditioner hums briskly[end if].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The felt door is west of the Pool Hall. The felt door is a door. The felt door is open. The felt door is lockable and unlocked. The key to the city unlocks the felt door. The description of the felt door is &quot;It has a prominent lock, designed for an old-fashioned key.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After locking a door with something in the presence of an other person (called audience):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The audience] looks a little non-plussed when you lock [the noun], but shrugs.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Nancy Johnson Memorial Square is west of the felt door. The description of Nancy Johnson Memorial Square is &quot;Waves of August heat rise from the pavement: more than once you've had the fancy that your shoes are simply going to stick. At the center of the square, rubbed to a brownish polish by many adoring hands, is the statue of Mrs. Nancy Johnson of New Jersey.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The statue is scenery in Memorial Square. Understand &quot;nancy&quot; or &quot;johnson&quot; or &quot;mrs&quot; as the statue. The description of the statue is &quot;Mrs. Johnson is pictured with a hand-cranked ice cream freezer tucked under one arm. Her other hand grips an ice cream scoop, ready to serve frozen dessert to the huddled masses.&quot; A hand-cranked ice cream freezer is part of the statue. The description is &quot;The hand-cranked ice cream freezer was Mrs. Johnson's invention in 1846, though it was William Young who had the sense to patent the thing in 1848.&quot; The scoop is part of the statue. The description of the scoop is &quot;An anachronism: Alfred Cralle would not invent the tool until 1897.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Post Office is northwest of Nancy Johnson Memorial Square. &quot;Service at the post office is on the slow side since everything went automated.&quot; The slot is scenery in the post office. The slot is a container. Carry out inserting something into the slot: remove the noun from play. Report inserting something into the slot: say &quot;[The noun] falls out of sight, and you know you will never see it again.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Hamwi Street is northeast of an iron gate. &quot;A U-shaped street running from Main Street around to the Memorial Square, Hamwi Street was recently added by ambitious city planners. The small and straggly line of trees has yet to grow enough to provide perceptible shade, so the street is even hotter and more unforgiving than the other parts of town.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The iron gate is northeast of Nancy Johnson Memorial Square. The iron gate is a door. It is lockable and unlocked.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before printing the name of the iron gate while not opening or closing or locking or unlocking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is the player
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the gate is open, say &quot;open &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if the gate is locked;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;locked &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if the gate is closed;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;closed &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Cold Comfort Ice Cream is north of a metal door. The metal door is north of Hamwi Street. A poster is fixed in place in Cold Comfort. &quot;A poster fills one wall with the blazing promise of treats to come.&quot; The description of the poster is &quot;Coming soon! Thai ice creams! Durian, jackfruit, taro, and coconut flavors!&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The metal door is a door. &quot;A frosty metallic door separates [the location] from [the other side of the metal door].&quot; The metal door is lockable and unlocked. The key to the city unlocks the metal door.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Marciony Street is southeast of Nancy Johnson Memorial Square. &quot;A semi-circular terrace, named somewhat fancifully after one claimant to the invention of the ice cream cone -- though Hamwi Street competes for the same honor. There are wedges of cool shadow here and there thanks to the buildings, but for the most part the southern exposure keeps Marciony unpleasantly hot.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Movie Rental Store is west of a glass door. The glass door is a door. It is west of Marciony Street.  The glass door is lockable and unlocked. The key to the city unlocks the glass door.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Main Street is southeast of Hamwi Street. Main Street is northeast of some bronze gates.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The emergency box is in Main Street. The emergency box is fixed in place. &quot;A fire-red box with a glass front faces the sidewalk, with 'In case of emergency, BREAK GLASS' lettered on it.&quot; The emergency box is closed and transparent. Understand &quot;glass&quot; as the box. Instead of attacking the closed emergency box: say &quot;You hit the emergency box, which shatters open.&quot;; change the emergency box to open. Instead of attacking the open emergency box: say &quot;The glass has already been thoroughly broken.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The syringe is in the emergency box. The description of the syringe is &quot;It contains the cure for Gelato's Syndrome. You can inject anyone you like with it.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The bronze gates are northeast of Marciony Street. The bronze gates are a door. The bronze gates are lockable and unlocked.  The description of the bronze gates is &quot;Erected during the milk-taint revolution of 1937, they were designed to keep Main Street safe from the depredations of dairy-starved rioters.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Public Library is east of Main Street. &quot;Built in the 1920s during the height of the dairy boom, the public library has lush pink velvet seats, marble walls the color of fresh cream, and a motif of cherries carved around every doorframe. An incongruous sign hangs from the ceiling.&quot; The incongruous sign is scenery in the Public Library. The description of the incongruous sign is &quot;Eating and drinking in the library is STRICTLY PROHIBITED.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Town Hall is southeast of Main Street. &quot;Town Hall was built during the slow days of the ice-cream bust, and therefore it is as joyless and utilitarian as the Public Library is ridiculous. Unwilling to be reminded of their pain, the inhabitants steered clear of any decoration that might remotely be construed to resemble a scoop of anything: so there are no curves, only disciplined right angles.&quot; The key to the city is in Town Hall. It unlocks the iron gate. It unlocks the bronze gates.  The description of the key to the city is &quot;A skeleton key.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A room can be indoors or outdoors. The Post Office, the Alfred Cralle Pool Hall, the Store, Cold Comfort, Town Hall, and the Library are indoors.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Use full-length room descriptions.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After looking in an outdoors room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let started printing be false;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if an indoors room is adjacent
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let started printing be true;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;From here you can head into [the list of adjacent indoors rooms][if a door is unmentioned], or go through [the list of visible unmentioned doors]. [run paragraph on]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if an outdoors room is adjacent
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You could[if started printing is true] also[end if] go &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let count be the number of adjacent outdoors rooms;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let index be count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with next room running through adjacent outdoors rooms
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from the location to the next room;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[way] to [the next room]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decrease index by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make delimiter index of count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if started printing is true, say paragraph break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before exiting when the player is in an indoors room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player can see a door (called nearest exit), try entering the nearest exit instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with way running through directions
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let next room be the room way from the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the next room is a room, try going way instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Blank is a room. The destination of the player is Blank. Blank contains 15 ice cream cones.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Section 4 - Other Players
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Vanessa is a woman in Cold Comfort. Vanessa owns Cold Comfort.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Francine is a woman in the Public Library. Francine carries a book called Phlox for Phyllis. Francine carries a stamped envelope called a pink stamped envelope.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Lewis is a man in the Alfred Cralle Pool Hall. Lewis carries 3 stamped envelopes. Lewis carries a book called Idiot's Guide to Dating. Lewis carries a book called How to Meet Women. Lewis carries a book called Seduction in Three Easy Steps. Lewis carries a DVD called Sleepless in Seattle.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Gene is a man in Nancy Johnson Memorial Square. Gene carries a stamped envelope. Gene carries a DVD called Casablanca. Gene carries a coupon.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rhoda is a woman in Marciony Street. Rhoda carries a book called The Marciony Street Murders. Rhoda carries a DVD called Unsolved Serial Killings XVIII. Rhoda carries a stamped envelope called a squashy package.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Martin is a man in Main Street. Martin carries a DVD called The Lifecycle of the South Sea Tortoise. Martin carries a coupon.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Antony is a man in Movie Rental. Antony carries a coupon. Antony carries a stamped envelope called a postcard.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Shelby is a man in the Town Hall. Shelby carries a DVD called  Conducting An Orderly Meeting. Shelby carries 5 stamped envelopes. Shelby carries an ice cream cone. Shelby carries a coupon.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Christopher is a man in the Library. Christopher owns the Library.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Linnea is a woman in the Alfred Cralle Pool Hall. Linnea owns the Alfred Cralle Pool Hall.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Ned is a man in the Movie Rental Store. Ned owns the Movie Rental.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After printing the name of someone (called target) while listing contents: if the target owns the location of the target, say &quot; (the owner)&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The description of a person is usually &quot;[The noun] [if the noun is clean]looks healthy[otherwise]is the color of [infection color of the noun][end if].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After examining another person who is carrying something: say &quot;[if the noun is female]She[otherwise]He[end if] is carrying [a list of things carried by the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins: let Patient Zero be a random other person; now patient zero is infected.
-</font></blockquote><p>
-<p>
-<p>This is a light variation of a previous example, but we use it here because it is convenient:
-<p>
-<blockquote><font color="#000080">Section 5 - Conversation
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A person has a table-name called conversation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking someone about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the source be the conversation of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if topic understood is a topic listed in source
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if there is a turn stamp entry
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You have already heard that [summary entry].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change turn stamp entry to the turn count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the character entry to the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] stares at you blankly.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
+<p>There is not really any unanimity about what regular expression language is. The unix tools sed and grep extend on Kleene's original grammar. Henry Spencer's regex library extended on this again, and was a foundation for Perl, but Perl once again went further. Philip Hazel's PCRE, despite the name Perl Compatible Regular Expressions, makes further extensions still, and so on.
 <p>
-<blockquote><font color="#000080">Instead of telling someone about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try asking the noun about it.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;recap&quot; or &quot;recall&quot; or &quot;review&quot; as recalling conversations.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Recalling conversations is an action applying to nothing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out recalling conversations:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with speaker running through other people
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let source be the conversation of the speaker;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sort source in turn stamp order;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The speaker] has so far told you: [line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let index be 0;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat through source
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if there is a turn stamp entry and the speaker is character entry
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let index be 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [summary entry][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if index is 0, say &quot;  absolutely nothing[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say line break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The conversation of a person is usually Table of General ChitChat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of General ChitChat
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">summary</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">turn stamp</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">character</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;weather/heat/warmth&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'It's appalling, isn't it? You'd think we didn't pay our taxes.'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that the weather is appalling&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a person</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;sun/sunlight&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Good thing the town mostly switched to solar power, har, har.'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that the town is mostly relying on solar power&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;rain&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Nope, there isn't going to be rain for 132 days,' replies [the noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that rain is not expected for another 132 days&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;snow/hail/ice&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;This hilarious sally is greeted with hoots of laughter only.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that the concept of snow is downright laughable&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;disease/sickness/illness/syndrome&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;You get a cold, fixed stare in response. 'That's not funny,' [the noun] replies finally.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that discussing the disease is more or less taboo&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cold comfort&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'If you haven't tried it, you should,' says [the noun]. 'Best ice cream in town, and that's saying something, you bet.'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that Cold Comfort has the best ice cream in town&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;town/city/village&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Yeah, it's a mite odd,' allows [the noun]. 'Not to everyone's taste, like...' [the noun as pronoun] considers for a moment. 'Like ginger ice cream. Big pieces of crystallized ginger... not everyone likes that.'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that the town is a mite odd&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;forecast/weatherman&quot; or &quot;weather forecast/man&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Oh, the weather man's gotten a lot more reliable since the gummint started making it for us,' says [the noun]. 'Now he just reads off the schedule on the air every morning. Pretty much takes the fun right out of the news, if you ask me.'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that the weather is all generated by schedule&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;taxes/tax&quot; or &quot;weather tax&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;A snort. 'You'd think for the rates we pay we'd get something a little pleasanter, don't you?'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that the weather tax really ought to be paying for something nicer than what you get&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;job/employment/work&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'[if the noun owns a room (called the shop)]I own [the shop],' replies [the noun][otherwise]Work at the creamery, like most folk around here,' answers [the noun].&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;this and that about employment in town&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;book/books/reading&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'The Public Library has a good selection, excepting only the cookbook section,' says [the noun]. 'That got censored way back when-- well, way back.'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that the Public Library has a good collection, except for the cookbook section&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The conversation of Vanessa is the Table of Vanessa Chatter.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Vanessa Chatter
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">summary</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">turn stamp</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">character</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;ice cream&quot; or &quot;sorbet/sherbet/flavor/flavors/flavour/flavours/ice/ices&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'The flavors are [list of flavors],' she responds promptly, without needing to draw breath.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that the flavors are [list of flavors]&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a person</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while player's command includes &quot;the&quot;, cut the matched text.
-</font></blockquote><p>
-<p>
-<p>This strips 'the' out of the command, so that ASK PERSON ABOUT THE RAIN will be understood as well as ASK PERSON ABOUT RAIN.
-<p>
-<p>Now we try something a bit unusual. Inform on its own will report each action on its own line, so that each character who walks into or out of a room will be described in a separate paragraph. This is usually fine, but in a game with a lot of characters moving around simultaneously, it can become a bit overwhelming. Instead, we may want to condense these reports into a single line, such as &quot;Ben and Jerry enter from the south&quot;. The following accomplishes that goal by replacing some of the reporting rules, storing the information in a table, and then reading the table back later, once all the character movement has been resolved and the reports can usefully be collated:
-<p>
-<blockquote><font color="#000080">Section 6 - Movement Description
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A person has some text called walk style. The walk style of a man is usually &quot;stride&quot;. The walk style of a woman is usually &quot;strut&quot;. The walk style of Gene is &quot;[one of]wander[or]stroll[purely at random]&quot;. The walk style of Francine is &quot;waddle&quot;. The walk style of Antony is &quot;scamper&quot;. The walk style of Rhoda is &quot;sashay&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Visible Exits
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">character</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">second</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">third</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">heading chosen</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">total</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a person</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a person</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a person</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a direction</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">with 10 blank rows.</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Visible Entrances
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">character</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">second</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">third</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">heading chosen</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">total</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a person</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a person</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a person</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a direction</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">with 10 blank rows.</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To clear (current table - a table-name):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through current table
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To tidy departures of (current table - a table-name):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let next direction be up;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through current table
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if heading chosen entry is next direction
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let accomplice be character entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row with heading chosen of next direction in the current table;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if total entry is 1
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change second entry to accomplice;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change total entry to 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if total entry is 2
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if second entry is accomplice
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do nothing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change third entry to accomplice;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change total entry to 3;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row with character of accomplice in the current table;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let next direction be heading chosen entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A door has a person called last opener.
-</font></blockquote><p>
+<p>Inform's regular expressions are modelled on those of Perl, as the best de facto standard we have, but a few omissions have been inevitable. Inform's regex matcher must occupy source code less than one hundredth the size of PCRE, and it has very little memory. Inform aims to behave exactly like Perl except as follows:
 <p>
-<blockquote><font color="#000080">Report someone opening a door:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change group size to 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last opener of the noun to the person asked;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is visible, say &quot;[The person asked] opens [the noun]. [run paragraph on]&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The noun] opens from the other side. [run paragraph on]&quot; instead.
+<blockquote><font color="#000080">(i) Inform allows angle brackets as synonymous with square brackets, for reasons explained above. This means literal angle brackets have to be escaped as &quot;\&lt;&quot; and &quot;\&gt;&quot; in Inform regular expressions, which is unnecessary in Perl.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report someone going through a door (called route):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is not the last opener of the route, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is the last person named, say &quot;[The person asked as pronoun]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The person asked]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot; [if the person asked is in the location]comes[otherwise]goes[end if] through[if the last thing named is not the route] [the route][end if].&quot; instead.
+<blockquote><font color="#000080">(ii) Inform only has single-line mode, not multiline mode: this removes need for the mode-switches &quot;(?m)&quot; and &quot;(?s)&quot; and the positional markers &quot;\A&quot; and &quot;\Z&quot;. Multiline mode is idiosyncratic to Perl and is a messy compromise to do with holding long files of text as single strings, yet treating them as lists of lines at the same time: this would not be sensible for Inform. Similarly, because there is no ambiguity about how line breaks are represented in Inform strings (by a single &quot;\n&quot;), initial newline convention markers such as &quot;(*ANYCRLF)&quot; are unsupported.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The last thing named is a thing that varies. Before printing the name of something (called target) which is not a person: change the last thing named to the target.
+<blockquote><font color="#000080">(iii) The codes &quot;\a&quot;, &quot;\r&quot;, &quot;\f&quot;, &quot;\e&quot;, &quot;\0&quot; for alarm, carriage return, form feed, escape and the zero character are unsupported: none of these can occur in an Inform string.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report someone going a direction:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is in the location,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose a blank row in the table of visible entrances;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise choose a blank row in the table of visible exits;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change character entry to the person asked;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change total entry to 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the person asked is in the location,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change heading chosen entry to the opposite of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change heading chosen entry to the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;stop the action.
+<blockquote><font color="#000080">(iv) Inform does not allow characters to be referred to by character code (whereas Perl allows &quot;\036&quot; for an octal character code, &quot;\x7e&quot; for a hexadecimal one, &quot;\cD&quot; for a control character). This is because we do not want the user to know whether text is internally stored as ZSCII or Unicode.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">This is the movement reporting rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Visible Entrances in heading chosen order;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;tidy departures of the table of visible entrances;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Visible exits in heading chosen order;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;tidy departures of the table of visible exits;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let total row count be the number of filled rows in the Table of Visible Entrances plus the number of filled rows in the Table of Visible Exits;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if total row count is 0, rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;generate descriptions from the Table of Visible Entrances;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;generate descriptions from the Table of Visible Exits;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;clear the Table of Visible Entrances; clear the Table of Visible Exits.
+<blockquote><font color="#000080">(v) Inform's character class &quot;\p&quot; (and its negation &quot;\P&quot;) have no equivalent in Perl, and Inform's understanding of &quot;\w&quot; is different. Perl defines this as an upper or lower case English letter, underscore or digit, which is good for programming-language identifiers, but bad for natural language - for instance, &quot;é&quot; is not matched by &quot;\w&quot; in Perl, but unquestionably it appears in words. Inform therefore defines &quot;\w&quot; as the negation of &quot;\s&quot; union &quot;\p&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To generate descriptions from (current table - a table-name):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let count be the number of filled rows in the current table;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if count is 0, rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let index be count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the current table
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let accomplice be character entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if character entry is a person, change character entry to marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if there is a second entry and second entry is a person, change second entry to marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if there is a third entry and third entry is a person, change third entry to marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let target be the room the heading chosen entry from the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if total entry is 3, say &quot;[The character entry], [the second entry][optional comma] and [the third entry] &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if total entry is 2, say &quot;[The character entry] and [the second entry] &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if total entry is 1
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the character entry is the last person named, say &quot;[The character entry as pronoun] &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The character entry] &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if total entry is 1, say &quot;[walk style of the character entry]s &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;walk[if total entry is 1]s[end if] &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the character entry is in the location
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if location is indoors and target is indoors, say &quot;over from &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if location is outdoors and target is indoors, say &quot;out of &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if location is indoors and target is outdoors, say &quot;in from &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if location is outdoors and target is outdoors, say &quot;over from &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if location is indoors and target is indoors, say &quot;over to &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if location is outdoors and target is indoors, say &quot;into &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if location is indoors and target is outdoors, say &quot;out [if a door is visible][the random visible door][end if] to &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if location is outdoors and target is outdoors, say &quot;over to &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if target is outdoors, say &quot;[the heading chosen entry]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[the target]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the total entry is 1 and count is 1 and accomplice carries something, say &quot;, carrying [a list of things carried by the accomplice]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decrease index by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make delimiter index of count, continuing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change group size to total entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a marked for listing person is infected
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[eliminate the case in which we have already seen this description because we just typed LOOK and the patient was in the room at the time]
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if looking and a marked for listing person is not in the location
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clear marked people;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;describe patients;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clear marked people;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">(vi) Inform supports only single-digit grouping numbers &quot;\1&quot; to &quot;\9&quot;, whereas Perl allows &quot;\10&quot;, &quot;\11&quot;, ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The last person named is a person that varies. Before printing the name of a person (called target): change the last person named to the target. Group size is a number that varies. Group size is 1.
+<blockquote><font color="#000080">(vii) POSIX named character ranges are not supported. These are only abbreviations in any case, and are not very useful. (Note that the POSIX range &quot;[:punct:]&quot;, which is supposedly for punctuation, includes many things we do not want to think of that way - percentage signs, for instance - and so &quot;\p&quot; has a more natural-language-based definition.)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To clear marked people:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with named party running through people
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the named party to not marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">(viii) Character classes can be used inside ranges, so that &quot;&lt;\da-f&gt;&quot; is legal, but not as ends of contiguous runs, so that &quot;&lt;\d-X&gt;&quot; is not legal. (As reckless as this is, it is legal in Perl.)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before listing nondescript items:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of people who are marked for listing is 0, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can see [a list of people who are marked for listing] here. &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change group size to the number of people who are marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;describe patients.
+<blockquote><font color="#000080">(ix) For obvious reasons, escapes to Perl code using the notation &quot;(?{...})&quot; are unsupported, and so is the Perl iteration operator &quot;\G&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To describe patients:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if every marked for listing person is infected and at least three people are marked for listing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;They are all sick as dogs, every one.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clear marked people;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the number of people who are marked for listing is greater than two and the number of infected people who are marked for listing is greater than the number of clean people who are marked for listing
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Only [the list of clean people who are marked for listing] currently remain[if the number of clean people who are marked for listing is 1]s[end if] untainted.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clear marked people;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let count be the number of marked for listing other people who are infected;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if count is 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break; make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let index be count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with patient running through marked for listing other people who are infected
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if index is count
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if count is 1 and the patient is the last person named
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The patient as pronoun]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The patient]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[the patient]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; [looks as though dipped in for index] [infection color of the patient]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decrease index by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make delimiter index of count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;clear marked people.
+<blockquote><font color="#000080">(x) Perl's extended mode &quot;(?x)&quot;, a lexical arrangement which allows expressions to be expanded out as little computer programs with comments, is unsupported. It would look awful syntax-coloured in the Inform interface and is not a style of coding to be encouraged.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say (named character - a man) as pronoun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if group size is 1, say &quot;He&quot;; if group size is 2, say &quot;The latter&quot;; if group size is greater than 2, say &quot;The last&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say (named character - a woman) as pronoun: if group size is 1, say &quot;She&quot;; if group size is 2, say &quot;The latter&quot;; if group size is greater than 2, say &quot;The last&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say looks as though dipped in for (index - a number):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let divider be the number of filled rows in the Table of Dipping Phrases;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if index is greater than 4, let index be the remainder after dividing index by divider;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row index in the Table of Dipping Phrases;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say dipping entry.
-</font></blockquote><p>
+<p>Inform further does not support the Python extension of named subexpression groups, nor the Java extension of the possessive quantifier &quot;++&quot;. There was only so much functionality we could squeeze in.
 <p>
-<blockquote><font color="#000080">Table of Dipping Phrases
-<br>dipping
-<br>&quot;looks as though dipped in&quot;
-<br>&quot;could have been rolling in&quot;
-<br>&quot;has a bad case of&quot;
-<br>&quot;suffers from&quot;
-<br>&quot;contracted a virulent&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A door is usually scenery.
-</font></blockquote><p>
-<p>
-<p>The next part could be simpler, but for rigor we will write it in such a way that it will work whether or not the serial comma is in use. This requires some extra work; feel free to skip down to the scenario if you prefer.
-<p>
-<blockquote><font color="#000080">To make delimiter (index - a number) of (count - a number), continuing or halting:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if index is 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if continuing, say &quot;. [run paragraph on]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if index is 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if count is 2, say &quot; and &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[optional comma] and &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;, &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
+<p>As verification of Inform's matching algorithm, we took the Perl 5 source code's notorious &quot;re-test.txt&quot; set of 961 test cases, removed the 316 using features unsupported by Inform (220 tested multiline mode, for instance), and ran the remaining 645 cases through Inform. It agrees with Perl on 643 of these: the two outstanding are -
 <p>
-<blockquote><font color="#000080">To say optional comma:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if using the serial comma option, say &quot;,&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise do nothing.
+<blockquote><font color="#000080">(i) Perl is able to match &quot;^(a\1?){4}$&quot; against &quot;aaaaaa&quot; but Inform is not - Inform's backtracking is not as good when it comes to repetitions of groupings which are recursively defined. (Note that the optional &quot;\1&quot; match refers to the value of the bracketed expression which contains it, so that the interpretation is different on each repetition. Here to match we have to interpret &quot;?&quot; as 0, 0, 1, 0 repeats respectively as we work through the &quot;{4}&quot;.)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;go to cold comfort / z / z / z / z / ask vanessa for french vanilla / ask vanessa for chocolate / ask vanessa about flavors / ask vanessa for chocolate chocolate chip&quot;.
+<blockquote><font color="#000080">(ii) Perl matches &quot;((&lt;a-c>)b*?\2)*&quot; against &quot;ababbbcbc&quot; finding the match &quot;ababb&quot;, whereas Inform finds the match &quot;ababbbcbc&quot;. This is really a difference of opinion about which of the two asterisks, both greedy, should be the greedier.
 </font></blockquote><p>
 <p>
-<p>Because so much of this game is randomized, it will not be possible to provide a test suite that systematically solves it. A good strategy is to go to Main Street, get the syringe; go to the Town Hall and get the key; then visit the shops, inject everyone, and lock them in when they've all been injected. Then go to the Pool Hall, turn on the air conditioner, and wait for the remaining parties to show up.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc312.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Case (i) is a sacrifice to enable Inform's back-tracking to use less memory. Case (ii) simply seems unimportant.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc321.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc311.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc313.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e163"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex163.html#e163 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>361</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex163.html#e163 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alpha</font></b></a><br>Creating a beta-testing command that matches any line starting with punctuation.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex163.html#e163 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc320.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc322.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

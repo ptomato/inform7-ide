@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>22.23. Segmented substitutions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>23.13. Defining phrases in Inform 6</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,40 +19,52 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Segmented substitutions" -->
-<!-- SEARCH SECTION "22.23" -->
-<!-- SEARCH SORT "022-023-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc384.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap22.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 22: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc386.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>22.23. Segmented substitutions</b></font></td></tr></table>
+<!-- SEARCH TITLE "Defining phrases in Inform 6" -->
+<!-- SEARCH SECTION "23.13" -->
+<!-- SEARCH SORT "023-013-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc384.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap23.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 23: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc386.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>23.13. Defining phrases in Inform 6</b></font></td></tr></table>
 <p>
-<p>A &quot;segmented&quot; substitution is a syntax where text is placed between two or more different text substitutions. Examples include:
+<p>The phrases described in this documentation, such as &quot;end the game in death&quot;, are all defined in the Standard Rules, and are for the most part defined not in terms of other I7 phrases but instead reduced to equivalents in I6. For instance:
 <p>
-<blockquote><font color="#000080">&quot;This hotel is [if the player is female]just awful[otherwise]basic[end if].&quot;
-<br>&quot;Annie [one of]dances[or]sulks[or]hangs out at Remo's[at random].&quot;
+<blockquote><font color="#000080">To end the game in death: (- deadflag=1; -).
 </font></blockquote><p>
 <p>
-<p>To create such syntaxes, it is not enough just to define how each expands into I6 code: for one thing we may need to know about the later terms in order to expand the earlier ones, which is normally impossible, and for another thing, the individual text substitutions mean nothing in isolation. For instance, Inform produces a problem if the following is tried:
+<p>The notation &quot;(-&quot; and &quot;-)&quot; indicates that what comes in between is I6 code. The minus sign is supposed to be a mnemonic for the decrease from 7 to 6: later we shall use &quot;(+&quot; and &quot;+)&quot; to go back up the other way, from 6 to 7.
 <p>
-<blockquote><font color="#000080">&quot;The hotel [at random] is on fire.&quot;
+<p>When a phrase is defined as containing only a single command, and that command is defined using I6 - as here - it is compiled in-line. This means that the phrase &quot;end the game in death&quot; will always be translated as &quot;deadflag=1;&quot;, rather than being translated into a call to a suitable function whose only statement is &quot;deadflag=1;&quot;.
+<p>
+<p>This is an easy case since the wording never varies. More typical examples would be:
+<p>
+<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
+<br>To sort (T - table-name) in (TC - table-column) order:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
 </font></blockquote><p>
 <p>
-<p>because &quot;[at random]&quot; is only legal when closing a &quot;[one of] ...&quot; construction. But if &quot;[at random]&quot; had been defined as just another text substitution, Inform would not have been able to detect such problems.
+<p>When the braced name of one of the variables in the phrase preamble appears, this is compiled to the corresponding I6 expression at the relevant position in the I6 code. So, for instance,
 <p>
-<p>Inform therefore allows us to mark text substitutions as being any of three special kinds: beginning, in the middle of, or ending a segmented substitution. There can be any number of alternative forms for each of these three variants. The syntax policed is that
-<p>
-<blockquote><font color="#000080">(a) Any usage must lie entirely within a single say or piece of text.
-<br>(b) It must begin with exactly one of the substitutions marked as &quot;beginning&quot;.
-<br>(c) It can contain any number, including none, of the substitutions marked as &quot;middle&quot; (if there are any).
-<br>(d) It must end with exactly one of the substitutions marked as &quot;ending&quot;.
+<blockquote><font color="#000080">say the capacity of the basket
 </font></blockquote><p>
 <p>
-<p>A simple example:
+<p>might be compiled to
 <p>
-<blockquote><font color="#000080">To say emphasis on -- beginning say_emphasis_on: (- style underline; -).
-<br>To say emphasis off -- ending say_emphasis_on: (- style roman; -).
+<blockquote><font color="#000080">print O17_basket.capacity;
 </font></blockquote><p>
 <p>
-<p>This creates &quot;[emphasis on]&quot; and &quot;[emphasis off]&quot; such that they can only be used as a pair. The keyword &quot;say_emphasis_on&quot;, which must be a valid I6 identifier (and hence a single word), is never seen by the user: it is simply an ID token so that Inform can identify the construction to which these belong. (We recommend that anybody creating such constructions should choose an ID token which consists of the construction's name but with underscores in place of spaces: this means that the namespace for ID tokens will only clash if the primary definitions would have clashed in any case.)
+<p>because &quot;{something}&quot; is expanded to &quot;capacity of the basket&quot; (I7 code) and then translated to &quot;O17_basket.capacity&quot; (I6 code), which is then spliced into the original I6 definition &quot;print {something};&quot;.
+<p>
+<p>Braces &quot;{&quot; are of course significant in I6. A real brace can be obtained by making the character following it a space, and then I7 will not attempt to read it as a request for substitution.
+<p>
+<p>Finally, note that while a normal I7 phrase definition can give a kind as what must be matched, e.g.,
+<p>
+<blockquote><font color="#000080">To release wild tigers into (arena - a room): ...
+</font></blockquote><p>
+<p>
+<p>it is in general a bad idea, and will result in inefficient code, for an phrase defined using I6 to do this. Instead, if possible, match against &quot;object&quot;, where any room, region, thing or direction will be a valid match:
+<p>
+<blockquote><font color="#000080">To release wild tigers into (arena - an object): ...
+</font></blockquote><p>
 <p>
 <p><hr><p>
-<a name="e265"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex265.html#e265 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>384</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex265.html#e265 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Chanel Version 1</font></b></a><br>Making paired italic and boldface tags like those used by HTML for web pages.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex265.html#e265 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e119"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex119.html#e119 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>392</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex119.html#e119 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Odins</font></b></a><br>Making [is-are] and [it-they] say tokens that will choose appropriately based on the last object mentioned.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex119.html#e119 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e226"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex226.html#e226 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>393</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex226.html#e226 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Pink or Blue</font></b></a><br>Asking the player to select a gender to begin play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex226.html#e226 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc384.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc386.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

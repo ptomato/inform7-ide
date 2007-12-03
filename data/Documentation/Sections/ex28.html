@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.18. Articles and proper names</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.10. Variations: arrays, logs, queues, stacks, sets, sieves and rings</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,77 +19,188 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Belfry" -->
-<!-- SEARCH SECTION "Ex 30" -->
-<!-- SEARCH SORT "Ex 003-018-030" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc43.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc45.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.18. Articles and proper names</b></font></td></tr></table>
+<!-- SEARCH TITLE "I Didn't Come All The Way From Great Portland Street" -->
+<!-- SEARCH SECTION "Ex 375" -->
+<!-- SEARCH SORT "Ex 020-010-375" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc333.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc335.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.10. Variations: arrays, logs, queues, stacks, sets, sieves and rings</b></font></td></tr></table>
 <p>
-<p>Suppose we have said that:
+<p>Lists are highly adaptable, and many other collection-like constructions can be made using them. This section introduces no new material, but simply suggests some of the variations which are possible.
 <p>
-<blockquote><font color="#000080">In the Ballroom is a man called Mr Darcy.
+<p>1. The traditional computing term <b>array</b> means a list of values accessed by their entry numbers, often used in mathematical computations. The difference between an array and a list is mostly one of attitude, but usually arrays are fixed in length whereas lists can expand or contract.
+<p>
+<p>2. A <b>log</b> is a list which records the most recently arrived values, but does not allow itself to grow indefinitely. In the following, which remembers the seven most recently taken items, new values arrive at the end while old ones eventually disappear from the front:
+<p>
+<blockquote><font color="#000080">The most-recently-taken list is a list of objects that varies.
+<br>Carry out taking something (called the item):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;truncate the most-recently-taken list to the last 6 entries;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the item to the most-recently-taken list.
+<br>After taking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Taken. (So, your recent acquisitions: [most-recently-taken list].)&quot;
 </font></blockquote><p>
 <p>
-<p>When the Ballroom is visited, the man is listed in the description of the room as &quot;Mr Darcy&quot;, not as &quot;a Mr Darcy&quot;. This happened not because Inform recognised that Darcy is a proper name, or even because men tend to have proper names, but because Inform noticed that we did not use &quot;a&quot;, &quot;an&quot;, &quot;the&quot; or &quot;some&quot; in the sentence which created him. The following shows most of the options:
+<p>Note that the most-recently-taken list begins play as the empty list, grows as the first few items are taken, but then stabilises at length 7 thereafter. If we need to remember recent history, but only <i>recent</i> history, then a log is better than a list which can grow indefinitely, because there is no risk of speed reduction or memory exhaustion in a very long game.
 <p>
-<blockquote><font color="#000080">The Belfry is a room. A bat is in the Belfry. The bell is in the Belfry. Some woodworm are in the Belfry. A man called William Snelson is in the Belfry. A woman called the sexton's wife is in the Belfry. A man called a bellringer is in the Belfry.
+<p>3. A <b>queue</b> is a list of values which are waiting for attention. New values join at the back, while those being dealt with are removed from the front (whereupon the whole queue moves up one). An empty queue means that nobody is waiting for attention: but there is, in principle, no upper limit to the size of a queue, as anyone who has tried to make a couchette reservation at Roma Termini will know.
+<p>
+<p>Queues typically form when two independent processes are at work, but going at different or variable speeds. An empty queue looks just like any other list:
+<p>
+<blockquote><font color="#000080">The queue is a list of objects that varies.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">In the Belfry is a man called the vicar. The indefinite article of the vicar is &quot;your local&quot;.
+<p>(Invariably people, in fact, but lists can only be of kinds of value: so, &quot;list of objects&quot;.) Once we identify a &quot;new customer&quot;, we can join him to the queue thus:
+<p>
+<blockquote><font color="#000080">add the new customer to the queue;
 </font></blockquote><p>
 <p>
-<p>In the resulting game, we read:
+<p>The process of serving the customers needs to make sure there is actually somebody waiting in the queue before it does anything:
 <p>
-<blockquote><font color="#000080">You can see a bat, a bell, some woodworm, William Snelson, the sexton's wife, a bellringer and your local vicar here.
+<blockquote><font color="#000080">Every turn when the number of entries in the queue is not 0:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the next customer be entry 1 of the queue;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The next customer] is served and leaves.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove entry 1 from the queue.
 </font></blockquote><p>
 <p>
-<p>The subtlest rule here is in the handling of &quot;the&quot;. We wrote &quot;The bell is in the Belfry&quot;, but this did not result in the bell always being called &quot;the&quot; bell: in fact, writing &quot;A bell is in the Belfry&quot; would have had the same effect. On the other hand, &quot;A woman called the sexton's wife is in the Belfry.&quot; led to the wife always being known as &quot;the&quot; sexton's wife, not &quot;a&quot; sexton's wife, because Inform thinks the choice of article after &quot;called&quot; shows more of our intention than it would elsewhere. These rules will never be perfect in all situations, so we are also allowed to specify indefinite articles by hand, as the vicar's case shows.
+<p>Of course queues can also be constructed which empty from other positions, rather than the front: or we could make what computer scientists sometimes call a <b>deque</b>, a &quot;double-ended queue&quot; where new values arrive at both ends.
 <p>
-<p>&quot;Some&quot; is worth a closer look, because English uses it in several different ways. By introducing the woodworm with &quot;some&quot;, above, we established that it was plural. We might imagine that there are many worms, even though they are represented by a single thing in Inform. We can expect to see text in the story such as:
+<p>4. A <b>stack</b> is like a queue except that values arrive at, and are removed from, the same end. Stacks are slightly faster if the active end is the back rather than the front, though this will only be noticeable if they grow quite large.
 <p>
-<blockquote><font color="#000080">You can see some woodworm here.
-<br>The woodworm are fixed in place.
+<p>To put a value V onto a stack S (which is known as &quot;pushing&quot;) is simple:
+<p>
+<blockquote><font color="#000080">add V to S;
 </font></blockquote><p>
 <p>
-<p>But suppose we wanted something which there is an amount of, but which is not made up of individual items - a so-called mass noun like &quot;water&quot;, or &quot;bread&quot;. Now we can write:
+<p>And to remove a value from the top of the stack (which is known as &quot;pulling&quot;):
 <p>
-<blockquote><font color="#000080">The water is here. The indefinite article is &quot;some&quot;.
+<blockquote><font color="#000080">let N be the number of entries in S;
+<br>let V be entry N of S;
+<br>remove entry N of S;
 </font></blockquote><p>
 <p>
-<p>and this time Inform does not treat the &quot;some water&quot; thing as a plural, so we might read:
+<p>Note that the middle line, accessing entry N, will fail if N = 0, that is, if the stack is empty: Inform's list routines will produce a run-time problem message.
 <p>
-<blockquote><font color="#000080">You can see some water here.
-<br>The water is hardly portable.
+<p>Stacks are useful if some long-term process is constantly being interrupted by newer and more urgent demands, but they can also be used in planning. If a character has a long-term goal, which needs various short-term goals to be achieved along the way, then a stack can represent the goals currently being pursued. The top of the stack represents what the character is trying to achieve now. If the character realises that it needs to achieve something else first, we put that new goal onto the top of the stack, and it becomes the new current goal. When the character completes a task, it can be removed, and we can go back to trying to finish whatever is now on top. When the stack is empty, the character has achieved the original goal.
+<p>
+<p>5. Notoriously, <b>set</b> has 464 distinct meanings in the Oxford English Dictionary, making it the single most ambiguous word in the language. Here we mean not the home of a badger or the Egyptian god of the desert, but the mathematical sense: a collection of values (sometimes called &quot;elements&quot;) without duplicates, and which is normally written in brace notation and in some natural order for the reader's convenience.
+<p>
+<p>The trick here is to maintain the principle that, at all times, our list is sorted in order and contains no duplicates. To provide an example, we start with two sets of numbers:
+<p>
+<blockquote><font color="#000080">let S be {2, 4, 8, 16, 32, 64};
+<br>let T be {2, 4, 6, 10};
 </font></blockquote><p>
 <p>
-<p>rather than &quot;The water are hardly portable.&quot;
+<p>Here we add an element to T:
 <p>
-<p>Finally, we can override these settings, if they still come out not as we intend, by explicitly changing the either/or properties &quot;singular-named&quot; (vs &quot;plural-named&quot;) and &quot;proper-named&quot; (vs &quot;improper-named&quot;).
+<blockquote><font color="#000080">add 8 to T, if absent; sort T;
+</font></blockquote><p>
+<p>
+<p>The &quot;if absent&quot; clause ensures that no duplicate can occur, and by sorting T afterwards, we maintain the principle that a set must remain in order - so T is now {2, 4, 6, 8, 10}, not {2, 4, 6, 10, 8}. (Inform's sorting algorithm is fast on nearly-sorted lists, so frequent sorting is not as inefficient as it might look.)
+<p>
+<p>We next take the union of T and S, that is, the set containing everything which is in either or both:
+<p>
+<blockquote><font color="#000080">let U be S; add T to U, if absent; sort U;
+</font></blockquote><p>
+<p>
+<p>This makes U = {2, 4, 6, 8, 10, 16, 32, 64}, and once again no duplicates occur and we preserve the sorting. The intersection of T and S, the set of elements in both of them, is a little trickier:
+<p>
+<blockquote><font color="#000080">let I be T;
+<br>repeat with the element running through T
+<br>begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the element is not listed in S, remove the element from I;
+<br>end repeat;
+</font></blockquote><p>
+<p>
+<p>(Faster methods could be devised which exploit the sortedness of T and S, but are not worth it for shortish lists.) This produces I = {2, 4, 8}. Lastly, we can form the set difference, consisting of those elements which are in S but not in T:
+<p>
+<blockquote><font color="#000080">let D be S; remove T from D, if present;
+</font></blockquote><p>
+<p>
+<p>Here, as with intersection, since all we do is to strike out unwanted elements, the surviving ones remain in order and there is no need to sort when we are finished. This produces D = {16, 32, 64}.
+<p>
+<p>6. A <b>sieve</b> is used to make a complicated choice where there are many constraints, by ruling out impossible cases to see what is left. The term derives from the kitchen utensil (for sieving fine grains of flour), but via the name of the &quot;sieve of Eratosthenes&quot;, an ancient Greek method for determining the prime numbers.
+<p>
+<p>Using a sieve is much like using a set, and the difference is mainly one of outlook - we are interested in what does not belong, rather than what does.
+<p>
+<p>7. A <b>ring</b> is not so much a row of values, more a circle, with the last and first entries thought of as adjacent. One position is usually thought of as special, and is the place where new items are added: this may as well be entry 1. For instance, to add &quot;new item&quot; to the ring:
+<p>
+<blockquote><font color="#000080">add the item at entry 1 in the ring;
+</font></blockquote><p>
+<p>
+<p>To set &quot;item&quot; to the frontmost value and extract it from the ring:
+<p>
+<blockquote><font color="#000080">let the item be entry 1 of the ring;
+<br>remove entry 1 from the ring;
+</font></blockquote><p>
+<p>
+<p>And we can rotate the ring in either direction, making a different entry the new entry 1 and therefore the new frontmost value:
+<p>
+<blockquote><font color="#000080">rotate the ring;
+<br>rotate the ring backwards;
+</font></blockquote><p>
 <p>
 <p><hr><p>
+<a name="e273"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex273.html#e273 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>374</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex273.html#e273 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Circle of Misery</font></b></a><br>Retrieving items from an airport luggage carousel is such fun, how can we resist simulating it, using a list as a ring buffer?<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex273.html#e273 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e28"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc44.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>30</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc44.html#e28 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Belfry</font></b></a><br>You can see a bat, a bell, some woodworm, William Snelson, the sexton's wife, a bellringer and your local vicar here.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex28.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e28"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc334.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>375</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc334.html#e28 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> I Didn't Come All The Way From Great Portland Street</font></b></a><br>In this fiendishly difficult puzzle, which may perhaps owe some inspiration to a certain BBC Radio panel game (1967-), a list is used as a set of actions to help enforce the rule that the player must keep going for ten turns without hesitation, repetition, or deviating from the subject on the card.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex28.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>There is very little to this, in fact. The tricky rule to enforce is Repetition: the player is forbidden to repeat any previously tried action. We keep track of this by keeping a set of past actions, which for want of a better term is called the &quot;tally&quot;. All we need to do is:
+<p>
+<blockquote><font color="#000080">if the current action is listed in the tally, challenge for &quot;Repetition of [the current action]!&quot;;
+<br>otherwise add the current action to the tally;
+</font></blockquote><p>
+<p>
+<p>Note that the tally can never contain duplicates, and that when, at the end of the round, we print it out, we sort it first - this makes a more natural-looking sentence. (Sorting a list of actions uses the natural order for actions: compare the sequence on the Actions page of the Index.) The full text, then, is:
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode109(code) {
+function pasteCode464(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Belfry"\n\nThe Belfry is a room. A bat is in the Belfry. The bell is in the Belfry. Some woodworm are in the Belfry. A man called William Snelson is in the Belfry. A woman called the sexton\'s wife is in the Belfry. A man called a bellringer is in the Belfry.\n\nIn the Belfry is a man called the vicar. The indefinite article of the vicar is "your local".\n\nTest me with "look".\n');
+    myProject.pasteCode('[=0x0022=]I Didn[=0x0027=]t Come All The Way From Great Portland Street[=0x0022=][=0x000A=][=0x000A=]The Paris Theatre is a room. An instrument is a kind of thing. The violin, the tuba, the xylophone and the triangle are instruments. The violin is inside the case. The tuba, the xylophone, the radish, the case, the bust of Nicholas Parsons, the purple felt hat and the triangle are in the Paris Theatre.[=0x000A=][=0x000A=]The Round is a scene. The Round begins when play begins. The Round ends when the turn count is 10.[=0x000A=][=0x000A=]The tally is a list of stored actions that varies.[=0x000A=][=0x000A=]When the Round begins:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]And the subject on the card is... musical instruments. Will you carry out for us something to do with that, please, for ten turns starting - now![=0x0027=][=0x0022=][=0x000A=][=0x000A=]When the Round ends:[=0x000A=][=0x0009=]sort the tally;[=0x000A=][=0x0009=]say [=0x0022=]Phweeep![paragraph break][=0x0027=]So, when the whistle goes ten turns are up, you get a point for acting when the whistle blows, and in that round you entertained us by [the tally], and you also get a bonus point for keeping going until the whistle went.[=0x0027=][=0x0022=];[=0x000A=][=0x0009=]end the game in victory.[=0x000A=][=0x000A=]To challenge for (infraction - text):[=0x000A=][=0x0009=]say [=0x0022=]Bzzzzt! [=0x0027=]And [one of]Clement Freud[or]Derek Nimmo[or]Kenneth Williams[or]Peter Jones[at random] has challenged.[=0x0027=][paragraph break][=0x0027=][infraction][=0x0027=][paragraph break][=0x0027=]Well, as it[=0x0027=]s your first time playing the game, and the audience was enjoying your contribution so much, I will disallow the challenge, you have [10 minus the turn count] turn[s] left on musical instruments, starting... now![=0x0022=][=0x000A=][=0x000A=]Before doing something:[=0x000A=][=0x0009=]if the current action is listed in the tally, challenge for [=0x0022=]Repetition of [the current action]![=0x0022=];[=0x000A=][=0x0009=]otherwise add the current action to the tally;[=0x000A=][=0x0009=]if waiting, challenge for [=0x0022=]Hesitation![=0x0022=];[=0x000A=][=0x0009=]if not looking and not waiting and the noun is not an instrument and the second noun is not an instrument, challenge for [=0x0022=]Deviation![=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]look / wait / examine bust / take tuba / put radish in tuba / get triangle / hit xylophone / get tuba / examine tuba / get violin[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode109()"><img border=0 src=../doc_images/paste.png></a> &quot;Belfry&quot;
+<a href="javascript:pasteCode464()"><img border=0 src=../doc_images/paste.png></a> &quot;I Didn't Come All The Way From Great Portland Street&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Belfry is a room. A bat is in the Belfry. The bell is in the Belfry. Some woodworm are in the Belfry. A man called William Snelson is in the Belfry. A woman called the sexton's wife is in the Belfry. A man called a bellringer is in the Belfry.
+<blockquote><font color="#000080">The Paris Theatre is a room. An instrument is a kind of thing. The violin, the tuba, the xylophone and the triangle are instruments. The violin is inside the case. The tuba, the xylophone, the radish, the case, the bust of Nicholas Parsons, the purple felt hat and the triangle are in the Paris Theatre.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">In the Belfry is a man called the vicar. The indefinite article of the vicar is &quot;your local&quot;.
+<blockquote><font color="#000080">The Round is a scene. The Round begins when play begins. The Round ends when the turn count is 10.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look&quot;.
+<blockquote><font color="#000080">The tally is a list of stored actions that varies.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc44.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">When the Round begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'And the subject on the card is... musical instruments. Will you carry out for us something to do with that, please, for ten turns starting - now!'&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When the Round ends:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the tally;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Phweeep![paragraph break]'So, when the whistle goes ten turns are up, you get a point for acting when the whistle blows, and in that round you entertained us by [the tally], and you also get a bonus point for keeping going until the whistle went.'&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To challenge for (infraction - text):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Bzzzzt! 'And [one of]Clement Freud[or]Derek Nimmo[or]Kenneth Williams[or]Peter Jones[at random] has challenged.'[paragraph break]'[infraction]'[paragraph break]'Well, as it's your first time playing the game, and the audience was enjoying your contribution so much, I will disallow the challenge, you have [10 minus the turn count] turn[s] left on musical instruments, starting... now!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current action is listed in the tally, challenge for &quot;Repetition of [the current action]!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise add the current action to the tally;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if waiting, challenge for &quot;Hesitation!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if not looking and not waiting and the noun is not an instrument and the second noun is not an instrument, challenge for &quot;Deviation!&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;look / wait / examine bust / take tuba / put radish in tuba / get triangle / hit xylophone / get tuba / examine tuba / get violin&quot;.
+</font></blockquote><p>
+<p>
+<p>(The Paris Theatre in Lower Regent Street, London, was for many years the home of BBC radio panel games.)
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc334.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e66"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex66.html#e66 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>31</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex66.html#e66 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Gopher-wood</font></b></a><br>Changing the name of a character in the middle of play, removing the article.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex66.html#e66 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc43.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc45.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e319"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex319.html#e319 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>376</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex319.html#e319 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Fibonacci Sequence</font></b></a><br>The modest Leonardo Fibonacci of Pisa will be only too happy to construct his sequence on request, using an array.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex319.html#e319 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e328"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex328.html#e328 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>377</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex328.html#e328 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Your Mother Doesn't Work Here</font></b></a><br>Your hard-working mother uses a list as a stack: urgent tasks are added to the end of the list, interrupting longer-term plans.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex328.html#e328 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e51"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex51.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>378</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex51.html#e51 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lugubrious Pete's Delicatessen</font></b></a><br>In this evocation of supermarket deli counter life, a list is used as a queue to keep track of who is waiting to be served.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex51.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e83"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>379</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex83.html#e83 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Sieve of Eratosthenes</font></b></a><br>The haughty Eratosthenes of Cyrene will nevertheless consent to sieve prime numbers on request.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e87"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex87.html#e87 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>380</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex87.html#e87 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Eyes, Fingers, Toes</font></b></a><br>A safe with a multi-number combination, meant to be dialed over multiple turns, is implemented using a log of the last three numbers dialed. The log can then be compared to the safe's correct combination.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex87.html#e87 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc333.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc335.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

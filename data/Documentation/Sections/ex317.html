@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.20. Writing a paragraph about</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.12. Arithmetic with units</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,95 +19,136 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Reflections" -->
-<!-- SEARCH SECTION "Ex 309" -->
-<!-- SEARCH SORT "Ex 017-020-309" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc281.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc283.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.20. Writing a paragraph about</b></font></td></tr></table>
+<!-- SEARCH TITLE "Frozen Assets" -->
+<!-- SEARCH SECTION "Ex 231" -->
+<!-- SEARCH SORT "Ex 014-012-231" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc219.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc221.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.12. Arithmetic with units</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> Just <i>before</i> writing a paragraph about some item in a room description.
-<p>
-<p><b>2. The default behaviour.</b> Is to do nothing. However, if a rule is supplied which prints something up, then this replaces the paragraph which would otherwise have been printed. Moreover, any items whose names are said in the course of this rule - for instance, by being listed - are then excluded from the remainder of the room description, because they are considered as having been described sufficiently already.
-<p>
-<p>Warning: because we often want a &quot;for&quot; rule for this activity to make some calculation and then possibly choose to do nothing (see the example &quot;Otranto&quot;), Inform suppresses the usual paragraph not when a &quot;for&quot; rule took effect but when it detected a paragraph having been printed. This can get confused if a text substitution affecting paragraph breaks, say &quot;[line break]&quot;, is within the final &quot;say&quot; of a &quot;for writing a paragraph about&quot; rule.
-<p>
-<p><b>3. Examples.</b> (a) This is a neat way to wrap several things together into the same paragraph:
+<p>Inform allows us to perform arithmetic on units only where that would make sense, and it keeps track of the results. For instance,
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode61(code) {
+function pasteCode33(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('Rule for writing a paragraph about Mr Wickham:\n\tsay "Mr Wickham looks speculatively at [list of women in the location]."\n\n');
+    myProject.pasteCode('The Weighbridge is a room. [=0x0022=]A sign declares that the maximum load is [100kg multiplied by 3].[=0x0022=][=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode61()"><img border=0 src=../doc_images/paste.png></a> Rule for writing a paragraph about Mr Wickham:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Mr Wickham looks speculatively at [list of women in the location].&quot;
+<a href="javascript:pasteCode33()"><img border=0 src=../doc_images/paste.png></a> The Weighbridge is a room. &quot;A sign declares that the maximum load is [100kg multiplied by 3].&quot;
 </font></blockquote><p>
 <p>
-<p>because now &quot;Mr Wickham looks speculatively at Velma and Daphne&quot; will now prevent the appearance of the subsequent text &quot;You can also see Velma and Daphne.&quot;
+<p>...will produce the text &quot;A sign declares that the maximum load is 300kg.&quot; Here Inform knows that it makes sense to multiply a weight by 3, and that the result will be a weight. Similarly, Inform allows us to add and subtract weights, and several different forms of division are allowed:
 <p>
-<p>Inform keeps track of which objects have already been named with an either/or property called &quot;mentioned&quot;, which it assigns whenever the name of an object has been automatically printed. So in this case, Velma and Daphne are now mentioned. Note &quot;automatically printed&quot;, though: if the text printed had just been &quot;Mr Wickham looks speculatively at Velma and Daphne&quot;, rather than the text-substitution list used above, then Inform would not know that Velma and Daphne have been described.
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode34(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('The blackboard is in the Weighbridge. [=0x0022=]A blackboard propped against one wall reads: [=0x0027=]122 / 10 is [122 divided by 10] remainder [remainder after dividing 122 by 10]; but 122kg / 10kg is [122kg divided by 10kg] remainder [remainder after dividing 122kg by 10kg]; and 122kg / 10 is [122kg divided by 10] remainder [remainder after dividing 122kg by 10].[=0x0027=][=0x0022=][=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode34()"><img border=0 src=../doc_images/paste.png></a> The blackboard is in the Weighbridge. &quot;A blackboard propped against one wall reads: '122 / 10 is [122 divided by 10] remainder [remainder after dividing 122 by 10]; but 122kg / 10kg is [122kg divided by 10kg] remainder [remainder after dividing 122kg by 10kg]; and 122kg / 10 is [122kg divided by 10] remainder [remainder after dividing 122kg by 10].'&quot;
+</font></blockquote><p>
 <p>
-<p>If we ever need to override this - say, we want to list all the women but make sure that Velma gets another paragraph anyway - we could change Velma to unmentioned again after the listing.
+<p>When we visit the Weighbridge, we find:
+<p>
+<blockquote><font color="#000080">A blackboard propped against one wall reads: &quot;122 / 10 is 12 remainder 2; but 122kg / 10kg is 12 remainder 2kg; and 122kg / 10 is 12kg remainder 2kg.&quot;
+</font></blockquote><p>
+<p>
+<p>Whereas we are not allowed to divide 122 by 10kg: that would make no sense, since 122 is a number and not made up of kilograms. Inform will produce a problem message if we try.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e317"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc282.html#e317 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>309</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc282.html#e317 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Reflections</font></b></a><br>Emphasizing the reflective quality of shiny objects whenever they are described in the presence of the torch.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex317.html#e317 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e317"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc220.html#e317 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>231</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc220.html#e317 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Frozen Assets</font></b></a><br>A treatment of money which keeps track of how much the player has on him, and a BUY command which lets him go shopping.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex317.html#e317 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>In our brave new world, everything will have a price, so we had better spell this out.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode396(code) {
+function pasteCode316(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Reflections"\n\nBehind the Waterfall is a room. "Though one wall of the cave is open to the waterfall, the quantity of water is so great that barely any light comes through from the outside." Behind the Waterfall is dark.\n\nSurface is a kind of value. The surfaces are shiny and dull. A thing has a surface. A thing is usually dull.\n\nThe player carries a reflecting ball, a canopic jar, an abacus, a plumbline, a piece of chalk, and a torch. The reflecting ball is shiny.\n\nAladdin\'s lamp is a shiny thing in Behind the Waterfall.\n\nBrightness is a kind of value. The brightnesses are guttering, weak, radiant and blazing. The torch has a brightness. The torch is blazing. The torch is lit.\n\nUnderstand "blow out [something]" or "blow [something]" or "extinguish [something]" as blowing out. Blowing out is an action applying to one thing.\n\nCarry out blowing out: say "Futile."\n\nInstead of blowing out the torch:\n\tchange brightness of torch to the brightness before the brightness of the torch;\n\tsay "The light of the torch dies to [brightness of torch]."\n\nInstead of blowing out the guttering torch:\n\tsay "Fool! Do you want to put it out entirely?"\n\nRule for writing a paragraph about a shiny thing:\n\tsay "The [brightness of the torch] light of [the torch] reflects in the surface[if the number of shiny things in the room > 1]s[end if] of [the list of shiny things in the room]."\n\nBefore printing the name of the torch while writing a paragraph about something:\n\tif the torch is in the location, say "fallen ".\n\nTest me with "drop ball / look / blow torch / look / drop torch / look".\n');
+    myProject.pasteCode('[=0x0022=]Frozen Assets[=0x0022=][=0x000A=][=0x000A=]Price is a kind of value. $10.99 specifies a price. A thing has a price. The price of a thing is usually $0.00. After examining something for sale, say [=0x0022=]It can be yours for [the price of the noun].[=0x0022=][=0x000A=][=0x000A=][Now we assume a simple shopping model in which the player can[=0x0027=]t take anything without paying for it.][=0x000A=][=0x000A=]Definition: a thing is free if the price of it is $0.00.[=0x000A=]Definition: a thing is for sale if it is not free.[=0x000A=][=0x000A=]Instead of taking something for sale:[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]ll have to pay for that.[=0x0022=][=0x000A=][=0x000A=]Before buying something for sale when the money is not in the wallet:[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]re broke.[=0x0022=] instead.[=0x000A=][=0x000A=]Before buying something for sale when the money is free:[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]re broke.[=0x0022=] instead.[=0x000A=][=0x000A=]Before buying something for sale when the price of the money is less than the price of the noun:[=0x000A=][=0x0009=]say [=0x0022=]Your funds do not run to the price of [the noun].[=0x0022=] instead.[=0x000A=][=0x000A=]Instead of buying something:[=0x000A=][=0x0009=]change price of the money to the price of the money minus the price of the noun;[=0x000A=][=0x0009=]say [=0x0022=]You fork over [the price of the noun] for [the noun], leaving yourself with [the price of the money].[=0x0022=];[=0x000A=][=0x0009=]if the money is free, remove the money from play;[=0x000A=][=0x0009=]change the price of the noun to $0.00;[=0x000A=][=0x0009=]now the player is carrying the noun.[=0x000A=][=0x000A=][The player[=0x0027=]s money object is going to be a bit unusual, because it has value but cannot itself be bought.][=0x000A=][=0x000A=]The player carries a wallet. The wallet contains money. The price of the money is $4.50. The printed name of the money is [=0x0022=][price of the money] in cash[=0x0022=]. Understand [=0x0022=]cash[=0x0022=] as the money.[=0x000A=][=0x000A=]Instead of taking the money:[=0x000A=][=0x0009=]say [=0x0022=]Best to leave it alone until you need to buy something.[=0x0022=][=0x000A=][=0x000A=]Instead of buying something free:[=0x000A=][=0x0009=]say [=0x0022=][The noun] is yours already.[=0x0022=][=0x000A=][=0x000A=]Instead of buying the money:[=0x000A=][=0x0009=]say [=0x0022=]The money belongs to you; you buy things with it.[=0x0022=][=0x000A=][=0x000A=][Now we just need something to buy.][=0x000A=][=0x000A=]The Dessert Parlor is a room. [=0x0022=]An underlit, over-crowded room campily furnished with a lot of gilt-frame mirrors and twinkle lights: it is essentially a brothel of food. The service is slow at best, and on Saturday nights glacial. However. The wares on display more than make up for these trivial inconveniences.[=0x0022=][=0x000A=][=0x000A=]The vanilla ice cream is an edible thing in the Parlor. The price of the ice cream is $2.45. The description is [=0x0022=]In the scale of ice creams, you recognize this as a very inferior vanilla because it has no adjectives in the title.[=0x0022=][=0x000A=][=0x000A=]The raspberry tart is an edible thing in the Parlor. The price of the tart is $4.50. The description is [=0x0022=]An almond-laced shell packed with raspberries-under-glaze.[=0x0022=][=0x000A=][=0x000A=]The syllabub is an edible thing in the Parlor. The price of the syllabub is $4.25. The description is [=0x0022=]Whipped cream, alcohol, and lime juice, a substance without any redeeming food value whatever.[=0x0022=][=0x000A=][=0x000A=]The espresso cake is an edible thing in the Parlor. The price of the espresso cake is $5.50. The description is [=0x0022=]A lethal wedge of purest blackness.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]inventory / examine syllabub / get syllabub / buy syllabub / drop it / get it / buy raspberry tart[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode396()"><img border=0 src=../doc_images/paste.png></a> &quot;Reflections&quot;
+<a href="javascript:pasteCode316()"><img border=0 src=../doc_images/paste.png></a> &quot;Frozen Assets&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Behind the Waterfall is a room. &quot;Though one wall of the cave is open to the waterfall, the quantity of water is so great that barely any light comes through from the outside.&quot; Behind the Waterfall is dark.
+<blockquote><font color="#000080">Price is a kind of value. $10.99 specifies a price. A thing has a price. The price of a thing is usually $0.00. After examining something for sale, say &quot;It can be yours for [the price of the noun].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Surface is a kind of value. The surfaces are shiny and dull. A thing has a surface. A thing is usually dull.
+<p>Now we assume a simple shopping model in which the player can't take anything without paying for it.
+<p>
+<blockquote><font color="#000080">Definition: a thing is free if the price of it is $0.00.
+<br>Definition: a thing is for sale if it is not free.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries a reflecting ball, a canopic jar, an abacus, a plumbline, a piece of chalk, and a torch. The reflecting ball is shiny.
+<blockquote><font color="#000080">Instead of taking something for sale:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'll have to pay for that.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Aladdin's lamp is a shiny thing in Behind the Waterfall.
+<blockquote><font color="#000080">Before buying something for sale when the money is not in the wallet:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're broke.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Brightness is a kind of value. The brightnesses are guttering, weak, radiant and blazing. The torch has a brightness. The torch is blazing. The torch is lit.
+<blockquote><font color="#000080">Before buying something for sale when the money is free:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're broke.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;blow out [something]&quot; or &quot;blow [something]&quot; or &quot;extinguish [something]&quot; as blowing out. Blowing out is an action applying to one thing.
+<blockquote><font color="#000080">Before buying something for sale when the price of the money is less than the price of the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your funds do not run to the price of [the noun].&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out blowing out: say &quot;Futile.&quot;
+<blockquote><font color="#000080">Instead of buying something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change price of the money to the price of the money minus the price of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You fork over [the price of the noun] for [the noun], leaving yourself with [the price of the money].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the money is free, remove the money from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the price of the noun to $0.00;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is carrying the noun.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of blowing out the torch:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change brightness of torch to the brightness before the brightness of the torch;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The light of the torch dies to [brightness of torch].&quot;
+<p>The player's money object is going to be a bit unusual, because it has value but cannot itself be bought.
+<p>
+<blockquote><font color="#000080">The player carries a wallet. The wallet contains money. The price of the money is $4.50. The printed name of the money is &quot;[price of the money] in cash&quot;. Understand &quot;cash&quot; as the money.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of blowing out the guttering torch:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Fool! Do you want to put it out entirely?&quot;
+<blockquote><font color="#000080">Instead of taking the money:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Best to leave it alone until you need to buy something.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for writing a paragraph about a shiny thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The [brightness of the torch] light of [the torch] reflects in the surface[if the number of shiny things in the room > 1]s[end if] of [the list of shiny things in the room].&quot;
+<blockquote><font color="#000080">Instead of buying something free:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is yours already.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before printing the name of the torch while writing a paragraph about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the torch is in the location, say &quot;fallen &quot;.
+<blockquote><font color="#000080">Instead of buying the money:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The money belongs to you; you buy things with it.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;drop ball / look / blow torch / look / drop torch / look&quot;.
+<p>Now we just need something to buy.
+<p>
+<blockquote><font color="#000080">The Dessert Parlor is a room. &quot;An underlit, over-crowded room campily furnished with a lot of gilt-frame mirrors and twinkle lights: it is essentially a brothel of food. The service is slow at best, and on Saturday nights glacial. However. The wares on display more than make up for these trivial inconveniences.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc282.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">The vanilla ice cream is an edible thing in the Parlor. The price of the ice cream is $2.45. The description is &quot;In the scale of ice creams, you recognize this as a very inferior vanilla because it has no adjectives in the title.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The raspberry tart is an edible thing in the Parlor. The price of the tart is $4.50. The description is &quot;An almond-laced shell packed with raspberries-under-glaze.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The syllabub is an edible thing in the Parlor. The price of the syllabub is $4.25. The description is &quot;Whipped cream, alcohol, and lime juice, a substance without any redeeming food value whatever.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The espresso cake is an edible thing in the Parlor. The price of the espresso cake is $5.50. The description is &quot;A lethal wedge of purest blackness.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;inventory / examine syllabub / get syllabub / buy syllabub / drop it / get it / buy raspberry tart&quot;.
+</font></blockquote><p>
+<p>
+<p>Implementing caloric units for this scenario is left as an exercise for the reader.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc220.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e282"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex282.html#e282 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>310</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex282.html#e282 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Emma</font></b></a><br>Social dynamics in which groups of people form and circulate during a party.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex282.html#e282 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e236"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex236.html#e236 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>311</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex236.html#e236 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Air Conditioning is Standard</font></b></a><br>Uses "writing a paragraph about" to make person and object descriptions that vary considerably depending on what else is going on in the room, including some randomized NPC interactions with objects or with each other.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex236.html#e236 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc281.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc283.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e361"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex361.html#e361 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>232</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex361.html#e361 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Money for Nothing</font></b></a><br>An OFFER price FOR command, allowing the player to bargain with a flexible seller.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex361.html#e361 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e262"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex262.html#e262 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>233</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex262.html#e262 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lemonade</font></b></a><br>Containers for liquid which keep track of how much liquid they are holding and of what kind, and allow quantities to be moved from one container to another.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex262.html#e262 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e342"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex342.html#e342 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>234</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex342.html#e342 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Savannah</font></b></a><br>Using the liquid implementation demonstrated in Lemonade for putting out fires.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex342.html#e342 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc219.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc221.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

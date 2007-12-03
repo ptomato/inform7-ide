@@ -13,5 +13,7 @@ skt2.png skt3.png skt4.png skt5.png skt6.png skt7.png skt8.png skt9.png \
 skt10.png skt11.png skt12.png skt13.png skt14.png Sophia.jpg sound_okay.png \
 testing.png Trans1.png Trans2.png unindexed_bullet.png vm_glulx.png vm_z.png \
 vm_z5.png vm_z6.png vm_z8.png wiarrow.png windows.png \
-mar07.jpg apr07.jpg jul07.jpg aug07.jpg oct07.jpg
+mar07.jpg apr07.jpg jul07.jpg aug07.jpg oct07.jpg nov07.jpg \
+Debian_Icon.png Fedora_Icon.png Linux_Icon.png MacOSX_Icon.png \
+Solaris_Icon.png Ubuntu_Icon.png Windows_Icon.png
 EXTRA_DIST = $(docimages_DATA)

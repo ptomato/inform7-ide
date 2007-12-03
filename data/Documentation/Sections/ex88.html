@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.8. Multiple endings</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.2. Rooms and the map</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,174 +19,112 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Panache" -->
-<!-- SEARCH SECTION "Ex 152" -->
-<!-- SEARCH SORT "Ex 010-008-152" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc150.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap10.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 10: Scenes</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc152.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.8. Multiple endings</b></font></td></tr></table>
+<!-- SEARCH TITLE "Starry Void" -->
+<!-- SEARCH SECTION "Ex 6" -->
+<!-- SEARCH SORT "Ex 003-002-006" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc27.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc29.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.2. Rooms and the map</b></font></td></tr></table>
 <p>
-<p>Interactive fictions vary considerably in the extent to which the player is allowed to influence the story-line. Sometimes the appearance of making choices is wholly bogus, as only one possible line is given more than lip service. But in other works, the player can radically change the outcome, and whole rafts of plot differ between one person's experience and another's. Inform allows multiple endings to its scenes to make this kind of branching story-line easy to achieve.
+<p>Rooms are joined together at their edges by &quot;map connections&quot;, most of which are pathways in one of the eight cardinal compass directions: north, northeast (written without a hyphen), east, southeast, south, southwest, west, northwest. We also have up and down, suitable for staircases or ladders. In real life, people are seldom conscious of their compass bearing when walking around buildings, but it makes a concise and unconfusing way for the player to say where to go next, so is generally accepted as a convention of the genre.
 <p>
-<p>Any scene can have up to 8 alternate endings, differentiated by name. These are created as and when conditions are set for them:
+<p>Two more directions are provided by Inform: &quot;inside&quot; and &quot;outside&quot;. These are best used when one location is, say, a meadow and the other is a woodcutter's hut in the middle of it; we might then say
 <p>
-<blockquote><font color="#000080">Brief Encounter ends happily when ...
-<br>Brief Encounter ends wisely but sadly when ...
+<blockquote><font color="#000080">Inside from the Meadow is the woodcutter's hut.
 </font></blockquote><p>
 <p>
-<p>&quot;Ends happily&quot; and &quot;ends wisely but sadly&quot; behave just like &quot;ends&quot;. We can have rules &quot;When Brief Encounter ends happily, ...&quot; and so forth, in addition to rules &quot;When Brief Encounter ends, ...&quot; - if a rule doesn't specify any particular ending, it applies to all of them.
+<p>The &quot;from&quot; is important, as it clarifies that we intend to link two different locations, not to create an item - the hut - in a single location - the meadow.
 <p>
-<p>We can also link rules together from these branches, so
+<p>A problem which sometimes arises when laying out maps is that Inform allows short forms of room names to be used as abbreviations. This is usually a good idea, but has unfortunate results if we write:
 <p>
-<blockquote><font color="#000080">Stranger's Acceptance begins when Brief Encounter ends happily.
-<br>Stranger's Rejection begins when Brief Encounter ends wisely but sadly.
+<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. The Airport is west of the Airport Road.
 </font></blockquote><p>
 <p>
-<p>With this set-up and that of the previous section, there are now two possible paths through the story:
+<p>...because &quot;Airport&quot; is taken as a reference to &quot;Airport Road&quot;, so Inform makes only two locations, one of which supernaturally leads to itself. We can avoid this by writing:
 <p>
-<blockquote><font color="#000080">(i) Train Stop - Brief Encounter - Stranger's Acceptance - Bittersweet Ending
-<br>(ii) Train Stop - Brief Encounter - Stranger's Rejection - Bittersweet Ending
+<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. A room called the Airport is west of the Airport Road.
 </font></blockquote><p>
 <p>
-<p>We might later need to know which of these paths has been taken, and to help with this Inform provides conditions like so:
+<p>Using &quot;called&quot; is often a good way to specify something whose name might give rise to confusion otherwise. It always makes something new, and it is also neatly concise, because we can establish something's kind and name in the same sentence. As another example, suppose we want to create a room called &quot;South of the Hut&quot;, to south of the Hut. We can't do so like this:
 <p>
-<blockquote><font color="#000080">if Brief Encounter ended happily ...
-<br>if Brief Encounter ended wisely but sadly ...
+<blockquote><font color="#000080">South of the Hut is a room. South of the Hut is south of the Hut.
 </font></blockquote><p>
 <p>
-<p>(For a scene which repeats, note that these conditions apply only to the most recent repetition: and that such conditions are always false if the scene is currently going on.)
+<p>...because Inform will read that first sentence as placing a (nameless) room to the south of a room called &quot;Hut&quot;. Once again &quot;called&quot; can save the day:
+<p>
+<blockquote><font color="#000080">South of the Hut is a room called South of the Hut.
+</font></blockquote><p>
+<p>
+<p>It is best to use &quot;called&quot; in the simplest way possible, and in particular, best not to use &quot;called&quot; twice in the same sentence. Consider:
+<p>
+<blockquote><font color="#000080">The kitchen cabinet contains a container called a mixing bowl and a portable supporter called a platter.
+</font></blockquote><p>
+<p>
+<p>It is unlikely that anyone would want to name something &quot;a mixing bowl and a portable supporter called a platter&quot;, but not impossible, and Inform tends not to be a good judge of what is likely.
 <p>
 <p><hr><p>
-<a name="e232"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex232.html#e232 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>151</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex232.html#e232 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Pine 4</font></b></a><br>Pine: Adding a flashback scene that, instead of repeating endlessly, repeats only until the Princess has understood the point.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex232.html#e232 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e186"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex186.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>4</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex186.html#e186 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Port Royal 1</font></b></a><br>A partial implementation of Port Royal, Jamaica, set before the earthquake of 1692 demolished large portions of the city.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex186.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e274"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex274.html#e274 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>5</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex274.html#e274 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Up and Up</font></b></a><br>Adding a short message as the player approaches a room, before the room description itself appears.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex274.html#e274 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e88"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc151.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>152</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc151.html#e88 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Panache</font></b></a><br>Replacing the score with a plot summary that records the events of the plot, scene by scene.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex88.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e88"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc28.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>6</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc28.html#e88 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Starry Void</font></b></a><br>Creating a booth that can be seen from the outside, opened and closed, and entered as a separate room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex88.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>If we have a plot that branches and has multiple kinds of outcome, we might well want to assemble these into a plot summary in place of the more traditional score. One way to approach this is to build the scene information into a table, adding information when each scene ends.
-<p>
-<p>We begin with a bit of setup:
+<p>Sometimes we may want a room to be visible from the outside in one location, but treated as a separate location when we are inside. The simplest way to do this is to make the exterior form of the object into a door object, and to describe it differently from different vantage points. (Doors in general are described more fully in the Doors section of the Things chapter.)
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode242(code) {
+function pasteCode85(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Panache"\n\nThe player is in a room called Beneath Roxane\'s Balcony. Christian is a man in the Balcony. "Christian stands in a spot of moonlight and tries to avoid too obviously glancing at the shadows that conceal you." The description of Christian is "Like you, Christian loves Roxane. Unlike you, he is handsome enough to receive her favor in return. He is the beauty to your brain."\n\nRoxane is a woman in the Balcony. "Above you in the night is Roxane." Roxane can be wooed, skeptical, confused, or annoyed. Roxane is skeptical. The description of Roxane is "The brightest, the most radiant of women -- and in love with an utter fool."\n\nEmpty Street is a room. "No one is about at this hour, all alone under a pale moon."\n\nTelling someone about something is speech. Asking someone about something is speech. Answering someone that something is speech.\n\n[This next portion borrows from the Advanced Actions chapter to allow us to command Christian to do things:]\n\nA persuasion rule for asking Christian to try speech: persuasion succeeds.\n\nCarry out Christian answering someone that something:\n\tnow Roxane is wooed;\n\tsay "\'[noun], [the topic understood].\'"\n\nCarry out Christian answering the player that something:\n\tsay "Christian parrots your words back to you." instead.\n\nCarry out Christian telling a skeptical Roxane about something:\n\tchange Roxane to confused;\n\tsay "Christian turns to [the noun]. \'I must tell you about [the topic understood],\' he says, and comes to a halt, looking at you for further direction.\n\n\tPerhaps you\'d better give him exact lines to say. Surely he can\'t mess up an instruction like \'say hello to Roxane.\'" instead.\n\nCarry out Christian asking a skeptical Roxane about something:\n\tchange Roxane to confused;\n\tsay "\'So,\' says Christian nervously to [the noun]. \'Did you know about [the topic understood]?\' But Roxane merely seems puzzled." instead.\n\nCarry out Christian telling a confused Roxane about something:\n\tchange Roxane to annoyed;\n\tsay "Christian begins rambling on witlessly about [the topic understood]." instead.\n\nCarry out Christian asking a confused Roxane about something:\n\tchange Roxane to annoyed;\n\tsay "Christian puts another confused question about [the topic understood]." instead.\n\n[And now we have enough material to begin writing the scenes:]\n\nCourting Roxane is a scene. Courting Roxane begins when play begins. Courting Roxane ends in success when Roxane is wooed. Courting Roxane ends in failure when Roxane is annoyed.\n\nWhen Courting Roxane ends in success:\n\trecord "Seduction by Proxy" in the Table of Events;\n\tsay "Roxane, deeply moved by this sentiment, invites Christian up to her balcony. He scrambles up the ivy and disappears into her bedroom; the last thing you hear is a girlish giggle from above.";\n\tremove Roxane from play; remove Christian from play;\n\tmove the player to Empty Street.\n\nWhen Courting Roxane ends in failure:\n\trecord "Ruining Christian\'s Chances" in the Table of Events;\n\tsay "Roxane sighs heavily and goes back into her room, slamming the door behind her.\n\n\'Thanks very much,\' says Christian to you, striding off down the street.";\n\tremove Roxane from play; remove Christian from play;\n\tmove the player to Empty Street.\n\n\nSulky Ramble is a scene. Sulky Ramble begins when Courting Roxane ends in success. Sulky Ramble ends when the time since Sulky Ramble began is 2 minutes. When Sulky Ramble ends: record "Wandering the Streets, Sulking" in the Table of Events.\n\nEvery turn during Sulky Ramble:\n\tsay "You find yourself kicking fenceposts quite without thinking about it."\n\nSmug Ramble is a scene. Smug Ramble begins when Courting Roxane ends in failure. Smug Ramble ends when the time since Smug Ramble began is 2 minutes. When Smug Ramble ends: record "Wandering the Streets, Exultant" in the Table of Events; say "Of course, you will regret this soon enough."\n\nEvery turn during Smug Ramble:\n\tsay "You find yourself smiling fiercely at the moon."\n\nTo record (occurrence - text) in (target table - a table-name):\n\tchoose a blank row in the target table;\n\tchange the event entry to the occurrence.\n\nTable of Events\nevent\n"A Duel of Insults"\nwith 30 blank rows.\n\nThe plot summary rule is listed instead of the announce the score rule in the carry out requesting the score rules.\n\nThis is the plot summary rule:\n\tsay "The Plot So Far: [paragraph break]";\n\tlet act number be 0;\n\trepeat through the table of Events\n\tbegin;\n\t\tincrease act number by 1;\n\t\tsay "  Act [act number]: [event entry][line break]";\n\tend repeat.\n\nTest me with "christian, ask roxane about love / christian, say your breath smells like ripe taleggio to roxane / score / z / z / score".\n');
+    myProject.pasteCode(' [=0x0022=]Starry Void[=0x0022=][=0x000A=][=0x000A=]The Center Ring is a room.[=0x000A=][=0x000A=]The magician[=0x0027=]s booth is a door. [=0x0022=][if in Center Ring]A magician[=0x0027=]s booth stands in the corner, painted dark blue with glittering gold stars.[otherwise if the magician[=0x0027=]s booth is closed]A crack of light indicates the way back out to the center ring.[otherwise]The door stands open to the outside.[end if][=0x0022=].[=0x000A=][=0x000A=][Here we[=0x0027=]ve arranged for the booth to be described in the initial room description in different ways depending on where the player is when viewing it. We might like to do the same if the player takes a closer look:][=0x000A=][=0x000A=]Instead of examining the magician[=0x0027=]s booth in the Center Ring:[=0x000A=][=0x0009=]say [=0x0022=]It is dark blue and glittering with gold stars. [if the booth is open]The door currently stands open[otherwise]It has been firmly shut[end if].[=0x0022=][=0x000A=][=0x000A=]Instead of examining the magician[=0x0027=]s booth in the Starry Void:[=0x000A=][=0x0009=]say [=0x0022=]The booth door is [if the magician[=0x0027=]s booth is open]wide open[otherwise]shut, admitting only a thin crack of light[end if].[=0x0022=][=0x000A=][=0x000A=][And now we put it in place:][=0x000A=][=0x000A=]The magician[=0x0027=]s booth is inside from Center Ring and outside from Starry Void.[=0x000A=][=0x000A=][...and make sure that the booth-and-door object responds to all the names we have used for it in different places:][=0x000A=][=0x000A=]Understand [=0x0022=]door[=0x0022=] or [=0x0022=]of[=0x0022=] or [=0x0022=]the[=0x0022=] or [=0x0022=]light[=0x0022=] or [=0x0022=]crack[=0x0022=] or [=0x0022=]thin crack[=0x0022=] as the booth.[=0x000A=][=0x000A=]Test me with [=0x0022=]in / examine booth / open door of the booth / in / examine door / close door / look / examine crack of light[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode242()"><img border=0 src=../doc_images/paste.png></a> &quot;Panache&quot;
+<a href="javascript:pasteCode85()"><img border=0 src=../doc_images/paste.png></a>  &quot;Starry Void&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player is in a room called Beneath Roxane's Balcony. Christian is a man in the Balcony. &quot;Christian stands in a spot of moonlight and tries to avoid too obviously glancing at the shadows that conceal you.&quot; The description of Christian is &quot;Like you, Christian loves Roxane. Unlike you, he is handsome enough to receive her favor in return. He is the beauty to your brain.&quot;
+<blockquote><font color="#000080">The Center Ring is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Roxane is a woman in the Balcony. &quot;Above you in the night is Roxane.&quot; Roxane can be wooed, skeptical, confused, or annoyed. Roxane is skeptical. The description of Roxane is &quot;The brightest, the most radiant of women -- and in love with an utter fool.&quot;
+<blockquote><font color="#000080">The magician's booth is a door. &quot;[if in Center Ring]A magician's booth stands in the corner, painted dark blue with glittering gold stars.[otherwise if the magician's booth is closed]A crack of light indicates the way back out to the center ring.[otherwise]The door stands open to the outside.[end if]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Empty Street is a room. &quot;No one is about at this hour, all alone under a pale moon.&quot;
+<p>Here we've arranged for the booth to be described in the initial room description in different ways depending on where the player is when viewing it. We might like to do the same if the player takes a closer look:
+<p>
+<blockquote><font color="#000080">Instead of examining the magician's booth in the Center Ring:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is dark blue and glittering with gold stars. [if the booth is open]The door currently stands open[otherwise]It has been firmly shut[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Telling someone about something is speech. Asking someone about something is speech. Answering someone that something is speech.
+<blockquote><font color="#000080">Instead of examining the magician's booth in the Starry Void:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The booth door is [if the magician's booth is open]wide open[otherwise]shut, admitting only a thin crack of light[end if].&quot;
 </font></blockquote><p>
 <p>
-<p>This next portion borrows from the Advanced Actions chapter to allow us to command Christian to do things:
+<p>And now we put it in place:
 <p>
-<blockquote><font color="#000080">A persuasion rule for asking Christian to try speech: persuasion succeeds.
+<blockquote><font color="#000080">The magician's booth is inside from Center Ring and outside from Starry Void.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out Christian answering someone that something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Roxane is wooed;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'[noun], [the topic understood].'&quot;
+<p>...and make sure that the booth-and-door object responds to all the names we have used for it in different places:
+<p>
+<blockquote><font color="#000080">Understand &quot;door&quot; or &quot;of&quot; or &quot;the&quot; or &quot;light&quot; or &quot;crack&quot; or &quot;thin crack&quot; as the booth.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out Christian answering the player that something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Christian parrots your words back to you.&quot; instead.
+<blockquote><font color="#000080">Test me with &quot;in / examine booth / open door of the booth / in / examine door / close door / look / examine crack of light&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out Christian telling a skeptical Roxane about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change Roxane to confused;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Christian turns to [the noun]. 'I must tell you about [the topic understood],' he says, and comes to a halt, looking at you for further direction.
+<p>A final nice touch, if we're so inclined, is to borrow from the Basic Actions chapter and make the player automatically open the booth door before trying to enter:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode86(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode(' Before going through the closed magician[=0x0027=]s booth:[=0x000A=][=0x0009=]say [=0x0022=](first opening the door of the booth)[command clarification break][=0x0022=];[=0x000A=][=0x0009=]silently try opening the booth.[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode86()"><img border=0 src=../doc_images/paste.png></a>  Before going through the closed magician's booth:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first opening the door of the booth)[command clarification break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try opening the booth.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">&nbsp;&nbsp;&nbsp;&nbsp;Perhaps you'd better give him exact lines to say. Surely he can't mess up an instruction like 'say hello to Roxane.'&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out Christian asking a skeptical Roxane about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change Roxane to confused;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'So,' says Christian nervously to [the noun]. 'Did you know about [the topic understood]?' But Roxane merely seems puzzled.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out Christian telling a confused Roxane about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change Roxane to annoyed;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Christian begins rambling on witlessly about [the topic understood].&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out Christian asking a confused Roxane about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change Roxane to annoyed;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Christian puts another confused question about [the topic understood].&quot; instead.
-</font></blockquote><p>
-<p>
-<p>And now we have enough material to begin writing the scenes:
-<p>
-<blockquote><font color="#000080">Courting Roxane is a scene. Courting Roxane begins when play begins. Courting Roxane ends in success when Roxane is wooed. Courting Roxane ends in failure when Roxane is annoyed.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When Courting Roxane ends in success:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;record &quot;Seduction by Proxy&quot; in the Table of Events;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Roxane, deeply moved by this sentiment, invites Christian up to her balcony. He scrambles up the ivy and disappears into her bedroom; the last thing you hear is a girlish giggle from above.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove Roxane from play; remove Christian from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to Empty Street.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When Courting Roxane ends in failure:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;record &quot;Ruining Christian's Chances&quot; in the Table of Events;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Roxane sighs heavily and goes back into her room, slamming the door behind her.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">'Thanks very much,' says Christian to you, striding off down the street.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove Roxane from play; remove Christian from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to Empty Street.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Sulky Ramble is a scene. Sulky Ramble begins when Courting Roxane ends in success. Sulky Ramble ends when the time since Sulky Ramble began is 2 minutes. When Sulky Ramble ends: record &quot;Wandering the Streets, Sulking&quot; in the Table of Events.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn during Sulky Ramble:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You find yourself kicking fenceposts quite without thinking about it.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Smug Ramble is a scene. Smug Ramble begins when Courting Roxane ends in failure. Smug Ramble ends when the time since Smug Ramble began is 2 minutes. When Smug Ramble ends: record &quot;Wandering the Streets, Exultant&quot; in the Table of Events; say &quot;Of course, you will regret this soon enough.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn during Smug Ramble:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You find yourself smiling fiercely at the moon.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To record (occurrence - text) in (target table - a table-name):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose a blank row in the target table;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the event entry to the occurrence.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Events
-<br>event
-<br>&quot;A Duel of Insults&quot;
-<br>with 30 blank rows.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The plot summary rule is listed instead of the announce the score rule in the carry out requesting the score rules.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">This is the plot summary rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The Plot So Far: [paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let act number be 0;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the table of Events
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase act number by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  Act [act number]: [event entry][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;christian, ask roxane about love / christian, say your breath smells like ripe taleggio to roxane / score / z / z / score&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc151.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>For the contrasting case of a space that is nested inside another place and is not its own room -- say a stall at an open-air market, or a rowboat on a lake -- see the example &quot;Tamed&quot;.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc28.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc150.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc152.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc27.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc29.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

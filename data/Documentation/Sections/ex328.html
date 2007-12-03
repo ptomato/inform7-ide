@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.13. Topic columns</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.10. Variations: arrays, logs, queues, stacks, sets, sieves and rings</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,146 +19,201 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "The Queen of Sheba" -->
-<!-- SEARCH SECTION "Ex 246" -->
-<!-- SEARCH SORT "Ex 015-013-246" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc236.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Tables</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc238.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.13. Topic columns</b></font></td></tr></table>
+<!-- SEARCH TITLE "Your Mother Doesn't Work Here" -->
+<!-- SEARCH SECTION "Ex 377" -->
+<!-- SEARCH SORT "Ex 020-010-377" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc333.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc335.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.10. Variations: arrays, logs, queues, stacks, sets, sieves and rings</b></font></td></tr></table>
 <p>
-<p>When double-quoted matter appears in a column of a table, Inform will normally treat that as text for printing out. The exception is when the column is called &quot;topic&quot;, where it is treated as text for comparing against what the player has typed. There is really only one operation allowed with topic columns, the &quot;...listed in...&quot; construction, but fortunately it is the one most often needed.
+<p>Lists are highly adaptable, and many other collection-like constructions can be made using them. This section introduces no new material, but simply suggests some of the variations which are possible.
 <p>
-<p>Let us suppose that the Sybil has a penchant for telling passers-by which is the Greek muse for what. We might write:
+<p>1. The traditional computing term <b>array</b> means a list of values accessed by their entry numbers, often used in mathematical computations. The difference between an array and a list is mostly one of attitude, but usually arrays are fixed in length whereas lists can expand or contract.
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode51(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After asking the Sybil about a topic listed in the Table of Sybil\'s Replies, say "The Sybil declaims for a while, the gist being that the muse in question looks after [muse entry]."\n\n[We can then provide a simple table giving her responses:]\n\nTable of Sybil\'s Replies\nTopic\tMuse\n"calliope"\t"epic poetry"\n"clio"\t"history"\n"erato"\t"love poetry"\n"euterpe"\t"music"\n"melpomene"\t"tragedy"\n"polyhymnia"\t"sacred poetry"\n"terpsichore"\t"dancing"\n"thalia"\t"comedy"\n"urania"\t"astronomy"\n"monica"\t"tidiness"\n"phoebe"\t"massage"\n"rachel"\t"oval hair-cuts"\n\n');
-}
-</script>
-<a href="javascript:pasteCode51()"><img border=0 src=../doc_images/paste.png></a> After asking the Sybil about a topic listed in the Table of Sybil's Replies, say &quot;The Sybil declaims for a while, the gist being that the muse in question looks after [muse entry].&quot;
+<p>2. A <b>log</b> is a list which records the most recently arrived values, but does not allow itself to grow indefinitely. In the following, which remembers the seven most recently taken items, new values arrive at the end while old ones eventually disappear from the front:
+<p>
+<blockquote><font color="#000080">The most-recently-taken list is a list of objects that varies.
+<br>Carry out taking something (called the item):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;truncate the most-recently-taken list to the last 6 entries;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the item to the most-recently-taken list.
+<br>After taking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Taken. (So, your recent acquisitions: [most-recently-taken list].)&quot;
 </font></blockquote><p>
 <p>
-<p>We can then provide a simple table giving her responses:
+<p>Note that the most-recently-taken list begins play as the empty list, grows as the first few items are taken, but then stabilises at length 7 thereafter. If we need to remember recent history, but only <i>recent</i> history, then a log is better than a list which can grow indefinitely, because there is no risk of speed reduction or memory exhaustion in a very long game.
 <p>
-<blockquote><font color="#000080">Table of Sybil's Replies
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">Topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">Muse</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;calliope&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;epic poetry&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;clio&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;history&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;erato&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;love poetry&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;euterpe&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;music&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;melpomene&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;tragedy&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;polyhymnia&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;sacred poetry&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;terpsichore&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;dancing&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;thalia&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;comedy&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;urania&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;astronomy&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;monica&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;tidiness&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;phoebe&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;massage&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;rachel&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;oval hair-cuts&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<p>3. A <b>queue</b> is a list of values which are waiting for attention. New values join at the back, while those being dealt with are removed from the front (whereupon the whole queue moves up one). An empty queue means that nobody is waiting for attention: but there is, in principle, no upper limit to the size of a queue, as anyone who has tried to make a couchette reservation at Roma Termini will know.
+<p>
+<p>Queues typically form when two independent processes are at work, but going at different or variable speeds. An empty queue looks just like any other list:
+<p>
+<blockquote><font color="#000080">The queue is a list of objects that varies.
 </font></blockquote><p>
 <p>
-<p>Topics can use the full range of abilities of the &quot;understanding&quot; system which Inform uses to parse text, and which will be the subject of a later chapter. For now, note that the Sybil's topics might equally include &quot;flora/eve&quot; (matching the single word &quot;flora&quot; or the single word &quot;eve&quot;), or something more elaborate such as:
+<p>(Invariably people, in fact, but lists can only be of kinds of value: so, &quot;list of objects&quot;.) Once we identify a &quot;new customer&quot;, we can join him to the queue thus:
 <p>
-<blockquote><font color="#000080">&quot;Bridget&quot; or &quot;Bridge&quot; or &quot;Bridget Jones&quot;
+<blockquote><font color="#000080">add the new customer to the queue;
 </font></blockquote><p>
 <p>
-<a href=doc243.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Understand</b></font></a><i> for the system Inform uses to parse text</i><p><p>
+<p>The process of serving the customers needs to make sure there is actually somebody waiting in the queue before it does anything:
+<p>
+<blockquote><font color="#000080">Every turn when the number of entries in the queue is not 0:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the next customer be entry 1 of the queue;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The next customer] is served and leaves.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove entry 1 from the queue.
+</font></blockquote><p>
+<p>
+<p>Of course queues can also be constructed which empty from other positions, rather than the front: or we could make what computer scientists sometimes call a <b>deque</b>, a &quot;double-ended queue&quot; where new values arrive at both ends.
+<p>
+<p>4. A <b>stack</b> is like a queue except that values arrive at, and are removed from, the same end. Stacks are slightly faster if the active end is the back rather than the front, though this will only be noticeable if they grow quite large.
+<p>
+<p>To put a value V onto a stack S (which is known as &quot;pushing&quot;) is simple:
+<p>
+<blockquote><font color="#000080">add V to S;
+</font></blockquote><p>
+<p>
+<p>And to remove a value from the top of the stack (which is known as &quot;pulling&quot;):
+<p>
+<blockquote><font color="#000080">let N be the number of entries in S;
+<br>let V be entry N of S;
+<br>remove entry N of S;
+</font></blockquote><p>
+<p>
+<p>Note that the middle line, accessing entry N, will fail if N = 0, that is, if the stack is empty: Inform's list routines will produce a run-time problem message.
+<p>
+<p>Stacks are useful if some long-term process is constantly being interrupted by newer and more urgent demands, but they can also be used in planning. If a character has a long-term goal, which needs various short-term goals to be achieved along the way, then a stack can represent the goals currently being pursued. The top of the stack represents what the character is trying to achieve now. If the character realises that it needs to achieve something else first, we put that new goal onto the top of the stack, and it becomes the new current goal. When the character completes a task, it can be removed, and we can go back to trying to finish whatever is now on top. When the stack is empty, the character has achieved the original goal.
+<p>
+<p>5. Notoriously, <b>set</b> has 464 distinct meanings in the Oxford English Dictionary, making it the single most ambiguous word in the language. Here we mean not the home of a badger or the Egyptian god of the desert, but the mathematical sense: a collection of values (sometimes called &quot;elements&quot;) without duplicates, and which is normally written in brace notation and in some natural order for the reader's convenience.
+<p>
+<p>The trick here is to maintain the principle that, at all times, our list is sorted in order and contains no duplicates. To provide an example, we start with two sets of numbers:
+<p>
+<blockquote><font color="#000080">let S be {2, 4, 8, 16, 32, 64};
+<br>let T be {2, 4, 6, 10};
+</font></blockquote><p>
+<p>
+<p>Here we add an element to T:
+<p>
+<blockquote><font color="#000080">add 8 to T, if absent; sort T;
+</font></blockquote><p>
+<p>
+<p>The &quot;if absent&quot; clause ensures that no duplicate can occur, and by sorting T afterwards, we maintain the principle that a set must remain in order - so T is now {2, 4, 6, 8, 10}, not {2, 4, 6, 10, 8}. (Inform's sorting algorithm is fast on nearly-sorted lists, so frequent sorting is not as inefficient as it might look.)
+<p>
+<p>We next take the union of T and S, that is, the set containing everything which is in either or both:
+<p>
+<blockquote><font color="#000080">let U be S; add T to U, if absent; sort U;
+</font></blockquote><p>
+<p>
+<p>This makes U = {2, 4, 6, 8, 10, 16, 32, 64}, and once again no duplicates occur and we preserve the sorting. The intersection of T and S, the set of elements in both of them, is a little trickier:
+<p>
+<blockquote><font color="#000080">let I be T;
+<br>repeat with the element running through T
+<br>begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the element is not listed in S, remove the element from I;
+<br>end repeat;
+</font></blockquote><p>
+<p>
+<p>(Faster methods could be devised which exploit the sortedness of T and S, but are not worth it for shortish lists.) This produces I = {2, 4, 8}. Lastly, we can form the set difference, consisting of those elements which are in S but not in T:
+<p>
+<blockquote><font color="#000080">let D be S; remove T from D, if present;
+</font></blockquote><p>
+<p>
+<p>Here, as with intersection, since all we do is to strike out unwanted elements, the surviving ones remain in order and there is no need to sort when we are finished. This produces D = {16, 32, 64}.
+<p>
+<p>6. A <b>sieve</b> is used to make a complicated choice where there are many constraints, by ruling out impossible cases to see what is left. The term derives from the kitchen utensil (for sieving fine grains of flour), but via the name of the &quot;sieve of Eratosthenes&quot;, an ancient Greek method for determining the prime numbers.
+<p>
+<p>Using a sieve is much like using a set, and the difference is mainly one of outlook - we are interested in what does not belong, rather than what does.
+<p>
+<p>7. A <b>ring</b> is not so much a row of values, more a circle, with the last and first entries thought of as adjacent. One position is usually thought of as special, and is the place where new items are added: this may as well be entry 1. For instance, to add &quot;new item&quot; to the ring:
+<p>
+<blockquote><font color="#000080">add the item at entry 1 in the ring;
+</font></blockquote><p>
+<p>
+<p>To set &quot;item&quot; to the frontmost value and extract it from the ring:
+<p>
+<blockquote><font color="#000080">let the item be entry 1 of the ring;
+<br>remove entry 1 from the ring;
+</font></blockquote><p>
+<p>
+<p>And we can rotate the ring in either direction, making a different entry the new entry 1 and therefore the new frontmost value:
+<p>
+<blockquote><font color="#000080">rotate the ring;
+<br>rotate the ring backwards;
+</font></blockquote><p>
+<p>
 <p><hr><p>
-<a name="e101"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex101.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>245</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex101.html#e101 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Merlin</font></b></a><br>A REMEMBER command which accepts any text and looks up a response in a table of recollections.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex101.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e273"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex273.html#e273 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>374</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex273.html#e273 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Circle of Misery</font></b></a><br>Retrieving items from an airport luggage carousel is such fun, how can we resist simulating it, using a list as a ring buffer?<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex273.html#e273 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e28"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex28.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>375</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex28.html#e28 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> I Didn't Come All The Way From Great Portland Street</font></b></a><br>In this fiendishly difficult puzzle, which may perhaps owe some inspiration to a certain BBC Radio panel game (1967-), a list is used as a set of actions to help enforce the rule that the player must keep going for ten turns without hesitation, repetition, or deviating from the subject on the card.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex28.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e319"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex319.html#e319 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>376</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex319.html#e319 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Fibonacci Sequence</font></b></a><br>The modest Leonardo Fibonacci of Pisa will be only too happy to construct his sequence on request, using an array.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex319.html#e319 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e328"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc237.html#e328 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>246</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc237.html#e328 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Queen of Sheba</font></b></a><br>Allowing the player to use question words, and using that information to modify the response given by the other character.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex328.html#e328 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e328"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc334.html#e328 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>377</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc334.html#e328 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Your Mother Doesn't Work Here</font></b></a><br>Your hard-working mother uses a list as a stack: urgent tasks are added to the end of the list, interrupting longer-term plans.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex328.html#e328 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want the player to ask questions of slightly more complexity - we might want to build in a system that understood &quot;who&quot;, &quot;what&quot;, &quot;where&quot;, and &quot;when&quot;, for instance. We could use a topic table for this, too:
+<p>Suppose the player's mother is supposed to be cleaning the living room, but she can be interrupted by the need to pick up things the player has dropped. New tasks are added to the end of her &quot;current plan&quot; list; every turn, she attempts to do whatever is the last entry on that list.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode333(code) {
+function pasteCode466(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"The Queen of Sheba"\n\nInterrogative is a kind of value. The interrogatives are who, what, when, where, how, and why.\n\nCurrent question is an interrogative that varies.\n\nAfter asking someone about something: respond to the question. After answering someone that something: respond to the question.\n\nAfter telling someone about something: say "You\'re here to ask questions and test Solomon\'s wisdom, not to give him a sample of your own."\n\nTable of Wise Answers\ntopic\tquestion type\treply\n"rain/weather/clouds/cloud/rains"\twhat\t"\'Clouds are a disturbance made by the paths of birds,\' Solomon replies. \'The air beaten by their wings becomes agitated, as when a river is stirred and the mud churns up.\'"\n"rain/weather/clouds/cloud/rains"\twhere\t"\'Weather is contained in a great silk bag which holds in the heavens,\' replies Solomon."\n"hunger/food/eating"\twhen\t"\'Sorry, are you getting hungry?\' he says, and rings a bell to summon servants."\n"hunger/food/eating"\twhy\t"\'Men were made to need food in order that they must farm and cook and dine together,\' Solomon replies. \'Otherwise, they might live apart, each sufficient in himself. But no man can feed himself alone all through his life.\'"\n"Solomon/he/himself"\twho\t"\'As you see,\' he says, holding out his arms to each side."\n"Solomon/he/himself"\twhat\t"\'I am an ordinary man,\' he answers."\n\n[One of the nice things about this system is that it only resets the "current question" when we get a new question word. For instance, this test will produce different replies to the question about Solomon himself, because the second time he is still in the mode of answering "what" questions:]\n\nTest me with "ask solomon about himself / ask solomon what rain is / ask solomon about himself".\n\n[If Solomon is to live up to his reputation at all, his wisdom table will have to be quite a bit longer - though one also would want to be careful, because forcing the game to cycle through a really immense table could be quite time-consuming. In fact, for the sake of this example, let\'s reward the player for managing to stay within the (narrow) range of Solomon\'s knowledge:]\n\nThe Hall of Almug Tree Pillars is a room. "The pillars of the room are made of almug tree, the ceiling made of silk and the floor of glass." Solomon is a man in the Hall of Almug Tree Pillars. Solomon has a number called wisdom. The wisdom of Solomon is 0.\n\nEvery turn:\n\tif the wisdom of Solomon is 3\n\tbegin;\n\t\tsay "Truly, Solomon has answered all your questions, and his wisdom is even as great as you had heard!";\n\t\tend the game saying "Your heart beats strangely fast";\n\tend if.\n\nWhen play begins, say "\'Oh, you\'ve arrived,\' says Solomon."\n\n[In a real game we\'d need to be a great deal subtler. All the same, if we have a character of quite limited resources to present to the player, it\'s a good idea to give the player some incentive to stay on topic, ask questions the character can answer, and generally interact within the parameters we\'re prepared for.]\n\n[Now, this last bit requires some trickery from later chapters, particularly those on Understanding and Activities, to pull the question words out of the player\'s command:]\n\nAfter reading a command:\n\tif the player\'s command includes "[interrogative]", change the current question to the interrogative understood.\n\nTo respond to the question:\n\trepeat through the Table of Wise Answers\n\tbegin;\n\t\tif the topic understood includes topic entry\n\t\tbegin;\n\t\t\tif the current question is the question type entry\n\t\t\tbegin;\n\t\t\t\tsay "[reply entry][paragraph break]";\n\t\t\t\tincrease the wisdom of Solomon by 1;\n\t\t\t\trule succeeds;\n\t\t\tend if;\n\t\tend if;\n\tend repeat;\n\tsay "Solomon looks blank, appalled by a question for which he was not prepared.";\n\tend the game saying "You have befuddled Solomon!"\n\nUnderstand "ask [someone] [text]" as asking it about.\n\n');
+    myProject.pasteCode(' [=0x0022=]Your Mother Doesn[=0x0027=]t Work Here[=0x0022=][=0x000A=][=0x000A=]A person has a list of stored actions called the current plan.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]repeat with culprit running through people who are not the player[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the number of entries in current plan of the culprit is greater than 0[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let N be the number of entries in the current plan of the culprit;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]try entry N of the current plan of the culprit;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]remove entry N from the current plan of the culprit;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x000A=]The Living Room is a room. It contains a somewhat muddy Persian rug. Your mother is a woman in the Living Room.[=0x000A=][=0x000A=]West of the Living Room is the Kitchen.[=0x000A=][=0x000A=]Instead of your mother rubbing the rug:[=0x000A=][=0x0009=]say [=0x0022=]Your mother scrubs the stained areas of the rug, muttering to herself.[=0x0022=][=0x000A=][=0x000A=]Instead of taking something:[=0x000A=][=0x0009=]say [=0x0022=]Nah, Mom[=0x0027=]ll get that.[=0x0022=][=0x000A=][=0x000A=]Report your mother taking something:[=0x000A=][=0x0009=]say [=0x0022=]Your mother picks up [the noun][one of], sighing deeply[or], jaw tight[or], with assorted comments on your manners[or]; to judge from her comments, she is also indulging in a pleasant fantasy about Swiss boarding schools[stopping].[=0x0022=] instead.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]add the action of mother going west to the current plan of mother;[=0x000A=][=0x0009=]add the action of mother rubbing the rug to the current plan of mother.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]if mother is not in the Living Room, end the game in victory.[=0x000A=][=0x000A=]Carry out dropping something:[=0x000A=][=0x0009=]add the action of mother taking the noun to the current plan of mother.[=0x000A=][=0x000A=]The player carries some dirty socks, some dirty shoes, a dirty hat, a pair of dirty trousers, and a backpack.[=0x000A=][=0x000A=]Test me with [=0x0022=]drop socks / z / drop shoes / drop hat / drop all / z / z[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode333()"><img border=0 src=../doc_images/paste.png></a> &quot;The Queen of Sheba&quot;
+<a href="javascript:pasteCode466()"><img border=0 src=../doc_images/paste.png></a>  &quot;Your Mother Doesn't Work Here&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Interrogative is a kind of value. The interrogatives are who, what, when, where, how, and why.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Current question is an interrogative that varies.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After asking someone about something: respond to the question. After answering someone that something: respond to the question.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After telling someone about something: say &quot;You're here to ask questions and test Solomon's wisdom, not to give him a sample of your own.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Wise Answers
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">question type</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;rain/weather/clouds/cloud/rains&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">what</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Clouds are a disturbance made by the paths of birds,' Solomon replies. 'The air beaten by their wings becomes agitated, as when a river is stirred and the mud churns up.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;rain/weather/clouds/cloud/rains&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">where</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Weather is contained in a great silk bag which holds in the heavens,' replies Solomon.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;hunger/food/eating&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">when</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Sorry, are you getting hungry?' he says, and rings a bell to summon servants.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;hunger/food/eating&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">why</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Men were made to need food in order that they must farm and cook and dine together,' Solomon replies. 'Otherwise, they might live apart, each sufficient in himself. But no man can feed himself alone all through his life.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Solomon/he/himself&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">who</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'As you see,' he says, holding out his arms to each side.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Solomon/he/himself&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">what</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'I am an ordinary man,' he answers.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<p>One of the nice things about this system is that it only resets the &quot;current question&quot; when we get a new question word. For instance, this test will produce different replies to the question about Solomon himself, because the second time he is still in the mode of answering &quot;what&quot; questions:
-<p>
-<blockquote><font color="#000080">Test me with &quot;ask solomon about himself / ask solomon what rain is / ask solomon about himself&quot;.
-</font></blockquote><p>
-<p>
-<p>If Solomon is to live up to his reputation at all, his wisdom table will have to be quite a bit longer - though one also would want to be careful, because forcing the game to cycle through a really immense table could be quite time-consuming. In fact, for the sake of this example, let's reward the player for managing to stay within the (narrow) range of Solomon's knowledge:
-<p>
-<blockquote><font color="#000080">The Hall of Almug Tree Pillars is a room. &quot;The pillars of the room are made of almug tree, the ceiling made of silk and the floor of glass.&quot; Solomon is a man in the Hall of Almug Tree Pillars. Solomon has a number called wisdom. The wisdom of Solomon is 0.
+<blockquote><font color="#000080">A person has a list of stored actions called the current plan.
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the wisdom of Solomon is 3
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with culprit running through people who are not the player
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Truly, Solomon has answered all your questions, and his wisdom is even as great as you had heard!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Your heart beats strangely fast&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins, say &quot;'Oh, you've arrived,' says Solomon.&quot;
-</font></blockquote><p>
-<p>
-<p>In a real game we'd need to be a great deal subtler. All the same, if we have a character of quite limited resources to present to the player, it's a good idea to give the player some incentive to stay on topic, ask questions the character can answer, and generally interact within the parameters we're prepared for.
-<p>
-<p>Now, this last bit requires some trickery from later chapters, particularly those on Understanding and Activities, to pull the question words out of the player's command:
-<p>
-<blockquote><font color="#000080">After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;[interrogative]&quot;, change the current question to the interrogative understood.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To respond to the question:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Wise Answers
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the topic understood includes topic entry
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the number of entries in current plan of the culprit is greater than 0
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current question is the question type entry
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase the wisdom of Solomon by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let N be the number of entries in the current plan of the culprit;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try entry N of the current plan of the culprit;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove entry N from the current plan of the culprit;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Solomon looks blank, appalled by a question for which he was not prepared.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;You have befuddled Solomon!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;ask [someone] [text]&quot; as asking it about.
+<blockquote><font color="#000080">The Living Room is a room. It contains a somewhat muddy Persian rug. Your mother is a woman in the Living Room.
 </font></blockquote><p>
 <p>
-<p>And now we have a game that will accept (though not always respond very sensibly to) questions of almost any form we might put to another character: ASK SOLOMON WHAT RAIN IS will be answered, but then again, it won't be distinguished from, say, ASK SOLOMON WHETHER THIS PERSISTENT RAIN IS A DIVINE PUNISHMENT OR WHAT.
+<blockquote><font color="#000080">West of the Living Room is the Kitchen.
+</font></blockquote><p>
 <p>
-<p>All the same, a system that allowed the player a bit more specification of questions than simple keyword-use might be useful in a mystery game, for instance, where we might want to let our detective conduct inquiries into specific details. An alternative approach to the rather free one above would be to force the player to use only questions of the form WHAT IS RAIN? or WHO ARE YOU?: this would cut down on false-positive matches. But we might still choose to store the responses in a table of this type.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc237.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Instead of your mother rubbing the rug:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your mother scrubs the stained areas of the rug, muttering to herself.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of taking something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Nah, Mom'll get that.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report your mother taking something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your mother picks up [the noun][one of], sighing deeply[or], jaw tight[or], with assorted comments on your manners[or]; to judge from her comments, she is also indulging in a pleasant fantasy about Swiss boarding schools[stopping].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the action of mother going west to the current plan of mother;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the action of mother rubbing the rug to the current plan of mother.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if mother is not in the Living Room, end the game in victory.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out dropping something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the action of mother taking the noun to the current plan of mother.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries some dirty socks, some dirty shoes, a dirty hat, a pair of dirty trousers, and a backpack.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;drop socks / z / drop shoes / drop hat / drop all / z / z&quot;.
+</font></blockquote><p>
+<p>
+<p>As goal-seeking goes, this is fairly rudimentary; &quot;Boston Cream&quot; provides an alternative (and slightly more sophisticated approach), but for really complex goal-seeking characters, it is probably best to turn to the character extensions designed for Inform.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc334.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e34"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex34.html#e34 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>247</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex34.html#e34 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Questionable Revolutions</font></b></a><br>An expansion on the previous idea, only this time we store information and let characters answer depending on their expertise in a given area.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex34.html#e34 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc236.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc238.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e51"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex51.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>378</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex51.html#e51 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lugubrious Pete's Delicatessen</font></b></a><br>In this evocation of supermarket deli counter life, a list is used as a queue to keep track of who is waiting to be served.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex51.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e83"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>379</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex83.html#e83 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Sieve of Eratosthenes</font></b></a><br>The haughty Eratosthenes of Cyrene will nevertheless consent to sieve prime numbers on request.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e87"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex87.html#e87 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>380</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex87.html#e87 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Eyes, Fingers, Toes</font></b></a><br>A safe with a multi-number combination, meant to be dialed over multiple turns, is implemented using a log of the last three numbers dialed. The log can then be compared to the safe's correct combination.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex87.html#e87 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc333.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc335.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

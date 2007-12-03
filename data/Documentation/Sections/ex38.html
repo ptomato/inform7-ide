@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.7. Indexed text in variables, properties and tables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.14. How many times?</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,131 +19,91 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Mirror, Mirror" -->
-<!-- SEARCH SECTION "Ex 363" -->
-<!-- SEARCH SORT "Ex 019-007-363" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc321.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc323.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.7. Indexed text in variables, properties and tables</b></font></td></tr></table>
+<!-- SEARCH TITLE "Infiltration" -->
+<!-- SEARCH SECTION "Ex 139" -->
+<!-- SEARCH SORT "Ex 009-014-139" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc140.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc142.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.14. How many times?</b></font></td></tr></table>
 <p>
-<p>So far we have been able to ignore the difference between &quot;text&quot; and &quot;indexed text&quot; because Inform has always been able to convert the former to the latter when needed. But the reverse conversion cannot be made. Ordinary text is stored in a specially compacted, read-only form: it's really part of the program, not part of the data.
+<p>There are two further ways to examine the historical record. Given any condition, we can say
 <p>
-<p>The upshot of this is that if we need a variable to contain text which can be internally altered during play, then we must declare this. Instead of writing
-<p>
-<blockquote><font color="#000080">The player's forename is a text that varies.
+<blockquote><font color="#000080">if (...condition...) for the second time ...
+<br>if (...condition...) twice ...
+<br>if (...condition...) 2 times...
+<br>if (...condition...) two times...
 </font></blockquote><p>
 <p>
-<p>we must write:
+<p>(all of which are synonymous: the words once, twice, thrice, one, two, three, four, five, six, seven, eight, nine, ten, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth and tenth all mean what they obviously should). The result is true if the condition holds now and has held for only one previous spell in the past. A condition holding for, say, fifteen consecutive turns without a break counts as only one &quot;time&quot; - so what we mean by &quot;twice&quot; here is that it is true now, was previously false for a while, and was previously true for a while before that, but no more. In effect, then,
 <p>
-<blockquote><font color="#000080">The player's forename is an indexed text that varies.
+<blockquote><font color="#000080">if the player is in the Ballroom for the third time ...
 </font></blockquote><p>
 <p>
-<p>Similarly for a property:
+<p>is true if this is the third visit to the Ballroom. We can also say
 <p>
-<blockquote><font color="#000080">A person has an indexed text called nickname.
+<blockquote><font color="#000080">if the player is in the Ballroom for more than the third time ...
 </font></blockquote><p>
 <p>
-<p>For a named &quot;let&quot; value, we have a dilemma. These are normally created by writing something like:
+<p>or similarly &quot;less than&quot;, &quot;at least&quot;, &quot;at most&quot;. It would be more natural, though, to say
 <p>
-<blockquote><font color="#000080">let the target be 17;
+<blockquote><font color="#000080">if the player has been in the Ballroom three times ...
 </font></blockquote><p>
 <p>
-<p>and Inform looks at the value - here 17, a number - to deduce that the new value, called &quot;target&quot;, must be a number. So if we write:
+<p>The adjective &quot;only&quot; (or equivalently &quot;exactly&quot;) can be added to obtain
 <p>
-<blockquote><font color="#000080">let the target be &quot;excellent&quot;;
+<blockquote><font color="#000080">if the player has been in the Ballroom only three times ...
 </font></blockquote><p>
 <p>
-<p>the result is that &quot;target&quot; is just a text, not an indexed text. We get around this by writing instead:
+<p>To recap, this means there have been exactly three visits to the Ballroom in history, whereas
 <p>
-<blockquote><font color="#000080">let the target be an indexed text;
+<blockquote><font color="#000080">if the player is in the Ballroom for the third time ...
 </font></blockquote><p>
 <p>
-<p>which creates the value, initially having the empty text as contents, and then
-<p>
-<blockquote><font color="#000080">let the target be &quot;excellent&quot;;
-</font></blockquote><p>
-<p>
-<p>to subsequently set its initial state.
-<p>
-<p>The same issue arises for table columns, because we are allowed to simply write out values in table columns, and let Inform work out what kind they are. If there are blank entries, we can always write in the kind of value by hand, but suppose the entries are initially all filled in? The answer is that we can imitate this:
-<p>
-<blockquote><font color="#000080">Table of Neptune's Moons
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">moon</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">surface (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Nereid&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;utterly unknown&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Triton&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cryovolcanic ridges&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Proteus&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highly irregular and sooty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<p>Here the two columns are called &quot;moon&quot; and &quot;surface&quot;, so we can talk about the &quot;moon entry&quot; and the &quot;surface entry&quot; once a row has been chosen: but the moon entry is text, and the surface entry is indexed text.
-<p>
-<p>Lastly, suppose we want to define new phrases which deal with text. Here we have two things to remember. First, we need to say that the value decided is indexed text, not text; secondly, that text converts to indexed text by magic, but not vice versa. So:
-<p>
-<blockquote><font color="#000080">To decide what indexed text is (T - text) doubled:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on &quot;[T][T]&quot;.
-</font></blockquote><p>
-<p>
-<p>works fine so long as we only want to pass text to it, but would not let us double indexed text. This, on the other hand, handles both:
-<p>
-<blockquote><font color="#000080">To decide what indexed text is (T - indexed text) doubled:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on &quot;[T][T]&quot;.
-</font></blockquote><p>
-<p>
-<p>So for instance:
-<p>
-<blockquote><font color="#000080">say &quot;Neptune&quot; doubled.
-</font></blockquote><p>
-<p>
-<p>prints &quot;NeptuneNeptune&quot; because Inform automatically converts &quot;Neptune&quot; to indexed text when &quot;doubled&quot; is used on it.
+<p>means there have been exactly three visits, the third of which is still going on - an important distinction.
 <p>
 <p><hr><p>
-<a name="e133"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex133.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>362</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex133.html#e133 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Identity Theft</font></b></a><br>Allowing the player to enter a name to be used for the player character during the game.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex133.html#e133 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e38"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc322.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>363</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc322.html#e38 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Mirror, Mirror</font></b></a><br>The sorcerer's mirror can, when held up high, form an impression of its surroundings which it then preserves.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex38.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e38"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc141.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>139</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc141.html#e38 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Infiltration</font></b></a><br>A room whose description changes depending on the number of times the player has visited.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex38.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Suppose we have a location that makes the player uncomfortable, and we want its description to change slightly each time he goes there, to reflect his increasing unease. We also want the door to that room to show whether he is going there for the first time, or whether this is a repeat visit.
+<p>
+<p>We start with an ordinary room:
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode452(code) {
+function pasteCode229(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Mirror, Mirror"\n\nThe Sorcerer\'s Workshop is a room. "The sorcerer\'s den is a dusty, whispering place. A grandfather clock with skeletal hands reads [the time of day in words]. The floorboards are stained where that porridge just wouldn\'t come out."\n\nThe Apprentice\'s Pantry is east of the Workshop. "This is where the aproned apprentice traditionally makes the camomile tea, cleans out the jackdaw cages and furtively examines purloined artefacts."\n\nWhen play begins: erase the mirror.\n\nThe player carries a magic mirror. The magic mirror has indexed text called mirror vision.\n\nTo erase the mirror: change mirror vision of the mirror to "The mirror is polished clean, and has no impression upon it."\n\nTo say current room description: try looking.\nTo expose the mirror:\n\tsay "The mirror shines momentarily with a dazzling light.[paragraph break]";\n\tchange mirror vision to "The hazy image in the mirror preserves a past sight:[line break][current room description]All is distorted and yet living, as though the past and present are coterminous in the mirror."\n\nUnderstand "hold up [something preferably held]" or "hold [something preferably held] up" as holding aloft. Holding aloft is an action applying to one carried thing. Report holding aloft: say "You hold [the noun] aloft."\n\nInstead of rubbing the mirror: erase the mirror; try examining the mirror. Instead of holding aloft the mirror: expose the mirror.\n\nThe description of the mirror is "[mirror vision of the mirror]".\n\nTest me with "look / examine mirror / hold up mirror / z / look / x mirror / rub mirror / east / hold mirror up / west / x mirror".\n');
+    myProject.pasteCode('[=0x0022=]Infiltration[=0x0022=][=0x000A=][=0x000A=]The Wasteland is a room. [=0x0022=]In its more distant reaches, the Wasteland has a kind of austere beauty, but here beside the Secure Zone it is the worst of all possible worlds. Barrels of toxins are stacked the regulation hundred and fifty feet out; more traditional garbage has simply been flung over the wall, and this category includes one or two corpses roughly and inadequately disguised by black plastic bags. The wall itself has become a canvas for outcasts and exiles, and is covered with obscene paintings, lewd remarks about the inhabitants of the Secure Zone, and a few maudlin epitaphs.[=0x0022=][=0x000A=][=0x000A=][Now the door, which will change from saying [=0x0022=]leads inside...[=0x0022=] to [=0x0022=]leads back inside...[=0x0022=] when this becomes appropriate:][=0x000A=][=0x000A=]The portal is a door. It is inside from the Wasteland and outside from the Secure Zone. [=0x0022=][if in the Wasteland]To the west, a[otherwise]A[end if] portal in the cinder-block and barbed wire wall leads[if in the Wasteland and the Zone is visited] back[end if] [if in the Wasteland]inside[otherwise]outside[end if].[=0x0022=][=0x000A=][=0x000A=][Here we haven[=0x0027=]t used any conditions that we didn[=0x0027=]t know about in previous sections: the portal line only reflects whether the Zone has been visited never or visited once. But the Secure Zone itself makes use of the number of times visited:][=0x000A=][=0x000A=]The Secure Zone has the description [=0x0022=][if the player is in the Zone for the second time]Re-entering the Zone has not made you any more comfortable inside. [end if]Despite your carefully-chosen outfit and the walk you have been practicing, you are sure those inside can tell you don[=0x0027=]t belong. Not that very many people are visible here[if the player is in the Zone for more than the second time] -- the place seems more desolate than ever[end if].[=0x0022=][=0x000A=][=0x000A=]Instead of going west in the Wasteland, try going inside. Instead of going east in the Secure Zone, try going outside.[=0x000A=][=0x000A=][And finally, to be sure that the player does see our fancy changing descriptions:][=0x000A=][=0x000A=]Use full-length room descriptions.[=0x000A=][=0x000A=]Test me with [=0x0022=]look / open portal / w / look / e / look / w / e / w[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode452()"><img border=0 src=../doc_images/paste.png></a> &quot;Mirror, Mirror&quot;
+<a href="javascript:pasteCode229()"><img border=0 src=../doc_images/paste.png></a> &quot;Infiltration&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Sorcerer's Workshop is a room. &quot;The sorcerer's den is a dusty, whispering place. A grandfather clock with skeletal hands reads [the time of day in words]. The floorboards are stained where that porridge just wouldn't come out.&quot;
+<blockquote><font color="#000080">The Wasteland is a room. &quot;In its more distant reaches, the Wasteland has a kind of austere beauty, but here beside the Secure Zone it is the worst of all possible worlds. Barrels of toxins are stacked the regulation hundred and fifty feet out; more traditional garbage has simply been flung over the wall, and this category includes one or two corpses roughly and inadequately disguised by black plastic bags. The wall itself has become a canvas for outcasts and exiles, and is covered with obscene paintings, lewd remarks about the inhabitants of the Secure Zone, and a few maudlin epitaphs.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Apprentice's Pantry is east of the Workshop. &quot;This is where the aproned apprentice traditionally makes the camomile tea, cleans out the jackdaw cages and furtively examines purloined artefacts.&quot;
+<p>Now the door, which will change from saying &quot;leads inside...&quot; to &quot;leads back inside...&quot; when this becomes appropriate:
+<p>
+<blockquote><font color="#000080">The portal is a door. It is inside from the Wasteland and outside from the Secure Zone. &quot;[if in the Wasteland]To the west, a[otherwise]A[end if] portal in the cinder-block and barbed wire wall leads[if in the Wasteland and the Zone is visited] back[end if] [if in the Wasteland]inside[otherwise]outside[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins: erase the mirror.
+<p>Here we haven't used any conditions that we didn't know about in previous sections: the portal line only reflects whether the Zone has been visited never or visited once. But the Secure Zone itself makes use of the number of times visited:
+<p>
+<blockquote><font color="#000080">The Secure Zone has the description &quot;[if the player is in the Zone for the second time]Re-entering the Zone has not made you any more comfortable inside. [end if]Despite your carefully-chosen outfit and the walk you have been practicing, you are sure those inside can tell you don't belong. Not that very many people are visible here[if the player is in the Zone for more than the second time] -- the place seems more desolate than ever[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries a magic mirror. The magic mirror has indexed text called mirror vision.
+<blockquote><font color="#000080">Instead of going west in the Wasteland, try going inside. Instead of going east in the Secure Zone, try going outside.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To erase the mirror: change mirror vision of the mirror to &quot;The mirror is polished clean, and has no impression upon it.&quot;
+<p>And finally, to be sure that the player does see our fancy changing descriptions:
+<p>
+<blockquote><font color="#000080">Use full-length room descriptions.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say current room description: try looking.
-<br>To expose the mirror:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The mirror shines momentarily with a dazzling light.[paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change mirror vision to &quot;The hazy image in the mirror preserves a past sight:[line break][current room description]All is distorted and yet living, as though the past and present are coterminous in the mirror.&quot;
+<blockquote><font color="#000080">Test me with &quot;look / open portal / w / look / e / look / w / e / w&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;hold up [something preferably held]&quot; or &quot;hold [something preferably held] up&quot; as holding aloft. Holding aloft is an action applying to one carried thing. Report holding aloft: say &quot;You hold [the noun] aloft.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of rubbing the mirror: erase the mirror; try examining the mirror. Instead of holding aloft the mirror: expose the mirror.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The description of the mirror is &quot;[mirror vision of the mirror]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;look / examine mirror / hold up mirror / z / look / x mirror / rub mirror / east / hold mirror up / west / x mirror&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc322.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Notice that the description of the Secure Zone changes from visit to visit, but that looking repeatedly during a single visit changes nothing.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc141.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e217"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex217.html#e217 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>364</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex217.html#e217 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Cow Exonerated</font></b></a><br>Creating a class of matches that burn for a time and then go out, with elegant reporting when several matches go out at once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex217.html#e217 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc321.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc323.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc140.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc142.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

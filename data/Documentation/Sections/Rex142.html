@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.9. Magic Words</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.6. Reading Matter</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,71 +19,178 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "XYZZY" -->
-<!-- SEARCH SECTION "Ex 253" -->
-<!-- SEARCH SORT "Ex 006-009-253" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc34.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap6.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 6: Commands</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc36.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.9. Magic Words</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Fifth Body" -->
+<!-- SEARCH SECTION "Ex 385" -->
+<!-- SEARCH SORT "Ex 009-006-385" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc64.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap9.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 9: Props: Food, Clothing, Money, Toys, Books, Electronics</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc66.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.6. Reading Matter</b></font></td></tr></table>
 <p>
-<p>Many fantasy games incorporate the idea of magic words that can be spoken. In implementing these, we want to be a bit flexible and accept a range of input regardless of whether the player explicitly speaks the command aloud: XYZZY, SAY XYZZY, or perhaps even CAST XYZZY. The inventively named <b>Xyzzy</b> demonstrates how we might define such a command.
+<p>Many things can be read, from warning notices to encyclopaedias, and a range of techniques is needed to provide them because the quantity of text, and how it presents itself, can vary so much. With a small amount of very large type, the player should not need any command at all to read the text:
 <p>
-<p>If we want to go even further and to allow the player also to use quotation marks, as in SAY &quot;XYZZY&quot;, we may want to include Punctuation Removal by Emily Short, which allows for quotation marks to be stripped out of the player's input before it is understood.
+<blockquote><font color="#000080">The road sign is in the Junction. The road sign is fixed in place. &quot;A road sign points north: 'Weston on the Green - 6'.&quot;
+</font></blockquote><p>
+<p>
+<p>If the print is smaller, or the object portable, the player will expect to use the EXAMINE command:
+<p>
+<blockquote><font color="#000080">The business card is in the Junction. The description is &quot;'Peter de Sèvres: consultant mnemonicist.'&quot;
+</font></blockquote><p>
+<p>
+<p>But if the object is a leaflet, say, EXAMINE should only describe the cover: READ would be the command a player would expect to use to get at the text itself. Inform normally defines READ to be the same command as EXAMINE, which is good for things like the business card, but counter-productive here. <b>The Trouble with Printing</b> shows how to separate these two commands, allowing any thing to have a property called its &quot;printing&quot; for text produced by READ, which will be different from its &quot;description&quot;, the text produced by EXAMINE.
+<p>
+<p>If the object is a lengthy diary, say, nobody would read it from cover to cover in a single IF turn. We might then want to allow the player to turn the pages one by one, with commands like READ PAGE 4 IN DIARY or READ THE NEXT PAGE: see <b>Pages</b>.
+<p>
+<p>If the object is an encyclopaedic reference work, the player would consult named entries: see <b>Costa Rican Ornithology</b>, which allows commands like LOOK UP QUETZAL IN GUIDE.
+<p>
+<p>Still larger sources of text often occur in IF: libraries or bookshelves, where many books are found together, and it is clumsy to write them as many individual items. One approach is to simulate an entire bookshelf with a single thing: see <b>Bibliophilia</b>. (This is much like looking up topics in a single book, except that each topic is a book in itself.) Another is to provide each book as an individual item, but have them automatically join together into a single portable collection: see <b>AARP-Gnosis</b>.
+<p>
+<p>Signs, leaflets and encyclopaedias, being printed, have a wording which will never change during play. But sometimes the player reads something which acts of its own accord. Text substitutions are usually all that is needed to achieve this:
+<p>
+<blockquote><font color="#000080">The computer display is on the desk. The description is &quot;Giant green digits read: [the time of day].&quot;
+</font></blockquote><p>
+<p>
+<p>This is easy because we know all the variations we want. But what if we want the player to write his own text, for instance, adding to a diary? This is trickier, because it means storing text as the player typed it, and replaying it later. (And suppose the player types reams and reams of text, not just a few words as we might have hoped?) <b>The Fourth Body</b> and <b>The Fifth Body</b> show how to use an external file - a multimedia trick requiring features only available if the project is set to the Glulx story file format - to handle even the most difficult cases.
 <p>
 <p><hr><p>
+<a name="e85"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex85.html#e85 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>86</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex85.html#e85 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Costa Rican Ornithology</font></b></a><br>A fully-implemented book, answering questions from a table of data, and responding to failed consultation with a custom message such as "You flip through the Guide to Central American Birds, but find no reference to penguins."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex85.html#e85 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e107"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex107.html#e107 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>269</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex107.html#e107 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Pages</font></b></a><br>A book with pages that can be read by number (as in "read page 3 in...") and which accepts relative page references as well (such as "read the last page of...", "read the next page", and so on).<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex107.html#e107 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e333"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex333.html#e333 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>287</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex333.html#e333 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bibliophilia</font></b></a><br>A bookshelf with a number of books, where the player's command to examine something will be interpreted as an attempt to look up titles if the bookshelf is present, but otherwise given the usual response.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex333.html#e333 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e211"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex211.html#e211 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>294</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex211.html#e211 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> AARP-Gnosis</font></b></a><br>An Encyclopedia set which treats volumes in the same place as a single object, but can also be split up.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex211.html#e211 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e95"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex95.html#e95 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>259</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex95.html#e95 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Trouble with Printing</font></b></a><br>Making a READ command, distinct from EXAMINE, for legible objects.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex95.html#e95 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e18"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex18.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>384</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex18.html#e18 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Fourth Body</font></b></a><br>Notebooks in which the player can record assorted notes throughout play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex18.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e142"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc35.html#e142 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>253</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc35.html#e142 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> XYZZY</font></b></a><br>Basics of adding a new command reviewed, for the case of the simple magic word XYZZY.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex142.html#e142 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e142"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc65.html#e142 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>385</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc65.html#e142 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Fifth Body</font></b></a><br>An expansion on the notebook, allowing the player somewhat more room in which to type his recorded remark.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex142.html#e142 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>We have seen before how to define a new action from scratch, but we may want to review here, using a simple command that requires no objects.
+<p>The implementation here is much like that of the previous example, except that we allow the player to write his notebook input as a separate command, leading to an exchange such as
+<p>
+<blockquote><font color="#000080">>write in my notebook
+<br>You open your notebook and prepare to write in it.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">>>Am beginning to think that HT and BGG are in this together.
+<br>You finish writing and fold your notebook away.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">>read my notebook
+<br>You read:
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Wednesday morning
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Am beginning to think that HT and BGG are in this together.
+</font></blockquote><p>
+<p>
+<p>The opening is much as before:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode736(code) {
+function pasteCode881(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"XYZZY"\n\nUnderstand "xyzzy" or "say xyzzy" or "cast xyzzy" as casting xyzzy.\n\nCasting xyzzy is an action applying to nothing.\n\nCheck casting xyzzy:\n\tif the player does not wear the amulet of elocution, say "You are unable to articulate the second \'z\' separately from the first, and the spell fails in a disdainful puff. Must be Parisian magic." instead;\n\tif the player has the plate, say "The plate of cheeses twitches uncomfortably, aware that it should be doing something, but not sure what." instead.\n\nCarry out casting xyzzy:\n\tmove the plate to the player.\n\nReport casting xyzzy:\n\tsay "Under the influence of the Amulet of Elocution, you pronounce this as Xhi-zee. And lo, from nowhere, a [plate] appears!"\n\nThe amulet of elocution is a wearable thing. It is carried by the player. The description is "A heavy gold ring on a chain. If heated in an ordinary house fire, it glows with the words, \'Moses Supposes His Toeses Are Roses.\'"\n\nThe plate is a portable supporter. On the plate is a very ripe ooze. Instead of smelling the ooze, say "It smells like socks. This is going to be wonderful." The ooze is edible. The printed name of the plate is "plate[if the plate supports the ooze] of cheese[end if]". The description of the ooze is "Definitely genuinely cheese." Understand "cheese" as the ooze.\n\nInstead of eating the ooze: remove the ooze from play; say "You are transported..."; move the player to Paradise.\n\nThe Cheez Factory is a room. "All around you are squares of pressed orange polymer, or possibly cheez. Your only hope is the magic word your uncle taught you: XYZZY." The squares of pressed orange polymer are scenery in the Factory. The description is "You see nothing special about the squares of pressed orange polymer. Nothing special at all." Understand "square" or "cheez" as the squares.\n\nParadise is a room. The description is "Well, it might just be one of the posh upper rings of purgatory, if you\'re entirely honest with yourself."\n\nTest me with "x squares / x amulet / x cheese / xyzzy / wear amulet / xyzzy / x ooze / smell ooze /  eat ooze".\n\n');
+    myProject.pasteCode('[=0x0022=]The Fifth Body[=0x0022=][=0x000A=][=0x000A=]A jotter is a kind of thing. A jotter has an external-file called the text file. A jotter can be fresh or used. A jotter is usually fresh. A jotter has a text called the heading.[=0x000A=][=0x000A=]The currently erased jotter is an object that varies.[=0x000A=][=0x000A=]To erase (pad - a jotter):[=0x000A=][=0x0009=]now the currently erased jotter is the pad;[=0x000A=][=0x0009=]write [=0x0022=][heading of the currently erased jotter][paragraph break][=0x0022=] to the text file of the pad;[=0x000A=][=0x0009=]now the pad is fresh.[=0x000A=][=0x000A=]To write in (pad - a jotter):[=0x000A=][=0x0009=]append [=0x0022=][the time of day]: [player[=0x0027=]s command][line break][=0x0022=] to the text file of the pad;[=0x000A=][=0x0009=]now the pad is used.[=0x000A=][=0x000A=]To read (pad - a jotter):[=0x000A=][=0x0009=]say [=0x0022=]You read: [paragraph break][text of the text file of the pad][=0x0022=].[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]repeat with pad running through jotters[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]erase the pad;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]Instead of examining a used jotter (called the pad):[=0x000A=][=0x0009=]read the pad.[=0x000A=][=0x000A=]Instead of examining a fresh jotter (called the pad):[=0x000A=][=0x0009=]say [=0x0022=]There is nothing of note in [the pad].[=0x0022=][=0x000A=][=0x000A=]Target jotter is an object that varies. The target jotter is usually nothing.[=0x000A=][=0x000A=]Understand [=0x0022=]write in [something preferably held][=0x0022=] as writing in. Writing in is an action applying to one thing.[=0x000A=][=0x000A=]Check writing in:[=0x000A=][=0x0009=]if the noun is not a jotter, say [=0x0022=]It would be better to write in a notebook.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out writing in:[=0x000A=][=0x0009=]change the command prompt to [=0x0022=][=0x003E=][=0x003E=][=0x0022=];[=0x000A=][=0x0009=]change the target jotter to the noun;[=0x000A=][=0x000A=]Report writing in:[=0x000A=][=0x0009=]say [=0x0022=]You open [the noun] and prepare to write in it.[=0x0022=][=0x000A=][=0x000A=][Now what happens is that the player, having typed WRITE IN NOTEBOOK, will be faced with a [=0x0022=][=0x003E=][=0x003E=][=0x0022=] prompt instead of the usual [=0x0022=][=0x003E=][=0x0022=]: a sign that the input mode has changed.][=0x000A=][=0x000A=][The next code is to react to reading a command. Whatever the player types at the [=0x003E=][=0x003E=] prompt when the target jotter is set will now be recorded in the notebook, though with a character limit of about 60-100 characters depending on how much upper-case and punctuation he uses. (There are ways to lift the character length restriction as well, but they would take us into deeper waters.)][=0x000A=][=0x000A=]After reading a command when target jotter is a jotter:[=0x000A=][=0x0009=]change the command prompt to [=0x0022=][=0x003E=][=0x0022=];[=0x000A=][=0x0009=]write in target jotter;[=0x000A=][=0x0009=]now target jotter is used;[=0x000A=][=0x0009=]say [=0x0022=]You finish writing and fold your notebook away.[=0x0022=];[=0x000A=][=0x0009=]change the target jotter to nothing;[=0x000A=][=0x0009=]reject the player[=0x0027=]s command.[=0x000A=][=0x000A=]Understand [=0x0022=]erase [something preferably held][=0x0022=] as erasing. Erasing is an action applying to one carried thing.[=0x000A=][=0x000A=]Check erasing:[=0x000A=][=0x0009=]if the noun is not a jotter, say [=0x0022=]It[=0x0027=]s hard to see how.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out erasing:[=0x000A=][=0x0009=]erase the noun.[=0x000A=][=0x000A=]Report erasing:[=0x000A=][=0x0009=]say [=0x0022=]You scrub out all the entries in [the noun].[=0x0022=][=0x000A=][=0x000A=]The player carries a jotter called your notebook. The file of Player[=0x0027=]s Observations is called [=0x0022=]notebook[=0x0022=]. The text file of your notebook is the file of Player[=0x0027=]s Observations. The heading of your notebook is [=0x0022=]Sunday Morning[=0x0022=].[=0x000A=][=0x000A=]The Vestry is a room. [=0x0022=][Havers] hangs back by the door: the forensics expert is not finished with a preliminary examination of the body. From here you can[=0x0027=]t see much, except that the expert has peeled back and laid to one side a liturgical vestment that someone at the church used to cover the corpse until the police came. What was once a cream silk with festive Easter embroidery is now stained with blood-colored handprints.[=0x0022=][=0x000A=][=0x000A=]Detective Havers is a woman in the Vestry. The description is [=0x0022=]She looks glumly back. There[=0x0027=]s still a purple-ish bruise on her cheekbone from the disaster Thursday afternoon.[=0x0022=] Havers is scenery.[=0x000A=][=0x000A=]Havers is carrying a jotter called Barbara[=0x0027=]s notebook. The file of Barbara[=0x0027=]s Observations is called [=0x0022=]barbara[=0x0022=]. The text file of Barbara[=0x0027=]s notebook is the file of Barbara[=0x0027=]s Observations. The heading of Barbara[=0x0027=]s notebook is [=0x0022=]Sun. AM[=0x0022=].[=0x000A=][=0x000A=]The time of day is 9:11 AM.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode736()"><img border=0 src=../doc_images/paste.png></a> &quot;XYZZY&quot;
+<a href="javascript:pasteCode881()"><img border=0 src=../doc_images/paste.png></a> &quot;The Fifth Body&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;xyzzy&quot; or &quot;say xyzzy&quot; or &quot;cast xyzzy&quot; as casting xyzzy.
+<blockquote><font color="#000080">A jotter is a kind of thing. A jotter has an external-file called the text file. A jotter can be fresh or used. A jotter is usually fresh. A jotter has a text called the heading.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Casting xyzzy is an action applying to nothing.
+<blockquote><font color="#000080">The currently erased jotter is an object that varies.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check casting xyzzy:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player does not wear the amulet of elocution, say &quot;You are unable to articulate the second 'z' separately from the first, and the spell fails in a disdainful puff. Must be Parisian magic.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player has the plate, say &quot;The plate of cheeses twitches uncomfortably, aware that it should be doing something, but not sure what.&quot; instead.
+<blockquote><font color="#000080">To erase (pad - a jotter):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the currently erased jotter is the pad;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write &quot;[heading of the currently erased jotter][paragraph break]&quot; to the text file of the pad;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pad is fresh.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out casting xyzzy:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the plate to the player.
+<blockquote><font color="#000080">To write in (pad - a jotter):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;append &quot;[the time of day]: [player's command][line break]&quot; to the text file of the pad;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pad is used.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report casting xyzzy:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Under the influence of the Amulet of Elocution, you pronounce this as Xhi-zee. And lo, from nowhere, a [plate] appears!&quot;
+<blockquote><font color="#000080">To read (pad - a jotter):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You read: [paragraph break][text of the text file of the pad]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The amulet of elocution is a wearable thing. It is carried by the player. The description is &quot;A heavy gold ring on a chain. If heated in an ordinary house fire, it glows with the words, 'Moses Supposes His Toeses Are Roses.'&quot;
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with pad running through jotters
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;erase the pad;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The plate is a portable supporter. On the plate is a very ripe ooze. Instead of smelling the ooze, say &quot;It smells like socks. This is going to be wonderful.&quot; The ooze is edible. The printed name of the plate is &quot;plate[if the plate supports the ooze] of cheese[end if]&quot;. The description of the ooze is &quot;Definitely genuinely cheese.&quot; Understand &quot;cheese&quot; as the ooze.
+<blockquote><font color="#000080">Instead of examining a used jotter (called the pad):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;read the pad.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of eating the ooze: remove the ooze from play; say &quot;You are transported...&quot;; move the player to Paradise.
+<blockquote><font color="#000080">Instead of examining a fresh jotter (called the pad):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There is nothing of note in [the pad].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Cheez Factory is a room. &quot;All around you are squares of pressed orange polymer, or possibly cheez. Your only hope is the magic word your uncle taught you: XYZZY.&quot; The squares of pressed orange polymer are scenery in the Factory. The description is &quot;You see nothing special about the squares of pressed orange polymer. Nothing special at all.&quot; Understand &quot;square&quot; or &quot;cheez&quot; as the squares.
+<blockquote><font color="#000080">Target jotter is an object that varies. The target jotter is usually nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Paradise is a room. The description is &quot;Well, it might just be one of the posh upper rings of purgatory, if you're entirely honest with yourself.&quot;
+<blockquote><font color="#000080">Understand &quot;write in [something preferably held]&quot; as writing in. Writing in is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;x squares / x amulet / x cheese / xyzzy / wear amulet / xyzzy / x ooze / smell ooze /  eat ooze&quot;.
+<blockquote><font color="#000080">Check writing in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a jotter, say &quot;It would be better to write in a notebook.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>XYZZY is a magic word from the original Adventure, and many other games respond to it with some sort of amusing message.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc35.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Carry out writing in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;>>&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the target jotter to the noun;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report writing in:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You open [the noun] and prepare to write in it.&quot;
+</font></blockquote><p>
+<p>
+<p>Now what happens is that the player, having typed WRITE IN NOTEBOOK, will be faced with a &quot;>>&quot; prompt instead of the usual &quot;>&quot;: a sign that the input mode has changed.
+<p>
+<p>The next code is to react to reading a command. Whatever the player types at the >> prompt when the target jotter is set will now be recorded in the notebook, though with a character limit of about 60-100 characters depending on how much upper-case and punctuation he uses. (There are ways to lift the character length restriction as well, but they would take us into deeper waters.)
+<p>
+<blockquote><font color="#000080">After reading a command when target jotter is a jotter:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;>&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write in target jotter;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now target jotter is used;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You finish writing and fold your notebook away.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the target jotter to nothing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;erase [something preferably held]&quot; as erasing. Erasing is an action applying to one carried thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check erasing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a jotter, say &quot;It's hard to see how.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out erasing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;erase the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report erasing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You scrub out all the entries in [the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries a jotter called your notebook. The file of Player's Observations is called &quot;notebook&quot;. The text file of your notebook is the file of Player's Observations. The heading of your notebook is &quot;Sunday Morning&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Vestry is a room. &quot;[Havers] hangs back by the door: the forensics expert is not finished with a preliminary examination of the body. From here you can't see much, except that the expert has peeled back and laid to one side a liturgical vestment that someone at the church used to cover the corpse until the police came. What was once a cream silk with festive Easter embroidery is now stained with blood-colored handprints.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Detective Havers is a woman in the Vestry. The description is &quot;She looks glumly back. There's still a purple-ish bruise on her cheekbone from the disaster Thursday afternoon.&quot; Havers is scenery.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Havers is carrying a jotter called Barbara's notebook. The file of Barbara's Observations is called &quot;barbara&quot;. The text file of Barbara's notebook is the file of Barbara's Observations. The heading of Barbara's notebook is &quot;Sun. AM&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The time of day is 9:11 AM.
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc65.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc34.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc36.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc64.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc66.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

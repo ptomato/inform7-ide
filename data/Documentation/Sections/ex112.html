@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.24. Concealment</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.16. Reaching inside and reaching outside rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,132 +19,111 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Search and Seizure" -->
-<!-- SEARCH SECTION "Ex 36" -->
-<!-- SEARCH SORT "Ex 003-024-036" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc49.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc51.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.24. Concealment</b></font></td></tr></table>
+<!-- SEARCH TITLE "Carnivale" -->
+<!-- SEARCH SECTION "Ex 197" -->
+<!-- SEARCH SORT "Ex 012-016-197" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc187.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc189.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.16. Reaching inside and reaching outside rules</b></font></td></tr></table>
 <p>
-<p>Though realism can become tiresome in interactive fiction, there are times when we cannot go along with Inform's normal assumption that all of a person's possessions are visible to everybody else. People are not like containers, which either show all of their holdings or not, according to whether they are open or transparent. If a man is carrying a fishing rod and a wallet, one will be on open show, the other not. Some clothing is outwardly visible, but not all.
+<p>The flow chart back at the start of this chapter shows that, early on in processing an action (between Before and Instead), Inform asks the question &quot;Can we see or touch things?&quot; This is where it enforces the requirements in the action's definition:
 <p>
-<p>Whether or not something is concealed is not like the either/or properties we have seen so far - such as being &quot;open&quot; or &quot;closed&quot; - because it is not really a property of the thing itself, but depends on the habitual behaviour of its current owner. To talk about behaviour we have to use sentences of a kind not seen so far, and which will not fully be explained for some chapters to come.
-<p>But straightforward cases are easy to write, if only by imitating the following examples.
-<p>
-<p>Here we make the Cloaked Villain invariably conceal anything she is holding or wearing:
-<p>
-<blockquote><font color="#000080">Rule for deciding the concealed possessions of the Cloaked Villain: yes.
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
+<br>Scraping it with is an action applying to two things.
 </font></blockquote><p>
 <p>
-<p>At which point we think about it more carefully, and then rewrite:
+<p>Seeing and touching are two different questions, which Inform answers in different ways. We shall see ways to modify or entirely alter what can be seen using the &quot;deciding the scope of something&quot; activity when we get to the Understanding and Activities chapters, and later in this chapter we will change the definition of touchability. What both have in common is that they are complicated questions, affected by the circumstances. We cannot simply declare that the player can touch a given lever, or can see in a given room: we must arrange for there to be no barriers between the player and the lever, or for there to be a light source in the room.
 <p>
-<blockquote><font color="#000080">Rule for deciding the concealed possessions of the Cloaked Villain: if the particular possession is the sable cloak, no; otherwise yes.
-</font></blockquote><p>
-<p>
-<p>Parts are treated exactly as if clothes or items being held, and the following will make the face and inscription on a coin invisible unless the player is holding it - the idea being that they are too small to be seen from farther away.
+<p>An example of rules applying to given objects is provided by the way that Inform decides whether the player can reach something or not. For instance, suppose the following:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode8(code) {
+function pasteCode30(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('The coin is in the Roman Villa. The face and inscription are parts of the coin. Rule for deciding the concealed possessions of the coin: if the coin is carried, no; otherwise yes.\n\n');
+    myProject.pasteCode('The Laboratory is a room. In the Laboratory is a conical flask. The flask is closed and transparent. In the flask is an antibumping granule.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode8()"><img border=0 src=../doc_images/paste.png></a> The coin is in the Roman Villa. The face and inscription are parts of the coin. Rule for deciding the concealed possessions of the coin: if the coin is carried, no; otherwise yes.
+<a href="javascript:pasteCode30()"><img border=0 src=../doc_images/paste.png></a> The Laboratory is a room. In the Laboratory is a conical flask. The flask is closed and transparent. In the flask is an antibumping granule.
+</font></blockquote><p>
+<p>
+<p>The player will be able to examine the granule but not to take it, as that would require reaching through glass. Suppose the player does type TAKE GRANULE: then Inform looks for potential barriers between the player and the granule, and of course finds the conical flask. If, as in this case, the thing to be touched is on the inside, then Inform asks the &quot;reaching inside&quot; rules for permission. There are two reaching inside rules built in to Inform:
+<p>
+<blockquote><font color="#000080">can't reach inside rooms rule
+<br>can't reach inside closed containers rule
+</font></blockquote><p>
+<p>
+<p>and in fact the second of these rules will cause the taking action to fail, because the conical flask is a closed container. (The other rule has to do with a player in one room able to see another room through, say, a telescope - merely having a line of sight doesn't give the ability to reach into the frame.)
+<p>
+<p>Symmetrically, Inform also has &quot;reaching outside&quot; rules, used if the player is inside something and wants to reach an object in the wider room. (From a bed, probably yes; from a cage, probably no.) This ordinarily contains just one rule:
+<p>
+<blockquote><font color="#000080">can't reach outside closed containers rule
 </font></blockquote><p>
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e112"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc50.html#e112 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>36</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc50.html#e112 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Search and Seizure</font></b></a><br>A smuggler who has items, some of which are hidden.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex112.html#e112 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e112"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc188.html#e112 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>197</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc188.html#e112 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Carnivale</font></b></a><br>An alternative to backdrops when we want something to be visible from a distance but only touchable from one room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex112.html#e112 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want a character who carries hidden objects, but only while he is wearing his jacket. If we deprive him of this, his other possessions become known. Furthermore, if we ever search him, his possessions also become known, and can thereafter be mentioned by us.
+<p>Suppose we want to make an object that (unlike a backdrop) is definitely located in one room, but can be seen from far off. We want to allow the player to interact with it from a distance, but only using those actions that require visibility. Other actions should be denied:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode117(code) {
+function pasteCode285(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Search and Seizure"\n\nSize is a kind of value. The sizes are small, medium, and large. A thing has a size. A thing is usually small.\n\nA thing can be licit or contraband. A thing is usually licit.\n\nA thing can be discovered or secret. A thing is usually secret.\n\n[Now, we want the character to be able to hide small things if he has some sort of concealing garment on. We also want to be able to see anything that the player has already found once, perhaps by using the >SEARCH PERSON command. So:]\n\nRule for deciding the concealed possessions of someone (called the suspect):\n\tif the particular possession is discovered, no;\n\tif the suspect wears something and the particular possession is small, yes;\n\totherwise no.\n\n[The following rule, borrowed from a later chapter, assures that any items that are ever mentioned to the player will be treated as known from then on:]\n\nBefore printing the name of something (called discovery): now the discovery is discovered.\n\nThe Customs House is a room. The smuggler is a man in the Customs House. The smuggler wears a leather jacket. He carries a bottle of Altairan rum, some raspberries, and a laser pistol. The pistol is large. The jacket is large. The rum and the raspberries are contraband. The description of the smuggler is "He has a bestubbled chin and a sinister eye."\n\nThe tourist is a woman in the customs house. The description is "The type who walks off home with a dozen contraband items in her pocket not because she means to steal things but because she\'s too stupid to understand that the law applies to herself." She wears a tight-fitting dress. The dress is large. The tourist carries a grapevine and an archaeological artifact. The grapevine is large and contraband. The artifact is contraband.\n\nReport examining someone: say "[The noun] is [if the noun is wearing something]wearing [a list of unconcealed things worn by the noun] and [end if]carrying [a list of unconcealed things carried by the noun]."\n\nReport examining someone who is concealing something contraband:\n\tsay "[The noun] looks nervous. You can just tell."\n\nReport examining someone who is carrying an unconcealed contraband thing:\n\tsay "Your eye goes at once to [the list of unconcealed contraband things carried by the noun] which [the noun] is unable to hide";\n\tif an unconcealed licit thing is had by the noun, say ", though [if the noun is female]s[end if]he also has [a list of unconcealed licit things had by the noun]";\n\tsay "." instead.\n\n[Notice that we can talk about what the smuggler wears, what he carries, and what he "has": things the smuggler has can be either worn or carried, so the phrase is useful if we don\'t care to make that distinction.]\n\nInstead of searching someone:\n\tsay "[The noun] is revealed to be carrying [a list of things carried by the noun]."\n\nInstead of confiscating the dress:\n\tsay "You are not allowed to perform strip-searches in the public customs area."\n\nUnderstand "confiscate [something]" as confiscating.\n\nConfiscating is an action applying to one thing.\n\nCheck confiscating:\n\tif the noun is had by someone who is not the player, do nothing;\n\totherwise say "You can only confiscate other people\'s possessions." instead.\n\nCarry out confiscating:\n\tnow the noun is carried by the player.\n\nReport confiscating:\n\tsay "Through the authority vested in you by the power of the Sovereign of Centauri Proxima, you make [the noun] your own."\n\nTest me with "x smuggler / search smuggler / x smuggler / confiscate jacket / x smuggler / confiscate rum / confiscate pistol / x smuggler / confiscate raspberries / x smuggler".\n\nTest more with "x tourist / confiscate dress / confiscate grapevine / x tourist / search tourist / confiscate artifact / x tourist".\n');
+    myProject.pasteCode('[=0x0022=]Carnivale[=0x0022=][=0x000A=][=0x000A=]The Fairground is a region. Park Entrance, By the Wheel, and Candy Stand are in Fairground. Candy Stand is north of By the Wheel. Park Entrance is west of Candy Stand and northwest of By the Wheel.[=0x000A=][=0x000A=]The ferris wheel is scenery in By the Wheel. [=0x0022=]It is extravagantly tall and carries several dozen glass gondolas for riders.[=0x0022=][=0x000A=][=0x000A=]The description of By the Wheel is [=0x0022=]You stand at the foot of an enormous ferris wheel, which turns far too quickly and never seems to stop for new riders.[=0x0022=][=0x000A=][=0x000A=]The description of Park Entrance is [=0x0022=]You are now just inside the gates. Behind you snakes a triple line of fairgoers all the way down the length of the valley to the railway station. Roughly southeast of here is the ferris wheel, towering over the other attractions.[=0x0022=][=0x000A=][=0x000A=]The description of Candy Stand is [=0x0022=]A hut in pale pink and baby blue dispenses marshmallow death[=0x0027=]s-heads, sugar-beetles, and other such treats. The giant ferris wheel is just off to the south from here.[=0x0022=][=0x000A=][=0x000A=][As the descriptions make clear, the ferris wheel should be visible from everywhere in the fair, so we[=0x0027=]ll borrow a line from the Activities chapter to make that happen:][=0x000A=][=0x000A=]After deciding the scope of the player:[=0x000A=][=0x0009=]if the location is in Fairground, place the ferris wheel in scope.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode117()"><img border=0 src=../doc_images/paste.png></a> &quot;Search and Seizure&quot;
+<a href="javascript:pasteCode285()"><img border=0 src=../doc_images/paste.png></a> &quot;Carnivale&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Size is a kind of value. The sizes are small, medium, and large. A thing has a size. A thing is usually small.
+<blockquote><font color="#000080">The Fairground is a region. Park Entrance, By the Wheel, and Candy Stand are in Fairground. Candy Stand is north of By the Wheel. Park Entrance is west of Candy Stand and northwest of By the Wheel.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be licit or contraband. A thing is usually licit.
+<blockquote><font color="#000080">The ferris wheel is scenery in By the Wheel. &quot;It is extravagantly tall and carries several dozen glass gondolas for riders.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be discovered or secret. A thing is usually secret.
+<blockquote><font color="#000080">The description of By the Wheel is &quot;You stand at the foot of an enormous ferris wheel, which turns far too quickly and never seems to stop for new riders.&quot;
 </font></blockquote><p>
 <p>
-<p>Now, we want the character to be able to hide small things if he has some sort of concealing garment on. We also want to be able to see anything that the player has already found once, perhaps by using the >SEARCH PERSON command. So:
-<p>
-<blockquote><font color="#000080">Rule for deciding the concealed possessions of someone (called the suspect):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the particular possession is discovered, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the suspect wears something and the particular possession is small, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise no.
+<blockquote><font color="#000080">The description of Park Entrance is &quot;You are now just inside the gates. Behind you snakes a triple line of fairgoers all the way down the length of the valley to the railway station. Roughly southeast of here is the ferris wheel, towering over the other attractions.&quot;
 </font></blockquote><p>
 <p>
-<p>The following rule, borrowed from a later chapter, assures that any items that are ever mentioned to the player will be treated as known from then on:
-<p>
-<blockquote><font color="#000080">Before printing the name of something (called discovery): now the discovery is discovered.
+<blockquote><font color="#000080">The description of Candy Stand is &quot;A hut in pale pink and baby blue dispenses marshmallow death's-heads, sugar-beetles, and other such treats. The giant ferris wheel is just off to the south from here.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Customs House is a room. The smuggler is a man in the Customs House. The smuggler wears a leather jacket. He carries a bottle of Altairan rum, some raspberries, and a laser pistol. The pistol is large. The jacket is large. The rum and the raspberries are contraband. The description of the smuggler is &quot;He has a bestubbled chin and a sinister eye.&quot;
+<p>As the descriptions make clear, the ferris wheel should be visible from everywhere in the fair, so we'll borrow a line from the Activities chapter to make that happen:
+<p>
+<blockquote><font color="#000080">After deciding the scope of the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is in Fairground, place the ferris wheel in scope.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The tourist is a woman in the customs house. The description is &quot;The type who walks off home with a dozen contraband items in her pocket not because she means to steal things but because she's too stupid to understand that the law applies to herself.&quot; She wears a tight-fitting dress. The dress is large. The tourist carries a grapevine and an archaeological artifact. The grapevine is large and contraband. The artifact is contraband.
+<p>&quot;Scope&quot; determines what the player can interact with; by writing this rule, we make Inform understand all commands that refer to the ferris wheel when the player is anywhere in the fairground, instead of responding with
+<p>
+<blockquote><font color="#000080">You can't see any such thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report examining someone: say &quot;[The noun] is [if the noun is wearing something]wearing [a list of unconcealed things worn by the noun] and [end if]carrying [a list of unconcealed things carried by the noun].&quot;
+<p>as it normally would.
+<p>
+<p>Now, by default, if the player were to type TOUCH FERRIS WHEEL while in another room, he would get the response
+<p>
+<blockquote><font color="#000080">You can't reach into By the Wheel.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report examining someone who is concealing something contraband:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] looks nervous. You can just tell.&quot;
+<p>This may not be quite what we want, but we can replace this text with our own reaching inside rule:
+<p>
+<blockquote><font color="#000080">Rule for reaching inside a room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can only look from this distance.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;deny access.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report examining someone who is carrying an unconcealed contraband thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your eye goes at once to [the list of unconcealed contraband things carried by the noun] which [the noun] is unable to hide&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if an unconcealed licit thing is had by the noun, say &quot;, though [if the noun is female]s[end if]he also has [a list of unconcealed licit things had by the noun]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot; instead.
+<p>And because our accessibility rules are considered before the &quot;Instead&quot; phase, we can write the following rule confident that it will apply only when the player is in fact in range to touch the ferris wheel:
+<p>
+<blockquote><font color="#000080">Instead of touching the ferris wheel:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You don't dare: it's spinning too fast.&quot;
 </font></blockquote><p>
 <p>
-<p>Notice that we can talk about what the smuggler wears, what he carries, and what he &quot;has&quot;: things the smuggler has can be either worn or carried, so the phrase is useful if we don't care to make that distinction.
-<p>
-<blockquote><font color="#000080">Instead of searching someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is revealed to be carrying [a list of things carried by the noun].&quot;
+<blockquote><font color="#000080">Test me with &quot;x ferris wheel / touch ferris wheel / se / x ferris wheel / touch ferris wheel&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of confiscating the dress:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are not allowed to perform strip-searches in the public customs area.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;confiscate [something]&quot; as confiscating.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Confiscating is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check confiscating:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is had by someone who is not the player, do nothing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You can only confiscate other people's possessions.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out confiscating:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is carried by the player.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report confiscating:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Through the authority vested in you by the power of the Sovereign of Centauri Proxima, you make [the noun] your own.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x smuggler / search smuggler / x smuggler / confiscate jacket / x smuggler / confiscate rum / confiscate pistol / x smuggler / confiscate raspberries / x smuggler&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test more with &quot;x tourist / confiscate dress / confiscate grapevine / x tourist / search tourist / confiscate artifact / x tourist&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc50.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc188.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc49.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc51.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc187.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc189.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

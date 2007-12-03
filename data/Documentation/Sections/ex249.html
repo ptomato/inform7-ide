@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.5. New activities</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.2. New commands for old grammar</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,137 +19,74 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Crusoe" -->
-<!-- SEARCH SECTION "Ex 295" -->
-<!-- SEARCH SORT "Ex 017-005-295" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc266.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc268.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.5. New activities</b></font></td></tr></table>
+<!-- SEARCH TITLE "Anchorite" -->
+<!-- SEARCH SECTION "Ex 256" -->
+<!-- SEARCH SORT "Ex 016-002-256" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc243.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc245.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.2. New commands for old grammar</b></font></td></tr></table>
 <p>
-<p>Activities are all about influencing the standard mechanisms which Inform uses, so it might at first seem that there is no need to create new activities: but on further reflection, quite a lot of the writing of interactive fiction involves creating new and systematic ways to do things, and as soon as we have a general rule, we will want to have exceptions. Inform therefore allows us to create our own activities, giving us ways to influence the operation of our own mechanisms.
+<p>In the photography example, we are providing entirely new grammar for an action  not ordinarily built in to Inform. But we often want simply to provide alternative grammar for existing actions, or even to put new interpretations on commands that Inform already recognises. For instance:
 <p>
-<p>There are two kinds of activity: those which relate to a specific thing or room, and those which do not. The following creates one of each kind:
-<p>
-<blockquote><font color="#000080">Analysing something is an activity.
-<br>Assaying is an activity.
+<blockquote><font color="#000080">Understand &quot;deposit [something] in [an open container]&quot; as inserting it into.
 </font></blockquote><p>
 <p>
-<p>Here &quot;analysing something&quot; relates to a specific item: Inform knows this because it looks for the clue &quot;something&quot; (or &quot;of something&quot;) after the activity's name, which in the first case above is simply &quot;analysing&quot;.
+<p>The inserting action is built in to Inform, but the command &quot;deposit&quot; is not, so this is created as new. It is occasionally useful to put a twist on this:
 <p>
-<p>Creating an activity is like creating an action: it automatically makes new rulebooks - &quot;before analysing&quot;, &quot;for analysing&quot; and &quot;after analysing&quot; - but they start out empty, so the activity does nothing yet. Moreover, it never happens. We can make an activity happen at any time by writing phrases like so:
-<p>
-<blockquote><font color="#000080">carry out the analysing activity with the pitchblende;
-<br>carry out the assaying activity;
+<blockquote><font color="#000080">Understand &quot;fill [an open container] with [something]&quot; as inserting it into (with nouns reversed).
 </font></blockquote><p>
 <p>
-<p>To make the activity do something useful, we need to put a rule into its &quot;for&quot; rulebook:
+<p>The clause &quot;(with nouns reversed)&quot; tells Inform to exchange the two nouns parsed, which is necessary because the inserting action expects the noun to be the item and the second noun to be the container, not vice versa.
 <p>
-<blockquote><font color="#000080">The last for assaying rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Professionally, you cast an eye around mineral deposits nearby, noticing [list of rocks in the location].&quot;
+<p>The following example:
+<p>
+<blockquote><font color="#000080">Understand &quot;access [something]&quot; as opening.
 </font></blockquote><p>
 <p>
-<p>&quot;The last&quot; is a technicality about rulebooks (see the next chapter) which, put briefly, guarantees that this rule comes last among all possible &quot;for assaying&quot; rules. This is good form because the whole point of an activity is to make it easy for further rules to interfere - so we deliberately hang back to last place, giving precedence to anybody else who wants it.
+<p>might look as if it makes &quot;access&quot; behave just like &quot;open&quot; when the player types it, but that's not so: &quot;open&quot; can also be used in constructions like &quot;open the door with the brass key&quot;, in which case it is understood as the unlocking action. We could add another line to make &quot;access&quot; behave this way too, but if what we really want is to make &quot;access&quot; behave just like &quot;open&quot;, it's easier simply to say so:
 <p>
-<p>It may look rather pretentious to dress up the footling little &quot;assaying&quot; example as an activity, but it gains us more than might first appear. Every new activity created provides a context which other activities can observe. We could, for instance, define
-<p>
-<blockquote><font color="#000080">Rule for printing the name of a rock while assaying: ...
+<blockquote><font color="#000080">Understand the command &quot;access&quot; as &quot;open&quot;.
 </font></blockquote><p>
 <p>
-<p>so that during assays more technical names are used.
+<p>This is very useful when adding a new command which needs synonyms:
+<p>
+<blockquote><font color="#000080">Understand the commands &quot;snap&quot; and &quot;picture&quot; as &quot;photograph&quot;.
+</font></blockquote><p>
+<p>
+<p>We can check the current stock of commands by looking at the table in the Actions index: for instance, before making &quot;snap&quot; synonymous with &quot;photograph&quot;, it might be wise to check that it is not already defined as a command for breaking something.
 <p>
 <p><hr><p>
-<a name="e206"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex206.html#e206 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>294</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex206.html#e206 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> AARP-Gnosis</font></b></a><br>An Encyclopedia set which treats volumes in the same place as a single object, but can also be split up.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex206.html#e206 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e249"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc267.html#e249 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>295</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc267.html#e249 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Crusoe</font></b></a><br>Adding a "printing the description of something" activity.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex249.html#e249 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e249"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc244.html#e249 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>256</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc244.html#e249 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Anchorite</font></b></a><br>By default, Inform understands GET OFF, GET UP, or GET OUT when the player is sitting or standing on an enterable object. We might also want to add GET DOWN and DOWN as exit commands, though:<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex249.html#e249 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to add rules so that any time we examine a charred object (and most of our objects can be charred), a line about the charring is appended to the end of the object description. We could use &quot;after examining...&quot;, but perhaps we would prefer for the sentence about the charring not to appear in its own paragraph.
-<p>
-<p>This is an ideal occasion for a new activity. We look at the action index for &quot;examining&quot; to identify the rule that causes the old behavior (in this case, the &quot;standard examining rule&quot;); replace this with a new rule that calls our activity; and write our &quot;printing the description&quot; activity in such a way that it uses an object's description without forcing a paragraph return afterward.
-<p>
-<p>Then we will use &quot;after printing the description&quot; to add our line about charring, and make sure that the paragraph return does occur before the prompt.
-<p>
-<p>So:
+<p>With GET DOWN, we can replace the whole command, which will not interfere with the normal function of the TAKE verb, or allow the player to attempt to GET any other directions:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode382(code) {
+function pasteCode343(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Crusoe"\n\nSection 1 - Creating our New Activity\n\nThe fancy examining rule is listed instead of the standard examining rule in the carry out examining rules.\n\n[This instruction replaces a normal piece of the examine action, the standard examining rule, with another one of our own devising. (The replacement of the standard examining rule will be explained in more detail in the chapter on rulebooks.)]\n\nPrinting the description of something is an activity.\n\nThis is the fancy examining rule:\n\tcarry out the printing the description activity with the noun.\n\n[All we have done here is enclose what is usually just a rule inside an activity. This means that we can now write before and after rules for the activity, and also add special instructions like "Rule for printing the name of something while printing the description of something" -- this may not be likely to arise often, but Inform now has the concept of "printing the description of something" as a separate context of action. Next we add the modification that lets us append to the description without a new line:]\n\nRule for printing the description of something (called item):\n\tsay "[description of item] [run paragraph on]".\n\n["run paragraph on" here will mean that we do not get a paragraph break following the description, even if it ends with a period. We also insert a space, so that our follow-on comments will be properly punctuated.]\n\nAfter printing the description of something charred:\n\tsay "It is charred." instead.\n\n[The instead at the end of this line stops Inform for going on with any other "after printing the description of..." rules.]\n\n[And now, because we want to make sure that we always do get a paragraph break after our description, we add this rule last after all the other rules. "Last" and "first" rules are covered in more detail in the chapter on rulebooks.]\n\nLast after printing the description of something:\n\tsay paragraph break.\n\nSection 2 - The Scenario\n\nThe Desert Isle is a room. "A pale expanse of sand, here and there developing into hillocks of grass, and a small clump of palms. The water is shallow here, and there are other islands within swimming distance -- or even wading distance, perhaps -- but none of them is any larger than your island, so it doesn\'t seem worth the trouble of visiting.\n\nA few hundred feet out, the water turns darker blue, the sea floor drops away, and there is nothing to be seen all the way down to the horizon, except a couple of fluffy clouds, and an occasional bird.\n\nThe remains of your fire smolder in the stone-lined pit."\n\nA thing can be charred or whole. A thing is usually whole. Instead of burning something: say "You hold [the noun] to the fire until it flares and chars."; change the noun to charred.\n\nThe player carries a stick. The description of the stick is "A strip of palm from the woodiest part of the leaf, about a foot and a half long."\n\nThe player carries a glass bottle and a piece of paper. The description of the paper is "A single blank sheet." In the glass bottle is a grain of sand. The glass bottle is openable and open. Instead of burning the glass bottle: say "You hold the bottle to the flame, but it grows uncomfortably warm."\n\nInstead of burning the grain of sand: say "You drop the grain into the fire pit, where it becomes indistinguishable from all the others."; remove the grain of sand from play. Instead of dropping the grain of sand: remove the grain of sand from play; say "You return the grain of sand to its brethren."\n\n[The player\'s description is handled in an unusual way, and this will produce a space paragraph break there where it should not. Instead, therefore, we will add an instead for examining the player (probably a good idea anyway):]\n\nInstead of examining the player:\n\tsay "You are sunburned and there is sand in cracks you didn\'t know existed."\n\nTest me with "i / x stick / x bottle / x sand / x paper / x me / burn stick / x stick / burn paper / x paper".\n\n');
+    myProject.pasteCode('[=0x0022=]Anchorite[=0x0022=][=0x000A=][=0x000A=]The Solitary Place is a room. [=0x0022=]A glittering, shimmering desert without either locusts or honey.[=0x0022=] The pillar is an enterable supporter in the Solitary Place. [=0x0022=]The broken pillar is short enough to climb and sit on.[=0x0022=] The description of the pillar is [=0x0022=]Once it was a monument: a long frieze of battles and lion-hunts spirals up the side, in honor of an earthly king.[=0x0022=] The player is on the pillar.[=0x000A=][=0x000A=]Understand [=0x0022=]get down[=0x0022=] as exiting.[=0x000A=][=0x000A=][This doesn[=0x0027=]t cover the case where the player just types [=0x0022=]DOWN[=0x0022=], and we don[=0x0027=]t want to preempt the normal operation of the GO action here. So instead of writing a new understand instruction, we might catch this one at the action-processing level:][=0x000A=][=0x000A=]Instead of going down when the player is on a supporter:[=0x000A=][=0x0009=]try exiting.[=0x000A=][=0x000A=]Test me with [=0x0022=]down / enter pillar / get down / down / get down[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode382()"><img border=0 src=../doc_images/paste.png></a> &quot;Crusoe&quot;
+<a href="javascript:pasteCode343()"><img border=0 src=../doc_images/paste.png></a> &quot;Anchorite&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 1 - Creating our New Activity
+<blockquote><font color="#000080">The Solitary Place is a room. &quot;A glittering, shimmering desert without either locusts or honey.&quot; The pillar is an enterable supporter in the Solitary Place. &quot;The broken pillar is short enough to climb and sit on.&quot; The description of the pillar is &quot;Once it was a monument: a long frieze of battles and lion-hunts spirals up the side, in honor of an earthly king.&quot; The player is on the pillar.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The fancy examining rule is listed instead of the standard examining rule in the carry out examining rules.
+<blockquote><font color="#000080">Understand &quot;get down&quot; as exiting.
 </font></blockquote><p>
 <p>
-<p>This instruction replaces a normal piece of the examine action, the standard examining rule, with another one of our own devising. (The replacement of the standard examining rule will be explained in more detail in the chapter on rulebooks.)
+<p>This doesn't cover the case where the player just types &quot;DOWN&quot;, and we don't want to preempt the normal operation of the GO action here. So instead of writing a new understand instruction, we might catch this one at the action-processing level:
 <p>
-<blockquote><font color="#000080">Printing the description of something is an activity.
+<blockquote><font color="#000080">Instead of going down when the player is on a supporter:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try exiting.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">This is the fancy examining rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;carry out the printing the description activity with the noun.
+<blockquote><font color="#000080">Test me with &quot;down / enter pillar / get down / down / get down&quot;.
 </font></blockquote><p>
-<p>
-<p>All we have done here is enclose what is usually just a rule inside an activity. This means that we can now write before and after rules for the activity, and also add special instructions like &quot;Rule for printing the name of something while printing the description of something&quot; -- this may not be likely to arise often, but Inform now has the concept of &quot;printing the description of something&quot; as a separate context of action. Next we add the modification that lets us append to the description without a new line:
-<p>
-<blockquote><font color="#000080">Rule for printing the description of something (called item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[description of item] [run paragraph on]&quot;.
-</font></blockquote><p>
-<p>
-<p>&quot;run paragraph on&quot; here will mean that we do not get a paragraph break following the description, even if it ends with a period. We also insert a space, so that our follow-on comments will be properly punctuated.
-<p>
-<blockquote><font color="#000080">After printing the description of something charred:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is charred.&quot; instead.
-</font></blockquote><p>
-<p>
-<p>The instead at the end of this line stops Inform for going on with any other &quot;after printing the description of...&quot; rules.
-<p>
-<p>And now, because we want to make sure that we always do get a paragraph break after our description, we add this rule last after all the other rules. &quot;Last&quot; and &quot;first&quot; rules are covered in more detail in the chapter on rulebooks.
-<p>
-<blockquote><font color="#000080">Last after printing the description of something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 2 - The Scenario
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Desert Isle is a room. &quot;A pale expanse of sand, here and there developing into hillocks of grass, and a small clump of palms. The water is shallow here, and there are other islands within swimming distance -- or even wading distance, perhaps -- but none of them is any larger than your island, so it doesn't seem worth the trouble of visiting.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A few hundred feet out, the water turns darker blue, the sea floor drops away, and there is nothing to be seen all the way down to the horizon, except a couple of fluffy clouds, and an occasional bird.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The remains of your fire smolder in the stone-lined pit.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A thing can be charred or whole. A thing is usually whole. Instead of burning something: say &quot;You hold [the noun] to the fire until it flares and chars.&quot;; change the noun to charred.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries a stick. The description of the stick is &quot;A strip of palm from the woodiest part of the leaf, about a foot and a half long.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries a glass bottle and a piece of paper. The description of the paper is &quot;A single blank sheet.&quot; In the glass bottle is a grain of sand. The glass bottle is openable and open. Instead of burning the glass bottle: say &quot;You hold the bottle to the flame, but it grows uncomfortably warm.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of burning the grain of sand: say &quot;You drop the grain into the fire pit, where it becomes indistinguishable from all the others.&quot;; remove the grain of sand from play. Instead of dropping the grain of sand: remove the grain of sand from play; say &quot;You return the grain of sand to its brethren.&quot;
-</font></blockquote><p>
-<p>
-<p>The player's description is handled in an unusual way, and this will produce a space paragraph break there where it should not. Instead, therefore, we will add an instead for examining the player (probably a good idea anyway):
-<p>
-<blockquote><font color="#000080">Instead of examining the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are sunburned and there is sand in cracks you didn't know existed.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;i / x stick / x bottle / x sand / x paper / x me / burn stick / x stick / burn paper / x paper&quot;.
-</font></blockquote><p>
-<p>
-<p>The &quot;printing a description&quot; activity may be useful for other games, and can be imported just by lifting section 1.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc267.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc244.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e380"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex380.html#e380 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>296</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex380.html#e380 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Aftershock</font></b></a><br>Modifying the rules for examining a device so that all devices have some specific behavior when switched on, which is described at various times.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex380.html#e380 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc266.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc268.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e46"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex46.html#e46 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>257</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex46.html#e46 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alpaca Farm</font></b></a><br>A generic USE action which behaves sensibly with a range of different objects.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex46.html#e46 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e309"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex309.html#e309 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>258</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex309.html#e309 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloak of Darkness</font></b></a><br>Implementation of "Cloak of Darkness", a simple example game that for years has been used to demonstrate the features of IF languages.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex309.html#e309 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc243.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc245.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

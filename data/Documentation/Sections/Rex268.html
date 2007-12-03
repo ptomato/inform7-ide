@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.1. Looking</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.7. Sounds</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,122 +19,68 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "Slightly Wrong" -->
-<!-- SEARCH SECTION "Ex 3" -->
-<!-- SEARCH SORT "Ex 006-001-003" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc26.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap6.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 6: Commands</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc28.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.1. Looking</b></font></td></tr></table>
+<!-- SEARCH TITLE "Scope for listening different from scope for seeing" -->
+<!-- SEARCH SECTION "Ex 313" -->
+<!-- SEARCH SORT "Ex 003-007-313" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc13.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap3.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 3: Place</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc15.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.7. Sounds</b></font></td></tr></table>
 <p>
-<p>Looking is one of the most complicated commands built into Inform, with a large number of things one might want to change.
+<p>It is too easily assumed that room descriptions are what the player sees, but as <b>The Undertomb</b> demonstrates, they might just as easily include ambient sounds.
 <p>
-<p>Looking prints the name and description of the room we're in. We can introduce variations into room names and descriptions by changing their printed name and description properties, as in
+<p>So Inform's &quot;listening to&quot; action is the audio equivalent of &quot;examining&quot;, rather than &quot;looking&quot;. Despite this the player can type LISTEN, which Inform understands as listening to the everything in the location at once. A simple but effective way to handle this is shown in <b>The Art of Noise</b>.
 <p>
-<blockquote><font color="#000080">change the printed name of the Church to &quot;Lightning-Struck Ruin&quot;;
-</font></blockquote><p>
+<p><b>Four Stars 2</b> adjusts the idea of &quot;visibility&quot; to make it behave differently for listening purposes: this introduces a formal idea of &quot;audibility&quot;.
 <p>
-<p>If we need more drastic effects, we can turn off or change either of these features by altering the rules in the carry out looking rulebook.
-<p>
-<p>Next, the game determines what items are visible to the player and need to be described. These never include the player himself, or scenery, but other things in the environment will be made &quot;marked for listing&quot;.
-<p>
-<p>Then Inform carries out the writing a paragraph about... activity with anything that provides one; anything it prints the name of, it tags &quot;mentioned&quot;. Thus
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about Mr Wickham:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Mr Wickham looks speculatively at [list of women in the location].&quot;
-</font></blockquote><p>
-<p>
-<p>will count Wickham and everyone he looks at as all having been mentioned, and will not refer to them again through the rest of the room description.
-<p>
-<p>Inform then prints the initial appearances of objects that are marked for listing but not already mentioned; and then it performs the listing nondescript items activity, collating the remaining objects into a paragraph like
-<p>
-<blockquote><font color="#000080">You can see a dog, a hen, ...
-</font></blockquote><p>
-<p>
-<p>We can pre-empt items from appearing in this paragraph or change their listing by intervening with a Before listing nondescript items... rule, as in
-<p>
-<blockquote><font color="#000080">Before listing nondescript items when the player needs the watch:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the watch is marked for listing begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The watch catches your eye.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the watch to not marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>If we wanted the watch always to be listed this way, it would be better to give it an initial appearance, but for conditional cases, the listing nondescript items activity is a good place to intervene. It also allows us to replace the &quot;You can see...&quot; tag with something else more fitting, if for instance we are in a dimly lit room.
-<p>
-<p>When the game compiles the list of nondescript items, it adds tags such as &quot;(open)&quot; or &quot;(empty)&quot; or &quot;(on which is a fish tank)&quot; to the names of containers and supporters. We can suppress or change the &quot;(empty)&quot; tag with the printing room description details of activity, as in
-<p>
-<blockquote><font color="#000080">Rule for printing room description details: stop.
-</font></blockquote><p>
-<p>
-<p>And we can suppress the &quot;(open)&quot; and &quot;(on which is...)&quot; sorts of tags with the &quot;omit the contents in listing&quot; phrase, as in
-<p>
-<blockquote><font color="#000080">Rule for printing the name of the bottle while not inserting or removing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the bottle contains sand, say &quot;bottle of sand&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;empty bottle&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;omit contents in listing.
-</font></blockquote><p>
-<p>
-<p>Finally, the looking command lists visible non-scenery items that sit on scenery supporters, as in
-<p>
-<blockquote><font color="#000080">On the table is a folded newspaper.
-</font></blockquote><p>
-<p>
-<p>It is at the moment slightly vexing to change the output of this line - a matter we hope to improve in future versions of Inform. One somewhat inelegant but effective way around it is to make the table not scenery after all, but merely fixed in place, and then to control output with a writing a paragraph about sentence, thus:
-<p>
-<blockquote><font color="#000080">Parlor is a room. The table is in Parlor. On the table is a folded newspaper.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about the table:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the folded newspaper is on the table, say &quot;Your newspaper is folded neatly on the end table.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the table is mentioned.
-</font></blockquote><p>
-<p>
-<p>Replacing that with just
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about the table:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the table is mentioned.
-</font></blockquote><p>
-<p>
-<p>will prevent the game from describing the table or anything that is on it.
-<p>
-<p>One common thing we may want to do is change the description of a room depending on whether we've been there before (as in <b>Slightly Wrong</b>) or on how often we've visited (as in <b>Infiltration</b>). <b>Night Sky</b>, meanwhile, changes the description of a room when we've examined another object, so that the player's awareness of his environment is affected by other things the character knows.
-<p>
-<p><b>Verbosity</b> changes the default behavior that rooms are described fully only the first time the player visits.
-<p>
-<a href=Rdoc32.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Going, Pushing Things in Directions</b></font></a><i> for ways to change just those room descriptions that are shown as the result of the player's movement</i><p><p>
+<a href=Rdoc13.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Lighting</b></font></a><i> for heightened hearing in darkness, and the rest of &quot;Four Stars&quot;</i><p><p>
 <p><hr><p>
+<a name="e223"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex223.html#e223 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>50</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex223.html#e223 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Undertomb</font></b></a><br>A small map of dead ends, in which the sound of an underground river has different strengths in different caves.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex223.html#e223 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e395"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex395.html#e395 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>87</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex395.html#e395 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Art of Noise</font></b></a><br>Things are all assigned their own noise (or silence). Listening to the room in general reports on all the things that are currently audible.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex395.html#e395 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e268"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc27.html#e268 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>3</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc27.html#e268 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Slightly Wrong</font></b></a><br>A room whose description changes slightly after our first visit there.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex268.html#e268 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e268"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc14.html#e268 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>313</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc14.html#e268 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Scope for listening different from scope for seeing</font></b></a><br>Using "deciding the scope" to change the content of lists such as "the list of audible things which can be touched by the player".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex268.html#e268 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>A fairly common effect in interactive fiction is a room which is described differently on the first visit than on subsequent visits. We can produce this effect as follows:
+<p>As we have seen, a well-written understand rule will often solve the problem of allowing the player to apply specific actions to objects not normally in scope. When we need to adjust scope for some other reason than reading the player's command, though, &quot;deciding the scope of...&quot; may come in handy.
+<p>
+<p>For instance, adding this to our Waning Moon example
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode478(code) {
+function pasteCode807(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Slightly Wrong"\n\nAwning is a room. "A tan awning is stretched on tent poles over the dig-site, providing a little shade to the workers here; you are at the bottom of a square twenty feet on a side, marked out with pegs and lines of string. Uncovered in the south face of this square is an awkward opening into the earth."\n\nSlightly Wrong Chamber is south of the Awning. "[if unvisited]When you first step into the room, you are bothered by the sense that something is not quite right: perhaps the lighting, perhaps the angle of the walls. [end if]A mural on the far wall depicts a woman with a staff, tipped with a pine-cone. She appears to be watching you."\n\nTest me with "look / s / look".\n\n');
+    myProject.pasteCode('The Balcony is outside from the Resort. In the Balcony is a tomcat. The sound of the tomcat is [=0x0022=]yowling[=0x0022=].[=0x000A=][=0x000A=]After deciding the scope of the player while listening:[=0x000A=][=0x0009=]if in darkness[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]repeat with locale running through adjacent rooms[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]place locale in scope;[=0x000A=][=0x0009=][=0x0009=]end repeat;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]A procedural rule while listening:[=0x000A=][=0x0009=]ignore the can[=0x0027=]t reach inside rooms rule.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode478()"><img border=0 src=../doc_images/paste.png></a> &quot;Slightly Wrong&quot;
+<a href="javascript:pasteCode807()"><img border=0 src=../doc_images/paste.png></a> The Balcony is outside from the Resort. In the Balcony is a tomcat. The sound of the tomcat is &quot;yowling&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Awning is a room. &quot;A tan awning is stretched on tent poles over the dig-site, providing a little shade to the workers here; you are at the bottom of a square twenty feet on a side, marked out with pegs and lines of string. Uncovered in the south face of this square is an awkward opening into the earth.&quot;
+<blockquote><font color="#000080">After deciding the scope of the player while listening:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if in darkness
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with locale running through adjacent rooms
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;place locale in scope;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Slightly Wrong Chamber is south of the Awning. &quot;[if unvisited]When you first step into the room, you are bothered by the sense that something is not quite right: perhaps the lighting, perhaps the angle of the walls. [end if]A mural on the far wall depicts a woman with a staff, tipped with a pine-cone. She appears to be watching you.&quot;
+<blockquote><font color="#000080">A procedural rule while listening:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;ignore the can't reach inside rooms rule.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look / s / look&quot;.
+<p>would put audible objects in adjacent rooms in scope even when the player does not specifically listen to them. So the player would receive the following message when listening:
+<p>
+<blockquote><font color="#000080">>listen
+<br>You hear the soothing whalesong from the Bose speaker and the yowling from the tomcat.
 </font></blockquote><p>
 <p>
-<p>Note the &quot;[if unvisited]...&quot; in the description of the Slightly Wrong Chamber. A room is considered to be &quot;unvisited&quot; until after the player has seen its description for the first time.
+<p>This is because the rule that defines what we can hear inside the room, namely
 <p>
-<p>The bracketed text creates a special rule for printing; we will learn more about these in the sections on text with variations and text with substitutions.
+<blockquote><font color="#000080">Instead of listening to a room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if an audible thing can be touched by the player, say &quot;You hear [the list of audible things which can be touched by the player].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;A merciful peace prevails.&quot;
+</font></blockquote><p>
 <p>
-<p>Some further fine print: we might write our condition as &quot;if unvisited&quot;, &quot;if the location is unvisited&quot;, or &quot;if the Chamber is unvisited&quot; -- all of these constructions would be acceptable, but in the absence of more specifics, the condition is understood to apply to the object whose description it is.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc27.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>now includes the tomcat in the &quot;list of audible things which can be touched by the player&quot;. Touchability has been modified by our scope adjustment, but only during the listening action. Otherwise the tomcat remains in the other room and off-limits.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc14.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e37"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex37.html#e37 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>139</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex37.html#e37 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Infiltration</font></b></a><br>A room whose description changes depending on the number of times the player has visited.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex37.html#e37 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e58"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex58.html#e58 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>135</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex58.html#e58 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Night Sky</font></b></a><br>A room which changes its description depending on whether an object has been examined.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex58.html#e58 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e352"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex352.html#e352 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>2</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex352.html#e352 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Verbosity</font></b></a><br>Making rooms give full descriptions each time we enter, even if we have visited before.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex352.html#e352 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc26.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc28.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc13.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc15.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

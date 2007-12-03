@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.16. Randomness</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.1. Understand</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,126 +19,94 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Do Pass Go" -->
-<!-- SEARCH SECTION "Ex 118" -->
-<!-- SEARCH SORT "Ex 008-016-118" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc124.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc126.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.16. Randomness</b></font></td></tr></table>
+<!-- SEARCH TITLE "XYZZY" -->
+<!-- SEARCH SECTION "Ex 253" -->
+<!-- SEARCH SORT "Ex 016-001-253" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc242.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc244.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.1. Understand</b></font></td></tr></table>
 <p>
-<p>Sometimes we want to introduce random behaviour into play. We usually do this by generating random values, and then acting differently depending on what they are. The following:
+<p>During play, the computer and the player alternate in writing messages to each other: in the player's case, these are short instructions, usually saying what to do next. A wide range of such &quot;commands&quot; are automatically understood, but these only apply to the standard built-in actions. (This wide range is conveniently tabulated at the foot of the Actions index.) If we want the player to be able to command new actions, then we need to specify what is to be understood as what. For this, we supply special sentences starting with the word &quot;Understand&quot;.
 <p>
-<blockquote><font color="#000080">a random number from 2 to 5
+<p>Suppose we return to the earlier example of a newly created action:
+<p>
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
 </font></blockquote><p>
 <p>
-<p>produces, as it suggests, a random number drawn from the choices 2, 3, 4 or 5, each of which is equally likely to come up.
+<p>We then supply lines of grammar (as they are called) for Inform to recognise, like so:
 <p>
-<p>We can also use random conditions:
-<p>
-<blockquote><font color="#000080">if a random chance of 2 in 3 succeeds then ...
+<blockquote><font color="#000080">Understand &quot;photograph [someone]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>Here is a rule which applies only 15% of the time:
-<p>
-<blockquote><font color="#000080">Instead of waiting when a random chance of 15 in 100 succeeds: ...
+<blockquote><font color="#000080">Understand &quot;photograph [an open door]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>If we make a new kind of value, we can also take random values from it:
+<p>As usual, the square brackets indicate something which stands for text, rather than text to be taken verbatim. &quot;[someone]&quot; needs to be the name of anything of the kind &quot;person&quot;, for instance (though as usual that person will need to be in sight of the player for the name to be accepted). The first word - in these examples &quot;photograph&quot; - must be something definite, not a substitution like this.
 <p>
-<blockquote><font color="#000080">A cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.
+<p>For obvious reasons, this pattern of words needs to match the expectations of the action. Photographing applies to &quot;one visible thing&quot; - the &quot;visible&quot; just means it does not need to be touched, only seen - so neither of these would be allowable:
+<p>
+<blockquote><font color="#000080">Understand &quot;photograph&quot; as photographing.
+<br>Understand &quot;photograph [someone] standing next to [something]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>The value &quot;a random cloud pattern&quot; then produces a random choice from the seven cloud patterns, each equally likely.
-<p>
-<p>Testing IF which makes random choices can be rather frustrating, because a problem showing up on one attempt may not show up on another. To ease testing, the following sentence will &quot;fix&quot; the process of generating these random numbers so that they are not random at all - the same sequence of random numbers will be produced on each run.
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode19(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('When play begins, seed the random-number generator with 1234.\n\n');
-}
-</script>
-<a href="javascript:pasteCode19()"><img border=0 src=../doc_images/paste.png></a> When play begins, seed the random-number generator with 1234.
-</font></blockquote><p>
-<p>
-<p>The seed value &quot;1234&quot; can be anything positive; a different sequence of random numbers will be produced for each different seed value. A seed value of 0 restores the RNG to properly random behaviour again.
+<p>The first is bad because it supplies no things at all, the second because it supplies two: what we want, of course, is just the one.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e146"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc125.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>118</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc125.html#e146 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Do Pass Go</font></b></a><br>A pair of dice which can be rolled, and are described with their current total when not carried, and have individual scores when examined.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex146.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e146"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc243.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>253</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc243.html#e146 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> XYZZY</font></b></a><br>Basics of adding a new command reviewed, for the case of the simple magic word XYZZY.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex146.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>We have seen before how to define a new action from scratch, but we may want to review here, using a simple command that requires no objects.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode206(code) {
+function pasteCode340(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Do Pass Go"\n\nGo is a room. "A giant square area, where you and your other pewter ornament friends gather before setting out to purchase London."\n\nThe pair of dice is carried by the player.\n\nThe pair of dice has a number called first die. The pair of dice has a number called second die. The first die of the pair is 6. The second die of the pair is 6. Rule for printing the name of the pair of dice while taking inventory: say "pair of dice".\nRule for printing the name of the pair of dice: say "pair of dice showing [first die of the pair plus second die of the pair]".\n\nTo say detailed state of the dice:\n\tif the first die of the pair is the second die of the pair, say "double [first die of the pair]";\n\totherwise say "[first die of the pair] and [second die of the pair]".\n\nThe description of the pair of dice is "The pair of dice are [if the dice are carried]itching to be rolled[otherwise]showing [detailed state of the dice][end if]."\n\nRolling is an action applying to one carried thing. Understand "roll [something preferably held]" as rolling.\n\nCheck rolling when the noun is not the pair of dice: say "Not something you can roll." instead.\nCarry out rolling:\n\tnow the pair of dice is in the holder of the actor;\n\tnow the first die of the pair of dice is a random number from 1 to 6;\n\tnow the second die of the pair of dice is a random number from 1 to 6.\nReport rolling:\n\tsay "You roll [detailed state of the dice]."\n\nTest me with "i / roll dice / look / x dice / get dice / x dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice".\n\n[Because we remember the states of the individual dice, not just a total, we can make use of the combination rolled.]\n\nThe doubles count is a number that varies.\nAfter rolling:\n\tif the first die of the pair is the second die of the pair, increase the doubles count by 1;\n\totherwise change the doubles count to 0;\n\tcontinue the action.\n\nJail is a room. "This is Jail, and not the Just Visiting periphery, either."\n\nEvery turn when the doubles count is 3:\n\tsay "The blue-uniformed policemen blows his whistle and beckons you sternly...";\n\tnow the player carries the pair of dice;\n\tnow the player is in Jail;\n\tnow the doubles count is 0.\n\nEvery turn when the doubles count is 1 and the player is in Jail:\n\tsay "The warden gruffly releases you.";\n\tnow the player carries the pair of dice;\n\tnow the player is in Go.\n');
+    myProject.pasteCode('[=0x0022=]XYZZY[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]xyzzy[=0x0022=] or [=0x0022=]say xyzzy[=0x0022=] or [=0x0022=]cast xyzzy[=0x0022=] as casting xyzzy.[=0x000A=][=0x000A=]Casting xyzzy is an action applying to nothing.[=0x000A=][=0x000A=]Check casting xyzzy:[=0x000A=][=0x0009=]if the player does not wear the amulet of elocution, say [=0x0022=]You are unable to articulate the second [=0x0027=]z[=0x0027=] separately from the first, and the spell fails in a disdainful puff. Must be Parisian magic.[=0x0022=] instead;[=0x000A=][=0x0009=]if the player has the plate, say [=0x0022=]The plate of cheeses twitches uncomfortably, aware that it should be doing something, but not sure what.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out casting xyzzy:[=0x000A=][=0x0009=]move the plate to the player.[=0x000A=][=0x000A=]Report casting xyzzy:[=0x000A=][=0x0009=]say [=0x0022=]Under the influence of the Amulet of Elocution, you pronounce this as Xhi-zee. And lo, from nowhere, a [plate] appears![=0x0022=][=0x000A=][=0x000A=]The amulet of elocution is a wearable thing. It is carried by the player. The description is [=0x0022=]A heavy gold ring on a chain. If heated in an ordinary house fire, it glows with the words, [=0x0027=]Moses Supposes His Toeses Are Roses.[=0x0027=][=0x0022=][=0x000A=][=0x000A=]The plate is a portable supporter. On the plate is a very ripe ooze. Instead of smelling the ooze, say [=0x0022=]It smells like socks. This is going to be wonderful.[=0x0022=] The ooze is edible. The printed name of the plate is [=0x0022=]plate[if the plate supports the ooze] of cheese[end if][=0x0022=]. The description of the ooze is [=0x0022=]Definitely genuinely cheese.[=0x0022=] Understand [=0x0022=]cheese[=0x0022=] as the ooze.[=0x000A=][=0x000A=]Instead of eating the ooze: remove the ooze from play; say [=0x0022=]You are transported...[=0x0022=]; move the player to Paradise.[=0x000A=][=0x000A=]The Cheez Factory is a room. [=0x0022=]All around you are squares of pressed orange polymer, or possibly cheez. Your only hope is the magic word your uncle taught you: XYZZY.[=0x0022=] The squares of pressed orange polymer are scenery in the Factory. The description is [=0x0022=]You see nothing special about the squares of pressed orange polymer. Nothing special at all.[=0x0022=] Understand [=0x0022=]square[=0x0022=] or [=0x0022=]cheez[=0x0022=] as the squares.[=0x000A=][=0x000A=]Paradise is a room. The description is [=0x0022=]Well, it might just be one of the posh upper rings of purgatory, if you[=0x0027=]re entirely honest with yourself.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]x squares / x amulet / x cheese / xyzzy / wear amulet / xyzzy / x ooze / smell ooze /  eat ooze[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode206()"><img border=0 src=../doc_images/paste.png></a> &quot;Do Pass Go&quot;
+<a href="javascript:pasteCode340()"><img border=0 src=../doc_images/paste.png></a> &quot;XYZZY&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Go is a room. &quot;A giant square area, where you and your other pewter ornament friends gather before setting out to purchase London.&quot;
+<blockquote><font color="#000080">Understand &quot;xyzzy&quot; or &quot;say xyzzy&quot; or &quot;cast xyzzy&quot; as casting xyzzy.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The pair of dice is carried by the player.
+<blockquote><font color="#000080">Casting xyzzy is an action applying to nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The pair of dice has a number called first die. The pair of dice has a number called second die. The first die of the pair is 6. The second die of the pair is 6. Rule for printing the name of the pair of dice while taking inventory: say &quot;pair of dice&quot;.
-<br>Rule for printing the name of the pair of dice: say &quot;pair of dice showing [first die of the pair plus second die of the pair]&quot;.
+<blockquote><font color="#000080">Check casting xyzzy:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player does not wear the amulet of elocution, say &quot;You are unable to articulate the second 'z' separately from the first, and the spell fails in a disdainful puff. Must be Parisian magic.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player has the plate, say &quot;The plate of cheeses twitches uncomfortably, aware that it should be doing something, but not sure what.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say detailed state of the dice:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the first die of the pair is the second die of the pair, say &quot;double [first die of the pair]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[first die of the pair] and [second die of the pair]&quot;.
+<blockquote><font color="#000080">Carry out casting xyzzy:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the plate to the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the pair of dice is &quot;The pair of dice are [if the dice are carried]itching to be rolled[otherwise]showing [detailed state of the dice][end if].&quot;
+<blockquote><font color="#000080">Report casting xyzzy:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Under the influence of the Amulet of Elocution, you pronounce this as Xhi-zee. And lo, from nowhere, a [plate] appears!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rolling is an action applying to one carried thing. Understand &quot;roll [something preferably held]&quot; as rolling.
+<blockquote><font color="#000080">The amulet of elocution is a wearable thing. It is carried by the player. The description is &quot;A heavy gold ring on a chain. If heated in an ordinary house fire, it glows with the words, 'Moses Supposes His Toeses Are Roses.'&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check rolling when the noun is not the pair of dice: say &quot;Not something you can roll.&quot; instead.
-<br>Carry out rolling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pair of dice is in the holder of the actor;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the first die of the pair of dice is a random number from 1 to 6;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the second die of the pair of dice is a random number from 1 to 6.
-<br>Report rolling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You roll [detailed state of the dice].&quot;
+<blockquote><font color="#000080">The plate is a portable supporter. On the plate is a very ripe ooze. Instead of smelling the ooze, say &quot;It smells like socks. This is going to be wonderful.&quot; The ooze is edible. The printed name of the plate is &quot;plate[if the plate supports the ooze] of cheese[end if]&quot;. The description of the ooze is &quot;Definitely genuinely cheese.&quot; Understand &quot;cheese&quot; as the ooze.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;i / roll dice / look / x dice / get dice / x dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice / roll dice&quot;.
+<blockquote><font color="#000080">Instead of eating the ooze: remove the ooze from play; say &quot;You are transported...&quot;; move the player to Paradise.
 </font></blockquote><p>
 <p>
-<p>Because we remember the states of the individual dice, not just a total, we can make use of the combination rolled.
-<p>
-<blockquote><font color="#000080">The doubles count is a number that varies.
-<br>After rolling:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the first die of the pair is the second die of the pair, increase the doubles count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change the doubles count to 0;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+<blockquote><font color="#000080">The Cheez Factory is a room. &quot;All around you are squares of pressed orange polymer, or possibly cheez. Your only hope is the magic word your uncle taught you: XYZZY.&quot; The squares of pressed orange polymer are scenery in the Factory. The description is &quot;You see nothing special about the squares of pressed orange polymer. Nothing special at all.&quot; Understand &quot;square&quot; or &quot;cheez&quot; as the squares.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Jail is a room. &quot;This is Jail, and not the Just Visiting periphery, either.&quot;
+<blockquote><font color="#000080">Paradise is a room. The description is &quot;Well, it might just be one of the posh upper rings of purgatory, if you're entirely honest with yourself.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when the doubles count is 3:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The blue-uniformed policemen blows his whistle and beckons you sternly...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the pair of dice;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is in Jail;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the doubles count is 0.
+<blockquote><font color="#000080">Test me with &quot;x squares / x amulet / x cheese / xyzzy / wear amulet / xyzzy / x ooze / smell ooze /  eat ooze&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when the doubles count is 1 and the player is in Jail:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The warden gruffly releases you.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player carries the pair of dice;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is in Go.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc125.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>XYZZY is a magic word from the original Adventure, and many other games respond to it with some sort of amusing message.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc243.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e27"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex27.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>119</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex27.html#e27 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lanista 1</font></b></a><br>Very simple randomized combat in which characters hit one another for a randomized amount of damage.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex27.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e285"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex285.html#e285 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>120</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex285.html#e285 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Weathering</font></b></a><br>The automatic weather station atop Mt. Pisgah shows randomly fluctuating temperature, pressure and cloud cover.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex285.html#e285 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e343"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex343.html#e343 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>121</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex343.html#e343 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uptown Girls</font></b></a><br>A stream of random pedestrians who go by the player.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex343.html#e343 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc124.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc126.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e62"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex62.html#e62 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>254</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex62.html#e62 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Indirection</font></b></a><br>Renaming the directions of the compass so that "white" corresponds to north, "red" to east, "yellow" to south, and "black" to west.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex62.html#e62 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e31"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex31.html#e31 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>255</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex31.html#e31 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Xylan</font></b></a><br>Creating a new command that does require an object to be named; and some comments about the choice of vocabulary, in general.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex31.html#e31 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc242.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc244.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

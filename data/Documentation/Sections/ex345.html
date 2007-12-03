@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.3. Before rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.9. Repeat</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,103 +19,120 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Sand" -->
-<!-- SEARCH SECTION "Ex 79" -->
-<!-- SEARCH SORT "Ex 007-003-079" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc92.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc94.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.3. Before rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Wonka's Revenge" -->
+<!-- SEARCH SECTION "Ex 160" -->
+<!-- SEARCH SORT "Ex 011-009-160" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc161.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc163.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.9. Repeat</b></font></td></tr></table>
 <p>
-<p>Despite what was said in the previous section, instead rules do not quite bypass all of the usual rules. Inform knows that certain actions require light: for instance,
+<p>The following kind of loop could if necessary be achieved just as well with a suitable &quot;while&quot;, but occurs so often that it is convenient to have a standard form. Repeat loops also have the great advantage of being certain to finish.
 <p>
-<blockquote><font color="#000080">examining the napkin; looking; looking under the dining table
+<blockquote><font color="#000080">repeat with my counter running from 1 to 10 begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(phrases)
+<br>end repeat;
 </font></blockquote><p>
 <p>
-<p>and if it is dark then none of these actions will be allowed, and any instead rules about them will not even be reached. Similarly, Inform knows that most actions require physical access to their objects: so &quot;taking the napkin&quot; would be blocked if the napkin were, say, inside a closed glass bottle, whereas &quot;examining the napkin&quot; would not. So an instead rule can only take effect if the action has already passed these basic reasonability tests.
+<p>This is similar to the old FOR/NEXT loop from BASIC, for those with long memories, and runs through the given phrases ten times. Within those phrases, a special value called &quot;my counter&quot; has the value 1 the first time through, then the value 2, then 3 and so on up to 10. This value exists only within the loop, so it makes no sense to talk about &quot;my counter&quot; elsewhere. (It can of course be called whatever we like: this is only an example.)
 <p>
-<p>&quot;Before&quot; rules genuinely precede checking of any kind. They also differ from instead rules in that they do not automatically stop the action in its tracks. Rather, they are provided as an opportunity to ensure that something else is done first. For example:
+<p>The &quot;begin&quot; and &quot;end repeat&quot; are compulsory for repeat loops, in the interests of clarity.
 <p>
-<blockquote><font color="#000080">Before taking the napkin, say &quot;(first unfolding its delicate origami swan)&quot;.
-</font></blockquote><p>
-<p>
-<p>whence
-<p>
-<blockquote><font color="#000080">&gt;GET NAPKIN
-<br>(first unfolding its delicate origami swan)
-<br>Taken.
-</font></blockquote><p>
-<p>
-<p>We have seen that instead rules automatically stop actions, whereas before rules automatically allow them to continue. We sometimes want to change this. The magic word &quot;instead&quot; can therefore be tacked on to any instruction in a before rule, and will have the effect of immediately stopping the action at that instruction. Thus the following two rules are (almost) equivalent:
-<p>
-<blockquote><font color="#000080">Before removing the key, instead say &quot;It seems to be soldered to the keyhole.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of removing the key, say &quot;It seems to be soldered to the keyhole.&quot;
-</font></blockquote><p>
-<p>
-<p>Two special phrases can also be used: &quot;stop the action&quot; and &quot;continue the action&quot;. Yet a third way to achieve the same effect, then, would be:
-<p>
-<blockquote><font color="#000080">Before removing the key: say &quot;It seems to be soldered to the keyhole.&quot;; stop the action.
-</font></blockquote><p>
-<p>
-<p>And to round off the discussion, these are also (almost) equivalent:
-<p>
-<blockquote><font color="#000080">Before taking the napkin, say &quot;(first unfolding its delicate origami swan)&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of taking the napkin: say &quot;(first unfolding its delicate origami swan)&quot;; continue the action.
-</font></blockquote><p>
-<p>
-<p>As a general principle, it is good style to use instead rules whenever blocking actions, and before rules only when it is genuinely necessary to do something first but then to continue: in fact, it is good style to use &quot;stop the action&quot; or &quot;continue the action&quot; as little as possible.
-<p>
-<p><hr><p>
-<a name="e350"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex350.html#e350 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>78</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex350.html#e350 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Democratic Process</font></b></a><br>Make PUT and INSERT commands automatically take objects if the player is not holding them.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex350.html#e350 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<!-- EXAMPLE START -->
-<a name="e345"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc93.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>79</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc93.html#e345 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Sand</font></b></a><br>Extend PUT and INSERT handling to cases where multiple objects are intended at once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex345.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>The above example does not quite work when we want the player to be allowed to take multiple objects at once before putting them somewhere: we also need to add a couple of &quot;understand&quot; rules borrowed from many chapters later. While the reasons may not be immediately clear, we include the demonstration here for the sake of thoroughness:
+<p>We are allowed to &quot;nest&quot; loops, that is, to put one inside another.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode163(code) {
+function pasteCode25(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Sand"\n\nBefore inserting something which is not carried by the player into something:\n\tif the noun is in the second noun, say "Already done." instead;\n\tsay "(first taking [the noun]) ";\n\tsilently try taking the noun;\n\tif the player is not holding the noun, stop the action.\n\nBefore putting something which is not carried by the player on something:\n\tif the noun is on the second noun, say "Already done." instead;\n\tsay "(first taking [the noun])[line break]";\n\tsilently try taking the noun;\n\tif the player is not holding the noun, stop the action.\n\nUnderstand "put [things] in [something]" as inserting it into. Understand "put [things] on [something]" as putting it on.\n\nThe Closet is a room.\n\nA lentil is a kind of thing. A black-eyed pea is a kind of thing. The closet contains 3 lentils. The Closet contains 14 black-eyed peas. The round tin is a container in the closet. The round tin contains 17 lentils. The square tin is a container in the Closet. The square tin contains 20 black-eyed peas.\n\nSorting is a scene. Sorting begins when play begins. Sorting ends when all the lentils are in the round tin and all the black-eyed peas are in the square tin. When Sorting ends, end the game in victory.\n\nWhen play begins: say "Thanks to your cruel stepmother, you\'re not going anywhere until the lentils and peas are sorted."\n\nTest me with "put peas in square tin / put lentils in round tin".\n');
+    myProject.pasteCode('To plot a grid with size (S - a number):[=0x000A=][=0x0009=]repeat with x running from 1 to S begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Row [x]:[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]repeat with y running from 1 to S begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=] [y][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]end repeat;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=].[=0x0022=];[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode163()"><img border=0 src=../doc_images/paste.png></a> &quot;Sand&quot;
+<a href="javascript:pasteCode25()"><img border=0 src=../doc_images/paste.png></a> To plot a grid with size (S - a number):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with x running from 1 to S begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Row [x]:&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with y running from 1 to S begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; [y]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before inserting something which is not carried by the player into something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is in the second noun, say &quot;Already done.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking [the noun]) &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not holding the noun, stop the action.
+<p>If we then write
+<p>
+<blockquote><font color="#000080">plot a grid with size 5
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before putting something which is not carried by the player on something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is on the second noun, say &quot;Already done.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking [the noun])[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not holding the noun, stop the action.
+<p>then the result is
+<p>
+<blockquote><font color="#000080">Row 1: 1 2 3 4 5.
+<br>Row 2: 1 2 3 4 5.
+<br>Row 3: 1 2 3 4 5.
+<br>Row 4: 1 2 3 4 5.
+<br>Row 5: 1 2 3 4 5.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;put [things] in [something]&quot; as inserting it into. Understand &quot;put [things] on [something]&quot; as putting it on.
+<p>Thus the innermost phrase, the say which mentions &quot;y&quot;, happens 25 times.
+<p>
+<p>Whenever dealing with numbers in Inform we may need to remember that the range is restricted to -32768 up to 32767. Repeating with a counter up to exactly 32767 is hazardous, because the counter can never break through this barrier: it's infinity, so far as Inform is concerned, and that can cause the repetitions to go on forever.
+<p>
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e345"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc162.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>160</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc162.html#e345 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Wonka's Revenge</font></b></a><br>A lottery drum which redistributes the tickets inside whenever the player spins it.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex345.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode250(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Wonka[=0x0027=]s Revenge[=0x0022=][=0x000A=][=0x000A=]The Caribou Lodge is a room. [=0x0022=]Hundreds of expectant faces are turned your way from every table.[=0x0022=] A lottery drum is in the Lodge. [=0x0022=]Before you is the lottery drum[if we have spun the drum], ready to disgorge a ticket[otherwise], waiting to be spun[end if].[=0x0022=] In the drum are a red ticket, an orange ticket, a yellow ticket, a green ticket, a blue ticket, a purple ticket, and a ticket of pure gold. The drum is closed and openable.[=0x000A=][=0x000A=]Understand [=0x0022=]spin [something][=0x0022=] as spinning.[=0x000A=][=0x000A=]Spinning is an action with past participle spun, applying to one thing.[=0x000A=][=0x000A=]Check spinning: if the noun is an open container which contains something, say [=0x0022=][The list of things in the noun] would fly out.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out spinning a container:[=0x000A=][=0x0009=]shuffle the contents of the noun.[=0x000A=][=0x000A=]Report spinning:[=0x000A=][=0x0009=]if the noun contains something, say [=0x0022=]You rattle [if the noun is transparent][the list of things in the noun][otherwise]the stuff[end if] in [the noun].[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]Nothing results of your shaking [the noun].[=0x0022=][=0x000A=][=0x000A=][Inform keeps track of the order in which things have been put into a container. If we want to change that order without the player[=0x0027=]s intervention, we can move the things ourselves.][=0x000A=][=0x000A=]To shuffle the contents of (basket - a container):[=0x000A=][=0x0009=]let moves be the number of things in the basket;[=0x000A=][=0x0009=]repeat with counter running from 1 to moves[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]move a random thing in the basket to the basket;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]After opening the drum when we have spun the drum for the first time:[=0x000A=][=0x0009=]if something (called the pick) is in the drum[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]try searching the drum;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The pick] it is, then.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]silently try taking the pick;[=0x000A=][=0x0009=][=0x0009=]if the pick is the ticket of pure gold, end the game in victory;[=0x000A=][=0x0009=][=0x0009=]otherwise end the game saying [=0x0022=]Oh well, better luck next time.[=0x0022=];[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]Test me with [=0x0022=]open drum / look in drum / close drum / spin drum / open drum[=0x0022=].[=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode250()"><img border=0 src=../doc_images/paste.png></a> &quot;Wonka's Revenge&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Closet is a room.
+<blockquote><font color="#000080">The Caribou Lodge is a room. &quot;Hundreds of expectant faces are turned your way from every table.&quot; A lottery drum is in the Lodge. &quot;Before you is the lottery drum[if we have spun the drum], ready to disgorge a ticket[otherwise], waiting to be spun[end if].&quot; In the drum are a red ticket, an orange ticket, a yellow ticket, a green ticket, a blue ticket, a purple ticket, and a ticket of pure gold. The drum is closed and openable.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A lentil is a kind of thing. A black-eyed pea is a kind of thing. The closet contains 3 lentils. The Closet contains 14 black-eyed peas. The round tin is a container in the closet. The round tin contains 17 lentils. The square tin is a container in the Closet. The square tin contains 20 black-eyed peas.
+<blockquote><font color="#000080">Understand &quot;spin [something]&quot; as spinning.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Sorting is a scene. Sorting begins when play begins. Sorting ends when all the lentils are in the round tin and all the black-eyed peas are in the square tin. When Sorting ends, end the game in victory.
+<blockquote><font color="#000080">Spinning is an action with past participle spun, applying to one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins: say &quot;Thanks to your cruel stepmother, you're not going anywhere until the lentils and peas are sorted.&quot;
+<blockquote><font color="#000080">Check spinning: if the noun is an open container which contains something, say &quot;[The list of things in the noun] would fly out.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;put peas in square tin / put lentils in round tin&quot;.
+<blockquote><font color="#000080">Carry out spinning a container:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;shuffle the contents of the noun.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc93.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Report spinning:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun contains something, say &quot;You rattle [if the noun is transparent][the list of things in the noun][otherwise]the stuff[end if] in [the noun].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Nothing results of your shaking [the noun].&quot;
+</font></blockquote><p>
+<p>
+<p>Inform keeps track of the order in which things have been put into a container. If we want to change that order without the player's intervention, we can move the things ourselves.
+<p>
+<blockquote><font color="#000080">To shuffle the contents of (basket - a container):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let moves be the number of things in the basket;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with counter running from 1 to moves
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move a random thing in the basket to the basket;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After opening the drum when we have spun the drum for the first time:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if something (called the pick) is in the drum
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try searching the drum;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The pick] it is, then.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the pick;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the pick is the ticket of pure gold, end the game in victory;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise end the game saying &quot;Oh well, better luck next time.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;open drum / look in drum / close drum / spin drum / open drum&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc162.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc92.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc94.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc161.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc163.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

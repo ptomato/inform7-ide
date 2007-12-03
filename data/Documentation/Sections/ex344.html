@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.26. Reading a command</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.19. Constructing the status line</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,165 +19,107 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Fore" -->
-<!-- SEARCH SECTION "Ex 323" -->
-<!-- SEARCH SORT "Ex 017-026-323" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc287.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc289.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.26. Reading a command</b></font></td></tr></table>
+<!-- SEARCH TITLE "Guided Tour" -->
+<!-- SEARCH SECTION "Ex 308" -->
+<!-- SEARCH SORT "Ex 017-019-308" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc280.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc282.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.19. Constructing the status line</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> When reading a command from the keyboard.
+<p><b>1. When it happens.</b> Just before input is accepted from the keyboard, Inform constructs a &quot;status line&quot; at the top of the window which is normally displayed in reverse colours (white on black instead of black on white, say).
 <p>
-<p><b>2. The default behaviour.</b> Print the prompt text; wait for the player to type something and press return. Reject an entirely blank line, and treat a command beginning &quot;oops&quot; as a correction to the previous one. This is a fairly complicated business, so it is probably best not to change the &quot;for&quot; rules for this activity: &quot;before&quot;, and especially &quot;after&quot;, are another matter. (Note, however, that if Inform does reject a blank line and ask for another then this all happens inside the &quot;for&quot; rules: no &quot;after&quot; occurs after the blank line, nor does a &quot;before&quot; happen before the second attempt by the player. It is all a single round of the activity, not two.)
+<p><b>2. The default behaviour.</b> Makes the status line up out of two pieces, the &quot;left hand status line&quot; and the &quot;right hand status line&quot;. Since these can freely be changed, note that the status line is already very customisable without using rules applied to this activity.
 <p>
-<p><b>3. Examples.</b> (a) To lead absolute beginners in gently:
+<p><b>3. Examples.</b> (a) The most useful thing about this activity is that it allows us to vary descriptions in the status line. This is especially helpful to abbreviate unduly long room names, which might not otherwise fit:
 <p>
-<blockquote><font color="#000080">Before reading a command while the turn count is 1, say &quot;(This is your chance to say what the protagonist should do next. After the '>', try typing 'take inventory'.)&quot;
+<blockquote><font color="#000080">The Temple Of A Thousand Mightily Peeved Deities is a room. Rule for printing the name of the Temple while constructing the status line: say &quot;Temple&quot;.
 </font></blockquote><p>
 <p>
-<p>(b) The following responds politely but firmly if the player tries to type &quot;please look&quot;, say, instead of just &quot;look&quot;:
+<p>(b) Again, it's usually not necessary to apply activity rules to this, but occasionally amusing effects are possible if we do:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode66(code) {
+function pasteCode60(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "Please do not say please.";\n\t\treject the player\'s command;\n\tend if.\n\n');
+    myProject.pasteCode('The blindfold is wearable and initially carried. Rule for constructing the status line while the blindfold is worn: do nothing.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode66()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Please do not say please.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<a href="javascript:pasteCode60()"><img border=0 src=../doc_images/paste.png></a> The blindfold is wearable and initially carried. Rule for constructing the status line while the blindfold is worn: do nothing.
 </font></blockquote><p>
-<p>
-<p>To explain. Fragments of what the player has typed are called snippets: &quot;the player's command&quot; is the entire thing. We can test if a snippet matches a given pattern like so:
-<p>
-<blockquote><font color="#000080">if the player's command matches &quot;room [number]&quot;, ...
-</font></blockquote><p>
-<p>
-<p>This requires an exact match: the weaker condition &quot;includes&quot; only means that the pattern occurs somewhere in the given snippet, so that
-<p>
-<blockquote><font color="#000080">if the player's command includes &quot;please&quot;, ...
-</font></blockquote><p>
-<p>
-<p>matches &quot;please look&quot; or &quot;look please&quot;, etc. Lastly, the phrase
-<p>
-<blockquote><font color="#000080">reject the player's command
-</font></blockquote><p>
-<p>
-<p>tells Inform not to bother analysing the text further, but to go back to the keyboard. (No time passes; no turn elapses; nothing happens in the simulated world.)
-<p>
-<p>(c) An improved version takes commands like &quot;please drop the coin&quot; and strips &quot;please&quot; from them, but then allows them to proceed normally:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode67(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:\n\tif the player\'s command includes "please" begin;\n\t\tsay "(Quelle politesse! But no need to say please.)";\n\t\tcut the matched text;\n\tend if.\n\n');
-}
-</script>
-<a href="javascript:pasteCode67()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(Quelle politesse! But no need to say please.)&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cut the matched text;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>&quot;Matched text&quot; is a snippet containing the words which matched against the pattern in the most recent &quot;includes&quot; condition, so in this case it contains just the single word &quot;please&quot;. Two phrases allow snippets to be altered:
-<p>
-<blockquote><font color="#000080">replace (... snippet ...) with (... text ...)
-<br>cut (...snippet ...)
-</font></blockquote><p>
-<p>
-<p>Note that &quot;replace&quot; and &quot;cut&quot; can only be used in &quot;after reading a command&quot; rules: not when an action has been chosen and has gone ahead into its rulebooks. Once the reading a command activity has finished, the command is final.
-<p>
-<p>(d) To make the word &quot;grab&quot; an abbreviation for &quot;take all&quot;:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode68(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:\n\tif the player\'s command matches "grab", replace the player\'s command with "take all".\n\n');
-}
-</script>
-<a href="javascript:pasteCode68()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command matches &quot;grab&quot;, replace the player's command with &quot;take all&quot;.
-</font></blockquote><p>
-<p>
-<p>(&quot;Snippet&quot; is actually a kind of value, so we could say &quot;Ah, you typed '[the player's command]'!&quot; or some such if we liked. But in practice only three snippets are likely to be useful: the two mentioned above, &quot;player's command&quot; and &quot;matched text&quot;, and the &quot;topic understood&quot;, used when matching the &quot;[text]&quot; token in command grammar.)
-<p>
-<p>(e) Finally, we can make still more detailed alterations to the text of the command using the techniques for indexed text presented in the Advanced Text chapter. For instance:
-<p>
-<blockquote><font color="#000080">After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let T be indexed text;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let T be the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;replace the regular expression &quot;\p&quot; in T with &quot;&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the text of the player's command to T.
-</font></blockquote><p>
-<p>
-<p>This converts the player's command to indexed text, which is then manipulated by searching for any punctuation mark and replacing it with blank text (that is, deleted), and then put back again as the new command.
 <p>
 <p><hr><p>
+<a name="e307"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex307.html#e307 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>307</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex307.html#e307 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ways Out</font></b></a><br>A status line that lists the available exits from the current location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex307.html#e307 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e344"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc288.html#e344 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>323</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc288.html#e344 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Fore</font></b></a><br>Understand "fore", "aft", "port", and "starboard", but only when the player is on a vessel.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex344.html#e344 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e344"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc281.html#e344 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>308</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc281.html#e344 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Guided Tour</font></b></a><br>A status line that lists the available exits from the current location, changing the names of these exits depending on whether the room has been visited or not.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex344.html#e344 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to understand shipboard directions, but only when the player is aboard a vessel. It might be tempting to do only:
+<p>It may sometimes be helpful to prompt the player with a list of exits printed up in the status line. For instance, here is a status line that will print the names of nearby rooms, as well as all the doors the player can see:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode411(code) {
+function pasteCode395(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Fore"\n\nUnderstand "fore" or "f" as north when the location is in the Ship. Understand "aft" or "a" as south when the location is in the Ship. Understand "port" or "p" as west when the location is in the Ship. Understand "starboard" or "sb" as east when the location is in the Ship.\n\n[but then we get "that\'s not a verb I understand" when the player tries ship directions on land, and that\'s obviously wrong.]\n\n[Similarly, we don\'t want to use "understand... as a mistake" with this set of things because we are correcting the name of a noun, not the phrasing of a verb.]\n\n[So we might choose to catch and correct mistakes at the reading a command stage:]\n\nUnderstand "fore" or "f" or "aft" or "port" or "p" or "starboard" or "sb" as "[shipboard direction]". Understand "a" or "go a" as "[going aft]".\n\nAfter reading a command:\n\tif the location is not in the Ship and the player\'s command includes "[shipboard direction]"\n\tbegin;\n\t\tsay "You\'re not at sea now, sailor.";\n\t\treject the player\'s command;\n\tend if;\n\tif the location is not in the Ship and the player\'s command matches "[going aft]"\n\tbegin;\n\t\tsay "You\'re not at sea now, sailor.";\n\t\treject the player\'s command;\n\tend if.\n\nBow is a room. South of Bow is By Foremast. South of By Foremast is By Mainmast. South of By Mainmast is By Mizzenmast. South of By Mizzenmast is By Jiggermast. South of By Jiggermast is Stern.\n\nThe Ship is a region. Bow, By Foremast, By Mainmast, By Mizzenmast, By Jiggermast, and Stern are in Ship.\n\nThe Dock is west of By Mainmast.\n\nTest me with "aft / port / a / p / starboard".\n\n');
+    myProject.pasteCode('[=0x0022=]Guided Tour[=0x0022=][=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]change left hand status line to [=0x0022=]Nearby: [if a room is adjacent][the list of adjacent rooms][end if][if a room is adjacent and a door is visible] and [end if][if a door is visible][the list of visible doors][end if][=0x0022=];[=0x000A=][=0x0009=]change right hand status line to [=0x0022=][=0x0022=].[=0x000A=][=0x000A=][Of course, we may not want to tell the player what glories are to be found in locations he hasn[=0x0027=]t yet explored.][=0x000A=][=0x000A=]Rule for printing the name of an unvisited room (called the target) while constructing the status line:[=0x000A=][=0x0009=]let aim be the best route from the location to the target;[=0x000A=][=0x0009=]say [=0x0022=]something [aim][=0x0022=].[=0x000A=][=0x000A=][Even when we have seen a room, we might still want a reminder about how to get there:][=0x000A=][=0x000A=]After printing the name of a visited room (called the target) while constructing the status line:[=0x000A=][=0x0009=]let aim be the best route from the location to the target;[=0x000A=][=0x0009=]say [=0x0022=] ([aim])[=0x0022=].[=0x000A=][=0x000A=][We may also find that printing out full directions makes the status line unpleasantly crowded. Fortunately, it isn[=0x0027=]t hard to provide a set of abbreviations to use in this context:][=0x000A=][=0x000A=]Rule for printing the name of a direction (called the aim) while constructing the status line:[=0x000A=][=0x0009=]choose row with a heading of the aim in the Table of Abbreviation;[=0x000A=][=0x0009=]say [=0x0022=][shortcut entry][=0x0022=].[=0x000A=][=0x000A=]Table of Abbreviation[=0x000A=]heading[=0x0009=]shortcut[=0x000A=]north[=0x0009=][=0x0022=]N[=0x0022=][=0x000A=]northeast[=0x0009=][=0x0022=]NE[=0x0022=][=0x000A=]northwest[=0x0009=][=0x0022=]NW[=0x0022=][=0x000A=]east[=0x0009=][=0x0022=]E[=0x0022=][=0x000A=]southeast[=0x0009=][=0x0022=]SE[=0x0022=][=0x000A=]south[=0x0009=][=0x0022=]S[=0x0022=][=0x000A=]southwest[=0x0009=][=0x0022=]SW[=0x0022=][=0x000A=]west[=0x0009=][=0x0022=]W[=0x0022=][=0x000A=]up[=0x0009=][=0x0022=]U[=0x0022=][=0x000A=]down[=0x0009=][=0x0022=]D[=0x0022=][=0x000A=]inside[=0x0009=][=0x0022=]in[=0x0022=][=0x000A=]outside[=0x0009=][=0x0022=]out[=0x0022=][=0x000A=][=0x000A=][Everywhere else, the names of directions will still be printed out in full in the usual way. And now we give it a little map to work with:][=0x000A=][=0x000A=]Dome is a room. North of Dome is North Chapel. South of the Dome is South Chapel. West of the Dome is Western End. Quiet Corner is northwest of the Dome, north of Western End, and west of North Chapel. Loud Corner is east of North Chapel, northeast of Dome, and north of Eastern End. Eastern End is north of Dim Corner and east of Dome. Dim Corner is southeast of Dome and east of South Chapel. Ruined Corner is southwest of Dome, west of South Chapel, and south of Western End.[=0x000A=][=0x000A=]The church door is east of Eastern End and west of the Courtyard. The church door is a door.[=0x000A=][=0x000A=]Test me with [=0x0022=]n / w / s[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode411()"><img border=0 src=../doc_images/paste.png></a> &quot;Fore&quot;
+<a href="javascript:pasteCode395()"><img border=0 src=../doc_images/paste.png></a> &quot;Guided Tour&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;fore&quot; or &quot;f&quot; as north when the location is in the Ship. Understand &quot;aft&quot; or &quot;a&quot; as south when the location is in the Ship. Understand &quot;port&quot; or &quot;p&quot; as west when the location is in the Ship. Understand &quot;starboard&quot; or &quot;sb&quot; as east when the location is in the Ship.
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change left hand status line to &quot;Nearby: [if a room is adjacent][the list of adjacent rooms][end if][if a room is adjacent and a door is visible] and [end if][if a door is visible][the list of visible doors][end if]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change right hand status line to &quot;&quot;.
 </font></blockquote><p>
 <p>
-<p>but then we get &quot;that's not a verb I understand&quot; when the player tries ship directions on land, and that's obviously wrong.
+<p>Of course, we may not want to tell the player what glories are to be found in locations he hasn't yet explored.
 <p>
-<p>Similarly, we don't want to use &quot;understand... as a mistake&quot; with this set of things because we are correcting the name of a noun, not the phrasing of a verb.
-<p>
-<p>So we might choose to catch and correct mistakes at the reading a command stage:
-<p>
-<blockquote><font color="#000080">Understand &quot;fore&quot; or &quot;f&quot; or &quot;aft&quot; or &quot;port&quot; or &quot;p&quot; or &quot;starboard&quot; or &quot;sb&quot; as &quot;[shipboard direction]&quot;. Understand &quot;a&quot; or &quot;go a&quot; as &quot;[going aft]&quot;.
+<blockquote><font color="#000080">Rule for printing the name of an unvisited room (called the target) while constructing the status line:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let aim be the best route from the location to the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;something [aim]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is not in the Ship and the player's command includes &quot;[shipboard direction]&quot;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're not at sea now, sailor.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is not in the Ship and the player's command matches &quot;[going aft]&quot;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're not at sea now, sailor.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<p>Even when we have seen a room, we might still want a reminder about how to get there:
+<p>
+<blockquote><font color="#000080">After printing the name of a visited room (called the target) while constructing the status line:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let aim be the best route from the location to the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot; ([aim])&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Bow is a room. South of Bow is By Foremast. South of By Foremast is By Mainmast. South of By Mainmast is By Mizzenmast. South of By Mizzenmast is By Jiggermast. South of By Jiggermast is Stern.
+<p>We may also find that printing out full directions makes the status line unpleasantly crowded. Fortunately, it isn't hard to provide a set of abbreviations to use in this context:
+<p>
+<blockquote><font color="#000080">Rule for printing the name of a direction (called the aim) while constructing the status line:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row with a heading of the aim in the Table of Abbreviation;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[shortcut entry]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Ship is a region. Bow, By Foremast, By Mainmast, By Mizzenmast, By Jiggermast, and Stern are in Ship.
+<blockquote><font color="#000080">Table of Abbreviation
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">heading</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">shortcut</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">north</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;N&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">northeast</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;NE&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">northwest</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;NW&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">east</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;E&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">southeast</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;SE&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">south</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;S&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">southwest</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;SW&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">west</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;W&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">up</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;U&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">down</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;D&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">inside</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;in&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">outside</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;out&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Dock is west of By Mainmast.
+<p>Everywhere else, the names of directions will still be printed out in full in the usual way. And now we give it a little map to work with:
+<p>
+<blockquote><font color="#000080">Dome is a room. North of Dome is North Chapel. South of the Dome is South Chapel. West of the Dome is Western End. Quiet Corner is northwest of the Dome, north of Western End, and west of North Chapel. Loud Corner is east of North Chapel, northeast of Dome, and north of Eastern End. Eastern End is north of Dim Corner and east of Dome. Dim Corner is southeast of Dome and east of South Chapel. Ruined Corner is southwest of Dome, west of South Chapel, and south of Western End.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;aft / port / a / p / starboard&quot;.
+<blockquote><font color="#000080">The church door is east of Eastern End and west of the Courtyard. The church door is a door.
 </font></blockquote><p>
 <p>
-<p>If desired, we could insert an equivalent set of refusals if the player tried to use north, south, etc., aboard ship.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc288.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Test me with &quot;n / w / s&quot;.
+</font></blockquote><p>
+<p>
+<p>Note that while this looks fine in some places, other locations exceed the limits of what the status-line can hold: if any given room is going to have a large number of exits, this kind of listing will almost certainly not fit. So apply cautiously.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc281.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e106"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex106.html#e106 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>324</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex106.html#e106 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fragment of a Greek Tragedy</font></b></a><br>Responding to the player's input based on keywords only, and overriding the original parser entirely.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex106.html#e106 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e170"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex170.html#e170 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>325</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex170.html#e170 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloves</font></b></a><br>Accepting adverbs anywhere in a command, registering what the player typed but then cutting them out before interpreting the command.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex170.html#e170 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e86"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex86.html#e86 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>326</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex86.html#e86 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Complimentary Peanuts</font></b></a><br>A character who responds to keywords in the player's instructions and remarks, even if there are other words included.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex86.html#e86 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc287.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc289.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc280.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc282.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

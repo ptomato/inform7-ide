@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.5. Declaring and previewing the figures</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.5. Building lists</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,23 +19,74 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Declaring and previewing the figures" -->
+<!-- SEARCH TITLE "Building lists" -->
 <!-- SEARCH SECTION "20.5" -->
 <!-- SEARCH SORT "020-005-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc328.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc330.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.5. Declaring and previewing the figures</b></font></td></tr></table>
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc328.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc330.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.5. Building lists</b></font></td></tr></table>
 <p>
-<p>Inside Inform, the source text for a project always tries to avoid talking about filenames - we need a better way to refer to the individual figures.
+<p>We have already seen &quot;add... to...&quot;. This in fact comes in two forms:
 <p>
-<p>We do this by declaring each figure with a sentence like the following examples:
-<p>
-<blockquote><font color="#000080">Figure of Woodlands is the file &quot;Woodlands.png&quot;.
-<br>Figure 2 is the file &quot;Red Admiral Butterfly.png&quot;.
+<blockquote><font color="#000080">add V to L;
+<br>add V to L, if absent;
 </font></blockquote><p>
 <p>
-<p>Figure names can consist of any text provided that text starts with the word &quot;Figure&quot;. So &quot;Figure 3 - Woodlands&quot;, for instance, or even &quot;Figure W&quot; would have been just as good as &quot;Figure of Woodlands&quot;. Books tend to number figures, but then, in a book the order in which they appear is known in advance - which might not be true in IF.
+<p>The former always adds V to L, while the latter does so only if V is not already somewhere in L. (Both forms are allowed only if V is compatible with the kind of entries which is supposed to be stored in L.) V is ordinarily added at the end of L, unless we specify otherwise, for instance with:
 <p>
-<p>The file names must be exactly those used in the Figures folder. We need not declare every image kept there, but those we don't declare - remember Blackberry.jpg? - cannot be displayed.
+<blockquote><font color="#000080">add V at entry 3 in L;
+<br>add V at entry 3 in L, if absent;
+</font></blockquote><p>
 <p>
-<p>We can preview the stock of figures by going to the table of figures in the Contents index for a project (once the project has been built, that is, so that its index is up to date). This preview shows thumbnail forms of the pictures, the names, the formats and the image sizes in pixels. A warning triangle is shown for any images in the wrong format, or which are missing from the Figures folder.
+<p>For instance &quot;add V at entry 1 in L&quot; adds V at the beginning, moving all of the existing entries up by one place. (If there are N entries in L, then we can add at any of entries 1 up to N+1: adding at entry N+1 means adding at the end.)
 <p>
+<p>A list is allowed to contain duplicates, and the order matters. For instance:
+<p>
+<blockquote><font color="#000080">let L be {2, 2, 3};
+</font></blockquote><p>
+<p>
+<p>makes L into &quot;2, 2 and 3&quot;. This is a different list to the one made by:
+<p>
+<blockquote><font color="#000080">let M be {2, 3, 2};
+</font></blockquote><p>
+<p>
+<p>even though L and M have the same values, repeated the same number of times - for two lists to be equal, they must have the same kind of entry, the same number of entries, and the same entries in each position.
+<p>
+<p>We can also strike out values:
+<p>
+<blockquote><font color="#000080">remove 2 from L;
+<br>remove 2 from L, if present;
+</font></blockquote><p>
+<p>
+<p>These each go through L and remove every 2 that's present: so for instance the L above would be reduced down to just a single entry, 3. Ordinarily &quot;remove 2 from L&quot; produces a run-time problem if L does not contain the value 2, but using the &quot;if present&quot; option lets us off this: the phrase then does nothing if L does not contain the value to be removed.
+<p>
+<p>Entries in given positions in the list can also be removed:
+<p>
+<blockquote><font color="#000080">remove entry 3 from L;
+<br>remove entries 4 to 6 from L;
+</font></blockquote><p>
+<p>
+<p>The entries are numbered from 1, so that &quot;remove entry 1 from L&quot; takes away the first entry. (The others automatically shuffle down.)
+<p>
+<p>Adding entries one at a time is pretty tiresome, but we can also append a whole list of extra entries X onto the end of any already-existing list L:
+<p>
+<blockquote><font color="#000080">let L be {2, 3};
+<br>add {60, 168} to L;
+</font></blockquote><p>
+<p>
+<p>makes L into {2, 3, 60, 168}. This is, of course, only allowed if the values in X are compatible with the kind of value L is supposed to hold. Alternatively, we can add a set at the front, or even somewhere in the middle:
+<p>
+<blockquote><font color="#000080">add {60, 168} at entry 2 in L;
+</font></blockquote><p>
+<p>
+<p>produces {2, 60, 168, 3}, with the added entries beginning at entry 2.
+<p>
+<p>Symmetrically, we can also remove from a list:
+<p>
+<blockquote><font color="#000080">let L be {2, 3, 7};
+<br>remove {3, 7} from L;
+</font></blockquote><p>
+<p>
+<p>makes L into simply {2}. (If L and the list to be added are both very large, this can be a slow process, and we might do better by sorting them and trying a more sophisticated method. But this is convenient for anything reasonable-sized.)
+<p>
+<p><hr><p>
+<a name="e233"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex233.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>370</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex233.html#e233 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Robo 1</font></b></a><br>A robot which watches and records the player's actions, then tries to repeat them back in the same order when he is switched into play-back mode.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex233.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc328.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc330.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

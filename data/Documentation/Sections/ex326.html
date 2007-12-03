@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.12. Phrase options</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.22. Deciding the scope of something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,186 +19,120 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Equipment List" -->
-<!-- SEARCH SECTION "Ex 163" -->
-<!-- SEARCH SORT "Ex 011-012-163" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc164.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc166.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.12. Phrase options</b></font></td></tr></table>
+<!-- SEARCH TITLE "Rock Garden" -->
+<!-- SEARCH SECTION "Ex 316" -->
+<!-- SEARCH SORT "Ex 017-022-316" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc283.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc285.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.22. Deciding the scope of something</b></font></td></tr></table>
 <p>
-<p>There are often several slightly different ways to perform a given task but which have substantially the same definition. In the following example:
+<p><b>1. When it happens.</b> &quot;Scope&quot; is a term of art in interactive fiction programming: it means the collection of things which can be interacted with at any given moment, which depends on who you are and where you are. Commands typed by the player will only be allowed to go forward into actions if the things they refer to are &quot;in scope&quot;. Inform also needs to determine scope at other times, too: for instance, when deciding whether a rule conditional on being &quot;in the presence of&quot; something is valid. It is a bad idea to say anything during this activity.
 <p>
-<blockquote><font color="#000080">To go hiking, into the woods or up the mountain:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if into the woods then say &quot;Watch out for badgers.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if up the mountain then say &quot;Better take your compass.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You go hiking.&quot;
+<p><b>2. The default behaviour.</b> Is complicated: see the Inform Designer's Manual, 4th edition, page 227. Briefly, the scope for someone consists of everything in the same place as them, unless it is dark.
+<p>
+<p><b>3. Examples.</b> (a) We very rarely want to forbid the player to refer to things close at hand, but often want to allow references to distant ones. For instance, a mirage of something which is not present at all:
+<p>
+<blockquote><font color="#000080">After deciding the scope of the player while in the Shrine: place the holy grail in scope.
 </font></blockquote><p>
 <p>
-<p>...a phrase has been set up which can be used in three ways:
+<p>The special phrase &quot;place ... in scope&quot; does what it suggests. Ordinarily if something is placed in scope, then so are its parts and (in the case of a supporter or a transparent or open container) its contents; but we can also &quot;place the box in scope, but not its contents&quot; if we really need to place just the box itself in scope.
 <p>
-<blockquote><font color="#000080">go hiking;
-<br>go hiking, into the woods;
-<br>go hiking, up the mountain;
-</font></blockquote><p>
-<p>
-<p>Note that commas must be used to divide these &quot;phrase options&quot; from the rest of the text of the phrase. Within the definition of the phrase, the option's name is a valid condition, and
-<p>
-<blockquote><font color="#000080">if up the mountain then ...
-</font></blockquote><p>
-<p>
-<p>is true if the phrase was called with &quot;up the mountain&quot; specified and false otherwise, in the obvious way. A more substantial example from the standard rules is given by the Inform list-writer, which produces lists of things to specifications we choose. For instance:
-<p>
-<blockquote><font color="#000080">list the contents of Marley Wood, as a sentence, with newlines
-<br>and including all contents;
-</font></blockquote><p>
-<p>
-<p>Note that this phrase is allowed to have multiple options specified, whereas &quot;go hiking&quot; above was not: this is because it was defined thus:
-<p>
-<blockquote><font color="#000080">To list the contents of (something - an object), with newlines, indented, as a sentence, including contents, including all contents, giving inventory information, giving brief inventory information, using the definite article, listing marked items only, prefacing with is/are, not listing concealed items, suppressing all articles and/or with extra indentation: ...
-</font></blockquote><p>
-<p>
-<p>The significant difference is the word &quot;and/or&quot; instead of &quot;or&quot;, which signals that more than one option can apply at a time.
-<p>
-<p>(As it happens, not all of the above options are equally useful: &quot;not listing concealed items&quot;, for instance, is probably helpful only to people creating projects which mingle Inform 6 and Inform 7 material. &quot;Concealed&quot; is a concept no longer in use.)
-<p>
-<p><hr><p>
-<!-- EXAMPLE START -->
-<a name="e326"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc165.html#e326 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>163</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc165.html#e326 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Equipment List</font></b></a><br>Overview of all the phrase options associated with listing, and examples of how to change the inventory list into some other standard formats.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex326.html#e326 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Most of the phrase options above are relatively self-explanatory; a few are less so. Here is an overview:
-<p>
-<p>&quot;With newlines&quot; tells Inform to put a new line before each listed object. Indented tells it to indent contents of objects, when listing these.
-<p>
-<p>&quot;Giving inventory information&quot; means to append information such as (closed) or (being worn) to objects.
-<p>
-<p>&quot;As a sentence&quot; means to put &quot;and&quot; before the last object and commas between them; this is usually not used in conjunction with newline listing. &quot;As a sentence&quot; obeys whatever conventions about the use of the serial comma we may have established with the &quot;Use serial comma&quot; option.
-<p>
-<p>&quot;Including contents&quot; means to list the contents of open or transparent containers and all supporters, whereas including all contents means to list the contents of all containers, even opaque closed ones.
-<p>
-<p>&quot;Tersely&quot;, perhaps unexpectedly, puts parentheses around objects listed as the contents of other objects.
-<p>
-<p>&quot;Giving brief inventory information&quot; omits most of the inventory tags, such as &quot;(open)&quot; and &quot;(worn)&quot;, but does list &quot;(closed)&quot; for closed containers which might not otherwise be obviously openable.
-<p>
-<p>&quot;Using the definite article&quot; means prefixing objects with &quot;the&quot;, if applicable, rather than &quot;a&quot;.
-<p>
-<p>&quot;Listing marked items only&quot; means including only objects that have already been declared &quot;marked for listing&quot;.
-<p>
-<p>&quot;Prefacing with is-are&quot; means that Inform will write &quot;is&quot; before the list if it contains only one item, and &quot;are&quot; if the list contains more than one.
-<p>
-<p>&quot;Not listing concealed items&quot; means to omit from the list anything which is scenery.
-<p>
-<p>Finally, &quot;with extra indentation&quot; means that the whole list should be indented slightly, in emulation of the default inventory listing.
-<p>
-<p>With this information, we can try rewriting the inventory behavior to emulate the standard or to explore alternate versions:
+<p>(b) Another useful device is to be able to see, but not touch, another room:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode253(code) {
+function pasteCode64(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Equipment List"\n\nThe Watery Room is a room. The player carries a snorkel and a waterproof sack. The waterproof sack contains an undersea map, a diving guide, a cup, and 500 Argentine pesos. The cup contains a worm. The player wears a swimsuit and a pair of flippers. The sack is openable and open.\n\nInventory listing style is a kind of value. The inventory listing styles are tall, wide, curt, minimal, divided tall, and divided wide. Current inventory listing style is an inventory listing style that varies.\n\nUnderstand "inventory [inventory listing style]" as requesting styled inventory. Requesting styled inventory is an action applying to an inventory listing style. It is an action out of world.\n\nCarry out requesting styled inventory:\n\tchange current inventory listing style to the inventory listing style understood.\n\nReport requesting styled inventory:\n\tsay "Inventory listing is now set to [current inventory listing style]."\n\n[We begin by emulating the standard inventory listing style:]\n\nInstead of taking inventory when current inventory listing style is tall:\n\tif the number of things enclosed by the player is 0, say "You are empty-handed." instead;\n\tsay "You are carrying: [line break]";\n\tlist the contents of the player, with newlines, indented, giving inventory information, including contents, with extra indentation.\n\n[Here we offer the alternative of listing everything together as a paragraph:]\n\nInstead of taking inventory when current inventory listing style is wide:\n\tif the number of things enclosed by the player is 0, say "You are empty-handed." instead;\n\tsay "You are carrying ";\n\tlist the contents of the player, giving inventory information, as a sentence, including contents;\n\tsay "."\n\n[This may be unsatisfactory, however. Items that are inside other items are not set off from those merely carried by the player. One way around this is to use terse listing, giving such descriptions as "a waterproof sack (in which are an undersea map, a diving guide, a cup (in which is a worm) and a 500 Argentine pesos)" as opposed to the more confusing " a waterproof sack (open), inside which are an undersea map, a diving guide, a cup, inside which is a worm and a 500 Argentine pesos".]\n\nInstead of taking inventory when current inventory listing style is curt:\n\tif the number of things enclosed by the player is 0, say "You are empty-handed." instead;\n\tsay "You are carrying ";\n\tlist the contents of the player, tersely, giving brief inventory information, as a sentence, including contents;\n\tsay "."\n\n[If, using the above style, we close the sack, we will still get "(closed)" after the sack\'s listing. The following minimalist listing style abolishes even that nicety:]\n\nInstead of taking inventory when current inventory listing style is minimal:\n\tif the number of things enclosed by the player is 0, say "You are empty-handed." instead;\n\tsay "You are carrying ";\n\tlist the contents of the player, tersely, as a sentence, including contents;\n\tsay "."\n\n[If we want to list worn things separately from carried things, we have occasion to put "listing marked items only" to work:]\n\nInstead of taking inventory when the current inventory listing style is divided wide:\n\tif the number of things enclosed by the player is 0, say "You are empty-handed." instead;\n\tsay "You are wearing ";\n\tnow all things enclosed by the player are unmarked for listing;\n\tnow all things worn by the player are marked for listing;\n\tif no things are marked for listing begin;\n\t\tsay "nothing";\n\totherwise;\n\t\tlist the contents of the player, as a sentence, listing marked items only;\n\tend if;\n\tsay ".[paragraph break]";\n\tsay "You are carrying ";\n\tnow all things carried by the player are marked for listing;\n\tnow all things worn by the player are unmarked for listing;\n\tif no things are marked for listing begin;\n\t\tsay "nothing[paragraph break]";\n\totherwise;\n\t\tlist the contents of the player, as a sentence, tersely, giving brief inventory information, listing marked items only;\n\tend if;\n\tsay ".[paragraph break]".\n\n[And similarly for a tall divided inventory:]\n\nInstead of taking inventory when the current inventory listing style is divided tall:\n\tif the number of things enclosed by the player is 0, say "You are empty-handed." instead;\n\tif the player carries something\n\tbegin;\n\t\tnow all things enclosed by the player are unmarked for listing;\n\t\tnow all things carried by the player are marked for listing;\n\t\tsay "You are carrying: [line break]";\n\t\tlist the contents of the player, with newlines, indented, giving inventory information, including contents, with extra indentation, listing marked items only;\n\tend if;\n\tif the player wears something\n\tbegin;\n\t\tnow all things enclosed by the player are unmarked for listing;\n\t\tnow all things worn by the player are marked for listing;\n\t\tsay "You are wearing: [line break]";\n\tlist the contents of the player, with newlines, indented, including contents, with extra indentation, listing marked items only;\n\tend if.\n\nTest me with "i / inventory wide / i / inventory curt / i / close sack / i / open sack / inventory minimal / i / close sack / i / open sack / inventory divided wide / i / inventory divided tall / i".\n');
+    myProject.pasteCode('The Cloakroom is a room. [=0x0022=]This is just a cloakroom, but through a vague, misty mirror-window you can make out the Beyond.[=0x0022=] After looking in the Cloakroom, say [=0x0022=]In the mirror you can see [list of things in the Beyond].[=0x0022=][=0x000A=][=0x000A=]After deciding the scope of the player while in the Cloakroom: place the Beyond in scope.[=0x000A=][=0x000A=]The Beyond is a room. Johnny Depp is a man in the Beyond.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode253()"><img border=0 src=../doc_images/paste.png></a> &quot;Equipment List&quot;
+<a href="javascript:pasteCode64()"><img border=0 src=../doc_images/paste.png></a> The Cloakroom is a room. &quot;This is just a cloakroom, but through a vague, misty mirror-window you can make out the Beyond.&quot; After looking in the Cloakroom, say &quot;In the mirror you can see [list of things in the Beyond].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Watery Room is a room. The player carries a snorkel and a waterproof sack. The waterproof sack contains an undersea map, a diving guide, a cup, and 500 Argentine pesos. The cup contains a worm. The player wears a swimsuit and a pair of flippers. The sack is openable and open.
+<blockquote><font color="#000080">After deciding the scope of the player while in the Cloakroom: place the Beyond in scope.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Inventory listing style is a kind of value. The inventory listing styles are tall, wide, curt, minimal, divided tall, and divided wide. Current inventory listing style is an inventory listing style that varies.
+<blockquote><font color="#000080">The Beyond is a room. Johnny Depp is a man in the Beyond.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;inventory [inventory listing style]&quot; as requesting styled inventory. Requesting styled inventory is an action applying to an inventory listing style. It is an action out of world.
+<p>(This must, however, also be a mirage, as at time of writing Mr Depp is alive and as well as can be expected following the reviews of &quot;Charlie and the Chocolate Factory&quot;.) When a room is placed in scope, this is understood as placing its contents in scope rather than the room-object itself. So &quot;place the Ballroom in scope&quot; allows the player to talk about the dancers, the chamber musicians and so forth, but not to &quot;EXAMINE BALLROOM&quot; as such. (This is sensible because actions like examining apply to things: and a room, unlike a container or a supporter, is not a kind of thing.)
+<p>
+<p>(c) In darkness, the scope of someone is ordinarily restricted to his or her possessions (and body), but we can override that:
+<p>
+<blockquote><font color="#000080">After deciding the scope of the player while in darkness: place the location in scope.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out requesting styled inventory:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change current inventory listing style to the inventory listing style understood.
+<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows the action it would be taking if the current line of command grammar were to be accepted, but it does not yet know to what objects that command would be applied. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
+<p>
+<p><hr><p>
+<a name="e268"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex268.html#e268 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>313</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex268.html#e268 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Scope for listening different from scope for seeing</font></b></a><br>Using "deciding the scope" to change the content of lists such as "the list of audible things which can be touched by the player".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex268.html#e268 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e277"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex277.html#e277 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>314</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex277.html#e277 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Peeled</font></b></a><br>Two different approaches to adjusting what the player can interact with, compared.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex277.html#e277 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e305"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex305.html#e305 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>315</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex305.html#e305 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ginger Beer</font></b></a><br>A portable magic telescope which allows the player to view items in another room of his choice.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex305.html#e305 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e326"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc284.html#e326 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>316</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc284.html#e326 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Rock Garden</font></b></a><br>A simple open landscape where the player can see between rooms and will automatically move to touch things in distant rooms.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex326.html#e326 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>A map of linked rooms works well for modeling enclosed or indoor space, and somewhat less well for modeling large open spaces, where a person should reasonably be able to see things which are much too far away to touch. With some modifications to scoping, though, we can create an environment where objects in nearby rooms are described and viewable, and where the player will automatically move towards distant items before interacting with them physically.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode404(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Rock Garden[=0x0022=][=0x000A=][=0x000A=]Section 1 - General Rules[=0x000A=][=0x000A=]Intervisibility relates rooms to each other in groups. The verb to be connected with implies the intervisibility relation.[=0x000A=][=0x000A=]Definition: a room is inter-visible if it is connected with more than one room.[=0x000A=][=0x000A=]After deciding the scope of the player when the location is an inter-visible room:[=0x000A=][=0x0009=]repeat with other place running through rooms which are connected with the location[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the other place is the location, do nothing;[=0x000A=][=0x0009=][=0x0009=]otherwise place the other place in scope;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]Rule for reaching inside a room (called target) which is connected with the location:[=0x000A=][=0x0009=]let way be the best route from the location to the target;[=0x000A=][=0x0009=]if the way is not a direction[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You can[=0x0027=]t get over to [the target] from here.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]deny access;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]say [=0x0022=](first heading [way])[command clarification break][=0x0022=];[=0x000A=][=0x0009=]try going way;[=0x000A=][=0x0009=]if the player is in the target, allow access;[=0x000A=][=0x0009=]otherwise deny access.[=0x000A=][=0x000A=]After looking when the location is an inter-visible room:[=0x000A=][=0x0009=]repeat with other place running through rooms which are connected with the location[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the other place is not the location, describe locale for other place;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]Section 2 - The Scenario[=0x000A=][=0x000A=]Rock Garden West is west of Rock Garden East. Rock Garden East contains a rake. Rock Garden West contains a bench and a maple leaf. The bench is an enterable supporter.[=0x000A=][=0x000A=]Rock Garden West is connected with Rock Garden East.[=0x000A=][=0x000A=]Test me with [=0x0022=]get rake / drop rake / sit on bench / get rake[=0x0022=].[=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode404()"><img border=0 src=../doc_images/paste.png></a> &quot;Rock Garden&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report requesting styled inventory:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Inventory listing is now set to [current inventory listing style].&quot;
+<blockquote><font color="#000080">Section 1 - General Rules
 </font></blockquote><p>
 <p>
-<p>We begin by emulating the standard inventory listing style:
-<p>
-<blockquote><font color="#000080">Instead of taking inventory when current inventory listing style is tall:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things enclosed by the player is 0, say &quot;You are empty-handed.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are carrying: [line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, with newlines, indented, giving inventory information, including contents, with extra indentation.
+<blockquote><font color="#000080">Intervisibility relates rooms to each other in groups. The verb to be connected with implies the intervisibility relation.
 </font></blockquote><p>
 <p>
-<p>Here we offer the alternative of listing everything together as a paragraph:
-<p>
-<blockquote><font color="#000080">Instead of taking inventory when current inventory listing style is wide:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things enclosed by the player is 0, say &quot;You are empty-handed.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are carrying &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, giving inventory information, as a sentence, including contents;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot;
+<blockquote><font color="#000080">Definition: a room is inter-visible if it is connected with more than one room.
 </font></blockquote><p>
 <p>
-<p>This may be unsatisfactory, however. Items that are inside other items are not set off from those merely carried by the player. One way around this is to use terse listing, giving such descriptions as &quot;a waterproof sack (in which are an undersea map, a diving guide, a cup (in which is a worm) and a 500 Argentine pesos)&quot; as opposed to the more confusing &quot; a waterproof sack (open), inside which are an undersea map, a diving guide, a cup, inside which is a worm and a 500 Argentine pesos&quot;.
-<p>
-<blockquote><font color="#000080">Instead of taking inventory when current inventory listing style is curt:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things enclosed by the player is 0, say &quot;You are empty-handed.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are carrying &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, tersely, giving brief inventory information, as a sentence, including contents;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot;
-</font></blockquote><p>
-<p>
-<p>If, using the above style, we close the sack, we will still get &quot;(closed)&quot; after the sack's listing. The following minimalist listing style abolishes even that nicety:
-<p>
-<blockquote><font color="#000080">Instead of taking inventory when current inventory listing style is minimal:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things enclosed by the player is 0, say &quot;You are empty-handed.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are carrying &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, tersely, as a sentence, including contents;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot;
-</font></blockquote><p>
-<p>
-<p>If we want to list worn things separately from carried things, we have occasion to put &quot;listing marked items only&quot; to work:
-<p>
-<blockquote><font color="#000080">Instead of taking inventory when the current inventory listing style is divided wide:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things enclosed by the player is 0, say &quot;You are empty-handed.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are wearing &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now all things enclosed by the player are unmarked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now all things worn by the player are marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if no things are marked for listing begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;nothing&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, as a sentence, listing marked items only;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.[paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are carrying &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now all things carried by the player are marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now all things worn by the player are unmarked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if no things are marked for listing begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;nothing[paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, as a sentence, tersely, giving brief inventory information, listing marked items only;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.[paragraph break]&quot;.
-</font></blockquote><p>
-<p>
-<p>And similarly for a tall divided inventory:
-<p>
-<blockquote><font color="#000080">Instead of taking inventory when the current inventory listing style is divided tall:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of things enclosed by the player is 0, say &quot;You are empty-handed.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries something
+<blockquote><font color="#000080">After deciding the scope of the player when the location is an inter-visible room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with other place running through rooms which are connected with the location
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now all things enclosed by the player are unmarked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now all things carried by the player are marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are carrying: [line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, with newlines, indented, giving inventory information, including contents, with extra indentation, listing marked items only;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player wears something
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now all things enclosed by the player are unmarked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now all things worn by the player are marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are wearing: [line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the player, with newlines, indented, including contents, with extra indentation, listing marked items only;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the other place is the location, do nothing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise place the other place in scope;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;i / inventory wide / i / inventory curt / i / close sack / i / open sack / inventory minimal / i / close sack / i / open sack / inventory divided wide / i / inventory divided tall / i&quot;.
+<blockquote><font color="#000080">Rule for reaching inside a room (called target) which is connected with the location:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from the location to the target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the way is not a direction
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't get over to [the target] from here.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deny access;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first heading [way])[command clarification break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try going way;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the target, allow access;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise deny access.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc165.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">After looking when the location is an inter-visible room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with other place running through rooms which are connected with the location
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the other place is not the location, describe locale for other place;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Section 2 - The Scenario
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rock Garden West is west of Rock Garden East. Rock Garden East contains a rake. Rock Garden West contains a bench and a maple leaf. The bench is an enterable supporter.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rock Garden West is connected with Rock Garden East.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get rake / drop rake / sit on bench / get rake&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc284.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc164.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc166.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e55"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex55.html#e55 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>317</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex55.html#e55 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Stately Gardens</font></b></a><br>An open landscape where the player can see landmarks in nearby areas, with somewhat more complex room descriptions than the previous example, and in which we also account for size differences between things seen at a distance.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex55.html#e55 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc283.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc285.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

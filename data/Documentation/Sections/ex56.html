@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.5. Assemblies and body parts</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.14. Exchanging files with other programs</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,121 +19,124 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "The Night Before" -->
-<!-- SEARCH SECTION "Ex 45" -->
-<!-- SEARCH SORT "Ex 004-005-045" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc57.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc59.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.5. Assemblies and body parts</b></font></td></tr></table>
+<!-- SEARCH TITLE "Flathead News Network" -->
+<!-- SEARCH SECTION "Ex 386" -->
+<!-- SEARCH SORT "Ex 021-014-386" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc347.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc349.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.14. Exchanging files with other programs</b></font></td></tr></table>
 <p>
-<p>In the previous chapter, we saw that it was possible to make sub-parts of things. For instance,
+<p>Provided we declare the files in the right way, it is easy for one project to read a file created by another project.
 <p>
-<blockquote><font color="#000080">The white door is in the Drawing Room. The handle is part of the white door.
+<p>But if we want more rapid communication, between two projects which are each playing at the same time, we need to be more careful. What if project A tries to read the file at the same moment that project B is writing it?
+<p>
+<p>To avoid this, we have a concept of files being &quot;ready&quot;. A file is ready if it exists, and is completely written, and not in use elsewhere. The following conditions can be used:
+<p>
+<blockquote><font color="#000080">if the file of Invariants exists...
+<br>if ready to read the file of Invariants...
 </font></blockquote><p>
 <p>
-<p>creates a door with an attached handle. But what if we want to say that not just this door, but every door, should have a handle? To do this we first need to create a kind called &quot;handle&quot;, since there will clearly need to be many handles. The solution is:
+<p>A file cannot be ready to read if it does not exist, so this is a stronger condition. If A and B are attempting communication in real time, both running at once, then Project A should check that an external file owned by B is ready before it tries to read it. Files can also be marked as ready or not ready, in effect claiming them, thus:
 <p>
-<blockquote><font color="#000080">A handle is a kind of thing. A handle is part of every door.
+<blockquote><font color="#000080">mark the file of Invariants as ready to read;
+<br>mark the file of Invariants as not ready to read;
 </font></blockquote><p>
 <p>
-<p>&quot;Every&quot; is a loaded word and best used sparingly. A sentence like &quot;A handle is part of every handle&quot; would, if taken literally, mean that a handle takes forever to make and is never finished. Inform will reject this, but the moral is clear: we should think about what we are doing with &quot;every&quot;. Another restriction is it is not safe to meddle with the three fundamental kinds &quot;room&quot;, &quot;container&quot; or &quot;supporter&quot; by making them into assemblies, but in fact this one can be got around quite easily, like so -
+<p>Possibilities really begin to open up when project A is our story file, but B is not another story file at all: it is some external program such as a Web service, say. (Of course this is harder to set up, since the player needs to have both A and B running at the same time, but for games running on an Internet server this can all be made seamless.)
 <p>
-<blockquote><font color="#000080">A silver coin is a kind of thing. A banking room is a kind of room. Five silver coins are in every banking room.
+<p>When Inform begins writing a table, or text, to a file, it initially marks the file as not ready: only when the table or text is completely written and the file about to close is the file marked as ready.
+<p>
+<p>In order to write non-story-file programs as B, communicating with story files as A, we need to know the file format used by Inform. An Inform file is currently a Unix text file (with 10 as the line division character), encoded as ASCII Latin-1. (We would like to use Unicode at some point in the future, but the Glk and Glulx layers are still not fully converted to Unicode.) It opens with a single header line in the form:
+<p>
+<blockquote><font color="#000080">* //IFID// leafname
 </font></blockquote><p>
 <p>
-<p>The effect of sentences like these is to make what we might call &quot;assemblies&quot; instead of single things. When a banking room is created, so are five more silver coins; when a door is created, so is another handle. Such sentences act not only on items created later on in the source text, but also on all those created so far.
+<p>The opening character is an asterisk if the file is currently ready, a hyphen if the file is currently not ready. The IFID between the slashes is the IFID number of the project which last wrote to the file. (Marking &quot;ready&quot; or &quot;not ready&quot; does not count as a write for this purpose.) If an external program wrote the file, it should call itself something which will not clash with any story file's IFID. The leafname is the filename text used inside the story file where the file was declared. For instance:
 <p>
-<p>This is especially useful for body parts. If we would like to explore Voltaire's suggestion that history would have been very different if only Cleopatra's nose had been shorter, we will need noses:
-<p>
-<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person.
+<blockquote><font color="#000080">* //4122DDA8-A153-46BC-8F57-42220F9D8795// ice
 </font></blockquote><p>
-<p>
-<p>Something to bear in mind, though, is that in play the following may well happen:
-<p>
-<blockquote><font color="#000080">>examine nose
-<br>Which do you mean, your nose, Antony's nose or Cleopatra's nose?
-</font></blockquote><p>
-<p>
-<p>...because the player, being also a &quot;person&quot;, is as susceptible to the invention of noses as anyone else.
-<p>
-<p>Note that Inform names the otherwise nameless noses after their owners. It will always do this unless there are multiple indistinguishable things being created, as in the &quot;five silver coins are in every banking room&quot; example: those will all just be called &quot;silver coin&quot;.
-<p>
-<p>Something to watch out for is that if we write:
-<p>
-<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person. Antony and Cleopatra are people.
-</font></blockquote><p>
-<p>
-<p>then we can begin talking about &quot;Antony's nose&quot; and &quot;Cleopatra's nose&quot;: but it is not safe to discuss these before the sentence &quot;A nose is part of every person&quot; which creates them. Another pitfall is that if we then write:
-<p>
-<blockquote><font color="#000080">Marcus Tullius Cicero is a person.
-</font></blockquote><p>
-<p>
-<p>then although &quot;Marcus Tullius Cicero's nose&quot; and &quot;Cicero's nose&quot; are both valid names for the consular nose, &quot;Marcus's nose&quot; is not.
 <p>
 <p><hr><p>
-<a name="e50"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex50.html#e50 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>43</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex50.html#e50 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Being Prepared</font></b></a><br>A kind for jackets, which always includes a container called a pocket.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex50.html#e50 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e158"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex158.html#e158 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>44</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex158.html#e158 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Model Shop</font></b></a><br>An "on/off button" which controls whatever device it is part of.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex158.html#e158 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e56"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc58.html#e56 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>45</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc58.html#e56 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Night Before</font></b></a><br>Instructing Inform to prefer different interpretations of EXAMINE NOSE, depending on whether the player is alone, in company, or with Rudolph the Red-nosed Reindeer.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex56.html#e56 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e56"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc348.html#e56 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>386</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc348.html#e56 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Flathead News Network</font></b></a><br>Using external files, together with a simple Unix script running in the background, to provide live news headlines inside a story file.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex56.html#e56 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose that we're going to give every person in the game a nose, but we want references to a nose always to mean the nose of someone *else*, if the player is with one other person. Moreover, on some occasions we're going to be in sight of Rudolph, so actions directed at an unspecified nose should always prefer his.
+<p>This example can only work if we have a separate program running in the background while the story file is being played, and as such it will only work if we set things up in a special way. Exactly how to do this will vary from platform to platform.
 <p>
-<p>This relies on a somewhat advanced technique from the Understanding chapter, but since it may become useful with assemblies and body parts, it is worth mentioning here.
+<p>First, the source text for the Inform end of the communication line:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode130(code) {
+function pasteCode475(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"The Night Before"\n\nThe North Pole is a room. "Here it is: the famous Pole. From here you can go south (or south-south, or south-south-by-south); or, alternatively, take refuge inside a red-and-white-striped cabin." The cabin is scenery in the North Pole. Instead of entering the cabin, try going inside.\n\nSanta is a man in the North Pole. "Santa is pacing around in the snow and trying to psych himself up for the big night."\n\nInside from North Pole is the Candy Cane Cabin. The description of the Cabin is "Striped red and white, but nothing can make this place seem warm and inviting since Mrs. Santa ran off with the Tooth Fairy."\n\nThe Ice Shelf is south of North Pole. "The ice here has been smoothed into a kind of runway for easy take-off, and ends in a cliff and cold arctic sea." Donner, Vixen, Blixen, and Rudolph are animals in the Ice Shelf.\n\nA nose is a kind of thing. A nose is part of every person. The description of Santa\'s nose is "It\'s a bit ruddy. You don\'t like to mention it, but Santa\'s been dipping heavily into the Grey Goose since Mrs. Santa left town." The description of a nose is usually "Not terribly exciting."  The description of Rudolph\'s nose is "See how it glows!"\n\n[Next, we\'ll teach Inform some vocabulary to distinguish between the player and everyone else:]\n\nDefinition: a person is other if it is not the player.\n\nDefinition: a thing is selfish if it is part of the player and the player can see an other person.\n\nInstead of examining a selfish nose:\n\tsay "You cross your eyes, but can\'t get a good look."\n\n[Here is the part that actually determines the preferences. "Does the player mean..." can result in five outcomes: "it is very unlikely", "it is unlikely", "it is possible" (the neutral default), "it is likely", and "it is very likely". This is discussed in greater detail in the Understanding chapter. Here, we want to discourage references to the player\'s own nose and encourage references to the nose of Rudolph, so:]\n\nDoes the player mean doing something when the noun is a selfish nose or the second noun is a selfish nose: it is very unlikely.\n\nDoes the player mean doing something to Rudolph\'s nose: it is very likely.\n\n[And this part is just for decoration:]\n\nRule for writing a paragraph about Rudolph:\n\tsay "The reindeer are already harnessed and waiting impatiently. The brilliance of [Rudolph]\'s nose casts an eerie red glow over [the list of unmentioned animals in the location]."\n\nTest me with "x nose / x my nose / x santa\'s nose / in / x nose / out / s / x my nose / x nose / x rudolph\'s nose / x donner\'s nose".\n');
+    myProject.pasteCode('[=0x0022=]Flathead News Network[=0x0022=][=0x000A=][=0x000A=]The file of RSS Requests is called [=0x0022=]rssrequest[=0x0022=].[=0x000A=][=0x000A=]The file of RSS Responses (owned by project [=0x0022=]RSS-SCRIPT[=0x0022=]) is called [=0x0022=]rssreply[=0x0022=].[=0x000A=][=0x000A=]To request (RSS feed address - text):[=0x000A=][=0x0009=]mark the file of RSS Responses as not ready to read;[=0x000A=][=0x0009=]write the RSS feed address to the file of RSS Requests.[=0x000A=][=0x000A=]Newsroom is a room. [=0x0022=]This is the secret nerve-centre of FNN, the Flathead News Network.[=0x0022=][=0x000A=][=0x000A=]The BBC button is in the Newsroom. Instead of pushing the BBC button: say [=0x0022=]Bong![=0x0022=]; request [=0x0022=]newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml[=0x0022=].[=0x000A=][=0x000A=]The NASA button is in the Newsroom. Instead of pushing the NASA button: say [=0x0022=]Bang![=0x0022=]; request [=0x0022=]www.nasa.gov/rss/breaking_news.rss[=0x0022=].[=0x000A=][=0x000A=]The WHO button is in the Newsroom. Instead of pushing the WHO button: say [=0x0022=]Bing![=0x0022=]; request [=0x0022=]www.gallifreyone.com/news.xml[=0x0022=].[=0x000A=][=0x000A=]A screen is in the Newsroom.[=0x000A=][=0x000A=]Instead of examining the screen:[=0x000A=][=0x0009=]if ready to read the file of RSS Responses, say [=0x0022=]From the screen you read:[line break][text of the file of RSS Responses][=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]The screen remains blank for now.[=0x0022=][=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode130()"><img border=0 src=../doc_images/paste.png></a> &quot;The Night Before&quot;
+<a href="javascript:pasteCode475()"><img border=0 src=../doc_images/paste.png></a> &quot;Flathead News Network&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The North Pole is a room. &quot;Here it is: the famous Pole. From here you can go south (or south-south, or south-south-by-south); or, alternatively, take refuge inside a red-and-white-striped cabin.&quot; The cabin is scenery in the North Pole. Instead of entering the cabin, try going inside.
+<blockquote><font color="#000080">The file of RSS Requests is called &quot;rssrequest&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Santa is a man in the North Pole. &quot;Santa is pacing around in the snow and trying to psych himself up for the big night.&quot;
+<blockquote><font color="#000080">The file of RSS Responses (owned by project &quot;RSS-SCRIPT&quot;) is called &quot;rssreply&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Inside from North Pole is the Candy Cane Cabin. The description of the Cabin is &quot;Striped red and white, but nothing can make this place seem warm and inviting since Mrs. Santa ran off with the Tooth Fairy.&quot;
+<blockquote><font color="#000080">To request (RSS feed address - text):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;mark the file of RSS Responses as not ready to read;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write the RSS feed address to the file of RSS Requests.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Ice Shelf is south of North Pole. &quot;The ice here has been smoothed into a kind of runway for easy take-off, and ends in a cliff and cold arctic sea.&quot; Donner, Vixen, Blixen, and Rudolph are animals in the Ice Shelf.
+<blockquote><font color="#000080">Newsroom is a room. &quot;This is the secret nerve-centre of FNN, the Flathead News Network.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person. The description of Santa's nose is &quot;It's a bit ruddy. You don't like to mention it, but Santa's been dipping heavily into the Grey Goose since Mrs. Santa left town.&quot; The description of a nose is usually &quot;Not terribly exciting.&quot;  The description of Rudolph's nose is &quot;See how it glows!&quot;
+<blockquote><font color="#000080">The BBC button is in the Newsroom. Instead of pushing the BBC button: say &quot;Bong!&quot;; request &quot;newsrss.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss.xml&quot;.
 </font></blockquote><p>
 <p>
-<p>Next, we'll teach Inform some vocabulary to distinguish between the player and everyone else:
-<p>
-<blockquote><font color="#000080">Definition: a person is other if it is not the player.
+<blockquote><font color="#000080">The NASA button is in the Newsroom. Instead of pushing the NASA button: say &quot;Bang!&quot;; request &quot;www.nasa.gov/rss/breaking_news.rss&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a thing is selfish if it is part of the player and the player can see an other person.
+<blockquote><font color="#000080">The WHO button is in the Newsroom. Instead of pushing the WHO button: say &quot;Bing!&quot;; request &quot;www.gallifreyone.com/news.xml&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining a selfish nose:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You cross your eyes, but can't get a good look.&quot;
+<blockquote><font color="#000080">A screen is in the Newsroom.
 </font></blockquote><p>
 <p>
-<p>Here is the part that actually determines the preferences. &quot;Does the player mean...&quot; can result in five outcomes: &quot;it is very unlikely&quot;, &quot;it is unlikely&quot;, &quot;it is possible&quot; (the neutral default), &quot;it is likely&quot;, and &quot;it is very likely&quot;. This is discussed in greater detail in the Understanding chapter. Here, we want to discourage references to the player's own nose and encourage references to the nose of Rudolph, so:
-<p>
-<blockquote><font color="#000080">Does the player mean doing something when the noun is a selfish nose or the second noun is a selfish nose: it is very unlikely.
+<blockquote><font color="#000080">Instead of examining the screen:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if ready to read the file of RSS Responses, say &quot;From the screen you read:[line break][text of the file of RSS Responses]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;The screen remains blank for now.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Does the player mean doing something to Rudolph's nose: it is very likely.
-</font></blockquote><p>
+<p>As far as the story file is concerned, then, it sends a request down the communication line by writing the chosen RSS feed to the file named &quot;rssrequest&quot;, and expects a reply to come back down the line by being written to the file &quot;rssreply&quot;. However, the story file needs to expect that this might take some time. (Maybe forever, if there is no program responding, or if the Internet connection is not working.) The story file marks the &quot;rssreply&quot; file as not ready before it makes a request; if it subsequently finds that the file is now ready, that must mean that the other program has done the honours, and that all is well. In the mean time, &quot;The screen remains blank for now.&quot;
 <p>
-<p>And this part is just for decoration:
+<p>Now for the RSS-SCRIPT program. The following provides a crude but workable program suitable for running as a Perl script on a system which provides the standard Internet fetching program &quot;curl&quot;: Mac OS X, for instance. (If you have OS X, you can paste the following into a (Unix-format) text file called &quot;rss-script.pl&quot;, place it in your home folder, open the Terminal utility, type &quot;perl rss-script.pl&quot;, and then hide the Terminal window again.)
 <p>
-<blockquote><font color="#000080">Rule for writing a paragraph about Rudolph:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The reindeer are already harnessed and waiting impatiently. The brilliance of [Rudolph]'s nose casts an eerie red glow over [the list of unmentioned animals in the location].&quot;
+<blockquote><font color="#000080">for (;;) { # repeat forever:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;system(&quot;sleep 1&quot;); # wait 1 second
+<br>&nbsp;&nbsp;&nbsp;&nbsp;open REQUEST, &quot;rssrequest.glkdata&quot; or next;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;# the request file has been detected:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;$header_line = &lt;REQUEST&gt;; # the header line
+<br>&nbsp;&nbsp;&nbsp;&nbsp;$rss_feed = &lt;REQUEST&gt;; # the actual content - the RSS feed URL
+<br>&nbsp;&nbsp;&nbsp;&nbsp;close REQUEST;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if ($header_line =~ m/^\*/) { # if the request file is marked ready
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$rss = system(&quot;curl $rss_feed &gt;rawrss.txt&quot;); # download the RSS feed
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# read the RSS XML into a single Perl string:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open RAWRSS, &quot;rawrss.txt&quot; or next;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$raw = &quot;&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while ($nl = &lt;RAWRSS&gt;) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$raw = $raw.&quot; &quot;.$nl;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close RAWRSS;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# look for the title and description of the first item:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ($raw =~ m/\&lt;item\&gt;\&lt;title.*?\&gt;(.*?)\&lt;\/title\&gt;.*?\&lt;description.*?\&gt;(.*?)\&lt;\/description\&gt;/) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# write the reply:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open REPLY, &quot;&gt;rssreply.glkdata&quot; or next;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print REPLY &quot;* //RSS-SCRIPT// rssreply\n&quot;, $1, &quot;\n&quot;, $2, &quot;\n&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;close REPLY;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# request safely dealt with, so we can remove it:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system(&quot;rm 'rssrequest.glkdata'&quot;);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;}
+<br>}
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x nose / x my nose / x santa's nose / in / x nose / out / s / x my nose / x nose / x rudolph's nose / x donner's nose&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc58.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc348.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e7"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex7.html#e7 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>46</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex7.html#e7 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> U-Stor-It</font></b></a><br>A "chest" kind which consists of a container which has a lid as a supporter.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex7.html#e7 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc57.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc347.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc349.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

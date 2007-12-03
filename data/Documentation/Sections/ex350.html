@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.3. Before rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.6. Actions applying to kinds of value</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,95 +19,74 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Democratic Process" -->
-<!-- SEARCH SECTION "Ex 78" -->
-<!-- SEARCH SORT "Ex 007-003-078" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc92.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc94.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.3. Before rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Tom's Midnight Garden" -->
+<!-- SEARCH SECTION "Ex 264" -->
+<!-- SEARCH SORT "Ex 016-006-264" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc247.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc249.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.6. Actions applying to kinds of value</b></font></td></tr></table>
 <p>
-<p>Despite what was said in the previous section, instead rules do not quite bypass all of the usual rules. Inform knows that certain actions require light: for instance,
+<p>Almost all actions apply to things: the player picks them up, pushes them, looks at them and so on. We only occasionally need to recognise other kinds of value, but when we do, we can. For instance:
 <p>
-<blockquote><font color="#000080">examining the napkin; looking; looking under the dining table
+<blockquote><font color="#000080">Adjusting it to is an action applying to one thing and one number.
 </font></blockquote><p>
 <p>
-<p>and if it is dark then none of these actions will be allowed, and any instead rules about them will not even be reached. Similarly, Inform knows that most actions require physical access to their objects: so &quot;taking the napkin&quot; would be blocked if the napkin were, say, inside a closed glass bottle, whereas &quot;examining the napkin&quot; would not. So an instead rule can only take effect if the action has already passed these basic reasonability tests.
-<p>
-<p>&quot;Before&quot; rules genuinely precede checking of any kind. They also differ from instead rules in that they do not automatically stop the action in its tracks. Rather, they are provided as an opportunity to ensure that something else is done first. For example:
-<p>
-<blockquote><font color="#000080">Before taking the napkin, say &quot;(first unfolding its delicate origami swan)&quot;.
+<blockquote><font color="#000080">Understand &quot;adjust [something] to [a number]&quot; as adjusting it to.
 </font></blockquote><p>
 <p>
-<p>whence
+<p>The substitution &quot;[a number]&quot; matches any number (actually any whole number that is not too large) typed by the player. Inform checks the various kinds being used to make sure that everything matches, so, for instance, this would be disallowed:
 <p>
-<blockquote><font color="#000080">&gt;GET NAPKIN
-<br>(first unfolding its delicate origami swan)
-<br>Taken.
+<blockquote><font color="#000080">Understand &quot;adjust [something] to [something]&quot; as adjusting it to.
 </font></blockquote><p>
-<p>
-<p>We have seen that instead rules automatically stop actions, whereas before rules automatically allow them to continue. We sometimes want to change this. The magic word &quot;instead&quot; can therefore be tacked on to any instruction in a before rule, and will have the effect of immediately stopping the action at that instruction. Thus the following two rules are (almost) equivalent:
-<p>
-<blockquote><font color="#000080">Before removing the key, instead say &quot;It seems to be soldered to the keyhole.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of removing the key, say &quot;It seems to be soldered to the keyhole.&quot;
-</font></blockquote><p>
-<p>
-<p>Two special phrases can also be used: &quot;stop the action&quot; and &quot;continue the action&quot;. Yet a third way to achieve the same effect, then, would be:
-<p>
-<blockquote><font color="#000080">Before removing the key: say &quot;It seems to be soldered to the keyhole.&quot;; stop the action.
-</font></blockquote><p>
-<p>
-<p>And to round off the discussion, these are also (almost) equivalent:
-<p>
-<blockquote><font color="#000080">Before taking the napkin, say &quot;(first unfolding its delicate origami swan)&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of taking the napkin: say &quot;(first unfolding its delicate origami swan)&quot;; continue the action.
-</font></blockquote><p>
-<p>
-<p>As a general principle, it is good style to use instead rules whenever blocking actions, and before rules only when it is genuinely necessary to do something first but then to continue: in fact, it is good style to use &quot;stop the action&quot; or &quot;continue the action&quot; as little as possible.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e350"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc93.html#e350 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>78</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc93.html#e350 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Democratic Process</font></b></a><br>Make PUT and INSERT commands automatically take objects if the player is not holding them.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex350.html#e350 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e350"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc248.html#e350 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>264</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc248.html#e350 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Tom's Midnight Garden</font></b></a><br>A clock kind that can be set to any time using "the time understood"; may be turned on and off; and will advance itself only when running. Time on the face is also reported differently depending on whether the clock is analog or digital.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex350.html#e350 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>&quot;Stop&quot; and &quot;Continue&quot; are most useful when we need to write rules that will have to stop the action some of the time but at other times let it pass; so for instance:
+<p>Time can also be understood as a token, and the time parsed will be recorded as &quot;the time understood&quot;. So therefore, if we wish for clocks which may be set:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode162(code) {
+function pasteCode351(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Democratic Process"\n\nBefore inserting something which is not carried by the player into something:\n\tif the noun is in the second noun, say "Already done." instead;\n\tsay "(first taking [the noun])[line break]";\n\tsilently try taking the noun;\n\tif the player is not holding the noun, stop the action.\n\nBefore putting something which is not carried by the player on something:\n\tif the noun is on the second noun, say "Already done." instead;\n\tsay "(first taking [the noun])[line break]";\n\tsilently try taking the noun;\n\tif the player is not holding the noun, stop the action.\n\nThe Assembly Room is a room. "On most days, this room is used for elementary school assemblies; at the moment, it serves as a voting place." The ballot is on the desk. The desk is in the Assembly Room.\n\nThe machine is a container in the Assembly Room. "On the ballot machine is a sign which reads \'PUT BALLOTS IN ME :)\'." Understand "ballot machine" as the machine.\n\nTest me with "put ballot in machine".\n\n');
+    myProject.pasteCode('[=0x0022=]Tom[=0x0027=]s Midnight Garden[=0x0022=][=0x000A=][=0x000A=]A clock is a kind of device. A clock has a time called the current time. A clock can be analog or digital. The current time of a clock is usually 9:01 AM. The description of a clock is [=0x0022=]It shows the time to be [if analog]about [the current time to the nearest five minutes in words][otherwise][the current time][end if].[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]set [clock] to [time][=0x0022=] as setting it by time. Setting it by time is an action applying to one thing and one time.[=0x000A=][=0x000A=]Instead of setting a clock to something:[=0x000A=][=0x0009=]say [=0x0022=][The noun] can be set only to a time of day, such as 8:00 AM, or midnight.[=0x0022=][=0x000A=][=0x000A=]Carry out setting a clock by time:[=0x000A=][=0x0009=]change the current time of the noun to the time understood.[=0x000A=][=0x000A=]Report setting a clock by time:[=0x000A=][=0x0009=]say [=0x0022=]You set [the noun] to [time understood].[=0x0022=][=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]repeat with item running through switched on clocks[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]change the current time of the item to one minute after the current time of the item;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]The Hall is a room. The grandfather clock is a fixed in place analog clock in the Hall. The travel clock is a switched on digital clock in the Hall.  When play begins: change the right hand status line to [=0x0022=][time of day][=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]examine grandfather clock / set it to midnight / switch it on / wait / wait / wait / examine it / set travel clock to 4:12 / examine it[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode162()"><img border=0 src=../doc_images/paste.png></a> &quot;Democratic Process&quot;
+<a href="javascript:pasteCode351()"><img border=0 src=../doc_images/paste.png></a> &quot;Tom's Midnight Garden&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before inserting something which is not carried by the player into something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is in the second noun, say &quot;Already done.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking [the noun])[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not holding the noun, stop the action.
+<blockquote><font color="#000080">A clock is a kind of device. A clock has a time called the current time. A clock can be analog or digital. The current time of a clock is usually 9:01 AM. The description of a clock is &quot;It shows the time to be [if analog]about [the current time to the nearest five minutes in words][otherwise][the current time][end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before putting something which is not carried by the player on something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is on the second noun, say &quot;Already done.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking [the noun])[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not holding the noun, stop the action.
+<blockquote><font color="#000080">Understand &quot;set [clock] to [time]&quot; as setting it by time. Setting it by time is an action applying to one thing and one time.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Assembly Room is a room. &quot;On most days, this room is used for elementary school assemblies; at the moment, it serves as a voting place.&quot; The ballot is on the desk. The desk is in the Assembly Room.
+<blockquote><font color="#000080">Instead of setting a clock to something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] can be set only to a time of day, such as 8:00 AM, or midnight.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The machine is a container in the Assembly Room. &quot;On the ballot machine is a sign which reads 'PUT BALLOTS IN ME :)'.&quot; Understand &quot;ballot machine&quot; as the machine.
+<blockquote><font color="#000080">Carry out setting a clock by time:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the current time of the noun to the time understood.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;put ballot in machine&quot;.
+<blockquote><font color="#000080">Report setting a clock by time:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You set [the noun] to [time understood].&quot;
 </font></blockquote><p>
 <p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc93.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through switched on clocks
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the current time of the item to one minute after the current time of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Hall is a room. The grandfather clock is a fixed in place analog clock in the Hall. The travel clock is a switched on digital clock in the Hall.  When play begins: change the right hand status line to &quot;[time of day]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;examine grandfather clock / set it to midnight / switch it on / wait / wait / wait / examine it / set travel clock to 4:12 / examine it&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc248.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e345"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex345.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>79</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex345.html#e345 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Sand</font></b></a><br>Extend PUT and INSERT handling to cases where multiple objects are intended at once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex345.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc92.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc94.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e96"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex96.html#e96 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>265</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex96.html#e96 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Safety</font></b></a><br>A safe whose dial can be turned with SPIN SAFE TO 1131, and which will open only with the correct combination.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex96.html#e96 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e377"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex377.html#e377 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>266</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex377.html#e377 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ibid.</font></b></a><br>A system which allows the author to assign footnotes to descriptions, and permits the player to retrieve them again by number, using "the number understood". Footnotes will automatically number themselves, according to the order in which the player discovers them.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex377.html#e377 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc247.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc249.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

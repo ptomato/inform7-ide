@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.20. Stored actions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.13. Relations involving values</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,193 +19,102 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Actor's Studio" -->
-<!-- SEARCH SECTION "Ex 204" -->
-<!-- SEARCH SORT "Ex 012-020-204" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc191.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc193.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.20. Stored actions</b></font></td></tr></table>
+<!-- SEARCH TITLE "Meet Market" -->
+<!-- SEARCH SECTION "Ex 220" -->
+<!-- SEARCH SORT "Ex 013-013-220" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc205.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc207.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.13. Relations involving values</b></font></td></tr></table>
 <p>
-<p>As we have seen, to describe an action fully takes a complicated little bundle of information - we need to know what is to be done, who will do it, and what it will be done to. There are times when we would like to remember an action and look back on it later (perhaps many turns later, after many other actions have taken effect) - but this is not easy to do with only the techniques we have seen so far. There are quite a few cases to get right, and it would be easy to not store quite enough of the details.
+<p>Most of the openly declared relations in Inform are between things - people, for instance, or rooms - but beneath the surface, many relations also apply to values. For instance,
 <p>
-<p>Fortunately, Inform provides a kind of value called &quot;stored action&quot; which can do all of this automatically. As with most other kinds of value, stored actions can be held in variables, &quot;let&quot; values, properties or table columns. For example:
-<p>
-<blockquote><font color="#000080">The best idea yet is a stored action that varies.
+<blockquote><font color="#000080">if the turn count is less than 100, ...
 </font></blockquote><p>
 <p>
-<p>creates a variable called &quot;the best idea yet&quot; which holds a stored action. This will normally be created holding the default value - the player waiting - but can instead be set explicitly:
+<p>involves a relation between two numbers expressed by the verb &quot;to be less than&quot;. These can also be created easily, provided we are willing to supply a definition. For instance:
 <p>
-<blockquote><font color="#000080">The best idea yet is the action of pushing the button.
+<blockquote><font color="#000080">Material is a kind of value. The materials are wood and metal. A thing has a material.
 </font></blockquote><p>
 <p>
-<p>Note the words &quot;action of...&quot;, which convert any sufficiently exact description of an action into its stored action form.
-<p>
-<p>In rules and phrases, we can always obtain the action currently going on (if there is one) with the value &quot;current action&quot;:
-<p>
-<blockquote><font color="#000080">let the present whim be the current action;
+<blockquote><font color="#000080">Materiality relates a thing (called X) to a material (called Y) when Y is the material of X. The verb to be made of implies the materiality relation.
 </font></blockquote><p>
 <p>
-<p>Moreover, just as we can &quot;try&quot; any action, so we can also try a stored one:
+<p>Of course, this does no more than to wrap up a property in the language of relations, but that does give us the elegant wording
 <p>
-<blockquote><font color="#000080">try the present whim;
-<br>silently try the present whim;
+<blockquote><font color="#000080">if the cube is made of wood, ...
+<br>say &quot;The carpenter looks at [the list of things which are made of wood].&quot;;
 </font></blockquote><p>
 <p>
-<p>would each work in the natural way. A stored action can do anything that actions can do: in particular, they remember, if necessary, the exact wording of the player's command at the time they were stored - so that even actions like &quot;looking up 'x100' in the code book&quot; will work if stored and tried on some future turn.
+<p>as an alternative to:
 <p>
-<p>As with any other kind of value, we can also say a stored action, and this produces a fairly natural description of what the action is:
-<p>
-<blockquote><font color="#000080">Before doing something in the presence of the bearded psychiatrist: say &quot;'Zo, the subject wishes to engage in [the current action]. Zis is very interesting.'&quot;
+<blockquote><font color="#000080">if the cube is wood, ...
+<br>say &quot;The carpenter looks at [the list of things which are wood].&quot;;
 </font></blockquote><p>
 <p>
-<p>will produce text such as:
+<p>By writing a more interesting definition, we get a more interesting relation as a result, of course. Here is a mathematical one:
 <p>
-<blockquote><font color="#000080">&quot;So, the subject vishes to engage in rubbing the fireman's pole. Zis is very interesting.&quot;
+<blockquote><font color="#000080">Divisibility relates a number (called N) to a number (called M) when remainder after dividing M by N is 0. The verb to divide (it divides, they divide, it divided, it is divisible) implies the divisibility relation. The verb to be a factor of implies the divisibility relation.
 </font></blockquote><p>
 <p>
-<p>One of Inform's most convenient features is its ability to test if the action being processed matches vague or complicated descriptions of whole classes of actions. Now, it would not make sense to write
-<p>
-<blockquote><font color="#000080">if the best idea yet is the action of taking something, ...
-</font></blockquote><p>
-<p>
-<p>because &quot;action of ...&quot; has to make an exact action, which clearly this is not: so Inform will produce a problem message if we try. But we do not need to, because Inform also allows us to compare a stored action against any description of an action, however vague:
-<p>
-<blockquote><font color="#000080">if the best idea yet is taking something, ...
-<br>if the best idea yet is doing something to the lever, ...
-</font></blockquote><p>
-<p>
-<p>When dealing with stored actions, we sometimes want to know what they are dealing with. We can extract this information using the following phrases:
-<p>
-<blockquote><font color="#000080">action-name part of S
-<br>noun part of S
-<br>second noun part of S
-<br>actor part of S
-</font></blockquote><p>
-<p>
-<p>For example, if S is &quot;Algy trying throwing the brick at Biggles&quot; then saying these four values will produce
-<p>
-<blockquote><font color="#000080">throwing it at
-<br>brick
-<br>Biggles
-<br>Algy
-</font></blockquote><p>
-<p>
-<p>Should the action be one which does not involve objects, the noun and second noun may be &quot;nothing&quot;: for instance if S is &quot;setting the dial to 3417&quot; then the noun part of S is the dial but the second noun part is nothing. (This has to be true, as otherwise Inform could never know what kind of value &quot;the noun part of S&quot; would have.)
-<p>
-<p>As a convenience, the condition
-<p>
-<blockquote><font color="#000080">if S involves X, ...
-</font></blockquote><p>
-<p>
-<p>is true if the object X appears as any of the actor, the noun or the second noun: for instance,
-<p>
-<blockquote><font color="#000080">if the current action involves Algy
-</font></blockquote><p>
-<p>
-<p>would be true for &quot;give revolver to Algy&quot;, &quot;Algy trying flying the Sopwith Camel&quot;, &quot;examine Algy&quot; and so on, but false for &quot;ask Raymond about secret airfield&quot;.
+<p>We now find that &quot;2 divides 12&quot;, &quot;5 is not a factor of 12&quot; and &quot;12 is divisible by 3&quot; are all true. Again, we are only really gaining a nice form of words, but improving the clarity of the source text is never a bad thing.
 <p>
 <p><hr><p>
-<a name="e233"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex233.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>202</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex233.html#e233 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bosch</font></b></a><br>Creating a list of actions that will earn the player points, and using this both to change the score and to give FULL SCORE reports.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex233.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e361"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex361.html#e361 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>203</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex361.html#e361 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cactus Will Outlive Us All</font></b></a><br>For every character besides the player, there is an action that will cause that character to wither right up and die.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex361.html#e361 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e235"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc192.html#e235 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>204</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc192.html#e235 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Actor's Studio</font></b></a><br>A video camera that records actions performed in its presence, and plays them back with time-stamps.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex235.html#e235 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e235"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc206.html#e235 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>220</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc206.html#e235 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Meet Market</font></b></a><br>A case in which relations give characters multiple values of the same kind.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex235.html#e235 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Here we construct a video camera to track and play back actions:
+<p>We have already seen that we can give things value properties -- a lamp has a brightness, for instance. Relations give us additional flexibility: since we may relate various things to various values, it is possible to describe a thing as having more than one value at the same time.
+<p>
+<p>To demonstrate:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode292(code) {
+function pasteCode307(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"The Actor\'s Studio"\n\nSection 1 - The Video Camera\n\nThe video camera is a thing carried by the player.\n\nTable of Videotape\nrecorded action\ttime stamp\nwaiting\t9:00 AM\nwith 25 blank rows.\n\nMode is a kind of value. The modes are idle, recording, and playing back. The video camera has a mode. The video camera is idle.\n\nUnderstand "play back" as playing back. Instead of switching on the camera, try tuning the camera to recording. Instead of switching off the camera, try tuning the camera to idle.\n\nThe description of the video camera is "It is currently [mode]; its available settings are idle, recording, and playing back."\n\nUnderstand "set [camera] to [a mode]" as tuning it to. Tuning it to is an action applying to one thing and one mode.\n\nInstead of setting the camera to something:\n\tsay "The available settings are idle, recording, and playing back."\n\nCheck tuning it to:\n\tif the noun is not the camera, say "Only the video camera can be set to [the mode understood]." instead.\n\nCarry out tuning it to:\n\tnow the mode of the noun is the mode understood.\n\nReport tuning it to:\n\tsay "You set [the noun] to [mode understood]."\n\nAfter an actor doing something when the video camera is recording:\n\tif the current action is the action of tuning the video camera to recording, make no decision;\n\tif the number of blank rows in the Table of Videotape is greater than zero\n\tbegin;\n\t\tchoose a blank row in the Table of Videotape;\n\t\tchange the recorded action entry to the current action;\n\t\tchange the time stamp entry to the time of day;\n\totherwise;\n\t\tnow the video camera is idle;\n\t\tsay "The video camera runs out of recording memory and switches off.";\n\tend if;\n\tcontinue the action.\n\nEvery turn when the video camera is playing back:\n\tsay "On the camera screen, you see [run paragraph on]";\n\tlet starting playback be false;\n\trepeat through the Table of Videotape\n\tbegin;\n\t\tif the recorded action entry is not waiting\n\t\tbegin;\n\t\t\tnow starting playback is true;\n\t\t\tsay "[line break] -- [if the actor part of the recorded action entry is the player]you [end if][the recorded action entry], time stamped at [time stamp entry]";\n\t\t\tblank out the whole row;\n\t\tend if;\n\tend repeat;\n\tif starting playback is false, say "only static."; otherwise say paragraph break.\n\nSection 2 - The Scenario\n\nThe Actor\'s Studio is a room. Lucas is a man in the Actor\'s Studio. Persuasion rule: persuasion succeeds.\n\nThe Studio contains an edible thing called a croissant.\n\nTest me with "set camera to recording / x lucas / lucas, take inventory / lucas, eat croissant / set camera to playing back / z".\n\n');
+    myProject.pasteCode('[=0x0022=]Meet Market[=0x0022=] by [=0x0022=]K M and Eric Rossing[=0x0022=][=0x000A=][=0x000A=]Feature is a kind of value.  The features are snub-nosed, gangly, comely, bright-eyed, and sulky.[=0x000A=][=0x000A=]Appearance relates various persons to various features.  The verb to appear (she appears, they appear) implies the appearance relation.[=0x000A=][=0x000A=]Meet Market is a room.[=0x000A=][=0x000A=]Bob, Carol, Ted, and Alice are people in the Meet Market.[=0x000A=][=0x000A=]Bob appears snub-nosed and gangly.[=0x000A=][=0x000A=]Ted appears sulky and snub-nosed.[=0x000A=][=0x000A=]Carol appears comely and bright-eyed.[=0x000A=][=0x000A=]Alice appears bright-eyed and comely.[=0x000A=][=0x000A=]Yourself appears sulky and gangly.[=0x000A=][=0x000A=]Instead of looking:[=0x000A=][=0x0009=]say [=0x0022=]The snub-nosed ones: [list of people who appear snub-nosed][line break][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=]The gangly ones: [list of people who appear gangly][line break][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=]The comely ones: [list of people who appear comely][line break][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=]The bright-eyed ones: [list of people who appear bright-eyed][line break][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=]The sulky ones: [list of people who appear sulky][paragraph break][=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]look[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode292()"><img border=0 src=../doc_images/paste.png></a> &quot;The Actor's Studio&quot;
+<a href="javascript:pasteCode307()"><img border=0 src=../doc_images/paste.png></a> &quot;Meet Market&quot; by &quot;K M and Eric Rossing&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 1 - The Video Camera
+<blockquote><font color="#000080">Feature is a kind of value.  The features are snub-nosed, gangly, comely, bright-eyed, and sulky.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The video camera is a thing carried by the player.
+<blockquote><font color="#000080">Appearance relates various persons to various features.  The verb to appear (she appears, they appear) implies the appearance relation.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Videotape
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">recorded action</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">time stamp</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">waiting</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">9:00 AM</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">with 25 blank rows.</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">Meet Market is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Mode is a kind of value. The modes are idle, recording, and playing back. The video camera has a mode. The video camera is idle.
+<blockquote><font color="#000080">Bob, Carol, Ted, and Alice are people in the Meet Market.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;play back&quot; as playing back. Instead of switching on the camera, try tuning the camera to recording. Instead of switching off the camera, try tuning the camera to idle.
+<blockquote><font color="#000080">Bob appears snub-nosed and gangly.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the video camera is &quot;It is currently [mode]; its available settings are idle, recording, and playing back.&quot;
+<blockquote><font color="#000080">Ted appears sulky and snub-nosed.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;set [camera] to [a mode]&quot; as tuning it to. Tuning it to is an action applying to one thing and one mode.
+<blockquote><font color="#000080">Carol appears comely and bright-eyed.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of setting the camera to something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The available settings are idle, recording, and playing back.&quot;
+<blockquote><font color="#000080">Alice appears bright-eyed and comely.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check tuning it to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not the camera, say &quot;Only the video camera can be set to [the mode understood].&quot; instead.
+<blockquote><font color="#000080">Yourself appears sulky and gangly.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out tuning it to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the mode of the noun is the mode understood.
+<blockquote><font color="#000080">Instead of looking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The snub-nosed ones: [list of people who appear snub-nosed][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The gangly ones: [list of people who appear gangly][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The comely ones: [list of people who appear comely][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The bright-eyed ones: [list of people who appear bright-eyed][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The sulky ones: [list of people who appear sulky][paragraph break]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report tuning it to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You set [the noun] to [mode understood].&quot;
+<blockquote><font color="#000080">Test me with &quot;look&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After an actor doing something when the video camera is recording:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current action is the action of tuning the video camera to recording, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of blank rows in the Table of Videotape is greater than zero
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose a blank row in the Table of Videotape;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the recorded action entry to the current action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the time stamp entry to the time of day;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the video camera is idle;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The video camera runs out of recording memory and switches off.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn when the video camera is playing back:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;On the camera screen, you see [run paragraph on]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let starting playback be false;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Videotape
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the recorded action entry is not waiting
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now starting playback is true;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break] -- [if the actor part of the recorded action entry is the player]you [end if][the recorded action entry], time stamped at [time stamp entry]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if starting playback is false, say &quot;only static.&quot;; otherwise say paragraph break.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 2 - The Scenario
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Actor's Studio is a room. Lucas is a man in the Actor's Studio. Persuasion rule: persuasion succeeds.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Studio contains an edible thing called a croissant.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;set camera to recording / x lucas / lucas, take inventory / lucas, eat croissant / set camera to playing back / z&quot;.
-</font></blockquote><p>
-<p>
-<p>Notice that both Lucas' implied taking action (picking up the croissant) and his eating action are recorded on the same move.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc192.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>The same logic might be used to provide characters who have complex mood states: a person might be angry and sad, not merely one or the other -- feelings being what they are.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc206.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e304"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex304.html#e304 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>205</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex304.html#e304 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Anteaters</font></b></a><br>The player carries a gizmo that is able to record actions performed by the player, then force him to repeat them when the gizmo is dropped. This includes storing actions that apply to topics, as in "look up anteater colonies in the guide".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex304.html#e304 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc191.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc193.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc205.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc207.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

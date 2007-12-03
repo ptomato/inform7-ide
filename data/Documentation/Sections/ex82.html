@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.6. Reading and talking</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.4. Listing rules explicitly</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,128 +19,108 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Costa Rican Ornithology" -->
-<!-- SEARCH SECTION "Ex 86" -->
-<!-- SEARCH SORT "Ex 007-006-086" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc95.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc97.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.6. Reading and talking</b></font></td></tr></table>
+<!-- SEARCH TITLE "Saint Eligius" -->
+<!-- SEARCH SECTION "Ex 338" -->
+<!-- SEARCH SORT "Ex 018-004-338" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc299.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc301.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.4. Listing rules explicitly</b></font></td></tr></table>
 <p>
-<p>A few actions apply not to items alone, but also involve what might be called conversation. The first is the one used for looking things up in books (which is conversation of a kind, even if the author is not present): &quot;consulting ... about ...&quot;. For example,
+<p>If rules can manage perfectly well without, why bother to have names for rules?
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode14(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('In the Grove is a book of sybilline verses.\n\nAfter consulting the book about "grove", say "The Grove is a sacred yadda, yadda. There\'s a tree, that sort of thing. Wisdom."\n\nAfter consulting the book about "future events", say "It\'s a bit, what\'s the word? Delphic."\n\n');
-}
-</script>
-<a href="javascript:pasteCode14()"><img border=0 src=../doc_images/paste.png></a> In the Grove is a book of sybilline verses.
+<p>The answer is that although Inform contains an elaborate mechanism for placing rules into the correct rulebook at the correct position, and this happens automatically, Inform will sometimes get it wrong. It will use a rule we do not want, or place them in an order which does not suit us. To put this right, we can give explicit instructions which take precedence over Inform's normal practice. This is done with the &quot;to list&quot; verb, as in the following examples.
+<p>
+<p>1. The simplest usage is to place a named rule, which currently has no home, in any rulebook of our choice. (This looks redundant, but just occasionally we want the same rule to appear in two different rulebooks.)
+<p>
+<blockquote><font color="#000080">The blossom rule is listed in the every turn rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After consulting the book about &quot;grove&quot;, say &quot;The Grove is a sacred yadda, yadda. There's a tree, that sort of thing. Wisdom.&quot;
+<p>A rule can only occur once in any single rulebook.
+<p>
+<p>2. We can also specify that the rule needs to appear before, or after, some other named rule in the same rulebook:
+<p>
+<blockquote><font color="#000080">The collapsing bridge rule is listed before the moving doorways rule in the instead rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After consulting the book about &quot;future events&quot;, say &quot;It's a bit, what's the word? Delphic.&quot;
+<p>Instead of being placed in specificity order in the whole &quot;instead&quot; rulebook, the &quot;collapsing bridge&quot; rule would now be placed in specificity order only in the first half of the &quot;instead&quot; rulebook - the rules from the start up to (but not including) the &quot;moving doorways&quot; rule.
+<p>
+<p>&quot;Listed&quot; sentences are obeyed by Inform in sequence, so if later ones issue instructions contradicting earlier ones, it's the later ones which win out. Thus if we say &quot;A is listed before B in X&quot; and then &quot;B is listed before A in X&quot;, the result is that B comes before A.
+<p>
+<p>3. We can specify that a rule needs to appear first or last in a given rulebook:
+<p>
+<blockquote><font color="#000080">The collapsing bridge rule is listed first in the instead rules.
 </font></blockquote><p>
 <p>
-<p>Note that what follows &quot;about&quot; here is a piece of text in double-quotes, and not the name of something. It can be almost any text at all, and in fact we shall later see (in the chapter on &quot;Understanding&quot;) that we can match complicated patterns of words, too.
+<p>Again, if we make several such instructions about the same rulebook then the most recent one wins: &quot;A is listed first in X. B is listed first in X. C is listed first in X.&quot; causes rulebook X to begin C, B, A.
 <p>
-<p>Similar actions are used for conversing with people:
+<p>4. We can also substitute one rule for another:
 <p>
-<blockquote><font color="#000080">After asking the Sybil about &quot;verses&quot;, say &quot;She blushes.&quot;
+<blockquote><font color="#000080">My darkness rule is listed instead of the can't act in the dark rule in the visibility rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After telling the Sybil about &quot;persians&quot;, say &quot;She nods gravely.&quot;
+<p>5. And we can strike down existing rules, either specifically or in all their applications:
+<p>
+<blockquote><font color="#000080">The can't act in the dark rule is not listed in the visibility rules.
+<br>The can't remove from people rule is not listed in any rulebook.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After answering the Sybil that &quot;I am mad&quot;, say &quot;She sighs.&quot;
-</font></blockquote><p>
+<p>This does not actually destroy the rules in question: they could still, for instance, be put into another rulebook, or even be applied explicitly, as we shall see. But unless we take deliberate action to the contrary, un-listing a rule amounts to abolishing it forever. This is a little drastic, and we will see subtler ways to change the standard behaviour later in the chapter.
 <p>
-<p>These would be produced by commands like &quot;ask sybil about verses&quot;, &quot;tell sybil about persians&quot; and &quot;answer i am mad&quot;. Answering is very seldom used and can be forgotten about, but the distinction between asking and telling is often worth preserving, which is why there are two different actions for these. If you would prefer to make &quot;tell sybil about X&quot; do the same as &quot;ask sybil about X&quot;, the following rule would serve:
-<p>
-<blockquote><font color="#000080">Instead of telling the Sybil about something, try asking the Sybil about it.
-</font></blockquote><p>
-<p>
-<p>Games with a lot of conversation often involve great heaps of rules like the ones above, which can be repetitious to type out. We shall also later see (in the chapter on &quot;Tables&quot;) that we can tabulate questions and answers in a much more concise way, if we prefer.
-<p>
-<a href=doc237.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Topic columns</b></font></a><i> for table-based ways to store and retrieve conversation</i><p><p>
 <p><hr><p>
-<a name="e152"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex152.html#e152 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>83</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex152.html#e152 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Sybil 1</font></b></a><br>Direct all ASK, TELL, and ANSWER commands to ASK, and accept multiple words for certain cases.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex152.html#e152 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e43"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex43.html#e43 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>84</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex43.html#e43 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lucy</font></b></a><br>Redirecting a question about one topic to ask about another.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex43.html#e43 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e128"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex128.html#e128 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>85</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex128.html#e128 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Sybil 2</font></b></a><br>Making the character understand YES, SAY YES TO CHARACTER, TELL CHARACTER YES, ANSWER YES, and CHARACTER, YES.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex128.html#e128 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e82"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc96.html#e82 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>86</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc96.html#e82 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Costa Rican Ornithology</font></b></a><br>A fully-implemented book, answering questions from a table of data, and responding to failed consultation with a custom message such as "You flip through the Guide to Central American Birds, but find no reference to penguins."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex82.html#e82 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e82"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc300.html#e82 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>338</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc300.html#e82 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Saint Eligius</font></b></a><br>Adding a first look rule that comments on locations when we visit them for the first time, inserting text after objects are listed but before any "every turn" rules might occur.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex82.html#e82 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The following relies on quite a number of features we haven't met yet: tables, rules for printing names, instructions for understanding the player's commands. It is offered simply as an example of how a fully implemented book might be handled in Inform.
+<p>A not-infrequent desire in IF is to provide a few lines of comment when the player first enters a new room, after the objects are described but before anything else (such as an every turn rule) can fire. The cleanest, most systematic solution is to add a rule to the carry out looking rulebook, so:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode170(code) {
+function pasteCode426(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Costa Rican Ornithology"\n\nA book is a kind of thing. Understand "book" as a book. A book has a table-name called the contents.\n\nInstead of consulting a book about a topic listed in the contents of the noun:\n\tsay "[reply entry][paragraph break]".\n\nReport consulting a book about:\n\tsay "You flip through [the noun], but find no reference to [the topic understood]." instead.\n\n[With this "topic understood" phrase, we\'re telling Inform to print back the word or phrase that the player was attempting to look up. This overrides the more general default response, "You discover nothing of interest in the book."]\n\n[We now have the essential elements to construct whatever books we like. Now let\'s have an example of a specific book:]\n\nThe Guide to Central American Birds is a book carried by the player. The contents of the Guide is the Table of Listed Birds.\n\n[We will come back to the idea of tables and table-names later, but for now the important thing is that we have instructed Inform to look up its answers to consulting the bird guide in this form:]\n\nTable of Listed Birds\ntopic\treply\n"[red]" or "[red] bird/macaw"\t"You flip through the Guide for a while and eventually discover a reference to the [scarlet macaw], which appears to correspond with what you see before you."\n"quetzal/trogon" or "resplendent trogon"\t"The entry on the quetzal is quite lyrical, describing its brilliant plumage, flashing and igniting in the sunshine, which is supposedly sufficient to lure birdwatchers from all over the world. Unfortunately, the quetzal is described as being bright emerald in color, with a pink fuzz on its head and a long soft tail \'like a feather boa\'. None of these describes your visitor."\n\n[The topic column is a bit special: it matches the player\'s input, and is not meant to be printed out again. Topic columns will be discussed further in the chapter on Tables. (Note also that, however it may appear in the documentation, the topic column should not be spanning multiple lines in our source text.)]\n\n[We may also compress long or complicated topics by creating bracketed abbreviations, and in fact it\'s useful to do so now, to explain the red token we just used:]\n\nUnderstand "red-orange" or "bird" or "red" or "orange" as the scarlet macaw. Understand "red-orange" or "red" or "orange" or "scarlet" as "[red]".\n\n[This technique is discussed further in the chapter on Understanding.]\n\n[If we wanted more books, we could define those in the same way, giving each its own separate contents table to be used for consultation. But for the sake of the example we will keep it simple, and move on to the scenario itself:]\n\nThe Veranda is a room. "From here you can see a considerable expanse of dense-growing jungle plants, and eventually the open water beyond."\n\nThe scarlet macaw is an animal in the veranda. "A vibrantly-colored [scarlet macaw] perches on the rail."\n\nA thing can be known or unknown.\n\nBefore printing the name of the scarlet macaw while consulting:\n\tnow the scarlet macaw is known.\n\nRule for printing the name of the unknown scarlet macaw: if the macaw is unknown, say "red-orange bird of unknown species".\n\nTest me with "look up penguins in the guide / look up quetzal in guide / look up silver nuthatches in the guide / look / look up red bird in the book / look".\n');
+    myProject.pasteCode('[=0x0022=]Saint Eligius[=0x0022=][=0x000A=][=0x000A=]The first look rule is listed after the room description paragraphs about objects rule in the carry out looking rules. A room can be commented or uncommented. A room is usually uncommented.[=0x000A=][=0x000A=]This is the first look rule:[=0x000A=][=0x0009=]if the location is uncommented, carry out the gawking at activity with the location.[=0x000A=][=0x000A=]Gawking at something is an activity.[=0x000A=][=0x000A=]Rule for gawking at the Diamond Market:[=0x000A=][=0x0009=]say [=0x0022=]Your throat closes and your eyes begin to sting. You have long disdained pomp and luxury, and railed against the oppression that brings such wealth to some men at the cost of the lives of others; you were not prepared for the magnificence.[=0x0022=][=0x000A=][=0x000A=]After gawking at a room (called the target): now the target is commented.[=0x000A=][=0x000A=][And now the scene itself:][=0x000A=][=0x000A=]The Cobbled Alley is a room. [=0x0022=]The Alley has never been made into a proper street: the buildings on either side are simply too important to tear down. For all that, there isn[=0x0027=]t much sign of the magnificence nearby. The entrance you seek is set below street level, four grimy steps down to a half-basement.[=0x0022=][=0x000A=][=0x000A=]After going to Diamond Market:[=0x000A=][=0x0009=]say [=0x0022=]You descend the steps quickly and step into the small foyer, allowing yourself to be searched for weapons, before going on to...[=0x0022=];[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]Diamond Market is down from Cobbled Alley. [=0x0022=]The roof is vaulted and painted in allegorical images representing Plenty, the Riches of the Earth, and Saint Eligius, patron of goldsmiths and jewelers.[=0x000A=][=0x000A=]Under their watchful eye, dozens of men in sober black robes sit; and on the tables before them are rubies, emeralds, sapphires from oversea, but most of all diamonds, both raw and cut.[=0x0022=][=0x000A=][=0x000A=]The burly guard is a man in Diamond Market. [=0x0022=]A burly guard patrols quite close to you, but even he is more sumptuously dressed than the average burly guard, and his buttons shine.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]d / look[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode170()"><img border=0 src=../doc_images/paste.png></a> &quot;Costa Rican Ornithology&quot;
+<a href="javascript:pasteCode426()"><img border=0 src=../doc_images/paste.png></a> &quot;Saint Eligius&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A book is a kind of thing. Understand &quot;book&quot; as a book. A book has a table-name called the contents.
+<blockquote><font color="#000080">The first look rule is listed after the room description paragraphs about objects rule in the carry out looking rules. A room can be commented or uncommented. A room is usually uncommented.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of consulting a book about a topic listed in the contents of the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;.
+<blockquote><font color="#000080">This is the first look rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is uncommented, carry out the gawking at activity with the location.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report consulting a book about:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You flip through [the noun], but find no reference to [the topic understood].&quot; instead.
+<blockquote><font color="#000080">Gawking at something is an activity.
 </font></blockquote><p>
 <p>
-<p>With this &quot;topic understood&quot; phrase, we're telling Inform to print back the word or phrase that the player was attempting to look up. This overrides the more general default response, &quot;You discover nothing of interest in the book.&quot;
-<p>
-<p>We now have the essential elements to construct whatever books we like. Now let's have an example of a specific book:
-<p>
-<blockquote><font color="#000080">The Guide to Central American Birds is a book carried by the player. The contents of the Guide is the Table of Listed Birds.
+<blockquote><font color="#000080">Rule for gawking at the Diamond Market:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your throat closes and your eyes begin to sting. You have long disdained pomp and luxury, and railed against the oppression that brings such wealth to some men at the cost of the lives of others; you were not prepared for the magnificence.&quot;
 </font></blockquote><p>
 <p>
-<p>We will come back to the idea of tables and table-names later, but for now the important thing is that we have instructed Inform to look up its answers to consulting the bird guide in this form:
-<p>
-<blockquote><font color="#000080">Table of Listed Birds
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[red]&quot; or &quot;[red] bird/macaw&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;You flip through the Guide for a while and eventually discover a reference to the [scarlet macaw], which appears to correspond with what you see before you.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;quetzal/trogon&quot; or &quot;resplendent trogon&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;The entry on the quetzal is quite lyrical, describing its brilliant plumage, flashing and igniting in the sunshine, which is supposedly sufficient to lure birdwatchers from all over the world. Unfortunately, the quetzal is described as being bright emerald in color, with a pink fuzz on its head and a long soft tail 'like a feather boa'. None of these describes your visitor.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">After gawking at a room (called the target): now the target is commented.
 </font></blockquote><p>
 <p>
-<p>The topic column is a bit special: it matches the player's input, and is not meant to be printed out again. Topic columns will be discussed further in the chapter on Tables. (Note also that, however it may appear in the documentation, the topic column should not be spanning multiple lines in our source text.)
+<p>And now the scene itself:
 <p>
-<p>We may also compress long or complicated topics by creating bracketed abbreviations, and in fact it's useful to do so now, to explain the red token we just used:
-<p>
-<blockquote><font color="#000080">Understand &quot;red-orange&quot; or &quot;bird&quot; or &quot;red&quot; or &quot;orange&quot; as the scarlet macaw. Understand &quot;red-orange&quot; or &quot;red&quot; or &quot;orange&quot; or &quot;scarlet&quot; as &quot;[red]&quot;.
+<blockquote><font color="#000080">The Cobbled Alley is a room. &quot;The Alley has never been made into a proper street: the buildings on either side are simply too important to tear down. For all that, there isn't much sign of the magnificence nearby. The entrance you seek is set below street level, four grimy steps down to a half-basement.&quot;
 </font></blockquote><p>
 <p>
-<p>This technique is discussed further in the chapter on Understanding.
-<p>
-<p>If we wanted more books, we could define those in the same way, giving each its own separate contents table to be used for consultation. But for the sake of the example we will keep it simple, and move on to the scenario itself:
-<p>
-<blockquote><font color="#000080">The Veranda is a room. &quot;From here you can see a considerable expanse of dense-growing jungle plants, and eventually the open water beyond.&quot;
+<blockquote><font color="#000080">After going to Diamond Market:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You descend the steps quickly and step into the small foyer, allowing yourself to be searched for weapons, before going on to...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The scarlet macaw is an animal in the veranda. &quot;A vibrantly-colored [scarlet macaw] perches on the rail.&quot;
+<blockquote><font color="#000080">Diamond Market is down from Cobbled Alley. &quot;The roof is vaulted and painted in allegorical images representing Plenty, the Riches of the Earth, and Saint Eligius, patron of goldsmiths and jewelers.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be known or unknown.
+<blockquote><font color="#000080">Under their watchful eye, dozens of men in sober black robes sit; and on the tables before them are rubies, emeralds, sapphires from oversea, but most of all diamonds, both raw and cut.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before printing the name of the scarlet macaw while consulting:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the scarlet macaw is known.
+<blockquote><font color="#000080">The burly guard is a man in Diamond Market. &quot;A burly guard patrols quite close to you, but even he is more sumptuously dressed than the average burly guard, and his buttons shine.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for printing the name of the unknown scarlet macaw: if the macaw is unknown, say &quot;red-orange bird of unknown species&quot;.
+<blockquote><font color="#000080">Test me with &quot;d / look&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;look up penguins in the guide / look up quetzal in guide / look up silver nuthatches in the guide / look / look up red bird in the book / look&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc96.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc300.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc95.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc97.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e184"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex184.html#e184 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>339</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex184.html#e184 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Slouching</font></b></a><br>A system of postures allowing the player and other characters to sit, stand, or lie down explicitly or implicitly on a variety of enterable supporters or containers, or in location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex184.html#e184 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc299.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc301.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

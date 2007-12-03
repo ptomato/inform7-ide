@@ -11,7 +11,7 @@ Global MStack_Top = 0;
 
 [ Mstack_Create_Frame creator id extent;
 	if (creator == 0) rfalse;
-	extent = creator.call(MStack_Top+2);
+	extent = creator.call(MStack_Top+2, 1);
 	if (extent == 0) rfalse;
 	if (MStack_Top + MAX_MSTACK_FRAME >= MSTACK_SIZE + 2) {
 		print "Variable stack exhausted^";
@@ -55,10 +55,11 @@ Global MStack_Frame_Extent = 0;
 	return 0; ! Not found
 ];
 
-[ Mstack_Destroy_Frame id pos;
+[ Mstack_Destroy_Frame creator id pos;
 	pos = Mstack_Seek_Frame(id);
 	if (pos == 0) rfalse; ! Not found: do nothing
 	MStack_Top = pos - 2; ! Clear mstack down to just below this frame
+	if (creator) creator.call(pos, -1);
 	rtrue;
 ];
 
@@ -102,7 +103,7 @@ Global MStack_Frame_Extent = 0;
 [ MStack_DestroyRBVars rb cr;
 	cr = rulebook_var_creators-->rb;
 	if (cr == 0) return;
-	Mstack_Destroy_Frame(rb);
+	Mstack_Destroy_Frame(cr, rb);
 ];
 
 [ MStack_CreateAVVars av cr;
@@ -114,7 +115,7 @@ Global MStack_Frame_Extent = 0;
 [ MStack_DestroyAVVars av cr;
 	cr = activity_var_creators-->av;
 	if (cr == 0) return;
-	Mstack_Destroy_Frame(av + 10000);
+	Mstack_Destroy_Frame(cr, av + 10000);
 ];
 
 ! End of MStack.i6 segment

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.13. Procedural rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.8. Replacements</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,59 +19,107 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Access All Areas" -->
-<!-- SEARCH SECTION "Ex 348" -->
-<!-- SEARCH SORT "Ex 018-013-348" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc308.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc310.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.13. Procedural rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Igpay Atinlay" -->
+<!-- SEARCH SECTION "Ex 366" -->
+<!-- SEARCH SORT "Ex 019-008-366" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc322.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc324.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.8. Replacements</b></font></td></tr></table>
 <p>
-<p>Before any rule or rulebook is followed, a special rulebook is always consulted first. This is called the &quot;procedural rules&quot;, and it starts out empty: so if we write no procedural rules, empty it will remain.
+<p>Suppose V is an indexed text which varies - perhaps a property of something, or a variable defined everywhere, or a temporary &quot;let&quot;-named value. How do we change its contents? The easiest way is simply to assign text to it. Thus:
 <p>
-<p>Like the points of order which precede a debate, the procedural rules are not intended to contribute to any decision in themselves, but merely to sort out which voices are to be heard when the time for decision comes. Should some rules be waived, or others substituted? Should the rulebook be rearranged, in certain circumstances? And so on. Procedural rules offer enormous flexibility and with them one could deconstruct Inform and put it back together in a very different shape - but in practical situations they will only occasionally be needed.
-<p>
-<p>Procedural rules are not allowed to say anything, or indeed to do anything which might have practical consequences; they are only allowed to think about the current situation (if they need to) and then use special phrases (if they choose to) which affect how other rules are to be followed. For instance:
-<p>
-<blockquote><font color="#000080">A procedural rule: if in the Timeless Void then ignore the advance time rule.
+<blockquote><font color="#000080">let V be &quot;It is now [the time of the day in words].&quot;
 </font></blockquote><p>
 <p>
-<p>Since the &quot;advance time rule&quot; is the one which moves on the number of turns and the clock, this means that the Timeless Void lives up to its name.
+<p>And, for instance,
 <p>
-<p>In general, it works but is inefficient to use procedural rules to abolish or substitute rules throughout an entire game: it's much faster to use the &quot;listed in&quot; and &quot;not listed in&quot; sentences described earlier in the chapter. But if we want to bend rules in particular circumstances - as here, in the Timeless Void but nowhere else - then procedural rules are ideal.
+<blockquote><font color="#000080">let V be &quot;[V]!&quot;
+</font></blockquote><p>
+<p>
+<p>adds an exclamation mark at the end of V.
+<p>
+<p>Otherwise, it is more useful (also a little faster) to modify V by changing its characters, words and so on. Thus:
+<p>
+<blockquote><font color="#000080">replace character number N in V with NEW
+</font></blockquote><p>
+<p>
+<p>changes the Nth character to NEW (which is not required to be a single character: it simply occupies the spot previously occupied by the Nth character). Similarly:
+<p>
+<blockquote><font color="#000080">replace word number N in V with NEW
+<br>replace punctuated word number N in V with NEW
+<br>replace unpunctuated word number N in V with NEW
+<br>replace line number N in V with NEW
+<br>replace paragraph number N in V with NEW
+</font></blockquote><p>
+<p>
+<p>Last, but not least, we can replace text wherever it occurs:
+<p>
+<blockquote><font color="#000080">replace the text FIND in V with NEW
+<br>replace the text FIND in V with NEW, case insensitively
+<br>replace the regular expression FIND in V with NEW
+<br>replace the regular expression FIND in V with NEW, case insensitively
+</font></blockquote><p>
+<p>
+<p>These match as much as they can, but again, with the matches not allowed to overlap. Thus
+<p>
+<blockquote><font color="#000080">replace the text &quot;a&quot; in V with &quot;z&quot;
+</font></blockquote><p>
+<p>
+<p>changes every lower-case &quot;a&quot; to &quot;z&quot;: the same thing done case insensitively would change each &quot;a&quot; or &quot;A&quot; to &quot;z&quot;.
+<p>
+<p>When replacing a regular expression, the replacement text also has a few special meanings (though, thankfully, many fewer than for the expression itself). Once again &quot;\n&quot; and &quot;\t&quot; can be used for line break and tab characters, and &quot;\\&quot; must be used for an actual backslash. But, very usefully, &quot;\1&quot; to &quot;\9&quot; expand as the contents of groups numbered 1 to 9, and &quot;\0&quot; to the exact text matched. So:
+<p>
+<blockquote><font color="#000080">replace the regular expression &quot;\d+&quot; in V with &quot;roughly \0&quot;
+</font></blockquote><p>
+<p>
+<p>adds the word &quot;roughly&quot; in front of any run of digits in V, because \0 becomes in turn whichever run of digits matched. And
+<p>
+<blockquote><font color="#000080">replace the regular expression &quot;(\w+) (.*)&quot; in V with &quot;\2, \1&quot;
+</font></blockquote><p>
+<p>
+<p>performs the transformation &quot;Frank Booth&quot; to &quot;Booth, Frank&quot;.
+<p>
+<p>Finally, prefixing the number by &quot;l&quot; or &quot;u&quot; forces the text it represents into lower or upper case, respectively. For instance:
+<p>
+<blockquote><font color="#000080">replace the regular expression &quot;\b(\w)(\w*)&quot; in X with &quot;\u1\l2&quot;;
+</font></blockquote><p>
+<p>
+<p>changes the casing of X to &quot;title casing&quot;, where each individual word is capitalised. (This is a little slow on large texts, since so many matches and replacements are made: it's more efficient to use the official phrases for changing case.)
 <p>
 <p><hr><p>
+<a name="e11"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex11.html#e11 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>365</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex11.html#e11 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Blackout</font></b></a><br>Filtering the names of rooms printed while in darkness.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex11.html#e11 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e166"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc309.html#e166 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>348</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc309.html#e166 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Access All Areas</font></b></a><br>The Pointy Hat of Liminal Transgression allows its wearer to walk clean through closed doors.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex166.html#e166 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e166"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc323.html#e166 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>366</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc323.html#e166 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Igpay Atinlay</font></b></a><br>A pig Latin filter for the player's commands.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex166.html#e166 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>This is a typical usage of procedural rules to suspend the laws of nature. Notice that we only need a procedural rule if we are going to conditionally replace or ignore the behavior of a rule at runtime.
-<p>
-<p>If we want to remove or replace one of the standard rules universally throughout the game, it is better to use the &quot;X is listed instead of Y...&quot; or &quot;X is not listed...&quot; syntax, since these will not require any runtime calculation. Procedural rules are called very frequently at runtime, so having a large number may slow down performance on slower machines.
+<p>For the sake of argument, suppose we want to parrot back all the player's commands in pig Latin:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode435(code) {
+function pasteCode455(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Access All Areas"\n\nThe extremely difficult door is north of the Standing Room and south of the Room of Walking Upside Down.  It is a locked door.\n\nThe player is carrying the Pointy Hat of Liminal Transgression. The hat is wearable.\n\nA procedural rule: if the Hat is worn, ignore the can\'t go through closed doors rule.\n\nTest me with "n / wear hat / n".\n\n');
+    myProject.pasteCode(' [=0x0022=]Igpay Atinlay[=0x0022=][=0x000A=][=0x000A=]Armfay is a room.[=0x000A=][=0x000A=]After reading a command:[=0x000A=][=0x0009=]let N be indexed text;[=0x000A=][=0x0009=]let N be the player[=0x0027=]s command;[=0x000A=][=0x0009=]replace the regular expression [=0x0022=][=0x005C=]b([=0x003C=]aeiou[=0x003E=]+)([=0x005C=]w*)[=0x0022=] in N with [=0x0022=][=0x005C=]1[=0x005C=]2ay[=0x0022=];[=0x000A=][=0x0009=]replace the regular expression [=0x0022=][=0x005C=]b([=0x003C=]bcdfghjklmnpqrstvwxz[=0x003E=]+)([=0x005C=]w*)[=0x0022=] in N with [=0x0022=][=0x005C=]2[=0x005C=]1ay[=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=][N][paragraph break][=0x0022=];[=0x000A=][=0x0009=]reject the player[=0x0027=]s command.[=0x000A=][=0x000A=]Test me with [=0x0022=]nix on the stupid[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode435()"><img border=0 src=../doc_images/paste.png></a> &quot;Access All Areas&quot;
+<a href="javascript:pasteCode455()"><img border=0 src=../doc_images/paste.png></a>  &quot;Igpay Atinlay&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The extremely difficult door is north of the Standing Room and south of the Room of Walking Upside Down.  It is a locked door.
+<blockquote><font color="#000080">Armfay is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player is carrying the Pointy Hat of Liminal Transgression. The hat is wearable.
+<blockquote><font color="#000080">After reading a command:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be indexed text;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;replace the regular expression &quot;\b(&lt;aeiou&gt;+)(\w*)&quot; in N with &quot;\1\2ay&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;replace the regular expression &quot;\b(&lt;bcdfghjklmnpqrstvwxz&gt;+)(\w*)&quot; in N with &quot;\2\1ay&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[N][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A procedural rule: if the Hat is worn, ignore the can't go through closed doors rule.
+<blockquote><font color="#000080">Test me with &quot;nix on the stupid&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;n / wear hat / n&quot;.
-</font></blockquote><p>
-<p>
-<p>(The Pointy Hat may be useful in debugging a game, even if it never makes it into the final published work.)
-<p>
-<p>The &quot;can't go through closed doors rule&quot; is one of those belonging to the &quot;check going&quot; rulebook. These names are fairly explanatory when written out, but hard to remember: fortunately we don't need to remember them, as the Index panel contains a full inventory of the check, carry out and report rules for every action, showing all of their names and the order in which they are checked.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc309.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc323.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc308.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc310.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e59"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex59.html#e59 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>367</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex59.html#e59 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fido</font></b></a><br>A dog the player can name and un-name at will.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex59.html#e59 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e118"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex118.html#e118 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>368</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex118.html#e118 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mr. Burns' Repast</font></b></a><br>Letting the player guess types for an unidentifiable fish.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex118.html#e118 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e285"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex285.html#e285 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>369</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex285.html#e285 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Northstar</font></b></a><br>Making Inform understand ASK JOSH TO TAKE INVENTORY as JOSH, TAKE INVENTORY. This requires us to use a regular expression on the player's command, replacing some of the content.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex285.html#e285 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc322.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc324.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

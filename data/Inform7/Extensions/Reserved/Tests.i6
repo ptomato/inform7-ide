@@ -16,18 +16,19 @@ Verb meta "test"
 	}
 ];
 #ifdef TARGET_ZCODE;
-Constant I7_TEST_STACK_SIZE = 15;
+Constant I7_TEST_STACK_SIZE = 20;
 #ifnot;
-Constant I7_TEST_STACK_SIZE = 31;
+Constant I7_TEST_STACK_SIZE = 40;
 #endif;
 
 Array test_stack --> I7_TEST_STACK_SIZE;
 Global test_sp = 0;
-[ TestStart T R k;
-	if (test_sp == I7_TEST_STACK_SIZE) ">--> Testing too many levels deep";
+[ TestStart T R l k;
+	if (test_sp >= I7_TEST_STACK_SIZE) ">--> Testing too many levels deep";
 	test_stack-->test_sp = T;
-	test_stack-->(test_sp+1) = 1;
-	test_sp = test_sp + 3;
+	test_stack-->(test_sp+1) = 0;
+	test_stack-->(test_sp+3) = l;
+	test_sp = test_sp + 4;
 	if ((R-->0) && (R-->0 ~= real_location)) {
 	     print "(first moving to ", (name) R-->0, ")^";
 	     PlayerTo(R-->0, 1);
@@ -48,15 +49,15 @@ Global test_sp = 0;
 	    return KeyboardPrimitive__(a_buffer, a_table);
 	}
 	else {
-	    p = test_stack-->(test_sp-3);
-	    i = test_stack-->(test_sp-2);
+	    p = test_stack-->(test_sp-4);
+	    i = test_stack-->(test_sp-3);
+	    l = test_stack-->(test_sp-1);
 	    print "[";
 	    print test_stack-->2;
 	    print "] ";
-	    test_stack-->2 = 
-	        test_stack-->2+1;
+	    test_stack-->2 = test_stack-->2 + 1;
 	    style bold;
-	    while ((i <= p->0) && (p->i ~= '/')) {
+	    while ((i < l) && (p->i ~= '/')) {
 	        if (spaced || (p->i ~= ' ')) {
 	            a_buffer->(j+WORDSIZE) = p->i;
 	            print (char) p->i;
@@ -73,9 +74,9 @@ Global test_sp = 0;
 	    #endif;
 	    Tokenise__(a_buffer, a_table);
 	    if (p->i == '/') i++;
-	    if (i > p->0) {
-	        test_sp = test_sp - 3;
-	    } else test_stack-->(test_sp-2) = i;
+	    if (i >= l) {
+	        test_sp = test_sp - 4;
+	    } else test_stack-->(test_sp-3) = i;
 	}
 ];
 

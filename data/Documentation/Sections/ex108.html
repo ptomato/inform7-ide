@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.16. Reaching inside and reaching outside rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.14. Totals</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,111 +19,368 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Carnivale" -->
-<!-- SEARCH SECTION "Ex 197" -->
-<!-- SEARCH SORT "Ex 012-016-197" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc187.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc189.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.16. Reaching inside and reaching outside rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Nickel and Dimed" -->
+<!-- SEARCH SECTION "Ex 236" -->
+<!-- SEARCH SORT "Ex 014-014-236" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc221.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc223.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.14. Totals</b></font></td></tr></table>
 <p>
-<p>The flow chart back at the start of this chapter shows that, early on in processing an action (between Before and Instead), Inform asks the question &quot;Can we see or touch things?&quot; This is where it enforces the requirements in the action's definition:
+<p>It often happens that we want to look at the measurements of a whole collection of things. Suppose we invent the idea of weight, and give everything a weight of its own. Most items will have a nominal weight of just 1 kilogram, but people will be heavier. Going on actuarial tables, we might say:
 <p>
-<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
-<br>Scraping it with is an action applying to two things.
+<blockquote><font color="#000080">A weight is a kind of value. 10kg specifies a weight. Everything has a weight. A thing usually has weight 1kg. A man usually has weight 80kg. A woman usually has weight 67kg.
 </font></blockquote><p>
 <p>
-<p>Seeing and touching are two different questions, which Inform answers in different ways. We shall see ways to modify or entirely alter what can be seen using the &quot;deciding the scope of something&quot; activity when we get to the Understanding and Activities chapters, and later in this chapter we will change the definition of touchability. What both have in common is that they are complicated questions, affected by the circumstances. We cannot simply declare that the player can touch a given lever, or can see in a given room: we must arrange for there to be no barriers between the player and the lever, or for there to be a light source in the room.
-<p>
-<p>An example of rules applying to given objects is provided by the way that Inform decides whether the player can reach something or not. For instance, suppose the following:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode30(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('The Laboratory is a room. In the Laboratory is a conical flask. The flask is closed and transparent. In the flask is an antibumping granule.\n\n');
-}
-</script>
-<a href="javascript:pasteCode30()"><img border=0 src=../doc_images/paste.png></a> The Laboratory is a room. In the Laboratory is a conical flask. The flask is closed and transparent. In the flask is an antibumping granule.
+<blockquote><font color="#000080">Definition: A thing is light if its weight is 3kg or less.
+<br>Definition: A thing is heavy if its weight is 10kg or more.
 </font></blockquote><p>
 <p>
-<p>The player will be able to examine the granule but not to take it, as that would require reaching through glass. Suppose the player does type TAKE GRANULE: then Inform looks for potential barriers between the player and the granule, and of course finds the conical flask. If, as in this case, the thing to be touched is on the inside, then Inform asks the &quot;reaching inside&quot; rules for permission. There are two reaching inside rules built in to Inform:
+<p>and this provides us with &quot;lighter&quot;, &quot;lightest&quot;, &quot;heavier&quot; and &quot;heaviest&quot; as before. Now we could say &quot;if Peter is heavier than Paul&quot;, or even &quot;if Peter is heavier than 75kg&quot;, and so forth.
 <p>
-<blockquote><font color="#000080">can't reach inside rooms rule
-<br>can't reach inside closed containers rule
+<p>The value &quot;total ... of ...&quot; is a convenient way to total up a given property of everything described. The following now makes the balance platform actually work:
+<p>
+<blockquote><font color="#000080">The balance platform is a supporter in the Weighbridge. &quot;The balance platform is currently weighing [contents of platform]. The scale alongside reads: [total weight of things on the platform].&quot;
 </font></blockquote><p>
 <p>
-<p>and in fact the second of these rules will cause the taking action to fail, because the conical flask is a closed container. (The other rule has to do with a player in one room able to see another room through, say, a telescope - merely having a line of sight doesn't give the ability to reach into the frame.)
+<p>Note that this only works because we said that &quot;everything has a weight&quot;: otherwise it would make no sense to add up the weights of things.
 <p>
-<p>Symmetrically, Inform also has &quot;reaching outside&quot; rules, used if the player is inside something and wants to reach an object in the wider room. (From a bed, probably yes; from a cage, probably no.) This ordinarily contains just one rule:
+<p>This enables us to get the average weight of a group of things, too:
 <p>
-<blockquote><font color="#000080">can't reach outside closed containers rule
+<blockquote><font color="#000080">the total weight of things on the platform divided by the number of things on the platform
+</font></blockquote><p>
+<p>
+<p>But we should be careful that this does not accidentally divide by zero, which it will if the platform has nothing on it! As well as the average, we could find the maximum and minimum weights:
+<p>
+<blockquote><font color="#000080">the weight of the heaviest thing on the platform
+<br>the weight of the lightest thing on the platform
+</font></blockquote><p>
+<p>
+<p>We should remember that &quot;the heaviest thing on the platform&quot; may be ambiguous, because there may be several equally heavy things there. That means
+<p>
+<blockquote><font color="#000080">if the lead pig is the heaviest thing on the platform
+</font></blockquote><p>
+<p>
+<p>will only reliably work if there is no possibility of a tie. A safer bet is:
+<p>
+<blockquote><font color="#000080">if the lead pig is the weight of the heaviest thing on the platform
 </font></blockquote><p>
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e108"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc188.html#e108 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>197</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc188.html#e108 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Carnivale</font></b></a><br>An alternative to backdrops when we want something to be visible from a distance but only touchable from one room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex108.html#e108 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e108"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc222.html#e108 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>236</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc222.html#e108 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Nickel and Dimed</font></b></a><br>A more intricate system of money, this time keeping track of the individual denominations of coins and bills, specifying what gets spent at each transaction, and calculating appropriate change.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex108.html#e108 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to make an object that (unlike a backdrop) is definitely located in one room, but can be seen from far off. We want to allow the player to interact with it from a distance, but only using those actions that require visibility. Other actions should be denied:
+<p>Typically games which keep track of the player's wealth need only do so as an abstract number, but occasionally it becomes useful to represent money as physical coins and bills. Here is an example that does exactly that:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode285(code) {
+function pasteCode321(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Carnivale"\n\nThe Fairground is a region. Park Entrance, By the Wheel, and Candy Stand are in Fairground. Candy Stand is north of By the Wheel. Park Entrance is west of Candy Stand and northwest of By the Wheel.\n\nThe ferris wheel is scenery in By the Wheel. "It is extravagantly tall and carries several dozen glass gondolas for riders."\n\nThe description of By the Wheel is "You stand at the foot of an enormous ferris wheel, which turns far too quickly and never seems to stop for new riders."\n\nThe description of Park Entrance is "You are now just inside the gates. Behind you snakes a triple line of fairgoers all the way down the length of the valley to the railway station. Roughly southeast of here is the ferris wheel, towering over the other attractions."\n\nThe description of Candy Stand is "A hut in pale pink and baby blue dispenses marshmallow death\'s-heads, sugar-beetles, and other such treats. The giant ferris wheel is just off to the south from here."\n\n[As the descriptions make clear, the ferris wheel should be visible from everywhere in the fair, so we\'ll borrow a line from the Activities chapter to make that happen:]\n\nAfter deciding the scope of the player:\n\tif the location is in Fairground, place the ferris wheel in scope.\n\n');
+    myProject.pasteCode('[=0x0022=]Nickel and Dimed[=0x0022=][=0x000A=][=0x000A=]Section 1 - Currency[=0x000A=][=0x000A=]Price is a kind of value. $10.99 specifies a price with parts dollars and cents. A thing has a price. The price of a thing is usually $0.00.[=0x000A=][=0x000A=]Money is a kind of thing. Coin is a kind of money.[=0x000A=][=0x000A=]A dollar bill is a kind of money. The price of a dollar bill is $1.00. The printed name of a dollar bill is [=0x0022=]dollar bill[=0x0022=]. Rule for printing the plural name of a dollar bill: say [=0x0022=]dollar bills[=0x0022=]. The description of a dollar bill is [=0x0022=]It has George Washington[=0x0027=]s head on the front, which with a bit of creative folding can be scrunched to look like a mushroom. All important things really are learned in kindergarten.[=0x0022=][=0x000A=][=0x000A=]A five-dollar bill is a kind of money. The price of a five-dollar bill is $5.00. Understand [=0x0022=]five[=0x0022=] or [=0x0022=]five dollar[=0x0022=] as the five-dollar bill. The description of a five-dollar bill is [=0x0022=]Abraham Lincoln. He looks slightly less dignified here than he does on the penny.[=0x0022=][=0x000A=][=0x000A=]A hundred-dollar bill is a kind of money. The price of the hundred-dollar bill is $100.00. Understand [=0x0022=]hundred[=0x0022=] or [=0x0022=]hundred dollar[=0x0022=] as the hundred-dollar bill. Understand [=0x0022=]dollar[=0x0022=] as the dollar bill. The description of a hundred-dollar bill is [=0x0022=]It[=0x0027=]s got Benjamin Franklin, who always gets shafted: a denomination too large for anyone to carry conveniently, and a lot of local fame in Philadelphia.[=0x0022=][=0x000A=][=0x000A=][Our choice of understand rules guarantees that [=0x0022=]five dollar[=0x0022=] will be understood as the five, but [=0x0022=]dollar[=0x0022=] alone as the single. We will learn more about [=0x0022=]understand[=0x0022=] in later chapters, but here is a test to check the functionality:][=0x000A=][=0x000A=]Test bills with [=0x0022=]x hundred dollar bill / x five dollar bill / x hundred / x five / x dollar / x dollar bill[=0x0022=].[=0x000A=][=0x000A=]A quarter is a kind of coin. The price of a quarter is $0.25. The description of a quarter is [=0x0022=]One of the old-fashioned variety, not a state quarter.[=0x0022=][=0x000A=][=0x000A=]A dime is a kind of coin. The price of a dime is $0.10. The description of a dime is [=0x0022=]Franklin Roosevelt, trying not to look too annoyed that his coin is so small and thin.[=0x0022=][=0x000A=][=0x000A=]A nickel is a kind of coin. The price of a nickel is $0.05. The description of a nickel is [=0x0022=]A chubby coin, but you[=0x0027=]ve always liked Thomas Jefferson, and the Monticello on the back is a nice touch.[=0x0022=][=0x000A=][=0x000A=]A penny is a kind of coin. The price of a penny is $0.01. The description of the penny is [=0x0022=]A profile Abe Lincoln. Sometime soon they[=0x0027=]ll stop minting these, you[=0x0027=]re sure of it.[=0x0022=][=0x000A=][=0x000A=]Section 2 - Ownership[=0x000A=][=0x000A=]Ownership relates one person (called the owner) to various things. The verb to own (he owns, they own, he owned, he is owned) implies the ownership relation.[=0x000A=][=0x000A=]Definition: a thing is owned if the player owns it.[=0x000A=][=0x000A=]Instead of buying something which is owned by the player:[=0x000A=][=0x0009=]say [=0x0022=]You already own [the noun].[=0x0022=][=0x000A=][=0x000A=]Instead of going somewhere when the player encloses something (called the stolen goods) which is not owned by the player:[=0x000A=][=0x0009=]if the owner of the stolen goods is not a person[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]now the player owns the stolen goods;[=0x000A=][=0x0009=][=0x0009=]continue the action;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]if the owner of the stolen goods can see the player,[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][=0x0027=]Hey there buddy, not so fast,[=0x0027=] says [the owner of the stolen goods]. [=0x0027=]You going to buy [the stolen goods] first, or am I gonna call the cops?[=0x0027=][=0x0022=];[=0x000A=][=0x0009=]otherwise continue the action.[=0x000A=][=0x000A=]After taking inventory:[=0x000A=][=0x0009=]say [=0x0022=]Altogether, you[=0x0027=]ve got [the player[=0x0027=]s cash] on your person.[=0x0022=][=0x000A=][=0x000A=]To decide what price is the player[=0x0027=]s cash:[=0x000A=][=0x0009=]let sum be the total price of money enclosed by the player;[=0x000A=][=0x0009=]decide on sum.[=0x000A=][=0x000A=]To decide what price is the sum in (item - a container):[=0x000A=][=0x0009=]let sum be the total price of the money in the item;[=0x000A=][=0x0009=]decide on sum.[=0x000A=][=0x000A=]When play begins: now every thing carried by the player is owned by the player.[=0x000A=][=0x000A=]Section 3 - Purchasing and Sales[=0x000A=][=0x000A=]Definition: a thing is worthless if the price of it is $0.00. Definition: a thing is valuable if it is not worthless.[=0x000A=][=0x000A=]A thing can be for sale.[=0x000A=][=0x000A=]Rule for printing room description details of something (called target) which is for sale (this is the disclose prices in room description rule): say [=0x0022=] ([price of the target])[=0x0022=].[=0x000A=][=0x000A=]Before listing contents: group money together giving articles.[=0x000A=][=0x000A=]Instead of examining a for sale thing (this is the describe things by price rule):[=0x000A=][=0x0009=]say [=0x0022=][The noun] costs [the price of the noun], payable to [the owner of the noun].[=0x0022=][=0x000A=][=0x000A=][The cashbox is a theoretical construct, not something the player will ever encounter in the course of the game. It contains all the money that is available for non-player characters to use in making change. If we wanted, we could give each character his own stash of change, but this would increase the likelihood that any given person would run out of cash to make change with. (And in this example there is only one vendor anyway.)][=0x000A=][=0x000A=]The cashbox is a container. The cashbox contains 10 pennies. The cashbox contains 10 nickels.  The cashbox contains 10 dimes.  The cashbox contains 10 quarters.  The cashbox contains 10 dollar bills.  The cashbox contains 10 five-dollar bills.[=0x000A=][=0x000A=]The block buying rule is not listed in the check buying rules.[=0x000A=][=0x000A=]Check buying something:[=0x000A=][=0x0009=]if the noun is not for sale, say [=0x0022=][The owner of the noun] does not want to sell you [the noun].[=0x0022=] instead;[=0x000A=][=0x0009=]if the player[=0x0027=]s cash is less than the price of the noun, say [=0x0022=]You can[=0x0027=]t afford the asking price of [the price of the noun] for [the noun].[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out buying something:[=0x000A=][=0x0009=]let sum paid be $0.00;[=0x000A=][=0x0009=]while sum paid is less than the price of the noun[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]let current target be the price of the noun minus the sum paid;[=0x000A=][=0x0009=][=0x0009=]let bill offered be the best money from the player for the current target;[=0x000A=][=0x0009=][=0x0009=]if the bill offered is money[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]move the bill offered to the owner of the noun;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]now the bill offered is spent;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]increase the sum paid by the price of the bill offered;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let current target be the price of the noun minus the sum paid;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end while;[=0x000A=][=0x0009=]say [=0x0022=]You hand [the owner of the noun] [a list of spent money]. [run paragraph on][=0x0022=];[=0x000A=][=0x0009=]if the sum paid is greater than the price of the noun, let change be the sum paid minus the price of the noun;[=0x000A=][=0x0009=]if change is greater than the sum in the cashbox[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]now the player carries every spent money;[=0x000A=][=0x0009=][=0x0009=]now every spent thing is fresh;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][=0x0027=]Whoa,[=0x0027=] says [the owner of the noun], handing the cash back to you. [=0x0027=]I can[=0x0027=]t make change for that, man, sorry.[=0x0027=][=0x0022=] instead;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]now every spent thing is in the cashbox;[=0x000A=][=0x0009=]now every spent thing is fresh;[=0x000A=][=0x0009=]while change is greater than $0.00[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]let change bill be the best money from the cashbox for change;[=0x000A=][=0x0009=][=0x0009=]decrease change by the price of the change bill;[=0x000A=][=0x0009=][=0x0009=]now change bill is spent;[=0x000A=][=0x0009=][=0x0009=]move change bill to player;[=0x000A=][=0x0009=]end while;[=0x000A=][=0x0009=]if money is spent, say [=0x0022=][The owner of the noun] makes change with [a list of spent money]. [run paragraph on][=0x0022=];[=0x000A=][=0x0009=]now every spent thing is fresh;[=0x000A=][=0x0009=]if the noun is not enclosed by the player and the owner of the noun can touch the noun[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][=0x0027=]Here ya go,[=0x0027=] says [the owner of the noun], handing [the noun] to you. [run paragraph on][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]move the noun to the player;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]now the player owns the noun.[=0x000A=][=0x000A=]Money can be spent or fresh.[=0x000A=][=0x000A=]Report buying something:[=0x000A=][=0x0009=]if the player owns the noun,[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Your transaction is now complete, leaving you with [the player[=0x0027=]s cash].[=0x0022=][=0x000A=][=0x000A=][We[=0x0027=]ve skipped over defining what makes a denomination the best for a given transaction, so we[=0x0027=]d better do that now. Our goal is to avoid ever having the player gratuitously overpay -- he should always offer the smallest amount of money that will meet the price of what he[=0x0027=]s buying.][=0x000A=][=0x000A=][We also assume that all money [=0x0022=]enclosed by the buyer[=0x0022=] -- that is, somewhere in the buyer[=0x0027=]s possession -- is available for use. This might not be true in a game where the player could pick up, say, a sealed lucite container with a ten-dollar bill inside; in that case we would have to define our terms more rigorously, perhaps by requiring that the bills be both enclosed and touchable by the buyer. The touchability check adds an extra layer of calculation, however, and since it is not necessary in this example (and probably not in most other cases either), we[=0x0027=]ll leave it out:][=0x000A=][=0x000A=]Definition: money is costly if its price is $2.50 or more. Definition: money is cheap if its price is $0.99 or less.[=0x000A=][=0x000A=]Functional relation is a kind of value. The functional relations are overpayment, underpayment, or irrelevant. Money has a functional relation.[=0x000A=][=0x000A=]To decide what money is the best money from (buyer - a thing) for (cost - a price):[=0x000A=][=0x0009=]repeat with bill offered running through money[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the bill offered is enclosed by the buyer[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if the price of the bill offered is the cost, decide on the bill offered;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if the price of the bill offered is greater than the cost, change the functional relation of bill offered to overpayment;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]otherwise change the functional relation of the bill offered to underpayment;[=0x000A=][=0x0009=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]change the functional relation of the bill offered to irrelevant;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=][say [=0x0022=]underpayment: [a list of underpayment money][=0x000A=][=0x0009=]overpayment: [a list of overpayment money][=0x0022=];][=0x000A=][=0x0009=]if the total price of underpayment money is less than the cost[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]let desired bill be the cheapest money which is overpayment;[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]let the desired bill be the costliest money which is underpayment;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]decide on the desired bill.[=0x000A=][=0x000A=][Notice the [=0x0022=]say underpayment/overpayment section...[=0x0022=] noted out, above. This is for debugging purposes: when writing complex code, it is sometimes useful to put in lines that will say explicitly what is going on. We can enclose them in brackets and Inform will ignore them as though they were comments; if we run into any problems with the code later, we can erase the brackets and see the diagnostic printed to the screen as we play.][=0x000A=][=0x000A=]Instead of giving money to someone:[=0x000A=][=0x0009=]say [=0x0022=]Best to keep the transaction simple by buying whatever you want.[=0x0022=][=0x000A=][=0x000A=]Section 4 - The Scenario[=0x000A=][=0x000A=]The player carries 2 dollar bills. The player carries a nickel. The player carries 2 pennies. The player carries a five-dollar bill. The player carries 1 hundred-dollar bill.[=0x000A=][=0x000A=]The Subway Station is a room.[=0x000A=][=0x000A=]The Bitterly Cold Street is north of the Subway Station. [=0x0022=]Even though there is no actual snow or ice, the street is about as cold as you can stand, for which reason walking the twenty blocks uptown is not an acceptable option.[=0x0022=] The Bitterly Cold Street contains a dollar bill.[=0x000A=][=0x000A=]The newspaper man is a man in the Subway Station. [=0x0022=]A newspaper man in a knit cap and fingerless gloves is hopping up and down behind his stand[if the turn count is 1]. Cold weather, caffeine overdose, or mental illness? You may never know. Welcome to New York[end if].[=0x0022=] The description is [=0x0022=]Eye contact with strangers is something to avoid around here.[=0x0022=][=0x000A=][=0x000A=]The stand is a supporter in the Station. The stand is scenery.[=0x000A=][=0x000A=]A copy of the New York Times is on the stand. The price of the New York Times is $1.25.[=0x000A=][=0x000A=]A pack of gum is on the stand. The price of the gum is $0.40.[=0x000A=][=0x000A=]A paperback novel is on the stand. The price of the paperback novel is $7.99.[=0x000A=][=0x000A=]A packet of trading cards is on the stand. The price of the packet is $0.99.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]now every thing on the stand is owned by the newspaper man;[=0x000A=][=0x0009=]now every thing on the stand is for sale.[=0x000A=][=0x000A=][We could have done all that by hand, but the initialization requires a little less work.][=0x000A=][=0x000A=]The ticket machine is a container in the Subway Station. It is fixed in place. The description of the ticket machine is [=0x0022=]An LED screen on the front instructs you to insert [remaining ticket total] to complete your purchase. You also notice that the NO CHANGE light is lit up.[=0x0022=] The light is part of the ticket machine. The printed name of the light is [=0x0022=]no change light[=0x0022=]. Understand [=0x0022=]no change[=0x0022=] or [=0x0022=]no change light[=0x0022=] as the light.[=0x000A=][=0x000A=]The description of the light is [=0x0022=]In the whole of your recollection, the ticket machine has actually had change a total of twice. Usually, as now, the no-change light gleams angrily, daring you to put in more than you owe.[=0x0022=] A cash return button is part of the ticket machine. Instead of pushing the cash return button: say [=0x0022=]The ticket machine regurgitates [the list of things in the ticket machine].[=0x0022=]; now every thing in the ticket machine is carried by the player. Instead of taking something which is in the ticket machine: say [=0x0022=]The ticket machine has swallowed your money, but it can be retrieved (you hope) with the cash return button.[=0x0022=][=0x000A=][=0x000A=]Instead of inserting a hundred-dollar bill into the ticket machine:[=0x000A=][=0x0009=]say [=0x0022=]What, are you nuts?[=0x0022=][=0x000A=][=0x000A=]To decide what price is the remaining ticket total:[=0x000A=][=0x0009=]let absolute cost be $2.25;[=0x000A=][=0x0009=]let remaining cost be absolute cost minus the total price of things in the ticket machine;[=0x000A=][=0x0009=]if remaining cost is less than $0.00, decide on $0.00;[=0x000A=][=0x0009=]decide on remaining cost.[=0x000A=][=0x000A=]Instead of inserting something which is not money into the ticket machine: say [=0x0022=]The ticket machine only accepts money, not other tokens of your esteem and regard.[=0x0022=][=0x000A=][=0x000A=]Instead of inserting a penny into the ticket machine:[=0x000A=][=0x0009=]say [=0x0022=]The penny rattles out again mockingly: not even the ticket machine thinks these are worth anything.[=0x0022=][=0x000A=][=0x000A=]A subway pass is a kind of thing. 15 subway passes are in the cashbox. The description of a subway pass is usually [=0x0022=]A rectangle of thick lavender paper with a black magnetic stripe running up the back side. It is good for one trip on the subway.[=0x0022=][=0x000A=][=0x000A=]After inserting something into the ticket machine:[=0x000A=][=0x0009=]if the remaining ticket total is $0.00[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]let purchased ticket be a random subway pass in the cashbox;[=0x000A=][=0x0009=][=0x0009=]if purchased ticket is not a subway pass, say [=0x0022=]The ticket machine grunts disobligingly and then the unwelcome words MALFUNCTION parade across the LED screen, three letters at a time.[=0x0022=] instead;[=0x000A=][=0x0009=][=0x0009=]repeat with item running through things in the machine[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]remove item from play;[=0x000A=][=0x0009=][=0x0009=]end repeat;[=0x000A=][=0x0009=][=0x0009=]move purchased ticket to player;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]The ticket machine beeps obligingly and disgorges a single subway pass.[=0x0022=];[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]The ticket machine beeps obligingly and adjusts its price down to [remaining ticket total].[=0x0022=];[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=][And because even though the ticket machine is a container, we don[=0x0027=]t want to say (empty) after it in the room description:][=0x000A=][=0x000A=]Rule for printing room description details of the ticket machine:[=0x000A=][=0x0009=]do nothing instead.[=0x000A=][=0x000A=]Test me with [=0x0022=]buy novel / n / get dollar / s / buy novel[=0x0022=].[=0x000A=][=0x000A=][After all that, we should probably give the player a chance to win, as well:][=0x000A=][=0x000A=]The turnstile is south of the Subway Station. [=0x0022=]A turnstile is all that separates you from the subway platform stairs.[=0x0022=] The turnstile is north of the Platform. The turnstile is a door. Before going down in the presence of the turnstile, try going south instead. The turnstile is openable. The turnstile is open.[=0x000A=][=0x000A=]Instead of going through the turnstile when the player carries a subway pass: say [=0x0022=]You enter the turnstile and begin your journey uptown...[=0x0022=]; end the game saying [=0x0022=]At last[=0x0022=]. Instead of going through the turnstile: say [=0x0022=]You can[=0x0027=]t go through the turnstile without a subway pass. They[=0x0027=]re very strict about this.[=0x0022=][=0x000A=][=0x000A=]Instead of inserting money into the turnstile: say [=0x0022=]The turnstile takes passes, not money.[=0x0022=] Instead of inserting a subway pass into the turnstile, try entering the turnstile.[=0x000A=][=0x000A=]Test more with [=0x0022=]buy times / put all but five-dollar bill in machine / press button / buy gum / buy cards / i / put dollar in machine / g / put quarter in machine / i / d[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode285()"><img border=0 src=../doc_images/paste.png></a> &quot;Carnivale&quot;
+<a href="javascript:pasteCode321()"><img border=0 src=../doc_images/paste.png></a> &quot;Nickel and Dimed&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Fairground is a region. Park Entrance, By the Wheel, and Candy Stand are in Fairground. Candy Stand is north of By the Wheel. Park Entrance is west of Candy Stand and northwest of By the Wheel.
+<blockquote><font color="#000080">Section 1 - Currency
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The ferris wheel is scenery in By the Wheel. &quot;It is extravagantly tall and carries several dozen glass gondolas for riders.&quot;
+<blockquote><font color="#000080">Price is a kind of value. $10.99 specifies a price with parts dollars and cents. A thing has a price. The price of a thing is usually $0.00.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of By the Wheel is &quot;You stand at the foot of an enormous ferris wheel, which turns far too quickly and never seems to stop for new riders.&quot;
+<blockquote><font color="#000080">Money is a kind of thing. Coin is a kind of money.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of Park Entrance is &quot;You are now just inside the gates. Behind you snakes a triple line of fairgoers all the way down the length of the valley to the railway station. Roughly southeast of here is the ferris wheel, towering over the other attractions.&quot;
+<blockquote><font color="#000080">A dollar bill is a kind of money. The price of a dollar bill is $1.00. The printed name of a dollar bill is &quot;dollar bill&quot;. Rule for printing the plural name of a dollar bill: say &quot;dollar bills&quot;. The description of a dollar bill is &quot;It has George Washington's head on the front, which with a bit of creative folding can be scrunched to look like a mushroom. All important things really are learned in kindergarten.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of Candy Stand is &quot;A hut in pale pink and baby blue dispenses marshmallow death's-heads, sugar-beetles, and other such treats. The giant ferris wheel is just off to the south from here.&quot;
+<blockquote><font color="#000080">A five-dollar bill is a kind of money. The price of a five-dollar bill is $5.00. Understand &quot;five&quot; or &quot;five dollar&quot; as the five-dollar bill. The description of a five-dollar bill is &quot;Abraham Lincoln. He looks slightly less dignified here than he does on the penny.&quot;
 </font></blockquote><p>
 <p>
-<p>As the descriptions make clear, the ferris wheel should be visible from everywhere in the fair, so we'll borrow a line from the Activities chapter to make that happen:
-<p>
-<blockquote><font color="#000080">After deciding the scope of the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is in Fairground, place the ferris wheel in scope.
+<blockquote><font color="#000080">A hundred-dollar bill is a kind of money. The price of the hundred-dollar bill is $100.00. Understand &quot;hundred&quot; or &quot;hundred dollar&quot; as the hundred-dollar bill. Understand &quot;dollar&quot; as the dollar bill. The description of a hundred-dollar bill is &quot;It's got Benjamin Franklin, who always gets shafted: a denomination too large for anyone to carry conveniently, and a lot of local fame in Philadelphia.&quot;
 </font></blockquote><p>
 <p>
-<p>&quot;Scope&quot; determines what the player can interact with; by writing this rule, we make Inform understand all commands that refer to the ferris wheel when the player is anywhere in the fairground, instead of responding with
+<p>Our choice of understand rules guarantees that &quot;five dollar&quot; will be understood as the five, but &quot;dollar&quot; alone as the single. We will learn more about &quot;understand&quot; in later chapters, but here is a test to check the functionality:
 <p>
-<blockquote><font color="#000080">You can't see any such thing.
+<blockquote><font color="#000080">Test bills with &quot;x hundred dollar bill / x five dollar bill / x hundred / x five / x dollar / x dollar bill&quot;.
 </font></blockquote><p>
 <p>
-<p>as it normally would.
-<p>
-<p>Now, by default, if the player were to type TOUCH FERRIS WHEEL while in another room, he would get the response
-<p>
-<blockquote><font color="#000080">You can't reach into By the Wheel.
+<blockquote><font color="#000080">A quarter is a kind of coin. The price of a quarter is $0.25. The description of a quarter is &quot;One of the old-fashioned variety, not a state quarter.&quot;
 </font></blockquote><p>
 <p>
-<p>This may not be quite what we want, but we can replace this text with our own reaching inside rule:
-<p>
-<blockquote><font color="#000080">Rule for reaching inside a room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can only look from this distance.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;deny access.
+<blockquote><font color="#000080">A dime is a kind of coin. The price of a dime is $0.10. The description of a dime is &quot;Franklin Roosevelt, trying not to look too annoyed that his coin is so small and thin.&quot;
 </font></blockquote><p>
 <p>
-<p>And because our accessibility rules are considered before the &quot;Instead&quot; phase, we can write the following rule confident that it will apply only when the player is in fact in range to touch the ferris wheel:
-<p>
-<blockquote><font color="#000080">Instead of touching the ferris wheel:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You don't dare: it's spinning too fast.&quot;
+<blockquote><font color="#000080">A nickel is a kind of coin. The price of a nickel is $0.05. The description of a nickel is &quot;A chubby coin, but you've always liked Thomas Jefferson, and the Monticello on the back is a nice touch.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;x ferris wheel / touch ferris wheel / se / x ferris wheel / touch ferris wheel&quot;.
+<blockquote><font color="#000080">A penny is a kind of coin. The price of a penny is $0.01. The description of the penny is &quot;A profile Abe Lincoln. Sometime soon they'll stop minting these, you're sure of it.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc188.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Section 2 - Ownership
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Ownership relates one person (called the owner) to various things. The verb to own (he owns, they own, he owned, he is owned) implies the ownership relation.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is owned if the player owns it.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of buying something which is owned by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You already own [the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going somewhere when the player encloses something (called the stolen goods) which is not owned by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the owner of the stolen goods is not a person
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the player owns the stolen goods;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the owner of the stolen goods can see the player,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Hey there buddy, not so fast,' says [the owner of the stolen goods]. 'You going to buy [the stolen goods] first, or am I gonna call the cops?'&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise continue the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After taking inventory:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Altogether, you've got [the player's cash] on your person.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what price is the player's cash:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let sum be the total price of money enclosed by the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on sum.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what price is the sum in (item - a container):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let sum be the total price of the money in the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on sum.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins: now every thing carried by the player is owned by the player.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Section 3 - Purchasing and Sales
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is worthless if the price of it is $0.00. Definition: a thing is valuable if it is not worthless.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A thing can be for sale.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for printing room description details of something (called target) which is for sale (this is the disclose prices in room description rule): say &quot; ([price of the target])&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before listing contents: group money together giving articles.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining a for sale thing (this is the describe things by price rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] costs [the price of the noun], payable to [the owner of the noun].&quot;
+</font></blockquote><p>
+<p>
+<p>The cashbox is a theoretical construct, not something the player will ever encounter in the course of the game. It contains all the money that is available for non-player characters to use in making change. If we wanted, we could give each character his own stash of change, but this would increase the likelihood that any given person would run out of cash to make change with. (And in this example there is only one vendor anyway.)
+<p>
+<blockquote><font color="#000080">The cashbox is a container. The cashbox contains 10 pennies. The cashbox contains 10 nickels.  The cashbox contains 10 dimes.  The cashbox contains 10 quarters.  The cashbox contains 10 dollar bills.  The cashbox contains 10 five-dollar bills.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The block buying rule is not listed in the check buying rules.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check buying something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not for sale, say &quot;[The owner of the noun] does not want to sell you [the noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's cash is less than the price of the noun, say &quot;You can't afford the asking price of [the price of the noun] for [the noun].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out buying something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let sum paid be $0.00;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;while sum paid is less than the price of the noun
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let current target be the price of the noun minus the sum paid;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let bill offered be the best money from the player for the current target;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the bill offered is money
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the bill offered to the owner of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the bill offered is spent;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase the sum paid by the price of the bill offered;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let current target be the price of the noun minus the sum paid;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end while;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You hand [the owner of the noun] [a list of spent money]. [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the sum paid is greater than the price of the noun, let change be the sum paid minus the price of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if change is greater than the sum in the cashbox
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the player carries every spent money;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now every spent thing is fresh;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Whoa,' says [the owner of the noun], handing the cash back to you. 'I can't make change for that, man, sorry.'&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every spent thing is in the cashbox;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every spent thing is fresh;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;while change is greater than $0.00
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let change bill be the best money from the cashbox for change;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decrease change by the price of the change bill;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now change bill is spent;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move change bill to player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end while;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if money is spent, say &quot;[The owner of the noun] makes change with [a list of spent money]. [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every spent thing is fresh;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not enclosed by the player and the owner of the noun can touch the noun
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Here ya go,' says [the owner of the noun], handing [the noun] to you. [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player owns the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Money can be spent or fresh.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report buying something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player owns the noun,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your transaction is now complete, leaving you with [the player's cash].&quot;
+</font></blockquote><p>
+<p>
+<p>We've skipped over defining what makes a denomination the best for a given transaction, so we'd better do that now. Our goal is to avoid ever having the player gratuitously overpay -- he should always offer the smallest amount of money that will meet the price of what he's buying.
+<p>
+<p>We also assume that all money &quot;enclosed by the buyer&quot; -- that is, somewhere in the buyer's possession -- is available for use. This might not be true in a game where the player could pick up, say, a sealed lucite container with a ten-dollar bill inside; in that case we would have to define our terms more rigorously, perhaps by requiring that the bills be both enclosed and touchable by the buyer. The touchability check adds an extra layer of calculation, however, and since it is not necessary in this example (and probably not in most other cases either), we'll leave it out:
+<p>
+<blockquote><font color="#000080">Definition: money is costly if its price is $2.50 or more. Definition: money is cheap if its price is $0.99 or less.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Functional relation is a kind of value. The functional relations are overpayment, underpayment, or irrelevant. Money has a functional relation.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what money is the best money from (buyer - a thing) for (cost - a price):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with bill offered running through money
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the bill offered is enclosed by the buyer
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the price of the bill offered is the cost, decide on the bill offered;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the price of the bill offered is greater than the cost, change the functional relation of bill offered to overpayment;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise change the functional relation of the bill offered to underpayment;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the functional relation of the bill offered to irrelevant;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;[say &quot;underpayment: [a list of underpayment money]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;overpayment: [a list of overpayment money]&quot;;]
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the total price of underpayment money is less than the cost
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let desired bill be the cheapest money which is overpayment;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the desired bill be the costliest money which is underpayment;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on the desired bill.
+</font></blockquote><p>
+<p>
+<p>Notice the &quot;say underpayment/overpayment section...&quot; noted out, above. This is for debugging purposes: when writing complex code, it is sometimes useful to put in lines that will say explicitly what is going on. We can enclose them in brackets and Inform will ignore them as though they were comments; if we run into any problems with the code later, we can erase the brackets and see the diagnostic printed to the screen as we play.
+<p>
+<blockquote><font color="#000080">Instead of giving money to someone:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Best to keep the transaction simple by buying whatever you want.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Section 4 - The Scenario
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player carries 2 dollar bills. The player carries a nickel. The player carries 2 pennies. The player carries a five-dollar bill. The player carries 1 hundred-dollar bill.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Subway Station is a room.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Bitterly Cold Street is north of the Subway Station. &quot;Even though there is no actual snow or ice, the street is about as cold as you can stand, for which reason walking the twenty blocks uptown is not an acceptable option.&quot; The Bitterly Cold Street contains a dollar bill.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The newspaper man is a man in the Subway Station. &quot;A newspaper man in a knit cap and fingerless gloves is hopping up and down behind his stand[if the turn count is 1]. Cold weather, caffeine overdose, or mental illness? You may never know. Welcome to New York[end if].&quot; The description is &quot;Eye contact with strangers is something to avoid around here.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The stand is a supporter in the Station. The stand is scenery.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A copy of the New York Times is on the stand. The price of the New York Times is $1.25.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A pack of gum is on the stand. The price of the gum is $0.40.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A paperback novel is on the stand. The price of the paperback novel is $7.99.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A packet of trading cards is on the stand. The price of the packet is $0.99.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing on the stand is owned by the newspaper man;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing on the stand is for sale.
+</font></blockquote><p>
+<p>
+<p>We could have done all that by hand, but the initialization requires a little less work.
+<p>
+<blockquote><font color="#000080">The ticket machine is a container in the Subway Station. It is fixed in place. The description of the ticket machine is &quot;An LED screen on the front instructs you to insert [remaining ticket total] to complete your purchase. You also notice that the NO CHANGE light is lit up.&quot; The light is part of the ticket machine. The printed name of the light is &quot;no change light&quot;. Understand &quot;no change&quot; or &quot;no change light&quot; as the light.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The description of the light is &quot;In the whole of your recollection, the ticket machine has actually had change a total of twice. Usually, as now, the no-change light gleams angrily, daring you to put in more than you owe.&quot; A cash return button is part of the ticket machine. Instead of pushing the cash return button: say &quot;The ticket machine regurgitates [the list of things in the ticket machine].&quot;; now every thing in the ticket machine is carried by the player. Instead of taking something which is in the ticket machine: say &quot;The ticket machine has swallowed your money, but it can be retrieved (you hope) with the cash return button.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of inserting a hundred-dollar bill into the ticket machine:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;What, are you nuts?&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To decide what price is the remaining ticket total:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let absolute cost be $2.25;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let remaining cost be absolute cost minus the total price of things in the ticket machine;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if remaining cost is less than $0.00, decide on $0.00;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on remaining cost.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of inserting something which is not money into the ticket machine: say &quot;The ticket machine only accepts money, not other tokens of your esteem and regard.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of inserting a penny into the ticket machine:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The penny rattles out again mockingly: not even the ticket machine thinks these are worth anything.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A subway pass is a kind of thing. 15 subway passes are in the cashbox. The description of a subway pass is usually &quot;A rectangle of thick lavender paper with a black magnetic stripe running up the back side. It is good for one trip on the subway.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After inserting something into the ticket machine:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the remaining ticket total is $0.00
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let purchased ticket be a random subway pass in the cashbox;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if purchased ticket is not a subway pass, say &quot;The ticket machine grunts disobligingly and then the unwelcome words MALFUNCTION parade across the LED screen, three letters at a time.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things in the machine
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove item from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move purchased ticket to player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The ticket machine beeps obligingly and disgorges a single subway pass.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The ticket machine beeps obligingly and adjusts its price down to [remaining ticket total].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<p>And because even though the ticket machine is a container, we don't want to say (empty) after it in the room description:
+<p>
+<blockquote><font color="#000080">Rule for printing room description details of the ticket machine:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;do nothing instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;buy novel / n / get dollar / s / buy novel&quot;.
+</font></blockquote><p>
+<p>
+<p>After all that, we should probably give the player a chance to win, as well:
+<p>
+<blockquote><font color="#000080">The turnstile is south of the Subway Station. &quot;A turnstile is all that separates you from the subway platform stairs.&quot; The turnstile is north of the Platform. The turnstile is a door. Before going down in the presence of the turnstile, try going south instead. The turnstile is openable. The turnstile is open.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going through the turnstile when the player carries a subway pass: say &quot;You enter the turnstile and begin your journey uptown...&quot;; end the game saying &quot;At last&quot;. Instead of going through the turnstile: say &quot;You can't go through the turnstile without a subway pass. They're very strict about this.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of inserting money into the turnstile: say &quot;The turnstile takes passes, not money.&quot; Instead of inserting a subway pass into the turnstile, try entering the turnstile.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test more with &quot;buy times / put all but five-dollar bill in machine / press button / buy gum / buy cards / i / put dollar in machine / g / put quarter in machine / i / d&quot;.
+</font></blockquote><p>
+<p>
+<p>In fairness to the Metropolitan Transit Authority, we should admit that most of the ticketing machines in the real New York subway are better than this, and will accept, say, a debit card. But that would be so much less exciting to implement.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc222.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc187.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc189.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc221.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc223.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>22.25. To say one of</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.10. Success and failure</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,101 +19,128 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Blink" -->
-<!-- SEARCH SECTION "Ex 385" -->
-<!-- SEARCH SORT "Ex 022-025-385" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc386.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap22.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 22: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc388.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>22.25. To say one of</b></font></td></tr></table>
+<!-- SEARCH TITLE "Feline Behavior" -->
+<!-- SEARCH SECTION "Ex 344" -->
+<!-- SEARCH SORT "Ex 018-010-344" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc305.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc307.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.10. Success and failure</b></font></td></tr></table>
 <p>
-<p>Many of the invocation syntaxes described in the previous section are used in the definition by the Standard Rules of the &quot;[one of] ... [or] ... [purely at random]&quot; construction, so it makes a good example of how they can be used.
+<p>Though we have blurred over this point so far, each rule must ordinarily end with one of three outcomes: success, failure and neither (&quot;no outcome&quot;).
 <p>
-<p>First, this is a segmented substitution with a single possible beginning (&quot;[one of]&quot;), a single possible middle (&quot;[or]&quot;) but a choice of many possible endings. Almost everything is compiled by the invocation of the beginning:
+<p>When a rulebook is followed, what happens is that each of its rules is followed in turn <b>until one of them ends in success or failure</b> - if ever: it is possible that each rule is tried and each ends with no outcome, so that the rulebook simply runs out of rules to try.
 <p>
-<blockquote><font color="#000080">To say one of -- beginning say_one_of:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-allocate-storage:say_one_of}I7_ST_say_one_of-->{-counter:say_one_of}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;= {-final-segment-marker}(I7_ST_say_one_of-->{-counter:say_one_of}, {-segment-count});
-<br>switch((I7_ST_say_one_of-->{-advance-counter:say_one_of})%({-segment-count}+1) - 1) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;0: -).
-<br>To say or -- continuing say_one_of:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-segment-count}: -).
-<br>To say purely at random -- ending say_one_of with marker I7_SOO_PAR:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-close-brace} -).
+<p>For some rulebooks, these are not useful ideas: &quot;every turn&quot; rules, for instance, never produce an outcome, which is why the &quot;every turn&quot; rulebook always runs through all its rules at the end of each turn. But for other rulebooks, such as &quot;check taking&quot;, it's important that a rule which fails will stop the whole rulebook. For instance, we might find that the &quot;can't take yourself rule&quot; produces no outcome (because we aren't trying to do that), and then likewise the &quot;can't take other people rule&quot; (ditto) but that the &quot;can't take component parts rule&quot; prints up a complaint, and fails the action: the rulebook stops, and never goes on to (for instance) the &quot;can't take scenery rule&quot;. This is good, because an impossible action often fails for several reasons at once, and we only want to print up one objection, not a whole list.
+<p>
+<p>To follow the working of this mechanism, we need to be able to predict the outcome of any given rule. Sometimes this is easy to spot. For instance, in a rule which works on actions:
+<p>
+<blockquote><font color="#000080">continue the action; <i>means</i> &quot;end this rule with no outcome&quot;
+<br>stop the action; <i>means</i> &quot;end this rule in failure&quot;
+<br>... instead; <i>means</i> &quot;end this rule in failure&quot;
 </font></blockquote><p>
 <p>
-<p>The 3rd invocation of this (say) might compile the following:
+<p>(&quot;Success&quot; and &quot;failure&quot; are technical terms here: they do not mean that the player has or hasn't got what he wanted.) This is why the rule:
 <p>
-<blockquote><font color="#000080">I7_ST_say_one_of-->2 = I7_SOO_PAR(I7_ST_say_one_of-->2, 4);
-<br>switch((I7_ST_say_one_of-->2)%5 - 1) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;0: ... first text ...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;1: ... second text ...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;2: ... third text ...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;3: ... fourth text ...
-<br>}
+<blockquote><font color="#000080">Before taking something: say &quot;The sentry won't let you!&quot; instead.
 </font></blockquote><p>
 <p>
-<p>First, we notified Inform that it needs to allocate an array (I7_ST_say_one_of) providing storage associated with the counter &quot;say_one_of&quot;. This we used to count off individual invocations of &quot;[one of]&quot;, so that each would have its own word of storage - for the 3rd invocation, I7_ST_say_one_of-->2. We then call a state-changing routine, in this case I7_SOO_PAR, which is allowed to know the previous state and also the number of options available, and which returns the new state. The state is supposed to be the option chosen last time, but that means that there are not 4, but 5 possibilities: 0 for &quot;there was no last time&quot;, then 1 to 4 for the possible outcomes. We reduce the state mod 5 to obtain the decision this time, and subtract 1 because it happens to be convenient to make the switch statement run from 0 to 3 rather than 1 to 4. (The reason we reduce the state mod 5 is to allow the state-changer to squirrel away secret information in the upper bits of the state, if it wants to. Note that subtracting one means that the switch value might be -1, which results in no text being printed: thus if the state-changer chooses 0, it can decide on none of the above.)
+<p>ends in failure, and therefore stops the &quot;before&quot; rulebook. Another easy-to-spot case is when a rule makes use of the explicit phrases:
 <p>
-<p>In this design, the marker attached to the choice of ending substitution is the name of the I6 state-changer: here is the I7_SOO_PAR routine.
-<p>
-<blockquote><font color="#000080">[ I7_SOO_PAR oldval count; if (count <= 1) return count; return random(count); ];
+<blockquote><font color="#000080">rule succeeds;
+<br>rule fails;
 </font></blockquote><p>
 <p>
-<p>As it happens, this ignores the old value: after all, it is meant to be purely at random, and nothing could be less pure than taking the last outcome into consideration when choosing the next.
+<p>But what happens if a rule simply doesn't say whether it succeeds, fails or has no outcome? In that case <b>it depends on the rulebook</b>. For almost all rulebooks, a rule which doesn't make a choice has no outcome, as in the following example:
 <p>
-<p>Note that the counter say_one_of is advanced in invocation of the head. It might seem that the tidier design, somehow, would be to advance the counter in the invocation of the tails, but this is not a good idea. In general it is not safe to assume that the counter will have the same value when the tail is invoked that it had when the head was invoked, because segmented say constructions can legally be nested in Inform strings. Because of this, it is best to deal with a counter entirely in a single invocation, either of the beginning or the ending.
+<blockquote><font color="#000080">Before taking something: say &quot;The sentry looks at you anxiously!&quot;
+</font></blockquote><p>
 <p>
-<p>Because &quot;[one of] ... [or] ...&quot; is such a useful construction - switching between alternative forms of text, which writers of IF very often do - the above implementation is intentionally left open for new endings to be added, and the examples below show how easily this can be done.
+<p>This rule, if it takes effect, ends with no outcome - so the action continues. But other rulebooks have a different convention: the most important is &quot;instead&quot;, where a rule making no explicit choice is deemed to end in failure. For instance:
+<p>
+<blockquote><font color="#000080">Instead of taking something: say &quot;The sentry prods you with his rifle!&quot;
+</font></blockquote><p>
+<p>
+<p>This rule, if it takes effect, ends in failure and therefore stops the action.
+<p>
+<p>We call this the <b>default outcome</b> of a rulebook. The default outcome of &quot;before&quot; (and of almost all rulebooks, in fact) is no outcome; the default outcome of &quot;instead&quot; is failure; the default outcome of &quot;after&quot; is success. The few exceptional cases with default outcome success or failure are marked as such in the Rules index.
+<p>
+<p>When we create a rulebook, it will default to &quot;no outcome&quot;. But we can specify otherwise with sentences like so:
+<p>
+<blockquote><font color="#000080">The cosmic analysis rules are a rulebook. The cosmic analysis rules have default failure.
+</font></blockquote><p>
+<p>
+<p>Finally, note that the default outcome for a rulebook is really the default outcome for any rule in that rulebook: if no rules in the rulebook ever apply, for instance if there aren't any and the rulebook is empty, then the rulebook ends with no outcome at all.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e126"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc387.html#e126 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>385</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc387.html#e126 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Blink</font></b></a><br>Making a "by atmosphere" token, allowing us to design our own text variations such as "[one of]normal[or]gloomy[or]scary[by atmosphere]".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex126.html#e126 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e126"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc306.html#e126 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>344</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc306.html#e126 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Feline Behavior</font></b></a><br>A cat which reacts to whatever items it has handy, returning the result of a rulebook for further processing.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex126.html#e126 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we are writing a game in which the mood of the piece changes, and we would like to have lots of descriptions that vary according to its current state. We might in that case want to create our own &quot;by atmosphere&quot; token, to control text variations, like this:
+<p>Suppose we have a cat which is supposed to react to (and destroy) the most interesting thing in its environment. There are several ways we could approach this problem, but for the sake of demonstration, let's have it follow a rulebook to figure out which thing it most wants to interact with. We will then return the chosen object as &quot;the result of the rule&quot;.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode474(code) {
+function pasteCode431(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Blink"\n\nAtmosphere is a kind of value. The atmospheres are normal, melancholy, and creepy.\n\nThe current atmosphere is an atmosphere that varies.\n\nTo say by atmosphere -- ending say_one_of with marker I7_SOO_ATM:\n\t(- {-close-brace} -).\n\n[Since we\'re operating within the untyped Inform 6, we can make use of the fact that kinds of value are (internally) just constants, enumerated in the same order in which they were originally defined. In other words, "normal" at the I6 level translates to 1, "melancholy" to 2, and "creepy" to 3; so we can return the value of the current atmosphere, and thereby select option 1, 2, or 3:]\n\nInclude (-\n[ I7_SOO_ATM oldval count;\n\tif (count < (+ current atmosphere +)) return count;\n\treturn (+ current atmosphere +); ];\n-)\n\n[And that concludes the hard part. Now to test that it works:]\n\nThe Flat is a room. "A small [one of]but cozy[or]depressing[or]imprisoning[by atmosphere] flat. Outside the window, the sun is [one of][or][or]apparently [by atmosphere]shining and there is a brisk breeze through the leaves of the birch trees. [one of]It would be quite nice weather for a walk[or]The rest of the world apparently has no appreciation of what you suffer[or]It all looks deceptively normal[by atmosphere]."\n\nInstead of waiting when the current atmosphere is normal:\n\tsay "Everything stretches wide and flat for just a moment, as though all the world around you were painted on a thin rubber sheet that is being [italic type]stretched[roman type]. Then it snaps back into place, leaving your ears ringing. But that little glitch was enough to warn you. Someone is tampering with space-time again. Someone very close by.";\n\tnow the current atmosphere is creepy.\n\nTest me with "look / z / look".\n\n');
+    myProject.pasteCode('[=0x0022=]Feline Behavior[=0x0022=][=0x000A=][=0x000A=]The Kitchen is a room. The cat is an animal in the Kitchen. In the Kitchen is a bowl, a ball of wool, a newspaper. The bowl contains a quantity of cream.[=0x000A=][=0x000A=]The cat is wearing a silver collar. The description of the cat is [=0x0022=]It is wearing [a list of things worn by the cat].[=0x0022=][=0x000A=][=0x000A=]The player carries a closed openable container called a bag. The bag contains catnip.[=0x000A=][=0x000A=]The cat behavior rules is a rulebook.[=0x000A=][=0x000A=]A cat behavior rule when the cat can touch the catnip:[=0x000A=][=0x0009=]say [=0x0022=]The cat frolics with the catnip until nothing remains of it.[=0x0022=];[=0x000A=][=0x0009=]rule succeeds with result catnip.[=0x000A=][=0x000A=]A cat behavior rule when the cat can touch the cream:[=0x000A=][=0x0009=]say [=0x0022=]The cat laps up the cream.[=0x0022=];[=0x000A=][=0x0009=]rule succeeds with result cream.[=0x000A=][=0x000A=]A cat behavior rule when the cat can touch the ball of wool:[=0x000A=][=0x0009=]say [=0x0022=]The cat makes the ball of wool into a useless tangle which must be discarded.[=0x0022=];[=0x000A=][=0x0009=]rule succeeds with result ball.[=0x000A=][=0x000A=]A cat behavior rule when the cat can touch the newspaper:[=0x000A=][=0x0009=]say [=0x0022=]The cat bats playfully at the newspaper until all the nasty boring articles are destroyed.[=0x0022=];[=0x000A=][=0x0009=]rule succeeds with result newspaper.[=0x000A=][=0x000A=]A cat behavior rule:[=0x000A=][=0x0009=]say [=0x0022=]The cat looks miffed at the lack of ready entertainment, and glares at you with yellow eyes as though wondering whether your pants leg is good for claw-sharpening.[=0x0022=];[=0x000A=][=0x0009=]rule fails.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]consider the cat behavior rules;[=0x000A=][=0x0009=]if rule succeeded[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]let the destroyed object be the result of the rule;[=0x000A=][=0x0009=][=0x0009=]remove the destroyed object from play;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][line break]Good thing you have no use for [the destroyed object] yourself.[paragraph break][=0x0022=];[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]Test me with [=0x0022=]z / z / open bag / z / z[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode474()"><img border=0 src=../doc_images/paste.png></a> &quot;Blink&quot;
+<a href="javascript:pasteCode431()"><img border=0 src=../doc_images/paste.png></a> &quot;Feline Behavior&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Atmosphere is a kind of value. The atmospheres are normal, melancholy, and creepy.
+<blockquote><font color="#000080">The Kitchen is a room. The cat is an animal in the Kitchen. In the Kitchen is a bowl, a ball of wool, a newspaper. The bowl contains a quantity of cream.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The current atmosphere is an atmosphere that varies.
+<blockquote><font color="#000080">The cat is wearing a silver collar. The description of the cat is &quot;It is wearing [a list of things worn by the cat].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say by atmosphere -- ending say_one_of with marker I7_SOO_ATM:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-close-brace} -).
+<blockquote><font color="#000080">The player carries a closed openable container called a bag. The bag contains catnip.
 </font></blockquote><p>
 <p>
-<p>Since we're operating within the untyped Inform 6, we can make use of the fact that kinds of value are (internally) just constants, enumerated in the same order in which they were originally defined. In other words, &quot;normal&quot; at the I6 level translates to 1, &quot;melancholy&quot; to 2, and &quot;creepy&quot; to 3; so we can return the value of the current atmosphere, and thereby select option 1, 2, or 3:
-<p>
-<blockquote><font color="#000080">Include (-
-<br>[ I7_SOO_ATM oldval count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if (count < (+ current atmosphere +)) return count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;return (+ current atmosphere +); ];
-<br>-)
+<blockquote><font color="#000080">The cat behavior rules is a rulebook.
 </font></blockquote><p>
 <p>
-<p>And that concludes the hard part. Now to test that it works:
-<p>
-<blockquote><font color="#000080">The Flat is a room. &quot;A small [one of]but cozy[or]depressing[or]imprisoning[by atmosphere] flat. Outside the window, the sun is [one of][or][or]apparently [by atmosphere]shining and there is a brisk breeze through the leaves of the birch trees. [one of]It would be quite nice weather for a walk[or]The rest of the world apparently has no appreciation of what you suffer[or]It all looks deceptively normal[by atmosphere].&quot;
+<blockquote><font color="#000080">A cat behavior rule when the cat can touch the catnip:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The cat frolics with the catnip until nothing remains of it.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds with result catnip.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of waiting when the current atmosphere is normal:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Everything stretches wide and flat for just a moment, as though all the world around you were painted on a thin rubber sheet that is being [italic type]stretched[roman type]. Then it snaps back into place, leaving your ears ringing. But that little glitch was enough to warn you. Someone is tampering with space-time again. Someone very close by.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the current atmosphere is creepy.
+<blockquote><font color="#000080">A cat behavior rule when the cat can touch the cream:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The cat laps up the cream.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds with result cream.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look / z / look&quot;.
+<blockquote><font color="#000080">A cat behavior rule when the cat can touch the ball of wool:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The cat makes the ball of wool into a useless tangle which must be discarded.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds with result ball.
 </font></blockquote><p>
 <p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc387.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">A cat behavior rule when the cat can touch the newspaper:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The cat bats playfully at the newspaper until all the nasty boring articles are destroyed.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds with result newspaper.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A cat behavior rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The cat looks miffed at the lack of ready entertainment, and glares at you with yellow eyes as though wondering whether your pants leg is good for claw-sharpening.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule fails.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;consider the cat behavior rules;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if rule succeeded
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the destroyed object be the result of the rule;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the destroyed object from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break]Good thing you have no use for [the destroyed object] yourself.[paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;z / z / open bag / z / z&quot;.
+</font></blockquote><p>
+<p>
+<p>We include the if rule succeeded... condition here because nothing will be returned if the cat's search failed (as for instance in the result of the final rule).
+<p>
+<p>Naturally, if we wanted we could equally well ask &quot;if rule failed...&quot;.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc306.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e191"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex191.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>386</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex191.html#e191 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uncommon Ground</font></b></a><br>Making a "by viewpoint" token, allowing us to design our own text variations such as "[show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show]" depending on the identity of the player at the moment.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex191.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc386.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc388.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e363"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex363.html#e363 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>345</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex363.html#e363 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Kyoto</font></b></a><br>Expanding the effects of the THROW something AT something command so that objects do make contact with one another.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex363.html#e363 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc305.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc307.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

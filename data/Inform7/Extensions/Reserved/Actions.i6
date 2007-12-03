@@ -69,8 +69,8 @@ Global trace_actions = 0;
 		Mstack_Create_Frame(ActionData-->(p1+9), frame_id);
 	}
 	if (I7_VerifyNouns()) {
-		if ((p1) && (ActionData-->(p1+9)))
-			Mstack_Destroy_Frame(frame_id);
+		if (frame_id ~= -1)
+			Mstack_Destroy_Frame(ActionData-->(p1+9), frame_id);
 		MStack_DestroyRBVars(APROC_RB);
 		return;
 	}
@@ -113,7 +113,10 @@ Global trace_actions = 0;
 		if (action == ##Go) SetActionBitmap(location, ##Enter);
 	}
 	EndActionProcessing();
-	if (frame_id ~= -1) Mstack_Destroy_Frame(frame_id);
+	if (frame_id ~= -1) {
+		p1 = FindAction(action);
+		Mstack_Destroy_Frame(ActionData-->(p1+9), frame_id);
+	}
 	MStack_DestroyRBVars(APROC_RB);
 	action = sa; noun = sn;
 	TrackActions(1);

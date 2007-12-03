@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.14. Phrases concerning rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.20. Stored actions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,215 +19,193 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Lethal Concentration 2" -->
-<!-- SEARCH SECTION "Ex 352" -->
-<!-- SEARCH SORT "Ex 018-014-352" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc309.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc311.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.14. Phrases concerning rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Actor's Studio" -->
+<!-- SEARCH SECTION "Ex 204" -->
+<!-- SEARCH SORT "Ex 012-020-204" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc191.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc193.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.20. Stored actions</b></font></td></tr></table>
 <p>
-<p>The &quot;ignore&quot; phrase is only one of a suite. The full list is:
+<p>As we have seen, to describe an action fully takes a complicated little bundle of information - we need to know what is to be done, who will do it, and what it will be done to. There are times when we would like to remember an action and look back on it later (perhaps many turns later, after many other actions have taken effect) - but this is not easy to do with only the techniques we have seen so far. There are quite a few cases to get right, and it would be easy to not store quite enough of the details.
 <p>
-<blockquote><font color="#000080">ignore ...rule...
-<br>reinstate ...rule...
+<p>Fortunately, Inform provides a kind of value called &quot;stored action&quot; which can do all of this automatically. As with most other kinds of value, stored actions can be held in variables, &quot;let&quot; values, properties or table columns. For example:
+<p>
+<blockquote><font color="#000080">The best idea yet is a stored action that varies.
 </font></blockquote><p>
 <p>
-<p>The &quot;reinstate&quot; phrase simply reverses any previous &quot;ignore&quot; of the same rule, and is otherwise not useful.
+<p>creates a variable called &quot;the best idea yet&quot; which holds a stored action. This will normally be created holding the default value - the player waiting - but can instead be set explicitly:
 <p>
-<blockquote><font color="#000080">reject the result of ...rule...
-<br>accept the result of ...rule...
+<blockquote><font color="#000080">The best idea yet is the action of pushing the button.
 </font></blockquote><p>
 <p>
-<p>Some rules produce results, as we shall see in the next section, but they can be set so that whatever result they produce will be ignored. Again, &quot;accept ...&quot; simply undoes a previous &quot;reject ...&quot; and otherwise has no effect.
+<p>Note the words &quot;action of...&quot;, which convert any sufficiently exact description of an action into its stored action form.
 <p>
-<blockquote><font color="#000080">substitute ...first rule... for ...second rule...
-<br>restore the original ...second rule...
+<p>In rules and phrases, we can always obtain the action currently going on (if there is one) with the value &quot;current action&quot;:
+<p>
+<blockquote><font color="#000080">let the present whim be the current action;
 </font></blockquote><p>
 <p>
-<p>Whenever the second rule is to be invoked - from any rulebook, or as a result of any &quot;follow&quot; instruction - invoke the first one instead. Again, &quot;restore ...&quot; simply undoes the effect of an earlier &quot;substitute&quot;.
+<p>Moreover, just as we can &quot;try&quot; any action, so we can also try a stored one:
 <p>
-<blockquote><font color="#000080">move ...first rule... to before/after ...second rule...
+<blockquote><font color="#000080">try the present whim;
+<br>silently try the present whim;
 </font></blockquote><p>
 <p>
-<p>This causes the first rule to be ignored whenever it turns up in the ordinary way, but to be invoked either immediately before or immediately after the second rule whenever that second rule is invoked. In effect, it cuts out the first rule from wherever it was, and glues it onto the second. Note that there is no obligation for the first rule to begin in the same rulebook(s) as the second, so this can be used to slot in a wholly new rule, perhaps only if certain circumstances hold.
+<p>would each work in the natural way. A stored action can do anything that actions can do: in particular, they remember, if necessary, the exact wording of the player's command at the time they were stored - so that even actions like &quot;looking up 'x100' in the code book&quot; will work if stored and tried on some future turn.
 <p>
-<p>These rule-changing instructions allow apparently casual sentences to wreak havoc with the model world. This, for instance, is quite the recipe for mayhem and perplexity:
+<p>As with any other kind of value, we can also say a stored action, and this produces a fairly natural description of what the action is:
 <p>
-<blockquote><font color="#000080">A procedural rule: reject the result of the before rules; ignore the after rules; move the after rules to before the before rules.
+<blockquote><font color="#000080">Before doing something in the presence of the bearded psychiatrist: say &quot;'Zo, the subject wishes to engage in [the current action]. Zis is very interesting.'&quot;
 </font></blockquote><p>
+<p>
+<p>will produce text such as:
+<p>
+<blockquote><font color="#000080">&quot;So, the subject vishes to engage in rubbing the fireman's pole. Zis is very interesting.&quot;
+</font></blockquote><p>
+<p>
+<p>One of Inform's most convenient features is its ability to test if the action being processed matches vague or complicated descriptions of whole classes of actions. Now, it would not make sense to write
+<p>
+<blockquote><font color="#000080">if the best idea yet is the action of taking something, ...
+</font></blockquote><p>
+<p>
+<p>because &quot;action of ...&quot; has to make an exact action, which clearly this is not: so Inform will produce a problem message if we try. But we do not need to, because Inform also allows us to compare a stored action against any description of an action, however vague:
+<p>
+<blockquote><font color="#000080">if the best idea yet is taking something, ...
+<br>if the best idea yet is doing something to the lever, ...
+</font></blockquote><p>
+<p>
+<p>When dealing with stored actions, we sometimes want to know what they are dealing with. We can extract this information using the following phrases:
+<p>
+<blockquote><font color="#000080">action-name part of S
+<br>noun part of S
+<br>second noun part of S
+<br>actor part of S
+</font></blockquote><p>
+<p>
+<p>For example, if S is &quot;Algy trying throwing the brick at Biggles&quot; then saying these four values will produce
+<p>
+<blockquote><font color="#000080">throwing it at
+<br>brick
+<br>Biggles
+<br>Algy
+</font></blockquote><p>
+<p>
+<p>Should the action be one which does not involve objects, the noun and second noun may be &quot;nothing&quot;: for instance if S is &quot;setting the dial to 3417&quot; then the noun part of S is the dial but the second noun part is nothing. (This has to be true, as otherwise Inform could never know what kind of value &quot;the noun part of S&quot; would have.)
+<p>
+<p>As a convenience, the condition
+<p>
+<blockquote><font color="#000080">if S involves X, ...
+</font></blockquote><p>
+<p>
+<p>is true if the object X appears as any of the actor, the noun or the second noun: for instance,
+<p>
+<blockquote><font color="#000080">if the current action involves Algy
+</font></blockquote><p>
+<p>
+<p>would be true for &quot;give revolver to Algy&quot;, &quot;Algy trying flying the Sopwith Camel&quot;, &quot;examine Algy&quot; and so on, but false for &quot;ask Raymond about secret airfield&quot;.
 <p>
 <p><hr><p>
-<a name="e190"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex190.html#e190 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>349</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex190.html#e190 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uptempo</font></b></a><br>Adjust time advancement so the game clock moves fifteen minutes each turn.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex190.html#e190 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e40"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex40.html#e40 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>350</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex40.html#e40 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Swigmore U.</font></b></a><br>Adding a new kind of supporter called a perch, where everything dropped lands on the floor.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex40.html#e40 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e76"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex76.html#e76 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>351</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex76.html#e76 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 1</font></b></a><br>A poisonous gas that spreads from room to room, incapacitating or killing the player when it reaches sufficient levels.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex76.html#e76 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e239"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex239.html#e239 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>202</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex239.html#e239 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bosch</font></b></a><br>Creating a list of actions that will earn the player points, and using this both to change the score and to give FULL SCORE reports.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex239.html#e239 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e372"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex372.html#e372 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>203</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex372.html#e372 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cactus Will Outlive Us All</font></b></a><br>For every character besides the player, there is an action that will cause that character to wither right up and die.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex372.html#e372 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e241"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc310.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>352</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc310.html#e241 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Lethal Concentration 2</font></b></a><br>Poisonous gas again, only this time it sinks.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex241.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e241"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc192.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>204</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc192.html#e241 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Actor's Studio</font></b></a><br>A video camera that records actions performed in its presence, and plays them back with time-stamps.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex241.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>This is a slight variation on the previous gas diffusion example: the main difference is that gas preferentially moves towards lower rooms, and will gradually settle in the bottom floor. We do this by calculating the probability of movement separately for each pair of rooms.
+<p>Here we construct a video camera to track and play back actions:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode442(code) {
+function pasteCode292(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Lethal Concentration"\n\nA concentration is a kind of value. 200.9ppm specifies concentration. 200.9 ppm specifies concentration.\n\nA room has a concentration called current concentration. A room has a concentration called former concentration.\n\nTo decide what number is the probability inverse between (space - a room) and (second space - a room):\n\tlet guess be 20;\n\tlet way be the best route from space to second space;\n\tif way is up, let guess be 50;\n\tif way is down, let guess be 10;\n\tif the guess is less than 10, decide on 10;\n\tdecide on guess.\n\n[If we wanted, we could introduce other concerns into the calculation here: open and closed doors, windows between rooms, rooms that are outdoors vs. those that are indoors, and so on. The possibilities are numerous, so we will stick with the simple principle that our poison gas sinks.]\n\nEvery turn:\n\tfollow the diffusion rules.\n\nThe diffusion rules are a rulebook.\n\nA diffusion rule (this is the gas movement rule):\n\trepeat with space running through rooms\n\tbegin;\n\t\tlet sum be 0.0 ppm;\n\t\trepeat with way running through directions\n\t\tbegin;\n\t\t\tlet second space be the room way from the space;\n\t\t\tif second space is a room\n\t\t\tbegin;\n\t\t\t\tlet incoming be the former concentration of the second space divided by the probability inverse between second space and space;\n\t\t\t\tlet outgoing be the former concentration of the space divided by  the probability inverse between space and second space;\n\t\t\t\tlet difference be incoming minus outgoing;\n\t\t\t\tincrease sum by the difference;\n\t\t\tend if;\n\t\tend repeat;\n\t\tchange current concentration of the space to the former concentration of the space plus the sum;\n\tend repeat.\n\nA diffusion rule (this is the resetting concentration rule):\n\trepeat with space running through rooms\n\tbegin;\n\t\tchange the former concentration of the space to the current concentration of the space;\n\tend repeat.\n\nThe last diffusion rule (this is the lethal dosage rule):\n\tif the current concentration of the location is greater than LC50\n\tbegin;\n\t\tsay "The concentration in the air overpowers you...";\n\t\tend the game in death;\n\totherwise;\n\t\tif the current concentration of the location is greater than TLV-STEL\n\t\tbegin;\n\t\t\tsay "You feel extremely uncomfortable in this environment.";\n\t\tend if;\n\tend if.\n\nInstead of doing something when the current concentration of the location is greater than TLV-STEL:\n\tif going, continue the action;\n\tsay "You can\'t work in this environment: your eyes and nose sting and it hurts to breathe."\n\nRoom 1A is west of Room 1B. Room 1B is west of Room 1C. Room 1C is west of Room 1D. Room 1D is west of Room 1E.\n\nRoom 2A is west of Room 2B and below room 1A. Room 2B is west of Room 2C and below Room 1B. Room 2C is west of Room 2D and below Room 1C. Room 2D is west of Room 2E and below Room 1D. Room 2E is south of Room 1E and below Room 1E.\n\nThe former concentration of Room 1C is 800.0 ppm.\n\nThe status grid is a device carried by the player. The status grid is switched on.\n\n[And just for fun, this time we\'ll make the grid prettier, too:]\n\nEvery turn:\n\ttry examining the grid.\n\n\tInstead of examining the status grid:\n\tsay "[fixed letter spacing][unicode box drawings light down and right][top bar][unicode box drawings light down and left][line break]";\n\tsay "[unicode box drawings light vertical]";\n\tsay "[state of room 1A][state of room 1B][state of room 1C][state of room 1D][state of room 1E]   upstairs[line break]";\n\tsay "[unicode box drawings light vertical and right][middle bar][unicode box drawings light vertical and left][line break]";\n\tsay "[unicode box drawings light vertical]";\n\tsay "[state of room 2A][state of room 2B][state of room 2C][state of room 2D][state of room 2E]   downstairs[line break]";\n\tsay "[unicode box drawings light up and right][bottom bar][unicode box drawings light up and left][variable letter spacing][line break]"\n\nInclude Unicode Character Names by Graham Nelson.\n\nTo say top bar:\n\trepeat with N running from 1 to 9\n\tbegin;\n\t\tif the remainder after dividing N by 2 is 0, say "[unicode box drawings light down and horizontal]";\n\t\totherwise say "[unicode box drawings light horizontal]";\n\tend repeat.\n\nTo say middle bar:\n\trepeat with N running from 1 to 9\n\tbegin;\n\t\tif the remainder after dividing N by 2 is 0, say "[unicode box drawings light vertical and horizontal]";\n\t\totherwise say "[unicode box drawings light triple dash horizontal]";\n\tend repeat.\n\nTo say bottom bar:\n\trepeat with N running from 1 to 9\n\tbegin;\n\t\tif the remainder after dividing N by 2 is 0, say "[unicode box drawings light up and horizontal]";\n\t\totherwise say "[unicode box drawings light horizontal]";\n\tend repeat.\n\nTLV is a concentration that varies. TLV is 30.0ppm. [Long-term exposure maximum, safe for 8 hours a day.]\n\nTLV-STEL is a concentration that varies. TLV-STEL is 50.0ppm. [Short-term exposure maximum, safe for fifteen minutes max.]\n\nTLV-C is a concentration that varies. TLV-C is 150.0ppm. [Absolute exposure ceiling.]\n\nLC50 is a concentration that varies. LC50 is 300.0ppm. [Concentration at which 50 percent of test subjects die of exposure, usually expressed in terms of time and body weight; in our LC50 these are factored in for the player\'s weight for one minute.]\n\nInclude Basic Screen Effects by Emily Short.\n\nTo say state of (space - a room):\n\tif the current concentration of space is less than TLV, say blue letters;\n\tif the current concentration of space is TLV, say blue letters;\n\tif the current concentration of space is greater than TLV, say green letters;\n\tif the current concentration of space is greater than TLV-STEL, say yellow letters;\n\tif the current concentration of space is greater than TLV-C, say red letters;\n\tsay "[unicode square with diagonal crosshatch fill]";\n\tsay default letters;\n\tsay "[unicode box drawings light vertical]".\n\nTest me with "z / z / z / z / z / z / z / z".\n\n');
+    myProject.pasteCode('[=0x0022=]The Actor[=0x0027=]s Studio[=0x0022=][=0x000A=][=0x000A=]Section 1 - The Video Camera[=0x000A=][=0x000A=]The video camera is a thing carried by the player.[=0x000A=][=0x000A=]Table of Videotape[=0x000A=]recorded action[=0x0009=]time stamp[=0x000A=]waiting[=0x0009=]9:00 AM[=0x000A=]with 25 blank rows.[=0x000A=][=0x000A=]Mode is a kind of value. The modes are idle, recording, and playing back. The video camera has a mode. The video camera is idle.[=0x000A=][=0x000A=]Understand [=0x0022=]play back[=0x0022=] as playing back. Instead of switching on the camera, try tuning the camera to recording. Instead of switching off the camera, try tuning the camera to idle.[=0x000A=][=0x000A=]The description of the video camera is [=0x0022=]It is currently [mode]; its available settings are idle, recording, and playing back.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]set [camera] to [a mode][=0x0022=] as tuning it to. Tuning it to is an action applying to one thing and one mode.[=0x000A=][=0x000A=]Instead of setting the camera to something:[=0x000A=][=0x0009=]say [=0x0022=]The available settings are idle, recording, and playing back.[=0x0022=][=0x000A=][=0x000A=]Check tuning it to:[=0x000A=][=0x0009=]if the noun is not the camera, say [=0x0022=]Only the video camera can be set to [the mode understood].[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out tuning it to:[=0x000A=][=0x0009=]now the mode of the noun is the mode understood.[=0x000A=][=0x000A=]Report tuning it to:[=0x000A=][=0x0009=]say [=0x0022=]You set [the noun] to [mode understood].[=0x0022=][=0x000A=][=0x000A=]After an actor doing something when the video camera is recording:[=0x000A=][=0x0009=]if the current action is the action of tuning the video camera to recording, make no decision;[=0x000A=][=0x0009=]if the number of blank rows in the Table of Videotape is greater than zero[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]choose a blank row in the Table of Videotape;[=0x000A=][=0x0009=][=0x0009=]change the recorded action entry to the current action;[=0x000A=][=0x0009=][=0x0009=]change the time stamp entry to the time of day;[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]now the video camera is idle;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]The video camera runs out of recording memory and switches off.[=0x0022=];[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]Every turn when the video camera is playing back:[=0x000A=][=0x0009=]say [=0x0022=]On the camera screen, you see [run paragraph on][=0x0022=];[=0x000A=][=0x0009=]let starting playback be false;[=0x000A=][=0x0009=]repeat through the Table of Videotape[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the recorded action entry is not waiting[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]now starting playback is true;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][line break] -- [if the actor part of the recorded action entry is the player]you [end if][the recorded action entry], time stamped at [time stamp entry][=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]blank out the whole row;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=]if starting playback is false, say [=0x0022=]only static.[=0x0022=]; otherwise say paragraph break.[=0x000A=][=0x000A=]Section 2 - The Scenario[=0x000A=][=0x000A=]The Actor[=0x0027=]s Studio is a room. Lucas is a man in the Actor[=0x0027=]s Studio. Persuasion rule: persuasion succeeds.[=0x000A=][=0x000A=]The Studio contains an edible thing called a croissant.[=0x000A=][=0x000A=]Test me with [=0x0022=]set camera to recording / x lucas / lucas, take inventory / lucas, eat croissant / set camera to playing back / z[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode442()"><img border=0 src=../doc_images/paste.png></a> &quot;Lethal Concentration&quot;
+<a href="javascript:pasteCode292()"><img border=0 src=../doc_images/paste.png></a> &quot;The Actor's Studio&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A concentration is a kind of value. 200.9ppm specifies concentration. 200.9 ppm specifies concentration.
+<blockquote><font color="#000080">Section 1 - The Video Camera
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A room has a concentration called current concentration. A room has a concentration called former concentration.
+<blockquote><font color="#000080">The video camera is a thing carried by the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To decide what number is the probability inverse between (space - a room) and (second space - a room):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let guess be 20;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from space to second space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if way is up, let guess be 50;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if way is down, let guess be 10;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the guess is less than 10, decide on 10;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on guess.
+<blockquote><font color="#000080">Table of Videotape
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">recorded action</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">time stamp</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">waiting</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">9:00 AM</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">with 25 blank rows.</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<p>If we wanted, we could introduce other concerns into the calculation here: open and closed doors, windows between rooms, rooms that are outdoors vs. those that are indoors, and so on. The possibilities are numerous, so we will stick with the simple principle that our poison gas sinks.
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the diffusion rules.
+<blockquote><font color="#000080">Mode is a kind of value. The modes are idle, recording, and playing back. The video camera has a mode. The video camera is idle.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The diffusion rules are a rulebook.
+<blockquote><font color="#000080">Understand &quot;play back&quot; as playing back. Instead of switching on the camera, try tuning the camera to recording. Instead of switching off the camera, try tuning the camera to idle.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A diffusion rule (this is the gas movement rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with space running through rooms
+<blockquote><font color="#000080">The description of the video camera is &quot;It is currently [mode]; its available settings are idle, recording, and playing back.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;set [camera] to [a mode]&quot; as tuning it to. Tuning it to is an action applying to one thing and one mode.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of setting the camera to something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The available settings are idle, recording, and playing back.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check tuning it to:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not the camera, say &quot;Only the video camera can be set to [the mode understood].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out tuning it to:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the mode of the noun is the mode understood.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report tuning it to:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You set [the noun] to [mode understood].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After an actor doing something when the video camera is recording:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current action is the action of tuning the video camera to recording, make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of blank rows in the Table of Videotape is greater than zero
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let sum be 0.0 ppm;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with way running through directions
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let second space be the room way from the space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if second space is a room
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let incoming be the former concentration of the second space divided by the probability inverse between second space and space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let outgoing be the former concentration of the space divided by  the probability inverse between space and second space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let difference be incoming minus outgoing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase sum by the difference;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change current concentration of the space to the former concentration of the space plus the sum;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A diffusion rule (this is the resetting concentration rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with space running through rooms
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the former concentration of the space to the current concentration of the space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The last diffusion rule (this is the lethal dosage rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of the location is greater than LC50
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The concentration in the air overpowers you...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in death;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose a blank row in the Table of Videotape;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the recorded action entry to the current action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the time stamp entry to the time of day;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of the location is greater than TLV-STEL
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the video camera is idle;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The video camera runs out of recording memory and switches off.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the video camera is playing back:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;On the camera screen, you see [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let starting playback be false;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Videotape
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the recorded action entry is not waiting
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You feel extremely uncomfortable in this environment.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now starting playback is true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break] -- [if the actor part of the recorded action entry is the player]you [end if][the recorded action entry], time stamped at [time stamp entry]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if starting playback is false, say &quot;only static.&quot;; otherwise say paragraph break.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of doing something when the current concentration of the location is greater than TLV-STEL:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if going, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't work in this environment: your eyes and nose sting and it hurts to breathe.&quot;
+<blockquote><font color="#000080">Section 2 - The Scenario
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Room 1A is west of Room 1B. Room 1B is west of Room 1C. Room 1C is west of Room 1D. Room 1D is west of Room 1E.
+<blockquote><font color="#000080">The Actor's Studio is a room. Lucas is a man in the Actor's Studio. Persuasion rule: persuasion succeeds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Room 2A is west of Room 2B and below room 1A. Room 2B is west of Room 2C and below Room 1B. Room 2C is west of Room 2D and below Room 1C. Room 2D is west of Room 2E and below Room 1D. Room 2E is south of Room 1E and below Room 1E.
+<blockquote><font color="#000080">The Studio contains an edible thing called a croissant.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The former concentration of Room 1C is 800.0 ppm.
+<blockquote><font color="#000080">Test me with &quot;set camera to recording / x lucas / lucas, take inventory / lucas, eat croissant / set camera to playing back / z&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The status grid is a device carried by the player. The status grid is switched on.
-</font></blockquote><p>
-<p>
-<p>And just for fun, this time we'll make the grid prettier, too:
-<p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the grid.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">&nbsp;&nbsp;&nbsp;&nbsp;Instead of examining the status grid:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[fixed letter spacing][unicode box drawings light down and right][top bar][unicode box drawings light down and left][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light vertical]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[state of room 1A][state of room 1B][state of room 1C][state of room 1D][state of room 1E]   upstairs[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light vertical and right][middle bar][unicode box drawings light vertical and left][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light vertical]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[state of room 2A][state of room 2B][state of room 2C][state of room 2D][state of room 2E]   downstairs[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light up and right][bottom bar][unicode box drawings light up and left][variable letter spacing][line break]&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Include Unicode Character Names by Graham Nelson.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say top bar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with N running from 1 to 9
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the remainder after dividing N by 2 is 0, say &quot;[unicode box drawings light down and horizontal]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[unicode box drawings light horizontal]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say middle bar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with N running from 1 to 9
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the remainder after dividing N by 2 is 0, say &quot;[unicode box drawings light vertical and horizontal]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[unicode box drawings light triple dash horizontal]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say bottom bar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with N running from 1 to 9
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the remainder after dividing N by 2 is 0, say &quot;[unicode box drawings light up and horizontal]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[unicode box drawings light horizontal]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">TLV is a concentration that varies. TLV is 30.0ppm. [Long-term exposure maximum, safe for 8 hours a day.]
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">TLV-STEL is a concentration that varies. TLV-STEL is 50.0ppm. [Short-term exposure maximum, safe for fifteen minutes max.]
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">TLV-C is a concentration that varies. TLV-C is 150.0ppm. [Absolute exposure ceiling.]
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">LC50 is a concentration that varies. LC50 is 300.0ppm. [Concentration at which 50 percent of test subjects die of exposure, usually expressed in terms of time and body weight; in our LC50 these are factored in for the player's weight for one minute.]
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Include Basic Screen Effects by Emily Short.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say state of (space - a room):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is less than TLV, say blue letters;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is TLV, say blue letters;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is greater than TLV, say green letters;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is greater than TLV-STEL, say yellow letters;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is greater than TLV-C, say red letters;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode square with diagonal crosshatch fill]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say default letters;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light vertical]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;z / z / z / z / z / z / z / z&quot;.
-</font></blockquote><p>
-<p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc310.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Notice that both Lucas' implied taking action (picking up the croissant) and his eating action are recorded on the same move.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc192.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e342"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex342.html#e342 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>353</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex342.html#e342 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Solitude</font></b></a><br>Novice mode that prefaces every prompt with a list of possible commands the player could try, and highlights every important word true, to alert players to interactive items in the scenery.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex342.html#e342 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc309.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc311.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e311"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex311.html#e311 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>205</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex311.html#e311 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Anteaters</font></b></a><br>The player carries a gizmo that is able to record actions performed by the player, then force him to repeat them when the gizmo is dropped. This includes storing actions that apply to topics, as in "look up anteater colonies in the guide".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex311.html#e311 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc191.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc193.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

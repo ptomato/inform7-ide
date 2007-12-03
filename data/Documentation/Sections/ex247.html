@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.10. Defining new prepositions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.14. Phrases concerning rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,156 +19,215 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Bogart" -->
-<!-- SEARCH SECTION "Ex 217" -->
-<!-- SEARCH SORT "Ex 013-010-217" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc202.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc204.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.10. Defining new prepositions</b></font></td></tr></table>
+<!-- SEARCH TITLE "Lethal Concentration 2" -->
+<!-- SEARCH SECTION "Ex 352" -->
+<!-- SEARCH SORT "Ex 018-014-352" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc309.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc311.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.14. Phrases concerning rules</b></font></td></tr></table>
 <p>
-<p>The term preposition is used here, a little loosely, to mean anything which we add to the verb <i>to be</i> in order to talk about some relation or other. We have seen many examples already, such as:
+<p>The &quot;ignore&quot; phrase is only one of a suite. The full list is:
 <p>
-<blockquote><font color="#000080">To be in - The ball is in the box.
-<br>To be part of - The lever is part of the slot machine.
+<blockquote><font color="#000080">ignore ...rule...
+<br>reinstate ...rule...
 </font></blockquote><p>
 <p>
-<p>These are easier to create than verbs, because Inform already knows the wayward grammar of <i>to be</i>, so we need not give any of the principal parts. Otherwise, the method is exactly the same. Compare the definitions in the following:
+<p>The &quot;reinstate&quot; phrase simply reverses any previous &quot;ignore&quot; of the same rule, and is otherwise not useful.
 <p>
-<blockquote><font color="#000080">Suspecting relates various people to one person.
+<blockquote><font color="#000080">reject the result of ...rule...
+<br>accept the result of ...rule...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The verb to suspect (he suspects, they suspect, he suspected, it is suspected, he is suspecting) implies the suspecting relation.
+<p>Some rules produce results, as we shall see in the next section, but they can be set so that whatever result they produce will be ignored. Again, &quot;accept ...&quot; simply undoes a previous &quot;reject ...&quot; and otherwise has no effect.
+<p>
+<blockquote><font color="#000080">substitute ...first rule... for ...second rule...
+<br>restore the original ...second rule...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The verb to be suspicious of implies the suspecting relation.
+<p>Whenever the second rule is to be invoked - from any rulebook, or as a result of any &quot;follow&quot; instruction - invoke the first one instead. Again, &quot;restore ...&quot; simply undoes the effect of an earlier &quot;substitute&quot;.
+<p>
+<blockquote><font color="#000080">move ...first rule... to before/after ...second rule...
 </font></blockquote><p>
 <p>
-<p>The result of this is that
+<p>This causes the first rule to be ignored whenever it turns up in the ordinary way, but to be invoked either immediately before or immediately after the second rule whenever that second rule is invoked. In effect, it cuts out the first rule from wherever it was, and glues it onto the second. Note that there is no obligation for the first rule to begin in the same rulebook(s) as the second, so this can be used to slot in a wholly new rule, perhaps only if certain circumstances hold.
 <p>
-<blockquote><font color="#000080">Hercule Poirot suspects Colonel Hotchkiss.
-<br>Hercule Poirot is suspicious of Colonel Hotchkiss.
+<p>These rule-changing instructions allow apparently casual sentences to wreak havoc with the model world. This, for instance, is quite the recipe for mayhem and perplexity:
+<p>
+<blockquote><font color="#000080">A procedural rule: reject the result of the before rules; ignore the after rules; move the after rules to before the before rules.
 </font></blockquote><p>
-<p>
-<p>are exactly equivalent, and so are these two descriptions:
-<p>
-<blockquote><font color="#000080">somebody who suspects Colonel Hotchkiss
-<br>somebody suspicious of Colonel Hotchkiss
-</font></blockquote><p>
-<p>
-<p>We can also define verbs as auxiliaries, like so:
-<p>
-<blockquote><font color="#000080">The verb to be able to approach implies the approachability relation.
-</font></blockquote><p>
-<p>
-<p>Now we can ask if Poirot &quot;can approach&quot; Hotchkiss, and so on. (Here again we need not spell out the other parts of the verb.)
 <p>
 <p><hr><p>
-<a name="e197"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex197.html#e197 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>214</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex197.html#e197 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Swerve left? Swerve right? Or think about it and die?</font></b></a><br>Building a marble chute track in which a dropped marble will automatically roll downhill.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex197.html#e197 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e349"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex349.html#e349 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>215</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex349.html#e349 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Abolition of Love</font></b></a><br>A thorough exploration of all the kinds of relations established so far, with the syntax to set and unset them.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex349.html#e349 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e59"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex59.html#e59 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>216</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex59.html#e59 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Beneath the Surface</font></b></a><br>An "underlying" relation which adds to the world model the idea of objects hidden under other objects.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex59.html#e59 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e194"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex194.html#e194 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>349</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex194.html#e194 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uptempo</font></b></a><br>Adjust time advancement so the game clock moves fifteen minutes each turn.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex194.html#e194 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e41"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex41.html#e41 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>350</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex41.html#e41 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Swigmore U.</font></b></a><br>Adding a new kind of supporter called a perch, where everything dropped lands on the floor.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex41.html#e41 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e78"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex78.html#e78 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>351</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex78.html#e78 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 1</font></b></a><br>A poisonous gas that spreads from room to room, incapacitating or killing the player when it reaches sufficient levels.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex78.html#e78 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e247"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc203.html#e247 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>217</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc203.html#e247 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bogart</font></b></a><br>Clothing for the player that layers, so that items cannot be taken off in the wrong order, and the player's inventory lists only the clothing that is currently visible.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex247.html#e247 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e247"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc310.html#e247 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>352</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc310.html#e247 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Lethal Concentration 2</font></b></a><br>Poisonous gas again, only this time it sinks.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex247.html#e247 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>We have two things to keep track of with our layering clothing: what currently is covering something else; and what <i>can</i> cover something else. This implementation goes for a fairly simple treatment, assuming that each item of clothing will completely conceal those beneath it, and that we are not implementing entire sets of shirts, jackets, etc. But it will do for a demonstration.
+<p>This is a slight variation on the previous gas diffusion example: the main difference is that gas preferentially moves towards lower rooms, and will gradually settle in the bottom floor. We do this by calculating the probability of movement separately for each pair of rooms.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode304(code) {
+function pasteCode442(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Bogart"\n\nSection 1 - Clothing Behavior\n\n[First we make our relation to represent what *is* underneath another item:]\n\nUnderlying relates one thing to various things. The verb to underlie (it underlies, they underlie, it is underlying, it is underlaid) implies the underlying relation. The verb to be under implies the underlying relation.\n\n[And now we prevent taking a lower layer off before the thing that is worn over it:]\n\nBefore taking off something which underlies something (called the impediment) which is worn by the player:\nsay "(first removing [the impediment])[command clarification break]";\nsilently try taking off the impediment;\nif the noun underlies something which is worn by the player, stop the action.\n\nCheck taking off:\n\tif the noun underlies something (called the impediment) which is worn by the player, say "[The impediment] is in the way." instead.\n\nCarry out taking off:\n\tnow the noun is not underlaid by anything.\n\nReport taking off something:\n\tsay "You are now wearing [a list of uppermost things worn by the player]." instead.\n\nDefinition: a thing is uppermost if it is not under something.\n\n[That covers order of clothing removal, but we also want to restrict what can be worn on top of what else. This time we need Inform to have some idea of what customarily can be layered on top of what other clothing:]\n\nOverlying relates one thing to various things. The verb to overlie (it overlies, they overlie, it is overlying) implies the overlying relation.\n\nCovering relates a thing (called A) to a thing (called B) when the number of steps via the overlying relation from A to B is greater than 0. The verb to cover (it covers, they cover, it is covering) implies the covering relation.\n\n[With these definitions, we can say that a jacket should go over a shirt and a shirt over an undershirt (say), and then Inform will know that a jacket will cover both shirt and undershirt.]\n\nBefore wearing something when something (called the impediment) which covers the noun is worn by the player:\n\twhile the player wears something which covers the noun\n\tbegin;\n\t\tsay "(first removing [the impediment])[command clarification break]";\n\t\tsilently try taking off the impediment;\n\t\tif the player is wearing the impediment, stop the action;\n\tend while.\n\nCarry out wearing:\n\tif the noun covers something (called the hidden item) worn by the player, now the hidden item underlies the noun.\n\nInstead of looking under something which is worn by the player:\n\tif something (called the underwear) underlies the noun, say "You peek at [the underwear]. Yup, still there.";\n\totherwise say "Just you in there."\n\nInstead of taking inventory:\n\tsay "You\'re carrying [a list of things carried by the player][if the player wears something]. You are wearing [a list of uppermost things worn by the player][end if]."\n\n[Notice that our inventory only describes the things that the player can see as the upper layer of clothing.]\n\nSection 2 - The Scenario\n\nThe Trailer is a room. "A full-length mirror is the main amenity in here, and that suits you just fine."  The full-length mirror is scenery in the Trailer. Instead of examining or searching the mirror, try taking inventory.\n\nThe player wears a fedora, a jacket, a shirt, some undershorts, an undershirt, some slacks, a pair of socks, and a pair of shoes.\n\nThe shirt underlies the jacket. The pair of socks underlies the pair of shoes. The undershorts underlie the slacks. The undershirt underlies the shirt.\n\nThe jacket overlies the shirt. The shoes overlie the socks. The slacks overlie the undershorts. The shirt overlies the undershirt.\n\nTest me with "x mirror / remove fedora / remove jacket / remove shirt / remove slacks / remove undershirt / remove shoes / remove socks / remove shorts / remove undershorts".\n\n');
+    myProject.pasteCode('[=0x0022=]Lethal Concentration[=0x0022=][=0x000A=][=0x000A=]A concentration is a kind of value. 200.9ppm specifies concentration. 200.9 ppm specifies concentration.[=0x000A=][=0x000A=]A room has a concentration called current concentration. A room has a concentration called former concentration.[=0x000A=][=0x000A=]To decide what number is the probability inverse between (space - a room) and (second space - a room):[=0x000A=][=0x0009=]let guess be 20;[=0x000A=][=0x0009=]let way be the best route from space to second space;[=0x000A=][=0x0009=]if way is up, let guess be 50;[=0x000A=][=0x0009=]if way is down, let guess be 10;[=0x000A=][=0x0009=]if the guess is less than 10, decide on 10;[=0x000A=][=0x0009=]decide on guess.[=0x000A=][=0x000A=][If we wanted, we could introduce other concerns into the calculation here: open and closed doors, windows between rooms, rooms that are outdoors vs. those that are indoors, and so on. The possibilities are numerous, so we will stick with the simple principle that our poison gas sinks.][=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]follow the diffusion rules.[=0x000A=][=0x000A=]The diffusion rules are a rulebook.[=0x000A=][=0x000A=]A diffusion rule (this is the gas movement rule):[=0x000A=][=0x0009=]repeat with space running through rooms[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]let sum be 0.0 ppm;[=0x000A=][=0x0009=][=0x0009=]repeat with way running through directions[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let second space be the room way from the space;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if second space is a room[=0x000A=][=0x0009=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]let incoming be the former concentration of the second space divided by the probability inverse between second space and space;[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]let outgoing be the former concentration of the space divided by  the probability inverse between space and second space;[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]let difference be incoming minus outgoing;[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]increase sum by the difference;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=][=0x0009=]end repeat;[=0x000A=][=0x0009=][=0x0009=]change current concentration of the space to the former concentration of the space plus the sum;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]A diffusion rule (this is the resetting concentration rule):[=0x000A=][=0x0009=]repeat with space running through rooms[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]change the former concentration of the space to the current concentration of the space;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]The last diffusion rule (this is the lethal dosage rule):[=0x000A=][=0x0009=]if the current concentration of the location is greater than LC50[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]The concentration in the air overpowers you...[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]end the game in death;[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]if the current concentration of the location is greater than TLV-STEL[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]You feel extremely uncomfortable in this environment.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]Instead of doing something when the current concentration of the location is greater than TLV-STEL:[=0x000A=][=0x0009=]if going, continue the action;[=0x000A=][=0x0009=]say [=0x0022=]You can[=0x0027=]t work in this environment: your eyes and nose sting and it hurts to breathe.[=0x0022=][=0x000A=][=0x000A=]Room 1A is west of Room 1B. Room 1B is west of Room 1C. Room 1C is west of Room 1D. Room 1D is west of Room 1E.[=0x000A=][=0x000A=]Room 2A is west of Room 2B and below room 1A. Room 2B is west of Room 2C and below Room 1B. Room 2C is west of Room 2D and below Room 1C. Room 2D is west of Room 2E and below Room 1D. Room 2E is south of Room 1E and below Room 1E.[=0x000A=][=0x000A=]The former concentration of Room 1C is 800.0 ppm.[=0x000A=][=0x000A=]The status grid is a device carried by the player. The status grid is switched on.[=0x000A=][=0x000A=][And just for fun, this time we[=0x0027=]ll make the grid prettier, too:][=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]try examining the grid.[=0x000A=][=0x000A=][=0x0009=]Instead of examining the status grid:[=0x000A=][=0x0009=]say [=0x0022=][fixed letter spacing][unicode box drawings light down and right][top bar][unicode box drawings light down and left][line break][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=][unicode box drawings light vertical][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=][state of room 1A][state of room 1B][state of room 1C][state of room 1D][state of room 1E]   upstairs[line break][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=][unicode box drawings light vertical and right][middle bar][unicode box drawings light vertical and left][line break][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=][unicode box drawings light vertical][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=][state of room 2A][state of room 2B][state of room 2C][state of room 2D][state of room 2E]   downstairs[line break][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=][unicode box drawings light up and right][bottom bar][unicode box drawings light up and left][variable letter spacing][line break][=0x0022=][=0x000A=][=0x000A=]Include Unicode Character Names by Graham Nelson.[=0x000A=][=0x000A=]To say top bar:[=0x000A=][=0x0009=]repeat with N running from 1 to 9[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the remainder after dividing N by 2 is 0, say [=0x0022=][unicode box drawings light down and horizontal][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]otherwise say [=0x0022=][unicode box drawings light horizontal][=0x0022=];[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]To say middle bar:[=0x000A=][=0x0009=]repeat with N running from 1 to 9[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the remainder after dividing N by 2 is 0, say [=0x0022=][unicode box drawings light vertical and horizontal][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]otherwise say [=0x0022=][unicode box drawings light triple dash horizontal][=0x0022=];[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]To say bottom bar:[=0x000A=][=0x0009=]repeat with N running from 1 to 9[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the remainder after dividing N by 2 is 0, say [=0x0022=][unicode box drawings light up and horizontal][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]otherwise say [=0x0022=][unicode box drawings light horizontal][=0x0022=];[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]TLV is a concentration that varies. TLV is 30.0ppm. [Long-term exposure maximum, safe for 8 hours a day.][=0x000A=][=0x000A=]TLV-STEL is a concentration that varies. TLV-STEL is 50.0ppm. [Short-term exposure maximum, safe for fifteen minutes max.][=0x000A=][=0x000A=]TLV-C is a concentration that varies. TLV-C is 150.0ppm. [Absolute exposure ceiling.][=0x000A=][=0x000A=]LC50 is a concentration that varies. LC50 is 300.0ppm. [Concentration at which 50 percent of test subjects die of exposure, usually expressed in terms of time and body weight; in our LC50 these are factored in for the player[=0x0027=]s weight for one minute.][=0x000A=][=0x000A=]Include Basic Screen Effects by Emily Short.[=0x000A=][=0x000A=]To say state of (space - a room):[=0x000A=][=0x0009=]if the current concentration of space is less than TLV, say blue letters;[=0x000A=][=0x0009=]if the current concentration of space is TLV, say blue letters;[=0x000A=][=0x0009=]if the current concentration of space is greater than TLV, say green letters;[=0x000A=][=0x0009=]if the current concentration of space is greater than TLV-STEL, say yellow letters;[=0x000A=][=0x0009=]if the current concentration of space is greater than TLV-C, say red letters;[=0x000A=][=0x0009=]say [=0x0022=][unicode square with diagonal crosshatch fill][=0x0022=];[=0x000A=][=0x0009=]say default letters;[=0x000A=][=0x0009=]say [=0x0022=][unicode box drawings light vertical][=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]z / z / z / z / z / z / z / z[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode304()"><img border=0 src=../doc_images/paste.png></a> &quot;Bogart&quot;
+<a href="javascript:pasteCode442()"><img border=0 src=../doc_images/paste.png></a> &quot;Lethal Concentration&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 1 - Clothing Behavior
+<blockquote><font color="#000080">A concentration is a kind of value. 200.9ppm specifies concentration. 200.9 ppm specifies concentration.
 </font></blockquote><p>
 <p>
-<p>First we make our relation to represent what *is* underneath another item:
-<p>
-<blockquote><font color="#000080">Underlying relates one thing to various things. The verb to underlie (it underlies, they underlie, it is underlying, it is underlaid) implies the underlying relation. The verb to be under implies the underlying relation.
+<blockquote><font color="#000080">A room has a concentration called current concentration. A room has a concentration called former concentration.
 </font></blockquote><p>
 <p>
-<p>And now we prevent taking a lower layer off before the thing that is worn over it:
-<p>
-<blockquote><font color="#000080">Before taking off something which underlies something (called the impediment) which is worn by the player:
-<br>say &quot;(first removing [the impediment])[command clarification break]&quot;;
-<br>silently try taking off the impediment;
-<br>if the noun underlies something which is worn by the player, stop the action.
+<blockquote><font color="#000080">To decide what number is the probability inverse between (space - a room) and (second space - a room):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let guess be 20;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from space to second space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if way is up, let guess be 50;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if way is down, let guess be 10;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the guess is less than 10, decide on 10;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on guess.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check taking off:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun underlies something (called the impediment) which is worn by the player, say &quot;[The impediment] is in the way.&quot; instead.
+<p>If we wanted, we could introduce other concerns into the calculation here: open and closed doors, windows between rooms, rooms that are outdoors vs. those that are indoors, and so on. The possibilities are numerous, so we will stick with the simple principle that our poison gas sinks.
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the diffusion rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out taking off:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is not underlaid by anything.
+<blockquote><font color="#000080">The diffusion rules are a rulebook.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report taking off something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are now wearing [a list of uppermost things worn by the player].&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a thing is uppermost if it is not under something.
-</font></blockquote><p>
-<p>
-<p>That covers order of clothing removal, but we also want to restrict what can be worn on top of what else. This time we need Inform to have some idea of what customarily can be layered on top of what other clothing:
-<p>
-<blockquote><font color="#000080">Overlying relates one thing to various things. The verb to overlie (it overlies, they overlie, it is overlying) implies the overlying relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Covering relates a thing (called A) to a thing (called B) when the number of steps via the overlying relation from A to B is greater than 0. The verb to cover (it covers, they cover, it is covering) implies the covering relation.
-</font></blockquote><p>
-<p>
-<p>With these definitions, we can say that a jacket should go over a shirt and a shirt over an undershirt (say), and then Inform will know that a jacket will cover both shirt and undershirt.
-<p>
-<blockquote><font color="#000080">Before wearing something when something (called the impediment) which covers the noun is worn by the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while the player wears something which covers the noun
+<blockquote><font color="#000080">A diffusion rule (this is the gas movement rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with space running through rooms
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first removing [the impediment])[command clarification break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silently try taking off the impediment;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player is wearing the impediment, stop the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end while.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let sum be 0.0 ppm;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with way running through directions
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let second space be the room way from the space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if second space is a room
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let incoming be the former concentration of the second space divided by the probability inverse between second space and space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let outgoing be the former concentration of the space divided by  the probability inverse between space and second space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let difference be incoming minus outgoing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase sum by the difference;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change current concentration of the space to the former concentration of the space plus the sum;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out wearing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun covers something (called the hidden item) worn by the player, now the hidden item underlies the noun.
+<blockquote><font color="#000080">A diffusion rule (this is the resetting concentration rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with space running through rooms
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the former concentration of the space to the current concentration of the space;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of looking under something which is worn by the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if something (called the underwear) underlies the noun, say &quot;You peek at [the underwear]. Yup, still there.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Just you in there.&quot;
+<blockquote><font color="#000080">The last diffusion rule (this is the lethal dosage rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of the location is greater than LC50
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The concentration in the air overpowers you...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in death;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of the location is greater than TLV-STEL
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You feel extremely uncomfortable in this environment.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of taking inventory:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're carrying [a list of things carried by the player][if the player wears something]. You are wearing [a list of uppermost things worn by the player][end if].&quot;
+<blockquote><font color="#000080">Instead of doing something when the current concentration of the location is greater than TLV-STEL:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if going, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't work in this environment: your eyes and nose sting and it hurts to breathe.&quot;
 </font></blockquote><p>
 <p>
-<p>Notice that our inventory only describes the things that the player can see as the upper layer of clothing.
-<p>
-<blockquote><font color="#000080">Section 2 - The Scenario
+<blockquote><font color="#000080">Room 1A is west of Room 1B. Room 1B is west of Room 1C. Room 1C is west of Room 1D. Room 1D is west of Room 1E.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Trailer is a room. &quot;A full-length mirror is the main amenity in here, and that suits you just fine.&quot;  The full-length mirror is scenery in the Trailer. Instead of examining or searching the mirror, try taking inventory.
+<blockquote><font color="#000080">Room 2A is west of Room 2B and below room 1A. Room 2B is west of Room 2C and below Room 1B. Room 2C is west of Room 2D and below Room 1C. Room 2D is west of Room 2E and below Room 1D. Room 2E is south of Room 1E and below Room 1E.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player wears a fedora, a jacket, a shirt, some undershorts, an undershirt, some slacks, a pair of socks, and a pair of shoes.
+<blockquote><font color="#000080">The former concentration of Room 1C is 800.0 ppm.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The shirt underlies the jacket. The pair of socks underlies the pair of shoes. The undershorts underlie the slacks. The undershirt underlies the shirt.
+<blockquote><font color="#000080">The status grid is a device carried by the player. The status grid is switched on.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The jacket overlies the shirt. The shoes overlie the socks. The slacks overlie the undershorts. The shirt overlies the undershirt.
+<p>And just for fun, this time we'll make the grid prettier, too:
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the grid.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;x mirror / remove fedora / remove jacket / remove shirt / remove slacks / remove undershirt / remove shoes / remove socks / remove shorts / remove undershorts&quot;.
+<blockquote><font color="#000080">&nbsp;&nbsp;&nbsp;&nbsp;Instead of examining the status grid:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[fixed letter spacing][unicode box drawings light down and right][top bar][unicode box drawings light down and left][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light vertical]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[state of room 1A][state of room 1B][state of room 1C][state of room 1D][state of room 1E]   upstairs[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light vertical and right][middle bar][unicode box drawings light vertical and left][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light vertical]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[state of room 2A][state of room 2B][state of room 2C][state of room 2D][state of room 2E]   downstairs[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light up and right][bottom bar][unicode box drawings light up and left][variable letter spacing][line break]&quot;
 </font></blockquote><p>
 <p>
-<p>If we further wanted to prevent the player from taking off clothes in inappropriate places, we might add something like this:
-<p>
-<blockquote><font color="#000080">Instead of taking off something in the presence of someone who is not the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are far too modest to strip in public.&quot;
+<blockquote><font color="#000080">Include Unicode Character Names by Graham Nelson.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc203.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">To say top bar:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with N running from 1 to 9
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the remainder after dividing N by 2 is 0, say &quot;[unicode box drawings light down and horizontal]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[unicode box drawings light horizontal]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say middle bar:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with N running from 1 to 9
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the remainder after dividing N by 2 is 0, say &quot;[unicode box drawings light vertical and horizontal]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[unicode box drawings light triple dash horizontal]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say bottom bar:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with N running from 1 to 9
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the remainder after dividing N by 2 is 0, say &quot;[unicode box drawings light up and horizontal]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[unicode box drawings light horizontal]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">TLV is a concentration that varies. TLV is 30.0ppm. [Long-term exposure maximum, safe for 8 hours a day.]
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">TLV-STEL is a concentration that varies. TLV-STEL is 50.0ppm. [Short-term exposure maximum, safe for fifteen minutes max.]
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">TLV-C is a concentration that varies. TLV-C is 150.0ppm. [Absolute exposure ceiling.]
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">LC50 is a concentration that varies. LC50 is 300.0ppm. [Concentration at which 50 percent of test subjects die of exposure, usually expressed in terms of time and body weight; in our LC50 these are factored in for the player's weight for one minute.]
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Include Basic Screen Effects by Emily Short.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say state of (space - a room):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is less than TLV, say blue letters;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is TLV, say blue letters;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is greater than TLV, say green letters;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is greater than TLV-STEL, say yellow letters;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current concentration of space is greater than TLV-C, say red letters;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode square with diagonal crosshatch fill]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say default letters;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[unicode box drawings light vertical]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;z / z / z / z / z / z / z / z&quot;.
+</font></blockquote><p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc310.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc202.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc204.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e351"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex351.html#e351 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>353</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex351.html#e351 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Solitude</font></b></a><br>Novice mode that prefaces every prompt with a list of possible commands the player could try, and highlights every important word true, to alert players to interactive items in the scenery.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex351.html#e351 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc309.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc311.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

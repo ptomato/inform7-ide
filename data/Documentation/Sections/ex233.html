@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.20. Stored actions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.5. Building lists</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,164 +19,147 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Bosch" -->
-<!-- SEARCH SECTION "Ex 202" -->
-<!-- SEARCH SORT "Ex 012-020-202" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc191.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc193.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.20. Stored actions</b></font></td></tr></table>
+<!-- SEARCH TITLE "Robo 1" -->
+<!-- SEARCH SECTION "Ex 370" -->
+<!-- SEARCH SORT "Ex 020-005-370" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc328.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc330.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.5. Building lists</b></font></td></tr></table>
 <p>
-<p>As we have seen, to describe an action fully takes a complicated little bundle of information - we need to know what is to be done, who will do it, and what it will be done to. There are times when we would like to remember an action and look back on it later (perhaps many turns later, after many other actions have taken effect) - but this is not easy to do with only the techniques we have seen so far. There are quite a few cases to get right, and it would be easy to not store quite enough of the details.
+<p>We have already seen &quot;add... to...&quot;. This in fact comes in two forms:
 <p>
-<p>Fortunately, Inform provides a kind of value called &quot;stored action&quot; which can do all of this automatically. As with most other kinds of value, stored actions can be held in variables, &quot;let&quot; values, properties or table columns. For example:
-<p>
-<blockquote><font color="#000080">The best idea yet is a stored action that varies.
+<blockquote><font color="#000080">add V to L;
+<br>add V to L, if absent;
 </font></blockquote><p>
 <p>
-<p>creates a variable called &quot;the best idea yet&quot; which holds a stored action. This will normally be created holding the default value - the player waiting - but can instead be set explicitly:
+<p>The former always adds V to L, while the latter does so only if V is not already somewhere in L. (Both forms are allowed only if V is compatible with the kind of entries which is supposed to be stored in L.) V is ordinarily added at the end of L, unless we specify otherwise, for instance with:
 <p>
-<blockquote><font color="#000080">The best idea yet is the action of pushing the button.
+<blockquote><font color="#000080">add V at entry 3 in L;
+<br>add V at entry 3 in L, if absent;
 </font></blockquote><p>
 <p>
-<p>Note the words &quot;action of...&quot;, which convert any sufficiently exact description of an action into its stored action form.
+<p>For instance &quot;add V at entry 1 in L&quot; adds V at the beginning, moving all of the existing entries up by one place. (If there are N entries in L, then we can add at any of entries 1 up to N+1: adding at entry N+1 means adding at the end.)
 <p>
-<p>In rules and phrases, we can always obtain the action currently going on (if there is one) with the value &quot;current action&quot;:
+<p>A list is allowed to contain duplicates, and the order matters. For instance:
 <p>
-<blockquote><font color="#000080">let the present whim be the current action;
+<blockquote><font color="#000080">let L be {2, 2, 3};
 </font></blockquote><p>
 <p>
-<p>Moreover, just as we can &quot;try&quot; any action, so we can also try a stored one:
+<p>makes L into &quot;2, 2 and 3&quot;. This is a different list to the one made by:
 <p>
-<blockquote><font color="#000080">try the present whim;
-<br>silently try the present whim;
+<blockquote><font color="#000080">let M be {2, 3, 2};
 </font></blockquote><p>
 <p>
-<p>would each work in the natural way. A stored action can do anything that actions can do: in particular, they remember, if necessary, the exact wording of the player's command at the time they were stored - so that even actions like &quot;looking up 'x100' in the code book&quot; will work if stored and tried on some future turn.
+<p>even though L and M have the same values, repeated the same number of times - for two lists to be equal, they must have the same kind of entry, the same number of entries, and the same entries in each position.
 <p>
-<p>As with any other kind of value, we can also say a stored action, and this produces a fairly natural description of what the action is:
+<p>We can also strike out values:
 <p>
-<blockquote><font color="#000080">Before doing something in the presence of the bearded psychiatrist: say &quot;'Zo, the subject wishes to engage in [the current action]. Zis is very interesting.'&quot;
+<blockquote><font color="#000080">remove 2 from L;
+<br>remove 2 from L, if present;
 </font></blockquote><p>
 <p>
-<p>will produce text such as:
+<p>These each go through L and remove every 2 that's present: so for instance the L above would be reduced down to just a single entry, 3. Ordinarily &quot;remove 2 from L&quot; produces a run-time problem if L does not contain the value 2, but using the &quot;if present&quot; option lets us off this: the phrase then does nothing if L does not contain the value to be removed.
 <p>
-<blockquote><font color="#000080">&quot;So, the subject vishes to engage in rubbing the fireman's pole. Zis is very interesting.&quot;
+<p>Entries in given positions in the list can also be removed:
+<p>
+<blockquote><font color="#000080">remove entry 3 from L;
+<br>remove entries 4 to 6 from L;
 </font></blockquote><p>
 <p>
-<p>One of Inform's most convenient features is its ability to test if the action being processed matches vague or complicated descriptions of whole classes of actions. Now, it would not make sense to write
+<p>The entries are numbered from 1, so that &quot;remove entry 1 from L&quot; takes away the first entry. (The others automatically shuffle down.)
 <p>
-<blockquote><font color="#000080">if the best idea yet is the action of taking something, ...
+<p>Adding entries one at a time is pretty tiresome, but we can also append a whole list of extra entries X onto the end of any already-existing list L:
+<p>
+<blockquote><font color="#000080">let L be {2, 3};
+<br>add {60, 168} to L;
 </font></blockquote><p>
 <p>
-<p>because &quot;action of ...&quot; has to make an exact action, which clearly this is not: so Inform will produce a problem message if we try. But we do not need to, because Inform also allows us to compare a stored action against any description of an action, however vague:
+<p>makes L into {2, 3, 60, 168}. This is, of course, only allowed if the values in X are compatible with the kind of value L is supposed to hold. Alternatively, we can add a set at the front, or even somewhere in the middle:
 <p>
-<blockquote><font color="#000080">if the best idea yet is taking something, ...
-<br>if the best idea yet is doing something to the lever, ...
+<blockquote><font color="#000080">add {60, 168} at entry 2 in L;
 </font></blockquote><p>
 <p>
-<p>When dealing with stored actions, we sometimes want to know what they are dealing with. We can extract this information using the following phrases:
+<p>produces {2, 60, 168, 3}, with the added entries beginning at entry 2.
 <p>
-<blockquote><font color="#000080">action-name part of S
-<br>noun part of S
-<br>second noun part of S
-<br>actor part of S
+<p>Symmetrically, we can also remove from a list:
+<p>
+<blockquote><font color="#000080">let L be {2, 3, 7};
+<br>remove {3, 7} from L;
 </font></blockquote><p>
 <p>
-<p>For example, if S is &quot;Algy trying throwing the brick at Biggles&quot; then saying these four values will produce
-<p>
-<blockquote><font color="#000080">throwing it at
-<br>brick
-<br>Biggles
-<br>Algy
-</font></blockquote><p>
-<p>
-<p>Should the action be one which does not involve objects, the noun and second noun may be &quot;nothing&quot;: for instance if S is &quot;setting the dial to 3417&quot; then the noun part of S is the dial but the second noun part is nothing. (This has to be true, as otherwise Inform could never know what kind of value &quot;the noun part of S&quot; would have.)
-<p>
-<p>As a convenience, the condition
-<p>
-<blockquote><font color="#000080">if S involves X, ...
-</font></blockquote><p>
-<p>
-<p>is true if the object X appears as any of the actor, the noun or the second noun: for instance,
-<p>
-<blockquote><font color="#000080">if the current action involves Algy
-</font></blockquote><p>
-<p>
-<p>would be true for &quot;give revolver to Algy&quot;, &quot;Algy trying flying the Sopwith Camel&quot;, &quot;examine Algy&quot; and so on, but false for &quot;ask Raymond about secret airfield&quot;.
+<p>makes L into simply {2}. (If L and the list to be added are both very large, this can be a slow process, and we might do better by sorting them and trying a more sophisticated method. But this is convenient for anything reasonable-sized.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e233"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc192.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>202</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc192.html#e233 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bosch</font></b></a><br>Creating a list of actions that will earn the player points, and using this both to change the score and to give FULL SCORE reports.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex233.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e233"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc329.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>370</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc329.html#e233 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Robo 1</font></b></a><br>A robot which watches and records the player's actions, then tries to repeat them back in the same order when he is switched into play-back mode.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex233.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>We could, if we wanted, make a table of stored actions all of which represent things that will earn points for the player. For instance:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode290(code) {
+function pasteCode459(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Bosch"\n\nThe Garden of Excess is a room. The gilded lily is an edible thing in the Garden of Excess.\n\nThe Pathway to Desire is west of the Garden of Excess. The emerald leaf is in the Pathway.\n\nTable of Valuable Actions\nrelevant action\tpoint value\tturn stamp\ntaking the emerald leaf\t15\t-1\neating the gilded lily\t5\t-1\n\n[(And our list would presumably continue from there, in the full game.)]\n\nThe maximum score is 25.\n\nAfter doing something:\n\trepeat through Table of Valuable Actions\n\tbegin;\n\t\tif the current action is the relevant action entry and turn stamp entry is less than 0\n\t\tbegin;\n\t\t\tchange the turn stamp entry to the turn count;\n\t\taward point value entry points;\n\t\tend if;\n\tend repeat;\n\tcontinue the action.\n\nUnderstand "full score" or "full" as requesting the complete score. Requesting the complete score is an action out of world.\n\nCheck requesting the complete score:\n\tif the score is 0, say "You have not yet achieved anything of note." instead.\n\nCarry out requesting the complete score:\n\tsay "So far you have received points for the following: [line break]";\n\tsort the Table of Valuable Actions in turn stamp order;\n\trepeat through the Table of Valuable Actions\n\tbegin;\n\t\tif the turn stamp entry is greater than 0\n\t\tbegin;\n\t\t\tsay "[line break]  [relevant action entry]: [point value entry] points";\n\t\tend if;\n\tend repeat;\n\tsay line break.\n\nTest me with "eat lily / w / full score / get leaf / full".\n\n');
+    myProject.pasteCode('[=0x0022=]Robo[=0x0022=][=0x000A=][=0x000A=]The Experimentation Chamber is a room. Robo is a man in the Experimentation Chamber. [=0x0022=]Robo, your prototype tin companion, stands awkwardly beside you. In the middle of his chest is a red enamel button[if the red button is switched on], currently depressed[otherwise], currently un-depressed[end if].[=0x0022=][=0x000A=][=0x000A=]The red button is a device. It is part of Robo. Instead of pushing the red button: if the red button is switched off, try switching on the red button; otherwise try switching off the red button.[=0x000A=][=0x000A=]After switching on the red button:[=0x000A=][=0x0009=]say [=0x0022=]CLICK! Robo is now in play-back mode.[=0x0022=][=0x000A=][=0x000A=]After switching off the red button:[=0x000A=][=0x0009=]say [=0x0022=]CLACK! Robo is now in observation mode.[=0x0022=][=0x000A=][=0x000A=]Definition: Robo is watching if the red button is switched off.[=0x000A=][=0x000A=]The current instruction set is a list of stored actions that varies.[=0x000A=][=0x000A=]After doing something when Robo is watching and Robo can see the player:[=0x000A=][=0x0009=]change the actor to Robo;[=0x000A=][=0x0009=]add the current action to the current instruction set;[=0x000A=][=0x0009=]change the actor to the player;[=0x000A=][=0x0009=]say [=0x0022=]Robo watches you [the current action][one of], his yellow eyes lamp-like and observant[or]. In his metal head, gears whirr[or], his brushed-copper handlebar moustaches twitching[or] impassively[at random].[=0x0022=];[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]Every turn when Robo is not watching:[=0x000A=][=0x0009=]if the number of entries in the current instruction set is 0[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Robo has run out of behavior and grinds to an (expectant) halt.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]now the red button is switched off;[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]let the next task be entry 1 of the current instruction set;[=0x000A=][=0x0009=][=0x0009=]try the next task;[=0x000A=][=0x0009=][=0x0009=]remove entry 1 from the current instruction set;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]The red block and the blue cylinder are things in the Experimentation Chamber. The counter is a supporter in the Experimentation Chamber. The counter is scenery.[=0x000A=][=0x000A=]Report Robo examining Robo:[=0x000A=][=0x0009=]say [=0x0022=]Robo examines each of his hands in turn, then each of his legs (bending over mostly double in the middle to do this).[=0x0022=] instead.[=0x000A=][=0x000A=]Report Robo examining the player:[=0x000A=][=0x0009=]say [=0x0022=]Robo stares at you, unblinkingly, for several seconds together[if a random chance of 1 in 7 succeeds]. His left moustache-bar twitches infinitesimally upward[end if].[=0x0022=] instead.[=0x000A=][=0x000A=]Report Robo taking the cylinder:[=0x000A=][=0x0009=]say [=0x0022=][one of][Robo] needs several attempts to get his metal fingers around [the cylinder] -- they are not designed for grasping small objects elegantly. But at last he succeeds[or]Once again, Robo struggles a bit before picking up [the cylinder][stopping].[=0x0022=] instead.[=0x000A=][=0x000A=]Test me with [=0x0022=]z / take cylinder / take block / put cylinder on counter / put block on counter / x robo / x me / get block / drop block / press red button / z / z / z / z / z / z / z / z / z / z[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode290()"><img border=0 src=../doc_images/paste.png></a> &quot;Bosch&quot;
+<a href="javascript:pasteCode459()"><img border=0 src=../doc_images/paste.png></a> &quot;Robo&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Garden of Excess is a room. The gilded lily is an edible thing in the Garden of Excess.
+<blockquote><font color="#000080">The Experimentation Chamber is a room. Robo is a man in the Experimentation Chamber. &quot;Robo, your prototype tin companion, stands awkwardly beside you. In the middle of his chest is a red enamel button[if the red button is switched on], currently depressed[otherwise], currently un-depressed[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Pathway to Desire is west of the Garden of Excess. The emerald leaf is in the Pathway.
+<blockquote><font color="#000080">The red button is a device. It is part of Robo. Instead of pushing the red button: if the red button is switched off, try switching on the red button; otherwise try switching off the red button.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Valuable Actions
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">relevant action</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">point value</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">turn stamp</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">taking the emerald leaf</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">15</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">-1</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">eating the gilded lily</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">-1</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">After switching on the red button:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;CLICK! Robo is now in play-back mode.&quot;
 </font></blockquote><p>
 <p>
-<p>(And our list would presumably continue from there, in the full game.)
-<p>
-<blockquote><font color="#000080">The maximum score is 25.
+<blockquote><font color="#000080">After switching off the red button:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;CLACK! Robo is now in observation mode.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After doing something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Valuable Actions
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current action is the relevant action entry and turn stamp entry is less than 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the turn stamp entry to the turn count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;award point value entry points;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
+<blockquote><font color="#000080">Definition: Robo is watching if the red button is switched off.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The current instruction set is a list of stored actions that varies.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After doing something when Robo is watching and Robo can see the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the actor to Robo;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the current action to the current instruction set;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the actor to the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo watches you [the current action][one of], his yellow eyes lamp-like and observant[or]. In his metal head, gears whirr[or], his brushed-copper handlebar moustaches twitching[or] impassively[at random].&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;full score&quot; or &quot;full&quot; as requesting the complete score. Requesting the complete score is an action out of world.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check requesting the complete score:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the score is 0, say &quot;You have not yet achieved anything of note.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out requesting the complete score:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;So far you have received points for the following: [line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Valuable Actions in turn stamp order;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Valuable Actions
+<blockquote><font color="#000080">Every turn when Robo is not watching:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of entries in the current instruction set is 0
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the turn stamp entry is greater than 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break]  [relevant action entry]: [point value entry] points&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say line break.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo has run out of behavior and grinds to an (expectant) halt.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the red button is switched off;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the next task be entry 1 of the current instruction set;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try the next task;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove entry 1 from the current instruction set;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;eat lily / w / full score / get leaf / full&quot;.
+<blockquote><font color="#000080">The red block and the blue cylinder are things in the Experimentation Chamber. The counter is a supporter in the Experimentation Chamber. The counter is scenery.
 </font></blockquote><p>
 <p>
-<p>This system is tidy, but limited: we cannot give actions interesting names in the score list, like &quot;seducing the pirate's daughter&quot; or &quot;collecting a valuable artifact&quot;. So it will not be ideal in all situations, but it has the virtue of being easy to extend, and of listing all of the player's successes in the order in which they occurred in his play-through.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc192.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Report Robo examining Robo:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo examines each of his hands in turn, then each of his legs (bending over mostly double in the middle to do this).&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Robo examining the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo stares at you, unblinkingly, for several seconds together[if a random chance of 1 in 7 succeeds]. His left moustache-bar twitches infinitesimally upward[end if].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Robo taking the cylinder:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[one of][Robo] needs several attempts to get his metal fingers around [the cylinder] -- they are not designed for grasping small objects elegantly. But at last he succeeds[or]Once again, Robo struggles a bit before picking up [the cylinder][stopping].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;z / take cylinder / take block / put cylinder on counter / put block on counter / x robo / x me / get block / drop block / press red button / z / z / z / z / z / z / z / z / z / z&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc329.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e361"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex361.html#e361 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>203</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex361.html#e361 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cactus Will Outlive Us All</font></b></a><br>For every character besides the player, there is an action that will cause that character to wither right up and die.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex361.html#e361 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e235"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex235.html#e235 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>204</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex235.html#e235 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Actor's Studio</font></b></a><br>A video camera that records actions performed in its presence, and plays them back with time-stamps.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex235.html#e235 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e304"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex304.html#e304 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>205</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex304.html#e304 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Anteaters</font></b></a><br>The player carries a gizmo that is able to record actions performed by the player, then force him to repeat them when the gizmo is dropped. This includes storing actions that apply to topics, as in "look up anteater colonies in the guide".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex304.html#e304 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc191.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc193.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc328.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc330.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

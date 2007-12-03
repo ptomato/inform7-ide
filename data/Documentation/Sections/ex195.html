@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.14. Understanding things by their properties</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>23.25. To say one of</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,212 +19,124 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Channel 2" -->
-<!-- SEARCH SECTION "Ex 281" -->
-<!-- SEARCH SORT "Ex 016-014-281" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc255.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc257.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.14. Understanding things by their properties</b></font></td></tr></table>
+<!-- SEARCH TITLE "Uncommon Ground" -->
+<!-- SEARCH SECTION "Ex 397" -->
+<!-- SEARCH SORT "Ex 023-025-397" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc396.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap23.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 23: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc398.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>23.25. To say one of</b></font></td></tr></table>
 <p>
-<p>Items are ordinarily understood only by their original given names. For instance, if we have:
+<p>Many of the invocation syntaxes described in the previous section are used in the definition by the Standard Rules of the &quot;[one of] ... [or] ... [purely at random]&quot; construction, so it makes a good example of how they can be used.
 <p>
-<blockquote><font color="#000080">In the Herb Garden is a china pot.
+<p>First, this is a segmented substitution with a single possible beginning (&quot;[one of]&quot;), a single possible middle (&quot;[or]&quot;) but a choice of many possible endings. Almost everything is compiled by the invocation of the beginning:
+<p>
+<blockquote><font color="#000080">To say one of -- beginning say_one_of:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-allocate-storage:say_one_of}I7_ST_say_one_of-->{-counter:say_one_of}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;= {-final-segment-marker}(I7_ST_say_one_of-->{-counter:say_one_of}, {-segment-count});
+<br>switch((I7_ST_say_one_of-->{-advance-counter:say_one_of})%({-segment-count}+1) - 1) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;0: -).
+<br>To say or -- continuing say_one_of:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-segment-count}: -).
+<br>To say purely at random -- ending say_one_of with marker I7_SOO_PAR:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-close-brace} -).
 </font></blockquote><p>
 <p>
-<p>then the player could refer to this as &quot;pot&quot;, &quot;china pot&quot; or &quot;china&quot;. We can embellish this by adding extra forms:
+<p>The 3rd invocation of this (say) might compile the following:
 <p>
-<blockquote><font color="#000080">Understand &quot;chinese pot&quot; or &quot;chinese vase&quot; as the china pot.
+<blockquote><font color="#000080">I7_ST_say_one_of-->2 = I7_SOO_PAR(I7_ST_say_one_of-->2, 4);
+<br>switch((I7_ST_say_one_of-->2)%5 - 1) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;0: ... first text ...
+<br>&nbsp;&nbsp;&nbsp;&nbsp;1: ... second text ...
+<br>&nbsp;&nbsp;&nbsp;&nbsp;2: ... third text ...
+<br>&nbsp;&nbsp;&nbsp;&nbsp;3: ... fourth text ...
+<br>}
 </font></blockquote><p>
 <p>
-<p>But suppose the pot changes its nature in the course of play? If we have:
+<p>First, we notified Inform that it needs to allocate an array (I7_ST_say_one_of) providing storage associated with the counter &quot;say_one_of&quot;. This we used to count off individual invocations of &quot;[one of]&quot;, so that each would have its own word of storage - for the 3rd invocation, I7_ST_say_one_of-->2. We then call a state-changing routine, in this case I7_SOO_PAR, which is allowed to know the previous state and also the number of options available, and which returns the new state. The state is supposed to be the option chosen last time, but that means that there are not 4, but 5 possibilities: 0 for &quot;there was no last time&quot;, then 1 to 4 for the possible outcomes. We reduce the state mod 5 to obtain the decision this time, and subtract 1 because it happens to be convenient to make the switch statement run from 0 to 3 rather than 1 to 4. (The reason we reduce the state mod 5 is to allow the state-changer to squirrel away secret information in the upper bits of the state, if it wants to. Note that subtracting one means that the switch value might be -1, which results in no text being printed: thus if the state-changer chooses 0, it can decide on none of the above.)
 <p>
-<blockquote><font color="#000080">The china pot can be unbroken or broken. The china pot is unbroken. After dropping the china pot: say &quot;Crack!&quot;; now the china pot is broken; change the printed name of the pot to &quot;broken pot&quot;.
+<p>In this design, the marker attached to the choice of ending substitution is the name of the I6 state-changer: here is the I7_SOO_PAR routine.
+<p>
+<blockquote><font color="#000080">[ I7_SOO_PAR oldval count; if (count <= 1) return count; return random(count); ];
 </font></blockquote><p>
 <p>
-<p>So now the player would reasonably expect to call it &quot;broken pot&quot;, a wording which would have been rejected before. We can achieve this by writing:
+<p>As it happens, this ignores the old value: after all, it is meant to be purely at random, and nothing could be less pure than taking the last outcome into consideration when choosing the next.
 <p>
-<blockquote><font color="#000080">Understand the unbroken property as describing the pot.
-</font></blockquote><p>
+<p>Note that the counter say_one_of is advanced in invocation of the head. It might seem that the tidier design, somehow, would be to advance the counter in the invocation of the tails, but this is not a good idea. In general it is not safe to assume that the counter will have the same value when the tail is invoked that it had when the head was invoked, because segmented say constructions can legally be nested in Inform strings. Because of this, it is best to deal with a counter entirely in a single invocation, either of the beginning or the ending.
 <p>
-<p>which allows &quot;unbroken&quot; or &quot;broken&quot; to describe the pot, depending on its state. And, since the player might well use a different adjective but with the same idea in mind, we can even add:
-<p>
-<blockquote><font color="#000080">Understand &quot;shattered&quot; or &quot;cracked&quot; or &quot;smashed&quot; as broken. Understand &quot;pristine&quot; as unbroken.
-</font></blockquote><p>
-<p>
-<p>This is something of a toy example, but the feature looks rather more useful when there are more pots than just one:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode57(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Terracotta"\n\nA flowerpot is a kind of thing. A flowerpot can be unbroken or broken. Understand the broken property as describing a flowerpot.\n\nAfter dropping an unbroken flowerpot: say "Crack!"; now the noun is broken; change the printed name of the noun to "broken flowerpot"; change the printed plural name of the noun to "broken flowerpots".\n\nThe Herb Garden is a room. In the Herb Garden are ten unbroken flowerpots.\n\n');
-}
-</script>
-<a href="javascript:pasteCode57()"><img border=0 src=../doc_images/paste.png></a> &quot;Terracotta&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A flowerpot is a kind of thing. A flowerpot can be unbroken or broken. Understand the broken property as describing a flowerpot.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After dropping an unbroken flowerpot: say &quot;Crack!&quot;; now the noun is broken; change the printed name of the noun to &quot;broken flowerpot&quot;; change the printed plural name of the noun to &quot;broken flowerpots&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Herb Garden is a room. In the Herb Garden are ten unbroken flowerpots.
-</font></blockquote><p>
-<p>
-<p>We then have the dialogue:
-<p>
-<blockquote><font color="#000080">Herb Garden
-<br>You can see ten flowerpots here.
-<br>>get two flowerpots
-<br>flowerpot: Taken.
-<br>flowerpot: Taken.
-<br>>drop all
-<br>flowerpot: Crack!
-<br>flowerpot: Crack!
-<br>>look
-<br>Herb Garden
-<br>You can see two broken flowerpots and eight flowerpots here.
-<br>>get an unbroken flowerpot
-<br>Taken.
-</font></blockquote><p>
-<p>
-<p>and so on and so forth.
-<p>
-<p>There are in fact two slightly different forms of this kind of sentence:
-<p>
-<blockquote><font color="#000080">Understand the broken property as describing a flowerpot.
-<br>Understand the broken property as referring to a flowerpot.
-</font></blockquote><p>
-<p>
-<p>The only difference is that in the &quot;describing&quot; case, the property's name alone can mean the thing in question - so &quot;take unbroken&quot; will work; whereas, in the &quot;referring to&quot;, the property's name can only be used as an adjective preceding the name of thing itself - so &quot;take unbroken flowerpot&quot; will work but &quot;take unbroken&quot; will not.
+<p>Because &quot;[one of] ... [or] ...&quot; is such a useful construction - switching between alternative forms of text, which writers of IF very often do - the above implementation is intentionally left open for new endings to be added, and the examples below show how easily this can be done.
 <p>
 <p><hr><p>
-<a name="e239"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex239.html#e239 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>276</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex239.html#e239 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hymenaeus</font></b></a><br>Understanding "flaming torch" and "extinguished torch" to refer to torches when lit and unlit.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex239.html#e239 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e97"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex97.html#e97 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>277</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex97.html#e97 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Aspect</font></b></a><br>Understanding aspect ratios (a unit) in the names of televisions.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex97.html#e97 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e201"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex201.html#e201 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>278</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex201.html#e201 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Terracottissima</font></b></a><br>The flowerpots once again, but this time arranged so that after the first breakage all undamaged pots are said to be "unbroken", to distinguish them from the others.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex201.html#e201 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e287"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex287.html#e287 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>279</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex287.html#e287 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Peers</font></b></a><br>The peers of the English realm come in six flavours - Baron, Viscount, Earl, Marquess, Duke and Prince - and must always be addressed properly. While a peerage is for life, it may at the royal pleasure be promoted.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex287.html#e287 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e316"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex316.html#e316 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>280</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex316.html#e316 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Channel 1</font></b></a><br>Understanding channels (a number) in the names of televisions.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex316.html#e316 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e130"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex130.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>396</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex130.html#e130 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Blink</font></b></a><br>Making a "by atmosphere" token, allowing us to design our own text variations such as "[one of]normal[or]gloomy[or]scary[by atmosphere]".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex130.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e195"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc256.html#e195 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>281</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc256.html#e195 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Channel 2</font></b></a><br>Understanding channels (a number) in the names of televisions, with more sophisticated parsing of the change channel action.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex195.html#e195 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e195"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc397.html#e195 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>397</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc397.html#e195 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Uncommon Ground</font></b></a><br>Making a "by viewpoint" token, allowing us to design our own text variations such as "[show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show]" depending on the identity of the player at the moment.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex195.html#e195 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Our previous implementation of televisions (&quot;Channel 1&quot;) doesn't allow the player to type things like
+<p>A slightly more challenging case than the &quot;by atmosphere&quot; example is one in which we want to create text variations depending on the identity of our player character.
 <p>
-<blockquote><font color="#000080">TUNE FIFTIES TELEVISION TO CHANNEL 4
+<p>What we want to do is build a switch statement in I6, one that looks something like
+<p>
+<blockquote><font color="#000080">switch(player)
+<br>{
+<br>&nbsp;&nbsp;&nbsp;&nbsp;yourself: print &quot;quaint&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;Lolita: print &quot;thrilling&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;default: print &quot;squalid&quot;;
+<br>}
 </font></blockquote><p>
 <p>
-<p>nor does it deal with player input like
+<p>out of I7 that looks like this:
 <p>
-<blockquote><font color="#000080">TUNE TO CHANNEL 4 ON FIFTIES TELEVISION
+<blockquote><font color="#000080">say &quot;[show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show]&quot;.
 </font></blockquote><p>
-<p>
-<p>or
-<p>
-<blockquote><font color="#000080">TUNE TO CHANNEL 4
-</font></blockquote><p>
-<p>
-<p>where no television is specified. When we are designing commands which involve two elements (here, a television and a channel number), it's usually a good idea to allow the player to specify those elements in either order, as we saw demonstrated briefly in &quot;New commands for old grammar&quot;.
-<p>
-<p>We might, therefore, want to add a few refinements: first by defining a &quot;[channel]&quot; token that will accept input of the forms &quot;[number]&quot; and &quot;channel [number]&quot;, and second by creating some additional &quot;Understand&quot; lines that will accept variant versions of the player's input.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode368(code) {
+function pasteCode486(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Channel 2"\n\nSection 1 - Televisions in General\n\nA television is a kind of device.\n\nA television has a number called the channel. Understand the channel property as referring to a television. Understand "channel" as a television.\n\nChanging the channel of it to is an action applying to one thing and one number.\n\nUnderstand "tune [television] to [channel]" or "change channel of [television] to [channel]" as changing the channel of it to.\n\nUnderstand "tune [something] to [channel]" or "change channel of [something] to [channel]" as changing the channel of it to.\n\nUnderstand "tune to [channel] on [television]" or "change to [channel] on [television]" as changing the channel of it to (with nouns reversed).\n\nUnderstand "tune to [channel] on [something]" or "change to [channel] on [something]" as changing the channel of it to (with nouns reversed).\n\nUnderstand "[number]" or "channel [number]" as "[channel]".\n\nCheck changing the channel of something to:\n\tif the noun is not a television, say "[The noun] cannot be tuned to a channel." instead.\n\nCarry out changing the channel of something to:\n\tnow the channel of the noun is the number understood.\n\nReport changing the channel of something to:\n\tsay "You tune [the noun] to channel [number understood]."\n\nInstead of examining a television:\n\tif the noun is switched off, say "[The noun] is current turned off." instead;\n\tlet the chosen channel be the channel of the noun;\n\tif the chosen channel is a current channel listed in the Table of Television Channels\n\tbegin;\n\t\tchoose row with current channel of the chosen channel in the Table of Television Channels;\n\tsay "[output entry][paragraph break]";\notherwise;\n\tsay "Snow fills the screen of [the noun].";\nend if.\n\nTable of Television Channels\ncurrent channel\toutput\n0\t"The screen of [the noun] is completely black."\n\nSection 2 - The Scenario\n\nThe Office is a room.\n\nThe widescreen TV is a television in the Office. The fifties TV is a television in the Office.\n\n[And we add the scenario-specific content to our Table of Television Channels; in the case of channel 13, we provide for a changing sequence of events using text variations.]\n\nTable of Television Channels (continued)\ncurrent channel\toutput\n4\t"A gloomy female news anchor describes the latest car bomb in Baghdad: 104 dead today, and no sign of change."\n5\t"A couple of contestants in spangled scarlet outfits are performing an energetic paso doble."\n13\t"[one of]On-screen, Ichiro is up to bat with one man on second and no outs.[or]Ichiro has singled to first and the other man is on third.[or]The next batter is in the middle of flying out.[or]Everything looks rosy until the men in black pull off a double-play and retire the side.[or]The channel has cut to a commercial.[stopping]"\n\nTest me with "test one / test two".\n\nTest one with "change channel of fifties tv to 4 / x channel 4 / switch on fifties / x channel 4 / switch on widescreen / tune fifties tv to channel 5 / x channel 5 / x fifties tv / x channel 4".\n\nTest two with "tune to channel 13 / widescreen / tune channel 13 to channel 5 / tune channel 5 to channel 3 / widescreen / x channel 3".\n\n');
+    myProject.pasteCode('[=0x0022=]Uncommon Ground[=0x0022=][=0x000A=][=0x000A=]The Mud Village is a room. [=0x0022=]You stand at the center of a [show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show] mud village.[=0x0022=][=0x000A=][=0x000A=]Leforge is a man in the Mud Village. Lolita is a woman in the Mud Village.[=0x000A=][=0x000A=]Instead of waiting:[=0x000A=][=0x0009=]if the player is Lolita, change the player to Leforge;[=0x000A=][=0x0009=]if the player is yourself, change the player to Lolita;[=0x000A=][=0x0009=]say [=0x0022=]You jump bodies. Whoops![=0x0022=][=0x000A=][=0x000A=]To say show to (N - a person) -- beginning say_seen_by:[=0x000A=][=0x0009=](-[=0x000A=][=0x0009=][=0x0009=]switch(player)[=0x000A=][=0x0009=][=0x0009=]{-open-brace}[=0x000A=][=0x0009=][=0x0009=]{N}:[=0x000A=][=0x0009=]-);[=0x000A=][=0x000A=]To say to (N - a person) -- continuing say_seen_by:[=0x000A=][=0x0009=](-[=0x000A=][=0x0009=][=0x0009=]{N}:[=0x000A=][=0x0009=]-);[=0x000A=][=0x000A=]To say to everyone else -- continuing say_seen_by:[=0x000A=][=0x0009=](-[=0x000A=][=0x0009=][=0x0009=]default:[=0x000A=][=0x0009=]-)[=0x000A=][=0x000A=]To say end show -- ending say_seen_by:[=0x000A=][=0x0009=](-[=0x000A=][=0x0009=][=0x0009=]{-close-brace}[=0x000A=][=0x0009=]-)[=0x000A=][=0x000A=]Test me with [=0x0022=]look / z / look / z / look[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode368()"><img border=0 src=../doc_images/paste.png></a> &quot;Channel 2&quot;
+<a href="javascript:pasteCode486()"><img border=0 src=../doc_images/paste.png></a> &quot;Uncommon Ground&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 1 - Televisions in General
+<blockquote><font color="#000080">The Mud Village is a room. &quot;You stand at the center of a [show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show] mud village.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A television is a kind of device.
+<blockquote><font color="#000080">Leforge is a man in the Mud Village. Lolita is a woman in the Mud Village.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A television has a number called the channel. Understand the channel property as referring to a television. Understand &quot;channel&quot; as a television.
+<blockquote><font color="#000080">Instead of waiting:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is Lolita, change the player to Leforge;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is yourself, change the player to Lolita;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You jump bodies. Whoops!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Changing the channel of it to is an action applying to one thing and one number.
+<blockquote><font color="#000080">To say show to (N - a person) -- beginning say_seen_by:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch(player)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{-open-brace}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{N}:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-);
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;tune [television] to [channel]&quot; or &quot;change channel of [television] to [channel]&quot; as changing the channel of it to.
+<blockquote><font color="#000080">To say to (N - a person) -- continuing say_seen_by:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{N}:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-);
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;tune [something] to [channel]&quot; or &quot;change channel of [something] to [channel]&quot; as changing the channel of it to.
+<blockquote><font color="#000080">To say to everyone else -- continuing say_seen_by:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;tune to [channel] on [television]&quot; or &quot;change to [channel] on [television]&quot; as changing the channel of it to (with nouns reversed).
+<blockquote><font color="#000080">To say end show -- ending say_seen_by:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{-close-brace}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;tune to [channel] on [something]&quot; or &quot;change to [channel] on [something]&quot; as changing the channel of it to (with nouns reversed).
+<blockquote><font color="#000080">Test me with &quot;look / z / look / z / look&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;[number]&quot; or &quot;channel [number]&quot; as &quot;[channel]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check changing the channel of something to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a television, say &quot;[The noun] cannot be tuned to a channel.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out changing the channel of something to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the channel of the noun is the number understood.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report changing the channel of something to:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You tune [the noun] to channel [number understood].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining a television:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is switched off, say &quot;[The noun] is current turned off.&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the chosen channel be the channel of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the chosen channel is a current channel listed in the Table of Television Channels
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row with current channel of the chosen channel in the Table of Television Channels;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[output entry][paragraph break]&quot;;
-<br>otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Snow fills the screen of [the noun].&quot;;
-<br>end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Television Channels
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">current channel</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">output</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;The screen of [the noun] is completely black.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Section 2 - The Scenario
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Office is a room.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The widescreen TV is a television in the Office. The fifties TV is a television in the Office.
-</font></blockquote><p>
-<p>
-<p>And we add the scenario-specific content to our Table of Television Channels; in the case of channel 13, we provide for a changing sequence of events using text variations.
-<p>
-<blockquote><font color="#000080">Table of Television Channels (continued)
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">current channel</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">output</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;A gloomy female news anchor describes the latest car bomb in Baghdad: 104 dead today, and no sign of change.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;A couple of contestants in spangled scarlet outfits are performing an energetic paso doble.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[one of]On-screen, Ichiro is up to bat with one man on second and no outs.[or]Ichiro has singled to first and the other man is on third.[or]The next batter is in the middle of flying out.[or]Everything looks rosy until the men in black pull off a double-play and retire the side.[or]The channel has cut to a commercial.[stopping]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;test one / test two&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test one with &quot;change channel of fifties tv to 4 / x channel 4 / switch on fifties / x channel 4 / switch on widescreen / tune fifties tv to channel 5 / x channel 5 / x fifties tv / x channel 4&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test two with &quot;tune to channel 13 / widescreen / tune channel 13 to channel 5 / tune channel 5 to channel 3 / widescreen / x channel 3&quot;.
-</font></blockquote><p>
-<p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc256.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc397.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e25"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex25.html#e25 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>282</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex25.html#e25 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Tilt 1</font></b></a><br>A deck of cards with fully implemented individual cards, which can be separately drawn and discarded, and referred to by name.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex25.html#e25 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e329"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex329.html#e329 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>283</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex329.html#e329 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Terracottissima Maxima</font></b></a><br>Flowerpots with textual names that might change during play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex329.html#e329 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc255.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc257.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc396.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc398.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

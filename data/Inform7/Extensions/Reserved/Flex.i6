@@ -28,6 +28,8 @@
 
 #IFDEF I7_HEAP_SIZE;
 
+! Constant SHOW_ALLOCATIONS = 1;
+
 #IFDEF TARGET_ZCODE;
 Constant BLK_DATA_OFFSET 4;
 Constant BLK_DATA_MULTI_OFFSET 8;
@@ -150,7 +152,7 @@ Array I7BASTACK --> 256;
 							break;
 						}
 					!print "Increasing heap by malloc: now ";
-					I7_Blk_Debug_Chunkiness(I7_Blk_Heap, 0);
+					!I7_Blk_Debug_Chunkiness(I7_Blk_Heap, 0);
 					!return 0;
 					jump RetryWithLargerHeap;
 				}
@@ -299,6 +301,17 @@ if (I7_Blk_Recut(first, last)) {
 	rtrue;
 ];
 
+Global i7btal = 0;
+
+[ i7btaldn k;
+	switch (k) {
+		INDEXED_TEXT_TY: print "INDEXED_TEXT_TY";
+		STORED_ACTION_TY: print "STORED_ACTION_TY";
+		LIST_OF_TY: print "LIST_OF_TY";
+		default: print "???";
+	}
+];
+
 [ I7_Blk_Free_Block txb free nx;
 !	print "Block ", txb, " (kov ", I7_Blk_Type(txb), ") freed^";
 	txb-->BLK_HEADER_KOV = 0;
@@ -325,6 +338,9 @@ if (I7_Blk_Recut(first, last)) {
 
 [ I7_Blk_Free txb fromtxb ptxb;
 	if (txb == 0) return;
+#ifdef SHOW_ALLOCATIONS;
+	print "[freed ", (i7btaldn) txb-->BLK_HEADER_KOV, " at ", txb, ": ", --i7btal, "]^";
+#endif;
 	I7_Blk_Deallocate(txb);
 !	print "Block ", txb, " doing ff^";
 	if ((txb->BLK_HEADER_FLAGS) & BLK_FLAG_MULTIPLE) {
@@ -485,8 +501,18 @@ if (I7_Blk_Recut(first, last)) {
 		print "*** Deep copy failed because source empty ***^";
 		rfalse;
 	}
+	if (txbfrom->BLK_N_VALUE == 0) {
+		!txbto->BLK_N_VALUE = 4;
+		!txbto-->BLK_HEADER_KOV = LIST_OF_TY;
+		!txbto->BLK_HEADER_FLAGS = BLK_FLAG_MULTIPLE + BLK_FLAG_WORD;
+		!txbto-->BLK_NEXT = I6_NULL;
+		!txbto-->BLK_PREV = I6_NULL;
+		I7_LIST_OF_TY_CopyRawArray(txbto, txbfrom);
+		return txbto;
+	}
 	if (txbfrom-->BLK_HEADER_KOV ~= txbto-->BLK_HEADER_KOV) {
 		print "*** Deep copy failed because types mismatch ***^";
+		for (i=0: i<10: i++) print txbfrom-->i, "^";
 		print txbfrom, " ", txbfrom-->BLK_HEADER_KOV, " --> ",
 			txbto, " ", txbto-->BLK_HEADER_KOV, "^";
 		rfalse;
@@ -507,6 +533,7 @@ if (I7_Blk_Recut(first, last)) {
 	switch (txbfrom-->BLK_HEADER_KOV) {
 		INDEXED_TEXT_TY: I7_INDEXED_TEXT_TY_Deep_Copy(txbto, txbfrom);
 		STORED_ACTION_TY: I7_STORED_ACTION_TY_Deep_Copy(txbto, txbfrom);
+		LIST_OF_TY: I7_LIST_OF_TY_Deep_Copy(txbto, txbfrom);
 		default: print "*** Impossible runtime deallocation ***^"; rfalse;
 	}
 	return txbto;
@@ -536,6 +563,7 @@ if (I7_Blk_Recut(first, last)) {
 	switch(kov) {
 		INDEXED_TEXT_TY: return I7_INDEXED_TEXT_TY_Compare(txbleft, txbright);
 		STORED_ACTION_TY: return I7_STORED_ACTION_TY_Compare(txbleft, txbright);
+		LIST_OF_TY: return I7_LIST_OF_TY_Compare(txbleft, txbright);
 		default: print "*** Impossible runtime comparison ***^"; rfalse;
 	}
 ];
@@ -561,19 +589,27 @@ if (I7_Blk_Recut(first, last)) {
 	}
 ];
 
-[ I7_Blk_Create kov opcast;
+[ I7_Blk_Create kov opcast skov v;
 	switch (kov) {
-		INDEXED_TEXT_TY: return I7_INDEXED_TEXT_TY_Create(opcast);
-		STORED_ACTION_TY: return I7_STORED_ACTION_TY_Create(opcast);
+		INDEXED_TEXT_TY: v = I7_INDEXED_TEXT_TY_Create(opcast);
+		STORED_ACTION_TY: v = I7_STORED_ACTION_TY_Create(opcast);
+		LIST_OF_TY: v = I7_LIST_OF_TY_Create(skov);
+			if (opcast) I7_LIST_OF_TY_CopyRawArray(v, opcast);
 		default: print "*** Impossible runtime creation ***^"; rfalse;
 	}
+#ifdef SHOW_ALLOCATIONS;
+	print "[created ", (i7btaldn) kov, " at ", v, ": ", i7btal++, "]^";
+#endif;
+	return v;
 ];
 
-[ I7_Blk_Deallocate blk;
+[ I7_Blk_Deallocate blk k rv;
 	if (blk == 0) return;
-	switch (blk-->BLK_HEADER_KOV) {
-		INDEXED_TEXT_TY: return I7_INDEXED_TEXT_TY_Free(blk);
-		STORED_ACTION_TY: return I7_STORED_ACTION_TY_Free(blk);
+	k = blk-->BLK_HEADER_KOV;
+	switch (k) {
+		INDEXED_TEXT_TY: rv = I7_INDEXED_TEXT_TY_Free(blk);
+		STORED_ACTION_TY: rv = I7_STORED_ACTION_TY_Free(blk);
+		LIST_OF_TY: rv = I7_LIST_OF_TY_Free(blk);
 		default: print "*** Impossible runtime deallocation ***^"; rfalse;
 	}
 ];
@@ -592,6 +628,7 @@ if (I7_Blk_Recut(first, last)) {
 [ I7_Blk_Write_File_Form; ];
 [ I7_Blk_Free; ];
 [ I7_Blk_Create; ];
+[ I7_Blk_Deep_Comparison x y; ];
 
 [ ShowHeapSub;
 	">--> This story file does not use a heap of managed memory.";

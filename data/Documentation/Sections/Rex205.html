@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.1. Gases</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.11. Characters Following a Script</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,97 +19,293 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "Only You..." -->
-<!-- SEARCH SECTION "Ex 225" -->
-<!-- SEARCH SORT "Ex 010-001-225" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc71.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap10.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 10: Physics: Substances, Ropes, Energy and Weight</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc73.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.1. Gases</b></font></td></tr></table>
+<!-- SEARCH TITLE "Robo 2" -->
+<!-- SEARCH SECTION "Ex 372" -->
+<!-- SEARCH SORT "Ex 007-011-372" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc49.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap7.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 7: Other Characters</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc51.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.11. Characters Following a Script</b></font></td></tr></table>
 <p>
-<p>Inform normally assumes that everything is solid. It has no built-in support for gases or liquids, because they have so many different behaviours. For instance, is the important thing about gas that it diffuses, or that we breathe it, or that it mixes with other gases to react, or that it sometimes obscures vision? The answer depends on what we are trying to write, and for this reason Inform leaves it up to us.
+<p>So far we've seen characters who will answer questions whenever the player feels like asking, and characters who will use some reasoning procedure to direct the conversation. There is a third option, often useful in IF with a fast-paced narrative: the character follows a conversational script, making sure to cover a series of points before the scene ends.
 <p>
-<p>Gases are easier to deal with than liquids, because they tend to be everywhere in their location at once (unlike a liquid which might form a pool on the floor) and because they diffuse and mix by themselves (rather than being carried around or brought into contact with each other by the player). On the other hand, unlike liquids, gases are compressible: they can be present at low or high pressures, that is, in low or high concentrations.
+<p>There are more and less tedious ways to implement this kind of scene. The worst case is one in which the player is not allowed to interrupt or ask any questions; he must merely wait until the character runs out of things to say. This can be useful and plausible in very small doses - say, two or three turns - but if the character has more information than that to impart, we may want to make the scene more interactive.
 <p>
-<p>The simplest approach is the one in <b>Only You...</b>, where rooms are either filled with smoke or else smoke-free. Smoke gradually fills through the map, obscuring vision: no attempt is made to conserve the total quantity of smoke, as we assume that some fire is churning it out continuously to replace what diffuses away.
+<p><b>Pine 2</b> partly addresses this challenge: the character has a line of conversation that she wants to follow to its conclusion; we may ask questions along the way, but if we're silent, she'll take up the slack, and the scene won't end until she's done with what she has to say.
 <p>
-<p><b>Lethal Concentration 1</b> and <b>2</b> simulate a gas diffusing through a three-dimensional maze of rooms, and becoming dangerous above certain concentrations. There is just one possible gas, and it is modelled by giving each room a number which represents the concentration (in parts per million). This enables us to conserve the total amount of gas, or to have it released or captured by sources and sinks of given capacity.
+<p>Another kind of script is a series of actions for the character to perform. <b>Robo</b> demonstrates a programmable robot that will observe what the player does, then try to emulate the actions later when switched into play-back mode. <b>Robo 2</b> extends this capacity to allow the robot to contain fifteen different scripts which the player can store, list, run, and erase.
 <p>
-<p>This could be extended by giving each room similar concentration levels for other gases, and providing for the diffusion rule to notice when different gases come into contact; or by giving a concentration (and also, for realism, a volume) to each closed container, applying rules for capturing and releasing gases as containers are opened and closed.
+<p><b>Your Mother Doesn't Work Here</b> offers a character with a list of tasks but whose plans can be interrupted by more urgent demands. This verges on not being a simple script any more: if we carry the idea to its natural conclusion, we get characters capable of planning scripts for themselves to accomplish their aims. This is conventionally called &quot;goal-seeking&quot;.
 <p>
+<a href=Rdoc53.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Goal-Seeking Characters</b></font></a><i> for characters that work out plans for themselves in order to accomplish various outcomes</i><p><p>
 <p><hr><p>
+<a name="e228"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex228.html#e228 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>147</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex228.html#e228 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Pine 2</font></b></a><br>Pine: Adding a conversation with the princess, in which a basic set of facts must be covered before the scene is allowed to end.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex228.html#e228 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e233"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex233.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>370</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex233.html#e233 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Robo 1</font></b></a><br>A robot which watches and records the player's actions, then tries to repeat them back in the same order when he is switched into play-back mode.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex233.html#e233 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e205"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc72.html#e205 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>225</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc72.html#e205 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Only You...</font></b></a><br>Smoke which spreads through the rooms of the map, but only every other turn.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex205.html#e205 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e205"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc50.html#e205 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>372</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc50.html#e205 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Robo 2</font></b></a><br>A robot which watches and records the player's actions, then tries to repeat them back in the same order when he is switched into play-back mode.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex205.html#e205 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to have smoke that spreads from room to room, gradually filling the entire map with a clogging smoke. Having it spread every single turn would make for a pretty rapid diffusion, so we temper this by having it spread only on even-numbered turns, instead:
+<p>We have seen how we can make a robot that watches the player, then plays back the same actions again. A slightly more adventurous implementation would be to let the player create a whole series of named scripts which the robot will run on command.
+<p>
+<p>To do this, we'll need each program to have a command that sets it off (stored as indexed text, since this is the best way to capture and preserve arbitrary text entered by the player) and then the script of actions that must result:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode706(code) {
+function pasteCode868(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Only You..."\n\nEvery turn when the turn count is even:\n\tif every room is smoky, make no decision;\n\tif location is unsmoky, let current state be 0; otherwise let current state be 1;\n\trepeat with area running through smoky rooms\n\tbegin;\n\t\tnow every room which is adjacent to the area is smoky;\n\tend repeat;\n\tif current state is 0 and the location is smoky, say "[The location] is filling rapidly with smoke."\n\nTo decide whether the turn count is even:\n\tif the remainder after dividing the turn count by 2 is 0, yes;\n\tno.\n\nA room can be smoky or unsmoky.\n\nSome air is a backdrop. Air is everywhere. Instead of doing something other than examining or smelling to air: say "It\'s just air." Understand "smoke" as the air when the location is smoky.\n\nInstead of examining the air in a smoky room: say "A thick layer of smoke lies just under the ceiling."\n\nInstead of smelling the air in a smoky room: say "Agh, acrid." Instead of smelling a smoky room: try smelling the air.\n\nThe Guide Lodge is a room. "A very spacious room capable of containing several hundred girls while they eat, talk, or do crafts. It is constructed in a not-unappealing rustic style, with floor-to-ceiling windows overlooking the lake below, and a fieldstone hearth at the center." The Guide Lodge is smoky\n\nAfter looking in a smoky room: say "A thick layer of smoke has gathered under the ceiling."\n\nThe Kitchen is north of the Guide Lodge. "Multiple eight-burner ranges, ovens, and a walk-in refrigerator: you know the sort of thing."\n\nThe Industrial Pantry is east of the Kitchen. "Awe-inspiring quantities of food line every shelf, from the three-gallon tub of mayonnaise to the 50-pound tub of rice. Perhaps the most astonishing item is a bag of marshmallows big enough to double as a futon."\n\nThe player is in the Pantry.\n\nThe Hallway is west of the Guide Lodge. The description of the Hallway is "A perpetually-crammed hallway which has to handle the overflow line for the toilets." A singed sign is fixed in place in the Hallway. The description of the sign is "Where the edge of the sign has not been burnt, the legible words are \'...Can Prevent Forest Fires\'."\n\nThe Toilets are north of the Hallway. "Always in full use, at least when the 12-to-15s are here."\n\nThe Coat Closet is south of the Hallway. "Muddy boots may not be worn inside the lodge; instead, about 250 pair are piled here, along with their owners\' damp parkas and umbrellas."\n\nThe Craft Supply Room is west of the Hallway. "A holding-depot for jugs of white glue and popsicle sticks."\n\nTest me with "x smoke / z / z / z / z / x smoke / look".\n');
+    myProject.pasteCode('[=0x0022=]Robo 2[=0x0022=][=0x000A=][=0x000A=]Chapter 1 - Programming[=0x000A=][=0x000A=]Section 1 - The Programs Themselves[=0x000A=][=0x000A=]The hard drive is a container. A program is a kind of thing. 15 programs are in hard drive. A program has some indexed text called the starter command. A program has a list of stored actions called the script. Understand the starter command property as describing a program.[=0x000A=][=0x000A=]Rule for printing the name of a program (called the target) which is not blank:[=0x000A=][=0x0009=]say [=0x0022=][starter command of the target in upper case][=0x0022=].[=0x000A=][=0x000A=]Definition: a program is blank if the number of entries in its script is 0.[=0x000A=][=0x000A=]The current instruction name is some indexed text that varies. The current instruction set is a list of stored actions that varies.[=0x000A=][=0x000A=][Now, we want to let Robo learn new programs; for this purpose, we[=0x0027=]ll emulate the code from our previous implementation, so that Robo watches what the player does and stores those actions in his script:][=0x000A=][=0x000A=]Section 2 - Learning New Programs[=0x000A=][=0x000A=]Understand [=0x0022=]learn [text][=0x0022=] as learning. Learning is an action applying to one topic.[=0x000A=][=0x000A=]Check learning:[=0x000A=][=0x0009=]say [=0x0022=]You have already learned all you need to know. Robo, however, remains to be trained.[=0x0022=] instead.[=0x000A=][=0x000A=]Check Robo learning:[=0x000A=][=0x0009=]if Robo is watching, say [=0x0022=]Robo is already recording [=0x0027=][the current instruction name][=0x0027=].[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out Robo learning:[=0x000A=][=0x0009=]truncate the current instruction set to 0 entries;[=0x000A=][=0x0009=]change the current instruction name to the topic understood;[=0x000A=][=0x0009=]now Robo is watching.[=0x000A=][=0x000A=]Report Robo learning:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]Learning [the current instruction name in upper case],[=0x0027=] Robo replies.[=0x0022=][=0x000A=][=0x000A=]After doing something when Robo is watching and Robo can see the player:[=0x000A=][=0x0009=]change the actor to Robo;[=0x000A=][=0x0009=]add the current action to the current instruction set;[=0x000A=][=0x0009=]change the actor to the player;[=0x000A=][=0x0009=]say [=0x0022=]Robo watches you [the current action][one of], his yellow eyes lamp-like and observant[or]. In his metal head, gears whirr[or], his brushed-copper handlebar moustaches twitching[or] impassively[at random].[=0x0022=];[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=][Of course, we also need to be able to switch learning mode off, and store any script learned this way. We[=0x0027=]ll also use the same STOP command to make Robo terminate a program he[=0x0027=]s in the middle of running.][=0x000A=][=0x000A=]Section 3 - Returning to Standby Mode[=0x000A=][=0x000A=]Understand [=0x0022=]stop[=0x0022=] as stopping. Stopping is an action applying to nothing.[=0x000A=][=0x000A=]Check stopping:[=0x000A=][=0x0009=]say [=0x0022=]The command is useful only for Robo.[=0x0022=] instead.[=0x000A=][=0x000A=]Check Robo stopping:[=0x000A=][=0x0009=]if Robo is standing by, stop the action.[=0x000A=][=0x000A=]Carry out Robo stopping when Robo is watching:[=0x000A=][=0x0009=]let N be a random blank program;[=0x000A=][=0x0009=]if N is a program[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]change the starter command of N to the current instruction name;[=0x000A=][=0x0009=][=0x0009=]change the script of N to the current instruction set;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][=0x0027=]Stored [current instruction name in upper case].[=0x0027=][=0x0022=];[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]FAILURE: no program slots remaining.[=0x0022=];[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]Carry out Robo stopping:[=0x000A=][=0x0009=]now Robo is standing by;[=0x000A=][=0x000A=]Report Robo stopping:[=0x000A=][=0x0009=]say [=0x0022=]Robo is now standing by.[=0x0022=][=0x000A=][=0x000A=][Next, we need to be able to play these programs back again. We[=0x0027=]ll give Robo a [=0x0022=]current program[=0x0022=] to store which program he[=0x0027=]s currently working on, and a number called [=0x0022=]stage[=0x0022=] which will record where he is in the script. Our previous implementation simply had Robo erase entries from his script list as he performed them, but this time we would like Robo to be able to remember and rerun the same scripts over and over, so we need something a little more subtle.][=0x000A=][=0x000A=]Section 4 - Running Learned Programs[=0x000A=][=0x000A=]Understand [=0x0022=]run [any program][=0x0022=] as running. Running is an action applying to one visible thing.[=0x000A=][=0x000A=]Check running:[=0x000A=][=0x0009=]say [=0x0022=]Only Robo can perform Robo[=0x0027=]s programs.[=0x0022=] instead.[=0x000A=][=0x000A=]Check Robo running:[=0x000A=][=0x0009=]if Robo is not standing by, stop the action.[=0x000A=][=0x000A=]Unsuccessful attempt by Robo running:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]ERROR: Robo can launch new programs only when on standby.[=0x0027=][=0x0022=][=0x000A=][=0x000A=]Carry out Robo running:[=0x000A=][=0x0009=]now the current program of Robo is the noun;[=0x000A=][=0x0009=]change the stage of Robo to 1;[=0x000A=][=0x0009=]now Robo is replaying.[=0x000A=][=0x000A=]Report Robo running:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]Running [the starter command in upper case],[=0x0027=] Robo confirms.[=0x0022=][=0x000A=][=0x000A=]Every turn when Robo is replaying:[=0x000A=][=0x0009=]let the chosen script be the script of the current program of Robo;[=0x000A=][=0x0009=]let maximum be the number of entries in the chosen script;[=0x000A=][=0x0009=]let N be the stage of Robo;[=0x000A=][=0x0009=]let the next step be entry N of the chosen script;[=0x000A=][=0x0009=]try the next step;[=0x000A=][=0x0009=]increase the stage of Robo by 1;[=0x000A=][=0x0009=]if the stage of Robo is greater than the maximum[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Robo[=0x0027=]s program ends, and he reverts to stand-by mode.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]now Robo is standing by;[=0x000A=][=0x0009=][=0x0009=]now the stage of Robo is 1;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=][For the player[=0x0027=]s sanity, we should also provide a way to find out which programs Robo has stored in memory and what they do, so we design two listing commands:][=0x000A=][=0x000A=]Section 5 - Listing Learned Programs[=0x000A=][=0x000A=]Understand [=0x0022=]list programs[=0x0022=] as requesting program list. Requesting program list is an action applying to nothing.[=0x000A=][=0x000A=]Check requesting program list:[=0x000A=][=0x0009=]say [=0x0022=]You will have to ask Robo to list programs.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out Robo requesting program list:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]The available program[if more than one program is not blank]s[end if] [is-are list of programs which are not blank].[=0x0027=][=0x0022=].[=0x000A=][=0x000A=][=0x000A=]Understand [=0x0022=]describe [any program][=0x0022=] or [=0x0022=]list [any program][=0x0022=] as requesting script of. Requesting script of is an action applying to one visible thing.[=0x000A=][=0x000A=]Check requesting script of:[=0x000A=][=0x0009=]say [=0x0022=]You will have to ask Robo to give you the script.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out Robo requesting script of:[=0x000A=][=0x0009=]say [=0x0022=]The script of [noun] is: [script of the noun].[=0x0022=][=0x000A=][=0x000A=][And to complete the suite, in case the player runs into Robo[=0x0027=]s fifteen-program limit:][=0x000A=][=0x000A=]Section 6 - Deleting Learned Programs[=0x000A=][=0x000A=]Understand [=0x0022=]delete [any program][=0x0022=] as deleting. Deleting is an action applying to one visible thing. Understand the command [=0x0022=]erase[=0x0022=] as [=0x0022=]delete[=0x0022=].[=0x000A=][=0x000A=]Check deleting:[=0x000A=][=0x0009=]say [=0x0022=]You will have to instruct Robo to delete [the noun].[=0x0022=] instead.[=0x000A=][=0x000A=]Check Robo deleting (this is the can[=0x0027=]t delete except in standby rule):[=0x000A=][=0x0009=]if Robo is not standing by, stop the action;[=0x000A=][=0x000A=]Unsuccessful attempt by Robo deleting:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]ERROR: programs may only be deleted while Robo is in stand-by mode.[=0x0027=][=0x0022=] instead.[=0x000A=][=0x000A=]Carry out Robo deleting:[=0x000A=][=0x0009=]truncate the script of the noun to 0 entries;[=0x000A=][=0x0009=]change the starter command of the noun to [=0x0022=][=0x0022=];[=0x000A=][=0x000A=]Report Robo deleting:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]Program deleted.[=0x0027=][=0x0022=][=0x000A=][=0x000A=][Now we use pretty much the same set-up as before to test Robo[=0x0027=]s abilities:][=0x000A=][=0x000A=]Chapter 2 - The Scenario[=0x000A=][=0x000A=]The Experimentation Chamber is a room.[=0x000A=][=0x000A=]Robo is a man in the Experimentation Chamber. [=0x0022=]Robo, your prototype tin companion, stands awkwardly beside you[if watching], watching[end if].[=0x0022=] Robo can be watching, replaying, or standing by. Robo is standing by. Robo has a program called the current program. Robo has a number called the stage.[=0x000A=][=0x000A=]Persuasion rule: persuasion succeeds.[=0x000A=][=0x000A=]The red block and the blue cylinder are things in the Experimentation Chamber. The counter is a supporter in the Experimentation Chamber. The counter is scenery.[=0x000A=][=0x000A=]Report Robo examining Robo:[=0x000A=][=0x0009=]say [=0x0022=]Robo examines each of his hands in turn, then each of his legs (bending over mostly double in the middle to do this).[=0x0022=] instead.[=0x000A=][=0x000A=]Report Robo examining the player:[=0x000A=][=0x0009=]say [=0x0022=]Robo stares at you, unblinkingly, for several seconds together[if a random chance of 1 in 7 succeeds]. His left moustache-bar twitches infinitesimally upward[end if].[=0x0022=] instead.[=0x000A=][=0x000A=]Report Robo taking the cylinder:[=0x000A=][=0x0009=]say [=0x0022=][one of][Robo] needs several attempts to get his metal fingers around [the cylinder] -- they are not designed for grasping small objects elegantly. But at last he succeeds[or]Once again, Robo struggles a bit before picking up [the cylinder][stopping].[=0x0022=] instead.[=0x000A=][=0x000A=]Test me with [=0x0022=]test chocolate / test vanilla[=0x0022=].[=0x000A=][=0x000A=]Test chocolate with [=0x0022=]learn chocolate / stop / list programs / Robo, learn chocolate / take red / put all on counter / Robo, stop / Robo, list programs / Robo, run chocolate / z / Robo, run chocolate / Robo, stop / z[=0x0022=].[=0x000A=][=0x000A=]Test vanilla with [=0x0022=]Robo, learn vanilla / take all / i / drop all / x robo / x me / Robo, stop / Robo, list programs / Robo, list vanilla / Robo, run vanilla / z / z / robo, delete vanilla / robo, stop / robo, list vanilla / robo, delete vanilla / robo, list programs[=0x0022=].[=0x000A=][=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode706()"><img border=0 src=../doc_images/paste.png></a> &quot;Only You...&quot;
+<a href="javascript:pasteCode868()"><img border=0 src=../doc_images/paste.png></a> &quot;Robo 2&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when the turn count is even:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if every room is smoky, make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if location is unsmoky, let current state be 0; otherwise let current state be 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with area running through smoky rooms
+<blockquote><font color="#000080">Chapter 1 - Programming
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Section 1 - The Programs Themselves
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The hard drive is a container. A program is a kind of thing. 15 programs are in hard drive. A program has some indexed text called the starter command. A program has a list of stored actions called the script. Understand the starter command property as describing a program.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Rule for printing the name of a program (called the target) which is not blank:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[starter command of the target in upper case]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a program is blank if the number of entries in its script is 0.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The current instruction name is some indexed text that varies. The current instruction set is a list of stored actions that varies.
+</font></blockquote><p>
+<p>
+<p>Now, we want to let Robo learn new programs; for this purpose, we'll emulate the code from our previous implementation, so that Robo watches what the player does and stores those actions in his script:
+<p>
+<blockquote><font color="#000080">Section 2 - Learning New Programs
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;learn [text]&quot; as learning. Learning is an action applying to one topic.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check learning:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You have already learned all you need to know. Robo, however, remains to be trained.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check Robo learning:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Robo is watching, say &quot;Robo is already recording '[the current instruction name]'.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out Robo learning:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;truncate the current instruction set to 0 entries;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the current instruction name to the topic understood;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Robo is watching.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Robo learning:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Learning [the current instruction name in upper case],' Robo replies.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After doing something when Robo is watching and Robo can see the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the actor to Robo;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the current action to the current instruction set;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the actor to the player;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo watches you [the current action][one of], his yellow eyes lamp-like and observant[or]. In his metal head, gears whirr[or], his brushed-copper handlebar moustaches twitching[or] impassively[at random].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+</font></blockquote><p>
+<p>
+<p>Of course, we also need to be able to switch learning mode off, and store any script learned this way. We'll also use the same STOP command to make Robo terminate a program he's in the middle of running.
+<p>
+<blockquote><font color="#000080">Section 3 - Returning to Standby Mode
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;stop&quot; as stopping. Stopping is an action applying to nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check stopping:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The command is useful only for Robo.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check Robo stopping:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Robo is standing by, stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out Robo stopping when Robo is watching:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be a random blank program;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if N is a program
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now every room which is adjacent to the area is smoky;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if current state is 0 and the location is smoky, say &quot;[The location] is filling rapidly with smoke.&quot;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the starter command of N to the current instruction name;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the script of N to the current instruction set;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Stored [current instruction name in upper case].'&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;FAILURE: no program slots remaining.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To decide whether the turn count is even:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the remainder after dividing the turn count by 2 is 0, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+<blockquote><font color="#000080">Carry out Robo stopping:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Robo is standing by;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A room can be smoky or unsmoky.
+<blockquote><font color="#000080">Report Robo stopping:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo is now standing by.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Some air is a backdrop. Air is everywhere. Instead of doing something other than examining or smelling to air: say &quot;It's just air.&quot; Understand &quot;smoke&quot; as the air when the location is smoky.
+<p>Next, we need to be able to play these programs back again. We'll give Robo a &quot;current program&quot; to store which program he's currently working on, and a number called &quot;stage&quot; which will record where he is in the script. Our previous implementation simply had Robo erase entries from his script list as he performed them, but this time we would like Robo to be able to remember and rerun the same scripts over and over, so we need something a little more subtle.
+<p>
+<blockquote><font color="#000080">Section 4 - Running Learned Programs
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining the air in a smoky room: say &quot;A thick layer of smoke lies just under the ceiling.&quot;
+<blockquote><font color="#000080">Understand &quot;run [any program]&quot; as running. Running is an action applying to one visible thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of smelling the air in a smoky room: say &quot;Agh, acrid.&quot; Instead of smelling a smoky room: try smelling the air.
+<blockquote><font color="#000080">Check running:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Only Robo can perform Robo's programs.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Guide Lodge is a room. &quot;A very spacious room capable of containing several hundred girls while they eat, talk, or do crafts. It is constructed in a not-unappealing rustic style, with floor-to-ceiling windows overlooking the lake below, and a fieldstone hearth at the center.&quot; The Guide Lodge is smoky
+<blockquote><font color="#000080">Check Robo running:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Robo is not standing by, stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After looking in a smoky room: say &quot;A thick layer of smoke has gathered under the ceiling.&quot;
+<blockquote><font color="#000080">Unsuccessful attempt by Robo running:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'ERROR: Robo can launch new programs only when on standby.'&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Kitchen is north of the Guide Lodge. &quot;Multiple eight-burner ranges, ovens, and a walk-in refrigerator: you know the sort of thing.&quot;
+<blockquote><font color="#000080">Carry out Robo running:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the current program of Robo is the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the stage of Robo to 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Robo is replaying.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Industrial Pantry is east of the Kitchen. &quot;Awe-inspiring quantities of food line every shelf, from the three-gallon tub of mayonnaise to the 50-pound tub of rice. Perhaps the most astonishing item is a bag of marshmallows big enough to double as a futon.&quot;
+<blockquote><font color="#000080">Report Robo running:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Running [the starter command in upper case],' Robo confirms.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player is in the Pantry.
+<blockquote><font color="#000080">Every turn when Robo is replaying:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the chosen script be the script of the current program of Robo;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let maximum be the number of entries in the chosen script;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be the stage of Robo;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the next step be entry N of the chosen script;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try the next step;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;increase the stage of Robo by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the stage of Robo is greater than the maximum
+<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo's program ends, and he reverts to stand-by mode.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now Robo is standing by;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the stage of Robo is 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Hallway is west of the Guide Lodge. The description of the Hallway is &quot;A perpetually-crammed hallway which has to handle the overflow line for the toilets.&quot; A singed sign is fixed in place in the Hallway. The description of the sign is &quot;Where the edge of the sign has not been burnt, the legible words are '...Can Prevent Forest Fires'.&quot;
+<p>For the player's sanity, we should also provide a way to find out which programs Robo has stored in memory and what they do, so we design two listing commands:
+<p>
+<blockquote><font color="#000080">Section 5 - Listing Learned Programs
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Toilets are north of the Hallway. &quot;Always in full use, at least when the 12-to-15s are here.&quot;
+<blockquote><font color="#000080">Understand &quot;list programs&quot; as requesting program list. Requesting program list is an action applying to nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Coat Closet is south of the Hallway. &quot;Muddy boots may not be worn inside the lodge; instead, about 250 pair are piled here, along with their owners' damp parkas and umbrellas.&quot;
+<blockquote><font color="#000080">Check requesting program list:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You will have to ask Robo to list programs.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Craft Supply Room is west of the Hallway. &quot;A holding-depot for jugs of white glue and popsicle sticks.&quot;
+<blockquote><font color="#000080">Carry out Robo requesting program list:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'The available program[if more than one program is not blank]s[end if] [is-are list of programs which are not blank].'&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;x smoke / z / z / z / z / x smoke / look&quot;.
+<p>
+<blockquote><font color="#000080">Understand &quot;describe [any program]&quot; or &quot;list [any program]&quot; as requesting script of. Requesting script of is an action applying to one visible thing.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc72.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Check requesting script of:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You will have to ask Robo to give you the script.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out Robo requesting script of:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The script of [noun] is: [script of the noun].&quot;
+</font></blockquote><p>
+<p>
+<p>And to complete the suite, in case the player runs into Robo's fifteen-program limit:
+<p>
+<blockquote><font color="#000080">Section 6 - Deleting Learned Programs
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;delete [any program]&quot; as deleting. Deleting is an action applying to one visible thing. Understand the command &quot;erase&quot; as &quot;delete&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check deleting:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You will have to instruct Robo to delete [the noun].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check Robo deleting (this is the can't delete except in standby rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Robo is not standing by, stop the action;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Unsuccessful attempt by Robo deleting:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'ERROR: programs may only be deleted while Robo is in stand-by mode.'&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out Robo deleting:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;truncate the script of the noun to 0 entries;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the starter command of the noun to &quot;&quot;;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Robo deleting:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Program deleted.'&quot;
+</font></blockquote><p>
+<p>
+<p>Now we use pretty much the same set-up as before to test Robo's abilities:
+<p>
+<blockquote><font color="#000080">Chapter 2 - The Scenario
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Experimentation Chamber is a room.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Robo is a man in the Experimentation Chamber. &quot;Robo, your prototype tin companion, stands awkwardly beside you[if watching], watching[end if].&quot; Robo can be watching, replaying, or standing by. Robo is standing by. Robo has a program called the current program. Robo has a number called the stage.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Persuasion rule: persuasion succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The red block and the blue cylinder are things in the Experimentation Chamber. The counter is a supporter in the Experimentation Chamber. The counter is scenery.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Robo examining Robo:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo examines each of his hands in turn, then each of his legs (bending over mostly double in the middle to do this).&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Robo examining the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Robo stares at you, unblinkingly, for several seconds together[if a random chance of 1 in 7 succeeds]. His left moustache-bar twitches infinitesimally upward[end if].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report Robo taking the cylinder:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[one of][Robo] needs several attempts to get his metal fingers around [the cylinder] -- they are not designed for grasping small objects elegantly. But at last he succeeds[or]Once again, Robo struggles a bit before picking up [the cylinder][stopping].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;test chocolate / test vanilla&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test chocolate with &quot;learn chocolate / stop / list programs / Robo, learn chocolate / take red / put all on counter / Robo, stop / Robo, list programs / Robo, run chocolate / z / Robo, run chocolate / Robo, stop / z&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test vanilla with &quot;Robo, learn vanilla / take all / i / drop all / x robo / x me / Robo, stop / Robo, list programs / Robo, list vanilla / Robo, run vanilla / z / z / robo, delete vanilla / robo, stop / robo, list vanilla / robo, delete vanilla / robo, list programs&quot;.
+</font></blockquote><p>
+<p>
+<p>
+<p>We could also have written this so that Robo learns new scripts by accepting the player's instructions, so that
+<p>
+<blockquote><font color="#000080">>ROBO, LEARN LIBRARY THEFT
+<br>>ROBO, TAKE BOOK
+<br>>ROBO, EAST
+<br>>ROBO, STOP
+</font></blockquote><p>
+<p>
+<p>...would store the script 'library theft' with the actions taking the book and going east. The implementation there would have been mostly identical, except that instead of an &quot;after doing something...&quot; rule, we would have captured commands as we asked Robo to perform them, and added those to the command list in progress. The alternative code might look something like this:
+<p>
+<blockquote><font color="#000080">Before Robo doing something other than stopping when Robo is watching:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the current action to the current instruction set;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'CHECK: [current action] added to script,' says Robo.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Unsuccessful attempt by Robo doing something when Robo is watching:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;He does not actually perform the action.&quot;
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc50.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e76"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex76.html#e76 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>351</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex76.html#e76 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 1</font></b></a><br>A poisonous gas that spreads from room to room, incapacitating or killing the player when it reaches sufficient levels.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex76.html#e76 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e241"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex241.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>352</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex241.html#e241 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 2</font></b></a><br>Poisonous gas again, only this time it sinks.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex241.html#e241 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc71.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc73.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e328"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex328.html#e328 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>377</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex328.html#e328 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Your Mother Doesn't Work Here</font></b></a><br>Your hard-working mother uses a list as a stack: urgent tasks are added to the end of the list, interrupting longer-term plans.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex328.html#e328 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc49.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc51.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

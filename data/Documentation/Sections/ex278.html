@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.8. Replacements</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>23.19. Longer extracts of Inform 6 code</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,112 +19,100 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Northstar" -->
-<!-- SEARCH SECTION "Ex 369" -->
-<!-- SEARCH SORT "Ex 019-008-369" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc322.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc324.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.8. Replacements</b></font></td></tr></table>
+<!-- SEARCH TITLE "Status line with centered text, the hard way" -->
+<!-- SEARCH SECTION "Ex 394" -->
+<!-- SEARCH SORT "Ex 023-019-394" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc390.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap23.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 23: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc392.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>23.19. Longer extracts of Inform 6 code</b></font></td></tr></table>
 <p>
-<p>Suppose V is an indexed text which varies - perhaps a property of something, or a variable defined everywhere, or a temporary &quot;let&quot;-named value. How do we change its contents? The easiest way is simply to assign text to it. Thus:
+<p>Whole routines, object and class definitions (or any other directives) can be pasted in wholesale using sentences like so:
 <p>
-<blockquote><font color="#000080">let V be &quot;It is now [the time of the day in words].&quot;
+<blockquote><font color="#000080">Include (-
+<br>[ MyInform6Routine a b; return a*b; ];
+<br>-).
 </font></blockquote><p>
 <p>
-<p>And, for instance,
+<p>Such inclusions are pasted into the final compiled code at the end of the file, after the I6 grammar has been declared.
 <p>
-<blockquote><font color="#000080">let V be &quot;[V]!&quot;
+<p>In such extracts, we sometimes need to refer to objects, variables or values which can't be described using I6: or rather, which can be described, but we don't know how. To this end, any text in an inclusion written in &quot;(+&quot; and &quot;+)&quot; parentheses is treated as an I7 value, and compiled accordingly, with all type-checking waived for the occasion. For instance:
+<p>
+<blockquote><font color="#000080">Include (-
+<br>Global my_global = (+ the tartan rucksack +);
+<br>-).
 </font></blockquote><p>
 <p>
-<p>adds an exclamation mark at the end of V.
+<p>Here &quot;the tartan rucksack&quot; is translated into &quot;O18_tartan_rucksack&quot;, or something similar: the I6 object created to represent the rucksack. Thus the actual line of code produced is
 <p>
-<p>Otherwise, it is more useful (also a little faster) to modify V by changing its characters, words and so on. Thus:
-<p>
-<blockquote><font color="#000080">replace character number N in V with NEW
+<blockquote><font color="#000080">Global my_global = O18_tartan_rucksack;
 </font></blockquote><p>
 <p>
-<p>changes the Nth character to NEW (which is not required to be a single character: it simply occupies the spot previously occupied by the Nth character). Similarly:
+<p>Note that the brace notation seen before for Inform 6-defined inline phrases is not allowed here. But this is better anyway.
 <p>
-<blockquote><font color="#000080">replace word number N in V with NEW
-<br>replace punctuated word number N in V with NEW
-<br>replace unpunctuated word number N in V with NEW
-<br>replace line number N in V with NEW
-<br>replace paragraph number N in V with NEW
+<p>The Standard Rules make use of the notation:
+<p>
+<blockquote><font color="#000080">Include (-
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...
+<br>-) before the library.
 </font></blockquote><p>
 <p>
-<p>Last, but not least, we can replace text wherever it occurs:
-<p>
-<blockquote><font color="#000080">replace the text FIND in V with NEW
-<br>replace the text FIND in V with NEW, case insensitively
-<br>replace the regular expression FIND in V with NEW
-<br>replace the regular expression FIND in V with NEW, case insensitively
-</font></blockquote><p>
-<p>
-<p>These match as much as they can, but again, with the matches not allowed to overlap. Thus
-<p>
-<blockquote><font color="#000080">replace the text &quot;a&quot; in V with &quot;z&quot;
-</font></blockquote><p>
-<p>
-<p>changes every lower-case &quot;a&quot; to &quot;z&quot;: the same thing done case insensitively would change each &quot;a&quot; or &quot;A&quot; to &quot;z&quot;.
-<p>
-<p>When replacing a regular expression, the replacement text also has a few special meanings (though, thankfully, many fewer than for the expression itself). Once again &quot;\n&quot; and &quot;\t&quot; can be used for line break and tab characters, and &quot;\\&quot; must be used for an actual backslash. But, very usefully, &quot;\1&quot; to &quot;\9&quot; expand as the contents of groups numbered 1 to 9, and &quot;\0&quot; to the exact text matched. So:
-<p>
-<blockquote><font color="#000080">replace the regular expression &quot;\d+&quot; in V with &quot;roughly \0&quot;
-</font></blockquote><p>
-<p>
-<p>adds the word &quot;roughly&quot; in front of any run of digits in V, because \0 becomes in turn whichever run of digits matched. And
-<p>
-<blockquote><font color="#000080">replace the regular expression &quot;(\w+) (.*)&quot; in V with &quot;\2, \1&quot;
-</font></blockquote><p>
-<p>
-<p>performs the transformation &quot;Frank Booth&quot; to &quot;Booth, Frank&quot;.
-<p>
-<p>Finally, prefixing the number by &quot;l&quot; or &quot;u&quot; forces the text it represents into lower or upper case, respectively. For instance:
-<p>
-<blockquote><font color="#000080">replace the regular expression &quot;\b(\w)(\w*)&quot; in X with &quot;\u1\l2&quot;;
-</font></blockquote><p>
-<p>
-<p>changes the casing of X to &quot;title casing&quot;, where each individual word is capitalised. (This is a little slow on large texts, since so many matches and replacements are made: it's more efficient to use the official phrases for changing case.)
+<p>the reference being to the I6 code appearing before the I6 library is included. Extension writers are asked not to use this if they can possibly avoid it, and are warned that creating I6 attributes or properties may cause I7 code to misbehave. (If new properties are needed, they should be created in I7 and referred to using the &quot;(+&quot; notation.)
 <p>
 <p><hr><p>
-<a name="e11"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex11.html#e11 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>365</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex11.html#e11 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Blackout</font></b></a><br>Filtering the names of rooms printed while in darkness.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex11.html#e11 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e162"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex162.html#e162 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>366</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex162.html#e162 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Igpay Atinlay</font></b></a><br>A pig Latin filter for the player's commands.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex162.html#e162 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e57"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex57.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>367</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex57.html#e57 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fido</font></b></a><br>A dog the player can name and un-name at will.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex57.html#e57 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e114"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex114.html#e114 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>368</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex114.html#e114 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mr. Burns' Repast</font></b></a><br>Letting the player guess types for an unidentifiable fish.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex114.html#e114 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e278"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc323.html#e278 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>369</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc323.html#e278 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Northstar</font></b></a><br>Making Inform understand ASK JOSH TO TAKE INVENTORY as JOSH, TAKE INVENTORY. This requires us to use a regular expression on the player's command, replacing some of the content.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex278.html#e278 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e278"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc391.html#e278 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>394</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc391.html#e278 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Status line with centered text, the hard way</font></b></a><br>A status line which has only the name of the location, centered.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex278.html#e278 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Most of the time, Inform understands commands to other characters when they take the form &quot;JOSH, TAKE INVENTORY&quot; or &quot;JOAN, WEAR THE ARMOR&quot;. But novice players might also try commands of the form ASK JOSH TO TAKE INVENTORY or ORDER JOAN TO WEAR THE ARMOR.
-<p>
-<p>The easiest way to make Inform understand such commands is to meddle directly with the player's command, changing it into the format that the game will understand, as here:
+<p>Making major changes to display features, such as the construction of the status line, sometimes requires that we rely on Inform 6 in bulk; here is how we might produce the Trinity-style status line, with the location centered at the top center of the screen.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode458(code) {
+function pasteCode483(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Northstar"\n\nThe Northstar Cafe is a room. "The Northstar is crammed with its usual brunch crowd, and you were lucky to get a table at all. You are now awaiting the arrival of your ricotta pancakes."\n\nJosh is a man in The Northstar Cafe. "Josh is on his way past your table." The description of Josh is "He is a waiter here, but you also know him socially, so he tends to be more chatty than the other waiters." A persuasion rule: persuasion succeeds.\n\nAfter reading a command:\n\tlet N be indexed text;\n\tlet N be the player\'s command;\n\treplace the regular expression "(ask|tell|order) (.+) to (.+)" in N with "\2, \3";\n\tchange the text of the player\'s command to N.\n\nTest me with "ask Josh to take inventory / tell Josh to take inventory / order Josh to take inventory".\n\n');
+    myProject.pasteCode('[=0x0022=]Corner of No and Where[=0x0022=][=0x000A=][=0x000A=]No is a room. Where is west of No.[=0x000A=][=0x000A=]Rule for constructing the status line:[=0x000A=][=0x0009=]print the location in the center of the status line;[=0x000A=][=0x0009=]rule succeeds.[=0x000A=][=0x000A=]To print the location in the center of the status line:[=0x000A=][=0x0009=](- PrintCenteredStatus(); -);[=0x000A=][=0x000A=]Include (-[=0x000A=][=0x000A=]Array printed_text --[=0x003E=] 64;[=0x000A=][=0x000A=][ PrintCenteredStatus i j;[=0x000A=][=0x0009=]@set_cursor 1 0;[=0x000A=][=0x0009=]i = 0-[=0x003E=]33;[=0x000A=][=0x0009=]spaces(i);[=0x000A=][=0x0009=]@output_stream 3 printed_text;[=0x000A=][=0x0009=]print (name) location;[=0x000A=][=0x0009=]@output_stream -3;[=0x000A=][=0x0009=]j = (i - (printed_text--[=0x003E=]0))/2;[=0x000A=][=0x0009=]@set_cursor 1 j;[=0x000A=][=0x0009=]print (name) location;[=0x000A=][=0x0009=]spaces j-1;[=0x000A=]];[=0x000A=][=0x000A=]-)[=0x000A=][=0x000A=]Test me with [=0x0022=]w / e[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode458()"><img border=0 src=../doc_images/paste.png></a> &quot;Northstar&quot;
+<a href="javascript:pasteCode483()"><img border=0 src=../doc_images/paste.png></a> &quot;Corner of No and Where&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Northstar Cafe is a room. &quot;The Northstar is crammed with its usual brunch crowd, and you were lucky to get a table at all. You are now awaiting the arrival of your ricotta pancakes.&quot;
+<blockquote><font color="#000080">No is a room. Where is west of No.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Josh is a man in The Northstar Cafe. &quot;Josh is on his way past your table.&quot; The description of Josh is &quot;He is a waiter here, but you also know him socially, so he tends to be more chatty than the other waiters.&quot; A persuasion rule: persuasion succeeds.
+<blockquote><font color="#000080">Rule for constructing the status line:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;print the location in the center of the status line;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be indexed text;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;replace the regular expression &quot;(ask|tell|order) (.+) to (.+)&quot; in N with &quot;\2, \3&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the text of the player's command to N.
+<blockquote><font color="#000080">To print the location in the center of the status line:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- PrintCenteredStatus(); -);
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;ask Josh to take inventory / tell Josh to take inventory / order Josh to take inventory&quot;.
+<blockquote><font color="#000080">Include (-
 </font></blockquote><p>
 <p>
-<p>Note that we have to copy N back explicitly to replace the player's command.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc323.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Array printed_text --> 64;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">[ PrintCenteredStatus i j;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;@set_cursor 1 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;i = 0->33;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;spaces(i);
+<br>&nbsp;&nbsp;&nbsp;&nbsp;@output_stream 3 printed_text;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;print (name) location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;@output_stream -3;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;j = (i - (printed_text-->0))/2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;@set_cursor 1 j;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;print (name) location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;spaces j-1;
+<br>];
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">-)
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;w / e&quot;.
+</font></blockquote><p>
+<p>
+<p>In fact, as we've already seen, many extra modifications to the display behavior are possible using Basic Screen Effects.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc391.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc322.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc324.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc390.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc392.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

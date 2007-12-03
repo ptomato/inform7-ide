@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.10. Action variables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.13. Review of Chapter 4: Kinds</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,159 +19,231 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Puff of Orange Smoke" -->
-<!-- SEARCH SECTION "Ex 186" -->
-<!-- SEARCH SORT "Ex 012-010-186" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc181.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc183.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.10. Action variables</b></font></td></tr></table>
+<!-- SEARCH TITLE "Bic" -->
+<!-- SEARCH SECTION "Ex 54" -->
+<!-- SEARCH SORT "Ex 004-013-054" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc65.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc67.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.13. Review of Chapter 4: Kinds</b></font></td></tr></table>
 <p>
-<p>For some complex situations, it can be useful to keep track of a few values throughout the processing of the action. This is not an everyday occurrence: in the Standard Rules, for instance, only two or three out of 90 actions need to do this. But suppose we want to write a more deluxe version of our &quot;photographing&quot; action. This time, rather than having a single thing called the &quot;camera&quot;, we will provide a whole range of possible cameras, varying in quality:
+<p>1. Kinds are fundamental sorts of object. Inform comes with a certain number of kinds, but we can create more. This can help us if we need a number of identical objects, or many items that share a great deal of common behavior.
 <p>
-<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light. Understand &quot;photograph [something]&quot; as photographing.
+<p>An item may belong to only one primary kind. For instance, if we say
+<p>
+<blockquote><font color="#000080">Fred is a man.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Studio is a room. Sally is a woman in the Studio. A foam-lined tote bag is in the Studio.
+<p>then, because a man is a kind of person, and a person is a kind of thing, Fred will also be understood to be a person and a thing. On the other hand, Fred will not also be a woman, a vehicle, or a container, since those are all incompatible with the &quot;man&quot; kind.
+<p>
+<p>2. When we create a new kind, we can give Inform instructions about properties that belong to things of this kind. The following are equivalent:
+<p>
+<blockquote><font color="#000080">A box is a kind of container which is closed and openable.
+<br>A box is a kind of container. A box is usually closed and openable.
+<br>A box is a kind of container. A box is seldom open and unopenable.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A camera is a kind of thing. A camera has a number called picture quality. The digital SLR camera is a camera in the tote bag. The player carries a camera called the instant one-shot camera. The picture quality of the SLR camera is 10. The picture quality of the one-shot is 2. Definition: a camera is sharp if its picture quality is 5 or more.
+<p>Each of these statements instructs Inform that boxes in general have these characteristics, though a particular box might begin the game in a different state, as in
+<p>
+<blockquote><font color="#000080">The player carries a box which is open.
 </font></blockquote><p>
 <p>
-<p>And we will want the photographing action to have the player use the best-quality camera which comes to hand. We will give the action a variable called the 'camera photographed with', thus:
+<p>We may also write a more absolute instruction, as in these equivalent lines:
 <p>
-<blockquote><font color="#000080">The photographing action has an object called the camera photographed with.
+<blockquote><font color="#000080">A box is a kind of container. A box is always closed and openable.
+<br>A box is a kind of container. A box is never open and unopenable.
 </font></blockquote><p>
 <p>
-<p>This value is created when the action begins, and disappears when the action ends. (If the action should happen a second time before the first time was completed, a second copy of the value is created, leaving the original undisturbed.) When the action begins, the value starts out as something neutral - so if it is a number, it starts out as 0, if a text, it starts out as the blank text &quot;&quot;, and so on. Here it is an object, so it starts out as nothing - the value meaning no object at all. But of course we want to give it a value ourselves. We can do that using the &quot;setting action variables&quot; rulebook. For instance:
+<p>These instructions tell Inform that we may never begin play with any box defined to be open, so that this time if our source text includes
 <p>
-<blockquote><font color="#000080">Setting action variables for photographing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the camera photographed with is the sharpest camera which is carried by the actor.
+<blockquote><font color="#000080">The player carries a box which is open.
 </font></blockquote><p>
 <p>
-<p>The &quot;setting action variables&quot; rulebook is run through before even the before rules, and it has no power to stop or change the action. Its rules should say nothing and do nothing other than to set rulebook variables like this one. Note that it is intended to work for any actor, not only the player: so rather than referring to the player as the performer of the action, we need to write &quot;the actor&quot;, as in the example above. (See subsequent sections for more on actors.)
+<p>we will receive a problem message. Inform attempts to construct the simplest possible model of the world based on the information we provide, and anything we tell it directly will override the other assumptions it might make.
 <p>
-<p>We can now write rules such as:
+<p>Note also that &quot;A box is never open&quot; only specifies that the author may not make the box open at the start of play. The player will still be able to open the box during the game.
 <p>
-<blockquote><font color="#000080">A check photographing rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the camera photographed with is nothing then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
+<p>We may not say, though it might seem natural,
+<p>
+<blockquote><font color="#000080">A crate is a kind of open container.
 </font></blockquote><p>
 <p>
-<p>Only rules to do with the photographing action - before, instead, after, check, carry out, or report rules, and so on - are allowed to see the 'camera photographed with' value: it's the private property of the action.
+<p>After &quot;kind of...&quot;, only the name of a kind may follow, with no adjectives. (This is because a kind is a permanent affiliation: once a crate, always a crate, and similarly for containers, whereas the adjective &quot;open&quot; describes an either/or property that comes and goes.)
 <p>
-<p>A further elaboration allows us to make rules about photographing neater to write. If we create our variable like so:
+<p>We also may not assign &quot;usual&quot; either/or properties to kinds already defined by Inform. For instance, the following would not be effective:
 <p>
-<blockquote><font color="#000080">The photographing action has an object called the camera photographed with (matched as &quot;using&quot;).
+<blockquote><font color="#000080">A door is usually open.
+<br>A container is usually openable.
 </font></blockquote><p>
 <p>
-<p>...then we are now allowed to add an optional 'using ...' clause onto a description of the action. For instance, we could write rules such as
+<p>3. In addition to either/or properties (such as open vs. closed), things may have numerical properties (with values such as 10) or textual ones (such as &quot;red&quot;). We may set these as well:
 <p>
-<blockquote><font color="#000080">Instead of photographing something using the one-shot camera:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;But you promised to give this to Sally's nephew.&quot;
+<blockquote><font color="#000080">The printed name of a box is usually &quot;cardboard box&quot;.
+<br>The printed name of a room is usually &quot;Here&quot;.
+<br>The initial appearance of a person is usually &quot;[printed name] stands nearby, looking gloomy.&quot;
+<br>The description of a container is usually &quot;A grubby box held together with silver tape.&quot;
+<br>The carrying capacity of a container is usually 3.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check photographing something using the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That would require some sort of contraption with mirrors.&quot; instead.
+<p>4. We may not give properties to an object unless we have said that the object can have these properties; so, for instance, Inform would complain if we tried to say
+<p>
+<blockquote><font color="#000080">Fred is a man. Fred is open.
 </font></blockquote><p>
 <p>
+<p>(Inform knows that doors and containers can be open, but it doesn't think men can be.) We may say that a thing or class has an either/or property by saying, for instance,
 <p>
-<blockquote><font color="#000080">Report photographing something using a sharp camera:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You feel cool and important as the shutter clicks.&quot;
+<blockquote><font color="#000080">Fred can be open.
+<br>A man can be open.
 </font></blockquote><p>
 <p>
-<p>(This is the method used by the Standard Rules to attach optional clauses such as 'to', 'with' and 'through' to the going action.)
+<p>or, equivalently,
+<p>
+<blockquote><font color="#000080">Fred can be closed.
+</font></blockquote><p>
+<p>
+<p>We may say that something can have a text, value, or thing property by saying
+<p>
+<blockquote><font color="#000080">A room has a number called size.
+<br>A supporter has some text called the description from inside.
+<br>A bus transfer has a time called the expiration time.
+<br>A liquid has a thing called the source spring.
+</font></blockquote><p>
+<p>
+<p>or even
+<p>
+<blockquote><font color="#000080">A container has a rule called the opening result rule.
+<br>A prop has a scene called the use scene.
+</font></blockquote><p>
+<p>
+<p>We will learn more about rules and scenes later; in practice these are the properties we are least likely to need. (For a full list of all the named kinds of value built in to Inform, see the chapter on extensions.)
+<p>
+<p>5. We may define our own new kinds of value, to represent states of things within our model world. These kinds of value may be used as properties of individual things or of entire kinds. So for instance:
+<p>
+<blockquote><font color="#000080">Brightness is a kind of value. The brightnesses are dim, shining, and blazing. A lamp is a kind of thing. A lamp has a brightness. A lamp is usually blazing. The hurricane lamp is a lamp.
+</font></blockquote><p>
+<p>
+<p>Unless we arrange otherwise, a value property can be referred to simply by the name of the value, as here, &quot;the brightness of the hurricane lamp&quot;. If, on the other hand, we wanted to associate two brightnesses with the lamp, we might say
+<p>
+<blockquote><font color="#000080">A lamp has a brightness called maximum brightness. A lamp has a brightness called current brightness.
+</font></blockquote><p>
+<p>
+<p>Now we may no longer add
+<p>
+<blockquote><font color="#000080">A lamp is usually blazing.
+</font></blockquote><p>
+<p>
+<p>since Inform will not know whether &quot;blazing&quot; is meant to be the current brightness of the lamp or the maximum brightness; so we will have to be more specific, as
+<p>
+<blockquote><font color="#000080">The maximum brightness of a lamp is usually blazing.
+<br>The maximum brightness of the hurricane lamp is shining.
+<br>The current brightness of the hurricane lamp is dim.
+</font></blockquote><p>
+<p>
+<p>and so on.
+<p>
+<p>6. Once we have made a kind, we may create multiple objects of this type without giving them individual names. For instance, we might say:
+<p>
+<blockquote><font color="#000080">A coin is a kind of thing. The player carries three coins.
+<br>A basket is a kind of container. 13 baskets are on the shelf.
+</font></blockquote><p>
+<p>
+<p>There are two points to note here. First, numbers over twelve may not be spelled out, and must be given numerically. Second, if we do not define a kind first,
+<p>
+<blockquote><font color="#000080">The player carries three coins.
+</font></blockquote><p>
+<p>
+<p>will instead produce a single object whose name is &quot;three coins&quot;.
+<p>
+<p>We are also allowed to make general rules about how parts and objects are distributed, so:
+<p>
+<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person.
+<br>A spray of lavender is a kind of thing. Three sprays of lavender are in every gardening basket.
+</font></blockquote><p>
+<p>
+<p>A few restrictions apply here. First, we may not use &quot;room&quot;, &quot;supporter&quot;, or &quot;container&quot; in these sentences; second, when we say &quot;Three sprays of lavender are in every gardening basket&quot;, &quot;spray of lavender&quot; and &quot;gardening basket&quot; must both be names of kinds.
+<p>
+<p>Inform will often be able to guess about the correct plural of a given word, but will sometimes need correction:
+<p>
+<blockquote><font color="#000080">An ox is a kind of animal. The plural of ox is oxen.
+</font></blockquote><p>
+<p>
+<p>7. The name of a kind will not automatically be understood to refer to an item of that kind: for instance
+<p>
+<blockquote><font color="#000080">The glass bottle is a container.
+</font></blockquote><p>
+<p>
+<p>will not mean that the glass bottle responds to
+<p>
+<blockquote><font color="#000080">>TAKE CONTAINER
+</font></blockquote><p>
+<p>
+<p>and
+<p>
+<blockquote><font color="#000080">Philippe is a man in the Botanical Garden.
+</font></blockquote><p>
+<p>
+<p>will not allow the player to refer to Philippe as &quot;the man&quot;. We can get around this using an instruction from later:
+<p>
+<blockquote><font color="#000080">Understand &quot;man&quot; as Philippe.
+</font></blockquote><p>
+<p>
+<p>Or, more generally,
+<p>
+<blockquote><font color="#000080">Understand &quot;man&quot; as a man.
+</font></blockquote><p>
+<p>
+<p>...in which case, all men can be referred to as &quot;man&quot;.
+<p>
+<p>The exception is that if we have created items without giving them names, as in
+<p>
+<blockquote><font color="#000080">The player carries a container.
+</font></blockquote><p>
+<p>
+<p>the name of the item will be the name of its kind, so that in this instance the player will see
+<p>
+<blockquote><font color="#000080">You are carrying:
+<br>  a container
+</font></blockquote><p>
+<p>
+<p>and the game will respond to &quot;TAKE CONTAINER&quot;.
 <p>
 <p><hr><p>
-<a name="e100"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex100.html#e100 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>183</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex100.html#e100 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Further Reasons Why All Poets Are Liars</font></b></a><br>The young William Wordsworth, pushing a box about in his room, must struggle to achieve a Romantic point of view.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex100.html#e100 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e165"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex165.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>184</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex165.html#e165 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Second Oldest Problem</font></b></a><br>Adapting the going action so that something special can happen when going from a dark room to another dark room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex165.html#e165 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e354"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex354.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>185</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex354.html#e354 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Removal</font></b></a><br>TAKE expanded to give responses such as "You take the book from the shelf." or "You pick up the toy from the ground."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex354.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e164"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc182.html#e164 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>186</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc182.html#e164 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Puff of Orange Smoke</font></b></a><br>A system in which every character has a body, which is left behind when the person dies; attempts to do something to the body are redirected to the person while the person is alive.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex164.html#e164 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e164"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc66.html#e164 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>54</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc66.html#e164 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bic</font></b></a><br>Testing to make sure that all objects have been given descriptions.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex164.html#e164 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to let the player kill characters, leaving behind corpses.
+<p>It may occasionally be useful to check whether all objects in our game have a given property. Here we have a &quot;not for release&quot; section that will run at the start of the game and alert us to any objects lacking description:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode276(code) {
+function pasteCode139(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Puff of Orange Smoke"\n\nParaguay is a room. Bolivia is north of Paraguay. Lydia is a woman in Paraguay. "Lydia is, as usual, here." The description of Lydia is "Long, long legs and a sarcastic attitude." Instead of touching Lydia: say "\'Watch it, sailor,\' she snaps."\n\nA body is a kind of thing. A body is a part of every person. Instead of touching a body: say "[The noun] is grotesquely inert."\n\nThe description of Lydia\'s body is "Long, long legs and no attitude at all." The initial appearance of Lydia\'s body is "Lydia\'s corpse is sprawled at your feet."\n\n[Using our "part of every person..." line, we\'ve conveniently assigned one body per person. Since we\'re going to separate people from their bodies when the bodies die, though, we also want a more permanent relation that will help us keep track of which bodies used to belong to which people:]\n\nSpirit-possession relates one person to one body. The verb to be owner of implies the spirit-possession relation.\n\nWhen play begins:\n\trepeat with victim running through people\n\tbegin;\n\t\tlet the corpse be a random body which is part of the victim;\n\t\tnow the victim is owner of the corpse;\n\tend repeat.\n\n[When Lydia is alive, we want >TOUCH LYDIA\'S BODY to mean the same thing as >TOUCH LYDIA, so we use the setting action variables rules as a convenient point at which to reassign the action:]\n\nSetting action variables when the noun is a body which is part of a person (called owner):\n\tchange the noun to the owner.\n\nSetting action variables when the second noun is a body which is part of a person (called owner):\n\tchange the second noun to the owner.\n\n[This doesn\'t change Inform\'s idea about what action is being performed; just about the object it\'s being performed on. The rest of the action will now proceed as if the player had typed >TOUCH LYDIA.]\n\n[Along similar lines, once Lydia is dead, we want >MOVE LYDIA to mean >MOVE LYDIA\'S BODY if the body is in view:]\n\nSetting action variables when the noun is a dead person and the noun is owner of a visible body (called the mortal remains):\n\tchange the noun to the mortal remains.\n\n[The trick is, though, that >MOVE LYDIA will only be understood if there is something called Lydia that the player can see and refer to, even after she\'s dead. There are various ways to do this, but the least painful here will be to make the deceased Lydia permanently visible, by putting her in an always-accessible backdrop. The backdrop itself will never be mentioned in the game, and we should make its name something that the player is unlikely to type casually; we don\'t want the player to interact with it directly. So:]\n\nThe worldview is a backdrop. It is everywhere. The spirit-world is a transparent closed unopenable container. It is part of the worldview.\n\nDefinition: a person is dead if he is in the spirit-world.\n\n[It\'s also possible that the player will type something like >X LYDIA when Lydia\'s corpse is not in view, so we should have an appropriate answer to that as well:]\n\nBefore doing something to a dead person:\n\tsay "[The noun] is dead; or had you blocked that out?" instead.\n\n[Because the before rules happen after the setting action variables rules, this will only ever happen if the corpse is not visible.]\n\n[Now we define the attack itself, which should discard the body, move the spirit to its eternal resting place, and describe the event to the player:]\n\nInstead of attacking someone:\n\tlet the corpse be a random body which is part of the noun;\n\tmove the corpse to the location;\n\tmove the noun to the spirit-world;\n\tsay "With a single blow, you rid the world of [the noun]."\n\n[And finally a trick borrowed from the chapter on understanding, so that we can refer to "Lydia\'s body" while Lydia is alive, but "Lydia\'s corpse" only after Lydia has died:]\n\nUnderstand "corpse" as a body when the item described is not part of a person.\n\nTest me with "x body / x lydia\'s body / touch lydia\'s body / x corpse / kill lydia / look / x lydia\'s body / x lydia\'s corpse / x corpse / x lydia / touch lydia / lydia, hello / n / x lydia / touch lydia / lydia, hello".\n');
+    myProject.pasteCode('[=0x0022=]Bic[=0x0022=][=0x000A=][=0x000A=]Section 1 - Testing descriptions - Not for release[=0x000A=][=0x000A=]When play begins (this is the run property checks at the start of play rule):[=0x000A=][=0x0009=]repeat with item running through things[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the item provides the property description, do nothing;[=0x000A=][=0x0009=][=0x0009=]otherwise say [=0x0022=][item] has no description.[=0x0022=];[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]Section 2 - Story[=0x000A=][=0x000A=]The Staff Break Room is a room.[=0x000A=][=0x000A=]The player carries an orange, a Bic pen, and a napkin. The description of the orange is [=0x0022=]It[=0x0027=]s a small hard pinch-skinned thing from the lunch room, probably with lots of pips and no juice.[=0x0022=][=0x000A=][=0x000A=]The description of the napkin is [=0x0022=]Slightly crumpled.[=0x0022=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode276()"><img border=0 src=../doc_images/paste.png></a> &quot;Puff of Orange Smoke&quot;
+<a href="javascript:pasteCode139()"><img border=0 src=../doc_images/paste.png></a> &quot;Bic&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Paraguay is a room. Bolivia is north of Paraguay. Lydia is a woman in Paraguay. &quot;Lydia is, as usual, here.&quot; The description of Lydia is &quot;Long, long legs and a sarcastic attitude.&quot; Instead of touching Lydia: say &quot;'Watch it, sailor,' she snaps.&quot;
+<blockquote><font color="#000080">Section 1 - Testing descriptions - Not for release
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A body is a kind of thing. A body is a part of every person. Instead of touching a body: say &quot;[The noun] is grotesquely inert.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The description of Lydia's body is &quot;Long, long legs and no attitude at all.&quot; The initial appearance of Lydia's body is &quot;Lydia's corpse is sprawled at your feet.&quot;
-</font></blockquote><p>
-<p>
-<p>Using our &quot;part of every person...&quot; line, we've conveniently assigned one body per person. Since we're going to separate people from their bodies when the bodies die, though, we also want a more permanent relation that will help us keep track of which bodies used to belong to which people:
-<p>
-<blockquote><font color="#000080">Spirit-possession relates one person to one body. The verb to be owner of implies the spirit-possession relation.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with victim running through people
+<blockquote><font color="#000080">When play begins (this is the run property checks at the start of play rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the corpse be a random body which is part of the victim;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the victim is owner of the corpse;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the item provides the property description, do nothing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[item] has no description.&quot;;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<p>When Lydia is alive, we want >TOUCH LYDIA'S BODY to mean the same thing as >TOUCH LYDIA, so we use the setting action variables rules as a convenient point at which to reassign the action:
-<p>
-<blockquote><font color="#000080">Setting action variables when the noun is a body which is part of a person (called owner):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the noun to the owner.
+<blockquote><font color="#000080">Section 2 - Story
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Setting action variables when the second noun is a body which is part of a person (called owner):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the second noun to the owner.
+<blockquote><font color="#000080">The Staff Break Room is a room.
 </font></blockquote><p>
 <p>
-<p>This doesn't change Inform's idea about what action is being performed; just about the object it's being performed on. The rest of the action will now proceed as if the player had typed >TOUCH LYDIA.
-<p>
-<p>Along similar lines, once Lydia is dead, we want >MOVE LYDIA to mean >MOVE LYDIA'S BODY if the body is in view:
-<p>
-<blockquote><font color="#000080">Setting action variables when the noun is a dead person and the noun is owner of a visible body (called the mortal remains):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the noun to the mortal remains.
+<blockquote><font color="#000080">The player carries an orange, a Bic pen, and a napkin. The description of the orange is &quot;It's a small hard pinch-skinned thing from the lunch room, probably with lots of pips and no juice.&quot;
 </font></blockquote><p>
 <p>
-<p>The trick is, though, that >MOVE LYDIA will only be understood if there is something called Lydia that the player can see and refer to, even after she's dead. There are various ways to do this, but the least painful here will be to make the deceased Lydia permanently visible, by putting her in an always-accessible backdrop. The backdrop itself will never be mentioned in the game, and we should make its name something that the player is unlikely to type casually; we don't want the player to interact with it directly. So:
-<p>
-<blockquote><font color="#000080">The worldview is a backdrop. It is everywhere. The spirit-world is a transparent closed unopenable container. It is part of the worldview.
+<blockquote><font color="#000080">The description of the napkin is &quot;Slightly crumpled.&quot;
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a person is dead if he is in the spirit-world.
-</font></blockquote><p>
-<p>
-<p>It's also possible that the player will type something like >X LYDIA when Lydia's corpse is not in view, so we should have an appropriate answer to that as well:
-<p>
-<blockquote><font color="#000080">Before doing something to a dead person:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is dead; or had you blocked that out?&quot; instead.
-</font></blockquote><p>
-<p>
-<p>Because the before rules happen after the setting action variables rules, this will only ever happen if the corpse is not visible.
-<p>
-<p>Now we define the attack itself, which should discard the body, move the spirit to its eternal resting place, and describe the event to the player:
-<p>
-<blockquote><font color="#000080">Instead of attacking someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the corpse be a random body which is part of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the corpse to the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the spirit-world;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;With a single blow, you rid the world of [the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>And finally a trick borrowed from the chapter on understanding, so that we can refer to &quot;Lydia's body&quot; while Lydia is alive, but &quot;Lydia's corpse&quot; only after Lydia has died:
-<p>
-<blockquote><font color="#000080">Understand &quot;corpse&quot; as a body when the item described is not part of a person.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x body / x lydia's body / touch lydia's body / x corpse / kill lydia / look / x lydia's body / x lydia's corpse / x corpse / x lydia / touch lydia / lydia, hello / n / x lydia / touch lydia / lydia, hello&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc182.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc66.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e9"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>187</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex9.html#e9 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Croft</font></b></a><br>Adding special reporting and handling for objects dropped when the player is on a supporter, and special entering rules for moving from one supporter to another.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc181.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc183.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc65.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc67.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

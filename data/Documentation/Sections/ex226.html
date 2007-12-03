@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.8. Otherwise</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>23.13. Defining phrases in Inform 6</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,106 +19,111 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Numberless" -->
-<!-- SEARCH SECTION "Ex 159" -->
-<!-- SEARCH SORT "Ex 011-008-159" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc160.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc162.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.8. Otherwise</b></font></td></tr></table>
+<!-- SEARCH TITLE "Pink or Blue" -->
+<!-- SEARCH SECTION "Ex 393" -->
+<!-- SEARCH SORT "Ex 023-013-393" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc384.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap23.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 23: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc386.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>23.13. Defining phrases in Inform 6</b></font></td></tr></table>
 <p>
-<p>We often need code which does one thing in one circumstance, and another the rest of the time. We could do this like so:
+<p>The phrases described in this documentation, such as &quot;end the game in death&quot;, are all defined in the Standard Rules, and are for the most part defined not in terms of other I7 phrases but instead reduced to equivalents in I6. For instance:
 <p>
-<blockquote><font color="#000080">if N is 2 begin; ...; end if;
-<br>if N is not 2 begin; ...; end if;
+<blockquote><font color="#000080">To end the game in death: (- deadflag=1; -).
 </font></blockquote><p>
 <p>
-<p>but this is not very elegant, and besides, what if the action we take when N is 2 changes N so that it becomes something else?
+<p>The notation &quot;(-&quot; and &quot;-)&quot; indicates that what comes in between is I6 code. The minus sign is supposed to be a mnemonic for the decrease from 7 to 6: later we shall use &quot;(+&quot; and &quot;+)&quot; to go back up the other way, from 6 to 7.
 <p>
-<p>Instead we use &quot;otherwise&quot;:
+<p>When a phrase is defined as containing only a single command, and that command is defined using I6 - as here - it is compiled in-line. This means that the phrase &quot;end the game in death&quot; will always be translated as &quot;deadflag=1;&quot;, rather than being translated into a call to a suitable function whose only statement is &quot;deadflag=1;&quot;.
 <p>
-<blockquote><font color="#000080">if N is 2 begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>end if;
+<p>This is an easy case since the wording never varies. More typical examples would be:
+<p>
+<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
+<br>To sort (T - table-name) in (TC - table-column) order:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
 </font></blockquote><p>
 <p>
-<p>Note that there is only one &quot;end if&quot;: the &quot;otherwise&quot; phrase occurs inside the &quot;if ... end if&quot; block of phrases.
+<p>When the braced name of one of the variables in the phrase preamble appears, this is compiled to the corresponding I6 expression at the relevant position in the I6 code. So, for instance,
 <p>
-<p>When there is only a single phrase we can use the shortened form:
-<p>
-<blockquote><font color="#000080">if N is 2 then say &quot;Hooray, N is 2!&quot;;
-<br>otherwise say &quot;Boo, N is not 2...&quot;
+<blockquote><font color="#000080">say the capacity of the basket
 </font></blockquote><p>
 <p>
-<p>Often, though, what we want is to divide up a situation into many cases, and for this the abbreviation &quot;otherwise if&quot; is allowed:
+<p>might be compiled to
 <p>
-<blockquote><font color="#000080">if N is 1 begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>otherwise if N is 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>otherwise if N is greater than 4;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>end if;
+<blockquote><font color="#000080">print O17_basket.capacity;
 </font></blockquote><p>
 <p>
-<p>At most one of the &quot;...&quot; clauses is ever reached - the first which works out. Note that there is only a single &quot;end if&quot;, at the end: it all counts as a single &quot;if&quot; construction.
+<p>because &quot;{something}&quot; is expanded to &quot;capacity of the basket&quot; (I7 code) and then translated to &quot;O17_basket.capacity&quot; (I6 code), which is then spliced into the original I6 definition &quot;print {something};&quot;.
 <p>
-<p>(In almost every computer programming language ever devised, including previous versions of Inform, the word &quot;else&quot; is used rather than &quot;otherwise&quot;: for the sake of familiarity, &quot;else&quot; can also be used here. All the same, &quot;otherwise&quot; seems closer to natural English.)
+<p>Braces &quot;{&quot; are of course significant in I6. A real brace can be obtained by making the character following it a space, and then I7 will not attempt to read it as a request for substitution.
+<p>
+<p>Finally, note that while a normal I7 phrase definition can give a kind as what must be matched, e.g.,
+<p>
+<blockquote><font color="#000080">To release wild tigers into (arena - a room): ...
+</font></blockquote><p>
+<p>
+<p>it is in general a bad idea, and will result in inefficient code, for an phrase defined using I6 to do this. Instead, if possible, match against &quot;object&quot;, where any room, region, thing or direction will be a valid match:
+<p>
+<blockquote><font color="#000080">To release wild tigers into (arena - an object): ...
+</font></blockquote><p>
 <p>
 <p><hr><p>
+<a name="e119"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex119.html#e119 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>392</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex119.html#e119 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Odins</font></b></a><br>Making [is-are] and [it-they] say tokens that will choose appropriately based on the last object mentioned.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex119.html#e119 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e226"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc161.html#e226 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>159</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc161.html#e226 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Numberless</font></b></a><br>A simple exercise in printing the names of random numbers, using "otherwise if..." and also a table-based alternative. (Or, in programming terms, how to emulate a switch statement.)<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex226.html#e226 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e226"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc385.html#e226 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>393</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc385.html#e226 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Pink or Blue</font></b></a><br>Asking the player to select a gender to begin play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex226.html#e226 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Suppose we would like to allow the player to choose a gender for the main character. We'd also like this to happen at the beginning of the game and outside the main parsing sequence. &quot;When play begins&quot; seems like a good place to put this.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode249(code) {
+function pasteCode482(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Numberless"\n\nThe Rambling Warren is a room.\n\nWhen play begins:\n\tlet N be a random number between 1 and 5;\n\tif N is 1\n\tbegin;\n\t\tsay "N is one.";\n\totherwise if N is 2;\n\t\tsay "N is two.";\n\totherwise if N is 3;\n\t\tsay "N is three.";\n\totherwise;\n\t\tsay "N is more than the number of your toes.";\n\tend if.\n\n[The final "otherwise" here will fire only if none of the earlier conditions applies; we could leave it out and print nothing in the case that N is 4 or 5.]\n\n[Alternatively, we can use a construction we\'ve seen only briefly before now: a table. The use of tables will be explained more fully in their own chapter, but here we see in brief that we can assign a number of values to one column of a table and then use that table to look up output:]\n\nWhen play begins:\n\tlet X be a random number between 11 and 14;\n\tif X is a number listed in the Table of Switching, say "[output entry][paragraph break]";\n\totherwise say "X is greater than the number of your noses!"\n\nTable of Switching\nnumber\toutput\n11\t"X is eleven!"\n12\t"X is twelve!"\n13\t"X is thirteen!"\n\nTest me with "z".\n\n');
+    myProject.pasteCode('[=0x0022=]Pink or Blue[=0x0022=][=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]say [=0x0022=]Should your character be male or female? [=0x003E=][=0x0022=];[=0x000A=][=0x0009=]if men win, now the player is male;[=0x000A=][=0x0009=]otherwise now the player is female;[=0x000A=][=0x0009=]say paragraph break.[=0x000A=][=0x000A=][Now a piece of Inform 6 code handles the unusual input. It[=0x0027=]s not necessary to understand this to use it, and the code should work for any question you[=0x0027=]d like to ask the player. The first three words in quotation marks ([=0x0027=]male[=0x0027=], [=0x0027=]M[=0x0027=], [=0x0027=]man[=0x0027=]...) correspond to positive feedback; the later three words correspond to negative feedback. So [=0x0022=]to decide whether men win[=0x0022=] will be true if the player types one of the first three, and false if he types one of the last three.][=0x000A=][=0x000A=]To decide whether men win:[=0x000A=][=0x0009=](- Question([=0x0027=]male[=0x0027=],[=0x0027=]M//[=0x0027=],[=0x0027=]man[=0x0027=],[=0x0027=]female[=0x0027=],[=0x0027=]F//[=0x0027=],[=0x0027=]woman[=0x0027=]) -)[=0x000A=][=0x000A=]Include (-[=0x000A=][=0x000A=][ Question pos1 pos2 pos3 neg1 neg2 neg3 i;[=0x000A=][=0x0009=]for (::)[=0x000A=][=0x0009=]{   if (location == nothing || parent(player) == nothing) read buffer parse;[=0x000A=][=0x0009=][=0x0009=]else read buffer parse DrawStatusLine;[=0x000A=][=0x0009=][=0x0009=]i=parse--[=0x003E=]1;[=0x000A=][=0x0009=][=0x0009=]if (i==pos1 or pos2 or pos3) rtrue;[=0x000A=][=0x0009=][=0x0009=]if (i==neg1 or neg2 or neg3) rfalse;[=0x000A=][=0x0009=][=0x0009=]print [=0x0022=]Please choose [=0x0022=], (address) pos1, [=0x0022=] or [=0x0022=], (address) neg1, [=0x0022=]. [=0x003E=] [=0x0022=];[=0x000A=][=0x0009=]}[=0x000A=]];[=0x000A=][=0x000A=]-)[=0x000A=][=0x000A=]Instead of examining the player when the player is female:[=0x000A=][=0x0009=]say [=0x0022=]Congratulations, you are a girl![=0x0022=][=0x000A=][=0x000A=]Instead of examining the player when the player is male:[=0x000A=][=0x0009=]say [=0x0022=]Congratulations, you are a boy![=0x0022=][=0x000A=][=0x000A=]The Room of Self-Knowledge is a room. [=0x0022=]Mirrors cover every available wall-surface of this hexagonal chamber, allowing you to examine yourself from all angles.[=0x0022=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode249()"><img border=0 src=../doc_images/paste.png></a> &quot;Numberless&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Rambling Warren is a room.
+<a href="javascript:pasteCode482()"><img border=0 src=../doc_images/paste.png></a> &quot;Pink or Blue&quot;
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be a random number between 1 and 5;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if N is 1
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;N is one.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if N is 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;N is two.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if N is 3;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;N is three.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;N is more than the number of your toes.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Should your character be male or female? >&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if men win, now the player is male;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the player is female;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break.
 </font></blockquote><p>
 <p>
-<p>The final &quot;otherwise&quot; here will fire only if none of the earlier conditions applies; we could leave it out and print nothing in the case that N is 4 or 5.
+<p>Now a piece of Inform 6 code handles the unusual input. It's not necessary to understand this to use it, and the code should work for any question you'd like to ask the player. The first three words in quotation marks ('male', 'M', 'man'...) correspond to positive feedback; the later three words correspond to negative feedback. So &quot;to decide whether men win&quot; will be true if the player types one of the first three, and false if he types one of the last three.
 <p>
-<p>Alternatively, we can use a construction we've seen only briefly before now: a table. The use of tables will be explained more fully in their own chapter, but here we see in brief that we can assign a number of values to one column of a table and then use that table to look up output:
-<p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let X be a random number between 11 and 14;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if X is a number listed in the Table of Switching, say &quot;[output entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;X is greater than the number of your noses!&quot;
+<blockquote><font color="#000080">To decide whether men win:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- Question('male','M//','man','female','F//','woman') -)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Switching
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">number</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">output</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;X is eleven!&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;X is twelve!&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;X is thirteen!&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">Include (-
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;z&quot;.
+<blockquote><font color="#000080">[ Question pos1 pos2 pos3 neg1 neg2 neg3 i;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;for (::)
+<br>&nbsp;&nbsp;&nbsp;&nbsp;{   if (location == nothing || parent(player) == nothing) read buffer parse;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else read buffer parse DrawStatusLine;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i=parse-->1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (i==pos1 or pos2 or pos3) rtrue;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (i==neg1 or neg2 or neg3) rfalse;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print &quot;Please choose &quot;, (address) pos1, &quot; or &quot;, (address) neg1, &quot;. > &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;}
+<br>];
 </font></blockquote><p>
 <p>
-<p>As we shall see, things other than text can be stored in tables, so we could also use a table as a way to look up objects or even rules to carry out.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc161.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">-)
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining the player when the player is female:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you are a girl!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of examining the player when the player is male:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Congratulations, you are a boy!&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Room of Self-Knowledge is a room. &quot;Mirrors cover every available wall-surface of this hexagonal chamber, allowing you to examine yourself from all angles.&quot;
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc385.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc160.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc162.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc384.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc386.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

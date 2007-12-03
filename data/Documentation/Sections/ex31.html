@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.12. Writing and reading tables to external files</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.1. Understand</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,188 +19,107 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Rubies" -->
-<!-- SEARCH SECTION "Ex 372" -->
-<!-- SEARCH SORT "Ex 020-012-372" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc335.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc337.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.12. Writing and reading tables to external files</b></font></td></tr></table>
+<!-- SEARCH TITLE "Xylan" -->
+<!-- SEARCH SECTION "Ex 255" -->
+<!-- SEARCH SORT "Ex 016-001-255" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc242.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc244.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.1. Understand</b></font></td></tr></table>
 <p>
-<p>The main use for files is to store and retrieve data, and the most flexible form of data used by Inform is the Table, so facilities are provided which make it as easy as possible to write and read the contents of a table to files.
+<p>During play, the computer and the player alternate in writing messages to each other: in the player's case, these are short instructions, usually saying what to do next. A wide range of such &quot;commands&quot; are automatically understood, but these only apply to the standard built-in actions. (This wide range is conveniently tabulated at the foot of the Actions index.) If we want the player to be able to command new actions, then we need to specify what is to be understood as what. For this, we supply special sentences starting with the word &quot;Understand&quot;.
 <p>
-<p>To save the contents of a table to a file, we use the phrase:
+<p>Suppose we return to the earlier example of a newly created action:
 <p>
-<blockquote><font color="#000080">write File of Glaciation Data from the Table of Antarctic Reserves
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
 </font></blockquote><p>
 <p>
-<p>naming the file (which should be one already declared) and specifying which table it should come from. To load a file back into a table,
+<p>We then supply lines of grammar (as they are called) for Inform to recognise, like so:
 <p>
-<blockquote><font color="#000080">read File of Glaciation Data into the Table of Antarctic Reserves
+<blockquote><font color="#000080">Understand &quot;photograph [someone]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>We can check if a file already exists using:
-<p>
-<blockquote><font color="#000080">if File of Glaciation Data exists, ...
+<blockquote><font color="#000080">Understand &quot;photograph [an open door]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>On writing a table, any blank rows are automatically moved to the bottom, and only the non-blank rows are written; on reading a file back in, any rows left spare at the foot of the table are automatically blanked. On the other hand if the file is too large to fit into the table - with too many columns or too many rows - a run-time problem is produced.
+<p>As usual, the square brackets indicate something which stands for text, rather than text to be taken verbatim. &quot;[someone]&quot; needs to be the name of anything of the kind &quot;person&quot;, for instance (though as usual that person will need to be in sight of the player for the name to be accepted). The first word - in these examples &quot;photograph&quot; - must be something definite, not a substitution like this.
 <p>
-<p>One unfortunate restriction must be kept in mind. Some of what is stored in tables is solid information whose meaning never changes: the number 342, for instance, means the same to everyone. But other information depends entirely on the current location of certain structures in memory - for instance, a rule is internally referred to by its memory location. This potentially changes each time Go or Replay is clicked, and so it is not safe to pass it from one copy to another, or from one project to another. The only tables which Inform allows us to write into files are those containing &quot;safe&quot; data: numbers, units, times of day and kinds of value with named alternatives. Scenes, rules or rulebooks, in particular, are not allowed.
+<p>For obvious reasons, this pattern of words needs to match the expectations of the action. Photographing applies to &quot;one visible thing&quot; - the &quot;visible&quot; just means it does not need to be touched, only seen - so neither of these would be allowable:
 <p>
-<p>And nor is text - but we can easily get around that, because indexed text (see the previous chapter) is. For instance, the following table can legally be written out to a file, weareas it would have thrown up a run-time problem if we tried it with the surface column defined simply as text:
-<p>
-<blockquote><font color="#000080">Table of Neptune's Moons
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">moon</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">surface (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;utterly unknown&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cryovolcanic ridges&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highly irregular and sooty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">Understand &quot;photograph&quot; as photographing.
+<br>Understand &quot;photograph [someone] standing next to [something]&quot; as photographing.
 </font></blockquote><p>
+<p>
+<p>The first is bad because it supplies no things at all, the second because it supplies two: what we want, of course, is just the one.
 <p>
 <p><hr><p>
-<a name="e244"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex244.html#e244 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>370</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex244.html#e244 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alien Invasion Part 23</font></b></a><br>Keeping a preference file that could be loaded by any game in a series.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex244.html#e244 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e370"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex370.html#e370 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>371</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex370.html#e370 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Labyrinth of Ghosts</font></b></a><br>Remembering the fates of all previous explorers of the labyrinth.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex370.html#e370 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e146"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex146.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>253</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex146.html#e146 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> XYZZY</font></b></a><br>Basics of adding a new command reviewed, for the case of the simple magic word XYZZY.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex146.html#e146 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e62"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex62.html#e62 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>254</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex62.html#e62 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Indirection</font></b></a><br>Renaming the directions of the compass so that "white" corresponds to north, "red" to east, "yellow" to south, and "black" to west.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex62.html#e62 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e31"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc336.html#e31 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>372</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc336.html#e31 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Rubies</font></b></a><br>A scoreboard that keeps track of the ten highest-scoring players from one playthrough to the next, adding the player's name if he has done well enough.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex31.html#e31 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e31"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc243.html#e31 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>255</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc243.html#e31 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Xylan</font></b></a><br>Creating a new command that does require an object to be named; and some comments about the choice of vocabulary, in general.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex31.html#e31 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The trick here is that we need a table with indexed text in order to keep track of the players' names.
-<p>
-<p>Part 1 largely replicates the source from &quot;Identity Theft&quot;; new material starts at Part 2.
+<p>If we wanted to define a brand new verb that did affect a specific object, we might begin like this:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode461(code) {
+function pasteCode342(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode(' "Rubies"\n\nPart 1 - Collecting Names\n\nThe player\'s forename is an indexed text that varies. The player\'s full name is an indexed text that varies.\n\nWhen play begins:\n\tchange the command prompt to "What is your name? > "\n\nTo decide whether collecting names:\n\tif the command prompt is "What is your name? > ", yes;\n\tno.\n\nAfter reading a command when collecting names:\n\tif the number of words in the player\'s command is greater than 5\n\tbegin;\n\t\tsay "[paragraph break]Who are you, a member of the British royal family? No one has that many names. Let\'s try this again.";\n\t\treject the player\'s command;\n\tend if;\n\tchange the player\'s full name to the player\'s command;\n\tchange the player\'s forename to word number 1 in the player\'s command;\n\tchange the command prompt to ">";\n\tsay "Hi, [player\'s forename]!";\n\tsay "[banner text]";\n\tmove the player to the location;\n\treject the player\'s command.\n\nInstead of looking when collecting names: do nothing.\n\nRule for printing the banner text when collecting names: do nothing.\n\nRule for constructing the status line when collecting names: do nothing.\n\nProcedural rule: if collecting names, ignore the turn sequence rules.\n\nPart 2 - Adding the Leaderboard\n\nFile of Leaderboard is called "leaderboard".\n\nWhen play begins:\n\tif the File of Leaderboard exists\n\tbegin;\n\t\tread File of Leaderboard into the Table of Leaders;\n\t\tsort the Table of Leaders in reverse scored amount order;\n\tend if;\n\nWhen play ends:\n\tchoose row 10 in the Table of Leaders; [we\'ve sorted the table, so the lowest score will be the one at the bottom]\n\tif the score is greater than scored amount entry\n\tbegin;\n\t\tchange name entry to the player\'s forename;\n\t\tchange the scored amount entry to the score;\n\tend if;\n\tshow leaderboard;\n\twrite the File of Leaderboard from the Table of Leaders.\n\nTo show leaderboard:\n\tsort the Table of Leaders in reverse scored amount order;\n\tsay "Current leading scores: [paragraph break]";\n\tsay fixed letter spacing;\n\trepeat through Table of Leaders\n\tbegin;\n\t\tif scored amount entry is greater than 0\n\t\tbegin;\n\t\t\tsay "  [name entry]";\n\t\t\tlet N be 25 minus the number of characters in name entry; [here we want to space out the scores so they make a neat column]\n\t\t\tif N is less than 1, change N to 1;\n\t\t\tsay N spaces;\n\t\t\tsay "[scored amount entry][line break]";\n\t\tend if;\n\tend repeat;\n\tsay variable letter spacing.\n\nTo say (N - a number) spaces:\n\trepeat with index running from 1 to N\n\tbegin;\n\t\tsay " ";\n\tend repeat.\n\nTable of Leaders\nscored amount\tname (indexed text)\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n0\t"Smithee"\n\n[And now we introduce a scenario that allows different players to come up with different scores -- admittedly not a very interesting scenario, but it will do for now:]\n\nPart 3 - Scenario\n\nCarry out taking something which is not handled:\n\tincrease score by 1.\n\nThe Big Treasure Chamber is a room. It contains a ruby, an emerald, a gold tooth, an antique katana, and a silver coin.\n\nInstead of waiting, end the game in victory.\n\nTest me with "get ruby / z".\n');
+    myProject.pasteCode('[=0x0022=]Xylan[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]hydrolyze [something][=0x0022=] as hydrolyzing. Hydrolyzing is an action applying to one thing.[=0x000A=][=0x000A=]Carry out hydrolyzing:[=0x000A=][=0x0009=]say [=0x0022=][The noun] cannot be hydrolyzed.[=0x0022=][=0x000A=][=0x000A=]Instead of hydrolyzing the xylan:[=0x000A=][=0x0009=]move the xylose to the holder of the xylan;[=0x000A=][=0x0009=]remove the xylan from play;[=0x000A=][=0x0009=]say [=0x0022=]At once the xylan becomes xylose.[=0x0022=][=0x000A=][=0x000A=]Plant Cell Wall is a room.[=0x000A=][=0x000A=]The xylose sample is a thing. The xylan sample is a thing in Plant Cell Wall. The description of the xylan is [=0x0022=]A polysaccharide. Totally useless. If only you had some xylose, instead![=0x0022=] The description of the xylose is [=0x0022=]Awesome![=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]x xylan / hydrolyze xylan / x xylose[=0x0022=].[=0x000A=][=0x000A=][Of course, how our players will ever solve this problem is another question (especially if their biology and chemistry are both rusty). When adding entirely new commands to a game, it is often a good idea to provide as many ways of phrasing the command as possible; to drop hints about the correct phrasing within the game[=0x0027=]s text; or even to tell the player about the expanded command list in some documentation or help at the beginning of the game. So for instance we might also add][=0x000A=][=0x000A=]Understand [=0x0022=]break down [something] with water[=0x0022=] or [=0x0022=]break [something] down with water[=0x0022=] as hydrolyzing.[=0x000A=][=0x000A=][And these lines will also provide syntax for our new command, without interfering with the previous syntax. It[=0x0027=]s also good to anticipate alternative (British or American) spellings. People[=0x0027=]s typing habits are hard to overcome, even if they know you are spelling the word the other way. It is probably best not to annoy them unduly. So:][=0x000A=][=0x000A=]Understand [=0x0022=]hydrolyse [something][=0x0022=] as hydrolyzing.[=0x000A=][=0x000A=][Then some text in-game might offer a clue, subtle or (since this is an example) blunt:][=0x000A=][=0x000A=]Instead of examining the player, say [=0x0022=]You[=0x0027=]re a drop of water, which means that you can break down certain chemicals![=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]break down [something][=0x0022=] or [=0x0022=]break [something] down[=0x0022=] as hydrolyzing.[=0x000A=][=0x000A=][And finally, we could try adding instructions explicitly:][=0x000A=][=0x000A=]Understand [=0x0022=]help[=0x0022=] or [=0x0022=]hint[=0x0022=] or [=0x0022=]hints[=0x0022=] or [=0x0022=]instructions[=0x0022=] or [=0x0022=]info[=0x0022=] or [=0x0022=]about[=0x0022=] as asking for help. Asking for help is an action out of world. Carry out asking for help: say [=0x0022=]The following commands are understood, in addition to the standard ones: EVAPORATE, FREEZE, HYDROLYZE, SUBLIME...[=0x0022=][=0x000A=][=0x000A=]Test more with [=0x0022=]help / x me / break down xylan[=0x0022=][=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode461()"><img border=0 src=../doc_images/paste.png></a>  &quot;Rubies&quot;
+<a href="javascript:pasteCode342()"><img border=0 src=../doc_images/paste.png></a> &quot;Xylan&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Part 1 - Collecting Names
+<blockquote><font color="#000080">Understand &quot;hydrolyze [something]&quot; as hydrolyzing. Hydrolyzing is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player's forename is an indexed text that varies. The player's full name is an indexed text that varies.
+<blockquote><font color="#000080">Carry out hydrolyzing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] cannot be hydrolyzed.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;What is your name? > &quot;
+<blockquote><font color="#000080">Instead of hydrolyzing the xylan:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the xylose to the holder of the xylan;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the xylan from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;At once the xylan becomes xylose.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To decide whether collecting names:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the command prompt is &quot;What is your name? > &quot;, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+<blockquote><font color="#000080">Plant Cell Wall is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After reading a command when collecting names:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of words in the player's command is greater than 5
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[paragraph break]Who are you, a member of the British royal family? No one has that many names. Let's try this again.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the player's full name to the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the player's forename to word number 1 in the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;>&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Hi, [player's forename]!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[banner text]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command.
+<blockquote><font color="#000080">The xylose sample is a thing. The xylan sample is a thing in Plant Cell Wall. The description of the xylan is &quot;A polysaccharide. Totally useless. If only you had some xylose, instead!&quot; The description of the xylose is &quot;Awesome!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of looking when collecting names: do nothing.
+<blockquote><font color="#000080">Test me with &quot;x xylan / hydrolyze xylan / x xylose&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for printing the banner text when collecting names: do nothing.
+<p>Of course, how our players will ever solve this problem is another question (especially if their biology and chemistry are both rusty). When adding entirely new commands to a game, it is often a good idea to provide as many ways of phrasing the command as possible; to drop hints about the correct phrasing within the game's text; or even to tell the player about the expanded command list in some documentation or help at the beginning of the game. So for instance we might also add
+<p>
+<blockquote><font color="#000080">Understand &quot;break down [something] with water&quot; or &quot;break [something] down with water&quot; as hydrolyzing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for constructing the status line when collecting names: do nothing.
+<p>And these lines will also provide syntax for our new command, without interfering with the previous syntax. It's also good to anticipate alternative (British or American) spellings. People's typing habits are hard to overcome, even if they know you are spelling the word the other way. It is probably best not to annoy them unduly. So:
+<p>
+<blockquote><font color="#000080">Understand &quot;hydrolyse [something]&quot; as hydrolyzing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Procedural rule: if collecting names, ignore the turn sequence rules.
+<p>Then some text in-game might offer a clue, subtle or (since this is an example) blunt:
+<p>
+<blockquote><font color="#000080">Instead of examining the player, say &quot;You're a drop of water, which means that you can break down certain chemicals!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Part 2 - Adding the Leaderboard
+<blockquote><font color="#000080">Understand &quot;break down [something]&quot; or &quot;break [something] down&quot; as hydrolyzing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">File of Leaderboard is called &quot;leaderboard&quot;.
+<p>And finally, we could try adding instructions explicitly:
+<p>
+<blockquote><font color="#000080">Understand &quot;help&quot; or &quot;hint&quot; or &quot;hints&quot; or &quot;instructions&quot; or &quot;info&quot; or &quot;about&quot; as asking for help. Asking for help is an action out of world. Carry out asking for help: say &quot;The following commands are understood, in addition to the standard ones: EVAPORATE, FREEZE, HYDROLYZE, SUBLIME...&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the File of Leaderboard exists
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;read File of Leaderboard into the Table of Leaders;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Leaders in reverse scored amount order;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
+<blockquote><font color="#000080">Test more with &quot;help / x me / break down xylan&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play ends:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;choose row 10 in the Table of Leaders; [we've sorted the table, so the lowest score will be the one at the bottom]
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the score is greater than scored amount entry
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change name entry to the player's forename;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the scored amount entry to the score;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;show leaderboard;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;write the File of Leaderboard from the Table of Leaders.
-</font></blockquote><p>
+<p>...though of course in fact these other commands won't be available until we define them, too.
 <p>
-<blockquote><font color="#000080">To show leaderboard:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Leaders in reverse scored amount order;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Current leading scores: [paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say fixed letter spacing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Leaders
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if scored amount entry is greater than 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [name entry]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let N be 25 minus the number of characters in name entry; [here we want to space out the scores so they make a neat column]
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if N is less than 1, change N to 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say N spaces;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[scored amount entry][line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say variable letter spacing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say (N - a number) spaces:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with index running from 1 to N
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Table of Leaders
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">scored amount</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">name (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">0</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Smithee&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<p>And now we introduce a scenario that allows different players to come up with different scores -- admittedly not a very interesting scenario, but it will do for now:
-<p>
-<blockquote><font color="#000080">Part 3 - Scenario
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out taking something which is not handled:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;increase score by 1.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Big Treasure Chamber is a room. It contains a ruby, an emerald, a gold tooth, an antique katana, and a silver coin.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of waiting, end the game in victory.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;get ruby / z&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc336.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>This last approach, defining all the extra commands up front, is especially useful if these commands are very technical or unusual; if they are needed early in the game, before you've a chance to educate the player; or if they are not suggested by any in-game objects. A player who encounters a tool with an obvious use, such as a hairbrush, will likely think of trying to BRUSH things with it. It's harder to rely on his guessing actions that are both outside the range of usual commands and unrelated to any of the visible props, however.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc243.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc335.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc337.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc242.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc244.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

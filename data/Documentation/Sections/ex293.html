@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.4. Duplicates</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.4. Standard tokens of grammar</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,145 +19,74 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Early Childhood" -->
-<!-- SEARCH SECTION "Ex 42" -->
-<!-- SEARCH SORT "Ex 004-004-042" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc56.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc58.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.4. Duplicates</b></font></td></tr></table>
+<!-- SEARCH TITLE "Shawn's Bad Day" -->
+<!-- SEARCH SECTION "Ex 261" -->
+<!-- SEARCH SORT "Ex 016-004-261" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc245.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc247.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.4. Standard tokens of grammar</b></font></td></tr></table>
 <p>
-<p>Although it is only useful to a limited extent, we can make any number of copies of something:
+<p>We have already seen &quot;[something]&quot; and &quot;[someone]&quot;, which are standard examples of &quot;tokens of grammar&quot; - patterns matched by suitable named things. There are several other standard tokens, provided not so much from necessity but to allow the game parser to be more graceful and responsive. &quot;[someone]&quot; matches the same possibilities as &quot;[a person]&quot; would, but the parser handles it a little better in cases of failure. These special tokens are best explained by looking at some of the examples in the standard grammar, which can be browsed in the Index of any game.
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode9(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Polygons"\n\nA shape is a kind of thing. A square is a kind of shape. A triangle is a kind of shape.\n\nThe Geometry Lab is a room. In the Geometry Lab are three triangles and two squares.\n\n');
-}
-</script>
-<a href="javascript:pasteCode9()"><img border=0 src=../doc_images/paste.png></a> &quot;Polygons&quot;
+<blockquote><font color="#000080">Understand &quot;wear [something preferably held]&quot; as wearing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A shape is a kind of thing. A square is a kind of shape. A triangle is a kind of shape.
+<p>Here we expect that the named item will be one that is held by the player, and the parser will use this to resolve ambiguities between names of things carried and not carried. (If the action is one which positively requires that its noun be something carried, such as &quot;eating&quot;, then a command matching this token against something not carried will generate an automatic attempt to take it.)
+<p>
+<blockquote><font color="#000080">Understand &quot;take [things]&quot; as taking.
+<br>Understand &quot;drop [things preferably held]&quot; as dropping.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Geometry Lab is a room. In the Geometry Lab are three triangles and two squares.
+<p>&quot;[things]&quot; is like &quot;[something]&quot; but allows a list of items, or a vague plural like &quot;all&quot;, to be typed. The result will be a sequence of actions, one for each item thus described. &quot;[things preferably held]&quot; is the analogous token for &quot;[something preferably held]&quot;.
+<p>
+<blockquote><font color="#000080">Understand &quot;take [things inside] from [something]&quot; as removing.
 </font></blockquote><p>
 <p>
-<p>The description &quot;three triangles&quot; makes three identical things, each of the kind &quot;triangle&quot;, and similarly for the squares. When the above is compiled, the player can type TAKE TWO TRIANGLES or TAKE ALL THE TRIANGLES and so forth. (The player has to type numbers as words when counting things here: so TAKE SIX TRIANGLES makes sense to Inform but TAKE 6 TRIANGLES doesn't, largely for traditional reasons.)
+<p>&quot;[things inside]&quot; matches only what is inside the second-named thing, and ensures that (for instance) the command &quot;take all from box&quot; does not also try to take the box.
 <p>
-<p>Three caveats. Firstly, a counted-out description like &quot;two squares&quot; is only allowed if it combines a number with the name of a kind which is already known (perhaps modified with adjectives, so &quot;two open doors&quot; is fine). If we say:
-<p>
-<blockquote><font color="#000080">Two circles are in the Lab.
+<blockquote><font color="#000080">Understand &quot;put [other things] in/inside/into [something]&quot; as inserting it into.
 </font></blockquote><p>
 <p>
-<p>without having defined &quot;circle&quot; as a kind in advance, then only a single object will be created - whose name is &quot;two circles&quot;. (This is because many natural names start with numbers: &quot;six of clubs&quot;, for instance, referring to a single playing card, or &quot;12 Hollywood Close&quot; meaning a single house. We wouldn't want such names to be misinterpreted.)
-<p>
-<p>The second caveat is that excessive duplication is expensive in memory and running time. It is perfectly legal to say
-<p>
-<blockquote><font color="#000080">In the Lab are 75 triangles.
-</font></blockquote><p>
-<p>
-<p>but the resulting game may be a little sluggish: and Inform draws the line at 100, refusing to create more duplicates than that in any single place. If we really need more than about fifty duplicated objects - say, a tombola containing raffle tickets numbered 1 to 1000 - it is usually better to find some less literal way to simulate this: for instance, only having a single raffle ticket, but with a randomly chosen number on it.
-<p>
-<p>Finally: numbers up to twelve may be written out in words in the source text, but larger ones must be written as numerals. So &quot;twelve&quot; or &quot;12&quot;, but &quot;13&quot; only.
+<p>Similarly, &quot;[other things]&quot; will allow anything except the second-named thing. (Like &quot;[things inside]&quot; it is really only needed for handling containers.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e293"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc57.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>42</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc57.html#e293 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Early Childhood</font></b></a><br>A child's set of building blocks, which come in three different colours - red, green and blue - but which can be repainted during play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex293.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e293"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc246.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>261</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc246.html#e293 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Shawn's Bad Day</font></b></a><br>Allowing the player to EXAMINE ALL.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex293.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>This would be a one-star example if it were not for the repainting:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode124(code) {
+function pasteCode348(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Early Childhood 1"\n\nA building block is a kind of thing. A red block, a blue block and a green block are kinds of building block.\n\nThe Nursery is a room. In the Nursery are six red blocks, four blue blocks and a green block.\n\nTest me with "look / get red block".\n\n');
+    myProject.pasteCode('[=0x0022=]Shawn[=0x0027=]s Bad Day[=0x0022=][=0x000A=][=0x000A=]The Treasury is a room. The vault is a lockable locked closed openable container in the Treasury. It is fixed in place. [=0x0022=]A massive vault fills up one wall.[=0x0022=] The description is [=0x0022=]The vault[=0x0027=]s system includes [a list of things which are part of the vault].[=0x0022=][=0x000A=][=0x000A=]A little green light, a little blue light, a little red light, a thin black pane of glass, a laser beam, a retinal scanner, a thumbprint ID plate, a dial, and a large lever are part of the vault.[=0x000A=][=0x000A=]The security guard is a man in the Treasury. The description is [=0x0022=]His name is Shawn, and he doesn[=0x0027=]t look happy.[=0x0022=][=0x000A=][=0x000A=]The description of the green light is [=0x0022=]Off.[=0x0022=] The description of the blue light is [=0x0022=]Tranquilly on.[=0x0022=] The description of the red light is [=0x0022=]Angrily flashing.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]examine [things][=0x0022=] as multiply examining.[=0x000A=][=0x000A=]Multiply examining is an action applying to one thing.[=0x000A=][=0x000A=]Carry out multiply examining:[=0x000A=][=0x0009=]try examining the noun.[=0x000A=][=0x000A=]Test me with [=0x0022=]examine all[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode124()"><img border=0 src=../doc_images/paste.png></a> &quot;Early Childhood 1&quot;
+<a href="javascript:pasteCode348()"><img border=0 src=../doc_images/paste.png></a> &quot;Shawn's Bad Day&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A building block is a kind of thing. A red block, a blue block and a green block are kinds of building block.
+<blockquote><font color="#000080">The Treasury is a room. The vault is a lockable locked closed openable container in the Treasury. It is fixed in place. &quot;A massive vault fills up one wall.&quot; The description is &quot;The vault's system includes [a list of things which are part of the vault].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Nursery is a room. In the Nursery are six red blocks, four blue blocks and a green block.
+<blockquote><font color="#000080">A little green light, a little blue light, a little red light, a thin black pane of glass, a laser beam, a retinal scanner, a thumbprint ID plate, a dial, and a large lever are part of the vault.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look / get red block&quot;.
+<blockquote><font color="#000080">The security guard is a man in the Treasury. The description is &quot;His name is Shawn, and he doesn't look happy.&quot;
 </font></blockquote><p>
 <p>
-<p>But a kind cannot change during play, so this will not do. Instead, the colour will have to be a property of the block. So we might first try this:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode125(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Early Childhood 2"\n\nColour is a kind of value. The colours are red, blue and green. A block is a kind of thing. A block has a colour. A block is usually blue.\n\nThe Nursery is a room. In the Nursery are six red blocks, four blue blocks and a green block.\n\nTest me with "look / get red block".\n\n');
-}
-</script>
-<a href="javascript:pasteCode125()"><img border=0 src=../doc_images/paste.png></a> &quot;Early Childhood 2&quot;
+<blockquote><font color="#000080">The description of the green light is &quot;Off.&quot; The description of the blue light is &quot;Tranquilly on.&quot; The description of the red light is &quot;Angrily flashing.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Colour is a kind of value. The colours are red, blue and green. A block is a kind of thing. A block has a colour. A block is usually blue.
+<blockquote><font color="#000080">Understand &quot;examine [things]&quot; as multiply examining.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Nursery is a room. In the Nursery are six red blocks, four blue blocks and a green block.
+<blockquote><font color="#000080">Multiply examining is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look / get red block&quot;.
+<blockquote><font color="#000080">Carry out multiply examining:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the noun.
 </font></blockquote><p>
 <p>
-<p>Which is fine, so far as it goes, but the colour property is not at all visible to the player, who simply sees &quot;eleven blocks&quot;. We thought of colour as being something outwardly apparent, but Inform does not know this. To achieve a better effect, we will need features from distant chapters. The first is an activity called &quot;printing the name of&quot;:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode126(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Early Childhood 3"\n\nColour is a kind of value. The colours are red, blue and green. A block is a kind of thing. A block has a colour. A block is usually blue. Before printing the name of a block: say "[colour] ". Before printing the plural name of a block: say "[colour] ".\n\nThe Nursery is a room. In the Nursery are six red blocks, four blue blocks and a green block.\n\nTest me with "look / get red block".\n\n');
-}
-</script>
-<a href="javascript:pasteCode126()"><img border=0 src=../doc_images/paste.png></a> &quot;Early Childhood 3&quot;
+<blockquote><font color="#000080">Test me with &quot;examine all&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Colour is a kind of value. The colours are red, blue and green. A block is a kind of thing. A block has a colour. A block is usually blue. Before printing the name of a block: say &quot;[colour] &quot;. Before printing the plural name of a block: say &quot;[colour] &quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Nursery is a room. In the Nursery are six red blocks, four blue blocks and a green block.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;look / get red block&quot;.
-</font></blockquote><p>
-<p>
-<p>This too, however, is unsatisfactory. The individual blocks are correctly described, but we are unable to distinguish them during play: we cannot type &quot;take a green block&quot;, for instance. And because the blocks are indistinguishable in play, they are still massed together as &quot;eleven blocks&quot; in room descriptions. We need to go one step further:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode127(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('"Early Childhood 4"\n\nColour is a kind of value. The colours are red, blue and green. A block is a kind of thing. A block has a colour. A block is usually blue. Before printing the name of a block: say "[colour] ". Before printing the plural name of a block: say "[colour] ". Understand the colour property as describing a block.\n\nThe Nursery is a room. In the Nursery are six red blocks, four blue blocks and a green block.\n\n[And now everything works nicely: the blocks are grouped by colour, and can be referred to by colour, and we can even change the colour of an individual block during play, using a bit of extra trickery from later:]\n\nUnderstand "paint [something] [colour]" as painting it. Painting it is an action applying to one thing and one colour. Check painting it: if the noun is not a block, say "Paints are only for blocks." instead. Carry out painting it: change the colour of the noun to the colour understood. Report painting it: say "The block is now [the colour of the noun]."\n\nTest me with "get red block / get blue block / g / i / look / paint blue block red / i / look / paint me red".\n');
-}
-</script>
-<a href="javascript:pasteCode127()"><img border=0 src=../doc_images/paste.png></a> &quot;Early Childhood 4&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Colour is a kind of value. The colours are red, blue and green. A block is a kind of thing. A block has a colour. A block is usually blue. Before printing the name of a block: say &quot;[colour] &quot;. Before printing the plural name of a block: say &quot;[colour] &quot;. Understand the colour property as describing a block.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Nursery is a room. In the Nursery are six red blocks, four blue blocks and a green block.
-</font></blockquote><p>
-<p>
-<p>And now everything works nicely: the blocks are grouped by colour, and can be referred to by colour, and we can even change the colour of an individual block during play, using a bit of extra trickery from later:
-<p>
-<blockquote><font color="#000080">Understand &quot;paint [something] [colour]&quot; as painting it. Painting it is an action applying to one thing and one colour. Check painting it: if the noun is not a block, say &quot;Paints are only for blocks.&quot; instead. Carry out painting it: change the colour of the noun to the colour understood. Report painting it: say &quot;The block is now [the colour of the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;get red block / get blue block / g / i / look / paint blue block red / i / look / paint me red&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc57.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc246.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc56.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc58.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc245.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc247.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

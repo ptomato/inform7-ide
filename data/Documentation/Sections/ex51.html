@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.4. Upper and lower case letters</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.10. Variations: arrays, logs, queues, stacks, sets, sieves and rings</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,94 +19,199 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Capital City" -->
-<!-- SEARCH SECTION "Ex 359" -->
-<!-- SEARCH SORT "Ex 019-004-359" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc318.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc320.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.4. Upper and lower case letters</b></font></td></tr></table>
+<!-- SEARCH TITLE "Lugubrious Pete's Delicatessen" -->
+<!-- SEARCH SECTION "Ex 378" -->
+<!-- SEARCH SORT "Ex 020-010-378" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc333.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc335.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.10. Variations: arrays, logs, queues, stacks, sets, sieves and rings</b></font></td></tr></table>
 <p>
-<p>In most European languages the same letters can appear in two forms: as capitals, like &quot;X&quot;, mainly used to mark a name or the start of a sentence; or in their ordinary less prominent form, like &quot;x&quot;. These forms are called upper and lower case because, historically, typesetters kept lead castings of letters in two wooden cases, one above the other on the workbench. Lower case letters were in the lower box closer to hand, being more often needed.
+<p>Lists are highly adaptable, and many other collection-like constructions can be made using them. This section introduces no new material, but simply suggests some of the variations which are possible.
 <p>
-<p>Human languages are complicated. Not every lower case letter has an upper case partner: ordinal markers in Hispanic languages don't, for instance, and the German &quot;ß&quot; is never used in upper case. Sometimes two different lower case letters have the same upper case form: &quot;ς&quot; and &quot;σ&quot;, two versions of the Greek sigma, both capitalise to &quot;Σ&quot;. Inform follows the international Unicode standard in coping with all this.
+<p>1. The traditional computing term <b>array</b> means a list of values accessed by their entry numbers, often used in mathematical computations. The difference between an array and a list is mostly one of attitude, but usually arrays are fixed in length whereas lists can expand or contract.
 <p>
-<p>We can test whether text is in either case like so:
+<p>2. A <b>log</b> is a list which records the most recently arrived values, but does not allow itself to grow indefinitely. In the following, which remembers the seven most recently taken items, new values arrive at the end while old ones eventually disappear from the front:
 <p>
-<blockquote><font color="#000080">if WHATEVER is in lower case
-<br>if WHATEVER is in upper case
+<blockquote><font color="#000080">The most-recently-taken list is a list of objects that varies.
+<br>Carry out taking something (called the item):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;truncate the most-recently-taken list to the last 6 entries;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the item to the most-recently-taken list.
+<br>After taking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Taken. (So, your recent acquisitions: [most-recently-taken list].)&quot;
 </font></blockquote><p>
 <p>
-<p>To pass, every character in WHATEVER must be a lower (or upper) case letter: so &quot;marbles&quot; is in lower case, but &quot;marble alley&quot; is not - the space is not a letter. (The empty text is in both lower and upper case.) And we can change the casing of text using:
+<p>Note that the most-recently-taken list begins play as the empty list, grows as the first few items are taken, but then stabilises at length 7 thereafter. If we need to remember recent history, but only <i>recent</i> history, then a log is better than a list which can grow indefinitely, because there is no risk of speed reduction or memory exhaustion in a very long game.
 <p>
-<blockquote><font color="#000080">WHATEVER in lower case
-<br>WHATEVER in upper case
-<br>WHATEVER in sentence case
-<br>WHATEVER in title case
+<p>3. A <b>queue</b> is a list of values which are waiting for attention. New values join at the back, while those being dealt with are removed from the front (whereupon the whole queue moves up one). An empty queue means that nobody is waiting for attention: but there is, in principle, no upper limit to the size of a queue, as anyone who has tried to make a couchette reservation at Roma Termini will know.
+<p>
+<p>Queues typically form when two independent processes are at work, but going at different or variable speeds. An empty queue looks just like any other list:
+<p>
+<blockquote><font color="#000080">The queue is a list of objects that varies.
 </font></blockquote><p>
 <p>
-<p>Sentence case and title case make sense only for texts longer than a single letter. Sentence case capitalises the first letter of each sentence and reduces the rest to lower case; title case capitalises the first letter of each word, and lowers the rest. For instance, if X is &quot;a ticket to Tromsø via Østfold&quot;:
+<p>(Invariably people, in fact, but lists can only be of kinds of value: so, &quot;list of objects&quot;.) Once we identify a &quot;new customer&quot;, we can join him to the queue thus:
 <p>
-<blockquote><font color="#000080">lower case: a ticket to tromsø via østfold
-<br>upper case: A TICKET TO TROMSØ VIA ØSTFOLD
-<br>title case: A Ticket To Tromsø Via Østfold
-<br>sentence case: A ticket to tromsø via østfold
+<blockquote><font color="#000080">add the new customer to the queue;
 </font></blockquote><p>
 <p>
-<p>Accents are preserved in case changes. So (if we are using Glulx and have Unicode available) title case can turn Aristophanes' discomfortingly lower-case lines
+<p>The process of serving the customers needs to make sure there is actually somebody waiting in the queue before it does anything:
 <p>
-<blockquote><font color="#000080">ἐξ οὗ γὰρ ἡμᾶς προὔδοσαν μιλήσιοι,
-<br>οὐκ εἶδον οὐδ᾽ ὄλισβον ὀκτωδάκτυλον,
-<br>ὃς ἦν ἂν ἡμῖν σκυτίνη &quot;πικουρία
+<blockquote><font color="#000080">Every turn when the number of entries in the queue is not 0:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the next customer be entry 1 of the queue;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The next customer] is served and leaves.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove entry 1 from the queue.
 </font></blockquote><p>
 <p>
-<p>by raising them proudly up like so:
+<p>Of course queues can also be constructed which empty from other positions, rather than the front: or we could make what computer scientists sometimes call a <b>deque</b>, a &quot;double-ended queue&quot; where new values arrive at both ends.
 <p>
-<blockquote><font color="#000080">Ἐξ Οὗ Γὰρ Ἡμᾶς Προὔδοσαν Μιλήσιοι,
-<br>Οὐκ Εἶδον Οὐδ᾽ Ὄλισβον Ὀκτωδάκτυλον,
-<br>Ὃς Ἦν Ἂν Ἡμῖν Σκυτίνη &quot;Πικουρία.
+<p>4. A <b>stack</b> is like a queue except that values arrive at, and are removed from, the same end. Stacks are slightly faster if the active end is the back rather than the front, though this will only be noticeable if they grow quite large.
+<p>
+<p>To put a value V onto a stack S (which is known as &quot;pushing&quot;) is simple:
+<p>
+<blockquote><font color="#000080">add V to S;
 </font></blockquote><p>
 <p>
-<p>Title and sentence casing can only be approximate if done by computer. Inform looks at the letters, but is blind to the words and sentences they make up. (Note the way sentence casing did not realise &quot;Tromsø&quot; and &quot;Østfold&quot; were proper nouns.) If asked to put the name &quot;MCKAY&quot; into title casing, Inform will opt for &quot;Mckay&quot;, not recognising this as the Scottish patronymic surname &quot;McKay&quot;. Given &quot;baym dnieper&quot;, the title of David Bergelson's great Yiddish novel of 1932, it will opt for &quot;BAYM DNIEPER&quot;: but properly speaking Yiddish does not have upper case lettering at all, though nowadays it is sometimes printed as if it did. And conventions are very variable about which words should be capitalised in titles: English publishers mostly agree that connectives, articles and prepositions should be in lower case, but in France almost anything goes, with Academie Française rules giving way to avant-garde book design. In short, we cannot rely on Inform's title casing to produce a result which a human reader will always think perfect.
+<p>And to remove a value from the top of the stack (which is known as &quot;pulling&quot;):
 <p>
-<p>One more caution, though it will affect hardly anyone. For projects using the Z-machine, only a restricted character set is available in indexed texts: for more, we must use Glulx. A mad anomaly of ZSCII, the Z-machine character set, is that it contains the lower case letter &quot;ÿ&quot; but not its upper case form &quot;Ÿ&quot;, so that
-<p>
-<blockquote><font color="#000080">&quot;ÿ&quot; in upper case
+<blockquote><font color="#000080">let N be the number of entries in S;
+<br>let V be entry N of S;
+<br>remove entry N of S;
 </font></blockquote><p>
 <p>
-<p>produces &quot;Ÿ&quot; in Glulx but &quot;ÿ&quot; in the Z-machine. This will come as a blow to Queensrÿche fans, but in all other respects any result on the Z-machine should agree with its counterpart on Glulx.
+<p>Note that the middle line, accessing entry N, will fail if N = 0, that is, if the stack is empty: Inform's list routines will produce a run-time problem message.
+<p>
+<p>Stacks are useful if some long-term process is constantly being interrupted by newer and more urgent demands, but they can also be used in planning. If a character has a long-term goal, which needs various short-term goals to be achieved along the way, then a stack can represent the goals currently being pursued. The top of the stack represents what the character is trying to achieve now. If the character realises that it needs to achieve something else first, we put that new goal onto the top of the stack, and it becomes the new current goal. When the character completes a task, it can be removed, and we can go back to trying to finish whatever is now on top. When the stack is empty, the character has achieved the original goal.
+<p>
+<p>5. Notoriously, <b>set</b> has 464 distinct meanings in the Oxford English Dictionary, making it the single most ambiguous word in the language. Here we mean not the home of a badger or the Egyptian god of the desert, but the mathematical sense: a collection of values (sometimes called &quot;elements&quot;) without duplicates, and which is normally written in brace notation and in some natural order for the reader's convenience.
+<p>
+<p>The trick here is to maintain the principle that, at all times, our list is sorted in order and contains no duplicates. To provide an example, we start with two sets of numbers:
+<p>
+<blockquote><font color="#000080">let S be {2, 4, 8, 16, 32, 64};
+<br>let T be {2, 4, 6, 10};
+</font></blockquote><p>
+<p>
+<p>Here we add an element to T:
+<p>
+<blockquote><font color="#000080">add 8 to T, if absent; sort T;
+</font></blockquote><p>
+<p>
+<p>The &quot;if absent&quot; clause ensures that no duplicate can occur, and by sorting T afterwards, we maintain the principle that a set must remain in order - so T is now {2, 4, 6, 8, 10}, not {2, 4, 6, 10, 8}. (Inform's sorting algorithm is fast on nearly-sorted lists, so frequent sorting is not as inefficient as it might look.)
+<p>
+<p>We next take the union of T and S, that is, the set containing everything which is in either or both:
+<p>
+<blockquote><font color="#000080">let U be S; add T to U, if absent; sort U;
+</font></blockquote><p>
+<p>
+<p>This makes U = {2, 4, 6, 8, 10, 16, 32, 64}, and once again no duplicates occur and we preserve the sorting. The intersection of T and S, the set of elements in both of them, is a little trickier:
+<p>
+<blockquote><font color="#000080">let I be T;
+<br>repeat with the element running through T
+<br>begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the element is not listed in S, remove the element from I;
+<br>end repeat;
+</font></blockquote><p>
+<p>
+<p>(Faster methods could be devised which exploit the sortedness of T and S, but are not worth it for shortish lists.) This produces I = {2, 4, 8}. Lastly, we can form the set difference, consisting of those elements which are in S but not in T:
+<p>
+<blockquote><font color="#000080">let D be S; remove T from D, if present;
+</font></blockquote><p>
+<p>
+<p>Here, as with intersection, since all we do is to strike out unwanted elements, the surviving ones remain in order and there is no need to sort when we are finished. This produces D = {16, 32, 64}.
+<p>
+<p>6. A <b>sieve</b> is used to make a complicated choice where there are many constraints, by ruling out impossible cases to see what is left. The term derives from the kitchen utensil (for sieving fine grains of flour), but via the name of the &quot;sieve of Eratosthenes&quot;, an ancient Greek method for determining the prime numbers.
+<p>
+<p>Using a sieve is much like using a set, and the difference is mainly one of outlook - we are interested in what does not belong, rather than what does.
+<p>
+<p>7. A <b>ring</b> is not so much a row of values, more a circle, with the last and first entries thought of as adjacent. One position is usually thought of as special, and is the place where new items are added: this may as well be entry 1. For instance, to add &quot;new item&quot; to the ring:
+<p>
+<blockquote><font color="#000080">add the item at entry 1 in the ring;
+</font></blockquote><p>
+<p>
+<p>To set &quot;item&quot; to the frontmost value and extract it from the ring:
+<p>
+<blockquote><font color="#000080">let the item be entry 1 of the ring;
+<br>remove entry 1 from the ring;
+</font></blockquote><p>
+<p>
+<p>And we can rotate the ring in either direction, making a different entry the new entry 1 and therefore the new frontmost value:
+<p>
+<blockquote><font color="#000080">rotate the ring;
+<br>rotate the ring backwards;
+</font></blockquote><p>
 <p>
 <p><hr><p>
-<a name="e22"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex22.html#e22 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>358</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex22.html#e22 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Rocket Man</font></b></a><br>Using case changes on any text produced by a "to say..." phrase.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex22.html#e22 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e273"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex273.html#e273 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>374</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex273.html#e273 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Circle of Misery</font></b></a><br>Retrieving items from an airport luggage carousel is such fun, how can we resist simulating it, using a list as a ring buffer?<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex273.html#e273 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e28"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex28.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>375</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex28.html#e28 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> I Didn't Come All The Way From Great Portland Street</font></b></a><br>In this fiendishly difficult puzzle, which may perhaps owe some inspiration to a certain BBC Radio panel game (1967-), a list is used as a set of actions to help enforce the rule that the player must keep going for ten turns without hesitation, repetition, or deviating from the subject on the card.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex28.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e319"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex319.html#e319 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>376</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex319.html#e319 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Fibonacci Sequence</font></b></a><br>The modest Leonardo Fibonacci of Pisa will be only too happy to construct his sequence on request, using an array.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex319.html#e319 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e328"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex328.html#e328 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>377</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex328.html#e328 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Your Mother Doesn't Work Here</font></b></a><br>Your hard-working mother uses a list as a stack: urgent tasks are added to the end of the list, interrupting longer-term plans.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex328.html#e328 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e51"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc319.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>359</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc319.html#e51 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Capital City</font></b></a><br>To arrange that the location information normally given on the left-hand side of the status line appears in block capitals.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex51.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e51"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc334.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>378</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc334.html#e51 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Lugubrious Pete's Delicatessen</font></b></a><br>In this evocation of supermarket deli counter life, a list is used as a queue to keep track of who is waiting to be served.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex51.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Not much is needed for this. The only noteworthy point is that it doesn't work by changing the LHSL to &quot;[the player's surroundings in upper case]&quot;: it cannot do this because &quot;the player's surroundings&quot; is not a value. Instead, &quot;[the player's surroundings]&quot; is a text substitution sometimes printing the name of a room, sometimes printing &quot;Darkness&quot;, and so on. We must therefore load it into a text first, and then apply &quot;...in upper case&quot;.
+<p>First, to set the scene:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode449(code) {
+function pasteCode467(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Capital City"\n\nCapital City is a room. East is Lower Caissons. South of Lower Caissons\nis San Seriffe. East of San Seriffe is a dark room.\n\nTo say the player\'s capitalised surroundings:\n\tlet the masthead be "[the player\'s surroundings]" in upper case;\n\tsay the masthead.\n\nWhen play begins:\n\tchange the left hand status line to "[the player\'s capitalised surroundings]".\n\nTest me with "e / s / e".\n');
+    myProject.pasteCode('[=0x0022=]Lugubrious Pete[=0x0027=]s Delicatessen[=0x0022=][=0x000A=][=0x000A=]The Supermarket is west of the Delicatessen Counter. Lugubrious Pete is in the Delicatessen. [=0x0022=]Lugubrious Pete, dolefully slicing meats and cheeses, serves at the counter.[=0x0022=] Alice, Beth, Gemma, Delia, and Eliza are women in the Supermarket.[=0x000A=][=0x000A=]The deli queue is a list of objects that varies.[=0x000A=][=0x000A=][Two processes compete here: one that fills the queue, the other which will empty it. The first process is the one which brings shoppers in to the counter, joining the back of the queue, which is where [=0x0022=]add ... to ...[=0x0022=] puts new entries by default:][=0x000A=][=0x000A=]Every turn when a woman is in the Supermarket and a random chance of 2 in 3 succeeds (this is the customer arriving rule):[=0x000A=][=0x0009=]let the customer be a random woman in the Supermarket;[=0x000A=][=0x0009=]now the customer is in the Delicatessen;[=0x000A=][=0x0009=]if the player is in the Supermarket, say [=0x0022=][The customer] walks into the Delicatessen.[=0x0022=];[=0x000A=][=0x0009=]if the player is in the Delicatessen, say [=0x0022=][The customer] comes in from the Supermarket, and [if the number of entries in the deli queue is 0]can[=0x0027=]t believe her luck. The counter is free![otherwise]resignedly queues behind [the deli queue].[=0x0022=];[=0x000A=][=0x0009=]add the customer to the deli queue.[=0x000A=][=0x000A=][The competing process is the one which serves shoppers and thus gets rid of them again: unfortunately, it is slower. But Pete is fair if inefficient, and serves the customers in strict order of arrival. Each served customer is removed from the front of the list, and the others therefore all move up a place.][=0x000A=][=0x000A=]Every turn when the number of entries in the deli queue is not 0 and a random chance of 1 in 3 succeeds (this is the customer being served rule):[=0x000A=][=0x0009=]let the customer be entry 1 of the deli queue;[=0x000A=][=0x0009=]if the player is in the Delicatessen, say [=0x0022=]Pete gives a droopy expression as he serves [customer], who nevertheless brightens and leaves.[=0x0022=];[=0x000A=][=0x0009=]if the player is in the Supermarket, say [=0x0022=][customer] emerges cheerfully from the Delicatessen Counter, and goes about her regular shopping.[=0x0022=];[=0x000A=][=0x0009=]now the customer is in the Supermarket;[=0x000A=][=0x0009=]remove entry 1 from the deli queue.[=0x000A=][=0x000A=]Instead of waiting in the Delicatessen when the number of entries in the deli queue is not 0, say [=0x0022=]Time passes, for [deli queue] quite as much as for yourself.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]wait / wait / wait / east / wait / wait / wait / wait / wait[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode449()"><img border=0 src=../doc_images/paste.png></a> &quot;Capital City&quot;
+<a href="javascript:pasteCode467()"><img border=0 src=../doc_images/paste.png></a> &quot;Lugubrious Pete's Delicatessen&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Capital City is a room. East is Lower Caissons. South of Lower Caissons
-<br>is San Seriffe. East of San Seriffe is a dark room.
+<blockquote><font color="#000080">The Supermarket is west of the Delicatessen Counter. Lugubrious Pete is in the Delicatessen. &quot;Lugubrious Pete, dolefully slicing meats and cheeses, serves at the counter.&quot; Alice, Beth, Gemma, Delia, and Eliza are women in the Supermarket.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say the player's capitalised surroundings:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the masthead be &quot;[the player's surroundings]&quot; in upper case;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say the masthead.
+<blockquote><font color="#000080">The deli queue is a list of objects that varies.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the left hand status line to &quot;[the player's capitalised surroundings]&quot;.
+<p>Two processes compete here: one that fills the queue, the other which will empty it. The first process is the one which brings shoppers in to the counter, joining the back of the queue, which is where &quot;add ... to ...&quot; puts new entries by default:
+<p>
+<blockquote><font color="#000080">Every turn when a woman is in the Supermarket and a random chance of 2 in 3 succeeds (this is the customer arriving rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the customer be a random woman in the Supermarket;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the customer is in the Delicatessen;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Supermarket, say &quot;[The customer] walks into the Delicatessen.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Delicatessen, say &quot;[The customer] comes in from the Supermarket, and [if the number of entries in the deli queue is 0]can't believe her luck. The counter is free![otherwise]resignedly queues behind [the deli queue].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;add the customer to the deli queue.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;e / s / e&quot;.
+<p>The competing process is the one which serves shoppers and thus gets rid of them again: unfortunately, it is slower. But Pete is fair if inefficient, and serves the customers in strict order of arrival. Each served customer is removed from the front of the list, and the others therefore all move up a place.
+<p>
+<blockquote><font color="#000080">Every turn when the number of entries in the deli queue is not 0 and a random chance of 1 in 3 succeeds (this is the customer being served rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the customer be entry 1 of the deli queue;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Delicatessen, say &quot;Pete gives a droopy expression as he serves [customer], who nevertheless brightens and leaves.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Supermarket, say &quot;[customer] emerges cheerfully from the Delicatessen Counter, and goes about her regular shopping.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the customer is in the Supermarket;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove entry 1 from the deli queue.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc319.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Instead of waiting in the Delicatessen when the number of entries in the deli queue is not 0, say &quot;Time passes, for [deli queue] quite as much as for yourself.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;wait / wait / wait / east / wait / wait / wait / wait / wait&quot;.
+</font></blockquote><p>
+<p>
+<p>That completes the example, but here is a variation to show that queues need not empty from the front. The Deli already looks a pretty sexist establishment, with the customers all being women, but it is about to get a whole lot worse:
+<p>
+<blockquote><font color="#000080">Modesty is a kind of value. The modesties are positively prim, buttoned up, modest, flirty, revealing and downright immodest. Every woman has a modesty. Alice is positively prim. Beth is downright immodest. Gemma is modest. Delia is flirty. Eliza is revealing.
+</font></blockquote><p>
+<p>
+<p>We could then rewrite the service rule like so:
+<p>
+<blockquote><font color="#000080">Every turn when the number of entries in the deli queue is not 0 and a random chance of 1 in 3 succeeds (this is the customer being served rule):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let Pete's preference be the deli queue;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort Pete's preference in reverse modesty order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the customer be entry 1 of Pete's preference;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the first in line be entry 1 of the deli queue;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Delicatessen, say &quot;[if the customer is the first in line]Pete gives a droopy expression as he serves [the customer], who nevertheless brightens and leaves.[otherwise]Outrageously, Pete scans the queue, notices [the customer] in her [modesty of the customer] clothes, and serves her next, while [the first in line] glares at him.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the Supermarket, say &quot;[The customer] emerges cheerfully from the Delicatessen Counter, and goes about her regular shopping.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the customer is in the Supermarket;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the customer from the deli queue.
+</font></blockquote><p>
+<p>
+<p>It is now heartbreakingly difficult for Alice to obtain her sliced chorizo sausage.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc334.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc318.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc320.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e83"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>379</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex83.html#e83 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Sieve of Eratosthenes</font></b></a><br>The haughty Eratosthenes of Cyrene will nevertheless consent to sieve prime numbers on request.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e87"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex87.html#e87 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>380</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex87.html#e87 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Eyes, Fingers, Toes</font></b></a><br>A safe with a multi-number combination, meant to be dialed over multiple turns, is implemented using a log of the last three numbers dialed. The log can then be compared to the safe's correct combination.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex87.html#e87 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc333.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc335.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

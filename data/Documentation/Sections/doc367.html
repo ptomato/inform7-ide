@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>22.5. Version numbering</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>22.19. Producing an EPS format map</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,50 +19,35 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Version numbering" -->
-<!-- SEARCH SECTION "22.5" -->
-<!-- SEARCH SORT "022-005-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc366.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap22.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 22: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc368.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>22.5. Version numbering</b></font></td></tr></table>
+<!-- SEARCH TITLE "Producing an EPS format map" -->
+<!-- SEARCH SECTION "22.19" -->
+<!-- SEARCH SORT "022-019-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc366.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap22.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 22: Publishing</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc368.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>22.19. Producing an EPS format map</b></font></td></tr></table>
 <p>
-<p>As we have seen, extensions are referred to by name and author, but they can also (optionally) be referred to by version. For instance:
+<p>The &quot;Index map with...&quot; instruction is a much more varied thing than hinted at in the previous section, and its general form is
 <p>
-<blockquote><font color="#000080">Include version 2 of the Ducking Action by Graham Nelson.
+<blockquote><font color="#000080">Index map with [instruction] and [instruction] and ... and [instruction].
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Version 1/040426 of the Ducking Action by Graham Nelson begins here.
+<p>where the instructions can be of four different forms, as follows:
+<p>
+<blockquote><font color="#000080">[room A] mapped [direction] of [room B]
+<br>EPS file
+<br>rubric [text] ... and some optional details ...
+<br>[setting] of [whatever] set to [value]
 </font></blockquote><p>
 <p>
-<p>A version number must be a whole number 1, 2, ... (version 0 is not allowed, and nor are decimal points), optionally followed by a slash '/' and then a six-figure date, in the form YYMMDD: so 040426 means 26 April 2004.
+<p>We have already seen the first of these instructions. The second is short and has a fixed wording:
 <p>
-<p>A request to include version 2 of something implicitly means &quot;version 2 or later&quot;, and similarly &quot;version 2/040426&quot; means version 2 with a date of 26 April 2004 or later, or else any version higher than 2. If Inform loads the extension but finds that its version is not good enough, an error is issued.
-<p>
-<p>Where no version number is quoted, the rule is that an unspecified version predates any numbered version. This means that the line
-<p>
-<blockquote><font color="#000080">Include the Ducking Action by Graham Nelson.
+<blockquote><font color="#000080">EPS file
 </font></blockquote><p>
 <p>
-<p>will be happy with any version of the extension at all, whether numbered or not; but
+<p>so can be invoked by typing &quot;Index map with EPS file.&quot;, for instance. EPS stands for Encapsulated PostScript, which is a standard file format for line art. EPS files can be edited with sophisticated graphics programs such as Adobe Illustrator, and can be used as illustrations in many word-processors and page layout programs. (They can also be converted to PDF by Mac OS X Preview.) We need a line-art format because the map produced will never be exactly what we want: we are probably going to end up hacking it to change the fonts, add some drawings, tidy up the spacing and so on.
 <p>
-<blockquote><font color="#000080">Include version 2 of the Ducking Action by Graham Nelson.
-</font></blockquote><p>
+<p>When the map-maker has been given the &quot;EPS file&quot; instruction, it writes an attempt to draw the current project's map in EPS format as a file onto the desktop, with the filename &quot;Inform Map.eps&quot;.
 <p>
-<p>will only accept the extension if it has a version number attached (and with that number being 2 or higher).
+<p>Note that Inform will over-write any existing file of this name: but that is intentional, because one usually ends up tweaking and rebuilding the project over and over to get the map just so, and it would be tiresome for Inform to produce endless copies &quot;Inform Map 19.eps&quot;, etc.
 <p>
-<p>During play of any game compiled by Inform 7, typing VERSION lists various serial numbers of the pieces of software used to make it. The list concludes with names, authors and version numbers of any extensions used. So every author whose work contributes to a game automatically gets a modest credit within it. The same list can be printed, at the discretion of the designer, using the textual substitution:
-<p>
-<blockquote><font color="#000080">say &quot;[list of extension credits]&quot;
-</font></blockquote><p>
-<p>
-<p>If we want our extension to go uncredited - perhaps if it is a low-level enabling sort of thing, for instance - we can place the following sentence inside the definition of the extension:
-<p>
-<blockquote><font color="#000080">Use authorial modesty.
-</font></blockquote><p>
-<p>
-<p>The same sentence placed in the body of a source text causes all extensions by the same author as the main source text to go uncredited. In other words, if Isaac Miggins writes a source text and includes, say, Unlikely Events by Isaac Miggins, then this extension will go uncredited in the VERSION command.
-<p>
-<p>A complete list, undiluted by modesty, can always be obtained using:
-<p>
-<blockquote><font color="#000080">say &quot;[complete list of extension credits]&quot;
-</font></blockquote><p>
+<p>(The reason the EPS file is not placed in a project's Materials folder is that it is not going to releasable to the public as it stands: for one thing it will be too raw, and for another, EPS is not a format everyone can read. It is provided as raw materials.)
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc366.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc368.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

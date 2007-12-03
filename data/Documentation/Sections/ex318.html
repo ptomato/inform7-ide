@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.22. Deciding the scope of something</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.2. Changing the command prompt</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,114 +19,118 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Rock Garden" -->
-<!-- SEARCH SECTION "Ex 316" -->
-<!-- SEARCH SORT "Ex 017-022-316" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc283.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc285.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.22. Deciding the scope of something</b></font></td></tr></table>
+<!-- SEARCH TITLE "Don Pedro's Revenge" -->
+<!-- SEARCH SECTION "Ex 105" -->
+<!-- SEARCH SORT "Ex 008-002-105" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc110.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc112.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.2. Changing the command prompt</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> &quot;Scope&quot; is a term of art in interactive fiction programming: it means the collection of things which can be interacted with at any given moment, which depends on who you are and where you are. Commands typed by the player will only be allowed to go forward into actions if the things they refer to are &quot;in scope&quot;. Inform also needs to determine scope at other times, too: for instance, when deciding whether a rule conditional on being &quot;in the presence of&quot; something is valid. It is a bad idea to say anything during this activity.
+<p>The command prompt is the text printed by Inform to ask the player for another command. Ordinarily this is simply a greater-than-sign, &quot;>&quot;, so we tend not to notice it as text at all. Internally, though, it is a variable value called &quot;command prompt&quot;, which means we can change it.
 <p>
-<p><b>2. The default behaviour.</b> Is complicated: see the Inform Designer's Manual, 4th edition, page 227. Briefly, the scope for someone consists of everything in the same place as them, unless it is dark.
+<p>For example, this will be a more conversational sort of prompt:
 <p>
-<p><b>3. Examples.</b> (a) We very rarely want to forbid the player to refer to things close at hand, but often want to allow references to distant ones. For instance, a mirage of something which is not present at all:
-<p>
-<blockquote><font color="#000080">After deciding the scope of the player while in the Shrine: place the holy grail in scope.
+<blockquote><font color="#000080">When play begins: change the command prompt to &quot;What now? &quot;.
 </font></blockquote><p>
 <p>
-<p>The special phrase &quot;place ... in scope&quot; does what it suggests. Ordinarily if something is placed in scope, then so are its parts and (in the case of a supporter or a transparent or open container) its contents; but we can also &quot;place the box in scope, but not its contents&quot; if we really need to place just the box itself in scope.
+<p>Whereas this will be more up-to-the-minute and demanding:
 <p>
-<p>(b) Another useful device is to be able to see, but not touch, another room:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode64(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('The Cloakroom is a room. "This is just a cloakroom, but through a vague, misty mirror-window you can make out the Beyond." After looking in the Cloakroom, say "In the mirror you can see [list of things in the Beyond]."\n\nAfter deciding the scope of the player while in the Cloakroom: place the Beyond in scope.\n\nThe Beyond is a room. Johnny Depp is a man in the Beyond.\n\n');
-}
-</script>
-<a href="javascript:pasteCode64()"><img border=0 src=../doc_images/paste.png></a> The Cloakroom is a room. &quot;This is just a cloakroom, but through a vague, misty mirror-window you can make out the Beyond.&quot; After looking in the Cloakroom, say &quot;In the mirror you can see [list of things in the Beyond].&quot;
+<blockquote><font color="#000080">When play begins: change the command prompt to &quot;[time of day] >&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After deciding the scope of the player while in the Cloakroom: place the Beyond in scope.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Beyond is a room. Johnny Depp is a man in the Beyond.
-</font></blockquote><p>
-<p>
-<p>(This must, however, also be a mirage, as at time of writing Mr Depp is alive and as well as can be expected following the reviews of &quot;Charlie and the Chocolate Factory&quot;.) When a room is placed in scope, this is understood as placing its contents in scope rather than the room-object itself. So &quot;place the Ballroom in scope&quot; allows the player to talk about the dancers, the chamber musicians and so forth, but not to &quot;EXAMINE BALLROOM&quot; as such. (This is sensible because actions like examining apply to things: and a room, unlike a container or a supporter, is not a kind of thing.)
-<p>
-<p>(c) In darkness, the scope of someone is ordinarily restricted to his or her possessions (and body), but we can override that:
-<p>
-<blockquote><font color="#000080">After deciding the scope of the player while in darkness: place the location in scope.
-</font></blockquote><p>
-<p>
-<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows the action it would be taking if the current line of command grammar were to be accepted, but it does not yet know to what objects that command would be applied. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
+<p>(&quot;Time of day&quot; is another variable value, which is fairly self-explanatory, but will be covered in detail later on.) The prompt can be changed at any point, so can be used to indicate the current situation, or even as a sly way to introduce a sort of conversation between computer and player.
 <p>
 <p><hr><p>
-<a name="e262"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex262.html#e262 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>313</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex262.html#e262 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Scope for listening different from scope for seeing</font></b></a><br>Using "deciding the scope" to change the content of lists such as "the list of audible things which can be touched by the player".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex262.html#e262 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e270"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex270.html#e270 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>314</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex270.html#e270 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Peeled</font></b></a><br>Two different approaches to adjusting what the player can interact with, compared.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex270.html#e270 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e298"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex298.html#e298 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>315</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex298.html#e298 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ginger Beer</font></b></a><br>A portable magic telescope which allows the player to view items in another room of his choice.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex298.html#e298 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e318"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc284.html#e318 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>316</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc284.html#e318 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Rock Garden</font></b></a><br>A simple open landscape where the player can see between rooms and will automatically move to touch things in distant rooms.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex318.html#e318 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e318"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc111.html#e318 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>105</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc111.html#e318 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Don Pedro's Revenge</font></b></a><br>Combat scenario in which the player's footing and position changes from move to move, and the command prompt also changes to reflect that.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex318.html#e318 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>A map of linked rooms works well for modeling enclosed or indoor space, and somewhat less well for modeling large open spaces, where a person should reasonably be able to see things which are much too far away to touch. With some modifications to scoping, though, we can create an environment where objects in nearby rooms are described and viewable, and where the player will automatically move towards distant items before interacting with them physically.
+<p>Suppose our game features a detailed simulated combat between the player character and his opponent. He might have several weapons available, and several types of attack available; and at any given time he might be perched up in the rigging of his ship, standing on the open deck, or boxed in between some barrels. His options will vary depending on his position, and obviously it would detract from the pacing to make the player keep LOOKing in the middle of combat in order to remind himself where he is. Instead, we'll roll this information into the command prompt:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode404(code) {
+function pasteCode192(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('"Rock Garden"\n\nRock Garden West is west of Rock Garden East. Rock Garden East contains a rake. Rock Garden West contains a bench and a maple leaf. The bench is an enterable supporter.\n\nIntervisibility relates rooms to each other in groups. The verb to be connected with implies the intervisibility relation.\n\nDefinition: a room is inter-visible if it is connected with more than one room.\n\nRock Garden West is connected with Rock Garden East.\n\nAfter deciding the scope of the player when the location is an inter-visible room:\n\trepeat with other place running through rooms which are connected with the location\n\tbegin;\n\t\tif the other place is the location, do nothing;\n\t\totherwise place the other place in scope;\n\tend repeat.\n\nRule for reaching inside a room (called target) which is connected with the location:\n\tlet way be the best route from the location to the target;\n\tif the way is not a direction\n\tbegin;\n\t\tsay "You can\'t get over to [the target] from here.";\n\t\tdeny access;\n\tend if;\n\tsay "(first heading [way])[command clarification break]";\n\ttry going way;\n\tif the player is in the target, allow access;\n\totherwise deny access.\n\nAfter looking when the location is an inter-visible room:\n\trepeat with other place running through rooms which are connected with the location\n\tbegin;\n\t\tif the other place is not the location, describe locale for other place;\n\tend repeat.\n\nTest me with "get rake / drop rake / sit on bench / get rake".\n');
+    myProject.pasteCode('[=0x0022=]Don Pedro[=0x0027=]s Revenge[=0x0022=][=0x000A=][=0x000A=]The Deck of the Helene Marie is a room. [=0x0022=]The two crews are embattled all around you, but your attention is reserved for your particular enemy: Don Pedro.[=0x0022=][=0x000A=][=0x000A=]Table of Random Prompts[=0x000A=]position[=0x0009=]prompt[=0x000A=]boxed[=0x0009=][=0x0022=]So securely boxed-in that you can really only parry or thrust, you try to [=0x0022=][=0x000A=]boxed[=0x0009=][=0x0022=]Trapped between your barrels, you decide to [=0x0022=][=0x000A=]perched[=0x0009=][=0x0022=]Able to slice at your attackers but not to advance or retreat, you choose to [=0x0022=][=0x000A=]perched[=0x0009=][=0x0022=]Perched up here with the advantage of height (but little mobility), you attempt to [=0x0022=][=0x000A=]free[=0x0009=][=0x0022=]Out on the open deck with no impediments, free to advance or retreat, you decide to [=0x0022=][=0x000A=][=0x000A=]When play begins: reset the prompt.[=0x000A=][=0x000A=]Every turn: reset the prompt.[=0x000A=][=0x000A=]To reset the prompt:[=0x000A=][=0x0009=]sort the Table of Random Prompts in random order;[=0x000A=][=0x0009=]repeat through the Table of Random Prompts[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the position entry is the placement of the player[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]change the command prompt to prompt entry;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]stop;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]After reading a command: say conditional paragraph break.[=0x000A=][=0x000A=]A placement is a kind of value. The placements are boxed, perched, free. The player has a placement. The player is free.[=0x000A=][=0x000A=]Understand [=0x0022=]retreat[=0x0022=] or [=0x0022=]parry[=0x0022=] as retreating. Retreating is an action applying to nothing.[=0x000A=][=0x000A=]Check retreating:[=0x000A=][=0x0009=]if the player is perched, say [=0x0022=]You can[=0x0027=]t move backward or parry very successfully from this position.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out retreating:[=0x000A=][=0x0009=]now the player is boxed;[=0x000A=][=0x0009=]say [=0x0022=]You protect yourself, but end up wedged in between two barrels.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]thrust[=0x0022=] or [=0x0022=]advance[=0x0022=] as advancing. Advancing is an action applying to nothing.[=0x000A=][=0x000A=]Check advancing:[=0x000A=][=0x0009=]if the player is perched, say [=0x0022=]You can[=0x0027=]t move forward from here, only slash.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out advancing:[=0x000A=][=0x0009=]now the player is free;[=0x000A=][=0x0009=]say [=0x0022=]You push forward aggressively, making your way to the open deck.[=0x0022=][=0x000A=][=0x000A=]Instead of jumping:[=0x000A=][=0x0009=]now the player is perched;[=0x000A=][=0x0009=]say [=0x0022=]You leap and swing yourself boldly up into the rigging, leaving your attackers beneath you.[=0x0022=][=0x000A=][=0x000A=]Instead of jumping when the player is perched:[=0x000A=][=0x0009=]now the player is free;[=0x000A=][=0x0009=]say [=0x0022=]You leap down from your position, into the middle of the deck.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]advance / jump / advance / retreat / jump / retreat / retreat / advance[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode404()"><img border=0 src=../doc_images/paste.png></a> &quot;Rock Garden&quot;
+<a href="javascript:pasteCode192()"><img border=0 src=../doc_images/paste.png></a> &quot;Don Pedro's Revenge&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rock Garden West is west of Rock Garden East. Rock Garden East contains a rake. Rock Garden West contains a bench and a maple leaf. The bench is an enterable supporter.
+<blockquote><font color="#000080">The Deck of the Helene Marie is a room. &quot;The two crews are embattled all around you, but your attention is reserved for your particular enemy: Don Pedro.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Intervisibility relates rooms to each other in groups. The verb to be connected with implies the intervisibility relation.
+<blockquote><font color="#000080">Table of Random Prompts
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">position</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">prompt</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">boxed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;So securely boxed-in that you can really only parry or thrust, you try to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">boxed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Trapped between your barrels, you decide to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">perched</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Able to slice at your attackers but not to advance or retreat, you choose to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">perched</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Perched up here with the advantage of height (but little mobility), you attempt to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">free</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Out on the open deck with no impediments, free to advance or retreat, you decide to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Definition: a room is inter-visible if it is connected with more than one room.
+<blockquote><font color="#000080">When play begins: reset the prompt.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rock Garden West is connected with Rock Garden East.
+<blockquote><font color="#000080">Every turn: reset the prompt.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After deciding the scope of the player when the location is an inter-visible room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with other place running through rooms which are connected with the location
+<blockquote><font color="#000080">To reset the prompt:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Random Prompts in random order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Random Prompts
 <br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the other place is the location, do nothing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise place the other place in scope;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the position entry is the placement of the player
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to prompt entry;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
 <br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for reaching inside a room (called target) which is connected with the location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from the location to the target;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the way is not a direction
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't get over to [the target] from here.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;deny access;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first heading [way])[command clarification break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try going way;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is in the target, allow access;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise deny access.
+<blockquote><font color="#000080">After reading a command: say conditional paragraph break.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After looking when the location is an inter-visible room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with other place running through rooms which are connected with the location
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the other place is not the location, describe locale for other place;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">A placement is a kind of value. The placements are boxed, perched, free. The player has a placement. The player is free.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;get rake / drop rake / sit on bench / get rake&quot;.
+<blockquote><font color="#000080">Understand &quot;retreat&quot; or &quot;parry&quot; as retreating. Retreating is an action applying to nothing.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc284.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Check retreating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is perched, say &quot;You can't move backward or parry very successfully from this position.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out retreating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is boxed;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You protect yourself, but end up wedged in between two barrels.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;thrust&quot; or &quot;advance&quot; as advancing. Advancing is an action applying to nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check advancing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is perched, say &quot;You can't move forward from here, only slash.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out advancing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is free;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You push forward aggressively, making your way to the open deck.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of jumping:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is perched;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You leap and swing yourself boldly up into the rigging, leaving your attackers beneath you.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of jumping when the player is perched:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is free;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You leap down from your position, into the middle of the deck.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;advance / jump / advance / retreat / jump / retreat / retreat / advance&quot;.
+</font></blockquote><p>
+<p>
+<p>Of course, this won't be much fun until we also provide the player with a few weapons, some more fighting maneuvers, and, most of all, a Don Pedro to defeat.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc111.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e53"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex53.html#e53 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>317</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex53.html#e53 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Stately Gardens</font></b></a><br>An open landscape where the player can see landmarks in nearby areas, with somewhat more complex room descriptions than the previous example, and in which we also account for size differences between things seen at a distance.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex53.html#e53 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc283.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc285.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc110.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc112.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

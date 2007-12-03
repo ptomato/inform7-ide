@@ -717,6 +717,8 @@ Array CheckTableEntryIsNonBlank_LU
 Global I7S_Tab;
 Global I7S_Col;
 Global I7S_Dir;
+Global I7S_Swap;
+Global I7S_Comp;
 #ifdef MEASURE_SORT_PERFORMANCE;
 Global I7S_CCOUNT;
 Global I7S_CCOUNT2;
@@ -727,6 +729,8 @@ Global I7S_XCOUNT;
 	I7S_Tab = tab;
 	I7S_Col = col;
 	I7S_Dir = dir;
+	I7S_Swap = TableSwapRows;
+	I7S_Comp = TableCompareRows;
 	#ifdef MEASURE_SORT_PERFORMANCE;
 	I7S_CCOUNT = 0;
 	I7S_CCOUNT2 = 0;
@@ -754,7 +758,7 @@ Global I7S_XCOUNT;
 	I7S_CCOUNT++;
 	if (I7S_CCOUNT == 10000) { I7S_CCOUNT = 0; I7S_CCOUNT2++; }
 	#endif;
-	return I7S_Dir*TableCompareRows(I7S_Tab, I7S_Col, x+1, y+1, I7S_Dir);
+	return I7S_Dir*I7S_Comp(I7S_Tab, I7S_Col, x+1, y+1, I7S_Dir);
 ];
 
 [ I7_Sort_Exchange x y;
@@ -762,7 +766,7 @@ Global I7S_XCOUNT;
 	I7S_XCOUNT++;
 	if (I7S_XCOUNT < 0) { print "XO^"; I7S_XCOUNT = 0; }
 	#endif;
-	return TableSwapRows(I7S_Tab, x+1, y+1);
+	return I7S_Swap(I7S_Tab, x+1, y+1);
 ];
 
 ! Sorting algorithm used in builds up to and including 4W37: note that this is
