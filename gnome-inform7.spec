@@ -3,7 +3,7 @@
 # Change 1.fc7 to ubuntu1 for ubuntu-style release number
 #
 %define  ver     5J39
-%define  rel     1.fc7
+%define  rel     1.fc8
 %define  prefix  /usr
 
 Summary: An IDE for the Inform 7 interactive fiction programming language
