@@ -95,7 +95,7 @@ after_welcome_dialog_realize           (GtkWidget       *widget,
     }
     g_list_free(recent);
 #else
-    gchar *filename = config_file_get_string("Settings", "LastProject");
+    filename = config_file_get_string("Settings", "LastProject");
     if(filename)
         gtk_widget_set_sensitive(
               lookup_widget(widget, "welcome_reopen_button"), TRUE);

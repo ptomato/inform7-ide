@@ -46,6 +46,11 @@ typedef struct {
     double   x;
 } NodeData;
 
+typedef struct {
+	gchar *label;
+	GNode *node;
+} NodeLabel;
+
 enum {
     GOT_LINE,
     GOT_TRANSCRIPT,
@@ -96,6 +101,7 @@ void skein_load(Skein *skein, const gchar *path);
 void skein_save(Skein *skein, const gchar *path);
 void skein_reset(Skein *skein, gboolean current);
 void skein_layout(Skein *skein, double spacing);
+void skein_invalidate_layout(Skein *skein);
 void skein_new_line(Skein *skein, const gchar *line);
 gboolean skein_next_line(Skein *skein, gchar **line);
 GSList *skein_get_commands(Skein *skein);
@@ -109,7 +115,8 @@ void skein_set_line(Skein *skein, GNode *node, const gchar *line);
 void skein_set_label(Skein *skein, GNode *node, const gchar *label);
 void skein_lock(Skein *skein, GNode *node);
 void skein_unlock(Skein *skein, GNode *node, gboolean notify);
-void skein_trim(Skein *skein, GNode *node, gboolean notify);
+void skein_trim(Skein *skein, GNode *node, int minScore, gboolean notify);
+GSList *skein_get_labels(Skein *skein);
 gboolean skein_has_labels(Skein *skein);
 void skein_bless(Skein *skein, GNode *node, gboolean all);
 gboolean skein_can_bless(Skein *skein, GNode *node, gboolean all);

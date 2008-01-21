@@ -95,6 +95,8 @@ typedef struct {
     int drawcounter;
     gboolean editingskein;
     gboolean redrawingskein;
+    gint old_horizontal_spacing;
+    gint old_vertical_spacing;
         
     /* History navigation */
     GQueue *back[2];

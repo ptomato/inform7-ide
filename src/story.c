@@ -32,6 +32,8 @@
 #include "tabsource.h"
 #include "windowlist.h"
 
+#define I_LIKE_SKEIN
+
 /* This is the list of all story structures that are currently allocated */
 static GSList *storylist = NULL;
 
@@ -70,6 +72,8 @@ Story *new_story() {
 #ifdef I_LIKE_SKEIN
     newstory->editingskein = FALSE;
     newstory->redrawingskein = FALSE;
+    newstory->old_horizontal_spacing = 0;
+    newstory->old_vertical_spacing = 0;
     for(foo = 0; foo < 3; foo++) {
         newstory->skeingroup[foo] = NULL;
         newstory->drawflag[foo] = FALSE;

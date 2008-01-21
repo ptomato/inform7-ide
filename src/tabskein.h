@@ -21,6 +21,8 @@
 
 #include <gnome.h>
 
+#define I_LIKE_SKEIN
+
 #ifdef I_LIKE_SKEIN
 #include <libgnomecanvas/libgnomecanvas.h>
 
@@ -37,13 +39,16 @@ void play_to_node(Skein *skein, GNode *node, Story *thestory);
 void on_skein_layout_clicked(GtkToolButton *toolbutton, gpointer user_data);
 void on_skein_trim_clicked(GtkToolButton *toolbutton, gpointer user_data);
 void on_skein_play_all_clicked(GtkToolButton *toolbutton, gpointer user_data);
+void on_skein_labels_show_menu(GtkMenuToolButton *menutoolbutton, gpointer
+                               user_data);
 #ifdef I_LIKE_SKEIN
-void on_skein_spacing_use_defaults_clicked(GtkButton *button, 
-                                           gpointer user_data);
-void on_skein_spacing_cancel_clicked(GtkButton *button, gpointer user_data);
-void on_skein_spacing_ok_clicked(GtkButton *button, gpointer user_data);
-void on_skein_trim_cancel_clicked(GtkButton *button, gpointer user_data);
-void on_skein_trim_ok_clicked(GtkButton *button, gpointer user_data);
+void on_skein_spacing_use_defaults_clicked(GtkButton *button, Story *thestory);
+void on_skein_spacing_cancel_clicked(GtkButton *button, Story *thestory);
+void on_skein_vertical_spacing_value_changed(GtkRange *range, Story *thestory);
+void on_skein_horizontal_spacing_value_changed(GtkRange *range, 
+                                               Story *thestory);
+void on_skein_spacing_use_defaults_clicked(GtkButton *button, Story *thestory);
+void on_skein_trim_ok_clicked(GtkButton *button, Story *thestory);
 
 #endif /*I_LIKE_SKEIN*/
 

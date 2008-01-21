@@ -29,6 +29,8 @@
 #include "tabskein.h"
 #include "tabsource.h"
 
+#define I_LIKE_SKEIN
+
 /* The global pointer to the inspector window */
 GtkWidget *inspector_window;
 
@@ -180,7 +182,7 @@ static void show_inspector(int which, gboolean show) {
       case INSPECTOR_SKEIN:
         inspector = lookup_widget(inspector_window, "skein_inspector");
         if(show && !GTK_WIDGET_VISIBLE(inspector)
-           && inspecting->drawflag[SKEIN_INSPECTOR])
+           && inspecting && inspecting->drawflag[SKEIN_INSPECTOR])
             skein_schedule_redraw(inspecting->theskein, inspecting);
         break;
 #endif /* I_LIKE_SKEIN */

@@ -488,6 +488,13 @@ skein_layout(Skein *skein, double spacing)
 }
 
 void
+skein_invalidate_layout(Skein *skein)
+{
+	I7_SKEIN_PRIVATE(skein)->layout = FALSE;
+    g_signal_emit(skein, skein_signals[TREE_CHANGED], 0);
+}
+
+void
 skein_new_line(Skein *skein, const gchar *line)
 {
     gboolean node_added = FALSE;
@@ -717,7 +724,7 @@ skein_unlock(Skein *skein, GNode *node, gboolean notify)
 }
 
 void
-skein_trim(Skein *skein, GNode *node, gboolean notify)
+skein_trim(Skein *skein, GNode *node, int minScore, gboolean notify)
 {
     int i = 0;
     while(i < g_node_n_children(node)) {
@@ -732,7 +739,7 @@ skein_trim(Skein *skein, GNode *node, gboolean notify)
             if(skein_remove_all(skein, child, FALSE) == FALSE)
                 i++;
         } else {
-            skein_trim(skein, child, FALSE);
+            skein_trim(skein, child, -1, FALSE);
             i++;
         }
     }
@@ -742,9 +749,32 @@ skein_trim(Skein *skein, GNode *node, gboolean notify)
     I7_SKEIN_PRIVATE(skein)->modified = TRUE;
 }
 
-/*
-skein_get_labels(...
-*/
+
+
+static void
+get_labels(GNode *node, GSList **labels)
+{
+	NodeData *data = (NodeData *)node->data;
+	if(data->label && strlen(data->label)) {
+		NodeLabel *nodelabel = g_new0(NodeLabel, 1);
+		nodelabel->label = g_strdup(data->label);
+		nodelabel->node = node;
+		*labels = g_slist_prepend(*labels, (gpointer)nodelabel);
+	}
+	for(node = node->children; node != NULL; node = node->next)
+		get_labels(node, labels);
+}
+
+
+GSList *
+skein_get_labels(Skein *skein)
+{
+	GSList *labels = NULL;
+	get_labels(I7_SKEIN_PRIVATE(skein)->root, &labels);
+	labels = g_slist_sort_with_data(labels, (GCompareDataFunc)strcmp, NULL);
+	return labels;
+}
+
 
 static gboolean
 has_labels(GNode *node)
@@ -752,7 +782,7 @@ has_labels(GNode *node)
     NodeData *data = (NodeData *)node->data;
     if(data->label && strlen(data->label))
         return TRUE;
-    for(node = node->children; node->next != NULL; node = node->next)
+    for(node = node->children; node != NULL; node = node->next)
         if(has_labels(node))
             return TRUE;
     return FALSE;
@@ -1000,16 +1030,18 @@ node_set_expected_text(GNode *node, const gchar *text)
 static double
 text_pixel_width(PangoLayout *layout, const gchar *text)
 {
-    int textwidth = 0, foo = 0;
-    pango_layout_set_text(layout, text, -1);
-    pango_layout_get_pixel_size(layout, &textwidth, &foo);
+    int textwidth = 0;
+	if(text && strlen(text)) {
+    	pango_layout_set_text(layout, text, -1);
+    	pango_layout_get_pixel_size(layout, &textwidth, NULL);
+	}
     return (double)textwidth;
 }
 
 double
 node_get_line_width(GNode *node, PangoLayout *layout)
 {
-    NodeData *data = (NodeData *)(node->data);
+    NodeData *data = (NodeData *)node->data;
     if(data->width < 0.0) {
         double size = text_pixel_width(layout, data->line);
         data->width = size;

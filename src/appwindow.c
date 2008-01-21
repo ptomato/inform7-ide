@@ -35,6 +35,8 @@
 #include "tabskein.h"
 #include "windowlist.h"
 
+#define I_LIKE_SKEIN
+
 /* The following function is from Damian Iverleigh's patch to GtkContainer,
 http://mail.gnome.org/archives/gtk-devel-list/2001-October/msg00516.html */
 
@@ -311,12 +313,17 @@ after_app_window_realize               (GtkWidget       *widget,
     g_free(htmlfile);
     history_unblock_handlers(thestory, RIGHT);
     
-    /* Create empty menus for the Headings buttons so they become active */
+    /* Create empty menus for the Headings and Skein Labels buttons so they 
+    become active */
     gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(lookup_widget(widget,
                                   "source_headings_l")), gtk_menu_new());
     gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(lookup_widget(widget,
                                   "source_headings_r")), gtk_menu_new());
-        
+    gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(lookup_widget(widget,
+                                  "skein_labels_l")), gtk_menu_new());
+    gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(lookup_widget(widget,
+                                  "skein_labels_r")), gtk_menu_new());
+    
     /* Show the inspector window if necessary */
     if(config_file_get_bool("Settings", "InspectorVisible")) {
         extern GtkWidget *inspector_window;

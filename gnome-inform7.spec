@@ -1,6 +1,6 @@
 #
 # Spec file for GNOME Inform 7
-# Change 1.fc7 to ubuntu1 for ubuntu-style release number
+# Change 1.fc8 to ubuntu1 for ubuntu-style release number
 #
 %define  ver     5J39
 %define  rel     1.fc8
@@ -72,6 +72,10 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/gnome-inform7/*
 
 %changelog
+* Mon Dec 3 2007 P.F. Chimento <philip.chimento@gmail.com>
+- Updated to Public Beta Build 5J39.
+* Tue Nov 13 2007 P.F. Chimento <philip.chimento@gmail.com>
+- Updated to Public Beta Build 5G67.
 * Sat Aug 18 2007 P.F. Chimento <philip.chimento@gmail.com>
 - Updated to version 0.4.
 * Sat Jun 16 2007 P.F. Chimento <philip.chimento@gmail.com>

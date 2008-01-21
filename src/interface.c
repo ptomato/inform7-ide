@@ -1044,6 +1044,7 @@ create_app_window (void)
   gtk_label_set_angle (GTK_LABEL (label10), 270);
 
   vbox3 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox3);
   gtk_container_add (GTK_CONTAINER (notebook_l), vbox3);
 
   toolbar8 = gtk_toolbar_new ();
@@ -1099,8 +1100,8 @@ create_app_window (void)
   tmp_image = gtk_image_new_from_stock ("gtk-media-play", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   skein_play_all_l = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Play All"));
-  gtk_widget_show (skein_play_all_l);
   gtk_container_add (GTK_CONTAINER (toolbar8), skein_play_all_l);
+  gtk_widget_set_sensitive (skein_play_all_l, FALSE);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (skein_play_all_l), tooltips, _("Play all threads that lead to a blessed knot"), NULL);
   gtk_tool_item_set_is_important (GTK_TOOL_ITEM (skein_play_all_l), TRUE);
 
@@ -1651,6 +1652,7 @@ create_app_window (void)
   gtk_label_set_angle (GTK_LABEL (label37), 270);
 
   vbox6 = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox6);
   gtk_container_add (GTK_CONTAINER (notebook_r), vbox6);
 
   toolbar9 = gtk_toolbar_new ();
@@ -1706,8 +1708,8 @@ create_app_window (void)
   tmp_image = gtk_image_new_from_stock ("gtk-media-play", tmp_toolbar_icon_size);
   gtk_widget_show (tmp_image);
   skein_play_all_r = (GtkWidget*) gtk_tool_button_new (tmp_image, _("Play All"));
-  gtk_widget_show (skein_play_all_r);
   gtk_container_add (GTK_CONTAINER (toolbar9), skein_play_all_r);
+  gtk_widget_set_sensitive (skein_play_all_r, FALSE);
   gtk_tool_item_set_tooltip (GTK_TOOL_ITEM (skein_play_all_r), tooltips, _("Play all threads that lead to a blessed knot"), NULL);
   gtk_tool_item_set_is_important (GTK_TOOL_ITEM (skein_play_all_r), TRUE);
 
@@ -2030,6 +2032,9 @@ create_app_window (void)
   g_signal_connect ((gpointer) skein_forward_l, "clicked",
                     G_CALLBACK (on_forward_l_clicked),
                     NULL);
+  g_signal_connect ((gpointer) skein_labels_l, "show_menu",
+                    G_CALLBACK (on_skein_labels_show_menu),
+                    NULL);
   g_signal_connect ((gpointer) skein_layout_l, "clicked",
                     G_CALLBACK (on_skein_layout_clicked),
                     NULL);
@@ -2119,6 +2124,9 @@ create_app_window (void)
                     NULL);
   g_signal_connect ((gpointer) skein_forward_r, "clicked",
                     G_CALLBACK (on_forward_r_clicked),
+                    NULL);
+  g_signal_connect ((gpointer) skein_labels_r, "show_menu",
+                    G_CALLBACK (on_skein_labels_show_menu),
                     NULL);
   g_signal_connect ((gpointer) skein_layout_r, "clicked",
                     G_CALLBACK (on_skein_layout_clicked),
@@ -3935,8 +3943,8 @@ create_prefs_dialog (void)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_headings_toggle), TRUE);
 
   prefs_skein_toggle = gtk_check_button_new_with_mnemonic (_("S_kein"));
+  gtk_widget_show (prefs_skein_toggle);
   gtk_box_pack_start (GTK_BOX (vbox31), prefs_skein_toggle, FALSE, FALSE, 0);
-  gtk_widget_set_sensitive (prefs_skein_toggle, FALSE);
   gtk_tooltips_set_tip (tooltips, prefs_skein_toggle, _("The skein inspector displays the story's current skein"), NULL);
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (prefs_skein_toggle), TRUE);
 
@@ -4896,7 +4904,7 @@ create_skein_spacing_dialog (void)
   g_signal_connect ((gpointer) skein_spacing_dialog, "delete_event",
                     G_CALLBACK (gtk_widget_destroy),
                     NULL);
-  g_signal_connect_swapped ((gpointer) skein_spacing_cancel, "clicked",
+  g_signal_connect_swapped ((gpointer) skein_spacing_ok, "clicked",
                             G_CALLBACK (gtk_widget_destroy),
                             GTK_OBJECT (skein_spacing_dialog));
 
@@ -4960,7 +4968,7 @@ create_skein_trim_dialog (void)
   gtk_widget_show (vbox52);
   gtk_box_pack_start (GTK_BOX (dialog_vbox6), vbox52, TRUE, TRUE, 0);
 
-  label97 = gtk_label_new (_("This will remove nodes from the skein and transcript that have not been visited recently, and which have not been locked. Drag the slider to the right to increase the number of nodes that will be deleted.\n\nThis operation cannot be undone."));
+  label97 = gtk_label_new (_("This will remove nodes from the skein and transcript that have not been visited recently, and which have not been locked. Drag the slider to the right to increase the number of nodes that will be deleted.\n\nThis operation cannot be undone.\n"));
   gtk_widget_show (label97);
   gtk_box_pack_start (GTK_BOX (vbox52), label97, FALSE, FALSE, 0);
   gtk_label_set_line_wrap (GTK_LABEL (label97), TRUE);
@@ -4981,7 +4989,7 @@ create_skein_trim_dialog (void)
   gtk_label_set_justify (GTK_LABEL (label99), GTK_JUSTIFY_RIGHT);
   gtk_misc_set_alignment (GTK_MISC (label99), 1, 1);
 
-  skein_trim_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (0, 0, 100, 1, 0, 0)));
+  skein_trim_scale = gtk_hscale_new (GTK_ADJUSTMENT (gtk_adjustment_new (10, 1, 30, 1, 0, 0)));
   gtk_widget_show (skein_trim_scale);
   gtk_box_pack_start (GTK_BOX (vbox52), skein_trim_scale, FALSE, TRUE, 0);
   gtk_scale_set_draw_value (GTK_SCALE (skein_trim_scale), FALSE);

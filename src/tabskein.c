@@ -21,6 +21,8 @@
 
 #include <gnome.h>
 
+#define I_LIKE_SKEIN
+
 #ifdef I_LIKE_SKEIN
 #include <math.h>
 #include <libgnomecanvas/libgnomecanvas.h>
@@ -42,8 +44,6 @@
 #include "tabskein.h"
 
 #define max(a, b) (((a) > (b))? (a) : (b))
-#define HORIZONTAL_SPACING 40.0
-#define VERTICAL_SPACING 75.0
 #define VERTICAL_NODE_FILL_FACTOR 2.0
 #define LABEL_MULTIPLIER 0.7
 
@@ -110,6 +110,8 @@ static void
 edit_node(Skein *skein, gboolean label, Story *thestory, GNode *thenode,
 		  int whichcanvas)
 {
+    double vertical_spacing = (double)config_file_get_int("Skein",
+                                                          "VerticalSpacing");
 	show_node(skein, GOT_USER_ACTION, thenode, thestory);
     thestory->editingskein = TRUE;
     GtkWidget *entry = gtk_entry_new();
@@ -120,7 +122,7 @@ edit_node(Skein *skein, gboolean label, Story *thestory, GNode *thenode,
     gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
     
 	double x = node_get_x(thenode);
-	double y = VERTICAL_SPACING * (double)(g_node_depth(thenode) - 1);
+	double y = vertical_spacing * (double)(g_node_depth(thenode) - 1);
 	GtkRequisition req = { 0, 0 };
 	gtk_widget_size_request(entry, &req);
     GnomeCanvasItem *editbox = 
@@ -219,13 +221,15 @@ skein_popup_new_thread(GtkMenuItem *menuitem, ClickedNode *clickednode)
 	/* JEEZ I am so sick of GnomeCanvas, it SUCKS ASS */
 	/* Have to copy everything out of clickednode, because it gets invalidated
 	in the redraw */
+    double horizontal_spacing = (double)config_file_get_int("Skein", 
+                                                           "HorizontalSpacing");
 	Skein *theskein = clickednode->story->theskein;
 	Story *thestory = clickednode->story;
 	GNode *thenode = clickednode->node;
 	int which = find_out_what_canvas_this_group_is_on(thestory, 
 													  clickednode->nodegroup);
 	GNode *newnode = skein_add_new(theskein, thenode);
-	skein_layout(theskein, HORIZONTAL_SPACING);
+	skein_layout(theskein, horizontal_spacing);
 	skein_redraw(thestory);
 	
 	edit_node(theskein, FALSE, thestory, newnode, which);
@@ -236,29 +240,43 @@ skein_popup_insert_knot(GtkMenuItem *menuitem, ClickedNode *clickednode)
 {
 	/* Have to copy everything out of clickednode, because it gets invalidated
 	in the redraw */
+    double horizontal_spacing = (double)config_file_get_int("Skein", 
+                                                            "HorizontalSpacing");
 	Skein *theskein = clickednode->story->theskein;
 	Story *thestory = clickednode->story;
 	GNode *thenode = clickednode->node;
 	int which = find_out_what_canvas_this_group_is_on(thestory, 
 													  clickednode->nodegroup);
 	GNode *newnode = skein_add_new_parent(theskein, thenode);
-	skein_layout(theskein, HORIZONTAL_SPACING);
+	skein_layout(theskein, horizontal_spacing);
 	skein_redraw(thestory);
 	
 	edit_node(theskein, FALSE, thestory, newnode, which);
 }
 
 static gboolean
-can_remove(GNode *node)
+can_remove(GNode *node, Story *thestory)
 {
+	if(game_is_running(thestory) && in_current_thread(thestory->theskein, node)) 
+	{
+		GtkWidget *dialog = gtk_message_dialog_new_with_markup
+			(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
+			 "<b>Unable to delete the active branch in the skein</b>");
+		gtk_message_dialog_format_secondary_text
+			(GTK_MESSAGE_DIALOG(dialog), "It is not possible to delete the "
+			 "branch of the skein that leads to the current position in the "
+			 "game. To delete this branch, either stop or restart the game.");
+		gtk_dialog_run(GTK_DIALOG(dialog));
+    	gtk_widget_destroy(dialog);
+		return FALSE;
+	}
+	
     if(node_get_temporary(node))
         return TRUE;
-    GtkWidget *dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_QUESTION,
-                                               GTK_BUTTONS_YES_NO,
-                                               "This knot has been locked to "
-                                               "preserve it. Do you\nreally "
-                                               "want to delete it? (This cannot"
-                                               " be undone.)");
+    GtkWidget *dialog = gtk_message_dialog_new
+		(NULL, 0, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
+         "This knot has been locked to preserve it. Do you really want to "
+		 "delete it? (This cannot be undone.)");
     int response = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
     if(response == GTK_RESPONSE_YES)
@@ -271,7 +289,7 @@ skein_popup_delete(GtkMenuItem *menuitem, ClickedNode *clickednode)
 {
 	Skein *theskein = clickednode->story->theskein;
 	GNode *thenode = clickednode->node;
-    if(can_remove(thenode))
+    if(can_remove(thenode, clickednode->story))
         skein_remove_single(theskein, thenode);
 }
 
@@ -280,7 +298,7 @@ skein_popup_delete_below(GtkMenuItem *menuitem, ClickedNode *clickednode)
 {
 	Skein *theskein = clickednode->story->theskein;
 	GNode *thenode = clickednode->node;
-    if(can_remove(thenode))
+    if(can_remove(thenode, clickednode->story))
         skein_remove_all(theskein, thenode, TRUE);
 }
 
@@ -290,7 +308,7 @@ skein_popup_delete_thread(GtkMenuItem *menuitem, ClickedNode *clickednode)
 	Skein *theskein = clickednode->story->theskein;
 	GNode *thenode = clickednode->node;
     GNode *topnode = skein_get_thread_top(theskein, thenode);
-    if(can_remove(topnode))
+    if(can_remove(topnode, clickednode->story))
         skein_remove_all(theskein, topnode, TRUE);
 }
 
@@ -312,8 +330,6 @@ on_canvas_item_event(GnomeCanvasItem *item, GdkEvent *event,
     /* Do not do a menu if editing skein */
     if(thestory->editingskein)
         return FALSE;
-    
-    gboolean game_running = game_is_running(thestory);
     
     /* Do "Play to here" if it was a double click */
     if(doubleclick) {
@@ -370,21 +386,14 @@ on_canvas_item_event(GnomeCanvasItem *item, GdkEvent *event,
         g_signal_connect(menuitem, "activate",
                          G_CALLBACK(skein_popup_insert_knot), clickednode);
         menuitem = gtk_menu_item_new_with_label("Delete");
-        gtk_widget_set_sensitive(menuitem, !(game_running && 
-                                 in_current_thread(theskein, node)));
         gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
         g_signal_connect(menuitem, "activate",
                          G_CALLBACK(skein_popup_delete), clickednode);
         menuitem = gtk_menu_item_new_with_label("Delete all Below");
-        gtk_widget_set_sensitive(menuitem, !(game_running && 
-                                 in_current_thread(theskein, node)));
         gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
         g_signal_connect(menuitem, "activate",
                          G_CALLBACK(skein_popup_delete_below), clickednode);
         menuitem = gtk_menu_item_new_with_label("Delete all in Thread");
-        gtk_widget_set_sensitive(menuitem, !(game_running && 
-                                 in_current_thread(theskein, 
-                                 skein_get_thread_top(theskein, node))));
         gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
         g_signal_connect(menuitem, "activate",
                          G_CALLBACK(skein_popup_delete_thread), clickednode);
@@ -530,9 +539,12 @@ enum {
 gboolean
 draw_node(GNode *node, Story *thestory)
 {
+    double vertical_spacing = (double)config_file_get_int("Skein",
+                                                          "VerticalSpacing");
+
     /* Create a group for the entire node */
     double x = node_get_x(node);
-    double y = (double)(g_node_depth(node) - 1) * VERTICAL_SPACING;
+    double y = (double)(g_node_depth(node) - 1) * vertical_spacing;
     GnomeCanvasGroup *nodegroup = GNOME_CANVAS_GROUP(
         gnome_canvas_item_new(thestory->skeingroup[thestory->drawcounter],
                               gnome_canvas_group_get_type(), 
@@ -542,14 +554,15 @@ draw_node(GNode *node, Story *thestory)
     /* Get the font from the preferences */
     PangoFontDescription *font = get_font_description();
     /* Draw the command text */
-    GnomeCanvasItem *command =
-        gnome_canvas_item_new(nodegroup, gnome_canvas_text_get_type(),
-                              "anchor", GTK_ANCHOR_CENTER,
-                              "font-desc", font,
-                              "fill-color", "black",
-                              "text", node_get_line(node),
-                              "x", 0.0, "y", 0.0,
-                              NULL);
+	const gchar *line = node_get_line(node);
+    GnomeCanvasItem *command = 
+		gnome_canvas_item_new(nodegroup, gnome_canvas_text_get_type(),
+							  "anchor", GTK_ANCHOR_CENTER,
+							  "font-desc", font,
+							  "fill-color", "black",
+							  "text", (line && strlen(line))? line : " ",
+							  "x", 0.0, "y", 0.0,
+							  NULL);
     
     /* Draw the node's label, if needed */
     GnomeCanvasItem *label = NULL;
@@ -711,7 +724,7 @@ draw_node(GNode *node, Story *thestory)
         GdkColor linecolor = get_scheme_color(node_get_temporary(node)? 
                                               CLR_UNLOCKED : CLR_LOCKED);
         double destx = node_get_x(node->parent);
-        double desty = y - VERTICAL_SPACING;
+        double desty = y - vertical_spacing;
         GnomeCanvasPoints *points;
         if(x == destx) {
             points = gnome_canvas_points_new(2);
@@ -724,9 +737,9 @@ draw_node(GNode *node, Story *thestory)
             points->coords[0] = destx;
             points->coords[1] = desty;
             points->coords[2] = destx;
-            points->coords[3] = desty + VERTICAL_SPACING * 0.2;
+            points->coords[3] = desty + vertical_spacing * 0.2;
             points->coords[4] = x;
-            points->coords[5] = y - VERTICAL_SPACING * 0.2;
+            points->coords[5] = y - vertical_spacing * 0.2;
             points->coords[6] = x;
             points->coords[7] = y;
         }
@@ -762,8 +775,18 @@ draw_node(GNode *node, Story *thestory)
 void
 skein_layout_and_redraw(Skein *skein, Story *thestory)
 {
-    skein_layout(skein, HORIZONTAL_SPACING);
+    double horizontal_spacing = (double)config_file_get_int("Skein", 
+                                                           "HorizontalSpacing");
+	skein_layout(skein, horizontal_spacing);
     skein_schedule_redraw(skein, thestory);
+	
+	/* Make the labels button sensitive or insensitive, since this function is
+	called on every "node-text-changed" signal */
+	gboolean labels = skein_has_labels(skein);
+	gtk_widget_set_sensitive(lookup_widget(thestory->window, "skein_labels_l"),
+							 labels);
+	gtk_widget_set_sensitive(lookup_widget(thestory->window, "skein_labels_r"),
+							 labels);
 }
 
 void
@@ -778,6 +801,10 @@ skein_schedule_redraw(Skein *skein, Story *thestory)
 gboolean
 skein_redraw(Story *thestory)
 {
+    double horizontal_spacing = (double)config_file_get_int("Skein", 
+                                                           "HorizontalSpacing");
+    double vertical_spacing = (double)config_file_get_int("Skein",
+                                                          "VerticalSpacing");
     Skein *skein = thestory->theskein;
     
     /* Load the skein bitmaps into memory */
@@ -830,8 +857,19 @@ skein_redraw(Story *thestory)
         }
 
         /* Create a new canvas group for the skein */
+		/* This is the polite way, but there should just be a way to do it given
+		only the canvas!
         if(thestory->skeingroup[foo])
             gtk_object_destroy(GTK_OBJECT(thestory->skeingroup[foo]));
+		*/
+		/* Impolite way: */
+		GnomeCanvasGroup *rootgroup = gnome_canvas_root(canvas);
+		GList *iter;
+		for(iter = rootgroup->item_list; iter; iter = iter->next)
+			gtk_object_destroy(GTK_OBJECT(iter->data));
+		g_list_free(rootgroup->item_list);
+		rootgroup->item_list = NULL;
+		
         thestory->skeingroup[foo] = GNOME_CANVAS_GROUP(
             gnome_canvas_item_new(gnome_canvas_root(canvas),
                                   gnome_canvas_group_get_type(),
@@ -840,14 +878,14 @@ skein_redraw(Story *thestory)
         /* Set the scroll region
         (can pass NULL because skein is already laid out) */
         double treewidth = node_get_tree_width(skein_get_root_node(skein), NULL,
-                                               HORIZONTAL_SPACING);
+                                               horizontal_spacing);
         gnome_canvas_set_scroll_region(canvas,
-                                       -treewidth*0.5 - HORIZONTAL_SPACING,
-                                       -0.5 * VERTICAL_SPACING,
-                                       treewidth*0.5 + HORIZONTAL_SPACING,
+                                       -treewidth*0.5 - horizontal_spacing,
+                                       -0.5 * vertical_spacing,
+                                       treewidth*0.5 + horizontal_spacing,
                                        g_node_max_height(
                                          skein_get_root_node(skein))
-                                         * VERTICAL_SPACING);
+                                         * vertical_spacing);
         /* Draw the nodes */
         thestory->drawcounter = foo; /* can only pass one parameter, feh */
         g_node_traverse(skein_get_root_node(skein), G_PRE_ORDER, G_TRAVERSE_ALL,
@@ -862,6 +900,10 @@ skein_redraw(Story *thestory)
 void
 show_node(Skein *skein, guint why, GNode *node, Story *thestory)
 {
+    double horizontal_spacing = (double)config_file_get_int("Skein", 
+                                                           "HorizontalSpacing");
+    double vertical_spacing = (double)config_file_get_int("Skein",
+                                                          "VerticalSpacing");
     /* Why, oh why, can't GnomeCanvas have a SANE scroll mechanism?
     And a model-view-controller interface? */
     double x, y, width, x1 = 0.0, y1 = 0.0, x2 = 0.0, y2 = 0.0;
@@ -880,7 +922,7 @@ show_node(Skein *skein, guint why, GNode *node, Story *thestory)
         case GOT_USER_ACTION:
             /* Work out the position of the node */
             x = node_get_x(node);
-            y = (double)(g_node_depth(node) - 1) * VERTICAL_SPACING;
+            y = (double)(g_node_depth(node) - 1) * vertical_spacing;
             width = node_get_line_text_width(node) * 0.5;
             for(foo = 0; foo < 3; foo++) {
                 GnomeCanvas *canvas = GNOME_CANVAS(lookup_widget(
@@ -894,10 +936,10 @@ show_node(Skein *skein, guint why, GNode *node, Story *thestory)
                 GtkAdjustment *v = gtk_scrolled_window_get_vadjustment(scroll);
                 scroll_x = ((x-x1) / (x2-x1)) * (h->upper-h->lower) + h->lower;
                 scroll_y = ((y-y1) / (y2-y1)) * (v->upper-v->lower) + v->lower;
-                gtk_adjustment_clamp_page(h, scroll_x-width-HORIZONTAL_SPACING,
-                                          scroll_x+width+HORIZONTAL_SPACING);
-                gtk_adjustment_clamp_page(v, scroll_y - 1.5*VERTICAL_SPACING,
-                                          scroll_y + 1.5*VERTICAL_SPACING);
+                gtk_adjustment_clamp_page(h, scroll_x-width-horizontal_spacing,
+                                          scroll_x+width+horizontal_spacing);
+                gtk_adjustment_clamp_page(v, scroll_y - 1.5*vertical_spacing,
+                                          scroll_y + 1.5*vertical_spacing);
             }
             break;
         case GOT_TRANSCRIPT:
@@ -968,13 +1010,29 @@ on_skein_layout_clicked(GtkToolButton *toolbutton, gpointer user_data)
 #ifdef I_LIKE_SKEIN
 	GtkWidget *dialog = create_skein_spacing_dialog();
 	Story *thestory = get_story(GTK_WIDGET(toolbutton));
+	thestory->old_horizontal_spacing = config_file_get_int("Skein", 
+														   "HorizontalSpacing");
+	thestory->old_vertical_spacing = config_file_get_int("Skein", 
+														 "VerticalSpacing");
+	GtkWidget *horiz = lookup_widget(dialog, "skein_horizontal_spacing");
+	GtkWidget *vert = lookup_widget(dialog, "skein_vertical_spacing");
+	gtk_range_set_value(GTK_RANGE(horiz), 
+						(gdouble)thestory->old_horizontal_spacing);
+	gtk_range_set_value(GTK_RANGE(vert), 
+						(gdouble)thestory->old_vertical_spacing);
 	g_signal_connect(lookup_widget(dialog, "skein_spacing_use_defaults"),
 					 "clicked",
 					 G_CALLBACK(on_skein_spacing_use_defaults_clicked),
 					 thestory);
-	g_signal_connect(lookup_widget(dialog, "skein_spacing_ok"), "clicked",
-					 G_CALLBACK(on_skein_spacing_ok_clicked), thestory);
-	gtk_widget_show(dialog);
+	g_signal_connect(lookup_widget(dialog, "skein_spacing_cancel"), "clicked",
+					 G_CALLBACK(on_skein_spacing_cancel_clicked), thestory);
+	g_signal_connect(horiz, "value-changed", 
+					 G_CALLBACK(on_skein_horizontal_spacing_value_changed),
+					 thestory);
+	g_signal_connect(vert, "value-changed", 
+					 G_CALLBACK(on_skein_vertical_spacing_value_changed),
+					 thestory);
+	gtk_dialog_run(GTK_DIALOG(dialog));
 #endif /*I_LIKE_SKEIN*/
 }
 
@@ -986,7 +1044,7 @@ on_skein_trim_clicked(GtkToolButton *toolbutton, gpointer user_data)
 	Story *thestory = get_story(GTK_WIDGET(toolbutton));
 	g_signal_connect(lookup_widget(dialog, "skein_trim_ok"), "clicked",
 					 G_CALLBACK(on_skein_trim_ok_clicked), thestory);
-	gtk_widget_show(dialog);
+	gtk_dialog_run(GTK_DIALOG(dialog));
 #endif /*I_LIKE_SKEIN*/
 }
 
@@ -996,25 +1054,107 @@ on_skein_play_all_clicked(GtkToolButton *toolbutton, gpointer user_data)
 	
 }
 
-#ifdef I_LIKE_SKEIN
-void
-on_skein_spacing_use_defaults_clicked(GtkButton *button, gpointer user_data)
-{
 
+#ifdef I_LIKE_SKEIN
+static void
+free_node_labels(GSList *item, gpointer data)
+{
+	NodeLabel *nodelabel = (NodeLabel *)item->data;
+	if(nodelabel) {
+		if(nodelabel->label) g_free(nodelabel->label);
+		g_free(nodelabel);
+	}
 }
 
+static void
+jump_to_node(GtkMenuItem *menuitem, GNode *node)
+{
+	Story *thestory = get_story(GTK_WIDGET(menuitem));
+	show_node(thestory->theskein, GOT_USER_ACTION, node, thestory);
+}
+#endif /*I_LIKE_SKEIN*/
 
 void
-on_skein_spacing_ok_clicked(GtkButton *button, gpointer user_data)
+on_skein_labels_show_menu(GtkMenuToolButton *menutoolbutton, gpointer user_data)
 {
-    /* Close the dialog */
+#ifdef I_LIKE_SKEIN
+	Story *thestory = get_story(GTK_WIDGET(menutoolbutton));
+	
+	/* Destroy the previous menu */
+    gtk_menu_tool_button_set_menu(menutoolbutton, NULL);
+	/* Create a new menu */
+	GtkWidget *menu = gtk_menu_new();
+	gtk_widget_show(menu);
+	GSList *labels = skein_get_labels(thestory->theskein);
+	for( ; labels != NULL; labels = g_slist_next(labels)) {
+		NodeLabel *nodelabel = (NodeLabel *)labels->data;
+		GtkWidget *item = gtk_menu_item_new_with_label
+			(g_strdup(nodelabel->label));
+		gtk_widget_show(item);
+		g_signal_connect(item, "activate", G_CALLBACK(jump_to_node), 
+						 nodelabel->node);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	}
+	g_slist_foreach(labels, (GFunc)free_node_labels, NULL);
+	g_slist_free(labels);
+	
+	/* Set the menu as the drop-down menu of the button */
+    gtk_menu_tool_button_set_menu(menutoolbutton, menu);
+#endif /*I_LIKE_SKEIN*/
+}
+
+#ifdef I_LIKE_SKEIN
+void
+on_skein_spacing_use_defaults_clicked(GtkButton *button, Story *thestory)
+{
+	gtk_range_set_value(GTK_RANGE(lookup_widget(GTK_WIDGET(button), 
+												"skein_horizontal_spacing")), 
+						40.0);
+	gtk_range_set_value(GTK_RANGE(lookup_widget(GTK_WIDGET(button), 
+												"skein_vertical_spacing")), 
+						75.0);
+	/* Config file settings now triggered by "value-changed" signal */
+	skein_layout_and_redraw(thestory->theskein, thestory);
+}
+
+void
+on_skein_spacing_cancel_clicked(GtkButton *button, Story *thestory)
+{
+	/* Close the dialog */
+	config_file_set_int("Skein", "HorizontalSpacing", 
+						thestory->old_horizontal_spacing);
+    config_file_set_int("Skein", "VerticalSpacing", 
+						thestory->old_vertical_spacing);
+	skein_layout_and_redraw(thestory->theskein, thestory);
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 }
 
 void
-on_skein_trim_ok_clicked(GtkButton *button, gpointer user_data)
+on_skein_vertical_spacing_value_changed(GtkRange *range, Story *thestory)
 {
-    /* Close the dialog */
+	config_file_set_int("Skein", "VerticalSpacing", 
+						(gint)gtk_range_get_value(range));
+	skein_layout_and_redraw(thestory->theskein, thestory);
+}
+
+void
+on_skein_horizontal_spacing_value_changed(GtkRange *range, Story *thestory)
+{
+	config_file_set_int("Skein", "HorizontalSpacing", 
+						(gint)gtk_range_get_value(range));
+	skein_invalidate_layout(thestory->theskein);
+	skein_layout_and_redraw(thestory->theskein, thestory);
+}
+
+void
+on_skein_trim_ok_clicked(GtkButton *button, Story *thestory)
+{
+    int pruning = 31 - (int)gtk_range_get_value
+		(GTK_RANGE(lookup_widget(thestory->window, "skein_trim_scale")));
+	if(pruning < 1)
+		pruning = 1;
+	skein_trim(thestory->theskein, skein_get_root_node(thestory->theskein),
+			   -1, TRUE);
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 }
 #endif /*I_LIKE_SKEIN*/
