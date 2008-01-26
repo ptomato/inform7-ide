@@ -1,6 +1,6 @@
 /* string.c: Glulxe string and text functions.
     Designed by Andrew Plotkin <erkyrath@eblong.com>
-    http://www.eblong.com/zarf/glulx/index.html
+    http://eblong.com/zarf/glulx/index.html
 */
 
 #include "glk.h"
@@ -35,14 +35,14 @@ static int never_cache_stringtable = FALSE;
 static int tablecache_valid = FALSE;
 static cacheblock_t tablecache;
 
+static void stream_setup_unichar(void);
+
 static void nopio_char_han(unsigned char ch);
 static void filio_char_han(unsigned char ch);
 static void nopio_unichar_han(glui32 ch);
 static void filio_unichar_han(glui32 ch);
-#ifndef GLK_MODULE_UNICODE
 static void glkio_unichar_nouni_han(glui32 val);
-#define glk_put_char_uni(x) glkio_unichar_nouni_han(x)
-#endif /* GLK_MODULE_UNICODE */
+static void (*glkio_unichar_han_ptr)(glui32 val) = NULL;
 
 static void dropcache(cacheblock_t *cablist);
 static void buildcache(cacheblock_t *cablist, glui32 nodeaddr, int depth,
@@ -53,6 +53,22 @@ void stream_get_iosys(glui32 *mode, glui32 *rock)
 {
   *mode = iosys_mode;
   *rock = iosys_rock;
+}
+
+static void stream_setup_unichar()
+{
+#ifdef GLK_MODULE_UNICODE
+
+  if (glk_gestalt(gestalt_Unicode, 0))
+    glkio_unichar_han_ptr = glk_put_char_uni;
+  else
+    glkio_unichar_han_ptr = glkio_unichar_nouni_han;
+
+#else /* GLK_MODULE_UNICODE */
+
+  glkio_unichar_han_ptr = glkio_unichar_nouni_han;
+
+#endif /* GLK_MODULE_UNICODE */
 }
 
 void stream_set_iosys(glui32 mode, glui32 rock)
@@ -71,13 +87,11 @@ void stream_set_iosys(glui32 mode, glui32 rock)
     stream_unichar_handler = filio_unichar_han;
     break;
   case iosys_Glk:
+    if (!glkio_unichar_han_ptr)
+      stream_setup_unichar();
     rock = 0;
     stream_char_handler = glk_put_char;
-#ifndef GLK_MODULE_UNICODE
-    stream_unichar_handler = glkio_unichar_nouni_han;
-#else
-    stream_unichar_handler = glk_put_char_uni;
-#endif /* GLK_MODULE_UNICODE */
+    stream_unichar_handler = glkio_unichar_han_ptr;
     break;
   }
 
@@ -106,8 +120,6 @@ static void filio_unichar_han(glui32 val)
   enter_function(iosys_rock, 1, &val);
 }
 
-#ifndef GLK_MODULE_UNICODE
-
 static void glkio_unichar_nouni_han(glui32 val)
 {
   /* Only used if the Glk library has no Unicode functions */
@@ -115,8 +127,6 @@ static void glkio_unichar_nouni_han(glui32 val)
     val = '?';
   glk_put_char(val);
 }
-
-#endif /* GLK_MODULE_UNICODE */
 
 /* stream_num():
    Write a signed integer to the current output stream.
@@ -293,7 +303,7 @@ void stream_string(glui32 addr, int inmiddle, int bitnum)
           case 0x04: /* single Unicode character */
             switch (iosys_mode) {
             case iosys_Glk:
-              glk_put_char_uni(cab->u.uch);
+              glkio_unichar_han_ptr(cab->u.uch);
               break;
             case iosys_Filter: 
               ival = cab->u.uch;
@@ -335,7 +345,7 @@ void stream_string(glui32 addr, int inmiddle, int bitnum)
             switch (iosys_mode) {
             case iosys_Glk:
               for (tmpaddr=cab->u.addr; (ival=Mem4(tmpaddr)) != 0; tmpaddr+=4) 
-                glk_put_char_uni(ival);
+                glkio_unichar_han_ptr(ival);
               cablist = tablecache.u.branches; 
               break;
             case iosys_Filter:
@@ -466,7 +476,7 @@ void stream_string(glui32 addr, int inmiddle, int bitnum)
             ival = Mem4(node);
             switch (iosys_mode) {
             case iosys_Glk:
-              glk_put_char_uni(ival);
+              glkio_unichar_han_ptr(ival);
               break;
             case iosys_Filter: 
               if (!substring) {
@@ -507,7 +517,7 @@ void stream_string(glui32 addr, int inmiddle, int bitnum)
             switch (iosys_mode) {
             case iosys_Glk:
               for (; (ival=Mem4(node)) != 0; node+=4) 
-                glk_put_char_uni(ival);
+                glkio_unichar_han_ptr(ival);
               node = Mem4(stringtable+8);
               break;
             case iosys_Filter:
@@ -615,7 +625,7 @@ void stream_string(glui32 addr, int inmiddle, int bitnum)
           addr+=4;
           if (ival == 0)
             break;
-          glk_put_char_uni(ival);
+          glkio_unichar_han_ptr(ival);
         }
         break;
       case iosys_Filter:

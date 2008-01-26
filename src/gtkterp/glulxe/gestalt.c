@@ -1,6 +1,6 @@
 /* gestalt.c: Glulxe code for gestalt selectors
     Designed by Andrew Plotkin <erkyrath@eblong.com>
-    http://www.eblong.com/zarf/glulx/index.html
+    http://eblong.com/zarf/glulx/index.html
 */
 
 #include "glk.h"
@@ -15,7 +15,7 @@ glui32 do_gestalt(glui32 val, glui32 val2)
     return 0x00030100; /* Glulx spec version 3.1 */
 
   case gestulx_TerpVersion:
-    return 0x00000402; /* Glulxe version 0.4.2 */
+    return 0x00000403; /* Glulxe version 0.4.3 */
 
   case gestulx_ResizeMem:
 #ifdef FIXED_MEMSIZE

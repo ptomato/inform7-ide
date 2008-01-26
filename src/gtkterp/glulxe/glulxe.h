@@ -1,13 +1,13 @@
 /* glulxe.h: Glulxe header file.
     Designed by Andrew Plotkin <erkyrath@eblong.com>
-    http://www.eblong.com/zarf/glulx/index.html
+    http://eblong.com/zarf/glulx/index.html
 */
 
 #ifndef _GLULXE_H
 #define _GLULXE_H
 
 /* We define our own TRUE and FALSE and NULL, because ANSI
-    is a strange world. */
+   is a strange world. */
 #ifndef TRUE
 #define TRUE 1
 #endif
@@ -19,10 +19,16 @@
 #endif
 
 /* You may have to edit the definition of glui16 to make sure it's really a
-    16-bit unsigned integer type, and glsi16 to make sure it's really a
-    16-bit signed integer type. If they're not, horrible things will happen. */
+   16-bit unsigned integer type, and glsi16 to make sure it's really a
+   16-bit signed integer type. If they're not, horrible things will happen. */
 typedef unsigned short glui16; 
 typedef signed short glsi16; 
+
+/* Uncomment this definition to turn on memory-address checking. In
+   this mode, all reads and writes to main memory will be checked to
+   ensure they're in range. This is slower, but prevents malformed
+   game files from crashing the interpreter. */
+/* #define VERIFY_MEMORY_ACCESS (1) */
 
 /* Some macros to read and write integers to memory, always in big-endian
    format. */
@@ -48,12 +54,18 @@ typedef signed short glsi16;
 #define Write1(ptr, vl)   \
   (((unsigned char *)(ptr))[0] = (vl))
 
-#define Mem1(adr)  (Read1(memmap+(adr)))
-#define Mem2(adr)  (Read2(memmap+(adr)))
-#define Mem4(adr)  (Read4(memmap+(adr)))
-#define MemW1(adr, vl)  (Write1(memmap+(adr), (vl)))
-#define MemW2(adr, vl)  (Write2(memmap+(adr), (vl)))
-#define MemW4(adr, vl)  (Write4(memmap+(adr), (vl)))
+#if VERIFY_MEMORY_ACCESS
+#define Verify(adr, ln) verify_address(adr, ln)
+#else
+#define Verify(adr, ln) (0)
+#endif /* VERIFY_MEMORY_ACCESS */
+
+#define Mem1(adr)  (Verify(adr, 1), Read1(memmap+(adr)))
+#define Mem2(adr)  (Verify(adr, 2), Read2(memmap+(adr)))
+#define Mem4(adr)  (Verify(adr, 4), Read4(memmap+(adr)))
+#define MemW1(adr, vl)  (Verify(adr, 1), Write1(memmap+(adr), (vl)))
+#define MemW2(adr, vl)  (Verify(adr, 2), Write2(memmap+(adr), (vl)))
+#define MemW4(adr, vl)  (Verify(adr, 4), Write4(memmap+(adr), (vl)))
 
 /* Macros to access values on the stack. These *must* be used 
    with proper alignment! (That is, Stk4 and StkW4 must take 
@@ -147,6 +159,7 @@ extern void finalize_vm(void);
 extern void vm_restart(void);
 extern glui32 change_memsize(glui32 newlen, int internal);
 extern glui32 *pop_arguments(glui32 count, glui32 addr);
+extern void verify_address(glui32 addr, glui32 count);
 
 /* exec.c */
 extern void execute_loop(void);

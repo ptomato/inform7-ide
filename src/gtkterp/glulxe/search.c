@@ -1,6 +1,6 @@
 /* search.c: Glulxe code for built-in search opcodes
     Designed by Andrew Plotkin <erkyrath@eblong.com>
-    http://www.eblong.com/zarf/glulx/index.html
+    http://eblong.com/zarf/glulx/index.html
 */
 
 #include "glk.h"

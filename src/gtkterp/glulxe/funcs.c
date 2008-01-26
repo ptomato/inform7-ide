@@ -1,6 +1,6 @@
 /* funcs.c: Glulxe function-handling functions.
     Designed by Andrew Plotkin <erkyrath@eblong.com>
-    http://www.eblong.com/zarf/glulx/index.html
+    http://eblong.com/zarf/glulx/index.html
 */
 
 #include "glk.h"

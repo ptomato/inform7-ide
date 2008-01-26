@@ -465,7 +465,7 @@ gtk_terp_start_game(GtkTerp *terp, const GtkTerpInterpreter format,
                       &child_pid,
                       error)) {
         g_assert(error == NULL || *error != NULL);
-        g_strfreev(args);
+        /*g_strfreev(args);*/ /* Seems to cause a crash?! */
         return FALSE;
     }
     

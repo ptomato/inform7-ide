@@ -1,6 +1,6 @@
 /* gestalt.h: The list of gestalt selectors for Glulxe.
     Designed by Andrew Plotkin <erkyrath@eblong.com>
-    http://www.eblong.com/zarf/glulx/index.html
+    http://eblong.com/zarf/glulx/index.html
 */
 
 #ifndef _GESTALT_H

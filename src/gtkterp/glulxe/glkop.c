@@ -1,6 +1,6 @@
 /* glkop.c: Glulxe code for Glk API dispatching.
     Designed by Andrew Plotkin <erkyrath@eblong.com>
-    http://www.eblong.com/zarf/glulx/index.html
+    http://eblong.com/zarf/glulx/index.html
 */
 
 /* This code is actually very general; it could work for almost any
@@ -1043,6 +1043,9 @@ void glulxe_retained_unregister(void *array, glui32 len,
     fatal_error("Unretained array reference in Glk call.");
   if (arref->elemsize != 4 || arref->len != len)
     fatal_error("Mismatched array argument in Glk call.");
+
+  *aptr = arref->next;
+  arref->next = NULL;
 
   for (ix=0, addr2=arref->addr; ix<arref->len; ix++, addr2+=4) {
     val = ((glui32 *)array)[ix];

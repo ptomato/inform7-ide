@@ -50,7 +50,7 @@ gnome_inform7_SOURCES = \
     apptoolbar.c apptoolbar.h \
     tabdocs.c tabdocs.h
 
-gnome_inform7_LDADD = @GNOMEINFORM7_LIBS@ $(INTLLIBS) $(GTKTERPLIBS) gtkterp/libgtkterp.a
+gnome_inform7_LDADD = @GNOMEINFORM7_LIBS@ $(INTLLIBS) $(GTKTERP_LIBS) gtkterp/libgtkterp.a
 
 gnome_inform7_LDFLAGS = -L.
 

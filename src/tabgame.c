@@ -105,7 +105,7 @@ void run_project(Story *thestory) {
     GError *err = NULL;
     if(!gtk_terp_load_game(terp, path, &err)) {
         error_dialog(GTK_WINDOW(thestory->window), err,
-                     "Could not load interpreter");
+                     "Could not load interpreter. ");
         g_free(path);
         return;
     }

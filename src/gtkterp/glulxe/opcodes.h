@@ -1,6 +1,6 @@
 /* opcodes.h: The big list of opcode values for Glulxe.
     Designed by Andrew Plotkin <erkyrath@eblong.com>
-    http://www.eblong.com/zarf/glulx/index.html
+    http://eblong.com/zarf/glulx/index.html
 */
 
 #ifndef _OPCODES_H

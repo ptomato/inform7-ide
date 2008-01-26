@@ -1,6 +1,6 @@
 /* vm.c: Glulxe code related to the VM overall. Also miscellaneous stuff.
     Designed by Andrew Plotkin <erkyrath@eblong.com>
-    http://www.eblong.com/zarf/glulx/index.html
+    http://eblong.com/zarf/glulx/index.html
 */
 
 #include "glk.h"
@@ -282,5 +282,21 @@ glui32 *pop_arguments(glui32 count, glui32 addr)
   }
 
   return array;
+}
+
+/* verify_address():
+   Make sure that count bytes beginning with addr all fall within the
+   current memory map. This is called at every memory access if
+   VERIFY_MEMORY_ACCESS is defined in the header file.
+*/
+void verify_address(glui32 addr, glui32 count)
+{
+  if (addr >= endmem)
+    fatal_error_i("Memory access out of range", addr);
+  if (count > 1) {
+    addr += (count-1);
+    if (addr >= endmem)
+      fatal_error_i("Memory access out of range", addr);
+  }
 }
 

@@ -1,6 +1,6 @@
 /* serial.c: Glulxe code for saving and restoring the VM state.
     Designed by Andrew Plotkin <erkyrath@eblong.com>
-    http://www.eblong.com/zarf/glulx/index.html
+    http://eblong.com/zarf/glulx/index.html
 */
 
 #include <string.h>
@@ -146,6 +146,10 @@ glui32 perform_saveundo()
 
   if (res == 0) {
     /* It worked. */
+    if (undo_chain_num >= undo_chain_size) {
+      glulx_free(undo_chain[undo_chain_num-1]);
+      undo_chain[undo_chain_num-1] = NULL;
+    }
     if (undo_chain_size > 1)
       memmove(undo_chain+1, undo_chain, 
         (undo_chain_size-1) * sizeof(unsigned char *));
