@@ -48,7 +48,7 @@
 static GnomeVFSMonitorHandle *monitor_file(const gchar *filename,
   GnomeVFSMonitorCallback callback, gpointer data) {
     GnomeVFSMonitorHandle *retval;
-    GError *err;
+    GError *err = NULL;
     gchar *file_uri;
 
     if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
@@ -205,7 +205,8 @@ gboolean verify_save(GtkWidget *thiswidget) {
 
 /* Read a project directory, loading all the appropriate files into a new
 story struct and returning that */
-Story *open_project(gchar *directory) {
+Story *open_project(gchar *path) {
+    gchar *directory = gnome_vfs_expand_initial_tilde(path);
     gchar *source_dir = g_build_filename(directory, "Source", NULL);    
     GError *err = NULL;
     gchar *filename, *text;
@@ -235,6 +236,7 @@ Story *open_project(gchar *directory) {
         /* fail discreetly */
         g_warning("Cannot convert project filename to URI: %s", err->message);
         g_error_free(err);
+        err = NULL; /* clear error */
     } else {
         GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
         recent_data->display_name = g_filename_display_basename(directory);
@@ -313,7 +315,8 @@ Story *open_project(gchar *directory) {
         error_dialog(NULL, NULL, "Could not open the project's settings file, "
           "'%s'. Using default settings.", filename);
     g_free(filename);    
-
+    g_free(directory);
+    
     /* Load index tabs if they exist and update settings */
     reload_index_tabs(thestory, FALSE);
     update_settings(thestory);
@@ -383,6 +386,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
         /* fail discreetly */
         g_warning("Cannot convert project filename to URI: %s", err->message);
         g_error_free(err);
+        err = NULL; /* clear error */
     } else {
         GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
         recent_data->display_name = g_filename_display_basename(directory);
@@ -632,6 +636,7 @@ Extension *open_extension(gchar *filename) {
         /* fail discreetly */
         g_warning("Cannot convert extension filename to URI: %s", err->message);
         g_error_free(err);
+        err = NULL; /* clear error */
     } else {
         GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
         recent_data->display_name = g_filename_display_basename(filename);
@@ -673,6 +678,7 @@ void save_extension(GtkWidget *thiswidget) {
         /* fail discreetly */
         g_warning("Cannot convert extension filename to URI: %s", err->message);
         g_error_free(err);
+        err = NULL; /* clear error */
     } else {
         GtkRecentData *recent_data = g_new0(GtkRecentData, 1);
         recent_data->display_name = g_filename_display_basename(ext->filename);

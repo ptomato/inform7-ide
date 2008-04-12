@@ -6,7 +6,7 @@ Plurality PunctuationRemoval
 EXTRA_DIST = $(emilyshort_DATA)
 
 install-data-hook:
-	pushd "$(emilyshortdir)"; \
+	pushd "$(DESTDIR)$(emilyshortdir)"; \
 	mv BasicHelpMenu Basic\ Help\ Menu; \
 	mv BasicScreenEffects Basic\ Screen\ Effects; \
 	mv CaseManagement Case\ Management; \
@@ -29,7 +29,7 @@ install-data-hook:
 	popd
 
 uninstall-hook:
-	pushd "$(emilyshortdir)"; \
+	pushd "$(DESTDIR)$(emilyshortdir)"; \
 	rm -f Basic\ Help\ Menu basic\ help\ menu; \
 	rm -f Basic\ Screen\ Effects basic\ screen\ effects; \
 	rm -f Case\ Management case\ management; \

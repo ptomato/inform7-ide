@@ -164,11 +164,13 @@ void delete_story(Story *oldstory) {
             g_free(foo);
         }
         g_queue_free(oldstory->forward[side]);
-        if(oldstory->current[side]->page)
-            g_free(oldstory->current[side]->page);
-        if(oldstory->current[side]->anchor)
-            g_free(oldstory->current[side]->anchor);
-        g_free(oldstory->current[side]);
+        if(oldstory->current[side]) {
+            if(oldstory->current[side]->page)
+                g_free(oldstory->current[side]->page);
+            if(oldstory->current[side]->anchor)
+                    g_free(oldstory->current[side]->anchor);
+            g_free(oldstory->current[side]);
+        }
     }
     
     g_free(oldstory);

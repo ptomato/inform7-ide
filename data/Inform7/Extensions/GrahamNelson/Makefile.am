@@ -4,7 +4,7 @@ UnicodeFullCharacterNames
 EXTRA_DIST = $(grahamnelson_DATA)
 
 install-data-hook:
-	pushd "$(grahamnelsondir)"; \
+	pushd "$(DESTDIR)$(grahamnelsondir)"; \
 	mv RideableVehicles Rideable\ Vehicles; \
 	mv StandardRules Standard\ Rules; \
 	mv UnicodeCharacterNames Unicode\ Character\ Names; \
@@ -16,7 +16,7 @@ install-data-hook:
 	popd
 	
 uninstall-hook:
-	pushd "$(grahamnelsondir)"; \
+	pushd "$(DESTDIR)$(grahamnelsondir)"; \
 	rm -f Rideable\ Vehicles rideable\ vehicles; \
 	rm -f Standard\ Rules standard\ rules; \
 	rm -f Unicode\ Character\ Names unicode\ character\ names; \

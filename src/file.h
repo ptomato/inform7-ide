@@ -30,7 +30,7 @@
 
 gboolean verify_save(GtkWidget *thiswidget);
 void save_project(GtkWidget *thiswidget, gchar *directory);
-Story *open_project(gchar *directory);
+Story *open_project(gchar *path);
 gboolean verify_save_ext(GtkWidget *thiswidget);
 Extension *open_extension(gchar *filename);
 void save_extension(GtkWidget *thiswidget);

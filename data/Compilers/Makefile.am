@@ -21,6 +21,6 @@ cBlorb: ni
 inform-6.31-biplatform: ni
 
 install-data-hook:
-	pushd "$(compilersdir)"; \
+	pushd "$(DESTDIR)$(compilersdir)"; \
 	chmod a+x cBlorb inform-6.31-biplatform ni; \
 	popd
