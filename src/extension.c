@@ -36,7 +36,7 @@ Extension *new_ext() {
     newext->filename = NULL;
     newext->monitor = NULL;
     newext->window = create_ext_window();
-    newext->buffer = create_natural_inform_source_buffer();
+    newext->buffer = create_natural_inform_source_buffer(TRUE);
 
     /* Connect the source buffer to our sourceview */
     gtk_text_view_set_buffer(

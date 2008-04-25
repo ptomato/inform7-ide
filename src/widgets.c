@@ -23,7 +23,8 @@
 
 /* Custom function to create a GtkSourceView; if 'string1' is not NULL or empty,
 then it becomes the contents of the buffer. If 'int1' is 0, then it is a regular
-buffer, otherwise a Natural Inform source buffer. */
+buffer, otherwise a Natural Inform source buffer. In the latter case, if 'int2'
+is also nonzero, it will be a Natural Inform Extension source buffer. */
 GtkWidget *custom_gtk_source_view_create (gchar *widget_name, gchar *string1,
   gchar *string2, gint int1, gint int2)
 {
@@ -31,7 +32,8 @@ GtkWidget *custom_gtk_source_view_create (gchar *widget_name, gchar *string1,
     
     if(string1 && strlen(string1)) {
         if(int1) {
-            GtkSourceBuffer *buffer = create_natural_inform_source_buffer();
+            GtkSourceBuffer *buffer = 
+                create_natural_inform_source_buffer(int2 != 0);
             source = gtk_source_view_new_with_buffer(buffer);
             gtk_text_buffer_set_text(GTK_TEXT_BUFFER(buffer), string1, -1);
         } else {

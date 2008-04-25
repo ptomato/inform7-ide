@@ -1,32 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE language SYSTEM "language.dtd">
-<language _name="Natural Inform" version="1.0" _section="Sources" mimetypes="text/x-natural-inform">
+<!--
 
-    <block-comment _name="Comment" style="Comment">
-        <start-regex>\[</start-regex>
-        <end-regex>\]</end-regex>
-    </block-comment>
+ Author: Zachary Amsden
+ Copyright (C) 2008 Zachary Amsden <zamsden@gmail.com>
 
-    <block-comment _name="I6 Code" style="Comment">
-        <start-regex>\(-</start-regex>
-        <end-regex>-\)</end-regex>
-    </block-comment>
+ GNOME Inform 7 is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-    <string _name="String" style="String" end-at-line-end="false">
-        <start-regex>&quot;</start-regex>
-        <end-regex>&quot;</end-regex>
-    </string>
+ GNOME Inform 7 is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    <syntax-item _name="Heading" style="Heading">
-        <start-regex>^\n([vV]olume|[bB]ook|[pP]art|[cC]hapter|[sS]ection)\s</start-regex>
-        <end-regex>$\n</end-regex>
-    </syntax-item>
+ You should have received a copy of the GNU General Public License
+ along with GNOME Inform 7; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-    <keyword-list _name = "Keyword" style="Keyword" case-sensitive="false">
-        <keyword>begin</keyword>
-        <keyword>end if</keyword>
-        <keyword>if</keyword>
-        <keyword>otherwise</keyword>
-    </keyword-list>
-
+-->
+<language id="inform7" _name="Natural Inform" version="2.0" _section="Sources">
+    <metadata>
+        <property name="mimetypes">text/x-natural-inform</property>
+        <property name="globs">*.ni</property>
+        <property name="block-comment-start">[</property>
+        <property name="block-comment-end">]</property>
+    </metadata>
+    
+    <styles>
+        <style id="comment" _name="Comment" map-to="def:comment"/>
+        <style id="string" _name="String" map-to="def:string"/>
+        <style id="markup" _name="String Markup" map-to="def:special-char"/>
+        <style id="heading" _name="Heading" map-to="def:string"/>
+        <style id="i6code" _name="Inform 6 Code" map-to="def:preprocessor"/>
+    </styles>
+    
+    <default-regex-options case-sensitive="false"/>
+    
+    <definitions>
+        <context id="inform7">
+            <include>
+            
+                <context id="title-heading" style-ref="heading" first-line-only="true"
+                once-only="true">
+                    <match>^".*"( by .*)?$</match>
+                </context>
+                
+                <context id="string" style-ref="string">
+                    <start>(?&lt;=\s|^)"</start>
+                    <end>"</end>
+                    <include>
+                        <context id="string-markup" style-ref="markup">
+                            <start>\[</start>
+                            <end>\]</end>
+                        </context>
+                    </include>
+                </context>
+                
+                <context id="block-comment" style-ref="comment">
+                    <start>\[</start>
+                    <end>\]</end>
+                    <include>
+                        <context ref="block-comment"/>
+                        <context ref="def:in-comment"/>
+                    </include>
+                </context>
+                
+                <context id="heading" style-ref="heading">
+                    <match>^(volume|book|part|chapter|section).*$</match>
+                </context>
+                
+                <context id="i6code" style-ref="i6code" style-inside="true">
+                    <start>\(-</start>
+                    <end>-\)</end>
+                    <include>
+                        <context ref="inform:inform:*"/>
+                    </include>
+                </context>
+            
+            </include>
+        </context>
+    </definitions>
 </language>
+<!--
+    <context id="loop-flow-and-exceptions-keywords" style-ref="keyword">
+      <keyword>begin</keyword>
+      <keyword>end if</keyword>
+      <keyword>if the player's command includes</keyword>
+      <keyword>does the player mean</keyword>
+      <keyword>if</keyword>
+      <keyword>otherwise</keyword>
+      <keyword>end while</keyword>
+      <keyword>while</keyword>
+      <keyword>repeatedly</keyword>
+      <keyword>repeat with</keyword>
+      <keyword>repeat through</keyword>
+      <keyword>end repeat</keyword>
+      <keyword>do nothing</keyword>
+      <keyword>continue the action</keyword>
+      <keyword>stop the action</keyword>
+      <keyword>decide on</keyword>
+      <keyword>decide yes</keyword>
+      <keyword>decide no</keyword>
+      <keyword>let</keyword>
+      <keyword>definition</keyword>
+      <keyword>to decide whether</keyword>
+      <keyword>to decide if</keyword>
+      <keyword>to decide what</keyword>
+      <keyword>to decide which</keyword>
+      <keyword>to say</keyword>
+      <keyword>every turn</keyword>
+    </context>
+
+    <context id="builtin-values" style-ref="keyword">
+      <keyword>False</keyword>
+      <keyword>True</keyword>
+    </context>
+
+    <context id="number" style-ref="decimal">
+      <match extended="true">
+        (?&lt;![\w\.])
+        (([0-9]+)|([0-9]+\.[0-9]+([Ee][-]?[0-9]+)?))
+        (?![\w\.])
+      </match>
+    </context>
+-->

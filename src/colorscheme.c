@@ -18,10 +18,13 @@
  
 #include <gnome.h>
 #include <gtksourceview/gtksourcelanguage.h>
+#include <gtksourceview/gtksourcestyle.h>
+#include <gtksourceview/gtksourcestyleschememanager.h>
 
 #include "colorscheme.h"
 #include "configfile.h"
 #include "prefs.h"
+#include "datafile.h"
 
 /* (0..255)*256 = (0..255)*65536/256 = convert color component from 8 bits to
 16 bits */
@@ -84,79 +87,68 @@ static GdkColor scheme_psychedelic[] = {
     RGB(0xF0, 0xF0, 0xF0), /* CLR_TRANS_UNSET */
 };   
 
-/* Set up the style colors for the Natural Inform highlighting */
-void set_highlight_styles(GtkSourceLanguage *language) {
-    GtkSourceTagStyle *style;
-    
+static GtkSourceStyleSchemeManager *scheme_manager = NULL;
+
+GtkSourceStyleSchemeManager *
+get_style_scheme_manager(void)
+{
+    if (!scheme_manager) {
+    	GList ldirs;
+        ldirs.data = get_datafile_path_va("styles", NULL); 
+        ldirs.prev = NULL;
+        ldirs.next = NULL;
+        scheme_manager = GTK_SOURCE_STYLE_SCHEME_MANAGER(g_object_new(
+          GTK_TYPE_SOURCE_STYLE_SCHEME_MANAGER, "search-path", &ldirs, NULL));
+    }
+    return scheme_manager;
+}
+
+/* Get the appropriate color scheme for the current settings. Return value must
+not be unref'd. */
+GtkSourceStyleScheme *
+get_style_scheme(void)
+{
+    GtkSourceStyleSchemeManager *manager = get_style_scheme_manager();
+    int set = config_file_get_int("Colors", "ColorSet");
     int styling = config_file_get_int("Fonts", "FontStyling");
     int colors = config_file_get_int("Colors", "ChangeColors");
     
-    style = gtk_source_language_get_tag_style(language, "Comment");
-    style->foreground = get_scheme_color((colors == CHANGE_COLORS_NEVER)?
-      CLR_TEXT : CLR_COMMENT);
-    style->bold = FALSE;
-    style->italic = (styling == FONT_STYLING_OFTEN);
-    gtk_source_language_set_tag_style(language, "Comment", style);
-    gtk_source_language_set_tag_style(language, "Documentation", style);
-    gtk_source_tag_style_free(style);
-
-    style = gtk_source_language_get_tag_style(language, "I6 Code");
-    style->foreground = get_scheme_color((colors == CHANGE_COLORS_NEVER)?
-      CLR_TEXT : CLR_I6_CODE);
-    style->bold = FALSE;
-    style->italic = (styling != FONT_STYLING_NONE);
-    gtk_source_language_set_tag_style(language, "I6 Code", style);
-    gtk_source_tag_style_free(style);
+    gchar *schemename = NULL;
+    if(colors == CHANGE_COLORS_NEVER)
+        schemename = g_strconcat("nocolor-", 
+                                 styling == FONT_STYLING_NONE ? "nostyling" :
+                                 styling == FONT_STYLING_SUBTLE ? "somestyling"
+                                 : "styling",
+                                 NULL);
+    else
+        schemename = g_strconcat(set == COLOR_SET_PSYCHEDELIC ? "psychedelic" :
+                                 set == COLOR_SET_SUBDUED ? "subdued" : 
+                                 "standard", "-",
+                                 colors == CHANGE_COLORS_OCCASIONALLY ? 
+                                 "somecolor" : "color", "-",
+                                 styling == FONT_STYLING_NONE ? "nostyling" :
+                                 styling == FONT_STYLING_SUBTLE ? "somestyling"
+                                 : "styling",
+                                 NULL);
     
-    style = gtk_source_language_get_tag_style(language, "String");
-    style->foreground = get_scheme_color((colors == CHANGE_COLORS_NEVER)?
-      CLR_TEXT : CLR_STRING);
-    style->bold = (styling != FONT_STYLING_NONE);
-    style->italic = FALSE;
-    gtk_source_language_set_tag_style(language, "String", style);
-    gtk_source_tag_style_free(style);
+  	GtkSourceStyleScheme *scheme =
+  	    gtk_source_style_scheme_manager_get_scheme(manager, schemename);
+  	g_free(schemename);
+  	return scheme;
+}
 
-    /* Markup 
-    style = gtk_source_language_get_tag_style(language, "Markup");
-    style->foreground = get_scheme_color((colors == CHANGE_COLORS_NEVER)?
-      CLR_TEXT : ((colors == CHANGE_COLORS_OCCASIONALLY)?
-      CLR_STRING : CLR_MARKUP));
-    style->bold = FALSE;
-    style->italic = (styling == FONT_STYLING_OFTEN);
-    gtk_source_language_set_tag_style(language, "Markup", style);
-    gtk_source_tag_style_free(style);
-    */
-
-    /* For Inform 6 only - use the markup color, for lack of a better one */
-    style = gtk_source_language_get_tag_style(language, "Number");
-    style->foreground = get_scheme_color((colors == CHANGE_COLORS_NEVER)?
-      CLR_TEXT : CLR_STRING_MARKUP);
-    style->bold = FALSE;
-    style->italic = (styling == FONT_STYLING_OFTEN);
-    gtk_source_language_set_tag_style(language, "Character Constant", style);
-    gtk_source_language_set_tag_style(language, "Decimal", style);
-    gtk_source_language_set_tag_style(language, "Hexadecimal", style);
-    gtk_source_language_set_tag_style(language, "Binary", style);
-    gtk_source_tag_style_free(style);
-
-    style = gtk_source_language_get_tag_style(language, "Keyword");
-    style->foreground = get_scheme_color((colors == CHANGE_COLORS_OFTEN)?
-      CLR_KEYWORD : CLR_TEXT);
-    style->bold = (styling == FONT_STYLING_OFTEN);
-    style->italic = FALSE;
-    gtk_source_language_set_tag_style(language, "Keyword", style);
-    gtk_source_tag_style_free(style);
-
-    style = gtk_source_tag_style_new();
-    style->mask = 0;
-    style->bold = (styling != FONT_STYLING_NONE);
-    style->italic = (styling != FONT_STYLING_NONE);
-    gtk_source_language_set_tag_style(language, "Heading", style);
-    gtk_source_tag_style_free(style);
+/* Set up the style colors for the Natural Inform highlighting */
+void 
+set_highlight_styles(GtkSourceBuffer *buffer) 
+{
+    GtkSourceStyleScheme *scheme = get_style_scheme();
+    gtk_source_buffer_set_style_scheme(buffer, scheme);
 }
 
 /* Return the GdkColor in the current scheme */
-GdkColor get_scheme_color(int color) {
+GdkColor 
+get_scheme_color(int color) 
+{
     GdkColor *scheme;
     int set = config_file_get_int("Colors", "ColorSet");
     switch(set) {

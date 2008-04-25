@@ -23,6 +23,7 @@ gnome_inform7_SOURCES = \
 	tabsettings.c tabsettings.h \
 	tabsource.c tabsource.h \
 	file.c file.h \
+	lang.c lang.h \
 	findreplace.c findreplace.h \
 	appwindow.c appwindow.h \
 	welcomedialog.c welcomedialog.h \

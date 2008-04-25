@@ -19,12 +19,12 @@
 #include <gnome.h>
 #include <gtksourceview/gtksourcebuffer.h>
 #include <gtksourceview/gtksourcelanguage.h>
-#include <gtksourceview/gtksourcelanguagesmanager.h>
+#include <gtksourceview/gtksourcelanguagemanager.h>
 
 #include "support.h"
 
 #include "colorscheme.h"
-#include "datafile.h"
+#include "lang.h"
 
 /* Add the debugging tabs to this main window */
 void add_debug_tabs(GtkWidget *window) {
@@ -45,25 +45,9 @@ void remove_debug_tabs(GtkWidget *window) {
 /* Set up the Inform 6 highlighting */
 GtkSourceBuffer *create_inform6_source_buffer() {
     GtkSourceBuffer *i6buffer = gtk_source_buffer_new(NULL);
-    GtkSourceLanguage *language;
-    GtkSourceLanguagesManager *lmanager;
-    GList ldirs;
-    
-    gchar *specfile = get_datafile_path("inform.lang");
 
-    ldirs.data = g_path_get_dirname(specfile);
-    ldirs.prev = NULL;
-    ldirs.next = NULL;
-    lmanager = GTK_SOURCE_LANGUAGES_MANAGER(g_object_new(
-      GTK_TYPE_SOURCE_LANGUAGES_MANAGER, "lang_files_dirs", &ldirs, NULL));
-    language = gtk_source_languages_manager_get_language_from_mime_type(
-      lmanager, "text/x-inform");
-    if(language != NULL) {
-        set_highlight_styles(language);
-		gtk_source_buffer_set_highlight(i6buffer, TRUE);
-		gtk_source_buffer_set_language(i6buffer, language);
-    }
-    
-    g_object_unref((gpointer)lmanager);
+    set_buffer_language(i6buffer, "inform");
+    set_highlight_styles(i6buffer);
+    gtk_source_buffer_set_highlight_syntax(i6buffer, TRUE);
     return i6buffer;
 }

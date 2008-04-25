@@ -20,6 +20,7 @@
 #include <gnome.h>
 #include <glib/gstdio.h>
 #include <gtksourceview/gtksourcebuffer.h>
+#include <gtksourceview/gtksourcestyle.h>
 #include <pango/pango-font.h>
 
 #include "support.h"
@@ -181,7 +182,7 @@ static gboolean update_app_window_font_sizes(gpointer data) {
 
 /* Turn source highlighting on or off in this source buffer */
 static void update_source_highlight(GtkSourceBuffer *buffer) {
-    gtk_source_buffer_set_highlight(buffer, config_file_get_bool("Syntax",
+    gtk_source_buffer_set_highlight_syntax(buffer, config_file_get_bool("Syntax",
       "Highlighting"));
 }
 
@@ -513,6 +514,11 @@ on_prefs_custom_font_font_set          (GtkFontButton   *fontbutton,
     g_free(fontname);
 }
 
+static void
+select_style_scheme(void)
+{
+
+}
 
 void
 on_prefs_font_styling_changed          (GtkComboBox     *combobox,
@@ -522,7 +528,7 @@ on_prefs_font_styling_changed          (GtkComboBox     *combobox,
     int oldsetting = config_file_get_int("Fonts", "FontStyling");
     
     if(setting != oldsetting) {
-        config_file_set_int("Fonts", "FontStyling", setting);
+       config_file_set_int("Fonts", "FontStyling", setting);
         update_style(GTK_SOURCE_VIEW(lookup_widget(GTK_WIDGET(combobox),
           "source_example")));
         for_each_story_window_idle((GSourceFunc)update_app_window_fonts);
@@ -916,26 +922,12 @@ on_prefs_close_clicked                 (GtkButton       *button,
 }
 
 
-/* Get the language associated with this sourceview, update the highlighting
-style, and redo the extra highlighting */
+/* Get the language associated with this sourceview and update the highlighting
+styles */
 void update_style(GtkSourceView *thiswidget) {
     GtkSourceBuffer *buffer = GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(thiswidget)));
-    /* Do not unreference the language */
-    GtkSourceLanguage *language = gtk_source_buffer_get_language(buffer);
-    set_highlight_styles(language);
-    
-    /* Remove the old string markup tag and make a new one */
-    GtkTextTag *markup = gtk_text_tag_table_lookup(
-      gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER(buffer)), "string-markup");
-    if(markup != NULL)
-        gtk_text_tag_table_remove(
-          gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER(buffer)), markup);
-    gtk_text_tag_table_add(
-      gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER(buffer)),
-      create_string_markup_tag());
-    /* Redo the extra highlighting */
-    g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
+    set_highlight_styles(buffer);
 }
 
 /* Change the font that this widget uses */
@@ -958,8 +950,9 @@ void update_tabs(GtkSourceView *thiswidget) {
     gint spaces = config_file_get_int("Tabs", "TabWidth");
     if(spaces == 0)
         spaces = 8; /* default is 8 */
-    gtk_source_view_set_tabs_width(thiswidget, spaces);
+    gtk_source_view_set_indent_width(thiswidget, spaces);
 }
+
 /* Return a string of font families for the font setting. String must be freed*/
 gchar *
 get_font_family(void)
@@ -973,6 +966,7 @@ get_font_family(void)
             customfont = config_file_get_string("Fonts", "CustomFont");
             if(customfont)
                 return customfont;
+            /* else fall through */
         default:
             ;
     }

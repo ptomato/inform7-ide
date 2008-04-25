@@ -19,8 +19,6 @@
 #include <gnome.h>
 #include <gtksourceview/gtksourceview.h>
 #include <gtksourceview/gtksourcebuffer.h>
-#include <gtksourceview/gtksourcelanguage.h>
-#include <gtksourceview/gtksourcelanguagesmanager.h>
 
 #include "support.h"
 
@@ -31,18 +29,15 @@
 #include "inspector.h"
 #include "prefs.h"
 #include "story.h"
+#include "lang.h"
 #include "tabsource.h"
 
 static void after_source_buffer_delete_range(GtkTextBuffer *buffer,
   GtkTextIter *start, GtkTextIter *end, gpointer data) {
     if(!config_file_get_bool("Syntax", "Intelligence"))
         return;
-    /* Do the extra highlighting anytime text is deleted, because running after
+    /* Reindex the section headings anytime text is deleted, because running after
     the default signal handler means we have no access to the deleted text. */
-    if(config_file_get_bool("Syntax", "Highlighting")) {
-        g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
-    }
-    /* Reindex the section headings now for the same reason */
     if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
         g_idle_remove_by_data(GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
         g_idle_add((GSourceFunc)reindex_headings,
@@ -71,13 +66,6 @@ static void after_source_buffer_insert_text(GtkTextBuffer *buffer,
     /* Return after that if we are not doing intelligent symbol following */    
     if(!config_file_get_bool("Syntax", "Intelligence"))
         return;
-    
-    /* if the inserted text contains a [, ] or ", then the highlighting for the
-    markup brackets may have changed, so redo the extra highlighting */
-    if(config_file_get_bool("Syntax", "Highlighting") &&
-      (strchr(text, '[') || strchr(text, ']') || strchr(text, '\"'))) {
-        g_idle_add((GSourceFunc)do_extra_highlighting, (gpointer)buffer);
-    }
     
     /* For any text, a section heading might have been entered or changed, so
     reindex the section headings */
@@ -126,59 +114,19 @@ static void after_source_buffer_insert_text(GtkTextBuffer *buffer,
     }
 }
 
-GtkTextTag *create_string_markup_tag() {
-    gint colors = config_file_get_int("Colors", "ChangeColors");
-    gint styling = config_file_get_int("Fonts", "FontStyling");
-    GdkColor clr = get_scheme_color((colors == CHANGE_COLORS_NEVER)?
-      CLR_TEXT : ((colors == CHANGE_COLORS_OCCASIONALLY)?
-      CLR_STRING : CLR_STRING_MARKUP));
-    
-    GtkTextTag *markup = gtk_text_tag_new("string-markup");
-    g_object_set(G_OBJECT(markup),
-      "foreground-set", TRUE,
-      "foreground-gdk", &clr,
-      "style-set", TRUE,
-      "style", (styling == FONT_STYLING_OFTEN)? PANGO_STYLE_ITALIC :
-      PANGO_STYLE_NORMAL,
-      "weight-set", TRUE,
-      "weight", PANGO_WEIGHT_NORMAL,
-      NULL);
-    return markup;
-}
-
-/* Create our default source buffer with Natural Inform highlighting */
-GtkSourceBuffer *create_natural_inform_source_buffer() {
+/* Create our default source buffer with Natural Inform highlighting. If
+extension is true, create one with the slightly different Natural Inform
+Extension highlighting. */
+GtkSourceBuffer *create_natural_inform_source_buffer(gboolean extension) {
     GtkSourceBuffer *buffer = gtk_source_buffer_new(NULL);
 
     /* Set up the Natural Inform highlighting */
-    GtkSourceLanguage *language;
-    GtkSourceLanguagesManager *lmanager;
-    GList ldirs;
-    
-    gchar *specfile = get_datafile_path("naturalinform.lang");
-    ldirs.data = g_path_get_dirname(specfile);
-    g_free(specfile);
-
-    ldirs.prev = NULL;
-    ldirs.next = NULL;
-    lmanager = GTK_SOURCE_LANGUAGES_MANAGER(g_object_new(
-      GTK_TYPE_SOURCE_LANGUAGES_MANAGER, "lang_files_dirs", &ldirs, NULL));
-    language = gtk_source_languages_manager_get_language_from_mime_type(
-      lmanager, "text/x-natural-inform");
-    if(language != NULL) {
-        set_highlight_styles(language);
-		gtk_source_buffer_set_highlight(buffer, TRUE);
-		gtk_source_buffer_set_language(buffer, language);
-    }
-    g_object_unref((gpointer)lmanager);
-    
-    /* Create the "string markup" tag and add it to the buffer's tag table */
-    gtk_text_tag_table_add(
-      gtk_text_buffer_get_tag_table(GTK_TEXT_BUFFER(buffer)), 
-      create_string_markup_tag());
+    set_buffer_language(buffer, extension? "inform7x" : "inform7");
+    set_highlight_styles(buffer);
+    gtk_source_buffer_set_highlight_syntax(buffer, TRUE);
     
     /* Turn off highlighting matching brackets */
-    gtk_source_buffer_set_check_brackets(buffer, FALSE);
+    gtk_source_buffer_set_highlight_matching_brackets(buffer, FALSE);
     
     /* Connect signals for intelligent syntax following */
     g_signal_connect_after(buffer, "delete-range", 
@@ -214,7 +162,7 @@ on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
       *section = NULL;
     GtkWidget *volume_item = NULL, *book_item = NULL, *part_item = NULL,
       *chapter_item = NULL, *section_item = NULL;
-    
+   
     while(gtk_text_iter_get_char(&pos) != 0) {
         if(gtk_text_iter_get_char(&pos) == '\n') {
             gtk_text_iter_forward_line(&pos);
@@ -354,8 +302,9 @@ on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
                 g_free(text);
                 g_free(lcase);
             }
-        }    
-        gtk_text_iter_forward_line(&pos);
+	    gtk_text_iter_backward_line(&pos);
+        }
+       	gtk_text_iter_forward_line(&pos);
     }
     
     /* Set the appropriate menu as the drop-down menu of the button, or an empty
@@ -394,61 +343,6 @@ void jump_to_line(GtkWidget *widget, guint line) {
       gtk_text_buffer_get_insert(GTK_TEXT_BUFFER(thestory->buffer)),
       0.25, FALSE, 0.0, 0.0);
     gtk_widget_grab_focus(view);
-}
-
-/* Idle function that looks for markup inside strings and highlights it with
-GtkSourceBuffer tags */
-gboolean do_extra_highlighting(gpointer data) {
-    GtkTextIter iter;
-    gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(data), &iter);
-    GtkTextIter start, end, stringstart;
-    
-    /* Remove the string markup tags */
-    gtk_text_buffer_get_start_iter(GTK_TEXT_BUFFER(data), &start);
-    gtk_text_buffer_get_end_iter(GTK_TEXT_BUFFER(data), &end);
-    gtk_text_buffer_remove_tag_by_name(GTK_TEXT_BUFFER(data), "string-markup",
-      &start, &end);
-    
-    /* Quit here if we are not using syntax highlighting or intelligent symbol
-    following (this is not redundant, because this function can be called from
-    other places than the signal handlers */
-    if(!config_file_get_bool("Syntax", "Intelligence")
-      || !config_file_get_bool("Syntax", "Highlighting"))
-        return FALSE;
-    
-    /* Search the text for brackets within quotes */
-    start = end = stringstart = iter;
-    gunichar pos;
-    while((pos = gtk_text_iter_get_char(&iter)) != 0) {
-        if(pos == '\"') {
-            stringstart = iter;
-            gtk_text_iter_forward_char(&iter);
-            while((pos = gtk_text_iter_get_char(&iter)) != '\"' && pos != '\0'){
-                if(pos == '[') {
-                    start = iter;
-                } else if(pos == ']') {
-                    /* don't highlight if the ] was unmatched */
-                    if(gtk_text_iter_compare(&start, &stringstart) > 0
-                      && gtk_text_iter_compare(&start, &end) >= 0) {
-                        end = iter;
-                        gtk_text_iter_forward_char(&end);
-                        gtk_text_buffer_apply_tag_by_name(GTK_TEXT_BUFFER(data),
-                          "string-markup", &start, &end);
-                    }
-                }
-                gtk_text_iter_forward_char(&iter);
-            }
-            /* If there was an unmatched [ in the string */
-            if(gtk_text_iter_compare(&start, &end) > 0) {
-                end = iter;
-                gtk_text_buffer_apply_tag_by_name(GTK_TEXT_BUFFER(data),
-                  "string-markup", &start, &end);
-            }
-        }
-        gtk_text_iter_forward_char(&iter);
-    }
-    
-    return FALSE; /* one-shot idle function */
 }
 
 /* Look for all the section headings and renumber them */
@@ -510,7 +404,8 @@ void renumber_sections(GtkTextBuffer *buffer) {
                 g_free(text);
                 g_free(lcase);
             }
-        }    
-        gtk_text_iter_forward_line(&pos);
+        } else {
+        	gtk_text_iter_forward_line(&pos);
+	}
     }
 }

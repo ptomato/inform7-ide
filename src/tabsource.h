@@ -30,10 +30,8 @@ void
 on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
                                         gpointer         user_data);
 
-GtkTextTag *create_string_markup_tag();
-GtkSourceBuffer *create_natural_inform_source_buffer();
+GtkSourceBuffer *create_natural_inform_source_buffer(gboolean extension);
 void paste_code (GtkSourceBuffer *buffer, gchar *code);
 void jump_to_line(GtkWidget *widget, guint line);
-gboolean do_extra_highlighting(gpointer data);
 void renumber_sections(GtkTextBuffer *buffer);
 #endif

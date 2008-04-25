@@ -45,8 +45,8 @@ rm -rf %{buildroot}
 %{_docdir}/gtkterp/*
 %{_datadir}/applications/gnome-inform7.desktop
 %{_datadir}/gnome-inform7/*.png
-%{_datadir}/gnome-inform7/inform.lang
-%{_datadir}/gnome-inform7/naturalinform.lang
+%{_datadir}/gnome-inform7/*.lang
+%{_datadir}/gnome-inform7/*.xml
 %{_datadir}/gnome-inform7/Compilers/cBlorb
 %{_datadir}/gnome-inform7/Compilers/inform-6.31-biplatform
 %{_datadir}/gnome-inform7/Compilers/ni

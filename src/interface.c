@@ -3856,7 +3856,6 @@ create_prefs_dialog (void)
   frame12 = gtk_frame_new (NULL);
   gtk_widget_show (frame12);
   gtk_box_pack_start (GTK_BOX (vbox19), frame12, TRUE, TRUE, 5);
-  gtk_container_set_border_width (GTK_CONTAINER (frame12), 2);
 
   alignment20 = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_widget_show (alignment20);

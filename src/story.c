@@ -45,7 +45,7 @@ Story *new_story() {
     newstory->filename = NULL;
     newstory->monitor = NULL;
     newstory->window = create_app_window();
-    newstory->buffer = create_natural_inform_source_buffer();
+    newstory->buffer = create_natural_inform_source_buffer(FALSE);
     newstory->notes = gtk_text_buffer_new(NULL);
     newstory->headings = gtk_tree_store_new(NUM_HEADING_COLUMNS,
       G_TYPE_STRING, /* Heading title */

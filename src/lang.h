@@ -1,4 +1,4 @@
-/*  Copyright 2006 P.F. Chimento
+/*  Copyright 2008 Zachary Amsden
  *  This file is part of GNOME Inform 7.
  * 
  *  GNOME Inform 7 is free software; you can redistribute it and/or modify
@@ -15,37 +15,13 @@
  *  along with GNOME Inform 7; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
-#ifndef COLOR_SCHEME_H
-#define COLOR_SCHEME_H
+
+#ifndef LANG_H
+#define LANG_H
 
 #include <gnome.h>
 #include <gtksourceview/gtksourcebuffer.h>
-#include <gtksourceview/gtksourcelanguage.h>
 
-/* All the different colors we use in the application */
-enum {
-    CLR_BACKGROUND = 0,
-    CLR_TEXT,
-    CLR_STRING,
-    CLR_STRING_MARKUP,
-    CLR_KEYWORD,
-    CLR_COMMENT,
-    CLR_ERROR,
-    CLR_HIGHLIGHT,
-    CLR_LOCKED,
-    CLR_UNLOCKED,
-    CLR_SKEIN_INPUT,
-    CLR_I6_CODE,
-    CLR_TRANS_CHANGED,
-    CLR_TRANS_UNCHANGED,
-    CLR_TRANS_INPUT,
-    CLR_TRANS_UNSET,
-    CLR_LAST = CLR_TRANS_UNSET
-};
-
-GtkSourceStyleScheme *get_style_scheme(void);
-void set_highlight_styles(GtkSourceBuffer *buffer);
-GdkColor get_scheme_color(int color);
+void set_buffer_language(GtkSourceBuffer *buffer, gchar *lang);
 
 #endif
