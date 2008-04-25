@@ -2501,27 +2501,38 @@ create_about_window (void)
   GtkWidget *about_window;
   const gchar *authors[] = {
     "Inform written by:",
-    "\tGraham Nelson",
+    "  Graham Nelson",
     "Glulx compiler written by:",
-    "\tGraham Nelson and Andrew Plotkin",
-    "GNOME Inform front-end written by:",
-    "\tP.F. Chimento",
-    "Based on front-ends by",
-    "\tAndrew Hunter (Mac OS X)",
-    "\tDavid Kinder (Windows)",
+    "  Graham Nelson",
+    "  Andrew Plotkin",
+    "Inform front-end written by:",
+    "  P.F. Chimento",
+    "Contributions by:",
+    "  Adam Thornton",
+    "  Daniel Nilsson",
+    "  Evil Tabby Cat",
+    "  Eric Forgeot",
+    "  Jonathan Liu",
+    "  Zachary Amsden",
+    "In addition, much code was adapted from David Kinder's Windows port.",
+    "Interface designed by:",
+    "  Graham Nelson",
+    "  Andrew Hunter",
+    "Gargoyle written by:",
+    "  Tor Andersson",
     "Contributions to the compiler:",
-    "\tEmily Short",
-    "\tGunther Schmidl",
-    "\tAndrew Plotkin",
-    "\tJason Penney",
-    "\tJoe Mason",
-    "\tCedric Knight",
-    "\tDavid Kinder",
-    "\tRoger Firth",
-    "\tMichael Coyne",
-    "\tDavid Cornelson",
-    "\tNeil Cerutti",
-    "\tKevin Bracey",
+    "  Emily Short",
+    "  Gunther Schmidl",
+    "  Andrew Plotkin",
+    "  Jason Penney",
+    "  Joe Mason",
+    "  Cedric Knight",
+    "  David Kinder",
+    "  Roger Firth",
+    "  Michael Coyne",
+    "  David Cornelson",
+    "  Neil Cerutti",
+    "  Kevin Bracey",
     NULL
   };
   /* TRANSLATORS: Replace this string with your names, one name per line. */
@@ -2533,7 +2544,7 @@ create_about_window (void)
   gtk_window_set_destroy_with_parent (GTK_WINDOW (about_window), TRUE);
   gtk_about_dialog_set_version (GTK_ABOUT_DIALOG (about_window), VERSION);
   gtk_about_dialog_set_name (GTK_ABOUT_DIALOG (about_window), _("GNOME Inform 7"));
-  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_window), _("Inform (1.0 6.31/5J39)\n\nCopyright 2006-2007 P.F. Chimento (front end),\nGraham Nelson et al. (compiler)."));
+  gtk_about_dialog_set_copyright (GTK_ABOUT_DIALOG (about_window), _("Inform (1.1 6.31N/5J39)\n\nCopyright 2006-2008 P.F. Chimento (front end),\nGraham Nelson et al. (compiler)."));
   gtk_about_dialog_set_comments (GTK_ABOUT_DIALOG (about_window), _("A GNOME IDE for Inform 7"));
   gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (about_window), "www.inform-fiction.org");
   gtk_about_dialog_set_website_label (GTK_ABOUT_DIALOG (about_window), _("www.inform-fiction.org"));
