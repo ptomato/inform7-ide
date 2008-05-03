@@ -446,7 +446,12 @@ Constant COMMA__TX      = ", ";
     print "That's";
 ];
 
-[ LanguageLM n x1;
+[ HisHerTheir o; if (o has pluralname) { print "their"; return; }
+	if (o has female) { print "her"; return; }
+	print "his";
+];
+
+[ LanguageLM n x1 x2;
   #ifdef NI_BUILD_COUNT; say__p = 1; #endif;
   Answer,Ask:
             "There is no reply.";
@@ -460,6 +465,8 @@ Constant COMMA__TX      = ", ";
         1:  print_ret (ctheyreorthats) x1, " not something you can close.";
         2:  print_ret (ctheyreorthats) x1, " already closed.";
         3:  "You close ", (the) x1, ".";
+		4:	print (The) actor, " closes ", (the) x1, ".^";
+		5:	print (The) x1, " closes.^";
     }
   CommandsOff: switch (n) {
         1: "[Command recording off.]";
@@ -484,12 +491,16 @@ Constant COMMA__TX      = ", ";
         5: "[Command replay complete.]";
         #Endif; ! TARGET_
     }
-  Consult:  "You discover nothing of interest in ", (the) x1, ".";
+  Consult: switch (n) {
+  		1:	"You discover nothing of interest in ", (the) x1, ".";
+  		2:	print (The) actor, " looks at ", (the) x1, ".^";
+    }
   Cut:      "Cutting ", (thatorthose) x1, " up would achieve little.";
   Dig:      "Digging would achieve nothing here.";
   Disrobe: switch (n) {
         1:  "You're not wearing ", (thatorthose) x1, ".";
         2:  "You take off ", (the) x1, ".";
+		3:	print (The) actor, " takes off ", (the) x1, ".^";
     }
   Drink:    "There's nothing suitable to drink here.";
   Drop: switch (n) {
@@ -502,10 +513,14 @@ Constant COMMA__TX      = ", ";
         3:  "(first taking ", (the) x1, " off)";
         #endif;
         4:  "Dropped.";
+        5:	"There is no more room on ", (the) x1, ".";
+        6:	"There is no more room in ", (the) x1, ".";
+        7:	print (The) actor, " puts down ", (the) x1, ".^";
     }
   Eat: switch (n) {
         1:  print_ret (ctheyreorthats) x1, " plainly inedible.";
         2:  "You eat ", (the) x1, ". Not bad.";
+        3:	print (The) actor, " eats ", (the) x1, ".^";
     }
   EmptyT: switch (n) {
         1:  print_ret (The) x1, " can't contain things.";
@@ -546,13 +561,17 @@ Constant COMMA__TX      = ", ";
             if (x1 has container) "(getting into ", (the) x1, ")^";
             "(entering ", (the) x1, ")^";
         #endif; ! NI_BUILD_COUNT
+		8:	print (The) actor, " gets into ", (the) x1, ".^";
+        9:  print (The) actor, " gets onto ", (the) x1, ".^";
     }
   Examine: switch (n) {
         1:  "Darkness, noun.  An absence of light to see by.";
         2:  "You see nothing special about ", (the) x1, ".";
         3:  print (The) x1, " ", (isorare) x1, " currently switched ";
             if (x1 has on) "on."; else "off.";
-    }
+		4:	print (The) actor, " looks closely at ", (the) x1, ".^";
+		5:	"You see nothing unexpected in that direction.";
+	}
   Exit: switch (n) {
         1:  "But you aren't in anything at the moment.";
         2:  "You can't get out of the closed ", (name) x1, ".";
@@ -562,6 +581,8 @@ Constant COMMA__TX      = ", ";
         4:  print "But you aren't ";
             if (x1 has supporter) print "on "; else print "in ";
             print_ret (the) x1, ".";
+		5:	print (The) actor, " gets off ", (the) x1, ".^";
+		6:	print (The) actor, " gets out of ", (the) x1, ".^";
     }
   Fill:     "But there's no water here to carry.";
   FullScore: switch (n) {
@@ -583,6 +604,9 @@ Constant COMMA__TX      = ", ";
             if (x1 has pluralname) print " aren't";
             else print " isn't";
             " able to receive things.";
+		5:	"You give ", (the) x1, " to ", (the) second, ".";
+		6: print (The) actor, " gives ", (the) x1, " to you.^";
+		7: print (The) actor, " gives ", (the) x1, " to ", (the) second, ".^";
         #endif;
     }
   Go: switch (n) {
@@ -595,6 +619,26 @@ Constant COMMA__TX      = ", ";
         5:  "You can't, since ", (the) x1, " ", (isorare) x1, " in the way.";
         6:  print "You can't, since ", (the) x1;
             if (x1 has pluralname) " lead nowhere."; else " leads nowhere.";
+		7:	"You'll have to say which compass direction to go in.";
+		8:	print (The) actor, " goes up";
+		9:	print (The) actor, " goes down";
+		10:	print (The) actor, " goes ", (name) x1;
+		11:	print (The) actor, " arrives from above";
+		12:	print (The) actor, " arrives from below";
+		13:	print (The) actor, " arrives from the ", (name) x1;
+		14:	print (The) actor, " arrives";
+		15:	print (The) actor, " arrives at ", (the) x1, " from above";
+		16:	print (The) actor, " arrives at ", (the) x1, " from below";
+		17:	print (The) actor, " arrives at ", (the) x1, " from the ", (name) x2;
+		18:	print (The) actor, " goes through ", (the) x1;
+		19:	print (The) actor, " arrives from ", (the) x1;
+		20:	print "on ", (the) x1;
+		21:	print "in ", (the) x1;
+		22:	print ", pushing ", (the) x1, " in front, and you along too";
+		23:	print ", pushing ", (the) x1, " in front";
+		24:	print ", pushing ", (the) x1, " away";
+		25:	print ", pushing ", (the) x1, " in";
+		26:	print ", taking you along";
     }
   Insert: switch (n) {
         1:  "You need to be holding ", (the) x1, " before you can put ", (itorthem) x1,
@@ -611,12 +655,14 @@ Constant COMMA__TX      = ", ";
         7:  "There is no more room in ", (the) x1, ".";
         8:  "Done.";
         9:  "You put ", (the) x1, " into ", (the) second, ".";
+       10:  print (The) actor, " puts ", (the) x1, " into ", (the) second, ".^";
     }
   Inv: switch (n) {
         1:  "You are carrying nothing.";
         2:  print "You are carrying";
         3:  print ":^";
         4:  print ".^";
+        5:	print (The) x1, " looks through ", (HisHerTheir) x1, " possessions.^";
     }
   Jump:     "You jump on the spot, fruitlessly.";
   JumpOver,Tie:
@@ -675,6 +721,7 @@ Constant COMMA__TX      = ", ";
         4:  if (x1 has pluralname) print "Those don't "; else print "That doesn't ";
             "seem to fit the lock.";
         5:  "You lock ", (the) x1, ".";
+        6:	print (The) actor, " locks ", (the) x1, ".^";
     }
   Look: switch (n) {
         1:  print " (on ", (the) x1, ")";
@@ -701,10 +748,12 @@ Constant COMMA__TX      = ", ";
         7:  "You see nothing unexpected in that direction.";
         8:  if (x1 has supporter) print " (on "; else print " (in ";
         	print (the) x1, ")";
+		9:	print (The) actor, " looks around.^";
     }
   LookUnder: switch (n) {
         1:  "But it's dark.";
         2:  "You find nothing of interest.";
+		3:	print (The) actor, " looks under ", (the) x1, ".^";
     }
   Mild:     "Quite.";
   Miscellany: switch (n) {
@@ -800,6 +849,18 @@ Constant COMMA__TX      = ", ";
         55: "[Comment NOT recorded.]";
         56: print ".^";
         57: print "?^";
+        58: print (The) actor, " ", (IsOrAre) actor, " unable to do that.^";
+		59:	"You must supply a noun.";
+		60:	"You may not supply a noun.";
+		61:	"You must name an object.";
+		62:	"You may not name an object.";
+		63:	"You must name a second object.";
+		64:	"You may not name a second object.";
+		65:	"You must supply a second noun.";
+		66:	"You may not supply a second noun.";
+		67:	"You must name something more substantial.";
+		68:	print "(", (The) actor, " first taking ", (the) x1, ")^";
+        69: "(first taking ", (the) x1, ")";
     }
   No,Yes:   "That was a rhetorical question.";
   NotifyOff:
@@ -826,6 +887,8 @@ Constant COMMA__TX      = ", ";
             if (WriteListFrom(child(x1), ENGLISH_BIT+TERSE_BIT+CONCEAL_BIT) == 0) "nothing.";
             ".";
         5:  "You open ", (the) x1, ".";
+		6:	print (The) actor, " opens ", (the) x1, ".^";
+		7:	print (The) x1, " opens.^";
     }
   Order:    print (The) x1;
             if (x1 has pluralname) print " have"; else print " has";
@@ -849,6 +912,9 @@ Constant COMMA__TX      = ", ";
         2:  "You are unable to.";
         3:  "Nothing obvious happens.";
         4:  "That would be less than courteous.";
+		5:	print (The) actor, " pulls ", (the) x1, ".^";
+		6:	print (The) actor, " pushes ", (the) x1, ".^";
+		7:	print (The) actor, " turns ", (the) x1, ".^";
     }
 ! Push: see Pull
   PushDir: switch (n) {
@@ -870,6 +936,7 @@ Constant COMMA__TX      = ", ";
         6:  "There is no more room on ", (the) x1, ".";
         7:  "Done.";
         8:  "You put ", (the) x1, " on ", (the) second, ".";
+        9:  print (The) actor, " puts ", (the) x1, " on ", (the) second, ".^";
     }
   Quit: switch (n) {
         1:  print "Please answer yes or no.";
@@ -901,6 +968,7 @@ Constant COMMA__TX      = ", ";
             if (turns ~= 1) print "s";
             return;
         2:  "There is no score in this story.";
+        3:	print ", earning you the rank of ";
     }
   ScriptOff: switch (n) {
         1:  "Transcripting is already off.";
@@ -924,6 +992,7 @@ Constant COMMA__TX      = ", ";
         7:  print "In ", (the) x1;
             WriteListFrom(child(x1), ENGLISH_BIT+TERSE_BIT+CONCEAL_BIT+ISARE_BIT);
             ".";
+		8:	print (The) actor, " searches ", (the) x1, ".^";
     }
   Set:      "No, you can't set ", (thatorthose) x1, ".";
   SetTo:    "No, you can't set ", (thatorthose) x1, " to anything.";
@@ -942,6 +1011,7 @@ Constant COMMA__TX      = ", ";
   Squeeze: switch (n) {
         1:  "Keep your hands to yourself.";
         2:  "You achieve nothing by this.";
+		3:	print (The) actor, " squeezes ", (the) x1, ".^";
     }
   Strong:   "Real adventurers do not use such language.";
   Swim:     "There's not enough water to swim in.";
@@ -950,11 +1020,13 @@ Constant COMMA__TX      = ", ";
         1:  print_ret (ctheyreorthats) x1, " not something you can switch.";
         2:  print_ret (ctheyreorthats) x1, " already off.";
         3:  "You switch ", (the) x1, " off.";
+		4:	print (The) actor, " switches ", (the) x1, " off.^";
     }
   SwitchOn: switch (n) {
         1:  print_ret (ctheyreorthats) x1, " not something you can switch.";
         2:  print_ret (ctheyreorthats) x1, " already on.";
         3:  "You switch ", (the) x1, " on.";
+		4:	print (The) actor, " switches ", (the) x1, " on.^";
     }
   Take: switch (n) {
         1:  "Taken.";
@@ -979,11 +1051,12 @@ Constant COMMA__TX      = ", ";
         #ifdef NI_BUILD_COUNT;
         13: print "(putting ", (the) x1, " into ", (the) SACK_OBJECT,
             " to make room)^"; say__p = 0; return;
-        14: "You can't reach into ", (the) x1, ".";
-        15: "You cannot carry ", (the) x1, ".";
         #ifnot;
         13: "(putting ", (the) x1, " into ", (the) SACK_OBJECT, " to make room)";
         #endif; ! NI_BUILD_COUNT
+        14: "You can't reach into ", (the) x1, ".";
+        15: "You cannot carry ", (the) x1, ".";
+        16: print (The) actor, " picks up ", (the) x1, ".^";
     }
   Taste:    "You taste nothing unexpected.";
   Tell: switch (n) {
@@ -1000,6 +1073,9 @@ Constant COMMA__TX      = ", ";
         1:  "Keep your hands to yourself!";
         2:  "You feel nothing unexpected.";
         3:  "If you think that'll help.";
+		4:	print (The) actor, " touches ", (the) x1, ".^";
+		5:	print (The) actor, " touches you.^";
+		6:	print (The) actor, " touches ", (the) x1, ".^";
     }
 ! Turn: see Pull.
   Unlock:  switch (n) {
@@ -1009,18 +1085,23 @@ Constant COMMA__TX      = ", ";
         3:  if (x1 has pluralname) print "Those don't "; else print "That doesn't ";
             "seem to fit the lock.";
         4:  "You unlock ", (the) x1, ".";
+        5:	print (The) actor, " unlocks ", (the) x1, ".^";
     }
   VagueGo:  "You'll have to say which compass direction to go in.";
   Verify: switch (n) {
         1:  "The game file has verified as intact.";
         2:  "The game file did not verify as intact, and may be corrupt.";
     }
-  Wait:     "Time passes.";
+  Wait: switch (n) {
+        1:  "Time passes.";
+        2:	print (The) actor, " waits.^";
+    }
   Wake:     "The dreadful truth is, this is not a dream.";
   WakeOther:"That seems unnecessary.";
   Wave: switch (n) {
         1:  "But you aren't holding ", (thatorthose) x1, ".";
         2:  "You look ridiculous waving ", (the) x1, ".";
+		3:	print (The) actor, " waves ", (the) x1, ".^";
     }
   WaveHands:"You wave, feeling foolish.";
   Wear: switch (n) {
@@ -1028,6 +1109,7 @@ Constant COMMA__TX      = ", ";
         2:  "You're not holding ", (thatorthose) x1, "!";
         3:  "You're already wearing ", (thatorthose) x1, "!";
         4:  "You put on ", (the) x1, ".";
+		5:	print (The) actor, " puts on ", (the) x1, ".^";
     }
 ! Yes:  see No.
 ];

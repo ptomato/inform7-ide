@@ -204,7 +204,14 @@ GtkWidget *create_open_extension_submenu() {
             }
             g_free(extname);
             /* Read files in the dir, but skip symlinks */
-            GtkWidget *extitem = gtk_menu_item_new_with_label(author_entry);
+            /* Remove .i7x from the display filename, if it is there */
+            gchar *displayname;
+            if(g_str_has_suffix(author_entry, ".i7x"))
+                displayname = g_strndup(author_entry, strlen(author_entry) - 4);
+            else
+                displayname = g_strdup(author_entry);
+            GtkWidget *extitem = gtk_menu_item_new_with_label(displayname);
+            g_free(displayname);
             gchar *path = get_extension_path(dir_entry, author_entry);
             g_signal_connect(extitem, "activate",
               G_CALLBACK(on_open_extension_activate),

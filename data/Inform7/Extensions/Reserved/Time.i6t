@@ -1,0 +1,129 @@
+B/timet: Time Template.
+ 
+@Purpose: Support for parsing and printing times of day.
+ 
+@-------------------------------------------------------------------------------
+
+@p Rounding.
+The following rounds time |t1| to the nearest unit of |t2|; for instance, if
+|t2| is 5 then it rounds to the nearest five minutes.
+
+@c
+[ RoundOffTime t1 t2; return ((t1+t2/2)/t2)*t2; ];
+
+@p Digital Printing.
+For instance, ``2:06 am''.
+
+@c
+[ PrintTimeOfDay t h aop;
+	if (t<0) { print "<no time>"; return; }
+	if (t >= TWELVE_HOURS) { aop = "pm"; t = t - TWELVE_HOURS; } else aop = "am";
+	h = t/ONE_HOUR; if (h==0) h=12;
+	print h, ":";
+	if (t%ONE_HOUR < 10) print "0"; print t%ONE_HOUR, " ", (string) aop;
+];
+
+@p Analogue Printing.
+For instance, ``six minutes past two''.
+
+@c
+[ PrintTimeOfDayEnglish t h m dir aop;
+	h = (t/ONE_HOUR) % 12; m = t%ONE_HOUR; if (h==0) h=12;
+	if (m==0) { print (number) h, " o'clock"; return; }
+	dir = "past";
+	if (m > HALF_HOUR) { m = ONE_HOUR-m; h = (h+1)%12; if (h==0) h=12; dir = "to"; }
+	switch(m) {
+		QUARTER_HOUR: print "quarter"; HALF_HOUR: print "half";
+		default: print (number) m;
+		    if (m%5 ~= 0) {
+				if (m == 1) print " minute"; else print " minutes";
+		    }
+	}
+	print " ", (string) dir, " ", (number) h;
+];
+
+@p Understanding.
+This I6 grammar token converts words in the player's command to a valid
+I7 time, and is heavily based on the one presented as a solution to an
+exercise in the DM4.
+
+@c
+[ TIME_TOKEN first_word second_word at length flag
+	illegal_char offhour hr mn i original_wn;
+	original_wn = wn;
+{-call:compile_time_grammar}
+	wn = original_wn;
+	first_word = NextWordStopped();
+	switch (first_word) {
+		'midnight': parsed_number = 0; return GPR_NUMBER;
+		'midday', 'noon': parsed_number = TWELVE_HOURS;
+		return GPR_NUMBER;
+	}
+	! Next try the format 12:02
+	at = WordAddress(wn-1); length = WordLength(wn-1);
+	for (i=0: i<length: i++) {
+		switch (at->i) {
+			':': if (flag == false && i>0 && i<length-1) flag = true;
+			else illegal_char = true;
+			'0', '1', '2', '3', '4', '5', '6', '7', '8', '9': ;
+			default: illegal_char = true;
+		}
+	}
+	if (length < 3 || length > 5 || illegal_char) flag = false;
+	if (flag) {
+		for (i=0: at->i~=':': i++, hr=hr*10) hr = hr + at->i - '0';
+		hr = hr/10;
+		for (i++: i<length: i++, mn=mn*10) mn = mn + at->i - '0';
+		mn = mn/10;
+		second_word = NextWordStopped();
+		parsed_number = HoursMinsWordToTime(hr, mn, second_word);
+		if (parsed_number == -1) return GPR_FAIL;
+		if (second_word ~= 'pm' or 'am') wn--;
+		return GPR_NUMBER;
+	}
+	! Lastly the wordy format
+	offhour = -1;
+	if (first_word == 'half') offhour = HALF_HOUR;
+	if (first_word == 'quarter') offhour = QUARTER_HOUR;
+	if (offhour < 0) offhour = TryNumber(wn-1);
+	if (offhour < 0 || offhour >= ONE_HOUR) return GPR_FAIL;
+	second_word = NextWordStopped();
+	switch (second_word) {
+		! "six o'clock", "six"
+		'o^clock', 'am', 'pm', -1:
+			hr = offhour; if (hr > 12) return GPR_FAIL;
+		! "quarter to six", "twenty past midnight"
+		'to', 'past':
+			mn = offhour; hr = TryNumber(wn);
+			if (hr <= 0) {
+				switch (NextWordStopped()) {
+					'noon', 'midday': hr = 12;
+					'midnight': hr = 0;
+					default: return GPR_FAIL;
+				}
+			}
+			if (hr >= 13) return GPR_FAIL;
+			if (second_word == 'to') {
+				mn = ONE_HOUR-mn; hr--; if (hr<0) hr=23;
+			}
+			wn++; second_word = NextWordStopped();
+		! "six thirty"
+		default:
+			hr = offhour; mn = TryNumber(--wn);
+			if (mn < 0 || mn >= ONE_HOUR) return GPR_FAIL;
+			wn++; second_word = NextWordStopped();
+	}
+	parsed_number = HoursMinsWordToTime(hr, mn, second_word);
+	if (parsed_number < 0) return GPR_FAIL;
+	if (second_word ~= 'pm' or 'am' or 'o^clock') wn--;
+	return GPR_NUMBER;
+];
+
+[ HoursMinsWordToTime hour minute word x;
+	if (hour >= 24) return -1;
+	if (minute >= ONE_HOUR) return -1;
+	x = hour*ONE_HOUR + minute; if (hour >= 13) return x;
+	x = x % TWELVE_HOURS; if (word == 'pm') x = x + TWELVE_HOURS;
+	if (word ~= 'am' or 'pm' && hour == 12) x = x + TWELVE_HOURS;
+	return x;
+];

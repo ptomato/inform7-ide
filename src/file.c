@@ -22,7 +22,7 @@
 #include <gtksourceview/gtksourcebuffer.h>
 #include <ctype.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <string.h>
+#include <strings.h>
 
 #include "support.h"
 #include "callbacks.h"
@@ -224,6 +224,19 @@ Story *open_project(gchar *path) {
         g_free(filename);
         delete_story(thestory);
         return NULL;
+    }
+    
+    /* Change newline separators to \n */
+    if(strstr(text, "\r\n")) {
+        gchar **lines = g_strsplit(text, "\r\n", 0);
+        g_free(text);
+        text = g_strjoinv("\n", lines);
+        g_strfreev(lines);
+    } else if(strstr(text, "\r")) {
+        gchar **lines = g_strsplit(text, "\r", 0);
+        g_free(text);
+        text = g_strjoinv("\n", lines);
+        g_strfreev(lines);
     }
     
     /* Update the list of recently used files */
@@ -536,6 +549,7 @@ gchar **theauthor) {
             return FALSE; /* file is binary */
         }
     
+    /* TO DO: replace this mess by regular expressions. */
     gchar **tokens = g_strsplit_set(g_strstrip(firstline), " \t", 0);
     g_free(firstline);
     gchar **ptr = tokens;
@@ -616,6 +630,19 @@ Extension *open_extension(gchar *filename) {
         error_dialog(NULL, err, "Could not open the extension '%s': ",filename);
         delete_ext(ext);
         return NULL;
+    }
+
+    /* Change newline separators to \n */
+    if(strstr(text, "\r\n")) {
+        gchar **lines = g_strsplit(text, "\r\n", 0);
+        g_free(text);
+        text = g_strjoinv("\n", lines);
+        g_strfreev(lines);
+    } else if(strstr(text, "\r")) {
+        gchar **lines = g_strsplit(text, "\r", 0);
+        g_free(text);
+        text = g_strjoinv("\n", lines);
+        g_strfreev(lines);
     }
 
     /* Put the text in the source buffer, clearing the undo history */
@@ -753,51 +780,27 @@ void install_extension(const gchar *filename) {
         return;
     }
     
-    /* Get the lowercase names for the author and extension */
-    gchar *author_lc = g_utf8_strdown(author, -1);
-    gchar *name_lc = g_utf8_strdown(name, -1);
-    
     /* Create the directory for that author if it does not exist already */
     gchar *dir = get_extension_path(author, NULL);
-    gchar *dir_lc = get_extension_path(author_lc, NULL);
     
     if(!g_file_test(dir, G_FILE_TEST_EXISTS)) {
-        if(g_file_test(dir_lc, G_FILE_TEST_EXISTS)) {
-            error_dialog(NULL, NULL, "A file called '%s' already exists. GNOME "
-              "Inform 7 needs to use this name to link to the extension. Remove"
-              " the file and try again.", dir_lc);
-            g_free(name);   g_free(name_lc);
-            g_free(author); g_free(author_lc);
-            g_free(dir);    g_free(dir_lc);
-            g_free(text);
-            return;
-        }
         if(g_mkdir_with_parents(dir, 0777) == -1) {
             error_dialog(NULL, NULL, "Error creating directory '%s'.", dir);
-            g_free(name);   g_free(name_lc);
-            g_free(author); g_free(author_lc);
-            g_free(dir);    g_free(dir_lc);
-            g_free(text);
-            return;
-        }
-        if(symlink(dir, dir_lc)) {
-            error_dialog(NULL, NULL, "Error linking '%s' to '%s'.", dir_lc,dir);
-            g_free(name);   g_free(name_lc);
-            g_free(author); g_free(author_lc);
-            g_free(dir);    g_free(dir_lc);
+            g_free(name);
+            g_free(author);
+            g_free(dir);
             g_free(text);
             return;
         }
     }
     
-    gchar *targetfile = g_build_filename(dir, name, NULL);
-    gchar *targetfile_lc = g_build_filename(dir_lc, name_lc, NULL);
-    g_free(dir);    g_free(dir_lc);
-    g_free(author_lc);
-    g_free(name_lc);
+    gchar *targetname = g_build_filename(dir, name, NULL);
+    gchar *canonicaltarget = g_strconcat(targetname, ".i7x", NULL);
+    g_free(dir);
 
     /* Check if the extension is already installed */
-    if(g_file_test(targetfile, G_FILE_TEST_EXISTS)) {
+    if(g_file_test(targetname, G_FILE_TEST_EXISTS) 
+      || g_file_test(canonicaltarget, G_FILE_TEST_EXISTS)) {
         GtkWidget *dialog = gtk_message_dialog_new(NULL, 0,
           GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
           "A version of the extension %s by %s is already installed. Do you "
@@ -805,23 +808,14 @@ void install_extension(const gchar *filename) {
           name, author);
         if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_YES) {
             gtk_widget_destroy(dialog);
-            g_free(targetfile); g_free(targetfile_lc);
+            g_free(targetname);
+            g_free(canonicaltarget);
             g_free(name);
             g_free(author);
             g_free(text);
             return;
         }
         gtk_widget_destroy(dialog);
-    }
-    if(g_file_test(targetfile_lc, G_FILE_TEST_EXISTS)) {
-        error_dialog(NULL, NULL, "A file called '%s' already exists. GNOME "
-          "Inform 7 needs to use this name to link to the extension. Remove the"
-          " file and try again.", targetfile_lc);
-        g_free(targetfile); g_free(targetfile_lc);
-        g_free(name);
-        g_free(author);
-        g_free(text);
-        return;
     }
     
     /* Change newline separators to \n */
@@ -838,31 +832,36 @@ void install_extension(const gchar *filename) {
     }
     
     /* Copy the extension file to the user's extensions dir */
-    if(!g_file_set_contents(targetfile, text, -1, &err)) {
+    if(!g_file_set_contents(canonicaltarget, text, -1, &err)) {
         error_dialog(NULL, NULL, "Error copying file '%s' to '%s': ", filename,
-          targetfile);
+          canonicaltarget);
         g_free(text);
-        g_free(targetfile); g_free(targetfile_lc);
-        g_free(name);
-        g_free(author);
-        return;
-    }
-    
-    /* Make a lowercase link */
-    if(symlink(targetfile, targetfile_lc)) {
-        error_dialog(NULL, NULL, "Error linking '%s' to '%s'.", targetfile_lc,
-          targetfile_lc);
-        g_free(text);
-        g_free(targetfile); g_free(targetfile_lc);
+        g_free(targetname);
+        g_free(canonicaltarget);
         g_free(name);
         g_free(author);
         return;
     }
     
     g_free(text);
-    g_free(targetfile); g_free(targetfile_lc);
+    g_free(canonicaltarget);
     g_free(name);
     g_free(author);
+    
+    /* If a version without *.i7x is still residing in that directory, delete
+    it now */
+    if(g_file_test(targetname, G_FILE_TEST_EXISTS)) {
+        if(g_remove(targetname) == -1) {
+            GtkWidget *dialog = gtk_message_dialog_new(NULL,
+              GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+              "There was an error removing the old file %s.", targetname);
+            gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+            g_free(targetname);
+            return;
+        }    
+    }
+    g_free(targetname);
 
     /* Index the new extensions, in the foreground */
     run_census(TRUE);
@@ -871,9 +870,10 @@ void install_extension(const gchar *filename) {
 
 /* Delete extension and remove author dir if empty */
 void delete_extension(gchar *author, gchar *extname) {
-    /* Remove extension */
+    /* Remove extension, try versions with and without .i7x */
     gchar *filename = get_extension_path(author, extname);
-    if(g_remove(filename) == -1) {
+    gchar *canonicalname = g_strconcat(filename, ".i7x", NULL);
+    if(g_remove(filename) == -1 && g_remove(canonicalname) == -1) {
         GtkWidget *dialog = gtk_message_dialog_new(NULL,
           GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
           "There was an error removing %s.", filename);
@@ -884,18 +884,22 @@ void delete_extension(gchar *author, gchar *extname) {
     }
     g_free(filename);
     
-    /* Remove lowercase symlink to extension */
+    /* Remove lowercase symlink to extension (holdover from previous versions
+    of Inform) */
     gchar *extname_lc = g_utf8_strdown(extname, -1);
     filename = get_extension_path(author, extname_lc);
     g_free(extname_lc);
-    if(g_remove(filename) == -1) {
-        GtkWidget *dialog = gtk_message_dialog_new(NULL,
-          GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-          "There was an error removing %s.", filename);
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
-        g_free(filename);
-        return;
+    /* Only do this if the symlink actually exists */
+    if(g_file_test(filename, G_FILE_TEST_IS_SYMLINK)) {
+        if(g_remove(filename) == -1) {
+            GtkWidget *dialog = gtk_message_dialog_new(NULL,
+              GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+              "There was an error removing %s.", filename);
+            gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+            g_free(filename);
+            return;
+        }
     }
     g_free(filename);
     
@@ -916,16 +920,20 @@ void delete_extension(gchar *author, gchar *extname) {
     }
     g_free(filename);
     
-    /* Remove lowercase symlink to author directory */
+    /* Remove lowercase symlink to author directory (holdover from previous 
+    versions of Inform) */
     gchar *author_lc = g_utf8_strdown(author, -1);
     filename = get_extension_path(author_lc, NULL);
     g_free(author_lc);
-    if(g_remove(filename) == -1) {
-        GtkWidget *dialog = gtk_message_dialog_new(NULL,
-          GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-          "There was an error removing %s.", filename);
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
+    /* Only do this if the symlink actually exists */
+    if(g_file_test(filename, G_FILE_TEST_IS_SYMLINK)) {
+        if(g_remove(filename) == -1) {
+            GtkWidget *dialog = gtk_message_dialog_new(NULL,
+              GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+              "There was an error removing %s.", filename);
+            gtk_dialog_run(GTK_DIALOG(dialog));
+            gtk_widget_destroy(dialog);
+        }
     }
     g_free(filename);
 }

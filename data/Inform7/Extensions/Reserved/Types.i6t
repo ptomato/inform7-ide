@@ -1,0 +1,589 @@
+B/typet: Types Template.
+ 
+@Purpose: To set up the atomic kinds of value (the base data types, in other
+words) within NI.
+ 
+@-------------------------------------------------------------------------------
+
+@p Header.
+The following mass of type definitions is not heavily subdivided into
+paragraphs since it's read so early in NI's run that ``Include...''
+sentences haven't had time to be read yet -- so they aren't easy to
+customise. (Except by putting a whole customised version of the file into
+the relevant |Materials/I6T| folder.)
+
+The |{-lines:type}| command causes all subsequent lines to be sent as
+parameters to the |{-type:...}| command, until the next |{-endlines}|
+command.
+
+@c
+{-callv:make_type_IDs_table}
+{-lines:type}
+
+#DEFAULTS:
+defined-in-source-text:no
+is-incompletely-defined:no
+is-a-unit:no
+is-an-enumeration:no
+uses-signed-comparisons:no
+can-coincide-with-property:no
+named-values-created-with-assertions:no
+used-in-let-without-casts:no
+can-be-type-of-global-variable:no
+has-i6-GPR:no
+i6-printing-routine:DecimalNumber
+i6-printing-routine-actions:DA_Name
+block-data:no
+multiple-block:no
+constant-compilation-method:none
+
+@p Macros.
+New kinds of value cause some I7 source to be generated, following various
+combinations of the macros below.
+
+@c
+*UNDERSTOOD-VARIABLE:
+<type> understood is a <type> which varies.
+*END
+
+*PRINTING-ROUTINE:
+To say (value - <type>):
+	(- print (<printing-routine>) {value}; -).
+*END
+
+*PRINTING-ROUTINE-BLOCK:
+To say (value - <type>):
+	(- print (<printing-routine>) {-pointer-to:value}; -).
+*END
+
+*RANDOM-CHOOSERS:
+To decide which <type> is a random <lower-case-type> between (first value - <type>) and (second value - <type>) - <type-number>:
+	(- R_<printing-routine>({first value}, {second value}) -).
+
+To decide which <type> is a random <lower-case-type> from (first value - <type>) to (second value - <type>) - <type-number>:
+	(- R_<printing-routine>({first value}, {second value}) -).
+*END
+
+*ENUMERATION-CHOOSERS:
+To decide which <type> is <lower-case-type> after (X - <type>) - <type-number>:
+	(- A_<printing-routine>({X}) -).
+
+To decide which <type> is <lower-case-type> before (X - <type>) - <type-number>:
+	(- B_<printing-routine>({X}) -).
+
+To decide which <type> is a random <lower-case-type> - <type-number>:
+	(- R_<printing-routine>() -).
+
+*END
+
+@p Group 1.
+These are data types used in type-checking but not representing specific
+kinds of value at run-time.
+
+The |+| notation indicates a type name which NI requires us to construct,
+and with this specific name.
+
+@c
++ANY_VALUE_TY:
+description:a value of some sort
+singular:value
+plural:values
+constant-compilation-method:none
+cast:<all>
+! Matches any value
+
++ASSIGNABLE_VALUE_TY:
+description:a value of some sort
+singular:assignable-value
+plural:assignable-values
+constant-compilation-method:none
+cast:<assignable>
+! Matches any value which can be the rvalue of an assignment
+
+ANY_POINTER_VALUE_TY:
+description:a complex value of some sort
+singular:pointer value
+constant-compilation-method:none
+cast:<pointer>
+! Matches any value where the I6 representation is a pointer to a block
+
+ANY_WORD_VALUE_TY:
+description:a simple value of some sort
+singular:word value
+constant-compilation-method:none
+cast:<word>
+! Matches any value where the I6 representation is a single word
+
++KIND_OF_POINTER_VALUE_TY:
+description:the name of a kind of complex value
+singular:kind of pointer value
+constant-compilation-method:none
+! Matches name of kind of value pointing to a block, compiles to NI type number
+
++KIND_OF_WORD_VALUE_TY:
+description:the name of a kind of simple value
+singular:kind of word value
+constant-compilation-method:none
+! Matches name of kind of value in a single word, compiles to NI type number
+
+CLASSIFIED_TY:
+description:some text or the name of a room, thing or rule
+singular:miscellaneous-value
+plural:miscellaneous-values
+used-in-let-with-cast-priority:50
+constant-compilation-method:none
+cast:OBJECT_TY
+cast:TEXT_TY
+cast:TEXT_ROUTINE_TY
+cast:RULE_TY
+! Deprecated: a union of the four I6-metaclass-distinguishable data types
+
+TEMPLATE_VAR1_TY:
+is-template-variable:yes
+template-variable-number:1
+description:template variable 1
+singular:kov marker 1
+plural:kov marker 1s
+! Used in template matches
+
+TEMPLATE_VAR2_TY:
+is-template-variable:yes
+template-variable-number:-1
+description:template variable 1 reference
+singular:kov reference 1
+plural:kov reference 1s
+! Used in template matches
+
+TEMPLATE_VAR3_TY:
+is-template-variable:yes
+template-variable-number:2
+description:template variable 2
+singular:kov marker 2
+plural:kov marker 2s
+! Used in template matches
+
+TEMPLATE_VAR4_TY:
+is-template-variable:yes
+template-variable-number:-2
+description:template variable 2 reference
+singular:kov reference 2
+plural:kov reference 2s
+! Used in template matches
+
+NO_ENTRIES_TY:
+description:no entries
+constant-compilation-method:none
+! Used for the type of the empty list { }
+
+@p Group 2.
+Data types for basic word-sized values.
+
+@c
++NUMBER_TY:
+description:a number
+singular:number
+plural:numbers
+has-i6-GPR:yes
+explicit-i6-GPR:DECIMAL_TOKEN
+i6-printing-routine-actions:DA_Number
+used-in-let-with-cast-priority:10
+can-be-type-of-global-variable:yes
+uses-signed-comparisons:yes
+can-exchange:yes
+default-value:0
+index-default-value:0
+index-entry:Whole number in the range -32768, -32767, ..., -2, -1, 0, 1, 2, 3, ..., 32767: small numbers can be written textually as 'one', 'two', 'three', ..., 'ten', 'eleven', 'twelve'. (A much larger number range is allowed if we compile the source to Glulx rather than the Z-machine: see the Settings panel.)
+constant-compilation-method:literal
+
++TIME_TY:
+description:a time
+singular:time
+plural:times
+used-in-let-with-cast-priority:20
+can-be-type-of-global-variable:yes
+uses-signed-comparisons:yes
+can-exchange:yes
+default-value:540
+has-i6-GPR:yes
+explicit-i6-GPR:TIME_TOKEN
+i6-printing-routine:PrintTimeOfDay
+i6-printing-routine-actions:PrintTimeOfDay
+index-entry:A time of day, written in the form '2:34 AM' or '12:51 PM', or a length of time such as '10 minutes' or '3 hours 31 minutes', which must be between 0 minutes and 23 hours 59 minutes inclusive.
+index-default-value:9:00 AM
+constant-compilation-method:literal
+apply-template:*PRINTING-ROUTINE
+
++TEXT_TY:
+description:some text
+singular:text
+plural:texts
+used-in-let-with-cast-priority:30
+can-be-type-of-global-variable:yes
+default-value:EMPTY_TEXT_VALUE
+i6-printing-routine:PrintText
+index-default-value:""
+index-entry:Some text in double quotation marks, perhaps with substitutions written in square brackets.
+cast:TEXT_ROUTINE_TY
+sometimes-cast:CLASSIFIED_TY
+constant-compilation-method:special
+! Because of casting, this can be text either with or without substitutions
+
++TEXT_ROUTINE_TY:
+description:some text with substitutions
+singular:text-routine
+plural:text-routine
+sometimes-cast:CLASSIFIED_TY
+constant-compilation-method:special
+! Quoted text which certainly does contain substitutions
+
++QUOT_TY:
+description:some formatted text without substitutions
+singular:boxed-quotation
+plural:boxed-quotations
+constant-compilation-method:special
+! Quoted text used only for I6 box quotation statements, without substitutions
+
++SNIPPET_TY:
+description:a snippet
+singular:snippet
+plural:snippets
+can-be-type-of-global-variable:yes
+default-value:101
+index-default-value:<i>word 1 of command</i>
+i6-printing-routine:PrintSnippet
+constant-compilation-method:none
+apply-template:*PRINTING-ROUTINE
+! Numerical reference to a word range (indicated by word counts) in the command
+
++UNICODECHAR_TY:
+description:a Unicode character
+singular:unicode-character
+plural:unicode-characters
+constant-compilation-method:literal
+! For constants like "unicode 65" or "unicode black knight chess piece" only
+
++OBJECT_TY:
+description:the name of an object
+singular:object
+plural:objects
+used-in-let-with-cast-priority:40
+can-be-type-of-global-variable:yes
+default-value:nothing
+index-default-value:nothing
+i6-printing-routine:PrintShortName
+i6-printing-routine-actions:DA_Name
+sometimes-cast:CLASSIFIED_TY
+constant-compilation-method:special
+! For any single specific object (direction, room, thing, etc.), or "nothing"
+
++I6_DESCRIPTION_ROUTINE_TY:
+description:a description
+singular:description
+plural:descriptions
+used-in-let-without-casts:yes
+can-be-type-of-global-variable:yes
+default-value:Prop_Falsity
+index-default-value:<i>matching nothing</i>
+constant-compilation-method:special
+! Routine determining whether its argument is an object matching a description
+
++USEOPTION_TY:
+description:the name of a use option
+singular:use-option
+plural:use-options
+constant-compilation-method:special
+! Constants only: the name of a use option, stored as its internal number
+
++PROPERTY_TY:
+description:a property of something
+singular:property
+plural:properties
+constant-compilation-method:special
+! Used for names of properties such as "closed" or "carrying capacity"
+
++RULE_TY:
+description:the name of a rule
+singular:rule
+plural:rules
+used-in-let-with-cast-priority:60
+can-be-type-of-global-variable:yes
+default-value:LITTLE_USED_DO_NOTHING_R
+i6-printing-routine:RulePrintingRule
+index-default-value:the little-used do nothing rule
+sometimes-cast:CLASSIFIED_TY
+cast:RULEBOOK_TY
+constant-compilation-method:special
+apply-template:*PRINTING-ROUTINE
+! Routine to test if a rule applies and carry it out if so
+
+RULE_OUTCOME_TY:
+description:a rule outcome
+singular:outcome
+plural:outcomes
+constant-compilation-method:none
+apply-template:*PRINTING-ROUTINE
+! Used fleetingly to handle return values from rules (success, failure, none)
+
++RULEBOOK_TY:
+modifying-adjective:action-based
+modifying-adjective:object-based
+description:the name of a rulebook
+singular:rulebook
+plural:rulebooks
+can-be-type-of-global-variable:yes
+default-value: 0
+index-default-value:the action-processing rules
+constant-compilation-method:special
+! A list of rules to be followed in sequence
+
++RULEBOOK_OUTCOME_TY:
+description:the name of a rulebook outcome
+singular:rulebook-outcome
+plural:rulebook-outcomes
+i6-printing-routine:RulebookOutcomePrintingRule
+constant-compilation-method:special
+apply-template:*PRINTING-ROUTINE
+! Used to handle return values from rulebooks, which can be named and varied
+
++ACTION_NAME_TY:
+description:an action name
+singular:action-name
+plural:action-names
+can-be-type-of-global-variable:yes
+default-value:##Wait
+index-default-value:waiting action
+constant-compilation-method:special
+i6-printing-routine:SayActionName
+apply-template:*PRINTING-ROUTINE
+! To refer to an action in abstract, without any of the nouns it applies to
+
++ACTIVITY_TY:
+description:an activity
+singular:activity
+plural:activities
+constant-compilation-method:special
+! Constants only: the name of an activity, stored as its internal number
+
++SCENE_TY:
+modifying-adjective:non-recurring
+modifying-adjective:recurring
+description:the name of a scene
+singular:scene
+plural:scenes
+named-values-created-with-assertions:yes
+can-be-type-of-global-variable:yes
+default-value: 0
+index-default-value:the Entire Game
+constant-compilation-method:quantitative
+! Scenes, as numbered in sequence in order of creation (from 0 not 1)
+
++TABLE_TY:
+description:the name of a table
+singular:table-name
+plural:table-names
+used-in-let-with-cast-priority:70
+can-be-type-of-global-variable:yes
+default-value:TheEmptyTable
+index-default-value:<i>a table with no rows or columns</i>
+i6-printing-routine:PrintTableName
+constant-compilation-method:special
+apply-template:*PRINTING-ROUTINE
+! Tables, stored as their array addresses inside the virtual machine
+
++TABLE_COLUMN_TY:
+description:the name of a column
+singular:table-column
+plural:table-columns
+constant-compilation-method:special
+! Constants only: a table column name, by which its kind of value can be known
+
++RELATION_TY:
+description:a relation
+singular:abstract-relation
+plural:abstract-relations
+constant-compilation-method:special
+! Constants only: a relation name, stored as its index in a run-time table
+
++UNDERSTANDING_TY:
+description:a topic
+singular:topic
+plural:topics
+i6-printing-routine-actions:DA_Topic
+cast:TEXT_TY
+cast:TEXT_ROUTINE_TY
+constant-compilation-method:special
+! I6 general parsing routine to match some specified text
+
++FIGURENAME_TY:
+description:the name of a figure
+singular:figure-name
+plural:figure-names
+can-be-type-of-global-variable:yes
+default-value:1
+index-default-value:figure of cover
+constant-compilation-method:literal
+! Blorb resource ID number for a picture
+
++SOUNDNAME_TY:
+description:the name of a sound effect
+singular:sound-name
+plural:sound-names
+constant-compilation-method:literal
+! Blorb resource ID number for a sound effect
+
++EXTERNALFILE_TY:
+description:the name of a file
+singular:external-file
+plural:external-files
+can-be-type-of-global-variable:yes
+default-value:0
+index-default-value:value representing a non-file
+constant-compilation-method:special
+! Address of an array holding a file I/O structure managed at run-time
+
++TRUTH_STATE_TY:
+description:something which is either true or false
+singular:truth state
+plural:truth states
+can-be-type-of-global-variable:yes
+default-value:false
+index-default-value:false
+i6-printing-routine:DA_TruthState
+used-in-let-with-cast-priority:50
+can-exchange:yes
+index-entry:The state of whether something is 'true' or 'false'.
+constant-compilation-method:literal
+apply-template:*PRINTING-ROUTINE-BLOCK
+
++DESCRIPTION_OF_ACTION_TY:
+description:a stored action
+constant-compilation-method:special
+! To represent an action test implicitly cast as a conditional rvalue
+
+@p Group 3.
+Data types for block-sized values; those where the I6 representation at
+run-time is a pointer to a block of memory, usually on the heap.
+
+@c
++INDEXED_TEXT_TY:
+description:an indexed text
+used-in-let-without-casts:yes
+can-be-type-of-global-variable:yes
+singular:indexed text
+plural:indexed texts
+block-data:yes
+has-native-constants:no
+multiple-block:yes
+heap-size-estimate:256
+cast:TEXT_TY
+cast:TEXT_ROUTINE_TY
+cast:SNIPPET_TY
+constant-compilation-method:none
+recognition-only-GPR:INDEXED_TEXT_TY_ROGPR
+distinguisher:INDEXED_TEXT_TY_Distinguish
+i6-printing-routine:INDEXED_TEXT_TY_Say
+apply-template:*PRINTING-ROUTINE-BLOCK
+can-exchange:yes
+index-default-value:""
+index-entry:A flexible-length form of text which can be internally altered and searched. Inform automatically changes text to this format when necessary.
+! A flexible-length, character-accessible string of text
+
++STORED_ACTION_TY:
+description:a stored action
+used-in-let-without-casts:yes
+can-be-type-of-global-variable:yes
+singular:stored action
+plural:stored actions
+block-data:yes
+has-native-constants:yes
+multiple-block:no
+heap-size-estimate:16
+constant-compilation-method:special
+distinguisher:STORED_ACTION_TY_Distinguish
+i6-printing-routine:STORED_ACTION_TY_Say
+apply-template:*PRINTING-ROUTINE-BLOCK
+can-exchange:yes
+index-default-value:waiting
+index-entry:A stored action, which can later be tried.
+! A stored action, which can later be tried
+
++LIST_OF_TY:
+is-constructor:yes
+description:a list of
+used-in-let-without-casts:yes
+can-be-type-of-global-variable:yes
+singular:list of
+plural:lists of
+block-data:yes
+has-native-constants:no
+multiple-block:yes
+heap-size-estimate:256
+constant-compilation-method:special
+distinguisher:LIST_OF_TY_Distinguish
+i6-printing-routine:LIST_OF_TY_Say
+apply-template:*PRINTING-ROUTINE-BLOCK
+can-exchange:yes
+index-default-value:{}
+index-entry:A flexible-length list of values.
+! A list of numbers, for now
+
+@p Groups 4 and 5.
+Enumerations and units.
+
+@c
+! New kinds of value are initially given these settings:
+
+#NEW:
+is-incompletely-defined:yes
+named-values-created-with-assertions:yes
+is-a-unit:no
+is-an-enumeration:no
+can-coincide-with-property:yes
+defined-in-source-text:yes
+can-be-type-of-global-variable:yes
+description:a designed type
+
+! When the source text specifies either a named constant value, or a literal
+! pattern, it decides whether the new type is to be an enumeration or a unit,
+! at which point one of the following macros is applied to the type:
+
+#ENUMERATION:
+is-incompletely-defined:no
+is-an-enumeration:yes
+named-values-created-with-assertions:yes
+used-in-let-without-casts:yes
+can-be-type-of-global-variable:yes
+default-value:1
+index-default-value:<first-constant>
+has-i6-GPR:yes
+uses-signed-comparisons:yes
+can-exchange:yes
+description:a designed type
+constant-compilation-method:quantitative
+apply-template:*PRINTING-ROUTINE
+apply-template:*UNDERSTOOD-VARIABLE
+apply-template:*RANDOM-CHOOSERS
+apply-template:*ENUMERATION-CHOOSERS
+
+#UNIT:
+is-incompletely-defined:no
+is-a-unit:yes
+uses-signed-comparisons:yes
+can-exchange:yes
+defined-in-source-text:yes
+named-values-created-with-assertions:no
+used-in-let-without-casts:yes
+can-be-type-of-global-variable:yes
+default-value:0
+index-default-value:<0-in-literal-pattern>
+has-i6-GPR:yes
+constant-compilation-method:literal
+apply-template:*PRINTING-ROUTINE
+apply-template:*UNDERSTOOD-VARIABLE
+apply-template:*RANDOM-CHOOSERS
+
+@p Tail.
+
+@c
+{-endlines}
+{-callv:complete_type_IDs_table}

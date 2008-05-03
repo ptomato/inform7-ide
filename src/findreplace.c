@@ -67,7 +67,7 @@ static gboolean find_next(const gchar *search_text, GtkTextIter *search_from,
             }      
         }
         if(do_it_again)
-            *search_from = *match_end;
+            *search_from = reverse? *match_start : *match_end;
     } while(do_it_again);
     return retval;
 }

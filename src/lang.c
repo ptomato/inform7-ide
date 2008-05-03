@@ -26,6 +26,7 @@
 #include <gtksourceview/gtksourcelanguagemanager.h>
 #include "lang.h"
 #include "datafile.h"
+#include "error.h"
 
 void set_buffer_language(GtkSourceBuffer *buffer, gchar *lang)
 {
@@ -46,7 +47,7 @@ void set_buffer_language(GtkSourceBuffer *buffer, gchar *lang)
     paths = gtk_source_language_manager_get_search_path(lmanager);
     for (dirs = 0; paths[dirs]; dirs++);
 
-    mypaths=calloc(dirs+2, sizeof(gchar *));
+    mypaths = calloc(dirs + 2, sizeof(gchar *));
 
     for (i = 0; i < dirs; i++)
     	mypaths[i] = g_strdup(paths[i]);

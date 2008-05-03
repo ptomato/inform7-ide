@@ -1,0 +1,180 @@
+B/maint: Main Template.
+ 
+@Purpose: The top-level logic of NI: the sequence of operations followed by
+NI up to the point where the output file is opened, resuming after it is
+closed again.
+ 
+@-------------------------------------------------------------------------------
+
+@p Startup.
+This segment of the template is not like any other. It contains almost the
+complete logical sequence of operations followed by NI -- indeed, NI
+essentially works by parsing some command-line arguments to set switches
+and then asking the template interpreter to run through ``Main.i6t'', the
+only template file which must always exist. (The other template files are
+only ever involved when called on by the |{-segment:...}| command from a
+template file already running.) Whereas most template segments contain
+I6 code to pass through into NI's output, this one runs both before and
+after NI's output file is being written, and contains only commands.
+
+The Startup paragraph is not in fact modifiable in any easy way, because of
+course ``Include...'' sentences -- used to tell the template interpreter
+to override the template files -- will not be understood until long after
+this paragraph has been fully dealt with. But perhaps that's no bad thing.
+
+@c
+{-callv:start_memory}
+{-callv:start_lexer}
+{-callv:make_reserved_words}
+
+{-callv:handle_census_mode}
+
+{-segment:Types.i6t}
+
+{-callv:make_built_in_relations}
+{-callv:make_built_in_verbs}
+
+{-progress-stage:0}
+{-log-phase:Lexical analysis}
+{-callv:read_primary_source_text}
+{-callv:create_kind_kind}
+{-callv:create_standard_csps}
+
+@p Semantic Analysis.
+Similarly: Include... sentences are not read until this paragraph is long
+forgotten.
+
+@c
+{-progress-stage:1}
+{-log-phase:Semantic analysis I}
+{-callv:plant_parse_tree} ! Initialise the parse tree
+{-callv:break_source_into_sentences} ! Build first tranche of sentences
+{-callv:traverse_for_extensions} ! Expand extension inclusions and build sentences
+{-callv:satisfy_heading_dependencies}
+{-callv:traverse_for_verbs} ! Find verbs in the assertion sentences
+{-callv:traverse_for_plural_definitions} ! Build irregular plurals dictionary
+{-callv:tidy_up_ofs_and_froms} ! More "of" wrangling
+{-callv:register_recently_lexed_phrases} ! To make commands children of their routines
+{-callv:declare_source_loaded}
+{-callv:include_templates_for_types}
+
+{-log-phase:Semantic analysis II}
+{-callv:verify_parse_tree} ! Purely to check that NI is running correctly
+{-callv:check_extension_versions} ! Do the extension version numbers meet needs?
+{-callv:make_heading_tree} ! Stratify headings and subheadings
+{-callv:write_headings_as_xml} ! Dump them to a file for the GUI to use
+
+{-log-phase:Semantic analysis III}
+{-callv:traverse_for_adjective_definitions}
+{-callv:traverse_to_create_tables}
+{-callv:traverse_for_phrase_names}
+
+@p Assertion Reading.
+Since Include... sentences are read during pass 2, they might just be able to
+meddle by adding instructions to take place after this paragraph, but would
+be too late to work before or instead of it.
+
+@c
+{-progress-stage:2}
+{-log-phase:First pass through assertions}
+{-read-assertions:1}
+{-log-phase:All objects and properties now created}
+{-callv:log_brief_picture}
+{-log-phase:Second pass through assertions}
+{-read-assertions:2}
+
+@p Model Construction.
+
+@c
+{-log-phase:Making the model world}
+{-callv:Inform_name_the_actions}
+{-callv:Inform_name_the_objects}
+{-callv:make_model_world}
+{-callv:validate_definitions}
+{-callv:make_comparative_bps}
+
+@p Tables and Grammar.
+
+@c
+{-log-phase:Tables and grammar}
+{-callv:check_tables_for_kind_clashes}
+{-callv:traverse_to_stock_tables}
+{-callv:traverse_for_grammar}
+
+@p Phrases and Rules.
+
+@c
+{-progress-stage:3}
+{-log-phase:Phrases and rules}
+{-callv:traverse_for_phrases}
+{-callv:register_phrase_meanings}
+{-callv:parse_rule_parameters}
+{-callv:add_rules_to_rulebooks}
+{-callv:parse_rule_placements}
+
+{-callv:empty_all_headings}
+
+@p Code Generation.
+This is where we hand over to regular template files -- containing code
+passed through as I6 source, as well as a few further commands -- starting
+with ``Output.i6t''.
+
+@c
+{-progress-stage:4}
+{-log-phase:Code generation}
+{-open-file}{-segment:Output.i6t}{-close-file}
+{-log-phase:Compilation now complete}
+
+@p Metadata.
+
+@c
+{-callv:write_ifiction_and_blurb}
+
+@p Indexing.
+This paragraph can be skipped without harming any of the rest of NI's work:
+the only effect is to suppress the generation of the index. (Indeed, if
+NI is called with the |-noindex| command-line switch, then the template
+interpreter ignores all commands in between |{-open-index}| and
+|{-close-index}|, thus skipping exactly this paragraph.)
+
+@c
+{-open-index}
+{-index:Kinds}
+	{-callv:index_page_Kinds}
+{-index:World}
+	{-callv:index_page_World}
+{-index:Actions and Commands}
+	{-callv:index_page_Actions}
+{-index:Rules}
+	{-callv:index_page_Rules}
+{-index:Phrasebook}
+	{-callv:index_page_Phrasebook}
+{-index:Contents}
+	{-callv:index_headings}
+	{-callv:index_extensions}
+	{-callv:update_census_of_extensions}
+	{-callv:index_quantities}
+	{-callv:index_tables}
+	{-callv:index_figures}
+	{-callv:index_sounds}
+	{-callv:index_external_files}
+	{-callv:index_library_card}
+{-index:Scenes}
+	{-callv:index_page_Scenes}
+{-callv:complete_index}
+{-close-index}
+
+@p Shutdown.
+Closing the problems report, making any final reports to the debugging
+log, and freeing all allocated memory: and that's then it.
+
+@c
+{-callv:complete_problems_report} 
+
+{-callv:report_pairs_observed}
+{-callv:report_pairs_allowed}
+{! -callv:debug_memory_statistics}
+{! -callv:debug_parser_statistics}
+{! -callv:debug_verbs}
+
+{-callv:free_memory}

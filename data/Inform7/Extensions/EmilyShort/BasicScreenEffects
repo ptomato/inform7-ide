@@ -11,32 +11,32 @@ Section 1 - Spacing and Pausing
 Include (-
 
 [ KeyPause i; 
-	i = KeyCharPrimitive(); 
+	i = VM_KeyChar(); 
 	rfalse;
 ];
 
 [ SPACEPause i;
 	while (i ~= 13 or 31 or 32)
 	{
-		i = KeyCharPrimitive();	
+		i = VM_KeyChar();	
 	}
 ];
 
 [ GetKey i;
-	i = KeyCharPrimitive(); 
+	i = VM_KeyChar(); 
 	return i;
 ];
 
 -)
 
 To clear the/-- screen:
-	(- ClearScreen(0); -)
+	(- VM_ClearScreen(0); -)
 
 To clear only the/-- main screen:
-	(- ClearScreen(2); -)
+	(- VM_ClearScreen(2); -)
 
 To clear only the/-- status line:
-	(- ClearScreen(1); -).
+	(- VM_ClearScreen(1); -).
 
 To wait for any key:
 	(- KeyPause(); -)
@@ -79,11 +79,11 @@ Array printed_text --> 64;
 
 [ CenterPrint str depth i j;
 	font off;
-	i = ScreenWidth();
-			PrintToBuffer(printed_text, 63, str);
+	i = VM_ScreenWidth();
+			VM_PrintToBuffer(printed_text, 63, str);
 	j = (i-(printed_text-->0))/2; 
 	j = j-1;
-	MoveCursor(depth, j);
+	VM_MoveCursorInStatusLine(depth, j);
 	print (I7_string) str; 
 	font on;
 ];
@@ -91,8 +91,8 @@ Array printed_text --> 64;
 [ CenterPrintComplex str i j;
 	font off;
 	print "^"; 
-	i = ScreenWidth();
-			PrintToBuffer(printed_text, 63, str);
+	i = VM_ScreenWidth();
+			VM_PrintToBuffer(printed_text, 63, str);
 	j = (i-(printed_text-->0))/2; 
 	spaces j-1;
 	print (I7_string) str; 
@@ -102,7 +102,7 @@ Array printed_text --> 64;
 -)
 
 To decide what number is screen width:
-	(- ScreenWidth() -);
+	(- VM_ScreenWidth() -);
 
 To decide what number is screen height:
 	(- I7ScreenHeight() -);
@@ -116,26 +116,13 @@ Include (-
 	return screen_height;
 ];
 
-[ ClearBoxedText i;
-  if (I7_box) {
-	  for (i=0: I7_boxes_appeared-->i: i++)
-		  if (I7_boxes_appeared-->i == I7_box) {
-			  I7_box = 0;
-			  return;
-		  }
-	  I7_boxes_appeared-->i = I7_box;
-	  I7_box();
-	  I7_box = 0;
-  }
-];
-
 -)
 
 To deepen the/-- status line to (depth - a number) rows:
 	(- DeepStatus({depth}); -);
 
 To move the/-- cursor to (depth - a number):
-	(- I7MoveCursor({depth}); -)
+	(- I7VM_MoveCursorInStatusLine({depth}); -)
 
 To right align the/-- cursor to (depth - a number):
 	(- RightAlign({depth}); -)
@@ -143,10 +130,10 @@ To right align the/-- cursor to (depth - a number):
 Include (- 
 
 [ DeepStatus depth i screen_width;
-	StatusLineHeight(depth);
-	screen_width = ScreenWidth(); style reverse;
+	VM_StatusLineHeight(depth);
+	screen_width = VM_ScreenWidth(); style reverse;
 			#ifdef TARGET_GLULX;
-			  ClearScreen(1);
+			  VM_ClearScreen(1);
 			#ifnot;
 	  for (i=1:i<depth+1:i++)
 			  {
@@ -156,15 +143,15 @@ Include (-
 		   #endif;
 ];
 
-[ I7MoveCursor depth;
-	MoveCursor(depth, 1);
+[ I7VM_MoveCursorInStatusLine depth;
+	VM_MoveCursorInStatusLine(depth, 1);
 ];
 
 [ RightAlign depth screen_width o n;
-	screen_width = ScreenWidth(); 
+	screen_width = VM_ScreenWidth(); 
 	n = (+ right alignment depth +);
 	o = screen_width - n;
-	MoveCursor(depth, o);
+	VM_MoveCursorInStatusLine(depth, o);
 ];
 
 -)

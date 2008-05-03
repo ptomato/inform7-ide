@@ -1,24 +1,20 @@
 grahamnelsondir = $(pkgdatadir)/Inform7/Extensions/Graham Nelson
-grahamnelson_DATA = RideableVehicles StandardRules UnicodeCharacterNames \
-UnicodeFullCharacterNames
+grahamnelson_DATA = RideableVehicles.i7x StandardRules.i7x \
+UnicodeCharacterNames.i7x UnicodeFullCharacterNames.i7x
 EXTRA_DIST = $(grahamnelson_DATA)
 
 install-data-hook:
 	pushd "$(DESTDIR)$(grahamnelsondir)"; \
-	mv RideableVehicles Rideable\ Vehicles; \
-	mv StandardRules Standard\ Rules; \
-	mv UnicodeCharacterNames Unicode\ Character\ Names; \
-	mv UnicodeFullCharacterNames Unicode\ Full\ Character\ Names; \
-	ln -s Rideable\ Vehicles rideable\ vehicles; \
-	ln -s Standard\ Rules standard\ rules; \
-	ln -s Unicode\ Character\ Names unicode\ character\ names; \
-	ln -s Unicode\ Full\ Character\ Names unicode\ full\ character\ names; \
+	mv RideableVehicles.i7x Rideable\ Vehicles.i7x; \
+	mv StandardRules.i7x Standard\ Rules.i7x; \
+	mv UnicodeCharacterNames.i7x Unicode\ Character\ Names.i7x; \
+	mv UnicodeFullCharacterNames.i7x Unicode\ Full\ Character\ Names.i7x; \
 	popd
 	
 uninstall-hook:
 	pushd "$(DESTDIR)$(grahamnelsondir)"; \
-	rm -f Rideable\ Vehicles rideable\ vehicles; \
-	rm -f Standard\ Rules standard\ rules; \
-	rm -f Unicode\ Character\ Names unicode\ character\ names; \
-	rm -f Unicode\ Full\ Character\ Names unicode\ full\ character\ names; \
+	rm -f Rideable\ Vehicles.i7x; \
+	rm -f Standard\ Rules.i7x; \
+	rm -f Unicode\ Character\ Names.i7x; \
+	rm -f Unicode\ Full\ Character\ Names.i7x; \
 	popd

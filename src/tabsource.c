@@ -364,8 +364,10 @@ void renumber_sections(GtkTextBuffer *buffer) {
                 gchar *text = gtk_text_iter_get_text(&pos, &end);
                 gchar *lcase = g_utf8_strdown(text, -1);
                 gchar *title = strchr(text, '-');
-                if(g_str_has_suffix(title, "\n"))
-                    *(strrchr(title, '\n')) = '\0'; /* remove trailing \n */
+                if(title) {
+                    if(g_str_has_suffix(title, "\n"))
+                        *(strrchr(title, '\n')) = '\0'; /* remove trailing \n */
+                }
                 gchar *newtitle;
                 
                 if(g_str_has_prefix(lcase, "volume")) {

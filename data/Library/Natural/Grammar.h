@@ -77,20 +77,12 @@ Verb meta 'actions'
     *                                           -> ActionsOn
     * 'on'                                      -> ActionsOn
     * 'off'                                     -> ActionsOff;
-Verb meta 'changes'
-    *                                           -> ChangesOn
-    * 'on'                                      -> ChangesOn
-    * 'off'                                     -> ChangesOff;
 Verb meta 'gonear'
     * noun                                      -> Gonear;
 Verb meta 'goto'
     * number                                    -> Goto;
 Verb meta 'random'
     *                                           -> Predictable;
-Verb meta 'routines' 'messages'
-    *                                           -> RoutinesOn
-    * 'on'                                      -> RoutinesOn
-    * 'off'                                     -> RoutinesOff;
 Verb meta 'scope'
     *                                           -> Scope
     * noun                                      -> Scope;
@@ -101,6 +93,14 @@ Verb meta 'showobj'
 Verb meta 'showverb'
     * special                                   -> Showverb;
 #ifndef NI_BUILD_COUNT;
+Verb meta 'routines' 'messages'
+    *                                           -> RoutinesOn
+    * 'on'                                      -> RoutinesOn
+    * 'off'                                     -> RoutinesOff;
+Verb meta 'changes'
+    *                                           -> ChangesOn
+    * 'on'                                      -> ChangesOn
+    * 'off'                                     -> ChangesOff;
 Verb meta 'timers' 'daemons'
     *                                           -> TimersOn
     * 'on'                                      -> TimersOn

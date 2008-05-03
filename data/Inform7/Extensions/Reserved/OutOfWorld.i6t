@@ -1,0 +1,99 @@
+B/oowt: OutOfWorld Template.
+ 
+@Purpose: To implement some of the out of world actions.
+ 
+@-------------------------------------------------------------------------------
+
+@p Perform Undo.
+
+@c
+[ Perform_Undo;
+	#ifdef PREVENT_UNDO; L__M(##Miscellany, 70); return; #endif;
+	if (turns == 1) { L__M(##Miscellany, 11); return; }
+	if (undo_flag == 0) { L__M(##Miscellany, 6); return; }
+	if (undo_flag == 1) { L__M(##Miscellany, 7); return; }
+	if (VM_Undo() == 0) L__M(##Miscellany, 7);
+];
+
+@p Announce Score Rule.
+
+@c
+[ ANNOUNCE_SCORE_R;
+	if (actor ~= player) rfalse;
+	#ifdef NO_SCORING; L__M(##Score, 2);
+	#ifnot; GL__M(##Score); PrintRank();
+	#endif;
+];
+
+@p Switch Score Notification On Rule.
+
+@c
+[ SWITCH_SCORE_NOTIFY_ON_R;
+	if (actor ~= player) rfalse;
+	#ifdef NO_SCORING; ANNOUNCE_SCORE_R();
+	#ifnot; notify_mode=1; GL__M(##NotifyOn);
+	#endif;
+];
+
+@p Switch Score Notification Off Rule.
+
+@c
+[ SWITCH_SCORE_NOTIFY_OFF_R;
+	if (actor ~= player) rfalse;
+	#ifdef NO_SCORING; ANNOUNCE_SCORE_R();
+	#ifnot; notify_mode=0; GL__M(##NotifyOff);
+	#endif;
+];
+
+@p Prefer Sometimes Abbreviated Room Descriptions Rule.
+
+@c
+[ PREFER_SOMETIMES_ABBREVIATED_R;
+	if (actor ~= player) rfalse;
+	lookmode=1; print (string) Story; GL__M(##LMode1);
+]; ! Brief
+
+@p Prefer Unabbreviated Room Descriptions Rule.
+
+@c
+[ PREFER_UNABBREVIATED_R;
+	if (actor ~= player) rfalse;
+	lookmode=2; print (string) Story; GL__M(##LMode2);
+]; ! Verbose
+
+@p Prefer Abbreviated Room Descriptions Rule.
+
+@c
+[ PREFER_ABBREVIATED_R;
+	if (actor ~= player) rfalse;
+	lookmode=3; print (string) Story; GL__M(##LMode3);
+]; ! Superbrief
+
+@p Announce Pronoun Meanings Rule.
+
+@c
+[ ANNOUNCE_PRONOUN_MEANINGS_R x y c d;
+	if (actor ~= player) rfalse;
+	GL__M(##Pronouns, 1);
+
+	c = (LanguagePronouns-->0)/3;
+	if (player ~= selfobj) c++;
+
+	if (c==0) return GL__M(##Pronouns, 4);
+
+	for (x = 1, d = 0 : x <= LanguagePronouns-->0: x = x+3) {
+		print "~", (address) LanguagePronouns-->x, "~ ";
+		y = LanguagePronouns-->(x+2);
+		if (y == NULL) GL__M(##Pronouns, 3);
+		else { GL__M(##Pronouns, 2); print (the) y; }
+		d++;
+		if (d < c-1) print ", ";
+		if (d == c-1) print (string) LISTAND__TX;
+	}
+	if (player ~= selfobj) {
+		print "~", (address) ME1__WD, "~ "; GL__M(##Pronouns, 2);
+		c = player; player = selfobj;
+		print (the) c; player = c;
+	}
+	".";
+];

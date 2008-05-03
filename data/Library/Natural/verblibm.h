@@ -22,8 +22,8 @@ Include "linklv";
 [ Banner i;
    #ifdef NI_BUILD_COUNT;
    new_line;
-   BeginActivity(BANNER_ACT);
-   if (ForActivity(BANNER_ACT) == false) {
+   BeginActivity(PRINTING_BANNER_TEXT_ACT);
+   if (ForActivity(PRINTING_BANNER_TEXT_ACT) == false) {
    #endif; ! NI_BUILD_COUNT
    
    if (Story ~= 0) {
@@ -77,7 +77,7 @@ Include "linklv";
     
     #ifdef NI_BUILD_COUNT;
     }
-    EndActivity(BANNER_ACT);
+    EndActivity(PRINTING_BANNER_TEXT_ACT);
     #endif; ! NI_BUILD_COUNT
 ];
 
@@ -304,8 +304,7 @@ Global I7_wlf_sp;
     if (o ~= child(parent(o))) { I7_WLF(o, depth); return; }
     objectloop (ol provides list_together)
         ol.list_together = 0;
-    CarryOutActivity(LISTCONTS_ACT, parent(o));
-    
+    CarryOutActivity(LISTING_CONTENTS_ACT, parent(o));
     #ifdef TARGET_ZCODE;
     @pull c_depth; @pull c_style;
     #ifnot; ! TARGET_GLULX
@@ -421,8 +420,8 @@ Global I7_wlf_sp;
                 if (listing_size == 1) jump Omit_WL2;
                 q = c_style;
                 if (c_style & INDENT_BIT ~= 0) Print__Spaces(2*(depth+wlf_indent));
-                BeginActivity(GROUP_ACT, j);
-                if (ForActivity(GROUP_ACT, j)) {
+                BeginActivity(GROUPING_TOGETHER_ACT, j);
+                if (ForActivity(GROUPING_TOGETHER_ACT, j)) {
                     c_style = c_style &~ NEWLINE_BIT; jump RuleOmitted2;
                 }
                 if (k2 == 3) {
@@ -471,7 +470,7 @@ Global I7_wlf_sp;
 
               .RuleOmitted2;
               
-                EndActivity(GROUP_ACT, j);
+                EndActivity(GROUPING_TOGETHER_ACT, j);
 
               .Omit__Sublist2;
 
@@ -498,9 +497,9 @@ Global I7_wlf_sp;
         else {
             if (c_style & DEFART_BIT ~= 0) PrefaceByArticle(j, 1, sizes_p->i);
             print (number) sizes_p->i, " ";
-            BeginActivity(PLURALNAME_ACT, j);
-            if (ForActivity(PLURALNAME_ACT, j) == false) PrintOrRun(j, plural, 1);
-            EndActivity(PLURALNAME_ACT, j);
+            BeginActivity(PRINTING_THE_PLURAL_NAME_ACT, j);
+            if (ForActivity(PRINTING_THE_PLURAL_NAME_ACT, j) == false) PrintOrRun(j, plural, 1);
+            EndActivity(PRINTING_THE_PLURAL_NAME_ACT, j);
         }
         if (sizes_p->i > 1 && j hasnt pluralname) {
             give j pluralname;
@@ -547,8 +546,8 @@ Global I7_wlf_sp;
             if (k == 2 or 3) {
                 if (c_style & INDENT_BIT ~= 0) Print__Spaces(2*(depth+wlf_indent));
                 q = c_style;
-                BeginActivity(GROUP_ACT, j);
-                if (ForActivity(GROUP_ACT, j)) {
+                BeginActivity(GROUPING_TOGETHER_ACT, j);
+                if (ForActivity(GROUPING_TOGETHER_ACT, j)) {
                     c_style = c_style &~ NEWLINE_BIT;
                     jump RuleOmitted;
                 }
@@ -598,7 +597,7 @@ Global I7_wlf_sp;
 
               .RuleOmitted;
               
-                EndActivity(GROUP_ACT, j);
+                EndActivity(GROUPING_TOGETHER_ACT, j);
                 
               .Omit__Sublist;
 
@@ -968,8 +967,8 @@ Global I7_wlf_sp;
     inventory_stage = 2;
     if (c_style & PARTINV_BIT) {
         #ifdef NI_BUILD_COUNT;
-        BeginActivity(DETAILS_ACT);
-        if (ForActivity(DETAILS_ACT) == false) {
+        BeginActivity(PRINTING_ROOM_DESC_DETAILS_ACT);
+        if (ForActivity(PRINTING_ROOM_DESC_DETAILS_ACT) == false) {
         #ifnot;
         if (o.invent && RunRoutines(o, invent)) {
             if (c_style & NEWLINE_BIT) new_line;
@@ -985,7 +984,7 @@ Global I7_wlf_sp;
         if (combo) L__M(##ListMiscellany, combo, o);
         #ifdef NI_BUILD_COUNT;
         }
-        EndActivity(DETAILS_ACT);
+        EndActivity(PRINTING_ROOM_DESC_DETAILS_ACT);
         #endif; ! NI_BUILD_COUNT
     }   ! end of PARTINV_BIT processing
 
@@ -2470,12 +2469,12 @@ Global I7_wlf_sp;
     #ifdef NI_BUILD_COUNT;
     I7_DivideParagraph();
     say__p = 0;
-    BeginActivity(NONDESCRIPT_ACT, descin);
+    BeginActivity(LISTING_NONDESCRIPT_ITEMS_ACT, descin);
     objectloop (o ofclass Object) if (o has I7_mentioned) give o ~workflag;
     k = 0; objectloop (o ofclass Object) if (o has workflag) k++;
-    if (k == 0) { AbandonActivity(NONDESCRIPT_ACT, descin); return; }
+    if (k == 0) { AbandonActivity(LISTING_NONDESCRIPT_ITEMS_ACT, descin); return; }
     I7_DivideParagraph();
-    if (ForActivity(NONDESCRIPT_ACT, descin) == false) {
+    if (ForActivity(LISTING_NONDESCRIPT_ITEMS_ACT, descin) == false) {
     #endif;
 
     if (flag == 1) L__M(##Look, 5, descin);
@@ -2483,7 +2482,7 @@ Global I7_wlf_sp;
     
     #ifdef NI_BUILD_COUNT;
     }
-    EndActivity(NONDESCRIPT_ACT, descin);
+    EndActivity(LISTING_NONDESCRIPT_ITEMS_ACT, descin);
     #endif;
 ];
 
@@ -3147,23 +3146,24 @@ Global I7_wlf_sp;
 !   Finally: the mechanism for library text (the text is in the language defn)
 ! ----------------------------------------------------------------------------
 
-[ L__M act n x1 s;
+[ L__M act n x1 x2 s;
     s = sw__var;
     sw__var = act;
     if (n == 0) n = 1;
-    L___M(n,x1);
+    if (x2) L___M(n,x1,x2); else L___M(n,x1);
     sw__var = s;
 ];
 
-[ L___M n x1 s;
+[ L___M n x1 x2 s;
     s = action;
     lm_n = n;
     lm_o = x1;
+    lm_o2 = x2;
     action = sw__var;
     if (RunRoutines(LibraryMessages, before) ~= 0)        { action = s; rfalse; }
     if (LibraryExtensions.RunWhile(ext_messages, 0) ~= 0) { action = s; rfalse; }
     action = s;
-    LanguageLM(n, x1);
+ 	if (x2) LanguageLM(n, x1, x2); else LanguageLM(n, x1);
 ];
 
 ! ==============================================================================

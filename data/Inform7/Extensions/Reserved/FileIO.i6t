@@ -1,0 +1,378 @@
+B/iot: FileIO Template.
+ 
+@Purpose: Reading and writing external files, in the Glulx virtual machine only.
+ 
+@-------------------------------------------------------------------------------
+
+@p Structure.
+The I7 kind of value ``auxiliary-file'' is an |-->| array, holding a memory
+structure containing information about external files. The following
+constants specify memory offsets and values. Note the safety value stored
+as the first word of the structure: this helps protect the routines below
+from accidents. (16339, besides being prime, is a number interesting to the
+author of Inform since it was the examination board identifying number of
+his school, and so had to be filled in on all of the many papers he sat
+during his formative years.)
+
+@c
+Constant AUXF_MAGIC = 0; ! First word holds a safety constant
+Constant AUXF_MAGIC_VALUE = 16339; ! Should be first word of any valid file structure
+Constant AUXF_STATUS = 1; ! One of the following:
+	Constant AUXF_STATUS_IS_UNUSED = 0; ! Never used
+	Constant AUXF_STATUS_IS_CLOSED = 1; ! Currently closed
+	Constant AUXF_STATUS_IS_OPEN_FOR_READ = 2;
+	Constant AUXF_STATUS_IS_OPEN_FOR_WRITE = 3;
+	Constant AUXF_STATUS_IS_OPEN_FOR_APPEND = 4;
+Constant AUXF_BINARY = 2; ! False for text files (I7 default), true for binary
+Constant AUXF_FREF = 3; ! Glulx file reference number (if file has been used)
+Constant AUXF_STREAM = 4; ! Stream for an open file (meaningless otherwise)
+Constant AUXF_FILENAME = 5; ! Packed address of constant string
+Constant AUXF_IFID_OF_OWNER = 6; ! UUID_ARRAY if owned by this project, or
+	! string array of IFID of owner wrapped in //...//, or NULL to leave open
+
+@p Instances.
+These structures are not dynamically created: they are precompiled by the NI
+compiler, already filled in with the necessary values. The following command
+generates them.
+
+@c
+{-call:external_file_arrays}
+
+@p Errors.
+This is used for I/O errors of all kinds: it isn't within the Glulx-only
+code because one of the errors is to try to use these routines on the
+Z-machine.
+
+@c
+[ FileIO_Error auxf err_text;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE)) {
+		print "^*** Error on unknown file: ", (string) err_text, " ***^";
+	} else
+		print "^*** Error on file '", (string) auxf-->AUXF_FILENAME, "': ",
+			(string) err_text, " ***^";
+	RunTimeProblem(RTP_FILEIOERROR);
+	return 0;
+];
+
+@p Glulx Material.
+
+@c
+#IFDEF TARGET_GLULX;
+
+@p Obtain File Reference.
+Obtain the file reference for a file (which need not exist). |auxf| is the
+memory location of the auxiliary file structure; a file reference is a
+Glulx concept.
+
+@c
+[ FileIO_Fref auxf  fref usage;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE)) rfalse;
+	if (auxf-->AUXF_STATUS == 0) {
+		if (auxf-->AUXF_BINARY) usage = fileusage_BinaryMode;
+		else usage = fileusage_TextMode;
+		auxf-->AUXF_FREF =
+			glk_fileref_create_by_name(fileusage_Data + usage,
+				Glulx_ChangeAnyToCString(auxf-->AUXF_FILENAME), 0);
+		auxf-->AUXF_STATUS = AUXF_STATUS_IS_CLOSED;
+	}
+	return auxf-->AUXF_FREF;
+];
+
+@p Existence.
+Determine whether a file exists on disc. Note that we have no concept of
+directories, or the file system structure on the host machine: indeed, it
+is entirely up to the Glulx VM what it does when asked to look for a file.
+By convention, though, files for a project are stored in the same folder
+as the story file when out in the wild; when a project is developed within
+the Inform user interface, they are either (for preference) stored in a
+|Files| subfolder of the |Materials| folder for a project, or else stored
+alongside the Inform project file.
+
+@c
+[ FileIO_Exists auxf  fref;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE)) rfalse;
+	fref = FileIO_Fref(auxf);
+	return glk_fileref_does_file_exist(fref);
+];
+
+@p Readiness.
+One of our problems is that a file might be being used by another application:
+perhaps even by another story file running in a second incarnation of Glulx,
+like a parallel world of which we can know nothing. We actually want to
+allow for this sort of thing, because one use for external files in I7
+is as a sort of communications conduit for assisting applications.
+
+Most operating systems solve this problem by means of locking a file, or
+by creating a second lock-file, the existence of which indicates ownership
+of the original. We haven't got much access to the file-system, though:
+what we do is to set the first character of the file to an asterisk to
+mark it as complete and ready for reading, or to a hyphen to mark it as
+a work in progress.
+
+|FileIO_Ready| determines whether or not a file is ready to be read
+from: it has to exist on disc, and to be openable, and also to be ready
+in having this marker asterisk.
+
+|FileIO_MarkReady| changes the readiness state of a file, writing the
+asterisk or hyphen into the initial character as needed.
+
+@c
+[ FileIO_Ready auxf  fref str ch;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE)) rfalse;
+	fref = FileIO_Fref(auxf);
+	if (glk_fileref_does_file_exist(fref) == false) rfalse;
+	str = glk_stream_open_file(fref, filemode_Read, 0);
+	ch = glk_get_char_stream(str);
+	glk_stream_close(str, 0);
+	if (ch ~= '*') rfalse;
+	rtrue;
+];
+
+[ FileIO_MarkReady auxf readiness  fref str ch;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return FileIO_Error(auxf, "tried to open a non-file");
+	fref = FileIO_Fref(auxf);
+	if (auxf-->AUXF_STATUS ~= AUXF_STATUS_IS_CLOSED)
+		return FileIO_Error(auxf, "only closed files can be marked");
+	str = glk_stream_open_file(fref, filemode_ReadWrite, 0);
+	glk_stream_set_position(str, 0, 0); ! seek start
+	if (readiness) ch = '*'; else ch = '-';
+	glk_put_char_stream(str, ch); ! mark as complete
+	glk_stream_close(str, 0);
+];
+
+@p Open File.
+
+@c
+[ FileIO_Open auxf write_flag append_flag
+	fref str mode ix ch not_this_ifid owner force_header;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return FileIO_Error(auxf, "tried to open a non-file");
+	fref = FileIO_Fref(auxf);
+	if (auxf-->AUXF_STATUS ~= AUXF_STATUS_IS_CLOSED)
+		return FileIO_Error(auxf, "tried to open a file already open");
+	if (write_flag) {
+		if (append_flag) {
+			mode = filemode_WriteAppend;
+			if (glk_fileref_does_file_exist(fref) == false)
+				force_header = true;
+		}
+		else mode = filemode_Write;
+	} else {
+		mode = filemode_Read;
+		if (glk_fileref_does_file_exist(fref) == false)
+			return FileIO_Error(auxf, "tried to open a file which does not exist");
+	}
+	str = glk_stream_open_file(fref, mode, 0);
+	if (str == 0)
+		return FileIO_Error(auxf, "tried to open a file but failed");
+	auxf-->AUXF_STREAM = str;
+	if (write_flag) {
+		if (append_flag)
+			auxf-->AUXF_STATUS = AUXF_STATUS_IS_OPEN_FOR_APPEND;
+		else
+			auxf-->AUXF_STATUS = AUXF_STATUS_IS_OPEN_FOR_WRITE;
+		glk_stream_set_current(str);
+		if ((append_flag == FALSE) || (force_header)) {
+			print "- ";
+			for (ix=6: ix <= UUID_ARRAY->0: ix++) print (char) UUID_ARRAY->ix;
+			print " ", (string) auxf-->AUXF_FILENAME, "^";
+		}
+	} else {
+		auxf-->AUXF_STATUS = AUXF_STATUS_IS_OPEN_FOR_READ;
+		ch = FileIO_GetC(auxf);
+		if (ch ~= '-' or '*') { jump BadFile; }
+		if (ch == '-')
+			return FileIO_Error(auxf, "tried to open a file which was incomplete");
+		ch = FileIO_GetC(auxf);
+		if (ch ~= ' ') { jump BadFile; }
+		ch = FileIO_GetC(auxf);
+		if (ch ~= '/') { jump BadFile; }
+		ch = FileIO_GetC(auxf);
+		if (ch ~= '/') { jump BadFile; }
+		owner = auxf-->AUXF_IFID_OF_OWNER;
+		ix = 3;
+		if (owner == UUID_ARRAY) ix = 8;
+		if (owner ~= NULL) {
+			for (: ix <= owner->0: ix++) {
+				ch = FileIO_GetC(auxf);
+				if (ch == -1) { jump BadFile; }
+				if (ch ~= owner->ix) not_this_ifid = true;
+				if (ch == ' ') break;
+			}
+			if (not_this_ifid == false) {
+				ch = FileIO_GetC(auxf);
+				if (ch ~= ' ') { jump BadFile; }
+			}
+		}
+		while (ch ~= -1) {
+			ch = FileIO_GetC(auxf);
+			if (ch == 10 or 13) break;
+		}
+		if (not_this_ifid) {
+			auxf-->AUXF_STATUS = AUXF_STATUS_IS_CLOSED;
+			glk_stream_close(str, 0);
+			return FileIO_Error(auxf,
+				"tried to open a file owned by another project");
+		}
+	}
+	return auxf-->AUXF_STREAM;
+	.BadFile;
+	auxf-->AUXF_STATUS = AUXF_STATUS_IS_CLOSED;
+	glk_stream_close(str, 0);
+	return FileIO_Error(auxf, "tried to open a file which seems to be malformed");
+];
+
+@p Close File.
+
+@c
+[ FileIO_Close auxf;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return FileIO_Error(auxf, "tried to close a non-file");
+	if (auxf-->AUXF_STATUS ~=
+		AUXF_STATUS_IS_OPEN_FOR_READ or
+		AUXF_STATUS_IS_OPEN_FOR_WRITE or
+		AUXF_STATUS_IS_OPEN_FOR_APPEND)
+		return FileIO_Error(auxf, "tried to close a file which is not open");
+	if ((auxf-->AUXF_BINARY == false) &&
+		(auxf-->AUXF_STATUS ==
+		AUXF_STATUS_IS_OPEN_FOR_WRITE or
+		AUXF_STATUS_IS_OPEN_FOR_APPEND)) {
+		glk_set_window(gg_mainwin);
+	}
+	if (auxf-->AUXF_STATUS ==
+		AUXF_STATUS_IS_OPEN_FOR_WRITE or
+		AUXF_STATUS_IS_OPEN_FOR_APPEND) {
+		glk_stream_set_position(auxf-->AUXF_STREAM, 0, 0); ! seek start
+		glk_put_char_stream(auxf-->AUXF_STREAM, '*'); ! mark as complete
+	}
+	glk_stream_close(auxf-->AUXF_STREAM, 0);
+	auxf-->AUXF_STATUS = AUXF_STATUS_IS_CLOSED;
+];
+
+@p Get Character.
+
+@c
+[ FileIO_GetC auxf;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE)) return -1;
+	if (auxf-->AUXF_STATUS ~= AUXF_STATUS_IS_OPEN_FOR_READ) return -1;
+	return glk_get_char_stream(auxf-->AUXF_STREAM);
+];
+
+@p Put Character.
+
+@c
+[ FileIO_PutC auxf char;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return FileIO_Error(auxf, "tried to write to a non-file");
+	if (auxf-->AUXF_STATUS ~=
+		AUXF_STATUS_IS_OPEN_FOR_WRITE or
+		AUXF_STATUS_IS_OPEN_FOR_APPEND)
+		return FileIO_Error(auxf,
+			"tried to write to a file which is not open for writing");
+	return glk_put_char_stream(auxf-->AUXF_STREAM, char);
+];
+
+@p Print Line.
+We read characters from the supplied file until the next newline
+character. (We allow for that to be encoded as either a single |0a| or a
+single |0d|.) Each character is printed, and at the end we print a newline.
+
+@c
+[ FileIO_PrintLine auxf ch;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return FileIO_Error(auxf, "tried to write to a non-file");
+	for (::) {
+		ch = FileIO_GetC(auxf);
+		if (ch == -1) rfalse;
+		if (ch == 10 or 13) { print "^"; rtrue; }
+		print (char) ch;
+	}
+];
+
+@p Print Contents.
+Repeating this until the file runs out is equivalent to the Unix command
+|cat|, that is, it copies the stream of characters from the file to the
+output stream. (This might well be another file, just as with |cat|, in
+which case we have a copy utility.)
+
+@c
+[ FileIO_PrintContents auxf tab;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return FileIO_Error(auxf, "tried to access a non-file");
+	if (auxf-->AUXF_BINARY)
+		return FileIO_Error(auxf, "printing text will not work with binary files");
+	if (FileIO_Open(auxf, false) == 0) rfalse;
+	while (FileIO_PrintLine(auxf)) ;
+	FileIO_Close(auxf);
+	rtrue;
+];
+
+@p Print Text.
+The following writes a given piece of text as the new content of the file,
+either as the whole file (if |append_flag| is false) or adding only to the
+end (if true).
+
+@c
+[ FileIO_PutContents auxf text append_flag  str ch;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return FileIO_Error(auxf, "tried to access a non-file");
+	if (auxf-->AUXF_BINARY)
+		return FileIO_Error(auxf, "writing text will not work with binary files");
+	str = FileIO_Open(auxf, true, append_flag);
+	if (str == 0) rfalse;
+	@push say__p; @push say__pc;
+	ClearParagraphing();
+	PrintText(text);
+	FileIO_Close(auxf);
+	@pull say__pc; @pull say__p;
+	rfalse;
+];
+
+@p Serialising Tables.
+The most important data structures to ``serialise'' -- that is, to convert
+from their binary representations in memory into text representations in an
+external file -- are Tables. Here we only carry out the file-handling; the
+actual translations are in ``Tables.i6t''.
+
+@c
+[ FileIO_PutTable auxf tab rv;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return FileIO_Error(auxf, "tried to write table to a non-file");
+	if (auxf-->AUXF_BINARY)
+		return FileIO_Error(auxf, "writing a table will not work with binary files");
+	if (FileIO_Open(auxf, true) == 0) rfalse;
+	rv = TablePrint(tab);
+	FileIO_Close(auxf);
+	if (rv) return RunTimeProblem(RTP_TABLE_CANTSAVE, tab);
+	rtrue;
+];
+
+[ FileIO_GetTable auxf tab;
+	if ((auxf == 0) || (auxf-->AUXF_MAGIC ~= AUXF_MAGIC_VALUE))
+		return FileIO_Error(auxf, "tried to read table from a non-file");
+	if (auxf-->AUXF_BINARY)
+		return FileIO_Error(auxf, "reading a table will not work with binary files");
+	if (FileIO_Open(auxf, false) == 0) rfalse;
+	TableRead(tab, auxf);
+	FileIO_Close(auxf);
+	rtrue;
+];
+
+@p Z-Machine Stubs.
+These routines do the minimum possible, but equally, they only generate a
+run-time problem when there is no alternative.
+
+@c
+#IFNOT; ! TARGET_GLULX
+[ FileIO_Exists auxf; rfalse; ];
+[ FileIO_Ready auxf; rfalse; ];
+[ FileIO_GetC auxf; return -1; ];
+[ FileIO_PutTable auxf tab;
+	return FileIO_Error(auxf, "external files can only be used under Glulx");
+];
+[ FileIO_MarkReady auxf status; FileIO_PutTable(auxf); ];
+[ FileIO_GetTable auxf tab; FileIO_PutTable(auxf); ];
+[ FileIO_PrintContents auxf; FileIO_PutTable(auxf); ];
+[ FileIO_PutContents auxf; FileIO_PutTable(auxf); ];
+#ENDIF; ! TARGET_GLULX

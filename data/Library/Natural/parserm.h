@@ -62,41 +62,6 @@ Global sline1;                      ! Must be second
 Global sline2;                      ! Must be third
                                     ! (for status line display)
 #endif; ! NI_BUILD_COUNT
-! ------------------------------------------------------------------------------
-!   I7 activity numbers
-! ------------------------------------------------------------------------------
-#ifdef NI_BUILD_COUNT;
-Constant PRINTNAME_ACT 0;
-Constant LISTCONTS_ACT 1;
-Constant GROUP_ACT 2;
-Constant STATUSLINE_ACT 3;
-Constant NONDESCRIPT_ACT 4;
-Constant SCOPE_ACT 5;
-Constant NONOUN_ACT 6;
-Constant NOSECOND_ACT 7;
-Constant COMMAND_ACT 8;
-Constant ALL_ACT 9;
-Constant OBITUARY_ACT 10;
-Constant AMUSING_ACT 11;
-Constant BANNER_ACT 12;
-Constant PLURALNAME_ACT 13;
-Constant CONCEALMENT_ACT 14;
-Constant TOODARK_ACT 15;
-Constant NOWDARK_ACT 16;
-Constant DARKNAME_ACT 17;
-Constant DARKDESC_ACT 18;
-Constant DETAILS_ACT 19;
-Constant PARSERERROR_ACT 20;
-Constant IMPLICITTAKE_ACT 21;
-Constant VERYEARLY_ACT 22;
-Constant CLARIFY_ACT 23;
-Constant WHICH_ACT 24;
-Constant PARAABOUT_ACT 25;
-
-Constant PARA_COMPLETED = 1;
-Constant PARA_LINEBREAK = 2;
-Constant PARA_FORCELINEBREAK = 4;
-#endif; ! NI_BUILD_COUNT
 
 ! ------------------------------------------------------------------------------
 !   Z-Machine and interpreter issues
@@ -237,6 +202,7 @@ Global item_name = "---";
 
 Global lm_n;                        ! Parameters used by LibraryMessages
 Global lm_o;                        ! mechanism
+Global lm_o2;                        ! mechanism
 
 #Ifdef DEBUG;
 Global debug_flag;                  ! Bitmap of flags for tracing actions,
@@ -605,17 +571,17 @@ Global old_herobj = NULL;           ! The object which is currently "her"
 Object  thedark "(darkness object)"
   with  initial 0,
         short_name
-        [;  BeginActivity(DARKNAME_ACT);
-            if (ForActivity(DARKNAME_ACT)==false) print (string) DARKNESS__TX;
-            EndActivity(DARKNAME_ACT);
+        [;  BeginActivity(PRINTING_NAME_OF_DARK_ROOM_ACT);
+            if (ForActivity(PRINTING_NAME_OF_DARK_ROOM_ACT)==false) print (string) DARKNESS__TX;
+            EndActivity(PRINTING_NAME_OF_DARK_ROOM_ACT);
                    rtrue;
         ],
         description
-        [;  BeginActivity(DARKDESC_ACT);
-            if (ForActivity(DARKDESC_ACT)==false) {
+        [;  BeginActivity(PRINTING_DESC_OF_DARK_ROOM_ACT);
+            if (ForActivity(PRINTING_DESC_OF_DARK_ROOM_ACT)==false) {
                 L__M(##Miscellany, 17); say__p = 1;
             }
-            EndActivity(DARKDESC_ACT);
+            EndActivity(PRINTING_DESC_OF_DARK_ROOM_ACT);
                    rtrue;
         ];
 #ifnot;
@@ -1157,9 +1123,9 @@ Object  InformParser "(Inform Parser)"
     if (nw == 0) {
         #ifdef NI_BUILD_COUNT;
         i = etype; etype = BLANKLINE_PE;
-        BeginActivity(PARSERERROR_ACT);
-           if (ForActivity(PARSERERROR_ACT) == false) L__M(##Miscellany,10);
-           EndActivity(PARSERERROR_ACT);
+        BeginActivity(PRINTING_A_PARSER_ERROR_ACT);
+           if (ForActivity(PRINTING_A_PARSER_ERROR_ACT) == false) L__M(##Miscellany,10);
+           EndActivity(PRINTING_A_PARSER_ERROR_ACT);
         etype = i;
         #ifnot;
         L__M(##Miscellany, 10);
@@ -1418,8 +1384,8 @@ Object  InformParser "(Inform Parser)"
   .ReType;
 
 #ifdef NI_BUILD_COUNT;
-	I7ResetChooseObjects();
-    BeginActivity(COMMAND_ACT); if (ForActivity(COMMAND_ACT)==false) {
+	RESET_PARSER_DISAMBIGUATION_R();
+    BeginActivity(READING_A_COMMAND_ACT); if (ForActivity(READING_A_COMMAND_ACT)==false) {
 #endif;
     Keyboard(buffer,parse);
 #ifdef NI_BUILD_COUNT;
@@ -1428,7 +1394,7 @@ Object  InformParser "(Inform Parser)"
   #ifnot; ! TARGET_GLULX
   I7_command = 100 + parse-->0;
   #endif; ! TARGET_
-    } if (EndActivity(COMMAND_ACT)) jump ReType;
+    } if (EndActivity(READING_A_COMMAND_ACT)) jump ReType;
 #endif;
 
   .ReParse;
@@ -2236,8 +2202,8 @@ Object  InformParser "(Inform Parser)"
     #ifdef NI_BUILD_COUNT;
     } else {
 		if (verb_wordnum == 0 && etype == CANTSEE_PE) etype = VERB_PE;
-        BeginActivity(PARSERERROR_ACT);
-        if (ForActivity(PARSERERROR_ACT)) jump SkipParserError;
+        BeginActivity(PRINTING_A_PARSER_ERROR_ACT);
+        if (ForActivity(PRINTING_A_PARSER_ERROR_ACT)) jump SkipParserError;
     }
     #endif;
     pronoun_word = pronoun__word; pronoun_obj = pronoun__obj;
@@ -2291,7 +2257,7 @@ Object  InformParser "(Inform Parser)"
     .SkipParserError;
     if ((etype ofclass Routine) || (etype ofclass String)) jump ReType;
     say__p = 1;
-    EndActivity(PARSERERROR_ACT);
+    EndActivity(PRINTING_A_PARSER_ERROR_ACT);
     #endif; ! NI_BUILD_COUNT
 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3163,8 +3129,8 @@ Global parsetoken_nesting = 0;
     ! out by Adjudicate() so as not to repeat ourselves on plural objects...
 
 	#ifdef NI_BUILD_COUNT;
-	BeginActivity(WHICH_ACT);
-	if (ForActivity(WHICH_ACT)) jump SkipWhichQuestion;
+	BeginActivity(ASKING_WHICH_DO_YOU_MEAN_ACT);
+	if (ForActivity(ASKING_WHICH_DO_YOU_MEAN_ACT)) jump SkipWhichQuestion;
 	#endif;
 
     if (context==CREATURE_TOKEN) L__M(##Miscellany, 45);
@@ -3188,7 +3154,7 @@ Global parsetoken_nesting = 0;
     L__M(##Miscellany, 57);
 
 	#ifdef NI_BUILD_COUNT;
-	.SkipWhichQuestion; EndActivity(WHICH_ACT);
+	.SkipWhichQuestion; EndActivity(ASKING_WHICH_DO_YOU_MEAN_ACT);
 	#endif;
 
     ! ...and get an answer:
@@ -3279,7 +3245,7 @@ Global parsetoken_nesting = 0;
     Tokenise__(buffer,parse);
     #Endif; ! V5
     #Endif; ! LanguageToInformese
-	FollowRulebookSelfed(Activity_after_rulebooks-->COMMAND_ACT);
+	FollowRulebookSelfed(Activity_after_rulebooks-->READING_A_COMMAND_ACT);
 	#Endif;
 
     return REPARSE_CODE;
@@ -3585,8 +3551,8 @@ Constant SCORE__DIVISOR = 20;
         for (j=BestGuess() : j~=-1 && i<indef_wanted && i+offset<63 : j=BestGuess()) {
             flag = 0;
             #ifdef NI_BUILD_COUNT;
-            BeginActivity(ALL_ACT, j);
-            if ((ForActivity(ALL_ACT, j)) == 0) {
+            BeginActivity(DECIDING_WHETHER_ALL_INC_ACT, j);
+            if ((ForActivity(DECIDING_WHETHER_ALL_INC_ACT, j)) == 0) {
             #endif; ! NI_BUILD_COUNT
 
                 if (j hasnt concealed && j hasnt worn) flag = 1;
@@ -3615,7 +3581,7 @@ Constant SCORE__DIVISOR = 20;
             } else {
                 flag = 0; if (RulebookSucceeded()) flag = 1;
             }
-            EndActivity(ALL_ACT, j);
+            EndActivity(DECIDING_WHETHER_ALL_INC_ACT, j);
             #endif; ! NI_BUILD_COUNT
             if (flag == 1) {
                 i++; multiple_object-->(i+offset) = j;
@@ -3981,11 +3947,11 @@ Constant SCORE__DIVISOR = 20;
 
 	#ifdef NI_BUILD_COUNT;
 	if (singleton_noun) {
-		BeginActivity(CLARIFY_ACT, pattern-->from);
-		if (ForActivity(CLARIFY_ACT, pattern-->from) == 0) {
+		BeginActivity(CLARIFYING_PARSERS_CHOICE_ACT, pattern-->from);
+		if (ForActivity(CLARIFYING_PARSERS_CHOICE_ACT, pattern-->from) == 0) {
 			print "("; PrintCommand(from); print ")^";
 		}
-		EndActivity(CLARIFY_ACT, pattern-->from);
+		EndActivity(CLARIFYING_PARSERS_CHOICE_ACT, pattern-->from);
 	} else {
 		print "("; PrintCommand(from); print ")^";
 	}
@@ -4197,8 +4163,8 @@ Constant SCORE__DIVISOR = 20;
     }
 
     #ifdef NI_BUILD_COUNT;
-    BeginActivity(SCOPE_ACT, actor);
-    if (ForActivity(SCOPE_ACT, actor)) jump SkipStdScope;
+    BeginActivity(DECIDING_SCOPE_ACT, actor);
+    if (ForActivity(DECIDING_SCOPE_ACT, actor)) jump SkipStdScope;
     #ifnot;
     ! Next, call any user-supplied routine adding things to the scope,
     ! which may circumvent the usual routines altogether if they return true:
@@ -4235,7 +4201,7 @@ Constant SCORE__DIVISOR = 20;
     
     .SkipStdScope;
     #ifdef NI_BUILD_COUNT;
-    EndActivity(SCOPE_ACT, actor);
+    EndActivity(DECIDING_SCOPE_ACT, actor);
     #endif;
 ];
 
@@ -4986,9 +4952,9 @@ Constant SCORE__DIVISOR = 20;
 Object  InformLibrary "(Inform Library)"
   with  play [ i j k l;
             #Ifdef NI_BUILD_COUNT;
-            ProcessRulebook(Activity_before_rulebooks-->VERYEARLY_ACT);
-            ProcessRulebook(Activity_when_rulebooks-->VERYEARLY_ACT);
-            ProcessRulebook(Activity_after_rulebooks-->VERYEARLY_ACT);
+            ProcessRulebook(Activity_before_rulebooks-->STARTING_VIRTUAL_MACHINE_ACT);
+            ProcessRulebook(Activity_when_rulebooks-->STARTING_VIRTUAL_MACHINE_ACT);
+            ProcessRulebook(Activity_after_rulebooks-->STARTING_VIRTUAL_MACHINE_ACT);
             #Endif;
 
             #Ifdef TARGET_ZCODE;
@@ -5273,9 +5239,9 @@ Object  InformLibrary "(Inform Library)"
             if (deadflag == 0) jump very__late__error;
 
             #ifdef NI_BUILD_COUNT;
-            CarryOutActivity(OBITUARY_ACT, 0);
+            CarryOutActivity(PRINTING_PLAYERS_OBITUARY_ACT, 0);
             #ifnot; ! NI_BUILD_COUNT;
-            OBIT_HEAD();
+            PRINT_OBITUARY_HEADLINE_R();
             ScoreSub();
             DisplayStatus();
             #endif; ! NI_BUILD_COUNT
@@ -5324,7 +5290,7 @@ Object  InformLibrary "(Inform Library)"
         ],
   has   proper;
 
-[ OBIT_HEAD;
+[ PRINT_OBITUARY_HEADLINE_R;
     print "^^    ";
     #Ifdef TARGET_ZCODE;
     #IfV5; style bold; #Endif; ! V5
@@ -5354,8 +5320,8 @@ Object  InformLibrary "(Inform Library)"
 ];
 
 #ifdef NI_BUILD_COUNT;
-[ OBIT_FINAL; #ifndef I7_NOSCORE; ScoreSub_O1(); #endif; rfalse; ];
-[ OBIT_DISP; DisplayStatus(); rfalse; ];
+[ PRINT_FINAL_SCORE_R; #ifndef I7_NOSCORE; ANNOUNCE_SCORE_R(); #endif; rfalse; ];
+[ DISPLAY_FINAL_STATUS_LINE_R; DisplayStatus(); rfalse; ];
 #endif; ! NI_BUILD_COUNT
 
 [ AdvanceWorldClock;
@@ -5466,7 +5432,7 @@ Object  InformLibrary "(Inform Library)"
     }
     #ifdef NI_BUILD_COUNT;
     if (deadflag == 2 && i == AMUSING__WD && I7_Amusing_Provided()) {
-        new_line; CarryOutActivity(AMUSING_ACT, 0);
+        new_line; CarryOutActivity(AMUSING_A_VICTORIOUS_PLAYER_ACT, 0);
         jump RRQPL;
     }
     #ifnot; ! NI_BUILD_COUNT;
@@ -5754,9 +5720,9 @@ Object  InformLibrary "(Inform Library)"
             NoteArrival();
             #ifdef NI_BUILD_COUNT;
             I7_DivideParagraph();
-            BeginActivity(NOWDARK_ACT);
-            if (ForActivity(NOWDARK_ACT) == false) L__M(##Miscellany, 9);
-            EndActivity(NOWDARK_ACT);
+            BeginActivity(PRINTING_NEWS_OF_DARKNESS_ACT);
+            if (ForActivity(PRINTING_NEWS_OF_DARKNESS_ACT) == false) L__M(##Miscellany, 9);
+            EndActivity(PRINTING_NEWS_OF_DARKNESS_ACT);
             rtrue;
             #ifnot;
             return L__M(##Miscellany, 9);
@@ -6980,7 +6946,7 @@ Array StorageForShortName -> 250 + WORDSIZE;
       String:   print "<string ~", (string) o, "~>"; rtrue;
       nothing:  print "<illegal object number ", o, ">"; rtrue;
     }
-    CarryOutActivity(PRINTNAME_ACT, o);
+    CarryOutActivity(PRINTING_THE_NAME_ACT, o);
 ];
 #ifnot; ! NI_BUILD_COUNT;
 [ PSN__ o; return I6_PSN__(o); ];

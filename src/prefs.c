@@ -85,10 +85,17 @@ static void populate_extension_lists(GtkWidget *thiswidget) {
                 g_free(extname);
                 continue;
             }
-            g_free(extname);
+            g_free(extname);         
             /* Read each file, but skip symlinks */
+            /* Remove .i7x from the filename, if it is there */
+            gchar *displayname;
+            if(g_str_has_suffix(author_entry, ".i7x"))
+                displayname = g_strndup(author_entry, strlen(author_entry) - 4);
+            else
+                displayname = g_strdup(author_entry);
             gtk_tree_store_append(store, &child_iter, &parent_iter);
-            gtk_tree_store_set(store, &child_iter, 0, author_entry, -1);
+            gtk_tree_store_set(store, &child_iter, 0, displayname, -1);
+            g_free(displayname);
         }
         g_dir_close(author);
     }
@@ -512,12 +519,6 @@ on_prefs_custom_font_font_set          (GtkFontButton   *fontbutton,
     }
     g_free(oldsetting);
     g_free(fontname);
-}
-
-static void
-select_style_scheme(void)
-{
-
 }
 
 void
