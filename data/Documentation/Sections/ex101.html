@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.14. Understanding things by their properties</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.20. Stored actions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,124 +19,188 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Aspect" -->
-<!-- SEARCH SECTION "Ex 276" -->
-<!-- SEARCH SORT "Ex 016-014-276" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc255.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc257.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.14. Understanding things by their properties</b></font></td></tr></table>
+<!-- SEARCH TITLE "Actor's Studio" -->
+<!-- SEARCH SECTION "Ex 210" -->
+<!-- SEARCH SORT "Ex 012-020-210" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc196.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc198.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.20. Stored actions</b></font></td></tr></table>
 <p>
-<p>Items are ordinarily understood only by their original given names. For instance, if we have:
+<p>As we have seen, to describe an action fully takes a complicated little bundle of information - we need to know what is to be done, who will do it, and what it will be done to. There are times when we would like to remember an action and look back on it later (perhaps many turns later, after many other actions have taken effect) - but this is not easy to do with only the techniques we have seen so far. There are quite a few cases to get right, and it would be easy to not store quite enough of the details.
 <p>
-<blockquote><font color="#000080">In the Herb Garden is a china pot.
+<p>Fortunately, Inform provides a kind of value called &quot;stored action&quot; which can do all of this automatically. As with most other kinds of value, stored actions can be held in variables, &quot;let&quot; values, properties or table columns. For example:
+<p>
+<blockquote><font color="#000080">The best idea yet is a stored action that varies.
 </font></blockquote><p>
 <p>
-<p>then the player could refer to this as &quot;pot&quot;, &quot;china pot&quot; or &quot;china&quot;. We can embellish this by adding extra forms:
+<p>creates a variable called &quot;the best idea yet&quot; which holds a stored action. This will normally be created holding the default value - the player waiting - but can instead be set explicitly:
 <p>
-<blockquote><font color="#000080">Understand &quot;chinese pot&quot; or &quot;chinese vase&quot; as the china pot.
+<blockquote><font color="#000080">The best idea yet is the action of pushing the button.
 </font></blockquote><p>
 <p>
-<p>But suppose the pot changes its nature in the course of play? If we have:
+<p>Note the words &quot;action of...&quot;, which convert any sufficiently exact description of an action into its stored action form.
 <p>
-<blockquote><font color="#000080">The china pot can be unbroken or broken. The china pot is unbroken. After dropping the china pot: say &quot;Crack!&quot;; now the china pot is broken; change the printed name of the pot to &quot;broken pot&quot;.
+<p>In rules and phrases, we can always obtain the action currently going on (if there is one) with the value &quot;current action&quot;:
+<p>
+<blockquote><font color="#000080">let the present whim be the current action;
 </font></blockquote><p>
 <p>
-<p>So now the player would reasonably expect to call it &quot;broken pot&quot;, a wording which would have been rejected before. We can achieve this by writing:
+<p>Moreover, just as we can &quot;try&quot; any action, so we can also try a stored one:
 <p>
-<blockquote><font color="#000080">Understand the unbroken property as describing the pot.
+<blockquote><font color="#000080">try the present whim;
+<br>silently try the present whim;
 </font></blockquote><p>
 <p>
-<p>which allows &quot;unbroken&quot; or &quot;broken&quot; to describe the pot, depending on its state. And, since the player might well use a different adjective but with the same idea in mind, we can even add:
+<p>would each work in the natural way. A stored action can do anything that actions can do: in particular, they remember, if necessary, the exact wording of the player's command at the time they were stored - so that even actions like &quot;looking up 'x100' in the code book&quot; will work if stored and tried on some future turn.
 <p>
-<blockquote><font color="#000080">Understand &quot;shattered&quot; or &quot;cracked&quot; or &quot;smashed&quot; as broken. Understand &quot;pristine&quot; as unbroken.
+<p>As with any other kind of value, we can also say a stored action, and this produces a fairly natural description of what the action is:
+<p>
+<blockquote><font color="#000080">Before doing something in the presence of the bearded psychiatrist: say &quot;'Zo, the subject wishes to engage in [the current action]. Zis is very interesting.'&quot;
 </font></blockquote><p>
 <p>
-<p>This is something of a toy example, but the feature looks rather more useful when there are more pots than just one:
+<p>will produce text such as:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode57(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Terracotta[=0x0022=][=0x000A=][=0x000A=]A flowerpot is a kind of thing. A flowerpot can be unbroken or broken. Understand the broken property as describing a flowerpot.[=0x000A=][=0x000A=]After dropping an unbroken flowerpot: say [=0x0022=]Crack![=0x0022=]; now the noun is broken; change the printed name of the noun to [=0x0022=]broken flowerpot[=0x0022=]; change the printed plural name of the noun to [=0x0022=]broken flowerpots[=0x0022=].[=0x000A=][=0x000A=]The Herb Garden is a room. In the Herb Garden are ten unbroken flowerpots.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode57()"><img border=0 src=../doc_images/paste.png></a> &quot;Terracotta&quot;
+<blockquote><font color="#000080">&quot;So, the subject vishes to engage in rubbing the fireman's pole. Zis is very interesting.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A flowerpot is a kind of thing. A flowerpot can be unbroken or broken. Understand the broken property as describing a flowerpot.
+<p>One of Inform's most convenient features is its ability to test if the action being processed matches vague or complicated descriptions of whole classes of actions. Now, it would not make sense to write
+<p>
+<blockquote><font color="#000080">if the best idea yet is the action of taking something, ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After dropping an unbroken flowerpot: say &quot;Crack!&quot;; now the noun is broken; change the printed name of the noun to &quot;broken flowerpot&quot;; change the printed plural name of the noun to &quot;broken flowerpots&quot;.
+<p>because &quot;action of ...&quot; has to make an exact action, which clearly this is not: so Inform will produce a problem message if we try. But we do not need to, because Inform also allows us to compare a stored action against any description of an action, however vague:
+<p>
+<blockquote><font color="#000080">if the best idea yet is taking something, ...
+<br>if the best idea yet is doing something to the lever, ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Herb Garden is a room. In the Herb Garden are ten unbroken flowerpots.
+<p>When dealing with stored actions, we sometimes want to know what they are dealing with. We can extract this information using the following phrases:
+<p>
+<blockquote><font color="#000080">action-name part of S
+<br>noun part of S
+<br>second noun part of S
+<br>actor part of S
 </font></blockquote><p>
 <p>
-<p>We then have the dialogue:
+<p>For example, if S is &quot;Algy trying throwing the brick at Biggles&quot; then saying these four values will produce
 <p>
-<blockquote><font color="#000080">Herb Garden
-<br>You can see ten flowerpots here.
-<br>>get two flowerpots
-<br>flowerpot: Taken.
-<br>flowerpot: Taken.
-<br>>drop all
-<br>flowerpot: Crack!
-<br>flowerpot: Crack!
-<br>>look
-<br>Herb Garden
-<br>You can see two broken flowerpots and eight flowerpots here.
-<br>>get an unbroken flowerpot
-<br>Taken.
+<blockquote><font color="#000080">throwing it at
+<br>brick
+<br>Biggles
+<br>Algy
 </font></blockquote><p>
 <p>
-<p>and so on and so forth.
+<p>Should the action be one which does not involve objects, the noun and second noun may be &quot;nothing&quot;: for instance if S is &quot;setting the dial to 3417&quot; then the noun part of S is the dial but the second noun part is nothing. (This has to be true, as otherwise Inform could never know what kind of value &quot;the noun part of S&quot; would have.)
 <p>
-<p>There are in fact two slightly different forms of this kind of sentence:
+<p>As a convenience, the condition
 <p>
-<blockquote><font color="#000080">Understand the broken property as describing a flowerpot.
-<br>Understand the broken property as referring to a flowerpot.
+<blockquote><font color="#000080">if S involves X, ...
 </font></blockquote><p>
 <p>
-<p>The only difference is that in the &quot;describing&quot; case, the property's name alone can mean the thing in question - so &quot;take unbroken&quot; will work; whereas, in the &quot;referring to&quot;, the property's name can only be used as an adjective preceding the name of thing itself - so &quot;take unbroken flowerpot&quot; will work but &quot;take unbroken&quot; will not.
+<p>is true if the object X appears as any of the actor, the noun or the second noun: for instance,
+<p>
+<blockquote><font color="#000080">if the current action involves Algy
+</font></blockquote><p>
+<p>
+<p>would be true for &quot;give revolver to Algy&quot;, &quot;Algy trying flying the Sopwith Camel&quot;, &quot;examine Algy&quot; and so on, but false for &quot;ask Raymond about secret airfield&quot;.
 <p>
 <p><hr><p>
+<a name="e186"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex186.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>208</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex186.html#e186 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cactus Will Outlive Us All</font></b></a><br>For every character besides the player, there is an action that will cause that character to wither right up and die.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex186.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e191"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex191.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>209</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex191.html#e191 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bosch</font></b></a><br>Creating a list of actions that will earn the player points, and using this both to change the score and to give FULL SCORE reports.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex191.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e101"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc256.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>276</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc256.html#e101 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Aspect</font></b></a><br>Understanding aspect ratios (a unit) in the names of televisions.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex101.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e101"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc197.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>210</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc197.html#e101 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Actor's Studio</font></b></a><br>A video camera that records actions performed in its presence, and plays them back with time-stamps.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex101.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Named properties are not the only kind that Inform is able to understand referring to an object. We can also use unit and number properties to distinguish things from one another, as here, where televisions have aspect ratios:
+<p>Here we construct a video camera to track and play back actions:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode363(code) {
+function pasteCode307(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Aspect[=0x0022=][=0x000A=][=0x000A=]An aspect ratio is a kind of value. 16:9 specifies an aspect ratio.[=0x000A=][=0x000A=]A television is a kind of device. A television has an aspect ratio. Understand the aspect ratio property as referring to a television. Understand [=0x0022=]European standard[=0x0022=] as 16:9.[=0x000A=][=0x000A=]The Office is a room.[=0x000A=][=0x000A=]The widescreen TV is a television in the Office. The fifties TV is a television in the Office. The widescreen TV is 16:9. The fifties TV is 4:3.[=0x000A=][=0x000A=]Test me with [=0x0022=]examine european standard tv / x 16:9 tv / x 4:3 tv[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]The Actor[=0x0027=]s Studio[=0x0022=][=0x000A=][=0x000A=]Section 1 - The Video Camera[=0x000A=][=0x000A=]The video camera is a thing carried by the player.[=0x000A=][=0x000A=]Table of Videotape[=0x000A=]recorded action[=0x0009=]time stamp[=0x000A=]waiting[=0x0009=]9:00 AM[=0x000A=]with 25 blank rows.[=0x000A=][=0x000A=]Mode is a kind of value. The modes are idle, recording, and playing back. The video camera has a mode. The video camera is idle.[=0x000A=][=0x000A=]Understand [=0x0022=]play back[=0x0022=] as playing back. Instead of switching on the camera, try tuning the camera to recording. Instead of switching off the camera, try tuning the camera to idle.[=0x000A=][=0x000A=]The description of the video camera is [=0x0022=]It is currently [mode]; its available settings are idle, recording, and playing back.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]set [camera] to [a mode][=0x0022=] as tuning it to. Tuning it to is an action applying to one thing and one mode.[=0x000A=][=0x000A=]Instead of setting the camera to something:[=0x000A=][=0x0009=]say [=0x0022=]The available settings are idle, recording, and playing back.[=0x0022=][=0x000A=][=0x000A=]Check tuning it to:[=0x000A=][=0x0009=]if the noun is not the camera, say [=0x0022=]Only the video camera can be set to [the mode understood].[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out tuning it to:[=0x000A=][=0x0009=]now the mode of the noun is the mode understood.[=0x000A=][=0x000A=]Report tuning it to:[=0x000A=][=0x0009=]say [=0x0022=]You set [the noun] to [mode understood].[=0x0022=][=0x000A=][=0x000A=]After an actor doing something when the video camera is recording:[=0x000A=][=0x0009=]if the current action is the action of tuning the video camera to recording, make no decision;[=0x000A=][=0x0009=]if the number of blank rows in the Table of Videotape is greater than zero:[=0x000A=][=0x0009=][=0x0009=]choose a blank row in the Table of Videotape;[=0x000A=][=0x0009=][=0x0009=]change the recorded action entry to the current action;[=0x000A=][=0x0009=][=0x0009=]change the time stamp entry to the time of day;[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]now the video camera is idle;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]The video camera runs out of recording memory and switches off.[=0x0022=];[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]Every turn when the video camera is playing back:[=0x000A=][=0x0009=]say [=0x0022=]On the camera screen, you see [run paragraph on][=0x0022=];[=0x000A=][=0x0009=]let starting playback be false;[=0x000A=][=0x0009=]repeat through the Table of Videotape:[=0x000A=][=0x0009=][=0x0009=]if the recorded action entry is not waiting:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]now starting playback is true;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][line break] -- [if the actor part of the recorded action entry is the player]you [end if][the recorded action entry], time stamped at [time stamp entry][=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]blank out the whole row;[=0x000A=][=0x0009=]if starting playback is false, say [=0x0022=]only static.[=0x0022=];[=0x000A=][=0x0009=]otherwise say paragraph break.[=0x000A=][=0x000A=]Section 2 - The Scenario[=0x000A=][=0x000A=]The Actor[=0x0027=]s Studio is a room. Lucas is a man in the Actor[=0x0027=]s Studio. Persuasion rule: persuasion succeeds.[=0x000A=][=0x000A=]The Studio contains an edible thing called a croissant.[=0x000A=][=0x000A=]Test me with [=0x0022=]set camera to recording / x lucas / lucas, take inventory / lucas, eat croissant / set camera to playing back / z[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode363()"><img border=0 src=../doc_images/paste.png></a> &quot;Aspect&quot;
+<a href="javascript:pasteCode307()"><img border=0 src=../doc_images/paste.png></a> &quot;The Actor's Studio&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">An aspect ratio is a kind of value. 16:9 specifies an aspect ratio.
+<blockquote><font color="#000080">Section 1 - The Video Camera
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A television is a kind of device. A television has an aspect ratio. Understand the aspect ratio property as referring to a television. Understand &quot;European standard&quot; as 16:9.
+<blockquote><font color="#000080">The video camera is a thing carried by the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Office is a room.
+<blockquote><font color="#000080">Table of Videotape
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">recorded action</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">time stamp</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">waiting</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">9:00 AM</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">with 25 blank rows.</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The widescreen TV is a television in the Office. The fifties TV is a television in the Office. The widescreen TV is 16:9. The fifties TV is 4:3.
+<blockquote><font color="#000080">Mode is a kind of value. The modes are idle, recording, and playing back. The video camera has a mode. The video camera is idle.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;examine european standard tv / x 16:9 tv / x 4:3 tv&quot;.
+<blockquote><font color="#000080">Understand &quot;play back&quot; as playing back. Instead of switching on the camera, try tuning the camera to recording. Instead of switching off the camera, try tuning the camera to idle.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc256.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">The description of the video camera is &quot;It is currently [mode]; its available settings are idle, recording, and playing back.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;set [camera] to [a mode]&quot; as tuning it to. Tuning it to is an action applying to one thing and one mode.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of setting the camera to something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The available settings are idle, recording, and playing back.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check tuning it to:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not the camera, say &quot;Only the video camera can be set to [the mode understood].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out tuning it to:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the mode of the noun is the mode understood.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report tuning it to:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You set [the noun] to [mode understood].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After an actor doing something when the video camera is recording:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current action is the action of tuning the video camera to recording, make no decision;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of blank rows in the Table of Videotape is greater than zero:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose a blank row in the Table of Videotape;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the recorded action entry to the current action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the time stamp entry to the time of day;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the video camera is idle;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The video camera runs out of recording memory and switches off.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when the video camera is playing back:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;On the camera screen, you see [run paragraph on]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let starting playback be false;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Videotape:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the recorded action entry is not waiting:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now starting playback is true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break] -- [if the actor part of the recorded action entry is the player]you [end if][the recorded action entry], time stamped at [time stamp entry]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if starting playback is false, say &quot;only static.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say paragraph break.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Section 2 - The Scenario
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Actor's Studio is a room. Lucas is a man in the Actor's Studio. Persuasion rule: persuasion succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Studio contains an edible thing called a croissant.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;set camera to recording / x lucas / lucas, take inventory / lucas, eat croissant / set camera to playing back / z&quot;.
+</font></blockquote><p>
+<p>
+<p>Notice that both Lucas' implied taking action (picking up the croissant) and his eating action are recorded on the same move.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc197.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e245"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex245.html#e245 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>277</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex245.html#e245 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hymenaeus</font></b></a><br>Understanding "flaming torch" and "extinguished torch" to refer to torches when lit and unlit.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex245.html#e245 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e206"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex206.html#e206 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>278</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex206.html#e206 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Terracottissima</font></b></a><br>The flowerpots once again, but this time arranged so that after the first breakage all undamaged pots are said to be "unbroken", to distinguish them from the others.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex206.html#e206 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e294"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex294.html#e294 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>279</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex294.html#e294 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Peers</font></b></a><br>The peers of the English realm come in six flavours - Baron, Viscount, Earl, Marquess, Duke and Prince - and must always be addressed properly. While a peerage is for life, it may at the royal pleasure be promoted.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex294.html#e294 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e324"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex324.html#e324 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>280</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex324.html#e324 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Channel 1</font></b></a><br>Understanding channels (a number) in the names of televisions.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex324.html#e324 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e199"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex199.html#e199 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>281</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex199.html#e199 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Channel 2</font></b></a><br>Understanding channels (a number) in the names of televisions, with more sophisticated parsing of the change channel action.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex199.html#e199 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e25"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex25.html#e25 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>282</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex25.html#e25 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Tilt 1</font></b></a><br>A deck of cards with fully implemented individual cards, which can be separately drawn and discarded, and referred to by name.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex25.html#e25 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e338"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex338.html#e338 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>283</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex338.html#e338 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Terracottissima Maxima</font></b></a><br>Flowerpots with textual names that might change during play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex338.html#e338 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc255.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc257.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e83"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>211</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex83.html#e83 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Anteaters</font></b></a><br>The player carries a gizmo that is able to record actions performed by the player, then force him to repeat them when the gizmo is dropped. This includes storing actions that apply to topics, as in "look up anteater colonies in the guide".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc196.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc198.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

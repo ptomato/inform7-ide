@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.13. Grouping together something</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.6. Activity variables</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,40 +19,27 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Grouping together something" -->
-<!-- SEARCH SECTION "17.13" -->
-<!-- SEARCH SORT "017-013-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc274.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc276.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.13. Grouping together something</b></font></td></tr></table>
+<!-- SEARCH TITLE "Activity variables" -->
+<!-- SEARCH SECTION "17.6" -->
+<!-- SEARCH SORT "017-006-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc274.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc276.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.6. Activity variables</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> Only while listing contents, and only when a collection of items to be grouped together is reached. This in turn happens only if a &quot;before listing contents&quot; rule has chosen it (see previous section). The first item in the group is the one to which the activity formally applies.
+<p>Just as actions can have variables, which are created when the action starts and disappear when it finishes, so activities can also have variables. They are visible to the rules for that activity, and nowhere else. (If the activity should happen a second time within its first run, that second occurrence gets its own copy of the variable, leaving the original untouched.)
 <p>
-<p><b>2. The default behaviour.</b> The items grouped together are printed in an English phrase, such as &quot;egg, chicken and farmer&quot;. In particular, they are not split onto separate lines even if the rest of the list is. (See previous section.)
+<p>Typically it will be useful to set a variable to some default value at the &quot;before&quot; stage, calculate some interesting value for it in the &quot;for&quot; stage, and make use of the outcome during the &quot;after&quot; stage. For instance:
 <p>
-<p><b>3. Examples.</b> (a) Here are Scrabble pieces which are described as &quot;the tile W from a Scrabble set&quot; or similar outside of lists, but which, when they turn up together in lists, are rolled together into &quot;the tiles A, B and D from a Scrabble set&quot;.
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode59(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('A Scrabble piece is a kind of thing. The X, the Y and the Z are Scrabble pieces.[=0x000A=][=0x000A=]Before listing contents: group Scrabble pieces together.[=0x000A=][=0x000A=]Before printing the name of a Scrabble piece while not grouping together, say [=0x0022=]tile [=0x0022=]. After printing the name of a Scrabble piece while not grouping together, say [=0x0022=] from a Scrabble set[=0x0022=].[=0x000A=][=0x000A=]Before grouping together Scrabble pieces, say [=0x0022=]the tiles [=0x0022=]. After grouping together Scrabble pieces, say [=0x0022=] from a Scrabble set[=0x0022=].[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode59()"><img border=0 src=../doc_images/paste.png></a> A Scrabble piece is a kind of thing. The X, the Y and the Z are Scrabble pieces.
+<blockquote><font color="#000080">Analysing something is an activity. The analysing activity has a text called first impression. Instead of examining something (called the sample), carry out the analysing activity with the sample.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before listing contents: group Scrabble pieces together.
+<blockquote><font color="#000080">Before analysing: now the first impression is &quot;unremarkable&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before printing the name of a Scrabble piece while not grouping together, say &quot;tile &quot;. After printing the name of a Scrabble piece while not grouping together, say &quot; from a Scrabble set&quot;.
+<blockquote><font color="#000080">Rule for analysing someone: now the first impression is &quot;living tissue&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before grouping together Scrabble pieces, say &quot;the tiles &quot;. After grouping together Scrabble pieces, say &quot; from a Scrabble set&quot;.
-</font></blockquote><p>
-<p>
-<p>(b) We can throw out all pretence at listing and say whatever we like, in fact:
-<p>
-<blockquote><font color="#000080">Before listing contents while taking inventory: group utensils together. Rule for grouping together utensils: say &quot;the usual utensils&quot;.
+<blockquote><font color="#000080">After analysing something (called the sample):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your professional opinion of [the sample] is that it is
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[first impression].&quot;
 </font></blockquote><p>
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc274.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc276.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

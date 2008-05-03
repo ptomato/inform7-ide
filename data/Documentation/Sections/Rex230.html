@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.4. Barter and Exchange</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.16. Clarification and Correction</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,125 +19,107 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "Bribery" -->
-<!-- SEARCH SECTION "Ex 337" -->
-<!-- SEARCH SORT "Ex 007-004-337" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc42.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap7.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 7: Other Characters</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc44.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.4. Barter and Exchange</b></font></td></tr></table>
+<!-- SEARCH TITLE "Cave-troll" -->
+<!-- SEARCH SECTION "Ex 390" -->
+<!-- SEARCH SORT "Ex 006-016-390" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc41.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap6.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 6: Commands</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc43.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.16. Clarification and Correction</b></font></td></tr></table>
 <p>
-<p>By default, Inform characters are a bit grudging about giving and sharing objects: they react with disinterest when they're shown things and refuse everything they're offered.
+<p>Some commands and some objects raise special challenges when it comes to working out the player's intention.
 <p>
-<p>If we'd like to change this, we can simply remove the default &quot;block giving&quot; rule, as in
+<p>Sometimes this can be done with good rules about the assumptions Inform should make. <b>Alpaca Farm</b> demonstrates a USE command, always a challenge because USE can mean very different actions with different items.
 <p>
-<blockquote><font color="#000080">The block giving rule is not listed in the check giving it to rules.
+<p>There are also times when we need to ask the player for more information. <b>Apples</b> demonstrates how sensibly to use properties to disambiguate between similar objects, while <b>Walls and Noses</b> rephrases the disambiguation question when special objects are involved: examining one of the walls of the room will make the game ask &quot;In which direction?&quot; and EXAMINE NOSE will lead to &quot;Whose nose do you mean, Frederica's, Betty's, Wilma's or your own?&quot;
+<p>
+<p>At other times, the player types something that is wrong in a predictable way: for instance, we might want to remove all the &quot;with...&quot; phrases from commands like
+<p>
+<blockquote><font color="#000080">HIT DOOR WITH FIST
+<br>KICK DRAGON WITH FOOT
+<br>LOOK WEST WITH EYES
 </font></blockquote><p>
 <p>
-<p>If we do this, giving items to characters will have the result of moving our possessions to the other person's inventory. Of course, without more customization, the player may not ever be able to persuade the other character to return his possessions. <b>Bribery</b> demonstrates a scenario in which a character will accept gifts if they are interesting to him, and respond with a changed attitude to the player.
+<p>and merely parse the remainder of the command. (That last command may be unlikely, but novice players do quite often type commands that refer unnecessarily to body parts.) <b>Cave-troll</b> demonstrates how.
 <p>
-<p><b>Barter Barter</b> expands further on this by allowing other characters to trade things with one another.
+<p><b>WXPQ</b> demonstrates how to modify the error message the parser gives in response to a command it doesn't understand; this particular example focuses on the &quot;That noun doesn't make sense in this context&quot; message that arises from using the &quot;[any thing]&quot; or &quot;[any room]&quot; tokens, but the techniques could be adapted to handling other parser errors as well.
 <p>
-<a href=Rdoc63.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Money</b></font></a><i> for ways to keep track of cash flow, physical money objects, and price negotiations</i><p><p>
+<p>For catching typing errors, Cedric Knight's extension Mistype may also be of use: it provides an automatic typo-correction function that the player can turn on or off.
+<p>
 <p><hr><p>
+<a name="e219"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex219.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>264</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex219.html#e219 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alpaca Farm</font></b></a><br>A generic USE action which behaves sensibly with a range of different objects.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex219.html#e219 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e269"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex269.html#e269 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>336</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex269.html#e269 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Apples</font></b></a><br>Prompting the player on how to disambiguate otherwise similar objects.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex269.html#e269 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e307"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex307.html#e307 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>337</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex307.html#e307 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Walls and Noses</font></b></a><br>Responding to "EXAMINE WALL" with "In which direction?", and to "EXAMINE NOSE" with "Whose nose do you mean, Frederica's, Betty's, Wilma's or your own?"<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex307.html#e307 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e230"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc43.html#e230 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>337</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc43.html#e230 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bribery</font></b></a><br>A GIVE command that gets rid of Inform's default refusal message in favor of something a bit more sophisticated.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex230.html#e230 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e230"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc42.html#e230 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>390</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc42.html#e230 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Cave-troll</font></b></a><br>Determining that the command the player typed is invalid, editing it, and re-examining it to see whether it now reads correctly.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex230.html#e230 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>If we want to rewrite the functionality of a command that usually ends with a &quot;block...&quot; rule, we will have to begin by turning the blocking off.
+<p>Novice players of interactive fiction, unfamiliar with its conventions, will often try to add extra phrases to a command that the game cannot properly parse: HIT DOOR WITH FIST, for instance, instead of HIT DOOR.
+<p>
+<p>While we can deal with some of these instances by expanding our range of actions, at some point it becomes impossible to account for all the possible prepositional phrases that the player might want to tack on. So what do we do if we want to handle those appended bits of text sensibly?
+<p>
+<p>We could go through and remove any piece of text containing &quot;with ...&quot; from the end of a player's command; the problem with that is that it overzealously lops off the ends of valid commands like UNLOCK DOOR WITH KEY, as well. So clearly we don't want to do this as part of the &quot;After reading a command...&quot; stage.
+<p>
+<p>A better time to cut off the offending text is right before issuing a parser error. At that point, Inform has already determined that it definitely cannot parse the instruction as given, so we know that there's something wrong with it.
+<p>
+<p>The next problem, though, is that after we've edited the player's text we want to feed the corrected version back to Inform and try once more to interpret it.
+<p>
+<p>This is where we have a valid reason to write a new &quot;rule for reading a command&quot;. We will tell Inform that when we have just corrected the player's input to something new, it should not ask for a new command (by printing a prompt and waiting for another line of input); it should instead paste our stored corrected command back into &quot;the player's command&quot; and proceed as though that new text had just been typed.
+<p>
+<p>Thanks to John Clemens for the specifics of the implementation.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode832(code) {
+function pasteCode920(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Bribery[=0x0022=][=0x000A=][=0x000A=]The block giving rule is not listed in the check giving it to rules.[=0x000A=][=0x000A=][As it happens, correct behavior is built into the GIVE command once [=0x0022=]block giving[=0x0022=] is turned off, so we do not have to write a replacement report or carry-out rule; the object will be transferred to the possession of the caterpillar. But we do want to adjust the action just a little so that our gift cheers up the recipient:][=0x000A=][=0x000A=]Carry out giving (this is the gratitude for gifts rule): improve the mood of the second noun.[=0x000A=][=0x000A=]Mood is a kind of value. The moods are hostile, suspicious, indifferent, friendly, and adoring. An animal has a mood. An animal is usually indifferent.[=0x000A=][=0x000A=]To improve the mood of (character - an animal):[=0x000A=][=0x0009=]if the mood of character is less than friendly, change the mood of the character to the mood after the mood of the character.[=0x000A=][=0x000A=][Now whenever we give something to an animal, the animal will be pleased about the present. Of course, we might also want to add a check rule to giving, to see whether the offering is something the recipient really wants:][=0x000A=][=0x000A=]Check giving (this is the polite refusal of unwanted objects rule):[=0x000A=][=0x0009=]if the noun interests the second noun[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]do nothing;[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The second noun] disdainfully refuses [the noun].[=0x0022=] instead;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]To decide whether (item - a thing) interests (character - a person):[=0x000A=][=0x0009=]if the character has the item, no;[=0x000A=][=0x0009=]if the item is edible, yes;[=0x000A=][=0x0009=]no.[=0x000A=][=0x000A=]Instead of showing something to someone:[=0x000A=]try giving the noun to the second noun.[=0x000A=][=0x000A=][There is already a perfectly workable report rule that will describe what happens when we give something to someone, but let[=0x0027=]s say we want to report on the recipient[=0x0027=]s changed mood, too:][=0x000A=][=0x000A=]After giving something to someone:[=0x000A=][=0x0009=]say [=0x0022=]You give [the noun] to [the second noun], who appears mollified and is now merely [mood of the second noun].[=0x0022=][=0x000A=][=0x000A=][And the rest is all scenario:][=0x000A=][=0x000A=]The Leafy Branch is a room. [=0x0022=]You stand on smooth bark dappled by sunlight. The scent-trail runs forward to home.[=0x000A=][=0x000A=]The branch continues forward and backward from here, and a stem extends forward-up.[=0x0022=][=0x000A=][=0x000A=]Instead of going south in Leafy Branch, say [=0x0022=]You must not back down! The scent trail leads onward![=0x0022=][=0x000A=][=0x000A=]The Very Hungry Caterpillar is a hostile animal in the Leafy Branch. [=0x0022=][The Caterpillar] looks [mood].[=0x0022=] Instead of examining the Caterpillar, say [=0x0022=][The caterpillar] appears [mood].[=0x0022=][=0x000A=][=0x000A=]The player carries an edible thing called a peanut crumb. The carrying capacity of the player is 1. After taking something, say [=0x0022=]You lift [the noun], though it is nearly your own size.[=0x0022=][=0x000A=][=0x000A=]Instead of going north in the presence of a hostile caterpillar:[=0x000A=][=0x0009=]say [=0x0022=][The Caterpillar] moves to block your exit, glaring down at you with all the bristles on its skin extended to full size.[=0x0022=][=0x000A=][=0x000A=]Instead of going north in the presence of a suspicious caterpillar:[=0x000A=][=0x0009=]say [=0x0022=][The Caterpillar] moves to block your exit, though it might allow you past if you offered further tribute.[=0x0022=][=0x000A=][=0x000A=]The Leaf Face is above the branch. [=0x0022=]The smooth and shiny surface of the leaf extends forward from here, but you have lost the scent-trail. This is not the way home.[=0x0022=]  The pear fragment is an edible thing in Leaf Face. The dead aphid is a thing in Leaf Face.[=0x000A=][=0x000A=]The Twig is north of Leafy Branch. [=0x0022=]The scent-trail is weak but not entirely gone, and you pursue it faithfully...[=0x0022=][=0x000A=][=0x000A=]After going to the Twig:[=0x000A=][=0x0009=]say [=0x0022=]The scent-trail is weak but not entirely gone, and you pursue it faithfully...[=0x0022=];[=0x000A=][=0x0009=]end the game in victory.[=0x000A=][=0x000A=]Understand [=0x0022=]forward-up[=0x0022=] as up. Understand [=0x0022=]forward[=0x0022=] as north. Understand [=0x0022=]backward[=0x0022=] as south.  Understand [=0x0022=]backward-down[=0x0022=] as down.[=0x000A=][=0x000A=]Test me with [=0x0022=]forward / give crumb to caterpillar / forward / forward-up / get aphid / get fragment / down / give aphid to caterpillar / drop aphid / forward-up / get fragment / down / give fragment / forward[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Cave-troll[=0x0022=] by JDC[=0x000A=][=0x000A=]Section 1 - The Mechanism[=0x000A=][=0x000A=]The last command is an indexed text that varies.[=0x000A=][=0x000A=]The parser error flag is a truth state that varies. The parser error flag is false.[=0x000A=][=0x000A=]Rule for printing a parser error when the parser error is only understood as far as and the player[=0x0027=]s command matches the text [=0x0022=]with[=0x0022=]:[=0x000A=][=0x0009=]change the last command to the player[=0x0027=]s command;[=0x000A=][=0x0009=]change the parser error flag to true;[=0x000A=][=0x0009=]let n be indexed text;[=0x000A=][=0x0009=]let n be the player[=0x0027=]s command;[=0x000A=][=0x0009=]replace the regular expression [=0x0022=].* with (.*)[=0x0022=] in n with [=0x0022=]with [=0x005C=]1[=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=](ignoring the unnecessary words [=0x0027=][n][=0x0027=])[line break][=0x0022=];[=0x000A=][=0x0009=]replace the regular expression [=0x0022=]with .*[=0x0022=] in the last command with [=0x0022=][=0x0022=].[=0x000A=][=0x000A=]Rule for reading a command when the parser error flag is true:[=0x000A=][=0x0009=]change the parser error flag to false;[=0x000A=][=0x0009=]change the text of the player[=0x0027=]s command to the last command.[=0x000A=][=0x000A=]Section 2 - The Scenario[=0x000A=][=0x000A=]The Cave is a room.[=0x000A=][=0x000A=]The troll is a man in the cave.[=0x000A=][=0x000A=]The player carries a sword.[=0x000A=][=0x000A=]The chest is a locked lockable container in the cave.[=0x000A=][=0x000A=]Test me with [=0x0022=]attack troll with sword / unlock chest with sword / attack troll as a test[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode832()"><img border=0 src=../doc_images/paste.png></a> &quot;Bribery&quot;
+<a href="javascript:pasteCode920()"><img border=0 src=../doc_images/paste.png></a> &quot;Cave-troll&quot; by JDC
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The block giving rule is not listed in the check giving it to rules.
+<blockquote><font color="#000080">Section 1 - The Mechanism
 </font></blockquote><p>
 <p>
-<p>As it happens, correct behavior is built into the GIVE command once &quot;block giving&quot; is turned off, so we do not have to write a replacement report or carry-out rule; the object will be transferred to the possession of the caterpillar. But we do want to adjust the action just a little so that our gift cheers up the recipient:
-<p>
-<blockquote><font color="#000080">Carry out giving (this is the gratitude for gifts rule): improve the mood of the second noun.
+<blockquote><font color="#000080">The last command is an indexed text that varies.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Mood is a kind of value. The moods are hostile, suspicious, indifferent, friendly, and adoring. An animal has a mood. An animal is usually indifferent.
+<blockquote><font color="#000080">The parser error flag is a truth state that varies. The parser error flag is false.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To improve the mood of (character - an animal):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the mood of character is less than friendly, change the mood of the character to the mood after the mood of the character.
+<blockquote><font color="#000080">Rule for printing a parser error when the parser error is only understood as far as and the player's command matches the text &quot;with&quot;:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last command to the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the parser error flag to true;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let n be indexed text;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let n be the player's command;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;replace the regular expression &quot;.* with (.*)&quot; in n with &quot;with \1&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(ignoring the unnecessary words '[n]')[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;replace the regular expression &quot;with .*&quot; in the last command with &quot;&quot;.
 </font></blockquote><p>
 <p>
-<p>Now whenever we give something to an animal, the animal will be pleased about the present. Of course, we might also want to add a check rule to giving, to see whether the offering is something the recipient really wants:
-<p>
-<blockquote><font color="#000080">Check giving (this is the polite refusal of unwanted objects rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun interests the second noun
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;do nothing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The second noun] disdainfully refuses [the noun].&quot; instead;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Rule for reading a command when the parser error flag is true:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the parser error flag to false;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the text of the player's command to the last command.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To decide whether (item - a thing) interests (character - a person):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the character has the item, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is edible, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+<blockquote><font color="#000080">Section 2 - The Scenario
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of showing something to someone:
-<br>try giving the noun to the second noun.
+<blockquote><font color="#000080">The Cave is a room.
 </font></blockquote><p>
 <p>
-<p>There is already a perfectly workable report rule that will describe what happens when we give something to someone, but let's say we want to report on the recipient's changed mood, too:
-<p>
-<blockquote><font color="#000080">After giving something to someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You give [the noun] to [the second noun], who appears mollified and is now merely [mood of the second noun].&quot;
+<blockquote><font color="#000080">The troll is a man in the cave.
 </font></blockquote><p>
 <p>
-<p>And the rest is all scenario:
-<p>
-<blockquote><font color="#000080">The Leafy Branch is a room. &quot;You stand on smooth bark dappled by sunlight. The scent-trail runs forward to home.
+<blockquote><font color="#000080">The player carries a sword.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The branch continues forward and backward from here, and a stem extends forward-up.&quot;
+<blockquote><font color="#000080">The chest is a locked lockable container in the cave.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going south in Leafy Branch, say &quot;You must not back down! The scent trail leads onward!&quot;
+<blockquote><font color="#000080">Test me with &quot;attack troll with sword / unlock chest with sword / attack troll as a test&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Very Hungry Caterpillar is a hostile animal in the Leafy Branch. &quot;[The Caterpillar] looks [mood].&quot; Instead of examining the Caterpillar, say &quot;[The caterpillar] appears [mood].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The player carries an edible thing called a peanut crumb. The carrying capacity of the player is 1. After taking something, say &quot;You lift [the noun], though it is nearly your own size.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going north in the presence of a hostile caterpillar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The Caterpillar] moves to block your exit, glaring down at you with all the bristles on its skin extended to full size.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of going north in the presence of a suspicious caterpillar:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The Caterpillar] moves to block your exit, though it might allow you past if you offered further tribute.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Leaf Face is above the branch. &quot;The smooth and shiny surface of the leaf extends forward from here, but you have lost the scent-trail. This is not the way home.&quot;  The pear fragment is an edible thing in Leaf Face. The dead aphid is a thing in Leaf Face.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Twig is north of Leafy Branch. &quot;The scent-trail is weak but not entirely gone, and you pursue it faithfully...&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After going to the Twig:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The scent-trail is weak but not entirely gone, and you pursue it faithfully...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;forward-up&quot; as up. Understand &quot;forward&quot; as north. Understand &quot;backward&quot; as south.  Understand &quot;backward-down&quot; as down.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;forward / give crumb to caterpillar / forward / forward-up / get aphid / get fragment / down / give aphid to caterpillar / drop aphid / forward-up / get fragment / down / give fragment / forward&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc43.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>A caveat about using this method in a larger game: &quot;parser error flag&quot; will not automatically control the behavior of any rules we might have written for Before reading a command... or After reading a command..., so they may now fire at inappropriate times. It is a good idea to check for parser error flag in those rules as well.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc42.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e298"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex298.html#e298 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>192</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex298.html#e298 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Barter Barter</font></b></a><br>Allowing characters other than the player to give objects to one another, accounting for the possibility that some items may not be desired by the intended recipients.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex298.html#e298 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc42.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc44.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e141"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex141.html#e141 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>345</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex141.html#e141 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> WXPQ</font></b></a><br>Creating a more sensible parser error than "that noun did not make sense in this context".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex141.html#e141 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc41.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc43.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

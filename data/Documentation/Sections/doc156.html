@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.3. Pattern matching</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.10. Review of Chapter 10: Scenes</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,57 +19,59 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Pattern matching" -->
-<!-- SEARCH SECTION "11.3" -->
-<!-- SEARCH SORT "011-003-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc155.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc157.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.3. Pattern matching</b></font></td></tr></table>
+<!-- SEARCH TITLE "Review of Chapter 10: Scenes" -->
+<!-- SEARCH SECTION "10.10" -->
+<!-- SEARCH SORT "010-010-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc155.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap10.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 10: Scenes</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc157.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.10. Review of Chapter 10: Scenes</b></font></td></tr></table>
 <p>
-<p>The following phrases all use different wording from each other:
+<p>1. A <b>scene</b> is a stretch of time somewhere in our narrative. We might choose to use scenes to organize the entire structure of our plot; just for timed or occasional events; or not at all, as we prefer.
 <p>
-<blockquote><font color="#000080">award 2 points
-<br>award 8 points
-<br>award 30 points
+<p>Scenes are a flexible way to keep an eye on and react to complex aspects of the world state, so they might for instance be used to monitor whether or not puzzles have been completed, determine when it is time to move the player to a new location, provide background activity, and so on.
+<p>
+<p>2. We define a new scene with
+<p>
+<blockquote><font color="#000080">Train Stop is a scene.
 </font></blockquote><p>
 <p>
-<p>but they have the same meaning, with only one detail being different between them. A single definition (internal to Inform, since &quot;award ... points&quot; comes built in) covers these and all similar cases. It is written like so:
+<p>A scene has only a single beginning but is allowed to have many different named endings. We indicate how our scenes are to begin and end like so:
 <p>
-<blockquote><font color="#000080">To award (some - a number) points: ...
+<blockquote><font color="#000080">Train Stop begins when ...
+<br>Train Stop ends when ...
+<br>Duel to the Death ends tragically when ...
 </font></blockquote><p>
 <p>
-<p>This pattern of words matches the text &quot;award 4 points&quot;, and indeed &quot;award four points&quot;, but not
+<p>These need not be simple rules. If necessary, long wordy conditions can be given: or, using techniques from the chapter on phrases, we could define a phrase to make a really complicated decision.
 <p>
-<blockquote><font color="#000080">award &quot;blue cheese&quot; points;
+<p>Scenes cannot be begun or ended just by saying so, using &quot;now&quot;. Although the condition &quot;the Horrible Argument is happening&quot; correctly tests for whether this scene is under way, demands like &quot;now the Horrible Argument is happening&quot; or &quot;now the Duel to the Death has ended&quot; are not allowed - scenes begin and end only when the conditions are met. There are several reasons for this, but one is that it makes it possible for the Scene Index to keep track of how scenes fit together in the course of our story.
+<p>
+<p>3. Just as rooms are joined together by map connections, we can join scenes together so that they lead one into another or run in parallel:
+<p>
+<blockquote><font color="#000080">Passenger Throng ends when Train Stop ends.
+<br>Train Departure begins when Train Stop ends.
+<br>Train Departure ends when Nightfall begins.
+<br>Owl Screeching begins when Nightfall begins.
 </font></blockquote><p>
 <p>
-<p>which results in the following error:
+<p>Or we can say that a scene begins &quot;when play begins&quot;.
 <p>
-<blockquote><font color="#000080"><b>Problem.</b> You wrote 'award &quot;blue cheese&quot; points' <img border=0 src=../doc_images/Reveal.png>, but '&quot;blue cheese&quot;' seems to be some text, whereas I was expecting to find a number there.
+<p>4. We can write rules applying during the scene like so:
+<p>
+<blockquote><font color="#000080">Every turn during Train Stop: ...
+<br>Before taking the luggage during Train Stop: ...
+<br>After listening when Train Stop is happening: ...
+<br>Instead of going to the Outdoor Region during Train Stop: ...
 </font></blockquote><p>
 <p>
-<p>The number does not need to be a literal constant such as 52, but can be anything which works out to be a number: the name of a number variable, for instance.
+<p>We may also check afterward whether a scene has happened:
 <p>
-<p>The bracketed part of the definition takes the form (name - what it is). The definition only applies if the text supplied agrees with the &quot;what it is&quot; part - for instance, 8 agreed with being a number, but &quot;blue cheese&quot; did not. If the definition does apply, then the name holds whatever value was supplied. For instance:
-<p>
-<blockquote><font color="#000080">To slam shut (box - an open container): say &quot;With great panache, you slam shut [the box].&quot;
+<blockquote><font color="#000080">Instead of kissing Miss Tilford when Train Stop has happened: ...
+<br>&quot;The Waiting Room is freshly painted.[if Train Stop has ended] But it somehow seems desolate now.&quot;
 </font></blockquote><p>
 <p>
-<p>The &quot;what it is&quot; will usually be a description of some objects, or the name of a kind of value, but it is also allowed to give a specific value. For instance, we could define:
+<p>and so on. For instance, we could use such conditions to assemble a summary of the plot so far for the player.
 <p>
-<blockquote><font color="#000080">To award (some - 13) points: say &quot;You shiver uncontrollably.&quot;
-</font></blockquote><p>
-<p>
-<p>which would withhold this unlucky bounty, applying only to that one case. (As elsewhere in Inform, more specific definitions take priority over more general ones, so &quot;award (some - 13) points&quot; takes priority over &quot;award (some - a number) points&quot;.)
-<p>
-<p>Sometimes it will not be possible to tell if the value supplied meets the requirements until the game is actually playing. If, at run-time, no definition fits some phrase which has to be carried out, a run-time problem message is produced.
-<p>
-<p>Finally, and more straightforwardly, we can specify variations in wording using slashes between alternative words in a &quot;To ...&quot; definition. For instance:
-<p>
-<blockquote><font color="#000080">To award (some - a number) point/points: ...
-</font></blockquote><p>
-<p>
-<p>allows the final word to be either &quot;point&quot; or &quot;points&quot;. Slashes like this can only be used with literal words (not bracketed values) and give alternative forms only of a single word at a time. (If we need more variation than that, we should make more than one definition.)
+<p>5. More than one scene can be happening at the same time, so it is not sensible to talk about &quot;the current scene&quot;, in the way that we talk about the location of the player. The player can only be in one room at a time, but he can be in the midst of multiple scenes (or none).
 <p>
 <p><hr><p>
-<a name="e320"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex320.html#e320 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>154</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex320.html#e320 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ahem</font></b></a><br>Writing a phrase, with several variant forms, whose function is to follow a rule several times.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex320.html#e320 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e134"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex134.html#e134 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>155</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex134.html#e134 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Ferragamo Again</font></b></a><br>Using the same phrase to produce different results with different characters.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex134.html#e134 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e323"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex323.html#e323 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>157</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex323.html#e323 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cheese-makers</font></b></a><br>Scenes used to control the way a character reacts to conversation and comments, using a TALK TO command.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex323.html#e323 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc155.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc157.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

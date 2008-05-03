@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.9. Repeat</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.28. To say one of</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,120 +19,101 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Wonka's Revenge" -->
-<!-- SEARCH SECTION "Ex 160" -->
-<!-- SEARCH SORT "Ex 011-009-160" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc161.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc163.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.9. Repeat</b></font></td></tr></table>
+<!-- SEARCH TITLE "Blink" -->
+<!-- SEARCH SECTION "Ex 418" -->
+<!-- SEARCH SORT "Ex 024-028-418" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc421.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc423.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.28. To say one of</b></font></td></tr></table>
 <p>
-<p>The following kind of loop could if necessary be achieved just as well with a suitable &quot;while&quot;, but occurs so often that it is convenient to have a standard form. Repeat loops also have the great advantage of being certain to finish.
+<p>Many of the invocation syntaxes described in the previous section are used in the definition by the Standard Rules of the &quot;[one of] ... [or] ... [purely at random]&quot; construction, so it makes a good example of how they can be used.
 <p>
-<blockquote><font color="#000080">repeat with my counter running from 1 to 10 begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(phrases)
-<br>end repeat;
+<p>First, this is a segmented substitution with a single possible beginning (&quot;[one of]&quot;), a single possible middle (&quot;[or]&quot;) but a choice of many possible endings. Almost everything is compiled by the invocation of the beginning:
+<p>
+<blockquote><font color="#000080">To say one of -- beginning say_one_of:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-allocate-storage:say_one_of}I7_ST_say_one_of-->{-counter:say_one_of}
+<br>&nbsp;&nbsp;&nbsp;&nbsp;= {-final-segment-marker}(I7_ST_say_one_of-->{-counter:say_one_of}, {-segment-count});
+<br>switch((I7_ST_say_one_of-->{-advance-counter:say_one_of})%({-segment-count}+1) - 1) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;0: -).
+<br>To say or -- continuing say_one_of:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-segment-count}: -).
+<br>To say purely at random -- ending say_one_of with marker I7_SOO_PAR:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-close-brace} -).
 </font></blockquote><p>
 <p>
-<p>This is similar to the old FOR/NEXT loop from BASIC, for those with long memories, and runs through the given phrases ten times. Within those phrases, a special value called &quot;my counter&quot; has the value 1 the first time through, then the value 2, then 3 and so on up to 10. This value exists only within the loop, so it makes no sense to talk about &quot;my counter&quot; elsewhere. (It can of course be called whatever we like: this is only an example.)
+<p>The 3rd invocation of this (say) might compile the following:
 <p>
-<p>The &quot;begin&quot; and &quot;end repeat&quot; are compulsory for repeat loops, in the interests of clarity.
-<p>
-<p>We are allowed to &quot;nest&quot; loops, that is, to put one inside another.
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode25(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('To plot a grid with size (S - a number):[=0x000A=][=0x0009=]repeat with x running from 1 to S begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Row [x]:[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]repeat with y running from 1 to S begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=] [y][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]end repeat;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=].[=0x0022=];[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode25()"><img border=0 src=../doc_images/paste.png></a> To plot a grid with size (S - a number):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with x running from 1 to S begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Row [x]:&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with y running from 1 to S begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; [y]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">I7_ST_say_one_of-->2 = I7_SOO_PAR(I7_ST_say_one_of-->2, 4);
+<br>switch((I7_ST_say_one_of-->2)%5 - 1) {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;0: ... first text ...
+<br>&nbsp;&nbsp;&nbsp;&nbsp;1: ... second text ...
+<br>&nbsp;&nbsp;&nbsp;&nbsp;2: ... third text ...
+<br>&nbsp;&nbsp;&nbsp;&nbsp;3: ... fourth text ...
+<br>}
 </font></blockquote><p>
 <p>
-<p>If we then write
+<p>First, we notified Inform that it needs to allocate an array (I7_ST_say_one_of) providing storage associated with the counter &quot;say_one_of&quot;. This we used to count off individual invocations of &quot;[one of]&quot;, so that each would have its own word of storage - for the 3rd invocation, I7_ST_say_one_of-->2. We then call a state-changing routine, in this case I7_SOO_PAR, which is allowed to know the previous state and also the number of options available, and which returns the new state. The state is supposed to be the option chosen last time, but that means that there are not 4, but 5 possibilities: 0 for &quot;there was no last time&quot;, then 1 to 4 for the possible outcomes. We reduce the state mod 5 to obtain the decision this time, and subtract 1 because it happens to be convenient to make the switch statement run from 0 to 3 rather than 1 to 4. (The reason we reduce the state mod 5 is to allow the state-changer to squirrel away secret information in the upper bits of the state, if it wants to. Note that subtracting one means that the switch value might be -1, which results in no text being printed: thus if the state-changer chooses 0, it can decide on none of the above.)
 <p>
-<blockquote><font color="#000080">plot a grid with size 5
+<p>In this design, the marker attached to the choice of ending substitution is the name of the I6 state-changer: here is the I7_SOO_PAR routine.
+<p>
+<blockquote><font color="#000080">[ I7_SOO_PAR oldval count; if (count <= 1) return count; return random(count); ];
 </font></blockquote><p>
 <p>
-<p>then the result is
+<p>As it happens, this ignores the old value: after all, it is meant to be purely at random, and nothing could be less pure than taking the last outcome into consideration when choosing the next.
 <p>
-<blockquote><font color="#000080">Row 1: 1 2 3 4 5.
-<br>Row 2: 1 2 3 4 5.
-<br>Row 3: 1 2 3 4 5.
-<br>Row 4: 1 2 3 4 5.
-<br>Row 5: 1 2 3 4 5.
-</font></blockquote><p>
+<p>Note that the counter say_one_of is advanced in invocation of the head. It might seem that the tidier design, somehow, would be to advance the counter in the invocation of the tails, but this is not a good idea. In general it is not safe to assume that the counter will have the same value when the tail is invoked that it had when the head was invoked, because segmented say constructions can legally be nested in Inform strings. Because of this, it is best to deal with a counter entirely in a single invocation, either of the beginning or the ending.
 <p>
-<p>Thus the innermost phrase, the say which mentions &quot;y&quot;, happens 25 times.
-<p>
-<p>Whenever dealing with numbers in Inform we may need to remember that the range is restricted to -32768 up to 32767. Repeating with a counter up to exactly 32767 is hazardous, because the counter can never break through this barrier: it's infinity, so far as Inform is concerned, and that can cause the repetitions to go on forever.
+<p>Because &quot;[one of] ... [or] ...&quot; is such a useful construction - switching between alternative forms of text, which writers of IF very often do - the above implementation is intentionally left open for new endings to be added, and the examples below show how easily this can be done.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e345"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc162.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>160</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc162.html#e345 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Wonka's Revenge</font></b></a><br>A lottery drum which redistributes the tickets inside whenever the player spins it.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex345.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e345"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc422.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>418</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc422.html#e345 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Blink</font></b></a><br>Making a "by atmosphere" token, allowing us to design our own text variations such as "[one of]normal[or]gloomy[or]scary[by atmosphere]".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex345.html#e345 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Suppose we are writing a game in which the mood of the piece changes, and we would like to have lots of descriptions that vary according to its current state. We might in that case want to create our own &quot;by atmosphere&quot; token, to control text variations, like this:
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode250(code) {
+function pasteCode517(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Wonka[=0x0027=]s Revenge[=0x0022=][=0x000A=][=0x000A=]The Caribou Lodge is a room. [=0x0022=]Hundreds of expectant faces are turned your way from every table.[=0x0022=] A lottery drum is in the Lodge. [=0x0022=]Before you is the lottery drum[if we have spun the drum], ready to disgorge a ticket[otherwise], waiting to be spun[end if].[=0x0022=] In the drum are a red ticket, an orange ticket, a yellow ticket, a green ticket, a blue ticket, a purple ticket, and a ticket of pure gold. The drum is closed and openable.[=0x000A=][=0x000A=]Understand [=0x0022=]spin [something][=0x0022=] as spinning.[=0x000A=][=0x000A=]Spinning is an action with past participle spun, applying to one thing.[=0x000A=][=0x000A=]Check spinning: if the noun is an open container which contains something, say [=0x0022=][The list of things in the noun] would fly out.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out spinning a container:[=0x000A=][=0x0009=]shuffle the contents of the noun.[=0x000A=][=0x000A=]Report spinning:[=0x000A=][=0x0009=]if the noun contains something, say [=0x0022=]You rattle [if the noun is transparent][the list of things in the noun][otherwise]the stuff[end if] in [the noun].[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]Nothing results of your shaking [the noun].[=0x0022=][=0x000A=][=0x000A=][Inform keeps track of the order in which things have been put into a container. If we want to change that order without the player[=0x0027=]s intervention, we can move the things ourselves.][=0x000A=][=0x000A=]To shuffle the contents of (basket - a container):[=0x000A=][=0x0009=]let moves be the number of things in the basket;[=0x000A=][=0x0009=]repeat with counter running from 1 to moves[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]move a random thing in the basket to the basket;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]After opening the drum when we have spun the drum for the first time:[=0x000A=][=0x0009=]if something (called the pick) is in the drum[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]try searching the drum;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The pick] it is, then.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]silently try taking the pick;[=0x000A=][=0x0009=][=0x0009=]if the pick is the ticket of pure gold, end the game in victory;[=0x000A=][=0x0009=][=0x0009=]otherwise end the game saying [=0x0022=]Oh well, better luck next time.[=0x0022=];[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]Test me with [=0x0022=]open drum / look in drum / close drum / spin drum / open drum[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Blink[=0x0022=][=0x000A=][=0x000A=]Atmosphere is a kind of value. The atmospheres are normal, melancholy, and creepy.[=0x000A=][=0x000A=]The current atmosphere is an atmosphere that varies.[=0x000A=][=0x000A=]To say by atmosphere -- ending say_one_of with marker I7_SOO_ATM:[=0x000A=][=0x0009=](- {-close-brace} -).[=0x000A=][=0x000A=][Since we[=0x0027=]re operating within the untyped Inform 6, we can make use of the fact that kinds of value are (internally) just constants, enumerated in the same order in which they were originally defined. In other words, [=0x0022=]normal[=0x0022=] at the I6 level translates to 1, [=0x0022=]melancholy[=0x0022=] to 2, and [=0x0022=]creepy[=0x0022=] to 3; so we can return the value of the current atmosphere, and thereby select option 1, 2, or 3:][=0x000A=][=0x000A=]Include (-[=0x000A=][ I7_SOO_ATM oldval count;[=0x000A=][=0x0009=]if (count [=0x003C=] (+ current atmosphere +)) return count;[=0x000A=][=0x0009=]return (+ current atmosphere +); ];[=0x000A=]-)[=0x000A=][=0x000A=][And that concludes the hard part. Now to test that it works:][=0x000A=][=0x000A=]The Flat is a room. [=0x0022=]A small [one of]but cozy[or]depressing[or]imprisoning[by atmosphere] flat. Outside the window, the sun is [one of][or][or]apparently [by atmosphere]shining and there is a brisk breeze through the leaves of the birch trees. [one of]It would be quite nice weather for a walk[or]The rest of the world apparently has no appreciation of what you suffer[or]It all looks deceptively normal[by atmosphere].[=0x0022=][=0x000A=][=0x000A=]Instead of waiting when the current atmosphere is normal:[=0x000A=][=0x0009=]say [=0x0022=]Everything stretches wide and flat for just a moment, as though all the world around you were painted on a thin rubber sheet that is being [italic type]stretched[roman type]. Then it snaps back into place, leaving your ears ringing. But that little glitch was enough to warn you. Someone is tampering with space-time again. Someone very close by.[=0x0022=];[=0x000A=][=0x0009=]now the current atmosphere is creepy.[=0x000A=][=0x000A=]Test me with [=0x0022=]look / z / look[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode250()"><img border=0 src=../doc_images/paste.png></a> &quot;Wonka's Revenge&quot;
+<a href="javascript:pasteCode517()"><img border=0 src=../doc_images/paste.png></a> &quot;Blink&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Caribou Lodge is a room. &quot;Hundreds of expectant faces are turned your way from every table.&quot; A lottery drum is in the Lodge. &quot;Before you is the lottery drum[if we have spun the drum], ready to disgorge a ticket[otherwise], waiting to be spun[end if].&quot; In the drum are a red ticket, an orange ticket, a yellow ticket, a green ticket, a blue ticket, a purple ticket, and a ticket of pure gold. The drum is closed and openable.
+<blockquote><font color="#000080">Atmosphere is a kind of value. The atmospheres are normal, melancholy, and creepy.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;spin [something]&quot; as spinning.
+<blockquote><font color="#000080">The current atmosphere is an atmosphere that varies.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Spinning is an action with past participle spun, applying to one thing.
+<blockquote><font color="#000080">To say by atmosphere -- ending say_one_of with marker I7_SOO_ATM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-close-brace} -).
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check spinning: if the noun is an open container which contains something, say &quot;[The list of things in the noun] would fly out.&quot; instead.
+<p>Since we're operating within the untyped Inform 6, we can make use of the fact that kinds of value are (internally) just constants, enumerated in the same order in which they were originally defined. In other words, &quot;normal&quot; at the I6 level translates to 1, &quot;melancholy&quot; to 2, and &quot;creepy&quot; to 3; so we can return the value of the current atmosphere, and thereby select option 1, 2, or 3:
+<p>
+<blockquote><font color="#000080">Include (-
+<br>[ I7_SOO_ATM oldval count;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if (count < (+ current atmosphere +)) return count;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;return (+ current atmosphere +); ];
+<br>-)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out spinning a container:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;shuffle the contents of the noun.
+<p>And that concludes the hard part. Now to test that it works:
+<p>
+<blockquote><font color="#000080">The Flat is a room. &quot;A small [one of]but cozy[or]depressing[or]imprisoning[by atmosphere] flat. Outside the window, the sun is [one of][or][or]apparently [by atmosphere]shining and there is a brisk breeze through the leaves of the birch trees. [one of]It would be quite nice weather for a walk[or]The rest of the world apparently has no appreciation of what you suffer[or]It all looks deceptively normal[by atmosphere].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report spinning:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun contains something, say &quot;You rattle [if the noun is transparent][the list of things in the noun][otherwise]the stuff[end if] in [the noun].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Nothing results of your shaking [the noun].&quot;
+<blockquote><font color="#000080">Instead of waiting when the current atmosphere is normal:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Everything stretches wide and flat for just a moment, as though all the world around you were painted on a thin rubber sheet that is being [italic type]stretched[roman type]. Then it snaps back into place, leaving your ears ringing. But that little glitch was enough to warn you. Someone is tampering with space-time again. Someone very close by.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the current atmosphere is creepy.
 </font></blockquote><p>
 <p>
-<p>Inform keeps track of the order in which things have been put into a container. If we want to change that order without the player's intervention, we can move the things ourselves.
-<p>
-<blockquote><font color="#000080">To shuffle the contents of (basket - a container):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let moves be the number of things in the basket;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with counter running from 1 to moves
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move a random thing in the basket to the basket;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">Test me with &quot;look / z / look&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After opening the drum when we have spun the drum for the first time:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if something (called the pick) is in the drum
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try searching the drum;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The pick] it is, then.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the pick;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the pick is the ticket of pure gold, end the game in victory;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise end the game saying &quot;Oh well, better luck next time.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;open drum / look in drum / close drum / spin drum / open drum&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc162.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc422.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc161.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc163.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e381"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex381.html#e381 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>419</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex381.html#e381 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uncommon Ground</font></b></a><br>Making a "by viewpoint" token, allowing us to design our own text variations such as "[show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show]" depending on the identity of the player at the moment.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex381.html#e381 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc421.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc423.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

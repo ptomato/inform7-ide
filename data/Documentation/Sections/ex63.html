@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.15. Understanding things by their relations</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.3. Before rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,94 +19,103 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Puncak Jaya" -->
-<!-- SEARCH SECTION "Ex 285" -->
-<!-- SEARCH SORT "Ex 016-015-285" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc256.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc258.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.15. Understanding things by their relations</b></font></td></tr></table>
+<!-- SEARCH TITLE "Sand" -->
+<!-- SEARCH SECTION "Ex 80" -->
+<!-- SEARCH SORT "Ex 007-003-080" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc94.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc96.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.3. Before rules</b></font></td></tr></table>
 <p>
-<p>Sometimes it makes sense for the name of something to involve the names of other things to which it is related. For instance, if we say TAKE THE BOTTLE OF WINE, we mean that the bottle currently contains wine - if it were the very same bottle containing water, we would call it something else.
+<p>Despite what was said in the previous section, instead rules do not quite bypass all of the usual rules. Inform knows that certain actions require light: for instance,
 <p>
-<p>For names which must involve related names, a special form of token is provided. For instance, we could say:
-<p>
-<blockquote><font color="#000080">A box is a kind of container. Understand &quot;box of [something related by containment]&quot; as a box.
+<blockquote><font color="#000080">examining the napkin; looking; looking under the dining table
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Toyshop is a room. The red box is a box in the Toyshop. Some crayons are in the red box.
+<p>and if it is dark then none of these actions will be allowed, and any instead rules about them will not even be reached. Similarly, Inform knows that most actions require physical access to their objects: so &quot;taking the napkin&quot; would be blocked if the napkin were, say, inside a closed glass bottle, whereas &quot;examining the napkin&quot; would not. So an instead rule can only take effect if the action has already passed these basic reasonability tests.
+<p>
+<p>&quot;Before&quot; rules genuinely precede checking of any kind. They also differ from instead rules in that they do not automatically stop the action in its tracks. Rather, they are provided as an opportunity to ensure that something else is done first. For example:
+<p>
+<blockquote><font color="#000080">Before taking the napkin, say &quot;(first unfolding its delicate origami swan)&quot;.
 </font></blockquote><p>
 <p>
-<p>and now TAKE BOX OF CRAYONS will work, because CRAYONS matches against &quot;[something related by containment]&quot; for the red box - or it does for as long as the crayons are there. We can have similar matches against relations of all kinds, but have to name the relation explicitly, using its one-word name. (See the examples at the end of this section for plenty of cases.)
+<p>whence
 <p>
-<p>We can also reverse the sense. If we write:
-<p>
-<blockquote><font color="#000080">A box is a kind of container. Understand &quot;box in [something related by reversed containment]&quot; as a box.
+<blockquote><font color="#000080">&gt;GET NAPKIN
+<br>(first unfolding its delicate origami swan)
+<br>Taken.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Toyshop is a room. The crate and the hammock are in the Toyshop. In the crate is a box. In the hammock is a box.
+<p>We have seen that instead rules automatically stop actions, whereas before rules automatically allow them to continue. We sometimes want to change this. The magic word &quot;instead&quot; can therefore be tacked on to any instruction in a before rule, and will have the effect of immediately stopping the action at that instruction. Thus the following two rules are (almost) equivalent:
+<p>
+<blockquote><font color="#000080">Before taking the key, instead say &quot;It seems to be soldered to the keyhole.&quot;
 </font></blockquote><p>
 <p>
-<p>then TAKE THE BOX IN THE HAMMOCK will work: here, the relation goes the other way, because the box is being contained by the other-named item, rather than doing the containing.
+<blockquote><font color="#000080">Instead of taking the key, say &quot;It seems to be soldered to the keyhole.&quot;
+</font></blockquote><p>
+<p>
+<p>Two special phrases can also be used: &quot;stop the action&quot; and &quot;continue the action&quot;. Yet a third way to achieve the same effect, then, would be:
+<p>
+<blockquote><font color="#000080">Before taking the key: say &quot;It seems to be soldered to the keyhole.&quot;; stop the action.
+</font></blockquote><p>
+<p>
+<p>And to round off the discussion, these are also (almost) equivalent:
+<p>
+<blockquote><font color="#000080">Before taking the napkin, say &quot;(first unfolding its delicate origami swan)&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of taking the napkin: say &quot;(first unfolding its delicate origami swan)&quot;; continue the action.
+</font></blockquote><p>
+<p>
+<p>As a general principle, it is good style to use instead rules whenever blocking actions, and before rules only when it is genuinely necessary to do something first but then to continue: in fact, it is good style to use &quot;stop the action&quot; or &quot;continue the action&quot; as little as possible.
 <p>
 <p><hr><p>
-<a name="e396"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex396.html#e396 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>284</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex396.html#e396 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cinco</font></b></a><br>A taco shell that can be referred to (when it contains things) in terms of its contents.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex396.html#e396 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e396"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex396.html#e396 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>79</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex396.html#e396 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Democratic Process</font></b></a><br>Make PUT and INSERT commands automatically take objects if the player is not holding them.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex396.html#e396 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e63"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc257.html#e63 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>285</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc257.html#e63 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Puncak Jaya</font></b></a><br>When a character is not visible, responding to such commands as EXAMINE PETER and PETER, HELLO with a short note that the person in question is no longer visible.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex63.html#e63 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e63"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc95.html#e63 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>80</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc95.html#e63 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Sand</font></b></a><br>Extend PUT and INSERT handling to cases where multiple objects are intended at once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex63.html#e63 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>By default, when something is not present, Inform does not allow a player to refer to it. But there are times when we might like to acknowledge that the thing mentioned in a command does exist somewhere in the game; it just happens not to be on hand right now.
-<p>
-<p>One way to do this is to make an object that appears everywhere and responds to the name of its owner only when the owner itself is not in view.
+<p>The above example does not quite work when we want the player to be allowed to take multiple objects at once before putting them somewhere: we also need to add a couple of &quot;understand&quot; rules borrowed from many chapters later. While the reasons may not be immediately clear, we include the demonstration here for the sake of thoroughness:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode372(code) {
+function pasteCode173(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Puncak Jaya[=0x0022=][=0x000A=][=0x000A=]A ghost is a kind of person. A man-ghost is a kind of ghost. A man-ghost is always male. A woman-ghost is a kind of ghost. A woman-ghost is always female.[=0x000A=][=0x000A=][We make the ghost a person rather than some other kind of thing so that it will be able to respond to commands such as KISS BOB or (even trickier) BOB, JUMP: if Inform did not recognize the ghost as an animate creature, it would not accept such input.][=0x000A=][=0x000A=]Representation relates one ghost to one person. The verb to represent (he represents, they represent, he represented, it is represented) implies the representation relation.[=0x000A=][=0x000A=]One man-ghost represents every man. One woman-ghost represents every woman.[=0x000A=][=0x000A=][This is, technically, an assembly -- except instead of saying that every device has a button part, or that there are three daffodils in every garden room, the assembly is based on a non-physical relation that we just designed.][=0x000A=][=0x000A=][Based on the [=0x0022=]representation[=0x0022=] relation, we now devise a conditional relation that applies only when the represented thing is not itself in view:][=0x000A=][=0x000A=]Indication relates a ghost (called X) to a person (called Y) when X represents Y and Y is not visible.[=0x000A=][=0x000A=]Understand [=0x0022=][something related by indication][=0x0022=] as a ghost.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]now every ghost is in the concept-repository.[=0x000A=][=0x000A=]Instead of doing something to a ghost:[=0x000A=][=0x0009=]say [=0x0022=]You seem to have left [a random person which is represented by the noun] behind.[=0x0022=][=0x000A=][=0x000A=]The concept-repository is a closed unopenable transparent container. It is part of the air. The air is a backdrop. It is everywhere.[=0x000A=][=0x000A=]Base of Puncak Jaya is a room. Temple, Kippax, and Huizenga are men in Base. Peak of Puncak Jaya is above Base of Puncak Jaya.[=0x000A=][=0x000A=]Test me with [=0x0022=]x kippax / up / x kippax / kiss kippax / kippax, hello[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Sand[=0x0022=][=0x000A=][=0x000A=]Before inserting something which is not carried by the player into something:[=0x000A=][=0x0009=]if the noun is in the second noun, say [=0x0022=]Already done.[=0x0022=] instead;[=0x000A=][=0x0009=]say [=0x0022=](first taking [the noun]) [=0x0022=];[=0x000A=][=0x0009=]silently try taking the noun;[=0x000A=][=0x0009=]if the player is not holding the noun, stop the action.[=0x000A=][=0x000A=]Before putting something which is not carried by the player on something:[=0x000A=][=0x0009=]if the noun is on the second noun, say [=0x0022=]Already done.[=0x0022=] instead;[=0x000A=][=0x0009=]say [=0x0022=](first taking [the noun])[line break][=0x0022=];[=0x000A=][=0x0009=]silently try taking the noun;[=0x000A=][=0x0009=]if the player is not holding the noun, stop the action.[=0x000A=][=0x000A=]Understand [=0x0022=]put [things] in [something][=0x0022=] as inserting it into. Understand [=0x0022=]put [things] on [something][=0x0022=] as putting it on.[=0x000A=][=0x000A=]The Closet is a room.[=0x000A=][=0x000A=]A lentil is a kind of thing. A black-eyed pea is a kind of thing. The closet contains 3 lentils. The Closet contains 14 black-eyed peas. The round tin is a container in the closet. The round tin contains 17 lentils. The square tin is a container in the Closet. The square tin contains 20 black-eyed peas.[=0x000A=][=0x000A=]Sorting is a scene. Sorting begins when play begins. Sorting ends when all the lentils are in the round tin and all the black-eyed peas are in the square tin. When Sorting ends, end the game in victory.[=0x000A=][=0x000A=]When play begins: say [=0x0022=]Thanks to your cruel stepmother, you[=0x0027=]re not going anywhere until the lentils and peas are sorted.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]put peas in square tin / put lentils in round tin[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode372()"><img border=0 src=../doc_images/paste.png></a> &quot;Puncak Jaya&quot;
+<a href="javascript:pasteCode173()"><img border=0 src=../doc_images/paste.png></a> &quot;Sand&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A ghost is a kind of person. A man-ghost is a kind of ghost. A man-ghost is always male. A woman-ghost is a kind of ghost. A woman-ghost is always female.
+<blockquote><font color="#000080">Before inserting something which is not carried by the player into something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is in the second noun, say &quot;Already done.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking [the noun]) &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not holding the noun, stop the action.
 </font></blockquote><p>
 <p>
-<p>We make the ghost a person rather than some other kind of thing so that it will be able to respond to commands such as KISS BOB or (even trickier) BOB, JUMP: if Inform did not recognize the ghost as an animate creature, it would not accept such input.
-<p>
-<blockquote><font color="#000080">Representation relates one ghost to one person. The verb to represent (he represents, they represent, he represented, it is represented) implies the representation relation.
+<blockquote><font color="#000080">Before putting something which is not carried by the player on something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is on the second noun, say &quot;Already done.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking [the noun])[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not holding the noun, stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">One man-ghost represents every man. One woman-ghost represents every woman.
+<blockquote><font color="#000080">Understand &quot;put [things] in [something]&quot; as inserting it into. Understand &quot;put [things] on [something]&quot; as putting it on.
 </font></blockquote><p>
 <p>
-<p>This is, technically, an assembly -- except instead of saying that every device has a button part, or that there are three daffodils in every garden room, the assembly is based on a non-physical relation that we just designed.
-<p>
-<p>Based on the &quot;representation&quot; relation, we now devise a conditional relation that applies only when the represented thing is not itself in view:
-<p>
-<blockquote><font color="#000080">Indication relates a ghost (called X) to a person (called Y) when X represents Y and Y is not visible.
+<blockquote><font color="#000080">The Closet is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;[something related by indication]&quot; as a ghost.
+<blockquote><font color="#000080">A lentil is a kind of thing. A black-eyed pea is a kind of thing. The closet contains 3 lentils. The Closet contains 14 black-eyed peas. The round tin is a container in the closet. The round tin contains 17 lentils. The square tin is a container in the Closet. The square tin contains 20 black-eyed peas.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now every ghost is in the concept-repository.
+<blockquote><font color="#000080">Sorting is a scene. Sorting begins when play begins. Sorting ends when all the lentils are in the round tin and all the black-eyed peas are in the square tin. When Sorting ends, end the game in victory.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of doing something to a ghost:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You seem to have left [a random person which is represented by the noun] behind.&quot;
+<blockquote><font color="#000080">When play begins: say &quot;Thanks to your cruel stepmother, you're not going anywhere until the lentils and peas are sorted.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The concept-repository is a closed unopenable transparent container. It is part of the air. The air is a backdrop. It is everywhere.
+<blockquote><font color="#000080">Test me with &quot;put peas in square tin / put lentils in round tin&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Base of Puncak Jaya is a room. Temple, Kippax, and Huizenga are men in Base. Peak of Puncak Jaya is above Base of Puncak Jaya.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x kippax / up / x kippax / kiss kippax / kippax, hello&quot;.
-</font></blockquote><p>
-<p>
-<p>Further complications of this example might require that the player meet a character before being able to refer to him or her.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc257.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc95.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e149"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex149.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>286</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex149.html#e149 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Claims Adjustment</font></b></a><br>An instant camera that spits out photographs of anything the player chooses to take a picture of.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex149.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc256.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc258.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc94.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc96.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

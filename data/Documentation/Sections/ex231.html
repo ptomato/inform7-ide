@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.8. Otherwise</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>13.13. Relations involving values</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,106 +19,102 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Numberless" -->
-<!-- SEARCH SECTION "Ex 159" -->
-<!-- SEARCH SORT "Ex 011-008-159" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc160.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc162.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.8. Otherwise</b></font></td></tr></table>
+<!-- SEARCH TITLE "Meet Market" -->
+<!-- SEARCH SECTION "Ex 226" -->
+<!-- SEARCH SORT "Ex 013-013-226" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc210.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap13.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 13: Relations</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc212.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>13.13. Relations involving values</b></font></td></tr></table>
 <p>
-<p>We often need code which does one thing in one circumstance, and another the rest of the time. We could do this like so:
+<p>Most of the openly declared relations in Inform are between things - people, for instance, or rooms - but beneath the surface, many relations also apply to values. For instance,
 <p>
-<blockquote><font color="#000080">if N is 2 begin; ...; end if;
-<br>if N is not 2 begin; ...; end if;
+<blockquote><font color="#000080">if the turn count is less than 100, ...
 </font></blockquote><p>
 <p>
-<p>but this is not very elegant, and besides, what if the action we take when N is 2 changes N so that it becomes something else?
+<p>involves a relation between two numbers expressed by the verb &quot;to be less than&quot;. These can also be created easily, provided we are willing to supply a definition. For instance:
 <p>
-<p>Instead we use &quot;otherwise&quot;:
-<p>
-<blockquote><font color="#000080">if N is 2 begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>end if;
+<blockquote><font color="#000080">Material is a kind of value. The materials are wood and metal. A thing has a material.
 </font></blockquote><p>
 <p>
-<p>Note that there is only one &quot;end if&quot;: the &quot;otherwise&quot; phrase occurs inside the &quot;if ... end if&quot; block of phrases.
-<p>
-<p>When there is only a single phrase we can use the shortened form:
-<p>
-<blockquote><font color="#000080">if N is 2 then say &quot;Hooray, N is 2!&quot;;
-<br>otherwise say &quot;Boo, N is not 2...&quot;
+<blockquote><font color="#000080">Materiality relates a thing (called X) to a material (called Y) when Y is the material of X. The verb to be made of implies the materiality relation.
 </font></blockquote><p>
 <p>
-<p>Often, though, what we want is to divide up a situation into many cases, and for this the abbreviation &quot;otherwise if&quot; is allowed:
+<p>Of course, this does no more than to wrap up a property in the language of relations, but that does give us the elegant wording
 <p>
-<blockquote><font color="#000080">if N is 1 begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>otherwise if N is 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>otherwise if N is greater than 4;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>end if;
+<blockquote><font color="#000080">if the cube is made of wood, ...
+<br>say &quot;The carpenter looks at [the list of things which are made of wood].&quot;;
 </font></blockquote><p>
 <p>
-<p>At most one of the &quot;...&quot; clauses is ever reached - the first which works out. Note that there is only a single &quot;end if&quot;, at the end: it all counts as a single &quot;if&quot; construction.
+<p>as an alternative to:
 <p>
-<p>(In almost every computer programming language ever devised, including previous versions of Inform, the word &quot;else&quot; is used rather than &quot;otherwise&quot;: for the sake of familiarity, &quot;else&quot; can also be used here. All the same, &quot;otherwise&quot; seems closer to natural English.)
+<blockquote><font color="#000080">if the cube is wood, ...
+<br>say &quot;The carpenter looks at [the list of things which are wood].&quot;;
+</font></blockquote><p>
+<p>
+<p>By writing a more interesting definition, we get a more interesting relation as a result, of course. Here is a mathematical one:
+<p>
+<blockquote><font color="#000080">Divisibility relates a number (called N) to a number (called M) when the remainder after dividing M by N is 0. The verb to divide (it divides, they divide, it divided, it is divisible) implies the divisibility relation. The verb to be a factor of implies the divisibility relation.
+</font></blockquote><p>
+<p>
+<p>We now find that &quot;2 divides 12&quot;, &quot;5 is not a factor of 12&quot; and &quot;12 is divisible by 3&quot; are all true. Again, we are only really gaining a nice form of words, but improving the clarity of the source text is never a bad thing.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e231"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc161.html#e231 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>159</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc161.html#e231 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Numberless</font></b></a><br>A simple exercise in printing the names of random numbers, using "otherwise if..." and also a table-based alternative. (Or, in programming terms, how to emulate a switch statement.)<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex231.html#e231 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e231"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc211.html#e231 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>226</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc211.html#e231 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Meet Market</font></b></a><br>A case in which relations give characters multiple values of the same kind.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex231.html#e231 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>We have already seen that we can give things value properties -- a lamp has a brightness, for instance. Relations give us additional flexibility: since we may relate various things to various values, it is possible to describe a thing as having more than one value at the same time.
+<p>
+<p>To demonstrate:
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode249(code) {
+function pasteCode322(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Numberless[=0x0022=][=0x000A=][=0x000A=]The Rambling Warren is a room.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]let N be a random number between 1 and 5;[=0x000A=][=0x0009=]if N is 1[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]N is one.[=0x0022=];[=0x000A=][=0x0009=]otherwise if N is 2;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]N is two.[=0x0022=];[=0x000A=][=0x0009=]otherwise if N is 3;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]N is three.[=0x0022=];[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]N is more than the number of your toes.[=0x0022=];[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=][The final [=0x0022=]otherwise[=0x0022=] here will fire only if none of the earlier conditions applies; we could leave it out and print nothing in the case that N is 4 or 5.][=0x000A=][=0x000A=][Alternatively, we can use a construction we[=0x0027=]ve seen only briefly before now: a table. The use of tables will be explained more fully in their own chapter, but here we see in brief that we can assign a number of values to one column of a table and then use that table to look up output:][=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]let X be a random number between 11 and 14;[=0x000A=][=0x0009=]if X is a number listed in the Table of Switching, say [=0x0022=][output entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]X is greater than the number of your noses![=0x0022=][=0x000A=][=0x000A=]Table of Switching[=0x000A=]number[=0x0009=]output[=0x000A=]11[=0x0009=][=0x0022=]X is eleven![=0x0022=][=0x000A=]12[=0x0009=][=0x0022=]X is twelve![=0x0022=][=0x000A=]13[=0x0009=][=0x0022=]X is thirteen![=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]z[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Meet Market[=0x0022=] by [=0x0022=]K M and Eric Rossing[=0x0022=][=0x000A=][=0x000A=]Feature is a kind of value.  The features are snub-nosed, gangly, comely, bright-eyed, and sulky.[=0x000A=][=0x000A=]Appearance relates various persons to various features.  The verb to appear (she appears, they appear) implies the appearance relation.[=0x000A=][=0x000A=]Meet Market is a room.[=0x000A=][=0x000A=]Bob, Carol, Ted, and Alice are people in the Meet Market.[=0x000A=][=0x000A=]Bob appears snub-nosed and gangly.[=0x000A=][=0x000A=]Ted appears sulky and snub-nosed.[=0x000A=][=0x000A=]Carol appears comely and bright-eyed.[=0x000A=][=0x000A=]Alice appears bright-eyed and comely.[=0x000A=][=0x000A=]Yourself appears sulky and gangly.[=0x000A=][=0x000A=]Instead of looking:[=0x000A=][=0x0009=]say [=0x0022=]The snub-nosed ones: [list of people who appear snub-nosed][line break][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=]The gangly ones: [list of people who appear gangly][line break][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=]The comely ones: [list of people who appear comely][line break][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=]The bright-eyed ones: [list of people who appear bright-eyed][line break][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=]The sulky ones: [list of people who appear sulky][paragraph break][=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]look[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode249()"><img border=0 src=../doc_images/paste.png></a> &quot;Numberless&quot;
+<a href="javascript:pasteCode322()"><img border=0 src=../doc_images/paste.png></a> &quot;Meet Market&quot; by &quot;K M and Eric Rossing&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Rambling Warren is a room.
+<blockquote><font color="#000080">Feature is a kind of value.  The features are snub-nosed, gangly, comely, bright-eyed, and sulky.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be a random number between 1 and 5;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if N is 1
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;N is one.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if N is 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;N is two.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if N is 3;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;N is three.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;N is more than the number of your toes.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Appearance relates various persons to various features.  The verb to appear (she appears, they appear) implies the appearance relation.
 </font></blockquote><p>
 <p>
-<p>The final &quot;otherwise&quot; here will fire only if none of the earlier conditions applies; we could leave it out and print nothing in the case that N is 4 or 5.
-<p>
-<p>Alternatively, we can use a construction we've seen only briefly before now: a table. The use of tables will be explained more fully in their own chapter, but here we see in brief that we can assign a number of values to one column of a table and then use that table to look up output:
-<p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let X be a random number between 11 and 14;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if X is a number listed in the Table of Switching, say &quot;[output entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;X is greater than the number of your noses!&quot;
+<blockquote><font color="#000080">Meet Market is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Switching
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">number</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">output</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">11</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;X is eleven!&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">12</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;X is twelve!&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">13</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;X is thirteen!&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">Bob, Carol, Ted, and Alice are people in the Meet Market.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;z&quot;.
+<blockquote><font color="#000080">Bob appears snub-nosed and gangly.
 </font></blockquote><p>
 <p>
-<p>As we shall see, things other than text can be stored in tables, so we could also use a table as a way to look up objects or even rules to carry out.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc161.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Ted appears sulky and snub-nosed.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carol appears comely and bright-eyed.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Alice appears bright-eyed and comely.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Yourself appears sulky and gangly.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of looking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The snub-nosed ones: [list of people who appear snub-nosed][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The gangly ones: [list of people who appear gangly][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The comely ones: [list of people who appear comely][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The bright-eyed ones: [list of people who appear bright-eyed][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The sulky ones: [list of people who appear sulky][paragraph break]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;look&quot;.
+</font></blockquote><p>
+<p>
+<p>The same logic might be used to provide characters who have complex mood states: a person might be angry and sad, not merely one or the other -- feelings being what they are.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc211.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc160.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc162.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc210.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc212.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

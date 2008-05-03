@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.5. Unsuccessful attempts</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.6. Regular expression matching</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,148 +19,258 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Generation X" -->
-<!-- SEARCH SECTION "Ex 174" -->
-<!-- SEARCH SORT "Ex 012-005-174" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc176.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc178.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.5. Unsuccessful attempts</b></font></td></tr></table>
+<!-- SEARCH TITLE "About Inform's regular expression support" -->
+<!-- SEARCH SECTION "Ex 380" -->
+<!-- SEARCH SORT "Ex 019-006-380" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc332.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc334.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.6. Regular expression matching</b></font></td></tr></table>
 <p>
-<p>Suppose, finally, that Will not only consents to try the action, but it also survives its passage through Before and Instead rules. What happens then? In principle, what happens to Will is exactly what would have happened to the player in his place. For instance:
+<p>When playing around with text, we tend to get into longer and trickier wrangles of matching - we find that we want to look not for simple text like &quot;gold&quot;, but for &quot;gold&quot; used only as a separate word, or for a date in YYYY-MM-DD format, or for a seemingly endless range of other possibilities. What we need is not just for Inform to provide a highly flexible matching program, but also a good notation in which to describe what we want.
 <p>
-<blockquote><font color="#000080">> will, go east
-<br>Will leaves to the east.
+<p>Fortunately, such a notation already exists. This is the &quot;regular expression&quot; notation, named for a 1950s mathematical model by the logician Stephen Kleene, applied to computing in the late 60s by Ken Thompson, borrowed almost at once by the early Unix tools of the 70s, and developed further by Henry Spencer in the 80s and Philip Hazel in the 90s. The glue holding the Internet together - the Apache web-server, the scripting languages Perl and Python, and so forth - makes indispensable use of regular expressions.
+<p>
+<p>As might be expected from the previous section, we simply have to describe the FIND text as &quot;regular expression&quot; rather than &quot;text&quot; and then the same facilities are available:
+<p>
+<blockquote><font color="#000080">WHATEVER matches the regular expression FIND
+<br>WHATEVER matches the regular expression FIND, case insensitively
+<br>WHATEVER exactly matches the regular expression FIND
+<br>WHATEVER exactly matches the regular expression FIND, case insensitively
+<br>number of times WHATEVER matches the regular expression FIND
+<br>number of times WHATEVER matches the regular expression FIND, case insensitively
 </font></blockquote><p>
 <p>
-<p>If on the other hand Will's attempt is frustrated because one of the checking rules stops him, then Will's action fails. For instance, if Will tries going northeast but there is no room to northeast, one of the rules checking the &quot;going&quot; action will stop him. We will then see this:
+<p>Perhaps fairly, perhaps not, regular expressions have a reputation for being inscrutable. The basic idea is that although alphanumeric characters (letters, numbers and spaces) mean just what they look like, punctuation characters are commands with sometimes dramatic effects. Thus:
 <p>
-<blockquote><font color="#000080">> will, go northeast
-<br>Will is unable to do that.
+<blockquote><font color="#000080">if WHATEVER matches the regular expression &quot;fish&quot;, ...
+<br>if WHATEVER matches the regular expression &quot;f.*h&quot;, ...
 </font></blockquote><p>
 <p>
-<p>This is rather a generic message, and we may want something more interesting. We can provide that using yet another special kind of rule:
+<p>behave very differently. The first is just like matching the text &quot;fish&quot;, but the second matches on any sequence of characters starting with an &quot;f&quot; and ending with an &quot;h&quot;. This is not at all obvious at first sight: reading regular expressions is a skill which must be learned, like reading a musical score. A really complex regular expression can look like a soup of punctuation and even an expert will blink for a few minutes before telling you what it does - but a beginner can pick up the basics very quickly. Newcomers might like to try out and become comfortable with the features a few at a time, reading down the following list.
 <p>
-<blockquote><font color="#000080">Unsuccessful attempt by Will going: say &quot;Will blunders around going nowhere, as usual.&quot;
+<p><b>1. Golden rule</b>. Don't try to remember all the characters with weird effects. Instead, if you actually mean any symbol other than a letter, digit or space to be taken literally, place a backslash &quot;\&quot; in front of it. For instance, matching the regular expression
+<p>
+<blockquote><font color="#000080">&quot;\*A\* of the Galactic Patrol&quot;
 </font></blockquote><p>
 <p>
-<p>Even that is still a little generic, though, because it treats all of the various ways that &quot;going&quot; can fail as the same. If we have ACTIONS switched on, we can see what goes on behind the scenes when we ask Will to walk into a door:
+<p>is the same as matching the text &quot;*A* of the Galactic Patrol&quot;, because the asterisks are robbed of their normal powers. This includes backslash itself: &quot;\\&quot; means a literal backslash. (Don't backslash letters or digits - that turns out to have a meaning all its own, but anyway, there is never any need.)
 <p>
-<blockquote><font color="#000080">>will, go west
-<br>[asking Will to try going west]
-<br>[(1) Will going west]
-<br>[(1) Will going west - failed the can't go through closed doors rule]
-<br>Will blunders around going nowhere, as usual.
-<br>[asking Will to try going west - succeeded]
+<p><b>2. Alternatives</b>. The vertical stroke &quot;|&quot; - not a letter I or L, nor the digit 1 - divides alternatives. Thus
+<p>
+<blockquote><font color="#000080">&quot;the fish|fowl|crawling thing&quot;
 </font></blockquote><p>
 <p>
-<p>(The &quot;(1)&quot; lets us know that a new action is starting during the old one, and before the old one finishes: sometimes we go up to three or four deep, though seldom more in practical cases.) We can now rewrite the &quot;unsuccessful attempt&quot; rule like so:
+<p>is the same as saying match &quot;the fish&quot;, or &quot;fowl&quot;, or &quot;crawling thing&quot;.
 <p>
-<blockquote><font color="#000080">Unsuccessful attempt by Will going:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the can't go through closed doors rule, say &quot;Will looks doubtful and mumbles about doors.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Will blunders around going nowhere, as usual.&quot;
+<p><b>3. Dividing with brackets</b>. Round brackets &quot;(&quot; and &quot;)&quot; group parts of the expression together.
+<p>
+<blockquote><font color="#000080">&quot;the (fish|fowl|crawling thing) in question&quot;
 </font></blockquote><p>
 <p>
-<p>The value &quot;reason the action failed&quot; is set to whichever checking rule threw out the action which Will tried. The names of these rules try to be self-explanatory - at any rate, those with gnomic names are not useful for this sort of thing, and can be ignored - and can be found out either using ACTIONS or by consulting the Actions index.
+<p>is the same as saying match &quot;the fish in question&quot;, or &quot;the fowl in question&quot;, or &quot;the crawling thing in question&quot;. Note that the &quot;|&quot; ranges outwards only as far as the group it is in.
 <p>
-<p>Finally, note that &quot;unsuccessful attempt&quot; rules apply only when the person in question is being asked to perform the action by somebody else - as in the examples above.
+<p><b>4. Any character</b>. The period &quot;.&quot; means any single character. So
+<p>
+<blockquote><font color="#000080">&quot;a...z&quot;
+</font></blockquote><p>
+<p>
+<p>matches on any sequence of five characters so long as the first is &quot;a&quot; and the last is &quot;z&quot;.
+<p>
+<p><b>5. Character alternatives</b>. The angle brackets &quot;&lt;&quot; and &quot;&gt;&quot; are a more concise way of specifying alternatives for a single character. Thus
+<p>
+<blockquote><font color="#000080">&quot;b&lt;aeiou&gt;b&quot;
+</font></blockquote><p>
+<p>
+<p>matches on &quot;bab&quot;, &quot;beb&quot;, &quot;bib&quot;, &quot;bob&quot; or &quot;bub&quot;, but not &quot;baob&quot; or &quot;beeb&quot; - any single character within the angle brackets is accepted. Beginning the range with &quot;^&quot; means &quot;any single character so long as it is not one of these&quot;: thus
+<p>
+<blockquote><font color="#000080">&quot;b&lt;^aeiou&gt;b&quot;
+</font></blockquote><p>
+<p>
+<p>matches on &quot;blb&quot; but not &quot;bab&quot;, &quot;beb&quot;, etc., nor on &quot;blob&quot; or &quot;bb&quot;. Because long runs like this can be a little tiresome, we are also allowed to use &quot;-&quot; to indicate whole ranges. Thus
+<p>
+<blockquote><font color="#000080">&quot;b&lt;a-z&gt;b&quot;
+</font></blockquote><p>
+<p>
+<p>matches a &quot;b&quot;, then any lower case English letter, then another &quot;b&quot;.
+<p>
+<p>In traditional regular expression language, square brackets rather than angle brackets are used for character ranges. In fact Inform does understand this notation (it treats square and angle brackets equally for this purpose), but square brackets would be annoying to type, since they already have a meaning in quoted text - for text substitutions.
+<p>
+<p><b>6. Popular character ranges</b>. The range &quot;&lt;0-9&gt;&quot;, matching any decimal digit, is needed so often that it has an abbreviation: &quot;\d&quot;. Thus
+<p>
+<blockquote><font color="#000080">&quot;\d\d\d\d-\d\d-\d\d&quot;
+</font></blockquote><p>
+<p>
+<p>matches, say, &quot;2006-12-03&quot;. Similarly, &quot;\s&quot; means &quot;any spacing character&quot; - a space, tab or line break. &quot;\p&quot; is a punctuation character, in the same sense used for word division in the previous section: it actually matches any of
+<p>
+<blockquote><font color="#000080">. , ! ? - / &quot; : ; ( ) [ ] { }
+</font></blockquote><p>
+<p>
+<p>&quot;\w&quot; means &quot;any character appearing in a word&quot;, and Inform defines it as anything not matching &quot;\s&quot; or &quot;\p&quot;.
+<p>
+<p>&quot;\l&quot; and &quot;\u&quot; match lower and upper case letters, respectively. These are much stronger than &quot;&lt;a-z&gt;&quot; and &quot;&lt;A-Z&gt;&quot;, since they use the complete definition in the Unicode 4.0.0 standard, so that letter-forms from all languages are catered for: for example &quot;δ&quot; matches &quot;\l&quot; and &quot;Δ&quot; matches &quot;\u&quot;.
+<p>
+<p>The reverse of these is achieved by capitalising the letter. So &quot;\D&quot; means &quot;anything not a digit&quot;, &quot;\P&quot; means &quot;anything not punctuation&quot;, &quot;\W&quot; means &quot;anything not a word character&quot;, &quot;\L&quot; means &quot;anything not a lower case letter&quot; and so on.
+<p>
+<p><b>7. Positional restrictions</b>. The notation &quot;^&quot; does not match anything, as such, but instead requires that we be positioned at the start of the text. Thus
+<p>
+<blockquote><font color="#000080">&quot;^fish&quot;
+</font></blockquote><p>
+<p>
+<p>matches only &quot;fish&quot; at the start of the text, not occurring anywhere later on. Similarly, &quot;$&quot; requires that the position be the end of the text. So
+<p>
+<blockquote><font color="#000080">&quot;fish$&quot;
+</font></blockquote><p>
+<p>
+<p>matches only if the last four characters are &quot;fish&quot;. Matching &quot;^fish$&quot; is the same thing as what Inform calls exactly matching &quot;fish&quot;.
+<p>
+<p>Another useful notation is &quot;\b&quot;, which matches a word boundary: that is, it matches no actual text, but requires the position to be a junction between a word character and a non-word character (a &quot;\w&quot; and a &quot;\W&quot;) or vice versa. Thus
+<p>
+<blockquote><font color="#000080">&quot;\bfish\b&quot;
+</font></blockquote><p>
+<p>
+<p>matches &quot;fish&quot; in &quot;some fish&quot; and also &quot;some fish, please!&quot;, but not in &quot;shellfish&quot;. (The regular expression &quot;\w*fish\b&quot; catches all words ending in &quot;fish&quot;, as we will see below.) As usual, the capitalised version &quot;\B&quot; negates this, and means &quot;not at a word boundary&quot;.
+<p>
+<p><b>8. Line break and tab</b>. The notations &quot;\n&quot; and &quot;\t&quot; are used for a line break (&quot;n&quot; for &quot;new line&quot;) and tab, respectively. Tabs normally do not occur in Inform strings, but can do when reading from files. It makes no sense to reverse these, so &quot;\N&quot; and &quot;\T&quot; produce errors.
+<p>
+<p><b>9. Repetition</b>. Placing a number in braces &quot;{&quot; and &quot;}&quot; after something says that it should be repeated that many times. Thus
+<p>
+<blockquote><font color="#000080">&quot;ax{25}&quot;
+</font></blockquote><p>
+<p>
+<p>matches only on &quot;axxxxxxxxxxxxxxxxxxxxxxxxx&quot;. More usefully, perhaps, we can specify a range of the number of repetitions:
+<p>
+<blockquote><font color="#000080">&quot;ax{2,6}&quot;
+</font></blockquote><p>
+<p>
+<p>matches only on &quot;axx&quot;, &quot;axxx&quot;, &quot;axxxx&quot;, &quot;axxxxx&quot;, &quot;axxxxxx&quot;. And we can leave the top end open: &quot;ax{2,}&quot; means &quot;a&quot; followed by at least two &quot;x&quot;s.
+<p>
+<p>Note that the braces attach only to most recent thing - so &quot;ax{2}&quot; means &quot;a&quot; followed by two of &quot;x&quot; - but, as always, we can use grouping brackets to change that. So &quot;(ax){2,}&quot; matches &quot;axax&quot;, &quot;axaxax&quot;, &quot;axaxaxax&quot;,...
+<p>
+<p>(It's probably best not to use Inform to try to match the human genome against &quot;&lt;acgt&gt;{3000000000}&quot;, but one of the most important practical uses of regular expression matching in science is in treating DNA as a string of nucleotides represented by the letters &quot;a&quot;, &quot;c&quot;, &quot;g&quot;, &quot;t&quot;, and looking for patterns.)
+<p>
+<p><b>10. Popular repetitions.</b> Three cases are so often needed that they have standard short forms:
+<p>
+<p>&quot;{0,1}&quot;, which means 0 or 1 repetition of something - in other words, doesn't so much repeat it as make it optional - is written &quot;?&quot;. Thus &quot;ax?y&quot; matches only on &quot;ay&quot; or &quot;axy&quot;.
+<p>
+<p>&quot;{0,}&quot;, which means 0 or more repetitions - in other words, any number at all - is written &quot;*&quot;. Thus &quot;ax*y&quot; matches on &quot;ay&quot;, &quot;axy&quot;, &quot;axxy&quot;, &quot;axxxy&quot;, ... and the omnivorous &quot;.*&quot; - which means &quot;anything, any number of times&quot; - matches absolutely every text.
+<p>
+<p>&quot;{1,}&quot;, which means 1 or more repetitions, is written &quot;+&quot;. So &quot;\d+&quot; matches any run of digits, for instance.
+<p>
+<p><b>11. Greedy vs lazy.</b> Once we allow things to repeat an unknown number of times, we run into an ambiguity. Sure, &quot;\d+&quot; matches the text &quot;16339b&quot;. But does it look only as far as the &quot;1&quot;, then reason that it now has one or more digits in a row, and stop? Or does it run onward devouring digits until it can do so no longer, so matching the &quot;16339&quot; part? These two strategies are called &quot;lazy&quot; and &quot;greedy&quot; respectively.
+<p>
+<p>Do we care? Well, the strategy used makes no difference to whether there is a match, but it does affect what part of the text is matched, and the number of matches there are. Unless we mark for it, all repetitions are greedy. Usually this is good, but it means that, for instance,
+<p>
+<blockquote><font color="#000080">&quot;-.+-&quot;
+</font></blockquote><p>
+<p>
+<p>applied to &quot;-alpha- -beta- -gamma-&quot; will match the whole text, because &quot;.+&quot; picks up all of &quot;alpha- -beta- -gamma&quot;. To get around this, we can mark any of the repetition operators as lazy by adding a question mark &quot;?&quot;. Thus:
+<p>
+<blockquote><font color="#000080">&quot;-.+?-&quot;
+</font></blockquote><p>
+<p>
+<p>applied to &quot;-alpha- -beta- -gamma-&quot; matches three times, producing &quot;-alpha-&quot; then &quot;-beta-&quot; then &quot;-gamma-&quot;.
+<p>
+<p>A logical but sometimes confusing consequence is that a doubled question mark &quot;??&quot; means &quot;repeat 0 or 1 times, but prefer 0 matches to 1 if both are possibilities&quot;: whereas a single question mark &quot;?&quot;, being greedy, means &quot;repeat 0 or 1 times, but prefer 1 match to 0 if both are possibilities&quot;.
+<p>
+<p><b>12. Numbered groups.</b> We have already seen that round brackets are useful to clump together parts of the regular expression - to choose within them, or repeat them. In fact, Inform numbers these from 1 upwards as they are used from left to right, and we can subsequently refer back to their contents with the notation &quot;\1&quot;, &quot;\2&quot;, ... For instance:
+<p>
+<blockquote><font color="#000080">&quot;(\w)\w*\1&quot;
+</font></blockquote><p>
+<p>
+<p>matches any run of two or more word-characters, subject to the restriction that the last one has to be the same as the first - so it matches &quot;xerox&quot; but not &quot;alphabet&quot;. When Inform matches this against &quot;xerox&quot;, first it matches the initial &quot;x&quot; against the group &quot;(\w)&quot;. It then matches &quot;\w*&quot; (&quot;any number of word-characters&quot;) against &quot;ero&quot;, so that the &quot;*&quot; runs up to 3 repetitions. It then matches &quot;\1&quot; against the final &quot;x&quot;, because &quot;\1&quot; requires it to match against whatever last matched in sub-expression 1 - which was an &quot;x&quot;.
+<p>
+<p>Numbered groups allow wicked tricks in matching, it's true, but really come into their own when it comes to replacing - as we shall see.
+<p>
+<p><b>13. Switching case sensitivity on and off.</b> The special notations &quot;(?i)&quot; and &quot;(?-i)&quot; switch sensitivity to upper vs. lower case off and on, mid-expression. Thus &quot;a(?i)bcd(?-i)e&quot; matches &quot;abcde&quot;, &quot;aBcDe&quot;, etc., but not &quot;Abcde&quot; or &quot;abcdE&quot;.
+<p>
+<p><b>14. Groups with special meanings.</b> This is the last of the special syntaxes: but it's a doozy. A round-bracketed group can be marked to behave in a special way by following the open bracket by a symbol with a special meaning. Groups like this have no number and are not counted as part of \1, \2, and so forth - they are intended not to gather up material but to have some effect of their own.
+<p>
+<blockquote><font color="#000080">&quot;(# ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Is a comment, that is, causes the group to do nothing and match against anything.
+<p>
+<blockquote><font color="#000080">&quot;(?= ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Is a lookahead: it is a form of positional requirement, like &quot;\b&quot; or &quot;^&quot;, but one which requires that the text ahead of us matches whatever is in the brackets. (It doesn't consume that text - only checks to see that it's there.) For instance &quot;\w+(?=;)&quot; matches a word followed by a semicolon, but does not match the semicolon itself.
+<p>
+<blockquote><font color="#000080">&quot;(?! ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Is the same but negated: it requires that the text ahead of us does not match the material given. For instance, &quot;a+(?!z)&quot; matches any run of &quot;a&quot;s not followed by a &quot;z&quot;.
+<p>
+<blockquote><font color="#000080">&quot;(?<= ...)&quot; and &quot;(?&lt;! ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Are the same but looking behind (hence the &quot;<&quot;), not forward. These are restricted to cases where Inform can determine that the material to be matched has a definite known width. For instance, &quot;(?&lt;!shell)fish&quot; matches any &quot;fish&quot; not occurring in &quot;shellfish&quot;.
+<p>
+<blockquote><font color="#000080">&quot;(> ...)&quot;
+</font></blockquote><p>
+<p>
+<p>Is a possessive, that is, causes the material to be matched and, once matched, never lets go. No matter what subsequently turns out to be convenient, it will never change its match. For instance, &quot;\d+8&quot; matches against &quot;768&quot; because Inform realises that &quot;\d+&quot; cannot be allowed to eat the &quot;8&quot; if there is to be a match, and stops it. But &quot;(>\d+)8&quot; does not match against &quot;768&quot; because now the &quot;\d+&quot;, which initially eats &quot;768&quot;, is possessive and refuses to give up the &quot;8&quot; once taken.
+<p>
+<blockquote><font color="#000080">&quot;(?(1)...)&quot; and &quot;(?(1)...|...)&quot;
+</font></blockquote><p>
+<p>
+<p>Are conditionals. These require us to match the material given if \1 has successfully matched already; in the second version, the material after the &quot;|&quot; must be matched if \1 has not successfully matched yet. And the same for 2, 3, ..., 9, of course.
+<p>
+<p>Finally, conditionals can also use lookaheads or lookbehinds as their conditions. So for instance:
+<p>
+<blockquote><font color="#000080">&quot;(?(?=\d)\d\d\d\d|AY-\d\d\d\d)&quot;
+</font></blockquote><p>
+<p>
+<p>means if you start with a digit, match four digits; otherwise match &quot;AY-&quot; followed by four digits. There are easier ways to do this, of course, but the really juicy uses of conditionals are only borderline legible and make poor examples - perhaps this is telling us something.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e16"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc177.html#e16 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>174</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc177.html#e16 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Generation X</font></b></a><br>A person who goes along with the player's instructions, but reluctantly, and will get annoyed after too many repetitions of the same kind of unsuccessful command.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex16.html#e16 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e16"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc333.html#e16 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>380</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc333.html#e16 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">About Inform's regular expression support</font></b></a><br>Some footnotes on Inform's regular expressions, and how they compare to those of other programming languages.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex16.html#e16 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode264(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Generation X[=0x0022=][=0x000A=][=0x000A=]The Volunteer Center is a room. [=0x0022=]A fairly spartan office, though there are a few attractive posters from advertising campaigns of the past, and an ominous map charting the deforestation of Brazil.[=0x0022=][=0x000A=][=0x000A=]The desk is scenery in the Volunteer Center. [=0x0022=]Your standard metal desk, with a drawer for postal supplies and the like.[=0x0022=] On the desk is a pile of leaflets and a pile of business cards. The power stapler is a device on the desk. A drawer is part of the desk. It is openable and closed. In the drawer are a sponge and a roll of bulk-mail stamps.[=0x000A=][=0x000A=]Instead of doing something:[=0x000A=][=0x0009=]if examining, continue the action;[=0x000A=][=0x0009=]if searching, continue the action;[=0x000A=][=0x0009=]if looking, continue the action;[=0x000A=][=0x0009=]if asking Jenna to try doing something, continue the action;[=0x000A=][=0x0009=]say [=0x0022=]The whole point of this exercise is to train Jenna. Once you have her on the envelope-stuffing, you can go make some calls.[=0x0022=][=0x000A=][=0x000A=]Instead of answering Jenna that something:[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]re going to have to break the instructions down to the simplest ones possible, given that she[=0x0027=]s in the mood to misunderstand on purpose.[=0x0022=][=0x000A=][=0x000A=]A cardboard box is in the Center. In the cardboard box is a pile of empty envelopes. The box is openable and closed. The description is [=0x0022=]A recycling symbol is prominent on the side, which makes you feel a little bit better about using a mailing campaign for this cause.[=0x0022=][=0x000A=][=0x000A=]Jenna is a woman in the Volunteer Center. [=0x0022=]Your daughter Jenna is here, barely visible through the cloud of resentment.[=0x0022=] The description is [=0x0022=]Jenna [if jenna carries something]has [the list of things carried by Jenna][otherwise]returns your stare, with added hostility[end if].[=0x0022=][=0x000A=][=0x000A=]A persuasion rule for asking Jenna to try doing something: persuasion succeeds.[=0x000A=][=0x000A=]Unsuccessful attempt by Jenna doing something:[=0x000A=][=0x0009=]repeat through Table of Retorts[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the reason the action failed is the cause entry[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][response entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]rule succeeds;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]I don[=0x0027=]t see how I[=0x0027=]m supposed to do that, Mom,[=0x0027=] Jenna says.[=0x0022=][=0x000A=][=0x000A=]Table of Retorts[=0x000A=]cause[=0x0009=]response[=0x000A=]can[=0x0027=]t take yourself rule[=0x0009=][=0x0022=][=0x0027=]Is that like [=0x0027=]get a grip on yourself[=0x0027=] or something?[=0x0027=] Jenna asks, momentarily diverted.[=0x0022=][=0x000A=]can[=0x0027=]t take what[=0x0027=]s fixed in place rule[=0x0009=][=0x0022=][physical impossibility][=0x0022=][=0x000A=]can[=0x0027=]t take scenery rule[=0x0009=][=0x0022=][physical impossibility][=0x0022=][=0x000A=]can[=0x0027=]t take what[=0x0027=]s already taken rule[=0x0009=][=0x0022=][already done][=0x0022=][=0x000A=]can[=0x0027=]t drop what[=0x0027=]s already dropped rule[=0x0009=][=0x0022=][already done][=0x0022=][=0x000A=]can[=0x0027=]t wear what[=0x0027=]s already worn rule[=0x0009=][=0x0022=][already done][=0x0022=][=0x000A=]can[=0x0027=]t take off what[=0x0027=]s not worn rule[=0x0009=][=0x0022=][already done][=0x0022=][=0x000A=]can[=0x0027=]t close what[=0x0027=]s already closed rule[=0x0009=][=0x0022=][already done][=0x0022=][=0x000A=]can[=0x0027=]t open what[=0x0027=]s already open rule[=0x0009=][=0x0022=][already done][=0x0022=][=0x000A=]can[=0x0027=]t switch off what[=0x0027=]s already off rule[=0x0009=][=0x0022=][already done][=0x0022=][=0x000A=]can[=0x0027=]t switch on what[=0x0027=]s already on rule[=0x0009=][=0x0022=][already done][=0x0022=][=0x000A=]can[=0x0027=]t unlock what[=0x0027=]s already unlocked rule[=0x0009=][=0x0022=][already done][=0x0022=][=0x000A=]can[=0x0027=]t lock what[=0x0027=]s already locked rule[=0x0009=][=0x0022=][already done][=0x0022=][=0x000A=][=0x000A=]To say physical impossibility:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]Maybe you should[=0x0027=]ve brought someone a little stronger,[=0x0027=] Jenna says. [=0x0027=]Like the Incredible Hulk.[=0x0027=] [=0x0022=][=0x000A=][=0x000A=]To say already done:[=0x000A=][=0x0009=]repeat through Table of Bored Remarks[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][response entry][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]blank out the whole row;[=0x000A=][=0x0009=][=0x0009=]rule succeeds;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]Okay, I[=0x0027=]m going to be, like, in the car,[=0x0027=] says Jenna. [=0x0027=]Outside.[=0x0027=] [=0x0022=];[=0x000A=][=0x0009=]end the game saying [=0x0022=]Jenna has gotten fed up[=0x0022=].[=0x000A=][=0x000A=]Table of Bored Remarks[=0x000A=]response[=0x000A=][=0x0022=][=0x0027=]Did that,[=0x0027=] says Jenna.[=0x0022=][=0x000A=][=0x0022=][=0x0027=]Check,[=0x0027=] says Jenna.[=0x0022=][=0x000A=][=0x0022=][=0x0027=]Yeah, Mom, I already did that, okay?[=0x0027=][=0x0022=][=0x000A=][=0x0022=][=0x0027=]Look, if I have to be here doing dumb stuff, could you at least tell me to do stuff that isn[=0x0027=]t already done?[=0x0027=] Jenna asks wearily.[=0x0022=][=0x000A=][=0x0022=]Jenna gives a great upward sigh, riffling her bangs. [=0x0027=]Once again... there is totally no point.[=0x0027=][=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]e / x jenna / jenna, get stapler / jenna, get stapler / x jenna / jenna, drop stapler / jenna, drop stapler / jenna, open box / jenna, open box / jenna, switch stapler on / jenna, switch stapler on / jenna, take desk / jenna, open box / jenna, open box[=0x0022=].[=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode264()"><img border=0 src=../doc_images/paste.png></a> &quot;Generation X&quot;
+<p>There is not really any unanimity about what regular expression language is. The unix tools sed and grep extend on Kleene's original grammar. Henry Spencer's regex library extended on this again, and was a foundation for Perl, but Perl once again went further. Philip Hazel's PCRE, despite the name Perl Compatible Regular Expressions, makes further extensions still, and so on.
+<p>
+<p>Inform's regular expressions are modelled on those of Perl, as the best de facto standard we have, but a few omissions have been inevitable. Inform's regex matcher must occupy source code less than one hundredth the size of PCRE, and it has very little memory. Inform aims to behave exactly like Perl except as follows:
+<p>
+<blockquote><font color="#000080">(i) Inform allows angle brackets as synonymous with square brackets, for reasons explained above. This means literal angle brackets have to be escaped as &quot;\&lt;&quot; and &quot;\&gt;&quot; in Inform regular expressions, which is unnecessary in Perl.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Volunteer Center is a room. &quot;A fairly spartan office, though there are a few attractive posters from advertising campaigns of the past, and an ominous map charting the deforestation of Brazil.&quot;
+<blockquote><font color="#000080">(ii) Inform only has single-line mode, not multiline mode: this removes need for the mode-switches &quot;(?m)&quot; and &quot;(?s)&quot; and the positional markers &quot;\A&quot; and &quot;\Z&quot;. Multiline mode is idiosyncratic to Perl and is a messy compromise to do with holding long files of text as single strings, yet treating them as lists of lines at the same time: this would not be sensible for Inform. Similarly, because there is no ambiguity about how line breaks are represented in Inform strings (by a single &quot;\n&quot;), initial newline convention markers such as &quot;(*ANYCRLF)&quot; are unsupported.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The desk is scenery in the Volunteer Center. &quot;Your standard metal desk, with a drawer for postal supplies and the like.&quot; On the desk is a pile of leaflets and a pile of business cards. The power stapler is a device on the desk. A drawer is part of the desk. It is openable and closed. In the drawer are a sponge and a roll of bulk-mail stamps.
+<blockquote><font color="#000080">(iii) The codes &quot;\a&quot;, &quot;\r&quot;, &quot;\f&quot;, &quot;\e&quot;, &quot;\0&quot; for alarm, carriage return, form feed, escape and the zero character are unsupported: none of these can occur in an Inform string.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of doing something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if examining, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if searching, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if looking, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if asking Jenna to try doing something, continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The whole point of this exercise is to train Jenna. Once you have her on the envelope-stuffing, you can go make some calls.&quot;
+<blockquote><font color="#000080">(iv) Inform does not allow characters to be referred to by character code (whereas Perl allows &quot;\036&quot; for an octal character code, &quot;\x7e&quot; for a hexadecimal one, &quot;\cD&quot; for a control character). This is because we do not want the user to know whether text is internally stored as ZSCII or Unicode.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of answering Jenna that something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're going to have to break the instructions down to the simplest ones possible, given that she's in the mood to misunderstand on purpose.&quot;
+<blockquote><font color="#000080">(v) Inform's character class &quot;\p&quot; (and its negation &quot;\P&quot;) have no equivalent in Perl, and Inform's understanding of &quot;\w&quot; is different. Perl defines this as an upper or lower case English letter, underscore or digit, which is good for programming-language identifiers, but bad for natural language - for instance, &quot;é&quot; is not matched by &quot;\w&quot; in Perl, but unquestionably it appears in words. Inform therefore defines &quot;\w&quot; as the negation of &quot;\s&quot; union &quot;\p&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A cardboard box is in the Center. In the cardboard box is a pile of empty envelopes. The box is openable and closed. The description is &quot;A recycling symbol is prominent on the side, which makes you feel a little bit better about using a mailing campaign for this cause.&quot;
+<blockquote><font color="#000080">(vi) Inform supports only single-digit grouping numbers &quot;\1&quot; to &quot;\9&quot;, whereas Perl allows &quot;\10&quot;, &quot;\11&quot;, ...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Jenna is a woman in the Volunteer Center. &quot;Your daughter Jenna is here, barely visible through the cloud of resentment.&quot; The description is &quot;Jenna [if jenna carries something]has [the list of things carried by Jenna][otherwise]returns your stare, with added hostility[end if].&quot;
+<blockquote><font color="#000080">(vii) POSIX named character ranges are not supported. These are only abbreviations in any case, and are not very useful. (Note that the POSIX range &quot;[:punct:]&quot;, which is supposedly for punctuation, includes many things we do not want to think of that way - percentage signs, for instance - and so &quot;\p&quot; has a more natural-language-based definition.)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A persuasion rule for asking Jenna to try doing something: persuasion succeeds.
+<blockquote><font color="#000080">(viii) Character classes can be used inside ranges, so that &quot;&lt;\da-f&gt;&quot; is legal, but not as ends of contiguous runs, so that &quot;&lt;\d-X&gt;&quot; is not legal. (As reckless as this is, it is legal in Perl.)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Unsuccessful attempt by Jenna doing something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Retorts
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the reason the action failed is the cause entry
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[response entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'I don't see how I'm supposed to do that, Mom,' Jenna says.&quot;
+<blockquote><font color="#000080">(ix) For obvious reasons, escapes to Perl code using the notation &quot;(?{...})&quot; are unsupported, and so is the Perl iteration operator &quot;\G&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Retorts
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">cause</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">response</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take yourself rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Is that like 'get a grip on yourself' or something?' Jenna asks, momentarily diverted.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take what's fixed in place rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[physical impossibility]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take scenery rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[physical impossibility]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take what's already taken rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't drop what's already dropped rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't wear what's already worn rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't take off what's not worn rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't close what's already closed rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't open what's already open rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't switch off what's already off rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't switch on what's already on rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't unlock what's already unlocked rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">can't lock what's already locked rule</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;[already done]&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">(x) Perl's extended mode &quot;(?x)&quot;, a lexical arrangement which allows expressions to be expanded out as little computer programs with comments, is unsupported. It would look awful syntax-coloured in the Inform interface and is not a style of coding to be encouraged.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say physical impossibility:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Maybe you should've brought someone a little stronger,' Jenna says. 'Like the Incredible Hulk.' &quot;
+<p>Inform further does not support the Python extension of named subexpression groups, nor the Java extension of the possessive quantifier &quot;++&quot;. There was only so much functionality we could squeeze in.
+<p>
+<p>As verification of Inform's matching algorithm, we took the Perl 5 source code's notorious &quot;re-test.txt&quot; set of 961 test cases, removed the 316 using features unsupported by Inform (220 tested multiline mode, for instance), and ran the remaining 645 cases through Inform. It agrees with Perl on 643 of these: the two outstanding are -
+<p>
+<blockquote><font color="#000080">(i) Perl is able to match &quot;^(a\1?){4}$&quot; against &quot;aaaaaa&quot; but Inform is not - Inform's backtracking is not as good when it comes to repetitions of groupings which are recursively defined. (Note that the optional &quot;\1&quot; match refers to the value of the bracketed expression which contains it, so that the interpretation is different on each repetition. Here to match we have to interpret &quot;?&quot; as 0, 0, 1, 0 repeats respectively as we work through the &quot;{4}&quot;.)
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say already done:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Bored Remarks
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[response entry]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Okay, I'm going to be, like, in the car,' says Jenna. 'Outside.' &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Jenna has gotten fed up&quot;.
+<blockquote><font color="#000080">(ii) Perl matches &quot;((&lt;a-c>)b*?\2)*&quot; against &quot;ababbbcbc&quot; finding the match &quot;ababb&quot;, whereas Inform finds the match &quot;ababbbcbc&quot;. This is really a difference of opinion about whether the outer asterisk, which is greedy, should be allowed three matches rather than two if to do so requires the inner asterisk, which is not greedy, to eat more than it needs on one of those three matches.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Bored Remarks
-<br>response
-<br>&quot;'Did that,' says Jenna.&quot;
-<br>&quot;'Check,' says Jenna.&quot;
-<br>&quot;'Yeah, Mom, I already did that, okay?'&quot;
-<br>&quot;'Look, if I have to be here doing dumb stuff, could you at least tell me to do stuff that isn't already done?' Jenna asks wearily.&quot;
-<br>&quot;Jenna gives a great upward sigh, riffling her bangs. 'Once again... there is totally no point.'&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;e / x jenna / jenna, get stapler / jenna, get stapler / x jenna / jenna, drop stapler / jenna, drop stapler / jenna, open box / jenna, open box / jenna, switch stapler on / jenna, switch stapler on / jenna, take desk / jenna, open box / jenna, open box&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc177.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Case (i) is a sacrifice to enable Inform's back-tracking to use less memory. Case (ii) simply seems unimportant.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc333.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc176.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc178.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e204"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex204.html#e204 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>381</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex204.html#e204 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alpha</font></b></a><br>Creating a beta-testing command that matches any line starting with punctuation.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex204.html#e204 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc332.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc334.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

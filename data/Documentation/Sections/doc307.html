@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.11. Named outcomes</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.38. Starting the virtual machine</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,49 +19,19 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Named outcomes" -->
-<!-- SEARCH SECTION "18.11" -->
-<!-- SEARCH SORT "018-011-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc306.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc308.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.11. Named outcomes</b></font></td></tr></table>
+<!-- SEARCH TITLE "Starting the virtual machine" -->
+<!-- SEARCH SECTION "17.38" -->
+<!-- SEARCH SORT "017-038-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc306.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc308.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.38. Starting the virtual machine</b></font></td></tr></table>
 <p>
-<p>We have seen that the terms &quot;success&quot; and &quot;failure&quot; can be misleading - after all, it might be a good thing for a particular rulebook to &quot;fail&quot;. At any rate, these are vague terms, and we don't want to have to remember the conventions used by every rulebook. This is why certain rulebooks have explicitly named outcomes instead. For instance, the &quot;visibility&quot; rules are allowed to have the outcomes:
+<p><b>1. When it happens.</b> This activity is provided solely as a &quot;hook&quot; for any low-level tasks which need to be performed when the virtual computer which runs Inform story files is starting up. This happens much earlier than &quot;when play begins&quot; rules, and should be used only as a last resort.
 <p>
-<blockquote><font color="#000080">there is sufficient light;
-<br>there is insufficient light;
-</font></blockquote><p>
+<p>It should be remembered that Inform can produce story files for several different virtual computers. On some of these, it will not be safe to print any text during this activity, as the windows which would display such text do not yet exist.
 <p>
-<p>These look like phrases, but are in fact named outcomes which can only be used in visibility rules. (They would make no sense elsewhere, and Inform will not allow their use if they are clearly out of context.) Such named outcomes are listed in the Rules index.
+<p><b>2. The default behaviour.</b> None.
 <p>
-<p>There can be any number of named outcomes. For instance, the Standard Rules define:
-<p>
-<blockquote><font color="#000080">The does the player mean rules are a rulebook. The does the player mean rules have outcomes it is very likely, it is likely, it is possible, it is unlikely and it is very unlikely.
-</font></blockquote><p>
-<p>
-<p>which makes five possible outcomes. Five outcomes seems to contradict the principle that there are only three possible outcomes for a rule: in fact, though, the five are counted as five different forms of &quot;success&quot;, and any of them will cause a &quot;does the player mean&quot; rule to succeed. If we do not want this, we can instead specify explicitly how the named outcomes correspond to success, failure or &quot;no outcome&quot;:
-<p>
-<blockquote><font color="#000080">Visibility rules have outcomes there is sufficient light (failure) and there is insufficient light (success).
-</font></blockquote><p>
-<p>
-<p>Again, see the Rules index for examples.
-<p>
-<p>The same named outcome can be used for more than one rulebook, and can have different meanings in the context of different rulebooks - &quot;good news&quot; could be defined as success in one rulebook and failure in another, for instance. (This means that rulebook creators need not worry about name clashes and is an important difference in behaviour between rulebook outcomes and kinds of value.) We can even name a specific named outcome as the default outcome for rules in this rulebook:
-<p>
-<blockquote><font color="#000080">Audibility rules have outcomes high background noise (failure), low background noise (success - the default) and absolute silence (success).
-</font></blockquote><p>
-<p>
-<p>After a rulebook using named outcomes has run, we can test which outcome occurred by looking at the special value
-<p>
-<blockquote><font color="#000080">the outcome of the rulebook
-</font></blockquote><p>
-<p>
-<p>so for instance:
-<p>
-<blockquote><font color="#000080">follow the audibility rules;
-<br>if the outcome of the rulebook is the absolute silence outcome, say &quot;You could hear a pin drop in here.&quot;
-</font></blockquote><p>
-<p>
-<p>(Each named outcome is a value if followed by the word &quot;outcome&quot;, which is how &quot;absolute silence&quot; has become &quot;the absolute silence outcome&quot;. Named outcomes can be said, so we could use the text substitution &quot;[outcome of the rulebook]&quot;, for instance. A final caveat: it is perfectly legal to create a named outcome which means &quot;no outcome&quot;, but if so then this will never be &quot;the outcome of the rulebook&quot; because &quot;no outcome&quot; is not an outcome.)
+<p><b>3. Examples.</b> No detailed examples will be given here, but the activity might be used (for instance) to set styles for the Glulx windows shortly to be brought into existence.
 <p>
 <p><hr><p>
-<a name="e270"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex270.html#e270 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>346</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex270.html#e270 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Being Peter</font></b></a><br>A set of rules determining the attitude a character will take when asked about certain topics.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex270.html#e270 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e335"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex335.html#e335 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>351</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex335.html#e335 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Blankness</font></b></a><br>Emptying the status line during the first screen of the game.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex335.html#e335 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc306.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc308.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

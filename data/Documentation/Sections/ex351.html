@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.14. Phrases concerning rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.1. Understand</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,270 +19,94 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Solitude" -->
-<!-- SEARCH SECTION "Ex 353" -->
-<!-- SEARCH SORT "Ex 018-014-353" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc309.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc311.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.14. Phrases concerning rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "XYZZY" -->
+<!-- SEARCH SECTION "Ex 261" -->
+<!-- SEARCH SORT "Ex 016-001-261" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc248.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc250.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.1. Understand</b></font></td></tr></table>
 <p>
-<p>The &quot;ignore&quot; phrase is only one of a suite. The full list is:
+<p>During play, the computer and the player alternate in writing messages to each other: in the player's case, these are short instructions, usually saying what to do next. A wide range of such &quot;commands&quot; are automatically understood, but these only apply to the standard built-in actions. (This wide range is conveniently tabulated at the foot of the Actions index.) If we want the player to be able to command new actions, then we need to specify what is to be understood as what. For this, we supply special sentences starting with the word &quot;Understand&quot;.
 <p>
-<blockquote><font color="#000080">ignore ...rule...
-<br>reinstate ...rule...
+<p>Suppose we return to the earlier example of a newly created action:
+<p>
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
 </font></blockquote><p>
 <p>
-<p>The &quot;reinstate&quot; phrase simply reverses any previous &quot;ignore&quot; of the same rule, and is otherwise not useful.
+<p>We then supply lines of grammar (as they are called) for Inform to recognise, like so:
 <p>
-<blockquote><font color="#000080">reject the result of ...rule...
-<br>accept the result of ...rule...
+<blockquote><font color="#000080">Understand &quot;photograph [someone]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>Some rules produce results, as we shall see in the next section, but they can be set so that whatever result they produce will be ignored. Again, &quot;accept ...&quot; simply undoes a previous &quot;reject ...&quot; and otherwise has no effect.
-<p>
-<blockquote><font color="#000080">substitute ...first rule... for ...second rule...
-<br>restore the original ...second rule...
+<blockquote><font color="#000080">Understand &quot;photograph [an open door]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>Whenever the second rule is to be invoked - from any rulebook, or as a result of any &quot;follow&quot; instruction - invoke the first one instead. Again, &quot;restore ...&quot; simply undoes the effect of an earlier &quot;substitute&quot;.
+<p>As usual, the square brackets indicate something which stands for text, rather than text to be taken verbatim. &quot;[someone]&quot; needs to be the name of anything of the kind &quot;person&quot;, for instance (though as usual that person will need to be in sight of the player for the name to be accepted). The first word - in these examples &quot;photograph&quot; - must be something definite, not a substitution like this.
 <p>
-<blockquote><font color="#000080">move ...first rule... to before/after ...second rule...
+<p>For obvious reasons, this pattern of words needs to match the expectations of the action. Photographing applies to &quot;one visible thing&quot; - the &quot;visible&quot; just means it does not need to be touched, only seen - so neither of these would be allowable:
+<p>
+<blockquote><font color="#000080">Understand &quot;photograph&quot; as photographing.
+<br>Understand &quot;photograph [someone] standing next to [something]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>This causes the first rule to be ignored whenever it turns up in the ordinary way, but to be invoked either immediately before or immediately after the second rule whenever that second rule is invoked. In effect, it cuts out the first rule from wherever it was, and glues it onto the second. Note that there is no obligation for the first rule to begin in the same rulebook(s) as the second, so this can be used to slot in a wholly new rule, perhaps only if certain circumstances hold.
-<p>
-<p>These rule-changing instructions allow apparently casual sentences to wreak havoc with the model world. This, for instance, is quite the recipe for mayhem and perplexity:
-<p>
-<blockquote><font color="#000080">A procedural rule: reject the result of the before rules; ignore the after rules; move the after rules to before the before rules.
-</font></blockquote><p>
+<p>The first is bad because it supplies no things at all, the second because it supplies two: what we want, of course, is just the one.
 <p>
 <p><hr><p>
-<a name="e194"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex194.html#e194 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>349</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex194.html#e194 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uptempo</font></b></a><br>Adjust time advancement so the game clock moves fifteen minutes each turn.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex194.html#e194 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e41"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex41.html#e41 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>350</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex41.html#e41 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Swigmore U.</font></b></a><br>Adding a new kind of supporter called a perch, where everything dropped lands on the floor.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex41.html#e41 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e78"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex78.html#e78 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>351</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex78.html#e78 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 1</font></b></a><br>A poisonous gas that spreads from room to room, incapacitating or killing the player when it reaches sufficient levels.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex78.html#e78 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e247"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex247.html#e247 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>352</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex247.html#e247 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Lethal Concentration 2</font></b></a><br>Poisonous gas again, only this time it sinks.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex247.html#e247 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e143"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex143.html#e143 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>260</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex143.html#e143 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Indirection</font></b></a><br>Renaming the directions of the compass so that "white" corresponds to north, "red" to east, "yellow" to south, and "black" to west.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex143.html#e143 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e351"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc310.html#e351 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>353</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc310.html#e351 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Solitude</font></b></a><br>Novice mode that prefaces every prompt with a list of possible commands the player could try, and highlights every important word true, to alert players to interactive items in the scenery.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex351.html#e351 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e351"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc249.html#e351 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>261</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc249.html#e351 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> XYZZY</font></b></a><br>Basics of adding a new command reviewed, for the case of the simple magic word XYZZY.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex351.html#e351 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Observation of novice IF players suggests that they often have a hard time figuring out how to get started, especially if they are encountering the game in a truth state where they don't have time to settle in and read instructions. Here we provide some training wheels to help them learn to communicate.
-<p>
-<p>This is divided into several parts. The first part is the system of rules for general guidance, which could be excerpted and true anywhere. The second part is a scenario using these rules; and in the third part, we play with a change to the situation which leads us to want to rearrange the rulebook.
+<p>We have seen before how to define a new action from scratch, but we may want to review here, using a simple command that requires no objects.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode443(code) {
+function pasteCode357(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Solitude[=0x0022=][=0x000A=][=0x000A=]Part 1 - General Rules[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]say [=0x0022=]Have you played interactive fiction before? [=0x003E=][=0x0022=];[=0x000A=][=0x0009=]if the player consents, change novice mode to false;[=0x000A=][=0x0009=]otherwise change novice mode to true.[=0x000A=][=0x000A=][The rationale for asking the question this way, and not another, is that novices asked whether they would like instructions very often say no, even if they need them.][=0x000A=][=0x000A=]Novice mode is a truth state that varies. Novice mode is true.[=0x000A=][=0x000A=]Stopping novice mode is an action out of world.[=0x000A=]Starting novice mode is an action out of world.[=0x000A=][=0x000A=]Understand [=0x0022=]novice mode off[=0x0022=] or [=0x0022=]novice off[=0x0022=] as stopping novice mode.[=0x000A=]Understand [=0x0022=]novice mode on[=0x0022=] or [=0x0022=]novice on[=0x0022=] as starting novice mode.[=0x000A=][=0x000A=]Carry out stopping novice mode: change novice mode to false.[=0x000A=]Carry out starting novice mode: change novice mode to true.[=0x000A=][=0x000A=]Report stopping novice mode: say [=0x0022=]Novice mode is now off.[=0x0022=][=0x000A=]Report starting novice mode: say [=0x0022=]Novice mode is now on.[=0x0022=][=0x000A=][=0x000A=]Before reading a command when novice mode is true:[=0x000A=][=0x0009=]say [=0x0022=][line break]Some options to try:[line break][=0x0022=];[=0x000A=][=0x0009=]follow the novice suggestion rules.[=0x000A=][=0x000A=]The novice suggestion rules is a rulebook.[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he look rule):[=0x000A=][=0x0009=]if not looking and not going, say [=0x0022=]  [bold type]look[roman type][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he check inventory rule):[=0x000A=][=0x0009=]if the player carries something and we are not taking inventory, say [=0x0022=]  [bold type]inventory[roman type] (I)[=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he put things on rule):[=0x000A=][=0x0009=]if the player carries something and a free-standing supporter is relevant, say [=0x0022=]  [bold type]put[roman type] something [bold type]on[roman type] [the list of relevant supporters][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he take things rule):[=0x000A=][=0x0009=]if a gettable thing is relevant, say [=0x0022=]  [bold type]take[roman type] [the list of gettable relevant things][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he examine things rule):[=0x000A=][=0x0009=]if an unexamined thing is relevant, say [=0x0022=]  [bold type]examine[roman type] (X) [the list of unexamined relevant things][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he enter things rule):[=0x000A=][=0x0009=]if a relevant thing is worth entering, say [=0x0022=]  [bold type]enter[roman type] [the list of worth entering relevant things], or [bold type]get out[roman type][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he open things rule):[=0x000A=][=0x0009=]if an unlocked openable thing is relevant, say [=0x0022=]  [bold type]open[roman type] or [bold type]close[roman type] [the list of unlocked openable relevant things][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he lock things rule):[=0x000A=][=0x0009=]if a closed lockable thing is relevant, say [=0x0022=]  [bold type]lock[roman type] or [bold type]unlock[roman type] [the list of closed lockable relevant things][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he eat things rule):[=0x000A=][=0x0009=]if the player carries an edible relevant thing, say [=0x0022=]  [bold type]eat[roman type] [the list of edible relevant things carried by the player][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he wear things rule):[=0x000A=][=0x0009=]if the player carries a wearable relevant thing, say [=0x0022=]  [bold type]wear[roman type] [the list of wearable relevant things carried by the player][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he turn things on rule):[=0x000A=][=0x0009=]if a device is relevant, say [=0x0022=]  [bold type]turn on[roman type] or [bold type]turn off[roman type] [the list of relevant devices][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he go places rule):[=0x000A=][=0x0009=]if a room is adjacent, say [=0x0022=]  [bold type]go[roman type][exit list][if in darkness] or try other directions in the dark[otherwise][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he enter doors rule):[=0x000A=][=0x0009=]if an open door is relevant, say [=0x0022=]  [bold type]go through[roman type] [the list of relevant open doors][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he interact with people rule):[=0x000A=][=0x0009=]if another person is relevant, say [=0x0022=]  [bold type]kiss[roman type] or [bold type]wake[roman type] [the list of relevant other people][if the player carries something], or [bold type]give[roman type] things [bold type]to[roman type] someone[end if][=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he ask for help rule):[=0x000A=][=0x0009=]say [=0x0022=]  [bold type]help[roman type] to see a more complete set of instructions[=0x0022=].[=0x000A=][=0x000A=]A novice suggestion rule (this is the suggestion that he turn off help rule):[=0x000A=][=0x0009=]say [=0x0022=]  [bold type]novice mode off[roman type] to turn off this guidance[=0x0022=].[=0x000A=][=0x000A=]Last novice suggestion rule:[=0x000A=][=0x0009=]say [=0x0022=][line break][=0x0022=].[=0x000A=][=0x000A=][The suggestion about asking for help is no good unless we provide some. This might take any of a number of forms, but for the sake of example we[=0x0027=]ll use an easy way out:][=0x000A=][=0x000A=]Include Basic Screen Effects by Emily Short. Include Menus by Emily Short. Include Basic Help Menu by Emily Short.[=0x000A=][=0x000A=]After taking inventory when novice mode is true: say [=0x0022=]To get rid of any of these objects, [bold type]drop[roman type] it.[=0x0022=][=0x000A=][=0x000A=]A thing can be examined or unexamined. Carry out examining something: now the noun is examined.[=0x000A=][=0x000A=]A thing can be seen or unseen. A thing is usually unseen.[=0x000A=][=0x000A=]Definition: a thing is relevant if it is seen and it is visible. Before printing the name of something (called the target): now the target is seen; if novice mode is true, say [=0x0022=][bold type][=0x0022=]. After printing the name of something: say [=0x0022=][roman type][=0x0022=].[=0x000A=][=0x000A=]Definition: a supporter is worth entering:[=0x000A=][=0x0009=]if the player carries it, no;[=0x000A=][=0x0009=]if it is enterable, yes.[=0x000A=][=0x000A=]Definition: a container is worth entering:[=0x000A=][=0x0009=]if the player carries it, no;[=0x000A=][=0x0009=]if it is enterable and it is open, yes.[=0x000A=][=0x000A=]Definition: a person is other if it is not the player. Definition: a person is another if it is other.[=0x000A=][=0x000A=]Definition: a thing is free-standing if it is in a room.[=0x000A=][=0x000A=]To say exit list:[=0x000A=][=0x0009=]let place be location;[=0x000A=][=0x0009=]let count be 0;[=0x000A=][=0x0009=]repeat with way running through directions[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]let place be the room way from the location;[=0x000A=][=0x0009=][=0x0009=]if place is a room[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]increase count by 1;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][if count is greater than 1] or[end if] [bold type][way][roman type][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]Definition: a thing is gettable:[=0x000A=][=0x0009=]if it is scenery, no;[=0x000A=][=0x0009=]if it is fixed in place, no;[=0x000A=][=0x0009=]if it is a person, no;[=0x000A=][=0x0009=]if the player is carrying it, no;[=0x000A=][=0x0009=]if the player is wearing it, no;[=0x000A=][=0x0009=]yes.[=0x000A=][=0x000A=]Part 2 - On the Ground[=0x000A=][=0x000A=]Antarctic Research Station is a room. [=0x0022=]Though not always the most stimulating of environments, the station is far from your ex-wife and most of the things in the world that annoy you, namely the other 6+ billion people. There is a second room to the south.[=0x0022=] The station contains a radio. The radio is a device. It is fixed in place.[=0x000A=][=0x000A=]South of the Station is Sitting Room. The description of the Sitting Room is [=0x0022=]Just big enough for a very [comfortable chair].[=0x0022=] The Sitting Room contains an enterable supporter called a comfortable chair. The chair is scenery. A monograph about penguins is in the Sitting Room.[=0x000A=][=0x000A=]Blistering Cold is a room. [=0x0022=]It is white out here and very very very cold.[=0x0022=] The white door is a door. [=0x0022=][The white door] leads to [the other side of the white door].[=0x0022=]  It is west of the Blistering Cold and east of the Antarctic Research Station.[=0x000A=][=0x000A=]Part 3 - Altered realities[=0x000A=][=0x000A=]This is the suggestion that he taste stuff rule:[=0x000A=][=0x0009=]say [=0x0022=]  [bold type]taste[roman type] [the random visible thing][=0x0022=].[=0x000A=][=0x000A=]This is the suggestion that he smell things rule:[=0x000A=][=0x0009=]say [=0x0022=]  [bold type]smell[roman type] [the list of relevant unexamined things][=0x0022=].[=0x000A=][=0x000A=]Procedural rule when the player is drugged:[=0x000A=][=0x0009=]ignore the suggestion that he take things rule;[=0x000A=][=0x0009=]ignore the suggestion that he check inventory rule;[=0x000A=][=0x0009=][=0x0009=]ignore the suggestion that he open things rule;[=0x000A=][=0x0009=]ignore the suggestion that he turn things on rule;[=0x000A=][=0x0009=]ignore the suggestion that he put things on rule;[=0x000A=][=0x0009=]ignore the suggestion that he go places rule;[=0x000A=][=0x0009=]ignore the suggestion that he enter doors rule;[=0x000A=][=0x0009=]substitute the suggestion that he smell things rule for the suggestion that he examine things rule;[=0x000A=][=0x0009=]move the suggestion that he taste stuff rule to before the suggestion that he ask for help rule.[=0x000A=][=0x000A=]A person can be drugged or sober. The player is sober.[=0x000A=][=0x000A=]The little purple mushroom is carried by the player. The mushroom is edible. After eating the little purple mushroom: say [=0x0022=]Whoa![=0x0022=]; now the player is drugged. The description of the mushroom is [=0x0022=]Pretty![=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]i / x radio / x door / s / i / drop mushroom / get mushroom / x chair / x monograph / sit in chair / get up / n / open door / enter door / eat mushroom / w / s[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]XYZZY[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]xyzzy[=0x0022=] or [=0x0022=]say xyzzy[=0x0022=] or [=0x0022=]cast xyzzy[=0x0022=] as casting xyzzy.[=0x000A=][=0x000A=]Casting xyzzy is an action applying to nothing.[=0x000A=][=0x000A=]Check casting xyzzy:[=0x000A=][=0x0009=]if the player does not wear the amulet of elocution, say [=0x0022=]You are unable to articulate the second [=0x0027=]z[=0x0027=] separately from the first, and the spell fails in a disdainful puff. Must be Parisian magic.[=0x0022=] instead;[=0x000A=][=0x0009=]if the player has the plate, say [=0x0022=]The plate of cheeses twitches uncomfortably, aware that it should be doing something, but not sure what.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out casting xyzzy:[=0x000A=][=0x0009=]move the plate to the player.[=0x000A=][=0x000A=]Report casting xyzzy:[=0x000A=][=0x0009=]say [=0x0022=]Under the influence of the Amulet of Elocution, you pronounce this as Xhi-zee. And lo, from nowhere, a [plate] appears![=0x0022=][=0x000A=][=0x000A=]The amulet of elocution is a wearable thing. It is carried by the player. The description is [=0x0022=]A heavy gold ring on a chain. If heated in an ordinary house fire, it glows with the words, [=0x0027=]Moses Supposes His Toeses Are Roses.[=0x0027=][=0x0022=][=0x000A=][=0x000A=]The plate is a portable supporter. On the plate is a very ripe ooze. Instead of smelling the ooze, say [=0x0022=]It smells like socks. This is going to be wonderful.[=0x0022=] The ooze is edible. The printed name of the plate is [=0x0022=]plate[if the plate supports the ooze] of cheese[end if][=0x0022=]. The description of the ooze is [=0x0022=]Definitely genuinely cheese.[=0x0022=] Understand [=0x0022=]cheese[=0x0022=] as the ooze.[=0x000A=][=0x000A=]Instead of eating the ooze: remove the ooze from play; say [=0x0022=]You are transported...[=0x0022=]; move the player to Paradise.[=0x000A=][=0x000A=]The Cheez Factory is a room. [=0x0022=]All around you are squares of pressed orange polymer, or possibly cheez. Your only hope is the magic word your uncle taught you: XYZZY.[=0x0022=] The squares of pressed orange polymer are scenery in the Factory. The description is [=0x0022=]You see nothing special about the squares of pressed orange polymer. Nothing special at all.[=0x0022=] Understand [=0x0022=]square[=0x0022=] or [=0x0022=]cheez[=0x0022=] as the squares.[=0x000A=][=0x000A=]Paradise is a room. The description is [=0x0022=]Well, it might just be one of the posh upper rings of purgatory, if you[=0x0027=]re entirely honest with yourself.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]x squares / x amulet / x cheese / xyzzy / wear amulet / xyzzy / x ooze / smell ooze /  eat ooze[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode443()"><img border=0 src=../doc_images/paste.png></a> &quot;Solitude&quot;
+<a href="javascript:pasteCode357()"><img border=0 src=../doc_images/paste.png></a> &quot;XYZZY&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Part 1 - General Rules
+<blockquote><font color="#000080">Understand &quot;xyzzy&quot; or &quot;say xyzzy&quot; or &quot;cast xyzzy&quot; as casting xyzzy.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Have you played interactive fiction before? >&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player consents, change novice mode to false;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change novice mode to true.
+<blockquote><font color="#000080">Casting xyzzy is an action applying to nothing.
 </font></blockquote><p>
 <p>
-<p>The rationale for asking the question this way, and not another, is that novices asked whether they would like instructions very often say no, even if they need them.
-<p>
-<blockquote><font color="#000080">Novice mode is a truth state that varies. Novice mode is true.
+<blockquote><font color="#000080">Check casting xyzzy:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player does not wear the amulet of elocution, say &quot;You are unable to articulate the second 'z' separately from the first, and the spell fails in a disdainful puff. Must be Parisian magic.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player has the plate, say &quot;The plate of cheeses twitches uncomfortably, aware that it should be doing something, but not sure what.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Stopping novice mode is an action out of world.
-<br>Starting novice mode is an action out of world.
+<blockquote><font color="#000080">Carry out casting xyzzy:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the plate to the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;novice mode off&quot; or &quot;novice off&quot; as stopping novice mode.
-<br>Understand &quot;novice mode on&quot; or &quot;novice on&quot; as starting novice mode.
+<blockquote><font color="#000080">Report casting xyzzy:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Under the influence of the Amulet of Elocution, you pronounce this as Xhi-zee. And lo, from nowhere, a [plate] appears!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out stopping novice mode: change novice mode to false.
-<br>Carry out starting novice mode: change novice mode to true.
+<blockquote><font color="#000080">The amulet of elocution is a wearable thing. It is carried by the player. The description is &quot;A heavy gold ring on a chain. If heated in an ordinary house fire, it glows with the words, 'Moses Supposes His Toeses Are Roses.'&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report stopping novice mode: say &quot;Novice mode is now off.&quot;
-<br>Report starting novice mode: say &quot;Novice mode is now on.&quot;
+<blockquote><font color="#000080">The plate is a portable supporter. On the plate is a very ripe ooze. Instead of smelling the ooze, say &quot;It smells like socks. This is going to be wonderful.&quot; The ooze is edible. The printed name of the plate is &quot;plate[if the plate supports the ooze] of cheese[end if]&quot;. The description of the ooze is &quot;Definitely genuinely cheese.&quot; Understand &quot;cheese&quot; as the ooze.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before reading a command when novice mode is true:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break]Some options to try:[line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the novice suggestion rules.
+<blockquote><font color="#000080">Instead of eating the ooze: remove the ooze from play; say &quot;You are transported...&quot;; move the player to Paradise.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The novice suggestion rules is a rulebook.
+<blockquote><font color="#000080">The Cheez Factory is a room. &quot;All around you are squares of pressed orange polymer, or possibly cheez. Your only hope is the magic word your uncle taught you: XYZZY.&quot; The squares of pressed orange polymer are scenery in the Factory. The description is &quot;You see nothing special about the squares of pressed orange polymer. Nothing special at all.&quot; Understand &quot;square&quot; or &quot;cheez&quot; as the squares.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he look rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if not looking and not going, say &quot;  [bold type]look[roman type]&quot;.
+<blockquote><font color="#000080">Paradise is a room. The description is &quot;Well, it might just be one of the posh upper rings of purgatory, if you're entirely honest with yourself.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he check inventory rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries something and we are not taking inventory, say &quot;  [bold type]inventory[roman type] (I)&quot;.
+<blockquote><font color="#000080">Test me with &quot;x squares / x amulet / x cheese / xyzzy / wear amulet / xyzzy / x ooze / smell ooze /  eat ooze&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he put things on rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries something and a free-standing supporter is relevant, say &quot;  [bold type]put[roman type] something [bold type]on[roman type] [the list of relevant supporters]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he take things rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a gettable thing is relevant, say &quot;  [bold type]take[roman type] [the list of gettable relevant things]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he examine things rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if an unexamined thing is relevant, say &quot;  [bold type]examine[roman type] (X) [the list of unexamined relevant things]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he enter things rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a relevant thing is worth entering, say &quot;  [bold type]enter[roman type] [the list of worth entering relevant things], or [bold type]get out[roman type]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he open things rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if an unlocked openable thing is relevant, say &quot;  [bold type]open[roman type] or [bold type]close[roman type] [the list of unlocked openable relevant things]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he lock things rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a closed lockable thing is relevant, say &quot;  [bold type]lock[roman type] or [bold type]unlock[roman type] [the list of closed lockable relevant things]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he eat things rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries an edible relevant thing, say &quot;  [bold type]eat[roman type] [the list of edible relevant things carried by the player]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he wear things rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries a wearable relevant thing, say &quot;  [bold type]wear[roman type] [the list of wearable relevant things carried by the player]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he turn things on rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a device is relevant, say &quot;  [bold type]turn on[roman type] or [bold type]turn off[roman type] [the list of relevant devices]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he go places rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if a room is adjacent, say &quot;  [bold type]go[roman type][exit list][if in darkness] or try other directions in the dark[otherwise]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he enter doors rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if an open door is relevant, say &quot;  [bold type]go through[roman type] [the list of relevant open doors]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he interact with people rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if another person is relevant, say &quot;  [bold type]kiss[roman type] or [bold type]wake[roman type] [the list of relevant other people][if the player carries something], or [bold type]give[roman type] things [bold type]to[roman type] someone[end if]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he ask for help rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [bold type]help[roman type] to see a more complete set of instructions&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A novice suggestion rule (this is the suggestion that he turn off help rule):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [bold type]novice mode off[roman type] to turn off this guidance&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Last novice suggestion rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break]&quot;.
-</font></blockquote><p>
-<p>
-<p>The suggestion about asking for help is no good unless we provide some. This might take any of a number of forms, but for the sake of example we'll use an easy way out:
-<p>
-<blockquote><font color="#000080">Include Basic Screen Effects by Emily Short. Include Menus by Emily Short. Include Basic Help Menu by Emily Short.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After taking inventory when novice mode is true: say &quot;To get rid of any of these objects, [bold type]drop[roman type] it.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A thing can be examined or unexamined. Carry out examining something: now the noun is examined.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A thing can be seen or unseen. A thing is usually unseen.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a thing is relevant if it is seen and it is visible. Before printing the name of something (called the target): now the target is seen; if novice mode is true, say &quot;[bold type]&quot;. After printing the name of something: say &quot;[roman type]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a supporter is worth entering:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries it, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is enterable, yes.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a container is worth entering:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player carries it, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is enterable and it is open, yes.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a person is other if it is not the player. Definition: a person is another if it is other.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a thing is free-standing if it is in a room.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say exit list:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let place be location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let count be 0;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with way running through directions
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let place be the room way from the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if place is a room
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase count by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[if count is greater than 1] or[end if] [bold type][way][roman type]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a thing is gettable:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is scenery, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is fixed in place, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is a person, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is carrying it, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is wearing it, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;yes.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Part 2 - On the Ground
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Antarctic Research Station is a room. &quot;Though not always the most stimulating of environments, the station is far from your ex-wife and most of the things in the world that annoy you, namely the other 6+ billion people. There is a second room to the south.&quot; The station contains a radio. The radio is a device. It is fixed in place.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">South of the Station is Sitting Room. The description of the Sitting Room is &quot;Just big enough for a very [comfortable chair].&quot; The Sitting Room contains an enterable supporter called a comfortable chair. The chair is scenery. A monograph about penguins is in the Sitting Room.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Blistering Cold is a room. &quot;It is white out here and very very very cold.&quot; The white door is a door. &quot;[The white door] leads to [the other side of the white door].&quot;  It is west of the Blistering Cold and east of the Antarctic Research Station.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Part 3 - Altered realities
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">This is the suggestion that he taste stuff rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [bold type]taste[roman type] [the random visible thing]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">This is the suggestion that he smell things rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [bold type]smell[roman type] [the list of relevant unexamined things]&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Procedural rule when the player is drugged:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;ignore the suggestion that he take things rule;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;ignore the suggestion that he check inventory rule;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ignore the suggestion that he open things rule;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;ignore the suggestion that he turn things on rule;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;ignore the suggestion that he put things on rule;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;ignore the suggestion that he go places rule;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;ignore the suggestion that he enter doors rule;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;substitute the suggestion that he smell things rule for the suggestion that he examine things rule;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the suggestion that he taste stuff rule to before the suggestion that he ask for help rule.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A person can be drugged or sober. The player is sober.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The little purple mushroom is carried by the player. The mushroom is edible. After eating the little purple mushroom: say &quot;Whoa!&quot;; now the player is drugged. The description of the mushroom is &quot;Pretty!&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;i / x radio / x door / s / i / drop mushroom / get mushroom / x chair / x monograph / sit in chair / get up / n / open door / enter door / eat mushroom / w / s&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc310.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>XYZZY is a magic word from the original Adventure, and many other games respond to it with some sort of amusing message.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc249.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc309.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc311.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e202"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex202.html#e202 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>262</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex202.html#e202 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Xylan</font></b></a><br>Creating a new command that does require an object to be named; and some comments about the choice of vocabulary, in general.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex202.html#e202 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc248.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc250.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

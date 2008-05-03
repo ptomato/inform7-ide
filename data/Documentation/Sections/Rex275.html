@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.1. Looking</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.3. Clothing</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,122 +19,130 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "Slightly Wrong" -->
-<!-- SEARCH SECTION "Ex 3" -->
-<!-- SEARCH SORT "Ex 006-001-003" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc26.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap6.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 6: Commands</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc28.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.1. Looking</b></font></td></tr></table>
+<!-- SEARCH TITLE "Bogart" -->
+<!-- SEARCH SECTION "Ex 223" -->
+<!-- SEARCH SORT "Ex 009-003-223" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc66.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap9.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 9: Props: Food, Clothing, Money, Toys, Books, Electronics</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc68.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.3. Clothing</b></font></td></tr></table>
 <p>
-<p>Looking is one of the most complicated commands built into Inform, with a large number of things one might want to change.
+<p>A person can wear any (portable) thing which has the &quot;wearable&quot; property. (This property seldom needs to be quoted because it is deduced automatically from sentences like &quot;Trevor wears a red hat.&quot;)
 <p>
-<p>Looking prints the name and description of the room we're in. We can introduce variations into room names and descriptions by changing their printed name and description properties, as in
+<p>In most traditional IF, clothing is only used when it is exceptional in some way. That is, we ignore the three to eight different garments most people are wearing at any given time - the everyday clothes which people wear without thinking about them - and only simulate the unexpected extras: a borrowed jaunty red hat, a radiation-proof space suit, and so on.
 <p>
-<blockquote><font color="#000080">change the printed name of the Church to &quot;Lightning-Struck Ruin&quot;;
-</font></blockquote><p>
+<p>These unusual garments turn up only occasionally in play and usually one at a time, so Inform does not normally provide rules to restrict how much or little is worn, or in what unlikely combinations. <b>Get Me to the Church on Time</b> categorises clothing by body area (trousers for lower body, shirts for upper); <b>Bogart</b> by layer, distinguishing underwear from outer garments. <b>What Not To Wear</b> combines both into a general-purpose system adequate for most kinds of clothing situations.
 <p>
-<p>If we need more drastic effects, we can turn off or change either of these features by altering the rules in the carry out looking rulebook.
+<p><b>Hayes Code</b> is a somewhat stripped down version.
 <p>
-<p>Next, the game determines what items are visible to the player and need to be described. These never include the player himself, or scenery, but other things in the environment will be made &quot;marked for listing&quot;.
+<p>Clothes are normally single things which have no function other than display and concealment, but <b>Being Prepared</b> gives them pockets which act as containers, and <b>Some Assembly Required</b> allows clothes to be stitched together from pieces of cloth.
 <p>
-<p>Then Inform carries out the writing a paragraph about... activity with anything that provides one; anything it prints the name of, it tags &quot;mentioned&quot;. Thus
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about Mr Wickham:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Mr Wickham looks speculatively at [list of women in the location].&quot;
-</font></blockquote><p>
-<p>
-<p>will count Wickham and everyone he looks at as all having been mentioned, and will not refer to them again through the rest of the room description.
-<p>
-<p>Inform then prints the initial appearances of objects that are marked for listing but not already mentioned; and then it performs the listing nondescript items activity, collating the remaining objects into a paragraph like
-<p>
-<blockquote><font color="#000080">You can see a dog, a hen, ...
-</font></blockquote><p>
-<p>
-<p>We can pre-empt items from appearing in this paragraph or change their listing by intervening with a Before listing nondescript items... rule, as in
-<p>
-<blockquote><font color="#000080">Before listing nondescript items when the player needs the watch:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the watch is marked for listing begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The watch catches your eye.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the watch to not marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>If we wanted the watch always to be listed this way, it would be better to give it an initial appearance, but for conditional cases, the listing nondescript items activity is a good place to intervene. It also allows us to replace the &quot;You can see...&quot; tag with something else more fitting, if for instance we are in a dimly lit room.
-<p>
-<p>When the game compiles the list of nondescript items, it adds tags such as &quot;(open)&quot; or &quot;(empty)&quot; or &quot;(on which is a fish tank)&quot; to the names of containers and supporters. We can suppress or change the &quot;(empty)&quot; tag with the printing room description details of activity, as in
-<p>
-<blockquote><font color="#000080">Rule for printing room description details: stop.
-</font></blockquote><p>
-<p>
-<p>And we can suppress the &quot;(open)&quot; and &quot;(on which is...)&quot; sorts of tags with the &quot;omit the contents in listing&quot; phrase, as in
-<p>
-<blockquote><font color="#000080">Rule for printing the name of the bottle while not inserting or removing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the bottle contains sand, say &quot;bottle of sand&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;empty bottle&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;omit contents in listing.
-</font></blockquote><p>
-<p>
-<p>Finally, the looking command lists visible non-scenery items that sit on scenery supporters, as in
-<p>
-<blockquote><font color="#000080">On the table is a folded newspaper.
-</font></blockquote><p>
-<p>
-<p>It is at the moment slightly vexing to change the output of this line - a matter we hope to improve in future versions of Inform. One somewhat inelegant but effective way around it is to make the table not scenery after all, but merely fixed in place, and then to control output with a writing a paragraph about sentence, thus:
-<p>
-<blockquote><font color="#000080">Parlor is a room. The table is in Parlor. On the table is a folded newspaper.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about the table:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the folded newspaper is on the table, say &quot;Your newspaper is folded neatly on the end table.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now the table is mentioned.
-</font></blockquote><p>
-<p>
-<p>Replacing that with just
-<p>
-<blockquote><font color="#000080">Rule for writing a paragraph about the table:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the table is mentioned.
-</font></blockquote><p>
-<p>
-<p>will prevent the game from describing the table or anything that is on it.
-<p>
-<p>One common thing we may want to do is change the description of a room depending on whether we've been there before (as in <b>Slightly Wrong</b>) or on how often we've visited (as in <b>Infiltration</b>). <b>Night Sky</b>, meanwhile, changes the description of a room when we've examined another object, so that the player's awareness of his environment is affected by other things the character knows.
-<p>
-<p><b>Verbosity</b> changes the default behavior that rooms are described fully only the first time the player visits.
-<p>
-<a href=Rdoc32.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Going, Pushing Things in Directions</b></font></a><i> for ways to change just those room descriptions that are shown as the result of the player's movement</i><p><p>
 <p><hr><p>
+<a name="e53"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex53.html#e53 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>42</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex53.html#e53 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Get Me to the Church on Time</font></b></a><br>Using kinds of clothing to prevent the player from wearing several pairs of trousers at the same time.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex53.html#e53 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e275"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc27.html#e275 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>3</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc27.html#e275 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Slightly Wrong</font></b></a><br>A room whose description changes slightly after our first visit there.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex275.html#e275 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e275"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc67.html#e275 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>223</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc67.html#e275 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bogart</font></b></a><br>Clothing for the player that layers, so that items cannot be taken off in the wrong order, and the player's inventory lists only the clothing that is currently visible.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex275.html#e275 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>A fairly common effect in interactive fiction is a room which is described differently on the first visit than on subsequent visits. We can produce this effect as follows:
+<p>We have two things to keep track of with our layering clothing: what currently is covering something else; and what <i>can</i> cover something else. This implementation goes for a fairly simple treatment, assuming that each item of clothing will completely conceal those beneath it, and that we are not implementing entire sets of shirts, jackets, etc. But it will do for a demonstration.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode489(code) {
+function pasteCode750(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Slightly Wrong[=0x0022=][=0x000A=][=0x000A=]Awning is a room. [=0x0022=]A tan awning is stretched on tent poles over the dig-site, providing a little shade to the workers here; you are at the bottom of a square twenty feet on a side, marked out with pegs and lines of string. Uncovered in the south face of this square is an awkward opening into the earth.[=0x0022=][=0x000A=][=0x000A=]Slightly Wrong Chamber is south of the Awning. [=0x0022=][if unvisited]When you first step into the room, you are bothered by the sense that something is not quite right: perhaps the lighting, perhaps the angle of the walls. [end if]A mural on the far wall depicts a woman with a staff, tipped with a pine-cone. She appears to be watching you.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]look / s / look[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Bogart[=0x0022=][=0x000A=][=0x000A=]Section 1 - Clothing Behavior[=0x000A=][=0x000A=][First we make our relation to represent what *is* underneath another item:][=0x000A=][=0x000A=]Underlying relates one thing to various things. The verb to underlie (it underlies, they underlie, it is underlying, it is underlaid) implies the underlying relation. The verb to be under implies the underlying relation.[=0x000A=][=0x000A=][And now we prevent taking a lower layer off before the thing that is worn over it:][=0x000A=][=0x000A=]Before taking off something which underlies something (called the impediment) which is worn by the player:[=0x000A=]say [=0x0022=](first removing [the impediment])[command clarification break][=0x0022=];[=0x000A=]silently try taking off the impediment;[=0x000A=]if the noun underlies something which is worn by the player, stop the action.[=0x000A=][=0x000A=]Check taking off:[=0x000A=][=0x0009=]if the noun underlies something (called the impediment) which is worn by the player, say [=0x0022=][The impediment] is in the way.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out taking off:[=0x000A=][=0x0009=]now the noun is not underlaid by anything.[=0x000A=][=0x000A=]Report taking off something:[=0x000A=][=0x0009=]say [=0x0022=]You are now wearing [a list of uppermost things worn by the player].[=0x0022=] instead.[=0x000A=][=0x000A=]Definition: a thing is uppermost if it is not under something.[=0x000A=][=0x000A=][That covers order of clothing removal, but we also want to restrict what can be worn on top of what else. This time we need Inform to have some idea of what customarily can be layered on top of what other clothing:][=0x000A=][=0x000A=]Overlying relates one thing to various things. The verb to overlie (it overlies, they overlie, it is overlying) implies the overlying relation.[=0x000A=][=0x000A=]Covering relates a thing (called A) to a thing (called B) when the number of steps via the overlying relation from A to B is greater than 0. The verb to cover (it covers, they cover, it is covering) implies the covering relation.[=0x000A=][=0x000A=][With these definitions, we can say that a jacket should go over a shirt and a shirt over an undershirt (say), and then Inform will know that a jacket will cover both shirt and undershirt.][=0x000A=][=0x000A=]Before wearing something when something (called the impediment) which covers the noun is worn by the player:[=0x000A=][=0x0009=]while the player wears something which covers the noun:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=](first removing [the impediment])[command clarification break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]silently try taking off the impediment;[=0x000A=][=0x0009=][=0x0009=]if the player is wearing the impediment, stop the action.[=0x000A=][=0x000A=]Carry out wearing:[=0x000A=][=0x0009=]if the noun covers something (called the hidden item) worn by the player, now the hidden item underlies the noun.[=0x000A=][=0x000A=]Instead of looking under something which is worn by the player:[=0x000A=][=0x0009=]if something (called the underwear) underlies the noun, say [=0x0022=]You peek at [the underwear]. Yup, still there.[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]Just you in there.[=0x0022=][=0x000A=][=0x000A=]Instead of taking inventory:[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]re carrying [a list of things carried by the player][if the player wears something]. You are wearing [a list of uppermost things worn by the player][end if].[=0x0022=][=0x000A=][=0x000A=][Notice that our inventory only describes the things that the player can see as the upper layer of clothing.][=0x000A=][=0x000A=]Section 2 - The Scenario[=0x000A=][=0x000A=]The Trailer is a room. [=0x0022=]A full-length mirror is the main amenity in here, and that suits you just fine.[=0x0022=]  The full-length mirror is scenery in the Trailer. Instead of examining or searching the mirror, try taking inventory.[=0x000A=][=0x000A=]The player wears a fedora, a jacket, a shirt, some undershorts, an undershirt, some slacks, a pair of socks, and a pair of shoes.[=0x000A=][=0x000A=]The shirt underlies the jacket. The pair of socks underlies the pair of shoes. The undershorts underlie the slacks. The undershirt underlies the shirt.[=0x000A=][=0x000A=]The jacket overlies the shirt. The shoes overlie the socks. The slacks overlie the undershorts. The shirt overlies the undershirt.[=0x000A=][=0x000A=]Test me with [=0x0022=]x mirror / remove fedora / remove jacket / remove shirt / remove slacks / remove undershirt / remove shoes / remove socks / remove shorts / remove undershorts[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode489()"><img border=0 src=../doc_images/paste.png></a> &quot;Slightly Wrong&quot;
+<a href="javascript:pasteCode750()"><img border=0 src=../doc_images/paste.png></a> &quot;Bogart&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Awning is a room. &quot;A tan awning is stretched on tent poles over the dig-site, providing a little shade to the workers here; you are at the bottom of a square twenty feet on a side, marked out with pegs and lines of string. Uncovered in the south face of this square is an awkward opening into the earth.&quot;
+<blockquote><font color="#000080">Section 1 - Clothing Behavior
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Slightly Wrong Chamber is south of the Awning. &quot;[if unvisited]When you first step into the room, you are bothered by the sense that something is not quite right: perhaps the lighting, perhaps the angle of the walls. [end if]A mural on the far wall depicts a woman with a staff, tipped with a pine-cone. She appears to be watching you.&quot;
+<p>First we make our relation to represent what *is* underneath another item:
+<p>
+<blockquote><font color="#000080">Underlying relates one thing to various things. The verb to underlie (it underlies, they underlie, it is underlying, it is underlaid) implies the underlying relation. The verb to be under implies the underlying relation.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look / s / look&quot;.
+<p>And now we prevent taking a lower layer off before the thing that is worn over it:
+<p>
+<blockquote><font color="#000080">Before taking off something which underlies something (called the impediment) which is worn by the player:
+<br>say &quot;(first removing [the impediment])[command clarification break]&quot;;
+<br>silently try taking off the impediment;
+<br>if the noun underlies something which is worn by the player, stop the action.
 </font></blockquote><p>
 <p>
-<p>Note the &quot;[if unvisited]...&quot; in the description of the Slightly Wrong Chamber. A room is considered to be &quot;unvisited&quot; until after the player has seen its description for the first time.
+<blockquote><font color="#000080">Check taking off:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun underlies something (called the impediment) which is worn by the player, say &quot;[The impediment] is in the way.&quot; instead.
+</font></blockquote><p>
 <p>
-<p>The bracketed text creates a special rule for printing; we will learn more about these in the sections on text with variations and text with substitutions.
+<blockquote><font color="#000080">Carry out taking off:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is not underlaid by anything.
+</font></blockquote><p>
 <p>
-<p>Some further fine print: we might write our condition as &quot;if unvisited&quot;, &quot;if the location is unvisited&quot;, or &quot;if the Chamber is unvisited&quot; -- all of these constructions would be acceptable, but in the absence of more specifics, the condition is understood to apply to the object whose description it is.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc27.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Report taking off something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are now wearing [a list of uppermost things worn by the player].&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Definition: a thing is uppermost if it is not under something.
+</font></blockquote><p>
+<p>
+<p>That covers order of clothing removal, but we also want to restrict what can be worn on top of what else. This time we need Inform to have some idea of what customarily can be layered on top of what other clothing:
+<p>
+<blockquote><font color="#000080">Overlying relates one thing to various things. The verb to overlie (it overlies, they overlie, it is overlying) implies the overlying relation.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Covering relates a thing (called A) to a thing (called B) when the number of steps via the overlying relation from A to B is greater than 0. The verb to cover (it covers, they cover, it is covering) implies the covering relation.
+</font></blockquote><p>
+<p>
+<p>With these definitions, we can say that a jacket should go over a shirt and a shirt over an undershirt (say), and then Inform will know that a jacket will cover both shirt and undershirt.
+<p>
+<blockquote><font color="#000080">Before wearing something when something (called the impediment) which covers the noun is worn by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;while the player wears something which covers the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first removing [the impediment])[command clarification break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;silently try taking off the impediment;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the player is wearing the impediment, stop the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out wearing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun covers something (called the hidden item) worn by the player, now the hidden item underlies the noun.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of looking under something which is worn by the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if something (called the underwear) underlies the noun, say &quot;You peek at [the underwear]. Yup, still there.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;Just you in there.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of taking inventory:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're carrying [a list of things carried by the player][if the player wears something]. You are wearing [a list of uppermost things worn by the player][end if].&quot;
+</font></blockquote><p>
+<p>
+<p>Notice that our inventory only describes the things that the player can see as the upper layer of clothing.
+<p>
+<blockquote><font color="#000080">Section 2 - The Scenario
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Trailer is a room. &quot;A full-length mirror is the main amenity in here, and that suits you just fine.&quot;  The full-length mirror is scenery in the Trailer. Instead of examining or searching the mirror, try taking inventory.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The player wears a fedora, a jacket, a shirt, some undershorts, an undershirt, some slacks, a pair of socks, and a pair of shoes.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The shirt underlies the jacket. The pair of socks underlies the pair of shoes. The undershorts underlie the slacks. The undershirt underlies the shirt.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The jacket overlies the shirt. The shoes overlie the socks. The slacks overlie the undershorts. The shirt overlies the undershirt.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x mirror / remove fedora / remove jacket / remove shirt / remove slacks / remove undershirt / remove shoes / remove socks / remove shorts / remove undershorts&quot;.
+</font></blockquote><p>
+<p>
+<p>If we further wanted to prevent the player from taking off clothes in inappropriate places, we might add something like this:
+<p>
+<blockquote><font color="#000080">Instead of taking off something in the presence of someone who is not the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are far too modest to strip in public.&quot;
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc67.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e38"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex38.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>139</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex38.html#e38 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Infiltration</font></b></a><br>A room whose description changes depending on the number of times the player has visited.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex38.html#e38 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e60"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex60.html#e60 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>135</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex60.html#e60 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Night Sky</font></b></a><br>A room which changes its description depending on whether an object has been examined.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex60.html#e60 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e362"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex362.html#e362 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>2</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex362.html#e362 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Verbosity</font></b></a><br>Making rooms give full descriptions each time we enter, even if we have visited before.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex362.html#e362 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc26.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc28.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e167"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex167.html#e167 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>227</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex167.html#e167 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> What Not To Wear</font></b></a><br>A general-purpose clothing system that handles a variety of different clothing items layered in different combinations over different areas of the body.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex167.html#e167 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e210"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex210.html#e210 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>306</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex210.html#e210 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hayes Code</font></b></a><br>Clark Gable in a pin-striped suit and a pink thong.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex210.html#e210 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e80"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex80.html#e80 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>44</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex80.html#e80 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Being Prepared</font></b></a><br>A kind for jackets, which always includes a container called a pocket.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex80.html#e80 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e339"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex339.html#e339 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>301</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex339.html#e339 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Some Assembly Required</font></b></a><br>Building different styles of shirt from component sleeves and collars.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex339.html#e339 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc66.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc68.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

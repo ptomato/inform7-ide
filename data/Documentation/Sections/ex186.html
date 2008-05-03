@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.2. Rooms and the map</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.20. Stored actions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,110 +19,124 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Port Royal 1" -->
-<!-- SEARCH SECTION "Ex 4" -->
-<!-- SEARCH SORT "Ex 003-002-004" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc27.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc29.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.2. Rooms and the map</b></font></td></tr></table>
+<!-- SEARCH TITLE "Cactus Will Outlive Us All" -->
+<!-- SEARCH SECTION "Ex 208" -->
+<!-- SEARCH SORT "Ex 012-020-208" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc196.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc198.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.20. Stored actions</b></font></td></tr></table>
 <p>
-<p>Rooms are joined together at their edges by &quot;map connections&quot;, most of which are pathways in one of the eight cardinal compass directions: north, northeast (written without a hyphen), east, southeast, south, southwest, west, northwest. We also have up and down, suitable for staircases or ladders. In real life, people are seldom conscious of their compass bearing when walking around buildings, but it makes a concise and unconfusing way for the player to say where to go next, so is generally accepted as a convention of the genre.
+<p>As we have seen, to describe an action fully takes a complicated little bundle of information - we need to know what is to be done, who will do it, and what it will be done to. There are times when we would like to remember an action and look back on it later (perhaps many turns later, after many other actions have taken effect) - but this is not easy to do with only the techniques we have seen so far. There are quite a few cases to get right, and it would be easy to not store quite enough of the details.
 <p>
-<p>Two more directions are provided by Inform: &quot;inside&quot; and &quot;outside&quot;. These are best used when one location is, say, a meadow and the other is a woodcutter's hut in the middle of it; we might then say
+<p>Fortunately, Inform provides a kind of value called &quot;stored action&quot; which can do all of this automatically. As with most other kinds of value, stored actions can be held in variables, &quot;let&quot; values, properties or table columns. For example:
 <p>
-<blockquote><font color="#000080">Inside from the Meadow is the woodcutter's hut.
+<blockquote><font color="#000080">The best idea yet is a stored action that varies.
 </font></blockquote><p>
 <p>
-<p>The &quot;from&quot; is important, as it clarifies that we intend to link two different locations, not to create an item - the hut - in a single location - the meadow.
+<p>creates a variable called &quot;the best idea yet&quot; which holds a stored action. This will normally be created holding the default value - the player waiting - but can instead be set explicitly:
 <p>
-<p>A problem which sometimes arises when laying out maps is that Inform allows short forms of room names to be used as abbreviations. This is usually a good idea, but has unfortunate results if we write:
-<p>
-<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. The Airport is west of the Airport Road.
+<blockquote><font color="#000080">The best idea yet is the action of pushing the button.
 </font></blockquote><p>
 <p>
-<p>...because &quot;Airport&quot; is taken as a reference to &quot;Airport Road&quot;, so Inform makes only two locations, one of which supernaturally leads to itself. We can avoid this by writing:
+<p>Note the words &quot;action of...&quot;, which convert any sufficiently exact description of an action into its stored action form.
 <p>
-<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. A room called the Airport is west of the Airport Road.
+<p>In rules and phrases, we can always obtain the action currently going on (if there is one) with the value &quot;current action&quot;:
+<p>
+<blockquote><font color="#000080">let the present whim be the current action;
 </font></blockquote><p>
 <p>
-<p>Using &quot;called&quot; is often a good way to specify something whose name might give rise to confusion otherwise. It always makes something new, and it is also neatly concise, because we can establish something's kind and name in the same sentence. As another example, suppose we want to create a room called &quot;South of the Hut&quot;, to south of the Hut. We can't do so like this:
+<p>Moreover, just as we can &quot;try&quot; any action, so we can also try a stored one:
 <p>
-<blockquote><font color="#000080">South of the Hut is a room. South of the Hut is south of the Hut.
+<blockquote><font color="#000080">try the present whim;
+<br>silently try the present whim;
 </font></blockquote><p>
 <p>
-<p>...because Inform will read that first sentence as placing a (nameless) room to the south of a room called &quot;Hut&quot;. Once again &quot;called&quot; can save the day:
+<p>would each work in the natural way. A stored action can do anything that actions can do: in particular, they remember, if necessary, the exact wording of the player's command at the time they were stored - so that even actions like &quot;looking up 'x100' in the code book&quot; will work if stored and tried on some future turn.
 <p>
-<blockquote><font color="#000080">South of the Hut is a room called South of the Hut.
+<p>As with any other kind of value, we can also say a stored action, and this produces a fairly natural description of what the action is:
+<p>
+<blockquote><font color="#000080">Before doing something in the presence of the bearded psychiatrist: say &quot;'Zo, the subject wishes to engage in [the current action]. Zis is very interesting.'&quot;
 </font></blockquote><p>
 <p>
-<p>It is best to use &quot;called&quot; in the simplest way possible, and in particular, best not to use &quot;called&quot; twice in the same sentence. Consider:
+<p>will produce text such as:
 <p>
-<blockquote><font color="#000080">The kitchen cabinet contains a container called a mixing bowl and a portable supporter called a platter.
+<blockquote><font color="#000080">&quot;So, the subject vishes to engage in rubbing the fireman's pole. Zis is very interesting.&quot;
 </font></blockquote><p>
 <p>
-<p>It is unlikely that anyone would want to name something &quot;a mixing bowl and a portable supporter called a platter&quot;, but not impossible, and Inform tends not to be a good judge of what is likely.
+<p>One of Inform's most convenient features is its ability to test if the action being processed matches vague or complicated descriptions of whole classes of actions. Now, it would not make sense to write
+<p>
+<blockquote><font color="#000080">if the best idea yet is the action of taking something, ...
+</font></blockquote><p>
+<p>
+<p>because &quot;action of ...&quot; has to make an exact action, which clearly this is not: so Inform will produce a problem message if we try. But we do not need to, because Inform also allows us to compare a stored action against any description of an action, however vague:
+<p>
+<blockquote><font color="#000080">if the best idea yet is taking something, ...
+<br>if the best idea yet is doing something to the lever, ...
+</font></blockquote><p>
+<p>
+<p>When dealing with stored actions, we sometimes want to know what they are dealing with. We can extract this information using the following phrases:
+<p>
+<blockquote><font color="#000080">action-name part of S
+<br>noun part of S
+<br>second noun part of S
+<br>actor part of S
+</font></blockquote><p>
+<p>
+<p>For example, if S is &quot;Algy trying throwing the brick at Biggles&quot; then saying these four values will produce
+<p>
+<blockquote><font color="#000080">throwing it at
+<br>brick
+<br>Biggles
+<br>Algy
+</font></blockquote><p>
+<p>
+<p>Should the action be one which does not involve objects, the noun and second noun may be &quot;nothing&quot;: for instance if S is &quot;setting the dial to 3417&quot; then the noun part of S is the dial but the second noun part is nothing. (This has to be true, as otherwise Inform could never know what kind of value &quot;the noun part of S&quot; would have.)
+<p>
+<p>As a convenience, the condition
+<p>
+<blockquote><font color="#000080">if S involves X, ...
+</font></blockquote><p>
+<p>
+<p>is true if the object X appears as any of the actor, the noun or the second noun: for instance,
+<p>
+<blockquote><font color="#000080">if the current action involves Algy
+</font></blockquote><p>
+<p>
+<p>would be true for &quot;give revolver to Algy&quot;, &quot;Algy trying flying the Sopwith Camel&quot;, &quot;examine Algy&quot; and so on, but false for &quot;ask Raymond about secret airfield&quot;.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e186"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc28.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>4</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc28.html#e186 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Port Royal 1</font></b></a><br>A partial implementation of Port Royal, Jamaica, set before the earthquake of 1692 demolished large portions of the city.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex186.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e186"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc197.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>208</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc197.html#e186 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Cactus Will Outlive Us All</font></b></a><br>For every character besides the player, there is an action that will cause that character to wither right up and die.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex186.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode83(code) {
+function pasteCode305(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]1691[=0x0022=][=0x000A=][=0x000A=]Fort James is a room. [=0x0022=]The enclosure of Fort James is a large, roughly hexagonal court walled with heavy stone.  The walls face the entrance to Port Royal Harbour, and the battery of guns is prepared to destroy any enemy ship arriving.[=0x0022=][=0x000A=][=0x000A=][Unless we arrange otherwise, this will be the first room in the game because it is the first we have defined.][=0x000A=][=0x000A=][For subsequent rooms, we do not have to say explicitly that they are rooms, as long as they are connected to a room on the map. For instance, this will automatically make Thames Street End a room:][=0x000A=][=0x000A=]Thames Street End is south of Fort James. [=0x0022=]The ill-named Thames Street runs from here -- at the point of the peninsula -- all the way east among houses and shops, through the Fish Market, edging by the round front of Fort Carlisle, to the point where the town stops and there is only sandy spit beyond. Lime Street, wider and healthier but not as rich, runs directly south, and to the north the road opens up into the courtyard of Fort James.[=0x0022=][=0x000A=][=0x000A=]Water Lane is east of Thames Street End. [=0x0022=]Here Thames Street -- never very straight -- goes steeply southeast for a portion before continuing more directly to the east.[=0x000A=][=0x000A=]Water Lane runs south toward Queen Street, and facing onto it is the New Prison -- which, in the way of these things, is neither.  It did serve in that capacity for a time, and in a measure of the villainy which has been usual in Port Royal from its earliest days, it is nearly the largest building in the town.[=0x0022=][=0x000A=][=0x000A=][If we have some concern that the room name will be confused with an existing name, we can be more explicit about it using [=0x0022=]called[=0x0022=]:][=0x000A=][=0x000A=]East of Water Lane is a room called Thames Street at the Wherry Bridge.  Thames Street at the Wherry Bridge has the description [=0x0022=]To the southwest is the fishmarket; directly across the street is the entrance to a private alley through a brick archway.[=0x0022=][=0x000A=][=0x000A=]The Private Alley is south of Thames Street at the Wherry Bridge. [=0x0022=]You[=0x0027=]re just outside the tavern the Feathers. To the north, under a pretty little archway, is the active mayhem of Thames Street, but the alley narrows down to a dead end a little distance to the south.[=0x0022=][=0x000A=][=0x000A=][And now we get [=0x0022=]inside[=0x0022=], which generates a space treated as its own area on the map.][=0x000A=][=0x000A=]The Feathers is inside from the Private Alley.  [=0x0022=]Newly built with brick, replacing the older Feathers tavern that used to stand here. It sells wines in quantity, as well as serving them directly, and the goods are always of the best quality. There[=0x0027=]s a room upstairs for those wanting to stay the night.[=0x0022=] The Feathers Bedroom is above the Feathers.[=0x000A=][=0x000A=][And if we like we can declare a number of rooms for which we will come back and write the descriptions later. There is no obligation for the description to occur at the first definition of the room.][=0x000A=][=0x000A=]Lime Street is south of Thames Street End.[=0x000A=][=0x000A=][For efficiency, we can also write multiple sets of connections at once:][=0x000A=][=0x000A=]Queen Street East is east of Queen Street Middle and south of Private Alley.[=0x000A=][=0x000A=][Clicking Go will translate this description into a sketchy but working simulation of Port Royal, in which we can type movement commands like EAST or SOUTH to explore the streets. Looking at the World tab of the Index, we can also see a schematic map of the simulation as it currently stands. Like the rest of the Index, this is provided entirely for the author[=0x0027=]s benefit, and is not visible to the player. (Though if we do decide that we want players to have access to a printed map while they play, Inform can help: we will return to the layout of Port Royal in the chapter on Publishing.)][=0x000A=][=0x000A=][The following Test command allows us to type TEST ME and explore the map we just devised:][=0x000A=][=0x000A=]Test me with [=0x0022=]s / e / e / e / e[=0x0022=].[=0x000A=]');
+    myProject.pasteCode(' [=0x0022=]Cactus Will Outlive Us All[=0x0022=][=0x000A=][=0x000A=]Death Valley is a room. Luckless Luke and Dead-Eye Pete are men in the Valley. A cactus is in the Valley. Persuasion rule: persuasion succeeds.[=0x000A=][=0x000A=]A person has a stored action called death knell. The death knell of Luckless Luke is the action of pulling the cactus. The death knell of Dead-Eye Pete is the action of Luke trying dropping the cactus.[=0x000A=][=0x000A=]Before an actor doing something:[=0x000A=][=0x0009=]repeat with the victim running through people in the location:[=0x000A=][=0x0009=][=0x0009=]let the DK be the death knell of the victim;[=0x000A=][=0x0009=][=0x0009=]if the DK is not waiting and the current action is the DK:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]It looks as if [the DK] was the death knell for [the victim], who looks startled, then nonexistent.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]remove the victim from play.[=0x000A=][=0x000A=]Test me with [=0x0022=]get cactus / drop cactus / luke, get cactus / luke, drop cactus / pull cactus / look[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode83()"><img border=0 src=../doc_images/paste.png></a> &quot;1691&quot;
+<a href="javascript:pasteCode305()"><img border=0 src=../doc_images/paste.png></a>  &quot;Cactus Will Outlive Us All&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Fort James is a room. &quot;The enclosure of Fort James is a large, roughly hexagonal court walled with heavy stone.  The walls face the entrance to Port Royal Harbour, and the battery of guns is prepared to destroy any enemy ship arriving.&quot;
+<blockquote><font color="#000080">Death Valley is a room. Luckless Luke and Dead-Eye Pete are men in the Valley. A cactus is in the Valley. Persuasion rule: persuasion succeeds.
 </font></blockquote><p>
 <p>
-<p>Unless we arrange otherwise, this will be the first room in the game because it is the first we have defined.
-<p>
-<p>For subsequent rooms, we do not have to say explicitly that they are rooms, as long as they are connected to a room on the map. For instance, this will automatically make Thames Street End a room:
-<p>
-<blockquote><font color="#000080">Thames Street End is south of Fort James. &quot;The ill-named Thames Street runs from here -- at the point of the peninsula -- all the way east among houses and shops, through the Fish Market, edging by the round front of Fort Carlisle, to the point where the town stops and there is only sandy spit beyond. Lime Street, wider and healthier but not as rich, runs directly south, and to the north the road opens up into the courtyard of Fort James.&quot;
+<blockquote><font color="#000080">A person has a stored action called death knell. The death knell of Luckless Luke is the action of pulling the cactus. The death knell of Dead-Eye Pete is the action of Luke trying dropping the cactus.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Water Lane is east of Thames Street End. &quot;Here Thames Street -- never very straight -- goes steeply southeast for a portion before continuing more directly to the east.
+<blockquote><font color="#000080">Before an actor doing something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with the victim running through people in the location:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the DK be the death knell of the victim;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the DK is not waiting and the current action is the DK:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It looks as if [the DK] was the death knell for [the victim], who looks startled, then nonexistent.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the victim from play.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Water Lane runs south toward Queen Street, and facing onto it is the New Prison -- which, in the way of these things, is neither.  It did serve in that capacity for a time, and in a measure of the villainy which has been usual in Port Royal from its earliest days, it is nearly the largest building in the town.&quot;
+<blockquote><font color="#000080">Test me with &quot;get cactus / drop cactus / luke, get cactus / luke, drop cactus / pull cactus / look&quot;.
 </font></blockquote><p>
-<p>
-<p>If we have some concern that the room name will be confused with an existing name, we can be more explicit about it using &quot;called&quot;:
-<p>
-<blockquote><font color="#000080">East of Water Lane is a room called Thames Street at the Wherry Bridge.  Thames Street at the Wherry Bridge has the description &quot;To the southwest is the fishmarket; directly across the street is the entrance to a private alley through a brick archway.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Private Alley is south of Thames Street at the Wherry Bridge. &quot;You're just outside the tavern the Feathers. To the north, under a pretty little archway, is the active mayhem of Thames Street, but the alley narrows down to a dead end a little distance to the south.&quot;
-</font></blockquote><p>
-<p>
-<p>And now we get &quot;inside&quot;, which generates a space treated as its own area on the map.
-<p>
-<blockquote><font color="#000080">The Feathers is inside from the Private Alley.  &quot;Newly built with brick, replacing the older Feathers tavern that used to stand here. It sells wines in quantity, as well as serving them directly, and the goods are always of the best quality. There's a room upstairs for those wanting to stay the night.&quot; The Feathers Bedroom is above the Feathers.
-</font></blockquote><p>
-<p>
-<p>And if we like we can declare a number of rooms for which we will come back and write the descriptions later. There is no obligation for the description to occur at the first definition of the room.
-<p>
-<blockquote><font color="#000080">Lime Street is south of Thames Street End.
-</font></blockquote><p>
-<p>
-<p>For efficiency, we can also write multiple sets of connections at once:
-<p>
-<blockquote><font color="#000080">Queen Street East is east of Queen Street Middle and south of Private Alley.
-</font></blockquote><p>
-<p>
-<p>Clicking Go will translate this description into a sketchy but working simulation of Port Royal, in which we can type movement commands like EAST or SOUTH to explore the streets. Looking at the World tab of the Index, we can also see a schematic map of the simulation as it currently stands. Like the rest of the Index, this is provided entirely for the author's benefit, and is not visible to the player. (Though if we do decide that we want players to have access to a printed map while they play, Inform can help: we will return to the layout of Port Royal in the chapter on Publishing.)
-<p>
-<p>The following Test command allows us to type TEST ME and explore the map we just devised:
-<p>
-<blockquote><font color="#000080">Test me with &quot;s / e / e / e / e&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc28.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc197.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e274"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex274.html#e274 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>5</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex274.html#e274 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Up and Up</font></b></a><br>Adding a short message as the player approaches a room, before the room description itself appears.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex274.html#e274 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e88"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex88.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>6</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex88.html#e88 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Starry Void</font></b></a><br>Creating a booth that can be seen from the outside, opened and closed, and entered as a separate room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex88.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc27.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc29.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e191"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex191.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>209</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex191.html#e191 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bosch</font></b></a><br>Creating a list of actions that will earn the player points, and using this both to change the score and to give FULL SCORE reports.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex191.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e101"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex101.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>210</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex101.html#e101 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Actor's Studio</font></b></a><br>A video camera that records actions performed in its presence, and plays them back with time-stamps.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex101.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e83"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>211</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex83.html#e83 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Anteaters</font></b></a><br>The player carries a gizmo that is able to record actions performed by the player, then force him to repeat them when the gizmo is dropped. This includes storing actions that apply to topics, as in "look up anteater colonies in the guide".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc196.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc198.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

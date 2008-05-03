@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>23.25. To say one of</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.7. Moving things</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,124 +19,96 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Uncommon Ground" -->
-<!-- SEARCH SECTION "Ex 397" -->
-<!-- SEARCH SORT "Ex 023-025-397" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc396.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap23.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 23: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc398.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>23.25. To say one of</b></font></td></tr></table>
+<!-- SEARCH TITLE "Meteoric I and II" -->
+<!-- SEARCH SECTION "Ex 114" -->
+<!-- SEARCH SORT "Ex 008-007-114" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc117.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc119.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.7. Moving things</b></font></td></tr></table>
 <p>
-<p>Many of the invocation syntaxes described in the previous section are used in the definition by the Standard Rules of the &quot;[one of] ... [or] ... [purely at random]&quot; construction, so it makes a good example of how they can be used.
+<p>We have now seen how to change the properties of rooms and things, and also any freestanding values which may have a bearing on the model world. We are not allowed to change the kind of anything during play. Our remaining freedom is to move things around. It would make no sense to move rooms around, because rooms are the fixed reference points in our geography, but anything else is mobile. This even includes things which are supposedly &quot;fixed in place&quot;, for unlike the player, we have god-like powers. (There is one restriction: backdrops, which are present in more than one place at once, can only be moved to regions. And while it is legal to move a door, it is not a good idea.)
 <p>
-<p>First, this is a segmented substitution with a single possible beginning (&quot;[one of]&quot;), a single possible middle (&quot;[or]&quot;) but a choice of many possible endings. Almost everything is compiled by the invocation of the beginning:
+<p>Here is how to move something:
 <p>
-<blockquote><font color="#000080">To say one of -- beginning say_one_of:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-allocate-storage:say_one_of}I7_ST_say_one_of-->{-counter:say_one_of}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;= {-final-segment-marker}(I7_ST_say_one_of-->{-counter:say_one_of}, {-segment-count});
-<br>switch((I7_ST_say_one_of-->{-advance-counter:say_one_of})%({-segment-count}+1) - 1) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;0: -).
-<br>To say or -- continuing say_one_of:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-segment-count}: -).
-<br>To say purely at random -- ending say_one_of with marker I7_SOO_PAR:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-close-brace} -).
+<blockquote><font color="#000080">move the genie's lamp to Aladdin's Cave
 </font></blockquote><p>
 <p>
-<p>The 3rd invocation of this (say) might compile the following:
+<p>The first object named has to be a thing; the destination must be a room, as here, a container, a supporter, or a person. When something is moved, all its parts and contents (and all their contents, and so on) move with it.  If the thing being moved is a person, then the destination is required to be a room or an enterable container. (In particular, a person cannot be carried by another person.)
 <p>
-<blockquote><font color="#000080">I7_ST_say_one_of-->2 = I7_SOO_PAR(I7_ST_say_one_of-->2, 4);
-<br>switch((I7_ST_say_one_of-->2)%5 - 1) {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;0: ... first text ...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;1: ... second text ...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;2: ... third text ...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;3: ... fourth text ...
-<br>}
+<p>If the destination is a person, then it will be carried rather than worn: we could arrange for it to be worn instead by writing
+<p>
+<blockquote><font color="#000080">now the genie's turban is worn by Aladdin
 </font></blockquote><p>
 <p>
-<p>First, we notified Inform that it needs to allocate an array (I7_ST_say_one_of) providing storage associated with the counter &quot;say_one_of&quot;. This we used to count off individual invocations of &quot;[one of]&quot;, so that each would have its own word of storage - for the 3rd invocation, I7_ST_say_one_of-->2. We then call a state-changing routine, in this case I7_SOO_PAR, which is allowed to know the previous state and also the number of options available, and which returns the new state. The state is supposed to be the option chosen last time, but that means that there are not 4, but 5 possibilities: 0 for &quot;there was no last time&quot;, then 1 to 4 for the possible outcomes. We reduce the state mod 5 to obtain the decision this time, and subtract 1 because it happens to be convenient to make the switch statement run from 0 to 3 rather than 1 to 4. (The reason we reduce the state mod 5 is to allow the state-changer to squirrel away secret information in the upper bits of the state, if it wants to. Note that subtracting one means that the switch value might be -1, which results in no text being printed: thus if the state-changer chooses 0, it can decide on none of the above.)
-<p>
-<p>In this design, the marker attached to the choice of ending substitution is the name of the I6 state-changer: here is the I7_SOO_PAR routine.
-<p>
-<blockquote><font color="#000080">[ I7_SOO_PAR oldval count; if (count <= 1) return count; return random(count); ];
-</font></blockquote><p>
-<p>
-<p>As it happens, this ignores the old value: after all, it is meant to be purely at random, and nothing could be less pure than taking the last outcome into consideration when choosing the next.
-<p>
-<p>Note that the counter say_one_of is advanced in invocation of the head. It might seem that the tidier design, somehow, would be to advance the counter in the invocation of the tails, but this is not a good idea. In general it is not safe to assume that the counter will have the same value when the tail is invoked that it had when the head was invoked, because segmented say constructions can legally be nested in Inform strings. Because of this, it is best to deal with a counter entirely in a single invocation, either of the beginning or the ending.
-<p>
-<p>Because &quot;[one of] ... [or] ...&quot; is such a useful construction - switching between alternative forms of text, which writers of IF very often do - the above implementation is intentionally left open for new endings to be added, and the examples below show how easily this can be done.
+<p>&quot;Now...&quot; is a much more flexible phrase than &quot;move&quot;: more on this shortly.
 <p>
 <p><hr><p>
-<a name="e130"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex130.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>396</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex130.html#e130 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Blink</font></b></a><br>Making a "by atmosphere" token, allowing us to design our own text variations such as "[one of]normal[or]gloomy[or]scary[by atmosphere]".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex130.html#e130 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e195"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc397.html#e195 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>397</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc397.html#e195 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Uncommon Ground</font></b></a><br>Making a "by viewpoint" token, allowing us to design our own text variations such as "[show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show]" depending on the identity of the player at the moment.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex195.html#e195 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e195"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc118.html#e195 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>114</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc118.html#e195 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Meteoric I and II</font></b></a><br>A meteor in the night sky which is visible from many rooms, so needs to be a backdrop, but which does not appear until 11:31 PM.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex195.html#e195 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>A slightly more challenging case than the &quot;by atmosphere&quot; example is one in which we want to create text variations depending on the identity of our player character.
-<p>
-<p>What we want to do is build a switch statement in I6, one that looks something like
-<p>
-<blockquote><font color="#000080">switch(player)
-<br>{
-<br>&nbsp;&nbsp;&nbsp;&nbsp;yourself: print &quot;quaint&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Lolita: print &quot;thrilling&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;default: print &quot;squalid&quot;;
-<br>}
-</font></blockquote><p>
-<p>
-<p>out of I7 that looks like this:
-<p>
-<blockquote><font color="#000080">say &quot;[show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show]&quot;.
-</font></blockquote><p>
+<p>The timing of the meteor's arrival uses features of Inform which the next chapter will go into at greater detail: suffice to say that the game below begins at half past eleven, and that one turn later is meteor time.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode486(code) {
+function pasteCode210(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Uncommon Ground[=0x0022=][=0x000A=][=0x000A=]The Mud Village is a room. [=0x0022=]You stand at the center of a [show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show] mud village.[=0x0022=][=0x000A=][=0x000A=]Leforge is a man in the Mud Village. Lolita is a woman in the Mud Village.[=0x000A=][=0x000A=]Instead of waiting:[=0x000A=][=0x0009=]if the player is Lolita, change the player to Leforge;[=0x000A=][=0x0009=]if the player is yourself, change the player to Lolita;[=0x000A=][=0x0009=]say [=0x0022=]You jump bodies. Whoops![=0x0022=][=0x000A=][=0x000A=]To say show to (N - a person) -- beginning say_seen_by:[=0x000A=][=0x0009=](-[=0x000A=][=0x0009=][=0x0009=]switch(player)[=0x000A=][=0x0009=][=0x0009=]{-open-brace}[=0x000A=][=0x0009=][=0x0009=]{N}:[=0x000A=][=0x0009=]-);[=0x000A=][=0x000A=]To say to (N - a person) -- continuing say_seen_by:[=0x000A=][=0x0009=](-[=0x000A=][=0x0009=][=0x0009=]{N}:[=0x000A=][=0x0009=]-);[=0x000A=][=0x000A=]To say to everyone else -- continuing say_seen_by:[=0x000A=][=0x0009=](-[=0x000A=][=0x0009=][=0x0009=]default:[=0x000A=][=0x0009=]-)[=0x000A=][=0x000A=]To say end show -- ending say_seen_by:[=0x000A=][=0x0009=](-[=0x000A=][=0x0009=][=0x0009=]{-close-brace}[=0x000A=][=0x0009=]-)[=0x000A=][=0x000A=]Test me with [=0x0022=]look / z / look / z / look[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Meteoric I[=0x0022=][=0x000A=][=0x000A=]The time of day is 11:30 PM.[=0x000A=][=0x000A=]At 11:31 PM:[=0x000A=][=0x0009=]move meteor to the great outdoors;[=0x000A=][=0x0009=]say [=0x0022=]A meteor streaks across the sky.[=0x0022=].[=0x000A=][=0x000A=]The great outdoors is a region. The Spanish Balcony is east of the Inner Court. The Court and Balcony are in the great outdoors. Inside from the Court is the Swimming Pool.[=0x000A=][=0x000A=]The meteor is a backdrop. Instead of doing something to the meteor, say [=0x0022=]The meteor is no longer visible, now nothing more than a memory.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]wait / wait / examine meteor / west / examine meteor / in / examine meteor[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode486()"><img border=0 src=../doc_images/paste.png></a> &quot;Uncommon Ground&quot;
+<a href="javascript:pasteCode210()"><img border=0 src=../doc_images/paste.png></a> &quot;Meteoric I&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Mud Village is a room. &quot;You stand at the center of a [show to yourself]quaint[to Lolita]thrilling[to everyone else]squalid[end show] mud village.&quot;
+<blockquote><font color="#000080">The time of day is 11:30 PM.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Leforge is a man in the Mud Village. Lolita is a woman in the Mud Village.
+<blockquote><font color="#000080">At 11:31 PM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move meteor to the great outdoors;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A meteor streaks across the sky.&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of waiting:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is Lolita, change the player to Leforge;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is yourself, change the player to Lolita;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You jump bodies. Whoops!&quot;
+<blockquote><font color="#000080">The great outdoors is a region. The Spanish Balcony is east of the Inner Court. The Court and Balcony are in the great outdoors. Inside from the Court is the Swimming Pool.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say show to (N - a person) -- beginning say_seen_by:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch(player)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{-open-brace}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{N}:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;-);
+<blockquote><font color="#000080">The meteor is a backdrop. Instead of doing something to the meteor, say &quot;The meteor is no longer visible, now nothing more than a memory.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say to (N - a person) -- continuing say_seen_by:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{N}:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;-);
+<blockquote><font color="#000080">Test me with &quot;wait / wait / examine meteor / west / examine meteor / in / examine meteor&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say to everyone else -- continuing say_seen_by:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;-)
+<p>Or for something a little slower-moving and with no after-image:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode211(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Meteoric II[=0x0022=][=0x000A=][=0x000A=]The time of day is 4:30 PM.[=0x000A=][=0x000A=]At 4:31 PM:[=0x000A=][=0x0009=]move Phobos to the great outdoors;[=0x000A=][=0x0009=]say [=0x0022=]Phobos rises from the western horizon.[=0x0022=][=0x000A=]At 10:06 PM:[=0x000A=][=0x0009=]remove Phobos from play;[=0x000A=][=0x0009=]say [=0x0022=]Phobos sets over the eastern horizon.[=0x0022=][=0x000A=][=0x000A=]The great outdoors is a region. The Martian Balcony is east of the Inner Court. The Court and Balcony are in the great outdoors. Inside from the Court is the Heavy Water Swimming Pool.[=0x000A=][=0x000A=]Phobos is a backdrop. Instead of doing something to Phobos, say [=0x0022=]Phobos orbits a mere 6000km above you, which is practically touching range for astronomy. On the other hand, astronomy isn[=0x0027=]t all that practical.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]wait / wait / examine phobos / west / examine phobos / in / examine phobos[=0x0022=].[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode211()"><img border=0 src=../doc_images/paste.png></a> &quot;Meteoric II&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To say end show -- ending say_seen_by:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(-
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{-close-brace}
-<br>&nbsp;&nbsp;&nbsp;&nbsp;-)
+<blockquote><font color="#000080">The time of day is 4:30 PM.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look / z / look / z / look&quot;.
+<blockquote><font color="#000080">At 4:31 PM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move Phobos to the great outdoors;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Phobos rises from the western horizon.&quot;
+<br>At 10:06 PM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;remove Phobos from play;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Phobos sets over the eastern horizon.&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc397.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">The great outdoors is a region. The Martian Balcony is east of the Inner Court. The Court and Balcony are in the great outdoors. Inside from the Court is the Heavy Water Swimming Pool.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Phobos is a backdrop. Instead of doing something to Phobos, say &quot;Phobos orbits a mere 6000km above you, which is practically touching range for astronomy. On the other hand, astronomy isn't all that practical.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;wait / wait / examine phobos / west / examine phobos / in / examine phobos&quot;.
+</font></blockquote><p>
+<p>
+<p>Though we should not really use Earthly time-keeping, since the Martian day is about half an hour longer than ours.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc118.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc396.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc398.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc117.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc119.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

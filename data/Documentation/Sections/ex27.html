@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.16. Randomness</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>8.2. Changing the command prompt</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,116 +19,114 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Lanista 1" -->
-<!-- SEARCH SECTION "Ex 119" -->
-<!-- SEARCH SORT "Ex 008-016-119" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc124.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc126.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.16. Randomness</b></font></td></tr></table>
+<!-- SEARCH TITLE "Don Pedro's Revenge" -->
+<!-- SEARCH SECTION "Ex 108" -->
+<!-- SEARCH SORT "Ex 008-002-108" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc112.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap8.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 8: Change</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc114.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>8.2. Changing the command prompt</b></font></td></tr></table>
 <p>
-<p>Sometimes we want to introduce random behaviour into play. We usually do this by generating random values, and then acting differently depending on what they are. The following:
+<p>The command prompt is the text printed by Inform to ask the player for another command. Ordinarily this is simply a greater-than-sign, &quot;>&quot;, so we tend not to notice it as text at all. Internally, though, it is a variable value called &quot;command prompt&quot;, which means we can change it.
 <p>
-<blockquote><font color="#000080">a random number from 2 to 5
+<p>For example, this will be a more conversational sort of prompt:
+<p>
+<blockquote><font color="#000080">When play begins: change the command prompt to &quot;What now? &quot;.
 </font></blockquote><p>
 <p>
-<p>produces, as it suggests, a random number drawn from the choices 2, 3, 4 or 5, each of which is equally likely to come up.
+<p>Whereas this will be more up-to-the-minute and demanding:
 <p>
-<p>We can also use random conditions:
-<p>
-<blockquote><font color="#000080">if a random chance of 2 in 3 succeeds then ...
+<blockquote><font color="#000080">When play begins: change the command prompt to &quot;[time of day] >&quot;.
 </font></blockquote><p>
 <p>
-<p>Here is a rule which applies only 15% of the time:
-<p>
-<blockquote><font color="#000080">Instead of waiting when a random chance of 15 in 100 succeeds: ...
-</font></blockquote><p>
-<p>
-<p>If we make a new kind of value, we can also take random values from it:
-<p>
-<blockquote><font color="#000080">A cloud pattern is a kind of value. The cloud patterns are cumulus, altocumulus, cumulonimbus, stratus, cirrus, nimbus, nimbostratus.
-</font></blockquote><p>
-<p>
-<p>The value &quot;a random cloud pattern&quot; then produces a random choice from the seven cloud patterns, each equally likely.
-<p>
-<p>Testing IF which makes random choices can be rather frustrating, because a problem showing up on one attempt may not show up on another. To ease testing, the following sentence will &quot;fix&quot; the process of generating these random numbers so that they are not random at all - the same sequence of random numbers will be produced on each run.
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode19(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('When play begins, seed the random-number generator with 1234.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode19()"><img border=0 src=../doc_images/paste.png></a> When play begins, seed the random-number generator with 1234.
-</font></blockquote><p>
-<p>
-<p>The seed value &quot;1234&quot; can be anything positive; a different sequence of random numbers will be produced for each different seed value. A seed value of 0 restores the RNG to properly random behaviour again.
+<p>(&quot;Time of day&quot; is another variable value, which is fairly self-explanatory, but will be covered in detail later on.) The prompt can be changed at any point, so can be used to indicate the current situation, or even as a sly way to introduce a sort of conversation between computer and player.
 <p>
 <p><hr><p>
-<a name="e150"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex150.html#e150 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>118</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex150.html#e150 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Do Pass Go</font></b></a><br>A pair of dice which can be rolled, and are described with their current total when not carried, and have individual scores when examined.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex150.html#e150 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e27"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc125.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>119</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc125.html#e27 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Lanista 1</font></b></a><br>Very simple randomized combat in which characters hit one another for a randomized amount of damage.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex27.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e27"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc113.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>108</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc113.html#e27 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Don Pedro's Revenge</font></b></a><br>Combat scenario in which the player's footing and position changes from move to move, and the command prompt also changes to reflect that.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex27.html#e27 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Suppose our game features a detailed simulated combat between the player character and his opponent. He might have several weapons available, and several types of attack available; and at any given time he might be perched up in the rigging of his ship, standing on the open deck, or boxed in between some barrels. His options will vary depending on his position, and obviously it would detract from the pacing to make the player keep LOOKing in the middle of combat in order to remind himself where he is. Instead, we'll roll this information into the command prompt:
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode207(code) {
+function pasteCode204(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Lanista, Part One[=0x0022=][=0x000A=][=0x000A=]The Arena is a room. [=0x0022=]Sand, blood, iron. These festivals are normally held on hot days, but the sun has gone behind a cloud and fat drops of rain now and then spatter the arena floor.[=0x0022=] The gladiator is a man in the Arena. [=0x0022=]A bare-chested Scythian gladiator faces you, wielding a trident.[=0x0022=][=0x000A=][=0x000A=][We start by recording, for each person, a maximum number of points of damage the person can sustain when starting from health, and the current number of points remaining. In the tradition of role-playing games, these are referred to as hit points.][=0x000A=][=0x000A=]A person has a number called maximum hit points. A person has a number called current hit points.[=0x000A=][=0x000A=]The maximum hit points of the player is 35. The maximum hit points of the gladiator is 25.[=0x000A=][=0x000A=]The current hit points of the player is 35. The current hit points of the gladiator is 25.[=0x000A=][=0x000A=][Now our rule for the actual attack. We want first to calculate how much damage the player[=0x0027=]s attack does, inflict that damage, and remove the enemy if he[=0x0027=]s dead; then, if he doesn[=0x0027=]t die, the enemy counter-attacks, also for a randomized amount of damage, and if this kills the player, the game ends in defeat.][=0x000A=][=0x000A=]Instead of attacking someone:[=0x000A=][=0x0009=]let the damage be a random number between 2 and 10;[=0x000A=][=0x0009=]say [=0x0022=]You attack [the noun], causing [damage] points of damage![=0x0022=];[=0x000A=][=0x0009=]decrease the current hit points of the noun by the damage;[=0x000A=][=0x0009=]if the current hit points of the noun is less than 0[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][line break][The noun] expires, and is immediately carried away by the Arena slaves![=0x0022=];[=0x000A=][=0x0009=][=0x0009=]remove the noun from play;[=0x000A=][=0x0009=][=0x0009=]end the game in victory;[=0x000A=][=0x0009=][=0x0009=]stop the action;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]let the enemy damage be a random number between 2 and 10;[=0x000A=][=0x0009=]say [=0x0022=][line break][The noun] attacks you, causing [enemy damage] points of damage![=0x0022=];[=0x000A=][=0x0009=]decrease the current hit points of the player by the enemy damage;[=0x000A=][=0x0009=]if the current hit points of the player is less than 0[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][line break]You expire![=0x0022=];[=0x000A=][=0x0009=][=0x0009=]end the game in death;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=][This last bit is a refinement to help the player keep track of how the contest is going:][=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]change the left hand status line to [=0x0022=]You: [current hit points of player][=0x0022=];[=0x000A=][=0x0009=]change the right hand status line to [=0x0022=]Gladiator: [current hit points of gladiator][=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]hit gladiator / g / g / g[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Don Pedro[=0x0027=]s Revenge[=0x0022=][=0x000A=][=0x000A=]The Deck of the Helene Marie is a room. [=0x0022=]The two crews are embattled all around you, but your attention is reserved for your particular enemy: Don Pedro.[=0x0022=][=0x000A=][=0x000A=]Table of Random Prompts[=0x000A=]position[=0x0009=]prompt[=0x000A=]boxed[=0x0009=][=0x0022=]So securely boxed-in that you can really only parry or thrust, you try to [=0x0022=][=0x000A=]boxed[=0x0009=][=0x0022=]Trapped between your barrels, you decide to [=0x0022=][=0x000A=]perched[=0x0009=][=0x0022=]Able to slice at your attackers but not to advance or retreat, you choose to [=0x0022=][=0x000A=]perched[=0x0009=][=0x0022=]Perched up here with the advantage of height (but little mobility), you attempt to [=0x0022=][=0x000A=]free[=0x0009=][=0x0022=]Out on the open deck with no impediments, free to advance or retreat, you decide to [=0x0022=][=0x000A=][=0x000A=]When play begins: reset the prompt.[=0x000A=][=0x000A=]Every turn: reset the prompt.[=0x000A=][=0x000A=]To reset the prompt:[=0x000A=][=0x0009=]sort the Table of Random Prompts in random order;[=0x000A=][=0x0009=]repeat through the Table of Random Prompts:[=0x000A=][=0x0009=][=0x0009=]if the position entry is the placement of the player:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]change the command prompt to prompt entry;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]stop.[=0x000A=][=0x000A=]After reading a command: say conditional paragraph break.[=0x000A=][=0x000A=]A placement is a kind of value. The placements are boxed, perched, free. The player has a placement. The player is free.[=0x000A=][=0x000A=]Understand [=0x0022=]retreat[=0x0022=] or [=0x0022=]parry[=0x0022=] as retreating. Retreating is an action applying to nothing.[=0x000A=][=0x000A=]Check retreating:[=0x000A=][=0x0009=]if the player is perched, say [=0x0022=]You can[=0x0027=]t move backward or parry very successfully from this position.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out retreating:[=0x000A=][=0x0009=]now the player is boxed;[=0x000A=][=0x0009=]say [=0x0022=]You protect yourself, but end up wedged in between two barrels.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]thrust[=0x0022=] or [=0x0022=]advance[=0x0022=] as advancing. Advancing is an action applying to nothing.[=0x000A=][=0x000A=]Check advancing:[=0x000A=][=0x0009=]if the player is perched, say [=0x0022=]You can[=0x0027=]t move forward from here, only slash.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out advancing:[=0x000A=][=0x0009=]now the player is free;[=0x000A=][=0x0009=]say [=0x0022=]You push forward aggressively, making your way to the open deck.[=0x0022=][=0x000A=][=0x000A=]Instead of jumping:[=0x000A=][=0x0009=]now the player is perched;[=0x000A=][=0x0009=]say [=0x0022=]You leap and swing yourself boldly up into the rigging, leaving your attackers beneath you.[=0x0022=][=0x000A=][=0x000A=]Instead of jumping when the player is perched:[=0x000A=][=0x0009=]now the player is free;[=0x000A=][=0x0009=]say [=0x0022=]You leap down from your position, into the middle of the deck.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]advance / jump / advance / retreat / jump / retreat / retreat / advance[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode207()"><img border=0 src=../doc_images/paste.png></a> &quot;Lanista, Part One&quot;
+<a href="javascript:pasteCode204()"><img border=0 src=../doc_images/paste.png></a> &quot;Don Pedro's Revenge&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Arena is a room. &quot;Sand, blood, iron. These festivals are normally held on hot days, but the sun has gone behind a cloud and fat drops of rain now and then spatter the arena floor.&quot; The gladiator is a man in the Arena. &quot;A bare-chested Scythian gladiator faces you, wielding a trident.&quot;
+<blockquote><font color="#000080">The Deck of the Helene Marie is a room. &quot;The two crews are embattled all around you, but your attention is reserved for your particular enemy: Don Pedro.&quot;
 </font></blockquote><p>
 <p>
-<p>We start by recording, for each person, a maximum number of points of damage the person can sustain when starting from health, and the current number of points remaining. In the tradition of role-playing games, these are referred to as hit points.
-<p>
-<blockquote><font color="#000080">A person has a number called maximum hit points. A person has a number called current hit points.
+<blockquote><font color="#000080">Table of Random Prompts
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">position</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">prompt</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">boxed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;So securely boxed-in that you can really only parry or thrust, you try to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">boxed</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Trapped between your barrels, you decide to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">perched</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Able to slice at your attackers but not to advance or retreat, you choose to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">perched</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Perched up here with the advantage of height (but little mobility), you attempt to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">free</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Out on the open deck with no impediments, free to advance or retreat, you decide to &quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The maximum hit points of the player is 35. The maximum hit points of the gladiator is 25.
+<blockquote><font color="#000080">When play begins: reset the prompt.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The current hit points of the player is 35. The current hit points of the gladiator is 25.
+<blockquote><font color="#000080">Every turn: reset the prompt.
 </font></blockquote><p>
 <p>
-<p>Now our rule for the actual attack. We want first to calculate how much damage the player's attack does, inflict that damage, and remove the enemy if he's dead; then, if he doesn't die, the enemy counter-attacks, also for a randomized amount of damage, and if this kills the player, the game ends in defeat.
-<p>
-<blockquote><font color="#000080">Instead of attacking someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the damage be a random number between 2 and 10;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You attack [the noun], causing [damage] points of damage!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decrease the current hit points of the noun by the damage;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current hit points of the noun is less than 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break][The noun] expires, and is immediately carried away by the Arena slaves!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the enemy damage be a random number between 2 and 10;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break][The noun] attacks you, causing [enemy damage] points of damage!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decrease the current hit points of the player by the enemy damage;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current hit points of the player is less than 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break]You expire!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in death;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">To reset the prompt:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Random Prompts in random order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Random Prompts:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the position entry is the placement of the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to prompt entry;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stop.
 </font></blockquote><p>
 <p>
-<p>This last bit is a refinement to help the player keep track of how the contest is going:
-<p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the left hand status line to &quot;You: [current hit points of player]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot;Gladiator: [current hit points of gladiator]&quot;.
+<blockquote><font color="#000080">After reading a command: say conditional paragraph break.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;hit gladiator / g / g / g&quot;.
+<blockquote><font color="#000080">A placement is a kind of value. The placements are boxed, perched, free. The player has a placement. The player is free.
 </font></blockquote><p>
 <p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc125.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Understand &quot;retreat&quot; or &quot;parry&quot; as retreating. Retreating is an action applying to nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check retreating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is perched, say &quot;You can't move backward or parry very successfully from this position.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out retreating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is boxed;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You protect yourself, but end up wedged in between two barrels.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;thrust&quot; or &quot;advance&quot; as advancing. Advancing is an action applying to nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check advancing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is perched, say &quot;You can't move forward from here, only slash.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out advancing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is free;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You push forward aggressively, making your way to the open deck.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of jumping:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is perched;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You leap and swing yourself boldly up into the rigging, leaving your attackers beneath you.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of jumping when the player is perched:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the player is free;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You leap down from your position, into the middle of the deck.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;advance / jump / advance / retreat / jump / retreat / retreat / advance&quot;.
+</font></blockquote><p>
+<p>
+<p>Of course, this won't be much fun until we also provide the player with a few weapons, some more fighting maneuvers, and, most of all, a Don Pedro to defeat.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc113.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e292"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex292.html#e292 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>120</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex292.html#e292 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Weathering</font></b></a><br>The automatic weather station atop Mt. Pisgah shows randomly fluctuating temperature, pressure and cloud cover.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex292.html#e292 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e352"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex352.html#e352 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>121</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex352.html#e352 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Uptown Girls</font></b></a><br>A stream of random pedestrians who go by the player.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex352.html#e352 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc124.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc126.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc112.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc114.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.6. The preamble of a rule</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.33. Printing a parser error</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,52 +19,83 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "The preamble of a rule" -->
-<!-- SEARCH SECTION "18.6" -->
-<!-- SEARCH SORT "018-006-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc301.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc303.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.6. The preamble of a rule</b></font></td></tr></table>
+<!-- SEARCH TITLE "Printing a parser error" -->
+<!-- SEARCH SECTION "17.33" -->
+<!-- SEARCH SORT "017-033-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc301.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc303.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.33. Printing a parser error</b></font></td></tr></table>
 <p>
-<p>In general, a rule looks like this:
+<p><b>1. When it happens.</b> The parser is the part of the run-time software, included in all works produced by Inform, which tries to match the player's command against the grammar provided by the work. When it is unable to make a valid match, the parser prints an error to the player: for instance,
 <p>
-<blockquote><font color="#000080">preamble : list of one or more phrases divided by semicolons
+<blockquote><font color="#000080">> BIFURCATE TREE
+<br>That's not a verb I recognise.
 </font></blockquote><p>
 <p>
-<p>though in a few common cases (where the preamble begins with Before, After, Instead of, Every turn, or When, and there is only one phrase in the list) the colon can be replaced with a comma. Three kinds of declaration are special, and these we can tell apart by the first word:
+<p>There are some 19 possible messages, and we can distinguish them using the following conditions:
 <p>
-<blockquote><font color="#000080">To ... - a new phrase: see the chapter on Phrases
-<br>At ... - something due to happen at a given time: see Time
-<br>Definition: ... - a new adjective: see Descriptions
+<blockquote><font color="#000080">if the parser error is didn't understand...
+<br>if the parser error is only understood as far as...
+<br>if the parser error is didn't understand that number...
+<br>if the parser error is can't see any such thing...
+<br>if the parser error is said too little...
+<br>if the parser error is aren't holding that...
+<br>if the parser error is can't use multiple objects...
+<br>if the parser error is can only use multiple objects...
+<br>if the parser error is not sure what it refers to...
+<br>if the parser error is excepted something not included...
+<br>if the parser error is can only do that to something animate...
+<br>if the parser error is not a verb I recognise...
+<br>if the parser error is not something you need to refer to...
+<br>if the parser error is can't see it at the moment...
+<br>if the parser error is didn't understand the way that finished...
+<br>if the parser error is not enough of those available...
+<br>if the parser error is nothing to do...
+<br>if the parser error is I beg your pardon...
+<br>if the parser error is noun did not make sense in that context...
 </font></blockquote><p>
 <p>
-<p>All other declarations (that is, starting with any other word) create rules fit for going into rulebooks. The preamble can either just be a name, which is required to end with the word &quot;rule&quot;, or it can give circumstances and have no name, or it can do both:
+<p><b>2. The default behaviour.</b> Prints the message in question.
 <p>
-<blockquote><font color="#000080">This is the ...name of rule...
-<br>...circumstances...
-<br>...circumstances... (this is the ...name of rule...)
+<p><b>3. Examples.</b> (a) Perhaps for newcomers:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode78(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('After printing a parser error:[=0x000A=][=0x0009=]say [=0x0022=]If you are new to interactive fiction, you may like to try typing HELP.[=0x0022=][=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode78()"><img border=0 src=../doc_images/paste.png></a> After printing a parser error:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;If you are new to interactive fiction, you may like to try typing HELP.&quot;
 </font></blockquote><p>
 <p>
-<p>The circumstances should be a sequence of the following ingredients, each of which is optional except the name of the rulebook:
+<p>(b) Or to give the parser a certain amount of character:
 <p>
-<blockquote><font color="#000080">first <i>or</i> last
-<br><i>followed by</i> ...rulebook name...
-<br><i>followed by</i> about <i>or</i> for <i>or</i> of <i>or</i> on <i>or</i> rule
-<br><i>followed by</i> ...what to apply to...
-<br><i>followed by</i> while <i>or</i> when ...condition...
-<br><i>followed by</i> during ...a scene...
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode79(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Rule for printing a parser error when parser error is I beg your pardon:[=0x000A=][=0x0009=]say [=0x0022=]What[=0x0027=]s that? Speak up, speak up.[=0x0022=] instead.[=0x000A=][=0x000A=]{*}Rule for printing a parser error:[=0x000A=][=0x0009=]say [=0x0022=]That[=0x0027=]s a rum thing to say, and no mistake.[=0x0022=] instead.[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode79()"><img border=0 src=../doc_images/paste.png></a> Rule for printing a parser error when parser error is I beg your pardon:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;What's that? Speak up, speak up.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>The word &quot;first&quot; or &quot;last&quot;, if present, is significant: it tells Inform exactly where the new rule should be placed into its rulebook, and so overrides the normal practice of placing the rule according to how specific it is.
-<p>
-<p>On the other hand, the use of any of the words &quot;about&quot;, &quot;for&quot;, etc., is purely to make the grammar easier to follow for: Inform does not make any direct use of these words (except perhaps that it may help to avoid ambiguities by separating the rulebook name from what is being applied to). Thus in the rule
-<p>
-<blockquote><font color="#000080">Instead of kissing Clark: ...
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode80(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Rule for printing a parser error:[=0x000A=][=0x0009=]say [=0x0022=]That[=0x0027=]s a rum thing to say, and no mistake.[=0x0022=] instead.[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode80()"><img border=0 src=../doc_images/paste.png></a> Rule for printing a parser error:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That's a rum thing to say, and no mistake.&quot; instead.
 </font></blockquote><p>
-<p>
-<p>the word &quot;instead&quot; is the rulebook's name, while &quot;of&quot; is technically optional. &quot;Instead about kissing Clark: ...&quot; would work just as well, but would make the source text harder to read.
-<p>
-<p>In this whole list of possible ingredients, only the rulebook name is compulsory. We could define a rule called simply &quot;Instead: ...&quot; if we wanted - though its universal applicability would make it pretty disruptive, with every action stopped in its tracks.
 <p>
 <p><hr><p>
-<a name="e272"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex272.html#e272 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>340</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex272.html#e272 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Replacing standard action report rules</font></b></a><br>Replacing the standard action report rules to reflect our own design.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex272.html#e272 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e312"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex312.html#e312 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>341</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex312.html#e312 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Backus-Naur form for rules</font></b></a><br>The full grammar Inform uses to parse rule definitions, in a standard computer-science notation.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex312.html#e312 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e141"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex141.html#e141 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>345</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex141.html#e141 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> WXPQ</font></b></a><br>Creating a more sensible parser error than "that noun did not make sense in this context".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex141.html#e141 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e168"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>346</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex168.html#e168 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Xot</font></b></a><br>Storing an invalid command to be repeated as text later in the game.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc301.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc303.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.10. Action variables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.33. Printing a parser error</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,159 +19,119 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Puff of Orange Smoke" -->
-<!-- SEARCH SECTION "Ex 186" -->
-<!-- SEARCH SORT "Ex 012-010-186" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc181.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc183.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.10. Action variables</b></font></td></tr></table>
+<!-- SEARCH TITLE "Xot" -->
+<!-- SEARCH SECTION "Ex 346" -->
+<!-- SEARCH SORT "Ex 017-033-346" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc301.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc303.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.33. Printing a parser error</b></font></td></tr></table>
 <p>
-<p>For some complex situations, it can be useful to keep track of a few values throughout the processing of the action. This is not an everyday occurrence: in the Standard Rules, for instance, only two or three out of 90 actions need to do this. But suppose we want to write a more deluxe version of our &quot;photographing&quot; action. This time, rather than having a single thing called the &quot;camera&quot;, we will provide a whole range of possible cameras, varying in quality:
+<p><b>1. When it happens.</b> The parser is the part of the run-time software, included in all works produced by Inform, which tries to match the player's command against the grammar provided by the work. When it is unable to make a valid match, the parser prints an error to the player: for instance,
 <p>
-<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light. Understand &quot;photograph [something]&quot; as photographing.
+<blockquote><font color="#000080">> BIFURCATE TREE
+<br>That's not a verb I recognise.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Studio is a room. Sally is a woman in the Studio. A foam-lined tote bag is in the Studio.
+<p>There are some 19 possible messages, and we can distinguish them using the following conditions:
+<p>
+<blockquote><font color="#000080">if the parser error is didn't understand...
+<br>if the parser error is only understood as far as...
+<br>if the parser error is didn't understand that number...
+<br>if the parser error is can't see any such thing...
+<br>if the parser error is said too little...
+<br>if the parser error is aren't holding that...
+<br>if the parser error is can't use multiple objects...
+<br>if the parser error is can only use multiple objects...
+<br>if the parser error is not sure what it refers to...
+<br>if the parser error is excepted something not included...
+<br>if the parser error is can only do that to something animate...
+<br>if the parser error is not a verb I recognise...
+<br>if the parser error is not something you need to refer to...
+<br>if the parser error is can't see it at the moment...
+<br>if the parser error is didn't understand the way that finished...
+<br>if the parser error is not enough of those available...
+<br>if the parser error is nothing to do...
+<br>if the parser error is I beg your pardon...
+<br>if the parser error is noun did not make sense in that context...
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A camera is a kind of thing. A camera has a number called picture quality. The digital SLR camera is a camera in the tote bag. The player carries a camera called the instant one-shot camera. The picture quality of the SLR camera is 10. The picture quality of the one-shot is 2. Definition: a camera is sharp if its picture quality is 5 or more.
-</font></blockquote><p>
+<p><b>2. The default behaviour.</b> Prints the message in question.
 <p>
-<p>And we will want the photographing action to have the player use the best-quality camera which comes to hand. We will give the action a variable called the 'camera photographed with', thus:
-<p>
-<blockquote><font color="#000080">The photographing action has an object called the camera photographed with.
-</font></blockquote><p>
-<p>
-<p>This value is created when the action begins, and disappears when the action ends. (If the action should happen a second time before the first time was completed, a second copy of the value is created, leaving the original undisturbed.) When the action begins, the value starts out as something neutral - so if it is a number, it starts out as 0, if a text, it starts out as the blank text &quot;&quot;, and so on. Here it is an object, so it starts out as nothing - the value meaning no object at all. But of course we want to give it a value ourselves. We can do that using the &quot;setting action variables&quot; rulebook. For instance:
-<p>
-<blockquote><font color="#000080">Setting action variables for photographing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the camera photographed with is the sharpest camera which is carried by the actor.
-</font></blockquote><p>
-<p>
-<p>The &quot;setting action variables&quot; rulebook is run through before even the before rules, and it has no power to stop or change the action. Its rules should say nothing and do nothing other than to set rulebook variables like this one. Note that it is intended to work for any actor, not only the player: so rather than referring to the player as the performer of the action, we need to write &quot;the actor&quot;, as in the example above. (See subsequent sections for more on actors.)
-<p>
-<p>We can now write rules such as:
-<p>
-<blockquote><font color="#000080">A check photographing rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the camera photographed with is nothing then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
-</font></blockquote><p>
-<p>
-<p>Only rules to do with the photographing action - before, instead, after, check, carry out, or report rules, and so on - are allowed to see the 'camera photographed with' value: it's the private property of the action.
-<p>
-<p>A further elaboration allows us to make rules about photographing neater to write. If we create our variable like so:
-<p>
-<blockquote><font color="#000080">The photographing action has an object called the camera photographed with (matched as &quot;using&quot;).
-</font></blockquote><p>
-<p>
-<p>...then we are now allowed to add an optional 'using ...' clause onto a description of the action. For instance, we could write rules such as
-<p>
-<blockquote><font color="#000080">Instead of photographing something using the one-shot camera:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;But you promised to give this to Sally's nephew.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check photographing something using the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That would require some sort of contraption with mirrors.&quot; instead.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Report photographing something using a sharp camera:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You feel cool and important as the shutter clicks.&quot;
-</font></blockquote><p>
-<p>
-<p>(This is the method used by the Standard Rules to attach optional clauses such as 'to', 'with' and 'through' to the going action.)
-<p>
-<p><hr><p>
-<a name="e104"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex104.html#e104 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>183</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex104.html#e104 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Further Reasons Why All Poets Are Liars</font></b></a><br>The young William Wordsworth, pushing a box about in his room, must struggle to achieve a Romantic point of view.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex104.html#e104 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e169"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex169.html#e169 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>184</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex169.html#e169 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Second Oldest Problem</font></b></a><br>Adapting the going action so that something special can happen when going from a dark room to another dark room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex169.html#e169 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e365"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex365.html#e365 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>185</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex365.html#e365 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Removal</font></b></a><br>TAKE expanded to give responses such as "You take the book from the shelf." or "You pick up the toy from the ground."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex365.html#e365 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<!-- EXAMPLE START -->
-<a name="e168"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc182.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>186</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc182.html#e168 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Puff of Orange Smoke</font></b></a><br>A system in which every character has a body, which is left behind when the person dies; attempts to do something to the body are redirected to the person while the person is alive.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Suppose we want to let the player kill characters, leaving behind corpses.
+<p><b>3. Examples.</b> (a) Perhaps for newcomers:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode276(code) {
+function pasteCode78(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Puff of Orange Smoke[=0x0022=][=0x000A=][=0x000A=]Paraguay is a room. Bolivia is north of Paraguay. Lydia is a woman in Paraguay. [=0x0022=]Lydia is, as usual, here.[=0x0022=] The description of Lydia is [=0x0022=]Long, long legs and a sarcastic attitude.[=0x0022=] Instead of touching Lydia: say [=0x0022=][=0x0027=]Watch it, sailor,[=0x0027=] she snaps.[=0x0022=][=0x000A=][=0x000A=]A body is a kind of thing. A body is a part of every person. Instead of touching a body: say [=0x0022=][The noun] is grotesquely inert.[=0x0022=][=0x000A=][=0x000A=]The description of Lydia[=0x0027=]s body is [=0x0022=]Long, long legs and no attitude at all.[=0x0022=] The initial appearance of Lydia[=0x0027=]s body is [=0x0022=]Lydia[=0x0027=]s corpse is sprawled at your feet.[=0x0022=][=0x000A=][=0x000A=][Using our [=0x0022=]part of every person...[=0x0022=] line, we[=0x0027=]ve conveniently assigned one body per person. Since we[=0x0027=]re going to separate people from their bodies when the bodies die, though, we also want a more permanent relation that will help us keep track of which bodies used to belong to which people:][=0x000A=][=0x000A=]Spirit-possession relates one person to one body. The verb to be owner of implies the spirit-possession relation.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]repeat with victim running through people[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]let the corpse be a random body which is part of the victim;[=0x000A=][=0x0009=][=0x0009=]now the victim is owner of the corpse;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=][When Lydia is alive, we want [=0x003E=]TOUCH LYDIA[=0x0027=]S BODY to mean the same thing as [=0x003E=]TOUCH LYDIA, so we use the setting action variables rules as a convenient point at which to reassign the action:][=0x000A=][=0x000A=]Setting action variables when the noun is a body which is part of a person (called owner):[=0x000A=][=0x0009=]change the noun to the owner.[=0x000A=][=0x000A=]Setting action variables when the second noun is a body which is part of a person (called owner):[=0x000A=][=0x0009=]change the second noun to the owner.[=0x000A=][=0x000A=][This doesn[=0x0027=]t change Inform[=0x0027=]s idea about what action is being performed; just about the object it[=0x0027=]s being performed on. The rest of the action will now proceed as if the player had typed [=0x003E=]TOUCH LYDIA.][=0x000A=][=0x000A=][Along similar lines, once Lydia is dead, we want [=0x003E=]MOVE LYDIA to mean [=0x003E=]MOVE LYDIA[=0x0027=]S BODY if the body is in view:][=0x000A=][=0x000A=]Setting action variables when the noun is a dead person and the noun is owner of a visible body (called the mortal remains):[=0x000A=][=0x0009=]change the noun to the mortal remains.[=0x000A=][=0x000A=][The trick is, though, that [=0x003E=]MOVE LYDIA will only be understood if there is something called Lydia that the player can see and refer to, even after she[=0x0027=]s dead. There are various ways to do this, but the least painful here will be to make the deceased Lydia permanently visible, by putting her in an always-accessible backdrop. The backdrop itself will never be mentioned in the game, and we should make its name something that the player is unlikely to type casually; we don[=0x0027=]t want the player to interact with it directly. So:][=0x000A=][=0x000A=]The worldview is a backdrop. It is everywhere. The spirit-world is a transparent closed unopenable container. It is part of the worldview.[=0x000A=][=0x000A=]Definition: a person is dead if he is in the spirit-world.[=0x000A=][=0x000A=][It[=0x0027=]s also possible that the player will type something like [=0x003E=]X LYDIA when Lydia[=0x0027=]s corpse is not in view, so we should have an appropriate answer to that as well:][=0x000A=][=0x000A=]Before doing something to a dead person:[=0x000A=][=0x0009=]say [=0x0022=][The noun] is dead; or had you blocked that out?[=0x0022=] instead.[=0x000A=][=0x000A=][Because the before rules happen after the setting action variables rules, this will only ever happen if the corpse is not visible.][=0x000A=][=0x000A=][Now we define the attack itself, which should discard the body, move the spirit to its eternal resting place, and describe the event to the player:][=0x000A=][=0x000A=]Instead of attacking someone:[=0x000A=][=0x0009=]let the corpse be a random body which is part of the noun;[=0x000A=][=0x0009=]move the corpse to the location;[=0x000A=][=0x0009=]move the noun to the spirit-world;[=0x000A=][=0x0009=]say [=0x0022=]With a single blow, you rid the world of [the noun].[=0x0022=][=0x000A=][=0x000A=][And finally a trick borrowed from the chapter on understanding, so that we can refer to [=0x0022=]Lydia[=0x0027=]s body[=0x0022=] while Lydia is alive, but [=0x0022=]Lydia[=0x0027=]s corpse[=0x0022=] only after Lydia has died:][=0x000A=][=0x000A=]Understand [=0x0022=]corpse[=0x0022=] as a body when the item described is not part of a person.[=0x000A=][=0x000A=]Test me with [=0x0022=]x body / x lydia[=0x0027=]s body / touch lydia[=0x0027=]s body / x corpse / kill lydia / look / x lydia[=0x0027=]s body / x lydia[=0x0027=]s corpse / x corpse / x lydia / touch lydia / lydia, hello / n / x lydia / touch lydia / lydia, hello[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('After printing a parser error:[=0x000A=][=0x0009=]say [=0x0022=]If you are new to interactive fiction, you may like to try typing HELP.[=0x0022=][=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode276()"><img border=0 src=../doc_images/paste.png></a> &quot;Puff of Orange Smoke&quot;
+<a href="javascript:pasteCode78()"><img border=0 src=../doc_images/paste.png></a> After printing a parser error:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;If you are new to interactive fiction, you may like to try typing HELP.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Paraguay is a room. Bolivia is north of Paraguay. Lydia is a woman in Paraguay. &quot;Lydia is, as usual, here.&quot; The description of Lydia is &quot;Long, long legs and a sarcastic attitude.&quot; Instead of touching Lydia: say &quot;'Watch it, sailor,' she snaps.&quot;
+<p>(b) Or to give the parser a certain amount of character:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode79(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Rule for printing a parser error when parser error is I beg your pardon:[=0x000A=][=0x0009=]say [=0x0022=]What[=0x0027=]s that? Speak up, speak up.[=0x0022=] instead.[=0x000A=][=0x000A=]{*}Rule for printing a parser error:[=0x000A=][=0x0009=]say [=0x0022=]That[=0x0027=]s a rum thing to say, and no mistake.[=0x0022=] instead.[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode79()"><img border=0 src=../doc_images/paste.png></a> Rule for printing a parser error when parser error is I beg your pardon:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;What's that? Speak up, speak up.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A body is a kind of thing. A body is a part of every person. Instead of touching a body: say &quot;[The noun] is grotesquely inert.&quot;
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode80(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Rule for printing a parser error:[=0x000A=][=0x0009=]say [=0x0022=]That[=0x0027=]s a rum thing to say, and no mistake.[=0x0022=] instead.[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode80()"><img border=0 src=../doc_images/paste.png></a> Rule for printing a parser error:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That's a rum thing to say, and no mistake.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of Lydia's body is &quot;Long, long legs and no attitude at all.&quot; The initial appearance of Lydia's body is &quot;Lydia's corpse is sprawled at your feet.&quot;
+<p><hr><p>
+<a name="e141"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex141.html#e141 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>345</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex141.html#e141 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> WXPQ</font></b></a><br>Creating a more sensible parser error than "that noun did not make sense in this context".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex141.html#e141 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e168"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc302.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>346</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc302.html#e168 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Xot</font></b></a><br>Storing an invalid command to be repeated as text later in the game.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>In Hitchhiker's Guide to the Galaxy, any erroneous command the player types can return to haunt him later in the game. We could do the same, if we liked, by storing the player's command whenever we print a parser error.
+<p>
+<p>This requires us to borrow the idea of &quot;indexed text&quot; -- a more flexible kind of text than the usual &quot;text that varies&quot; -- from the Advanced Text chapter:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode443(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode(' [=0x0022=]Xot[=0x0022=][=0x000A=][=0x000A=]Humiliation Chamber is a room. [=0x0022=]A grim, grey-walled room. Cameras watch you from every angle; convex mirrors reflect your actions; and up near the ceiling, where you can[=0x0027=]t disable it, is a loudspeaker.[=0x0022=][=0x000A=][=0x000A=]Last error is indexed text that varies. The last error is [=0x0022=]xot[=0x0022=].[=0x000A=][=0x000A=]Before printing a parser error:[=0x000A=][=0x0009=]change the last error to the player[=0x0027=]s command.[=0x000A=][=0x000A=]Every turn when a random chance of 1 in 2 succeeds:[=0x000A=][=0x0009=]say [=0x0022=]Over the loudspeaker comes some distorted nonsense. If you listen carefully, it sounds as though some fool is saying [=0x0027=][last error], [last error], [last error]![=0x0027=][=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]wiggle / z / z / z / z / z / z[=0x0022=].[=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode443()"><img border=0 src=../doc_images/paste.png></a>  &quot;Xot&quot;
 </font></blockquote><p>
 <p>
-<p>Using our &quot;part of every person...&quot; line, we've conveniently assigned one body per person. Since we're going to separate people from their bodies when the bodies die, though, we also want a more permanent relation that will help us keep track of which bodies used to belong to which people:
-<p>
-<blockquote><font color="#000080">Spirit-possession relates one person to one body. The verb to be owner of implies the spirit-possession relation.
+<blockquote><font color="#000080">Humiliation Chamber is a room. &quot;A grim, grey-walled room. Cameras watch you from every angle; convex mirrors reflect your actions; and up near the ceiling, where you can't disable it, is a loudspeaker.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with victim running through people
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the corpse be a random body which is part of the victim;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now the victim is owner of the corpse;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">Last error is indexed text that varies. The last error is &quot;xot&quot;.
 </font></blockquote><p>
 <p>
-<p>When Lydia is alive, we want >TOUCH LYDIA'S BODY to mean the same thing as >TOUCH LYDIA, so we use the setting action variables rules as a convenient point at which to reassign the action:
-<p>
-<blockquote><font color="#000080">Setting action variables when the noun is a body which is part of a person (called owner):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the noun to the owner.
+<blockquote><font color="#000080">Before printing a parser error:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last error to the player's command.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Setting action variables when the second noun is a body which is part of a person (called owner):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the second noun to the owner.
+<blockquote><font color="#000080">Every turn when a random chance of 1 in 2 succeeds:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Over the loudspeaker comes some distorted nonsense. If you listen carefully, it sounds as though some fool is saying '[last error], [last error], [last error]!'&quot;
 </font></blockquote><p>
 <p>
-<p>This doesn't change Inform's idea about what action is being performed; just about the object it's being performed on. The rest of the action will now proceed as if the player had typed >TOUCH LYDIA.
-<p>
-<p>Along similar lines, once Lydia is dead, we want >MOVE LYDIA to mean >MOVE LYDIA'S BODY if the body is in view:
-<p>
-<blockquote><font color="#000080">Setting action variables when the noun is a dead person and the noun is owner of a visible body (called the mortal remains):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the noun to the mortal remains.
+<blockquote><font color="#000080">Test me with &quot;wiggle / z / z / z / z / z / z&quot;.
 </font></blockquote><p>
-<p>
-<p>The trick is, though, that >MOVE LYDIA will only be understood if there is something called Lydia that the player can see and refer to, even after she's dead. There are various ways to do this, but the least painful here will be to make the deceased Lydia permanently visible, by putting her in an always-accessible backdrop. The backdrop itself will never be mentioned in the game, and we should make its name something that the player is unlikely to type casually; we don't want the player to interact with it directly. So:
-<p>
-<blockquote><font color="#000080">The worldview is a backdrop. It is everywhere. The spirit-world is a transparent closed unopenable container. It is part of the worldview.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a person is dead if he is in the spirit-world.
-</font></blockquote><p>
-<p>
-<p>It's also possible that the player will type something like >X LYDIA when Lydia's corpse is not in view, so we should have an appropriate answer to that as well:
-<p>
-<blockquote><font color="#000080">Before doing something to a dead person:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is dead; or had you blocked that out?&quot; instead.
-</font></blockquote><p>
-<p>
-<p>Because the before rules happen after the setting action variables rules, this will only ever happen if the corpse is not visible.
-<p>
-<p>Now we define the attack itself, which should discard the body, move the spirit to its eternal resting place, and describe the event to the player:
-<p>
-<blockquote><font color="#000080">Instead of attacking someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the corpse be a random body which is part of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the corpse to the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the spirit-world;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;With a single blow, you rid the world of [the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>And finally a trick borrowed from the chapter on understanding, so that we can refer to &quot;Lydia's body&quot; while Lydia is alive, but &quot;Lydia's corpse&quot; only after Lydia has died:
-<p>
-<blockquote><font color="#000080">Understand &quot;corpse&quot; as a body when the item described is not part of a person.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x body / x lydia's body / touch lydia's body / x corpse / kill lydia / look / x lydia's body / x lydia's corpse / x corpse / x lydia / touch lydia / lydia, hello / n / x lydia / touch lydia / lydia, hello&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc182.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc302.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e9"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>187</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex9.html#e9 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Croft</font></b></a><br>Adding special reporting and handling for objects dropped when the player is on a supporter, and special entering rules for moving from one supporter to another.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc181.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc183.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc301.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc303.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.5. After rules</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.7. New value properties</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,69 +19,88 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Morning After" -->
-<!-- SEARCH SECTION "Ex 82" -->
-<!-- SEARCH SORT "Ex 007-005-082" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc94.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc96.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.5. After rules</b></font></td></tr></table>
+<!-- SEARCH TITLE "Straw Boater" -->
+<!-- SEARCH SECTION "Ex 50" -->
+<!-- SEARCH SORT "Ex 004-007-050" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc59.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc61.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.7. New value properties</b></font></td></tr></table>
 <p>
-<p>There is pleasantly little to be said about &quot;after&quot; rules. If an action has survived all the rules in its way, and has actually succeeded, then we need to give the player a response which acknowledges this. Inform's normal rules will be sufficient to say something undramatic: for instance, if &quot;taking the napkin&quot; has succeeded then it will reply &quot;Taken.&quot; to the player.
+<p>Moving on to properties which contain values, such as the &quot;matching key&quot; property of a door or a container, we need to use a different formulation.
 <p>
-<p>An after rule is an opportunity to say something more interesting:
-<p>
-<blockquote><font color="#000080">After taking the diamonds, say &quot;Taken!&quot;
+<blockquote><font color="#000080">A dead end has some text called river sound. The river sound of a dead end is usually &quot;a faint whispering of running water&quot;. The Tortuous Alcove has river sound &quot;a gurgle of running water&quot;.
 </font></blockquote><p>
 <p>
-<p>(Well, slightly more interesting.) After rules automatically end the action (as a success), which is what we would want in the above case. Allowing it to continue would simply result in &quot;Taken.&quot; being printed as well. However, should we really need to do something and then carry on:
+<p>The property &quot;river sound&quot; is now applicable only to dead ends, and we would not be allowed to talk about it in any other context. As can be seen, it holds a piece of text. If we tried the following:
 <p>
-<blockquote><font color="#000080">After taking the diamonds: say &quot;(Mr Beebe looks up sharply.) &quot;; continue the action.
+<blockquote><font color="#000080">The river sound of the Tortuous Alcove is 7.
 </font></blockquote><p>
+<p>
+<p>...then Inform would object, because the number 7 is the wrong kind of value to go into the &quot;river sound&quot; property. If we need a numerical property, we can try this instead:
+<p>
+<blockquote><font color="#000080">A dead end has a number called the difficulty rating. The Tortuous Alcove has difficulty rating 7.
+</font></blockquote><p>
+<p>
+<p>Suppose that we were to add:
+<p>
+<blockquote><font color="#000080">The Exquisitely Narrow Defile is a dead end.
+</font></blockquote><p>
+<p>
+<p>The Defile must have a river sound, of course, because we said that every dead end would have one. Now in fact the Defile will be provided for because we also said:
+<p>
+<blockquote><font color="#000080">The river sound of a dead end is usually &quot;a faint whispering of running water&quot;.
+</font></blockquote><p>
+<p>
+<p>But suppose there are no instructions at all about the value of a property? What Inform does is to start off the property holding the &quot;default value&quot; for this kind of value: for instance, it sees that the river sound has to be &quot;some text&quot;, and it fills in the default value for text: which is the empty text, consisting of no words at all, and written &quot;&quot;. Similarly, its difficulty rating is set to 0. (A table of the kinds which can be used for properties, and their default values, can be found in the Kinds index.)
 <p>
 <p><hr><p>
+<a name="e119"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex119.html#e119 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>49</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex119.html#e119 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Would you...?</font></b></a><br>Adding new properties to objects, and checking for their presence.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex119.html#e119 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e368"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc95.html#e368 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>82</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc95.html#e368 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Morning After</font></b></a><br>When the player picks something up which he hasn't already examined, the object is described.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex368.html#e368 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e368"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc60.html#e368 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>50</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc60.html#e368 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Straw Boater</font></b></a><br>Using text properties that apply only to some things and are not defined for others.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex368.html#e368 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to make the player's life slightly easier by examining everything he picks up, if he hasn't already examined it.
+<p>Sometimes we like to give properties to kinds of thing, but not fill them in in all cases. For instance, we might have vehicles that optionally make noise, and those might have a &quot;movement sound&quot;.
+<p>
+<p>All properties have a default value, which we can find by looking in the Kinds tab of the index. This is what the property will be set to automatically, if we do not change it ourselves. In the case of a text property, that is &quot;&quot;; so for instance we might use our movement sound thus:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode166(code) {
+function pasteCode143(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Morning After[=0x0022=][=0x000A=][=0x000A=]A thing can be examined or unexamined.[=0x000A=][=0x000A=]After taking something unexamined:[=0x000A=][=0x0009=]say [=0x0022=]Taken. [run paragraph on][=0x0022=];[=0x000A=][=0x0009=]try examining the noun.[=0x000A=][=0x000A=]Carry out examining something:[=0x000A=][=0x0009=]now the noun is examined.[=0x000A=][=0x000A=][Carry out rules are explained in more detail in the chapter on advanced action handling. For now, it may be enough to know that what we put into this carry out rule for examining will happen any time anything is examined, but that it will not interfere with the rest of the predefined behavior of the action. The player will still see the object description and so on, as usual.][=0x000A=][=0x000A=]The Red Door Saloon is a room. [=0x0022=]This old place is in pretty bad shape since the mine shut down. Now there[=0x0027=]s not much to see but the pair of deep gouges in the floorboards where they dragged away the Sheriff[=0x0027=]s corpse with the spurs still on.[=0x0022=][=0x000A=][=0x000A=]Jed is a man in the Red Door Saloon. [=0x0022=]At 8:30 AM the only person around is old Jed, collecting his hangover cure.[=0x0022=][=0x000A=][=0x000A=]The pistol is a thing in the Red Door Saloon. The description of the pistol is [=0x0022=]It ain[=0x0027=]t too accurate, but for two dollars you can[=0x0027=]t expect much.[=0x0022=][=0x000A=][=0x000A=]The hangover cure is a thing in the Red Door Saloon. The description of the hangover cure is [=0x0022=]Two yellow egg-yolks unbroken in a red-brown liquid. Yep.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]x pistol / get all[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Straw Boater[=0x0022=][=0x000A=][=0x000A=]Boathouse is a room. [=0x0022=]A boathouse circa 1915, which -- though in poor repair -- still suggests Sunday afternoon jaunts taken by women in white gowns and men in straw hats.[=0x0022=][=0x000A=][=0x000A=]North of the Boathouse is the Shallow Water. The description of Shallow Water is [=0x0022=]Just south is the boathouse, and beyond it are trees and the marble terrace of the house above. The water deepens to the north.[=0x0022=][=0x000A=][=0x000A=]North of Shallow Water is Deep Water. The description of Deep Water is [=0x0022=]From here the boathouse has dwindled invisibly to the south, and you have a broad panorama of the shoreline, all the way down to the Skeleton Point Lighthouse in the southeast.[=0x0022=][=0x000A=][=0x000A=]A vehicle has some text called the movement sound. The sailboat and the motorboat are vehicles in the Boathouse. The movement sound of the motorboat is [=0x0022=]VRRRROOOMMMM...[=0x0022=] Understand [=0x0022=]boat[=0x0022=] as the sailboat. Understand [=0x0022=]boat[=0x0022=] as the motorboat.[=0x000A=][=0x000A=][Note that we haven[=0x0027=]t given the sailboat any movement sound at all.][=0x000A=][=0x000A=]After going somewhere by a vehicle (called cart):[=0x000A=][=0x0009=]if the movement sound of the cart is not [=0x0022=][=0x0022=], say [=0x0022=][the movement sound of the cart][paragraph break][=0x0022=];[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]Instead of exiting when the player is in a vehicle and the location is not the Boathouse:[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]re not dressed for a swim.[=0x0022=][=0x000A=][=0x000A=]Instead of going somewhere when the player is not in a vehicle:[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]d rather not try to make this journey by swimming alone.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]n / get in sailboat / n / get out / s / get in motorboat / n / n[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode166()"><img border=0 src=../doc_images/paste.png></a> &quot;Morning After&quot;
+<a href="javascript:pasteCode143()"><img border=0 src=../doc_images/paste.png></a> &quot;Straw Boater&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be examined or unexamined.
+<blockquote><font color="#000080">Boathouse is a room. &quot;A boathouse circa 1915, which -- though in poor repair -- still suggests Sunday afternoon jaunts taken by women in white gowns and men in straw hats.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After taking something unexamined:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Taken. [run paragraph on]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the noun.
+<blockquote><font color="#000080">North of the Boathouse is the Shallow Water. The description of Shallow Water is &quot;Just south is the boathouse, and beyond it are trees and the marble terrace of the house above. The water deepens to the north.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out examining something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is examined.
+<blockquote><font color="#000080">North of Shallow Water is Deep Water. The description of Deep Water is &quot;From here the boathouse has dwindled invisibly to the south, and you have a broad panorama of the shoreline, all the way down to the Skeleton Point Lighthouse in the southeast.&quot;
 </font></blockquote><p>
 <p>
-<p>Carry out rules are explained in more detail in the chapter on advanced action handling. For now, it may be enough to know that what we put into this carry out rule for examining will happen any time anything is examined, but that it will not interfere with the rest of the predefined behavior of the action. The player will still see the object description and so on, as usual.
-<p>
-<blockquote><font color="#000080">The Red Door Saloon is a room. &quot;This old place is in pretty bad shape since the mine shut down. Now there's not much to see but the pair of deep gouges in the floorboards where they dragged away the Sheriff's corpse with the spurs still on.&quot;
+<blockquote><font color="#000080">A vehicle has some text called the movement sound. The sailboat and the motorboat are vehicles in the Boathouse. The movement sound of the motorboat is &quot;VRRRROOOMMMM...&quot; Understand &quot;boat&quot; as the sailboat. Understand &quot;boat&quot; as the motorboat.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Jed is a man in the Red Door Saloon. &quot;At 8:30 AM the only person around is old Jed, collecting his hangover cure.&quot;
+<p>Note that we haven't given the sailboat any movement sound at all.
+<p>
+<blockquote><font color="#000080">After going somewhere by a vehicle (called cart):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the movement sound of the cart is not &quot;&quot;, say &quot;[the movement sound of the cart][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The pistol is a thing in the Red Door Saloon. The description of the pistol is &quot;It ain't too accurate, but for two dollars you can't expect much.&quot;
+<blockquote><font color="#000080">Instead of exiting when the player is in a vehicle and the location is not the Boathouse:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're not dressed for a swim.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The hangover cure is a thing in the Red Door Saloon. The description of the hangover cure is &quot;Two yellow egg-yolks unbroken in a red-brown liquid. Yep.&quot;
+<blockquote><font color="#000080">Instead of going somewhere when the player is not in a vehicle:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You'd rather not try to make this journey by swimming alone.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;x pistol / get all&quot;.
+<blockquote><font color="#000080">Test me with &quot;n / get in sailboat / n / get out / s / get in motorboat / n / n&quot;.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc95.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc60.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc94.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc96.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc61.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.6. The time of day</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.12. Writing and reading tables to external files</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,100 +19,145 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "IPA" -->
-<!-- SEARCH SECTION "Ex 129" -->
-<!-- SEARCH SORT "Ex 009-006-129" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc132.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc134.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.6. The time of day</b></font></td></tr></table>
+<!-- SEARCH TITLE "Labyrinth of Ghosts" -->
+<!-- SEARCH SECTION "Ex 404" -->
+<!-- SEARCH SORT "Ex 021-012-404" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc357.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc359.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.12. Writing and reading tables to external files</b></font></td></tr></table>
 <p>
-<p>Inform keeps track of the time of day automatically: play ordinarily begins at 9 AM and each turn takes one minute. In some works of interactive fiction, time of day is crucial: in others, it is irrelevant or even, by a sort of tacit convention, non-existent. So Inform does nothing to act upon the time, or to reveal it to the player, without instruction. Nevertheless it is there.
+<p>The main use for files is to store and retrieve data, and the most flexible form of data used by Inform is the Table, so facilities are provided which make it as easy as possible to write and read the contents of a table to files.
 <p>
-<p>A sentence like the following allows the initial time to be set up as something other than 9 AM:
+<p>To save the contents of a table to a file, we use the phrase:
 <p>
-<blockquote><font color="#000080">The time of day is 3:13 PM.
+<blockquote><font color="#000080">write File of Glaciation Data from the Table of Antarctic Reserves
 </font></blockquote><p>
 <p>
-<p>Here, &quot;3:13 PM&quot; is a constant value of a kind not seen before: it's a kind of value called &quot;time&quot;, and the value &quot;time of day&quot; is a time that varies. After one turn it will be 3:14 PM, then 3:15 PM and so on.
+<p>naming the file (which should be one already declared) and specifying which table it should come from. To load a file back into a table,
 <p>
-<p>Note that the sentence above is an assertion (a statement about the initial state of affairs), not an instruction which can be part of a rule. It would be equivalent to write:
-<p>
-<blockquote><font color="#000080">When play begins, change the time of day to 3:13 PM.
+<blockquote><font color="#000080">read File of Glaciation Data into the Table of Antarctic Reserves
 </font></blockquote><p>
 <p>
-<p>We more often use &quot;change the time of day to ...&quot; to take care of drastic events:
+<p>We can check if a file already exists using:
 <p>
-<blockquote><font color="#000080">At the time when the player loses consciousness:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the time of day to 10:12 AM;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A mist comes over your vision, and when you come to, it is morning and you are in bed.&quot;
+<blockquote><font color="#000080">if File of Glaciation Data exists, ...
+</font></blockquote><p>
+<p>
+<p>On writing a table, any blank rows are automatically moved to the bottom, and only the non-blank rows are written; on reading a file back in, any rows left spare at the foot of the table are automatically blanked. On the other hand if the file is too large to fit into the table - with too many columns or too many rows - a run-time problem is produced.
+<p>
+<p>One unfortunate restriction must be kept in mind. Some of what is stored in tables is solid information whose meaning never changes: the number 342, for instance, means the same to everyone. But other information depends entirely on the current location of certain structures in memory - for instance, a rule is internally referred to by its memory location. This potentially changes each time Go or Replay is clicked, and so it is not safe to pass it from one copy to another, or from one project to another. The only tables which Inform allows us to write into files are those containing &quot;safe&quot; data: numbers, units, times of day and kinds of value with named alternatives. Scenes, rules or rulebooks, in particular, are not allowed.
+<p>
+<p>And nor is text - but we can easily get around that, because indexed text (see the previous chapter) is. For instance, the following table can legally be written out to a file, weareas it would have thrown up a run-time problem if we tried it with the surface column defined simply as text:
+<p>
+<blockquote><font color="#000080">Table of Neptune's Moons
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">moon</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">surface (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">1</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;utterly unknown&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">2</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cryovolcanic ridges&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highly irregular and sooty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
 <p><hr><p>
+<a name="e393"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex393.html#e393 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>403</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex393.html#e393 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Alien Invasion Part 23</font></b></a><br>Keeping a preference file that could be loaded by any game in a series.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex393.html#e393 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e203"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc133.html#e203 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>129</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc133.html#e203 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> IPA</font></b></a><br>Shops which each have opening and closing hours, so that it is impossible to go in at the wrong times, and the player is kicked out if he overstays his welcome.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex203.html#e203 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e203"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc358.html#e203 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>404</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc358.html#e203 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Labyrinth of Ghosts</font></b></a><br>Remembering the fates of all previous explorers of the labyrinth.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex203.html#e203 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we wanted a game set in a living town, with locations opening and closing at different times of day, and business carrying on as usual. The point might be to force the player to plan his itinerary carefully to hit the right spots at the right times; or we might be writing a more contemplative piece, where part of the enjoyment came from just watching the characters wander around doing their daily business...
+<p>A tradition among Nethack-like computer games of the old school is that a player's death in a given place leaves a ghost behind to haunt subsequent players. Information about past lives is sometimes stored in a &quot;bones file&quot;, and in this example we do exactly that, for a grievously unfair little dungeon.
+<p>
+<p>To begin with, the labyrinth itself. We create a kind of value to remember possible means of death in these tunnels, and we assign a coordinate position in some grid to each location. (We do this because grid positions can safely be stored in tables saved out to external files, whereas room names cannot - they represent data which changes each time we amend the source.)
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode218(code) {
+function pasteCode503(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]IPA[=0x0022=][=0x000A=][=0x000A=]When play begins: change the right hand status line to [=0x0022=][time of day][=0x0022=].[=0x000A=][=0x000A=]The time of day is 9:50 AM.[=0x000A=][=0x000A=]A shop is a kind of room. A shop has a time called the opening hour. The opening hour of the shop is usually 8 AM. A shop has a time called the closing hour. A shop usually has closing hour 6 PM.[=0x000A=][=0x000A=]Check going to a shop (called the target):[=0x000A=][=0x0009=]if the time of day is before the opening hour of the target,[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The target] is locked up until [the opening hour of the target].[=0x0022=] instead.[=0x000A=][=0x000A=]Check going to a shop (called the target):[=0x000A=][=0x0009=]if the time of day is after the closing hour of the target,[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The target] has been closed since [the closing hour of the target].[=0x0022=] instead.[=0x000A=][=0x000A=]Every turn when the location is a shop:[=0x000A=][=0x0009=]let deadline be the closing hour of the location;[=0x000A=][=0x0009=]if the deadline is before the time of day[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]let target be a random adjacent room which is not a shop;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You are gently but firmly ushered out, since [the location] is closing.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]move the player to the target;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]The Strip-mall Parking Lot is a room. [=0x0022=]Dead Christmas trees are heaped outside the bagel shop. Strips of dirty ice survive along the curb, and in the shadows of the lamp-posts. A wet, almost illegible sheet of algebra homework is plastered to the asphalt.[=0x000A=][=0x000A=]Pinewood Brewing Supply is at the east end of the lot.[=0x0022=][=0x000A=][=0x000A=]Pinewood Brewing Supply is a shop. It is east of Parking Lot. The opening hour of Pinewood Brewing Supply is 10:00 AM. The closing hour of Pinewood Brewing Supply is 3:30 PM. [=0x0022=]Shelves and shelves of malt and hops; large glass carboys, and plastic tubing; empty bottles; bottle-caps; bottle-labeling kits; starters for vinegar, sourdough, root beer.[=0x000A=][=0x000A=]A sweet malty smell hangs in the air.[=0x0022=][=0x000A=][=0x000A=]Instead of going to Brewing Supply when the time of day is before the opening hour of Brewing Supply for the second time:[=0x000A=][=0x0009=]say [=0x0022=]You rattle at the door again. [=0x0027=]Hold your horses, for crying out loud,[=0x0027=] yells a voice from within.[=0x0022=][=0x000A=][=0x000A=]Noah[=0x0027=]s Bagels is a shop. It is north of the Parking Lot. The opening hour of Noah[=0x0027=]s Bagels is 6:00 AM. The closing hour of Noah[=0x0027=]s Bagels is 11:00 AM. [=0x0022=]The selection has been somewhat picked over, leaving you with your choice of Pumpernickel, Asiago, or Everything.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]e / e / n / z / s / e / z / e / z / z / e[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Labyrinth of Ghosts[=0x0022=][=0x000A=][=0x000A=]A demise is a kind of value. The demises are drowned, buried by a rockfall, pierced by an arrow and slain. The latest demise is a demise that varies.[=0x000A=][=0x000A=]A grid location is a kind of value. (1,19) specifies a grid location. A room has a grid location called coordinates.[=0x000A=][=0x000A=]The Gateway is a room. [=0x0022=]For the foolhardy adventurer, the perilous labyrinth lies north, east or south.[=0x0022=] The coordinates are (6,6). The Tomb is east of the Gateway. The coordinates are (7,6). The Rockfall Cave is north of the Gateway. [=0x0022=]This partly fallen cave may perhaps extend further north.[=0x0022=] The coordinates are (6,5). Instead of going north in the Rockfall Cave, have the player buried by a rockfall. The Archery Canyon is south of the Gateway. [=0x0022=]No telling why this canyon is named after archery, but perhaps if you wait around you[=0x0027=]ll find out.[=0x0022=] The coordinates are (6,7). Instead of waiting in the Archery Canyon, have the player pierced by an arrow. The Rock Pool is east of the Tomb. The coordinates are (8,6). The cold mountain pool is in the Rock Pool. The cold pool is fixed in place. Instead of entering the cold mountain pool, have the player drowned.[=0x000A=][=0x000A=]Every turn when a random chance of 1 in 10 succeeds:[=0x000A=][=0x0009=]say [=0x0022=]A dwarf appears out of nowhere, and throws a nasty little knife.[=0x0022=];[=0x000A=][=0x0009=]have the player slain.[=0x000A=][=0x000A=][And as compensation for these hazards:][=0x000A=][=0x000A=]Some silver bars are in the Tomb. The emerald is in the Rock Pool. The platinum pyramid is in the Canyon.[=0x000A=][=0x000A=]Table of Point Values[=0x000A=]item [=0x0009=]  [=0x0009=]score[=0x000A=]silver bars[=0x0009=]3[=0x000A=]platinum pyramid[=0x0009=]10[=0x000A=]emerald[=0x0009=]4[=0x000A=][=0x000A=]Report taking an item listed in the Table of Point Values:[=0x000A=][=0x0009=]award score entry points;[=0x000A=][=0x0009=]blank out the whole row.[=0x000A=][=0x000A=][We are now ready for the actual undertaking. The Table of Ghostly Presences holds up to twenty death notices, and is initially blank. Deaths are sequentially numbered, and this number is stored in the sequence column.][=0x000A=][=0x000A=]Table of Ghostly Presences[=0x000A=]haunted position[=0x0009=]score at death[=0x0009=]turns at death[=0x0009=]manner of death[=0x0009=]sequence[=0x000A=]a grid location[=0x0009=]a number[=0x0009=]a number[=0x0009=]a demise[=0x0009=]a number[=0x000A=]with 19 blank rows.[=0x000A=][=0x000A=][As the story file starts up, we look to see if a ghosts file already exists. If one does, we load up the Table of Ghostly Presences with it: and if not, as will be the case the first time the player explores, we leave the table blank. We sort the table so that it has earlier deaths (lower sequence numbers) first.][=0x000A=][=0x000A=]The File of Ghosts is called [=0x0022=]ghosts[=0x0022=].[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]if the File of Ghosts exists, read File of Ghosts into the Table of Ghostly Presences;[=0x000A=][=0x0009=]sort the Table of Ghostly Presences in sequence order.[=0x000A=][=0x000A=][How will ghosts manifest themselves? Because this is only a small example, we will simply tell the player that he senses something. If several ghosts are present in the same place, the most aggrieved (that is, the most recent) is sensed first...][=0x000A=][=0x000A=]After looking:[=0x000A=][=0x0009=]repeat through the Table of Ghostly Presences in reverse sequence order:[=0x000A=][=0x0009=][=0x0009=]if the haunted position entry is the coordinates of the location, say [=0x0022=]You sense the ghostly presence of an adventurer, [manner of death entry] with a score of [score at death entry] in [turns at death entry] turns.[=0x0022=][=0x000A=][=0x000A=][(For instance, [=0x0022=]You sense the ghostly presence of an adventurer, buried by a rockfall with a score of 10 in 5 turns.[=0x0022=]) That just leaves the rule for bumping off the player. When the Table is full, and there are already 20 ghosts, the one who died longest ago (with the lowest sequence count) is eliminated, and his row blanked out. (This will always be row 1 since we sorted the table in sequence order on reading it in.)][=0x000A=][=0x000A=]To have the player (sticky end - a demise):[=0x000A=][=0x0009=]let the new sequence number be 0;[=0x000A=][=0x0009=]repeat through the Table of Ghostly Presences:[=0x000A=][=0x0009=][=0x0009=]let S be the sequence entry;[=0x000A=][=0x0009=][=0x0009=]if S is greater than the new sequence number, let the new sequence number be S;[=0x000A=][=0x0009=]increase the new sequence number by 1;[=0x000A=][=0x0009=]if the number of blank rows in the Table of Ghostly Presences is 0:[=0x000A=][=0x0009=][=0x0009=]choose row 1 in the Table of Ghostly Presences;[=0x000A=][=0x0009=][=0x0009=]blank out the whole row;[=0x000A=][=0x0009=]choose a blank row in the Table of Ghostly Presences;[=0x000A=][=0x0009=]change the sequence entry to the new sequence number;[=0x000A=][=0x0009=]change the manner of death entry to the sticky end;[=0x000A=][=0x0009=]change the turns at death entry to the turn count;[=0x000A=][=0x0009=]change the score at death entry to the score;[=0x000A=][=0x0009=]change the haunted position entry to the coordinates of the location;[=0x000A=][=0x0009=]write the File of Ghosts from the Table of Ghostly Presences;[=0x000A=][=0x0009=]change the latest demise to the sticky end;[=0x000A=][=0x0009=]end the game saying [=0x0022=]You have been [latest demise][=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode218()"><img border=0 src=../doc_images/paste.png></a> &quot;IPA&quot;
+<a href="javascript:pasteCode503()"><img border=0 src=../doc_images/paste.png></a> &quot;Labyrinth of Ghosts&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins: change the right hand status line to &quot;[time of day]&quot;.
+<blockquote><font color="#000080">A demise is a kind of value. The demises are drowned, buried by a rockfall, pierced by an arrow and slain. The latest demise is a demise that varies.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The time of day is 9:50 AM.
+<blockquote><font color="#000080">A grid location is a kind of value. (1,19) specifies a grid location. A room has a grid location called coordinates.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A shop is a kind of room. A shop has a time called the opening hour. The opening hour of the shop is usually 8 AM. A shop has a time called the closing hour. A shop usually has closing hour 6 PM.
+<blockquote><font color="#000080">The Gateway is a room. &quot;For the foolhardy adventurer, the perilous labyrinth lies north, east or south.&quot; The coordinates are (6,6). The Tomb is east of the Gateway. The coordinates are (7,6). The Rockfall Cave is north of the Gateway. &quot;This partly fallen cave may perhaps extend further north.&quot; The coordinates are (6,5). Instead of going north in the Rockfall Cave, have the player buried by a rockfall. The Archery Canyon is south of the Gateway. &quot;No telling why this canyon is named after archery, but perhaps if you wait around you'll find out.&quot; The coordinates are (6,7). Instead of waiting in the Archery Canyon, have the player pierced by an arrow. The Rock Pool is east of the Tomb. The coordinates are (8,6). The cold mountain pool is in the Rock Pool. The cold pool is fixed in place. Instead of entering the cold mountain pool, have the player drowned.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check going to a shop (called the target):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the time of day is before the opening hour of the target,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The target] is locked up until [the opening hour of the target].&quot; instead.
+<blockquote><font color="#000080">Every turn when a random chance of 1 in 10 succeeds:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;A dwarf appears out of nowhere, and throws a nasty little knife.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;have the player slain.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check going to a shop (called the target):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the time of day is after the closing hour of the target,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The target] has been closed since [the closing hour of the target].&quot; instead.
+<p>And as compensation for these hazards:
+<p>
+<blockquote><font color="#000080">Some silver bars are in the Tomb. The emerald is in the Rock Pool. The platinum pyramid is in the Canyon.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when the location is a shop:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let deadline be the closing hour of the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the deadline is before the time of day
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let target be a random adjacent room which is not a shop;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are gently but firmly ushered out, since [the location] is closing.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the player to the target;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Table of Point Values
+<br>item 	  	score
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">silver bars</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">3</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">platinum pyramid</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">10</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">emerald</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">4</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Strip-mall Parking Lot is a room. &quot;Dead Christmas trees are heaped outside the bagel shop. Strips of dirty ice survive along the curb, and in the shadows of the lamp-posts. A wet, almost illegible sheet of algebra homework is plastered to the asphalt.
+<blockquote><font color="#000080">Report taking an item listed in the Table of Point Values:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;award score entry points;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Pinewood Brewing Supply is at the east end of the lot.&quot;
+<p>We are now ready for the actual undertaking. The Table of Ghostly Presences holds up to twenty death notices, and is initially blank. Deaths are sequentially numbered, and this number is stored in the sequence column.
+<p>
+<blockquote><font color="#000080">Table of Ghostly Presences
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">haunted position</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">score at death</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">turns at death</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">manner of death</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">sequence</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a grid location</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a demise</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">with 19 blank rows.</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Pinewood Brewing Supply is a shop. It is east of Parking Lot. The opening hour of Pinewood Brewing Supply is 10:00 AM. The closing hour of Pinewood Brewing Supply is 3:30 PM. &quot;Shelves and shelves of malt and hops; large glass carboys, and plastic tubing; empty bottles; bottle-caps; bottle-labeling kits; starters for vinegar, sourdough, root beer.
+<p>As the story file starts up, we look to see if a ghosts file already exists. If one does, we load up the Table of Ghostly Presences with it: and if not, as will be the case the first time the player explores, we leave the table blank. We sort the table so that it has earlier deaths (lower sequence numbers) first.
+<p>
+<blockquote><font color="#000080">The File of Ghosts is called &quot;ghosts&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A sweet malty smell hangs in the air.&quot;
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the File of Ghosts exists, read File of Ghosts into the Table of Ghostly Presences;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Ghostly Presences in sequence order.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of going to Brewing Supply when the time of day is before the opening hour of Brewing Supply for the second time:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You rattle at the door again. 'Hold your horses, for crying out loud,' yells a voice from within.&quot;
+<p>How will ghosts manifest themselves? Because this is only a small example, we will simply tell the player that he senses something. If several ghosts are present in the same place, the most aggrieved (that is, the most recent) is sensed first...
+<p>
+<blockquote><font color="#000080">After looking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Ghostly Presences in reverse sequence order:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the haunted position entry is the coordinates of the location, say &quot;You sense the ghostly presence of an adventurer, [manner of death entry] with a score of [score at death entry] in [turns at death entry] turns.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Noah's Bagels is a shop. It is north of the Parking Lot. The opening hour of Noah's Bagels is 6:00 AM. The closing hour of Noah's Bagels is 11:00 AM. &quot;The selection has been somewhat picked over, leaving you with your choice of Pumpernickel, Asiago, or Everything.&quot;
+<p>(For instance, &quot;You sense the ghostly presence of an adventurer, buried by a rockfall with a score of 10 in 5 turns.&quot;) That just leaves the rule for bumping off the player. When the Table is full, and there are already 20 ghosts, the one who died longest ago (with the lowest sequence count) is eliminated, and his row blanked out. (This will always be row 1 since we sorted the table in sequence order on reading it in.)
+<p>
+<blockquote><font color="#000080">To have the player (sticky end - a demise):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the new sequence number be 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Ghostly Presences:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let S be the sequence entry;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if S is greater than the new sequence number, let the new sequence number be S;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;increase the new sequence number by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of blank rows in the Table of Ghostly Presences is 0:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choose row 1 in the Table of Ghostly Presences;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;choose a blank row in the Table of Ghostly Presences;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the sequence entry to the new sequence number;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the manner of death entry to the sticky end;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the turns at death entry to the turn count;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the score at death entry to the score;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the haunted position entry to the coordinates of the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;write the File of Ghosts from the Table of Ghostly Presences;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the latest demise to the sticky end;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;You have been [latest demise]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;e / e / n / z / s / e / z / e / z / z / e&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc133.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Strictly speaking we ought to worry that after 2,147,483,647 deaths, the sequence numbers would grow too large to store in a single value, and then the sequence of ghosts will be erratic. But it seems unlikely that anyone will play this example 2.1 billion times.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc358.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc132.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc134.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e274"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex274.html#e274 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>405</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex274.html#e274 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Rubies</font></b></a><br>A scoreboard that keeps track of the ten highest-scoring players from one playthrough to the next, adding the player's name if he has done well enough.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex274.html#e274 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc357.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc359.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

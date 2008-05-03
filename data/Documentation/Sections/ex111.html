@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.10. Understanding values</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.13. Going from, going to</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,86 +19,123 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Palette" -->
-<!-- SEARCH SECTION "Ex 273" -->
-<!-- SEARCH SORT "Ex 016-010-273" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc251.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc253.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.10. Understanding values</b></font></td></tr></table>
+<!-- SEARCH TITLE "Polarity" -->
+<!-- SEARCH SECTION "Ex 97" -->
+<!-- SEARCH SORT "Ex 007-013-097" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc104.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc106.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.13. Going from, going to</b></font></td></tr></table>
 <p>
-<p>So far every &quot;Understand&quot; sentence has ended with &quot;as&quot; and a description of an action. But we can also use &quot;Understand&quot; to supply new ways to talk about things and even values. For instance, if we create:
-<p>
-<blockquote><font color="#000080">A brass lantern is in the Building.
-</font></blockquote><p>
-<p>
-<p>then it can be called &quot;brass&quot;, or &quot;lantern&quot;, but not &quot;lamp&quot;: Inform does not really know what these words mean, and has no grasp of synonyms. We can arrange for &quot;lamp&quot; to work as well like so:
-<p>
-<blockquote><font color="#000080">Understand &quot;lamp&quot; as the lantern.
-<br>Understand &quot;old lamp&quot; as the lantern.
-</font></blockquote><p>
-<p>
-<p>With care, we can do the same trick for entire kinds of thing at once. It is not ordinarily the case that a thing can be called by the name of its kind: if we put a woman called April into a room, then she can usually be called &quot;April&quot;, but not &quot;woman&quot;. (The exception is when we do not specify any name for her - in that case, Inform will give up and call her just &quot;woman&quot;.) So there is not usually any form of words which can refer to anything of a given kind. If we should want this, we have to say so explicitly:
-<p>
-<blockquote><font color="#000080">Understand &quot;machine&quot; as a device.
-</font></blockquote><p>
-<p>
-<p>Device is a kind, so now the word &quot;machine&quot; can be used to refer to any device: if there are two in the same place, the result might play out like so:
-<p>
-<blockquote><font color="#000080">>switch machine on
-<br>Which do you mean, the bale twiner or the grain thresher?
-<br>>twiner
-<br>You watch absorbed as a perfect cube of hay is trussed up like a parcel.
-</font></blockquote><p>
-<p>
-<p>Similarly, we might conceivably want to allow new ways to recognise values - in this case, a number:
-<p>
-<blockquote><font color="#000080">Understand &quot;eleventy-one&quot; as 111.
-</font></blockquote><p>
-<p>
-<p>When making complicated names, we need to watch out for the possibility of writing a definition which will cause Inform to go around in circles (something which will show up as a &quot;Too many activities at once&quot; run-time problem). For instance,
-<p>
-<blockquote><font color="#000080">Understand &quot;[thing] substitute&quot; as the placebo.
-</font></blockquote><p>
-<p>
-<p>will fail because Inform, working left to right, needs to look for every possible object name before it can progress: one possibility is the placebo itself: to check that, it needs to look for every possible object name: and so on, never finishing. A definition like this one very likely matches too much in any case (would we really want to accept PLACEBO SUBSTITUTE or CIGARETTE SUBSTITUTE SUBSTITUTE SUBSTITUTE here, as the definition implies?).
-<p>
-<p><hr><p>
-<!-- EXAMPLE START -->
-<a name="e111"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc252.html#e111 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>273</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc252.html#e111 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Palette</font></b></a><br>An artist's workshop in which the canvas can be painted in any colour, and where painterly names for pigments ("cerulean") are accepted alongside everyday ones ("blue").<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex111.html#e111 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>There are hundreds of traditional pigments, from lampblack to burnt sienna, so we will confine ourselves to just two:
+<p>Going is an action defined like any other: it is the one which happens when the player tries to go from one location to another. But it is unlike other actions because it happens in two locations, not just one, and has other complications such as vehicles and doors to contend with. To make it easier to write legible and flexible rules, &quot;going&quot; is allowed to be described in a number of special ways not open to other actions, as demonstrated by the following example game:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode360(code) {
+function pasteCode15(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Palette[=0x0022=][=0x000A=][=0x000A=]The Atelier is a room. [=0x0022=]The floridly untidy loft space used by a moderately unsuccessful artist (you, that is).[=0x0022=] The canvas, palette and paint brush are here. Understand [=0x0022=]painting[=0x0022=] as the canvas.[=0x000A=][=0x000A=]Colour is a kind of value. The colours are white, red, blue and green.[=0x000A=][=0x000A=]The canvas has a colour. The canvas is white. The printed name of the canvas is [=0x0022=]largely [colour] canvas[=0x0022=].[=0x000A=][=0x000A=]Painting is an action applying to one thing and one colour. Check painting: if the noun is not the canvas then say [=0x0022=]Centuries of tradition suggest that canvas is the natural home of paint.[=0x0022=] instead. Carry out painting: change the colour of the canvas to the colour understood. Report painting: say [=0x0022=]You splash away at the now [canvas].[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]paint [something] [a colour][=0x0022=] as painting.[=0x000A=][=0x000A=]Understand [=0x0022=]calico[=0x0022=] as white. Understand [=0x0022=]cerulean[=0x0022=] or [=0x0022=]cerulean blue[=0x0022=] as blue.[=0x000A=][=0x000A=]Test me with [=0x0022=]examine canvas / paint canvas red / examine canvas / paint canvas cerulean / examine canvas[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Going Going[=0x0022=][=0x000A=][=0x000A=]The Catalogue Room is east of the Front Stacks. South of the Catalogue Room is the Musicology Section.[=0x000A=][=0x000A=]Instead of going nowhere from the Front Stacks, say [=0x0022=]Bookcases obstruct almost all passages out of here.[=0x0022=][=0x000A=][=0x000A=]Instead of going nowhere, say [=0x0022=]You really can[=0x0027=]t wander around at random in the Library.[=0x0022=][=0x000A=][=0x000A=]Before going to the Catalogue Room, say [=0x0022=]You emerge back into the Catalogue Room.[=0x0022=][=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode360()"><img border=0 src=../doc_images/paste.png></a> &quot;Palette&quot;
+<a href="javascript:pasteCode15()"><img border=0 src=../doc_images/paste.png></a> &quot;Going Going&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Atelier is a room. &quot;The floridly untidy loft space used by a moderately unsuccessful artist (you, that is).&quot; The canvas, palette and paint brush are here. Understand &quot;painting&quot; as the canvas.
+<blockquote><font color="#000080">The Catalogue Room is east of the Front Stacks. South of the Catalogue Room is the Musicology Section.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Colour is a kind of value. The colours are white, red, blue and green.
+<blockquote><font color="#000080">Instead of going nowhere from the Front Stacks, say &quot;Bookcases obstruct almost all passages out of here.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The canvas has a colour. The canvas is white. The printed name of the canvas is &quot;largely [colour] canvas&quot;.
+<blockquote><font color="#000080">Instead of going nowhere, say &quot;You really can't wander around at random in the Library.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Painting is an action applying to one thing and one colour. Check painting: if the noun is not the canvas then say &quot;Centuries of tradition suggest that canvas is the natural home of paint.&quot; instead. Carry out painting: change the colour of the canvas to the colour understood. Report painting: say &quot;You splash away at the now [canvas].&quot;
+<blockquote><font color="#000080">Before going to the Catalogue Room, say &quot;You emerge back into the Catalogue Room.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;paint [something] [a colour]&quot; as painting.
+<p>Note that &quot;going nowhere&quot; means trying a map connection which is blank, and if no rules intervene then &quot;You can't go that way&quot; is normally printed. Unless &quot;nowhere&quot; is specified, descriptions of going apply only when there is a map connection. So &quot;going from the Musicology Section&quot; would not match if the player were trying to go east from there, since there is no map connection to the east. Similarly, &quot;going somewhere&quot; excludes blank connections.
+<p>
+<p>The places gone &quot;from&quot; or &quot;to&quot; can be specific named regions instead of rooms. This is convenient when there are several different ways into or out of an area of map but a common rule needs to apply to all: so, for example,
+<p>
+<blockquote><font color="#000080">Before going from the Cultivated Land to the Wilderness, ...
+<br>Before going nowhere from the Wilderness, say &quot;Tangled brush forces you back.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;calico&quot; as white. Understand &quot;cerulean&quot; or &quot;cerulean blue&quot; as blue.
+<p>Note that it must be &quot;going nowhere from the Wilderness&quot;, not &quot;...in the Wilderness&quot;. (Note also the caveat that the regions must be named: &quot;going from a region&quot;, or something similarly nonspecific, will not work.)
+<p>
+<p>An important point about &quot;going... from&quot; is that, as mentioned in general terms above, it requires that there is actually a map connection that way: whereas &quot;going... in&quot; does not. Suppose there is no map connection north from the Wilderness. Then:
+<p>
+<blockquote><font color="#000080">Instead of going north from the Wilderness, say &quot;You'll never read this.&quot;
+<br>Instead of going north in the Wilderness, say &quot;Oh, it's too cold.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;examine canvas / paint canvas red / examine canvas / paint canvas cerulean / examine canvas&quot;.
+<p>The first of these never happens, because it is logically impossible to go north from the Wilderness: but the second does happen. (Technically, this is because &quot;going north&quot; is the action, and &quot;in the Wilderness&quot; a separate condition tacked onto the rule.) This distinction is often useful - it allows us to write rules which apply only to feasible movements.
+<p>
+<p>This may be a good place to mention a small restriction on the ways we can specify an action for a rule to apply to, and how it can be overcome. The restriction is that the action should only involve constant quantities, so that the following does not work:
+<p>
+<blockquote><font color="#000080">The Dome is a room. The Hutch is north of the Dome. The rabbit is in the Hutch. Before going to the location of the rabbit, say &quot;You pick up a scent!&quot;
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc252.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<p>because &quot;the location of the rabbit&quot; is a quantity which changes in play (the player can pick up the rabbit and take him to the Dome, for instance). However, we can get around this restriction by defining a suitable adjective, like so:
+<p>
+<blockquote><font color="#000080">The Dome is a room. The Hutch is north of the Dome. The rabbit is in the Hutch. Definition: a room is rabbit-infested if it is the location of the rabbit. Before going to a rabbit-infested room, say &quot;You pick up a scent!&quot;
+</font></blockquote><p>
+<p>
+<p><hr><p>
+<a name="e161"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex161.html#e161 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>94</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex161.html#e161 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Veronica</font></b></a><br>An effect that occurs only when the player leaves a region entirely.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex161.html#e161 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e170"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex170.html#e170 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>95</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex170.html#e170 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hagia Sophia</font></b></a><br>If the player tries to go a valid direction while on a supporter, make him stand up first; if he tries to go a nonexistent one, print a special refusal.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex170.html#e170 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e60"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex60.html#e60 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>96</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex60.html#e60 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> A&E</font></b></a><br>Using regions to block access to an entire area when the player does not carry a pass, regardless of which entrance he uses.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex60.html#e60 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<!-- EXAMPLE START -->
+<a name="e111"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc105.html#e111 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>97</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc105.html#e111 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Polarity</font></b></a><br>A "go back" command that keeps track of the direction from which the player came, and sends him back.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex111.html#e111 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>The main trick of this is always to record where the player has gone when he has just moved.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode193(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Polarity[=0x0022=][=0x000A=][=0x000A=]The former location is a room that varies.[=0x000A=][=0x000A=][Here we record where the player has been before moving him; by calling this the [=0x0022=]first carry out going rule[=0x0022=], we make sure that this rule is followed during the going action before any other pieces of the movement occur. For more detail, see the chapters on advanced actions and on rules.][=0x000A=][=0x000A=]First carry out going rule:[=0x000A=][=0x0009=]change the former location to the location.[=0x000A=][=0x000A=]Understand [=0x0022=]go back[=0x0022=] as retreating. Understand [=0x0022=]back[=0x0022=] or [=0x0022=]return[=0x0022=] or [=0x0022=]retreat[=0x0022=] as retreating.[=0x000A=][=0x000A=]Retreating is an action applying to nothing.[=0x000A=][=0x000A=]Carry out retreating:[=0x000A=][=0x0009=]let way be the best route from the location to the former location, using doors;[=0x000A=][=0x0009=]if way is a direction, try going way;[=0x000A=][=0x0009=]otherwise say [=0x0022=]You can[=0x0027=]t see an open way back.[=0x0022=][=0x000A=][=0x000A=][And to deal with the case where the player has not yet moved:][=0x000A=][=0x000A=]When play begins: change the former location to the Dome.[=0x000A=][=0x000A=]Instead of retreating when the former location is the location: say [=0x0022=]You haven[=0x0027=]t gone anywhere yet.[=0x0022=][=0x000A=][=0x000A=]Dome is a room. North of Dome is North Chapel. South of the Dome is South Chapel. West of the Dome is Western End. Quiet Corner is northwest of the Dome, north of Western End, and west of North Chapel. Loud Corner is east of North Chapel, northeast of Dome, and north of Eastern End. Eastern End is north of Dim Corner and east of Dome. Dim Corner is southeast of Dome and east of South Chapel. Ruined Corner is southwest of Dome, west of South Chapel, and south of Western End.[=0x000A=][=0x000A=]The church door is east of Eastern End and west of the Courtyard. The church door is a door.[=0x000A=][=0x000A=]Test me with [=0x0022=]back / n / go back / e / open door / go through door / go back[=0x0022=].[=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode193()"><img border=0 src=../doc_images/paste.png></a> &quot;Polarity&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The former location is a room that varies.
+</font></blockquote><p>
+<p>
+<p>Here we record where the player has been before moving him; by calling this the &quot;first carry out going rule&quot;, we make sure that this rule is followed during the going action before any other pieces of the movement occur. For more detail, see the chapters on advanced actions and on rules.
+<p>
+<blockquote><font color="#000080">First carry out going rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the former location to the location.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;go back&quot; as retreating. Understand &quot;back&quot; or &quot;return&quot; or &quot;retreat&quot; as retreating.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Retreating is an action applying to nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out retreating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let way be the best route from the location to the former location, using doors;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if way is a direction, try going way;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You can't see an open way back.&quot;
+</font></blockquote><p>
+<p>
+<p>And to deal with the case where the player has not yet moved:
+<p>
+<blockquote><font color="#000080">When play begins: change the former location to the Dome.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of retreating when the former location is the location: say &quot;You haven't gone anywhere yet.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Dome is a room. North of Dome is North Chapel. South of the Dome is South Chapel. West of the Dome is Western End. Quiet Corner is northwest of the Dome, north of Western End, and west of North Chapel. Loud Corner is east of North Chapel, northeast of Dome, and north of Eastern End. Eastern End is north of Dim Corner and east of Dome. Dim Corner is southeast of Dome and east of South Chapel. Ruined Corner is southwest of Dome, west of South Chapel, and south of Western End.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The church door is east of Eastern End and west of the Courtyard. The church door is a door.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;back / n / go back / e / open door / go through door / go back&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc105.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e102"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex102.html#e102 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>274</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex102.html#e102 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Baritone, Bass</font></b></a><br>Letting the player pick a gender (or perhaps other characteristics) before starting play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex102.html#e102 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc251.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc253.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e350"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex350.html#e350 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>98</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex350.html#e350 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bumping into Walls</font></b></a><br>Offering the player a list of valid directions if he tries to go in a direction that leads nowhere.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex350.html#e350 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc104.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc106.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

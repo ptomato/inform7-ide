@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.10. Adding and removing rows</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.2. Named rules and rulebooks</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,108 +19,83 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Odyssey" -->
-<!-- SEARCH SECTION "Ex 242" -->
-<!-- SEARCH SORT "Ex 015-010-242" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc233.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Tables</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc235.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.10. Adding and removing rows</b></font></td></tr></table>
+<!-- SEARCH TITLE "Delayed Gratification" -->
+<!-- SEARCH SECTION "Ex 353" -->
+<!-- SEARCH SORT "Ex 018-002-353" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc309.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc311.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.2. Named rules and rulebooks</b></font></td></tr></table>
 <p>
-<p>Writing in new rows is simple:
+<p>Most of the rules built into Inform have names. For instance, a rule called &quot;the advance time rule&quot; is the one which increments the number of turns - usually visible on the &quot;status line&quot; displayed above the window of a game in progress - and advances the clock, which is usually not visible, but ticking away behind the scenes.
 <p>
-<blockquote><font color="#000080">choose a blank row in Table 3;
-<br>change element entry to &quot;Fluorine&quot;;
-<br>change symbol to &quot;F&quot;;
-<br>change atomic number to 9;
-<br>change atomic weight to 19;
+<p>A rulebook is a list of rules to be followed in sequence until one of them makes a decision. For instance, when actions get to the &quot;instead&quot; stage, each &quot;instead&quot; rule is tried until one of them chooses to do something. If the source text contains the rules
+<p>
+<blockquote><font color="#000080">Instead of taking something: say &quot;You have no particular need just now.&quot;
+<br>Instead of taking a fish: say &quot;It's all slimy.&quot;
 </font></blockquote><p>
 <p>
-<p>This will produce an error if there are no blank rows left in Table 3, so it can be important to worry about free space. To that end we can not only find the number of rows (as we have already seen) but also the number currently blank and not blank. Thus these:
+<p>and a command to TAKE something is tried, then only one of these rules will have any effect. The &quot;instead&quot; rulebook contains:
 <p>
-<blockquote><font color="#000080">the number of blank rows in Table 3
-<br>the number of filled rows in Table 3
+<blockquote><font color="#000080">Rule (1) to be applied if the action matches &quot;taking a fish&quot;
+<br>Rule (2) to be applied if the action matches &quot;taking something&quot;
 </font></blockquote><p>
 <p>
-<p>always add up to &quot;the number of rows in Table 3&quot;.
+<p>Inside their rulebook, the rules are not listed in the order of definition in the source text. Rule (1) comes before rule (2) because it applies in more specific circumstances. This is the main idea: a rulebook gathers together rules about making some decision, or taking some action, and sorts them in order to give the more specific rules first choice about whether they want to intervene.
 <p>
-<p>To delete a row, we first choose it and then &quot;blank out the whole row&quot;. Thus, for abdication purposes:
+<p>Whereas only some rules are named (the two &quot;instead&quot; rules above have no name, for instance), every rulebook has a name. For convenience, the following forms of rule and rulebook name are synonymous:
 <p>
-<blockquote><font color="#000080">choose row with name of &quot;Edward VIII&quot; in the Table of Recent Monarchs;
-<br>blank out the whole row;
+<blockquote><font color="#000080">advance time = the advance time rule
 </font></blockquote><p>
+<p>
+<blockquote><font color="#000080">the instead rules = instead rulebook = instead
+</font></blockquote><p>
+<p>
+<p>The names of built-in rules have been chosen as descriptively as possible: the &quot;can't go through closed doors rule&quot;, for instance. Names for rules tend to be verbose, but this is a situation where clarity is very much better than brevity.
 <p>
 <p><hr><p>
+<a name="e159"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex159.html#e159 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>352</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex159.html#e159 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Nine AM Appointment</font></b></a><br>A WAIT [number] MINUTES command which advances through an arbitrary number of turns.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex159.html#e159 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e213"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc234.html#e213 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>242</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc234.html#e213 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Odyssey</font></b></a><br>A person who follows a path predetermined and stored in a table, and who can be delayed if the player tries to interact with her.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex213.html#e213 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e213"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc310.html#e213 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>353</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc310.html#e213 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Delayed Gratification</font></b></a><br>A WAIT UNTIL [time] command which advances until the game clock reaches the correct hour.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex213.html#e213 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode329(code) {
+function pasteCode450(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Odyssey[=0x0022=][=0x000A=][=0x000A=]Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.[=0x000A=][=0x000A=]Athena is a woman in Athens.[=0x000A=][=0x000A=][Athena will proceed, unless delayed, through a list of locations stored in a simple table. Rather than using Inform[=0x0027=]s route-finding abilities ([=0x0022=]the best route from...[=0x0022=]), we simply move Athena from one location to the next, not even using the going action: she moves in mysterious ways, as befits a goddess.][=0x000A=][=0x000A=]Table of Athena[=0x0027=]s Movement[=0x000A=]destination[=0x000A=]Thebes[=0x000A=]Delphi[=0x000A=]Thebes[=0x000A=]Athens[=0x000A=]Corinth[=0x000A=]Mycenae[=0x000A=][=0x000A=]Every turn when Athena is active:[=0x000A=][=0x0009=]repeat through the Table of Athena[=0x0027=]s Movement[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]let last space be the location of Athena;[=0x000A=][=0x0009=][=0x0009=]if Athena can be seen by the player, say [=0x0022=]Athena heads to [the destination entry].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]move Athena to destination entry;[=0x000A=][=0x0009=][=0x0009=]if Athena can be seen by the player, say [=0x0022=]Athena arrives from [the last space].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]blank out the whole row;[=0x000A=][=0x0009=][=0x0009=]rule succeeds;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=][By blanking out the table line by line, we make sure that we never lose our place in the path.][=0x000A=][=0x000A=][Since we want the player to be able to talk to Athena, we need a way to stall her in her path, as well.][=0x000A=][=0x000A=]Athena can be active or passive. Athena is active.[=0x000A=][=0x000A=]Before doing something to Athena:[=0x000A=][=0x0009=]change Athena to passive;[=0x000A=][=0x0009=]say [=0x0022=]Athena waits around patiently, though you can tell she would like to leave...[=0x0022=][=0x000A=][=0x000A=]Instead of telling Athena about something:[=0x000A=][=0x0009=]say [=0x0022=]She watches you patiently as though to say that she already knows.[=0x0022=][=0x000A=][=0x000A=]Instead of asking Athena about something:[=0x000A=][=0x0009=]say [=0x0022=]Her response is inscrutably ancient and Greek. Afterwards you remember only the flash of bright eyes.[=0x0022=][=0x000A=][=0x000A=][Finally, we do need to wake Athena up again if she has become passive. The following rule will occur after the movement rule just because of code ordering, though we could make matters more explicit if we needed to:][=0x000A=][=0x000A=]Every turn when Athena is passive:[=0x000A=][=0x0009=]change Athena to active.[=0x000A=][=0x000A=]Test me with [=0x0022=]east / northwest / wait / examine athena / wait[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Delayed Gratification[=0x0022=][=0x000A=][=0x000A=]Hanging around until is an action applying to one time.[=0x000A=][=0x000A=]Check hanging around until:[=0x000A=][=0x0009=]if the time of day is the time understood, say [=0x0022=]It is [time understood] now![=0x0022=] instead;[=0x000A=][=0x0009=]if the time of day is after the time understood, say [=0x0022=]It is too late for that now.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out hanging around until:[=0x000A=][=0x0009=]while the time of day is before time understood repeatedly follow the turn sequence rules.[=0x000A=][=0x000A=]Report hanging around until:[=0x000A=][=0x0009=]say [=0x0022=]You yawn until [time understood].[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]wait until [time][=0x0022=] as hanging around until.[=0x000A=][=0x000A=]The Empty Field is a room. [=0x0022=]It[=0x0027=]s an ordinary empty field. Nothing to see here at all-- yet. Wait until 11:45 PM, though.[=0x0022=][=0x000A=][=0x000A=]At 11:45 PM:[=0x000A=][=0x0009=]say [=0x0022=]Suddenly the air is filled with light and the sounds of an approaching band. Over the crest of the hill comes a parade of singing, stomping, hooting people: and not just people, but dogs, horses, elephants, giraffes... There are banners, and candles, and a flag that glows eerie-green in the dark; there is a float shaped like an enormous turtle, its shell covered with winking green lights; there is an old man dressed as a skeleton, carried in a litter, his neck garlanded with dried chiles. There are small girls throwing rose petals from a basket, and grown women half-naked carrying the emblems of Bacchic revelry, and two little boys each with a silver basin of clear water. All these go by in procession, and you join on at the end.[=0x0022=];[=0x000A=][=0x0009=]end the game in victory.[=0x000A=][=0x000A=]Test me with [=0x0022=]look / z / z / wait until 11:45 PM[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode329()"><img border=0 src=../doc_images/paste.png></a> &quot;Odyssey&quot;
+<a href="javascript:pasteCode450()"><img border=0 src=../doc_images/paste.png></a> &quot;Delayed Gratification&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.
+<blockquote><font color="#000080">Hanging around until is an action applying to one time.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Athena is a woman in Athens.
+<blockquote><font color="#000080">Check hanging around until:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the time of day is the time understood, say &quot;It is [time understood] now!&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the time of day is after the time understood, say &quot;It is too late for that now.&quot; instead.
 </font></blockquote><p>
 <p>
-<p>Athena will proceed, unless delayed, through a list of locations stored in a simple table. Rather than using Inform's route-finding abilities (&quot;the best route from...&quot;), we simply move Athena from one location to the next, not even using the going action: she moves in mysterious ways, as befits a goddess.
-<p>
-<blockquote><font color="#000080">Table of Athena's Movement
-<br>destination
-<br>Thebes
-<br>Delphi
-<br>Thebes
-<br>Athens
-<br>Corinth
-<br>Mycenae
+<blockquote><font color="#000080">Carry out hanging around until:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;while the time of day is before time understood repeatedly follow the turn sequence rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn when Athena is active:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Athena's Movement
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let last space be the location of Athena;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Athena can be seen by the player, say &quot;Athena heads to [the destination entry].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move Athena to destination entry;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Athena can be seen by the player, say &quot;Athena arrives from [the last space].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">Report hanging around until:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You yawn until [time understood].&quot;
 </font></blockquote><p>
 <p>
-<p>By blanking out the table line by line, we make sure that we never lose our place in the path.
-<p>
-<p>Since we want the player to be able to talk to Athena, we need a way to stall her in her path, as well.
-<p>
-<blockquote><font color="#000080">Athena can be active or passive. Athena is active.
+<blockquote><font color="#000080">Understand &quot;wait until [time]&quot; as hanging around until.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before doing something to Athena:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change Athena to passive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Athena waits around patiently, though you can tell she would like to leave...&quot;
+<blockquote><font color="#000080">The Empty Field is a room. &quot;It's an ordinary empty field. Nothing to see here at all-- yet. Wait until 11:45 PM, though.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of telling Athena about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;She watches you patiently as though to say that she already knows.&quot;
+<blockquote><font color="#000080">At 11:45 PM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Suddenly the air is filled with light and the sounds of an approaching band. Over the crest of the hill comes a parade of singing, stomping, hooting people: and not just people, but dogs, horses, elephants, giraffes... There are banners, and candles, and a flag that glows eerie-green in the dark; there is a float shaped like an enormous turtle, its shell covered with winking green lights; there is an old man dressed as a skeleton, carried in a litter, his neck garlanded with dried chiles. There are small girls throwing rose petals from a basket, and grown women half-naked carrying the emblems of Bacchic revelry, and two little boys each with a silver basin of clear water. All these go by in procession, and you join on at the end.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of asking Athena about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Her response is inscrutably ancient and Greek. Afterwards you remember only the flash of bright eyes.&quot;
+<blockquote><font color="#000080">Test me with &quot;look / z / z / wait until 11:45 PM&quot;.
 </font></blockquote><p>
-<p>
-<p>Finally, we do need to wake Athena up again if she has become passive. The following rule will occur after the movement rule just because of code ordering, though we could make matters more explicit if we needed to:
-<p>
-<blockquote><font color="#000080">Every turn when Athena is passive:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change Athena to active.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;east / northwest / wait / examine athena / wait&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc234.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc310.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc233.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc235.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc309.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc311.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

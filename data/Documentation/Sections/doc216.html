@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.8. Multiple-number specifications</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.3. Whereabouts on a scale?</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,31 +19,44 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Multiple-number specifications" -->
-<!-- SEARCH SECTION "14.8" -->
-<!-- SEARCH SORT "014-008-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc215.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc217.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.8. Multiple-number specifications</b></font></td></tr></table>
+<!-- SEARCH TITLE "Whereabouts on a scale?" -->
+<!-- SEARCH SECTION "14.3" -->
+<!-- SEARCH SORT "014-003-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc215.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc217.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.3. Whereabouts on a scale?</b></font></td></tr></table>
 <p>
-<p>Natural language is full of notations for weights and measures which involve more than one number, and perhaps some punctuation. For instance, suppose we want a running time for some piece of music, in minutes and seconds: we might choose to write this in the old-fashioned way 4'33.
+<p>Adjectives are often used in English to give a sense of where something is on a sliding scale. We talk about &quot;a tall man&quot; and &quot;a short man&quot;, but without meaning that all men are either tall or short. If pushed, we might say that tall means about 6 feet and up, short means about 5 feet 6 and down, but we more often compare one person's height against another's.
 <p>
-<blockquote><font color="#000080">A running time is a kind of value. 3'59 specifies a running time.
+<p>Inform allows us to use adjectives in the same way. For example, every container has a number called its &quot;carrying capacity&quot;. We can define:
+<p>
+<blockquote><font color="#000080">Definition: A container is huge if its carrying capacity is 20 or more.
+<br>Definition: A container is large if its carrying capacity is 10 or more.
+<br>Definition: A container is standard if its carrying capacity is 7.
+<br>Definition: A container is small if its carrying capacity is 5 or less.
 </font></blockquote><p>
 <p>
-<p>The choice of &quot;3&quot; here makes no difference, much as the choice of &quot;10&quot; in the weight examples was arbitrary. But the &quot;59&quot; is significant. Numbers after the first one are expected to range from 0 up to the value we quote - so in this case, the number of seconds can be anything from 0 to 59. Or, for instance:
+<p>These definitions are similar to those in the previous section, but have a very specific (and strictly enforced) shape to them. The adjective must be a single word. We have to say &quot;its&quot; (i.e., of it), not the ungrammatical &quot;it's&quot;; we have to specify a property, and a literal value of it, and we must either give an exact value or else conclude with &quot;or more&quot; or &quot;or less&quot;. If we create something with one of these properties:
 <p>
-<blockquote><font color="#000080">A height is a kind of value. 5 foot 11 specifies a height.
+<blockquote><font color="#000080">The basket is a large container in the Shop. The thimble is a small container in the Shop. The matchbox is a standard container in the Shop.
 </font></blockquote><p>
 <p>
-<p>A specification can contain up to four numbers like this: but see the caveats on the limited total size of those numbers in the next section.
+<p>then they will have the most moderate values they can have, that is, the basket will have carrying capacity 10 and the thimble 5 (and of course the matchbox 7). The following tests will then, not surprisingly, fail:
 <p>
-<p>Specifications must not contain double-quotation marks because, even though people did once use these to denote minutes of arc, they would simply confuse programs like Inform's user interface which have to keep track of what is quoted text and what is not. But other punctuation marks are fine <i>provided they occur between two digits</i>. For instance, in
-<p>
-<blockquote><font color="#000080">A monetary value is a kind of value. $1.99 specifies a monetary value.
+<blockquote><font color="#000080">if the basket is huge ...
+<br>if the basket is a small container ...
 </font></blockquote><p>
 <p>
-<p>the full stop between the 1 and the 99 is not interpreted as a division of two sentences; and similarly for colons in examples such as
+<p>because the basket is neither huge nor small, but somewhere in between.
 <p>
-<blockquote><font color="#000080">An aspect ratio is a kind of value. 16:9 specifies an aspect ratio.
+<p>Sometimes the meaning of adjectives must depend on their context, as we see from the following example, where we assess heights in inches:
+<p>
+<blockquote><font color="#000080">A person has a number called height. Definition: A man is tall if his height is 72 or more. Definition: A woman is tall if her height is 68 or more.
 </font></blockquote><p>
+<p>
+<p>Inform then judges whether someone is or is not &quot;tall&quot; using different standards for men and for women, and
+<p>
+<blockquote><font color="#000080">In the Shop are a tall man and a tall woman.
+</font></blockquote><p>
+<p>
+<p>creates a man 72 inches tall and a woman 68 inches tall.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc215.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc217.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

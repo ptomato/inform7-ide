@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.21. Listing nondescript items of something</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.17. Two rulebooks used internally</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,134 +19,118 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Happy Hour" -->
-<!-- SEARCH SECTION "Ex 312" -->
-<!-- SEARCH SORT "Ex 017-021-312" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc282.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc284.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.21. Listing nondescript items of something</b></font></td></tr></table>
+<!-- SEARCH TITLE "Endurance" -->
+<!-- SEARCH SECTION "Ex 377" -->
+<!-- SEARCH SORT "Ex 018-017-377" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc324.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc326.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.17. Two rulebooks used internally</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> This activity prints up the also-ran paragraph at the end of a room description. These are nondescript items because they don't merit paragraphs of their own: if, as sometimes happens, there are none in the room, then no such paragraph is printed and this activity does not happen. (So to add a further paragraph to a room description, a simpler &quot;after looking&quot; rule should be used, not an &quot;after listing nondescript items&quot; rule.)
+<p>Rulebooks handle almost all of the important tasks which an Inform work of IF must carry out in order to keep play going. We have seen them used in clarifying the player's command, supplying missing ingredients, processing the action to see what should happen, responding, and so on: by this point in the documentation, it must look as if Inform uses rulebooks for everything.
 <p>
-<p><b>2. The default behaviour.</b> The paragraph ordinarily reads as &quot;You can also see a cask and a clock.&quot; or similar. Before the activity begins, those objects which are nondescript - in this case the cask and the clock - are given the property of being &quot;marked for listing&quot;. If it turns out that nothing is marked for listing, because of before rules like the one in the example below, then nothing is printed.
+<p>This is nearly true. There is not actually a super-rulebook controlling everything. (Such a super-rulebook would need to repeat itself and never finish, something a rulebook is not allowed to do.) Instead, what happens during play looks like so:
 <p>
-<p><b>3. Examples.</b> (a) Promoting something out of the nondescript category, by unmarking it.
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode62(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('Before listing nondescript items:[=0x000A=][=0x0009=]if the watch is marked for listing begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]The watch catches your eye.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]change the watch to not marked for listing;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode62()"><img border=0 src=../doc_images/paste.png></a> Before listing nondescript items:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the watch is marked for listing begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The watch catches your eye.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the watch to not marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">1. Following the &quot;when play begins&quot; rulebook.
+<br>2. Repeating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;2(a). Reading and parsing a command into an action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;2(b). Following the &quot;action processing&quot; rulebook;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;2(c). Following the &quot;turn sequence&quot; rulebook.
+<br>until the game has finished.
+<br>3. Following the &quot;when play ends&quot; rulebook.
 </font></blockquote><p>
 <p>
-<p>(b) Changing the normal phrasing of the paragraph. Note that we can also change the listing style; the one below is the default.
+<p>The command parser occasionally calls on the services of activity rulebooks to help it, but otherwise gets on with its job in ways that we do not &quot;see&quot; as Inform 7 users. The rest of what happens involves rulebooks, and in particular two important beneath-the-surface rulebooks: action processing and the turn sequence.
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode63(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('Rule for listing nondescript items of the Distressingly Messy Room:[=0x000A=][=0x0009=]say [=0x0022=]Strewn carelessly on the floor[=0x0022=];[=0x000A=][=0x0009=]list the contents of the Distressingly Messy Room, as a sentence,[=0x000A=][=0x0009=][=0x0009=]tersely, listing marked items only, prefacing with is/are,[=0x000A=][=0x0009=][=0x0009=]including contents and giving brief inventory[=0x000A=][=0x0009=][=0x0009=]information;[=0x000A=][=0x0009=]say [=0x0022=].[=0x0022=][=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode63()"><img border=0 src=../doc_images/paste.png></a> Rule for listing nondescript items of the Distressingly Messy Room:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Strewn carelessly on the floor&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the Distressingly Messy Room, as a sentence,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tersely, listing marked items only, prefacing with is/are,
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;including contents and giving brief inventory
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;information;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot;
-</font></blockquote><p>
+<p>The <b>action processing rules</b> are used whenever an action must be tried, by whoever tries it. This usually happens in response to player commands, but not always: it might happen because of a &quot;try...&quot;, and it can certainly interrupt an existing action.
+<p>
+<p>The <b>turn sequence rules</b> are used at the end of each turn, and include housekeeping as well as timekeeping. They consult the &quot;every turn&quot; rulebook, and advance the time of day, among other useful tasks.
+<p>
+<p>In general, we should only modify the operation of these two crucial rulebooks as a last resort. Play can evidently fall to pieces if they cease to work normally.
 <p>
 <p><hr><p>
+<a name="e331"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex331.html#e331 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>374</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex331.html#e331 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Electrified</font></b></a><br>Adding a rule before the basic accessibility rule that will prevent the player from touching electrified objects under the wrong circumstances.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex331.html#e331 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e62"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex62.html#e62 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>375</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex62.html#e62 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Timeless</font></b></a><br>A set of actions which do not take any game time at all.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex62.html#e62 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e1"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex1.html#e1 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>376</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex1.html#e1 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Escape from the Seraglio</font></b></a><br>Replacing the usual response to TAKE ALL so that instead of output such as "grapes: Taken. orange: Taken.", Inform produces variable responses in place of "grapes:".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex1.html#e1 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e45"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc283.html#e45 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>312</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc283.html#e45 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Happy Hour</font></b></a><br>Listing visible characters as a group, then giving some followup details in the same paragraph about specific ones.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex45.html#e45 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e45"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc325.html#e45 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>377</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc325.html#e45 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Endurance</font></b></a><br>Giving different actions a range of durations using a time allotment rulebook.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex45.html#e45 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Often it is best to have an entire paragraph about the characters present in a room, but suppose we're narrating a large party with a lot of people moving around. In that case, it might be better to list everyone together, then add a few salient details by way of follow-up, like this:
+<p>Here we move to a systematic way of giving different durations to different actions, including even variations on the same act -- so that for instance climbing a steep hill might take several minutes more than other going actions. We do this by setting a number, &quot;work duration&quot;, to represent the number of minutes consumed by a given action, and then consulting a rulebook to find out how long the past turn's action should take. By default, an action will take 1 minute.
+<p>
+<p>We'll start by emulating the behavior of &quot;Uptempo&quot;: each turn we'll set the clock forward most of the way, then check to see what has changed since the last turn, print any relevant events, and only then set the clock forward the final minute. The exception is when an action is set to take no time at all; in that case, we'll skip the rest of the turn sequence rules entirely.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode399(code) {
+function pasteCode477(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Happy Hour[=0x0022=][=0x000A=][=0x000A=]Before listing nondescript items:[=0x000A=][=0x0009=]say [=0x0022=]You can see [a list of people who are marked for listing] here. [=0x0022=];[=0x000A=][=0x0009=]repeat with named party running through people[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]change the named party to not marked for listing;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=]let count be the number of visible other people who are carrying something;[=0x000A=][=0x0009=]if count is 0[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say paragraph break; continue the action;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]let index be count;[=0x000A=][=0x0009=]repeat with holder running through visible other people who are carrying something[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if index is count, say [=0x0022=][The holder][=0x0022=]; otherwise say [=0x0022=][the holder][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=] has [a list of things carried by the holder][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]decrease index by 1;[=0x000A=][=0x0009=][=0x0009=]make delimiter index of count;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=][The next part could be simpler, but for rigor we will write it in such a way that it will work whether or not the serial comma is in use. This requires some extra work; feel free to skip down to the scenario if you prefer.][=0x000A=][=0x000A=]To make delimiter (index - a number) of (count - a number), continuing or halting:[=0x000A=][=0x0009=]if index is 0[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if continuing, say [=0x0022=]. [run paragraph on][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]otherwise say [=0x0022=].[=0x0022=];[=0x000A=][=0x0009=]otherwise if index is 1;[=0x000A=][=0x0009=][=0x0009=]if count is 2, say [=0x0022=] and [=0x0022=];[=0x000A=][=0x0009=][=0x0009=]otherwise say [=0x0022=][optional comma] and [=0x0022=];[=0x000A=][=0x0009=]otherwise;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=], [=0x0022=];[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]To say optional comma:[=0x000A=][=0x0009=]if using the serial comma option, say [=0x0022=],[=0x0022=];[=0x000A=][=0x0009=]otherwise do nothing.[=0x000A=][=0x000A=][And now the scene:][=0x000A=][=0x000A=]The Banquet Hall is a room. [=0x0022=]A large cheery banner over the door (which, incidentally, vanishes when you approach it) reads: HELLO NEW INDUCTEES! WELCOME TO THE AFTERLIFE![=0x0022=][=0x000A=][=0x000A=]Fred, George, and Larry are men in the Banquet Hall. Fred carries a dry martini. Larry carries a cream puff. Matilda and Louise are women in the Banquet Hall.[=0x000A=][=0x000A=]Definition: a person is other if it is not the player.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]let wanderer be a random other person;[=0x000A=][=0x0009=]let place be the holder of the wanderer;[=0x000A=][=0x0009=]let next place be a random room adjacent to the place;[=0x000A=][=0x0009=]let the way be the best route from the place to the next place;[=0x000A=][=0x0009=]try the wanderer going the way.[=0x000A=][=0x000A=]The Kitchen is west of the Banquet Hall. [=0x0022=]Dominated by a pile of dirty plates which you imagine it will be someone[=0x0027=]s privilege to wash, later.[=0x0022=] Vanessa is a woman in the Kitchen. Vanessa carries a tray. On the tray is a salmon roll. The roll is edible.[=0x000A=][=0x000A=]Test me with [=0x0022=]z / look / g / g / g [=0x0022=].[=0x000A=]');
+    myProject.pasteCode(' [=0x0022=]Endurance[=0x0022=][=0x000A=][=0x000A=]Work duration is a number that varies.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]change work duration to 0;[=0x000A=][=0x0009=]increase the turn count by 1;[=0x000A=][=0x0009=]follow the time allotment rules;[=0x000A=][=0x0009=]if work duration is 0, rule succeeds;[=0x000A=][=0x0009=]change the time of day to the time of day + (work duration minutes - 1 minute).[=0x000A=][=0x000A=]The time allotment rules are a rulebook.[=0x000A=][=0x000A=]A time allotment rule for examining or looking:[=0x000A=][=0x0009=]change work duration to 0;[=0x000A=][=0x0009=]rule succeeds.[=0x000A=][=0x000A=]A time allotment rule for going:[=0x000A=][=0x0009=]change work duration to 2;[=0x000A=][=0x0009=]rule succeeds.[=0x000A=][=0x000A=]A time allotment rule for going up:[=0x000A=][=0x0009=]change work duration to 5;[=0x000A=][=0x0009=]rule succeeds.[=0x000A=][=0x000A=]A time allotment rule for waiting:[=0x000A=][=0x0009=]change work duration to 10;[=0x000A=][=0x0009=]rule succeeds.[=0x000A=][=0x000A=]The last time allotment rule:[=0x000A=][=0x0009=]change work duration to 1.[=0x000A=][=0x000A=]When play begins: change the right hand status line to [=0x0022=][time of day][=0x0022=].[=0x000A=][=0x000A=]The Quai is a room. [=0x0022=]An attractive park at the edge of the river Aude: here you can wander among palm trees, and watch cyclists go by on the bike path; in the water there are ducks. In the cafe to your north, patrons sip their pastis; and above you is the medieval walled city and its castle.[=0x0022=][=0x000A=][=0x000A=]The Cafe is north of the Quai. [=0x0022=]A charming collection of umbrella-shaded tables, from which one can watch the river and the walls of the city beyond. The noise of traffic is only a minor distraction.[=0x0022=][=0x000A=][=0x000A=]The City is above the Quai.[=0x000A=][=0x000A=]After going to the City:[=0x000A=][=0x0009=]say [=0x0022=]You struggle uphill for some distance...[=0x0022=];[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]At 9:15 AM:[=0x000A=][=0x0009=]say [=0x0022=]The bells ring out from Place Carnot.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]z / n / s / u[=0x0022=].[=0x000A=][=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode399()"><img border=0 src=../doc_images/paste.png></a> &quot;Happy Hour&quot;
+<a href="javascript:pasteCode477()"><img border=0 src=../doc_images/paste.png></a>  &quot;Endurance&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before listing nondescript items:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can see [a list of people who are marked for listing] here. &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with named party running through people
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the named party to not marked for listing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let count be the number of visible other people who are carrying something;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if count is 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say paragraph break; continue the action;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let index be count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with holder running through visible other people who are carrying something
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if index is count, say &quot;[The holder]&quot;; otherwise say &quot;[the holder]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot; has [a list of things carried by the holder]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decrease index by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make delimiter index of count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
-</font></blockquote><p>
-<p>
-<p>The next part could be simpler, but for rigor we will write it in such a way that it will work whether or not the serial comma is in use. This requires some extra work; feel free to skip down to the scenario if you prefer.
-<p>
-<blockquote><font color="#000080">To make delimiter (index - a number) of (count - a number), continuing or halting:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if index is 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if continuing, say &quot;. [run paragraph on]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if index is 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if count is 2, say &quot; and &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[optional comma] and &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;, &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say optional comma:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if using the serial comma option, say &quot;,&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise do nothing.
-</font></blockquote><p>
-<p>
-<p>And now the scene:
-<p>
-<blockquote><font color="#000080">The Banquet Hall is a room. &quot;A large cheery banner over the door (which, incidentally, vanishes when you approach it) reads: HELLO NEW INDUCTEES! WELCOME TO THE AFTERLIFE!&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Fred, George, and Larry are men in the Banquet Hall. Fred carries a dry martini. Larry carries a cream puff. Matilda and Louise are women in the Banquet Hall.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Definition: a person is other if it is not the player.
+<blockquote><font color="#000080">Work duration is a number that varies.
 </font></blockquote><p>
 <p>
 <blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let wanderer be a random other person;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let place be the holder of the wanderer;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let next place be a random room adjacent to the place;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the way be the best route from the place to the next place;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try the wanderer going the way.
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change work duration to 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;increase the turn count by 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;follow the time allotment rules;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if work duration is 0, rule succeeds;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the time of day to the time of day + (work duration minutes - 1 minute).
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Kitchen is west of the Banquet Hall. &quot;Dominated by a pile of dirty plates which you imagine it will be someone's privilege to wash, later.&quot; Vanessa is a woman in the Kitchen. Vanessa carries a tray. On the tray is a salmon roll. The roll is edible.
+<blockquote><font color="#000080">The time allotment rules are a rulebook.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;z / look / g / g / g &quot;.
+<blockquote><font color="#000080">A time allotment rule for examining or looking:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change work duration to 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc283.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">A time allotment rule for going:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change work duration to 2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A time allotment rule for going up:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change work duration to 5;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A time allotment rule for waiting:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change work duration to 10;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;rule succeeds.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The last time allotment rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change work duration to 1.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">When play begins: change the right hand status line to &quot;[time of day]&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Quai is a room. &quot;An attractive park at the edge of the river Aude: here you can wander among palm trees, and watch cyclists go by on the bike path; in the water there are ducks. In the cafe to your north, patrons sip their pastis; and above you is the medieval walled city and its castle.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Cafe is north of the Quai. &quot;A charming collection of umbrella-shaded tables, from which one can watch the river and the walls of the city beyond. The noise of traffic is only a minor distraction.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The City is above the Quai.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After going to the City:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You struggle uphill for some distance...&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">At 9:15 AM:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The bells ring out from Place Carnot.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;z / n / s / u&quot;.
+</font></blockquote><p>
+<p>
+<p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc325.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc282.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc284.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc324.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc326.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

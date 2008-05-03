@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.7. New rulebooks</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.34. Deciding whether all includes</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,48 +19,43 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "New rulebooks" -->
-<!-- SEARCH SECTION "18.7" -->
-<!-- SEARCH SORT "018-007-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc302.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc304.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.7. New rulebooks</b></font></td></tr></table>
+<!-- SEARCH TITLE "Deciding whether all includes" -->
+<!-- SEARCH SECTION "17.34" -->
+<!-- SEARCH SORT "017-034-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc302.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc304.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.34. Deciding whether all includes</b></font></td></tr></table>
 <p>
-<p>Creating a new rulebook is also straightforward, as we see in the following modest example game:
+<p><b>1. When it happens.</b> When parsing a command such as &quot;take all&quot;, where the player uses &quot;all&quot; to signify everything within reach.
+<p>
+<p><b>2. The default behaviour.</b> The actual method used is complicated, as &quot;all&quot; is not as simple as it seems - &quot;take all&quot; would not include the player's own body, for instance, or the crescent moon. The point of this action is to allow the normal method to be changed for given objects, or given kinds of object.
+<p>
+<p><b>3. Examples.</b> (a) Removing scenery from &quot;all&quot;:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode77(code) {
+function pasteCode81(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Appraisal[=0x0022=][=0x000A=][=0x000A=]The Passage is east of the Tomb. The green-eyed idol is in the Tomb. A Speak-Your-Progress machine is in the Passage.[=0x000A=][=0x000A=]Appraisal rules is a rulebook.[=0x000A=][=0x000A=]An appraisal rule: say [=0x0022=]Click... whirr... the score is [the score in words] points.[=0x0022=][=0x000A=][=0x000A=]An appraisal rule: if we have taken the idol then say [=0x0022=]Most importantly of all, the idol has been found.[=0x0022=][=0x000A=][=0x000A=]Instead of switching on the machine, follow the appraisal rules.[=0x000A=][=0x000A=]');
+    myProject.pasteCode('Rule for deciding whether all includes scenery: it does not.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode77()"><img border=0 src=../doc_images/paste.png></a> &quot;Appraisal&quot;
+<a href="javascript:pasteCode81()"><img border=0 src=../doc_images/paste.png></a> Rule for deciding whether all includes scenery: it does not.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Passage is east of the Tomb. The green-eyed idol is in the Tomb. A Speak-Your-Progress machine is in the Passage.
+<p>The phrases &quot;it does&quot; and &quot;it does not&quot; make a decision.
+<p>
+<p>(b) Ensuring that a given thing, which might otherwise be excluded, is included:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode82(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Rule for deciding whether all includes the oval roof: it does.[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode82()"><img border=0 src=../doc_images/paste.png></a> Rule for deciding whether all includes the oval roof: it does.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Appraisal rules is a rulebook.
-</font></blockquote><p>
+<p><b>4. A note about actions.</b> This activity takes place during the process of understanding the player's command, when the action that will take place is not fully known. So if the player types &quot;TAKE SHOEBOX&quot;, this activity would happen when SHOEBOX is being examined for meaning. Inform knows that the action will be taking, but nothing else. That means attaching a proviso like &quot;... while taking a container&quot; to a rule for this activity will cause the rule to have no effect - whereas &quot;... while taking&quot; would be fine.
 <p>
-<blockquote><font color="#000080">An appraisal rule: say &quot;Click... whirr... the score is [the score in words] points.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">An appraisal rule: if we have taken the idol then say &quot;Most importantly of all, the idol has been found.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of switching on the machine, follow the appraisal rules.
-</font></blockquote><p>
-<p>
-<p>The creation of the rulebook is all very well, but without the final sentence it would never be used. The crucial new phrase here is &quot;follow ...&quot;, which is the first of several phrases allowing us to use rules whenever we want to (rather than simply at predetermined times such as when a particular action is being tried, or at the end of every turn, and such).
-<p>
-<p>Like &quot;number&quot; or &quot;text&quot;, &quot;rule&quot; and &quot;rulebook&quot; are kinds of value built into Inform: &quot;the blossom rule&quot; is a value whose kind is &quot;rule&quot;, whereas &quot;the every turn rules&quot; is a value whose kind is &quot;rulebook&quot;. In fact, Inform considers a rulebook to be a special case of a rule, so that whenever a rule is required it is legal to name a rulebook instead, but not vice versa. The &quot;follow&quot; phrase here...
-<p>
-<blockquote><font color="#000080">Instead of switching on the machine, follow the appraisal rules.
-</font></blockquote><p>
-<p>
-<p>...expects to be applied to a value of kind &quot;rule&quot;; &quot;the appraisal rules&quot; is in fact a rulebook, but since that counts as a rule the phrase makes sense to Inform. To follow a rulebook means to run through all its rules in turn, stopping when one rule reaches an outcome; to follow a single rule means just that one, of course.
-<p>
-<p><hr><p>
-<a name="e290"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex290.html#e290 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>342</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex290.html#e290 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> In Fire or in Flood</font></b></a><br>A BURN command; flammable objects which light other items in their vicinity and can burn for different periods of time; the possibility of having parts or contents of a flaming item which survive being burnt.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex290.html#e290 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc302.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc304.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

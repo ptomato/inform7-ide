@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.26. Reading a command</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>14.6. Units</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,165 +19,96 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Fore" -->
-<!-- SEARCH SECTION "Ex 323" -->
-<!-- SEARCH SORT "Ex 017-026-323" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc287.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc289.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.26. Reading a command</b></font></td></tr></table>
+<!-- SEARCH TITLE "rBGH" -->
+<!-- SEARCH SECTION "Ex 232" -->
+<!-- SEARCH SORT "Ex 014-006-232" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc218.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap14.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 14: Units</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc220.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>14.6. Units</b></font></td></tr></table>
 <p>
-<p><b>1. When it happens.</b> When reading a command from the keyboard.
+<p>Some of the examples in the last few sections were slightly strained because they used numbers where an English speaker not quite do so. We tend not to say &quot;Isabella has height 68&quot;: we would more normally say &quot;Isabella is 5 foot 8.&quot; Perhaps the computer will need to store that measurement as the number 68 in some register or other, but we really don't want to know that.
 <p>
-<p><b>2. The default behaviour.</b> Print the prompt text; wait for the player to type something and press return. Reject an entirely blank line, and treat a command beginning &quot;oops&quot; as a correction to the previous one. This is a fairly complicated business, so it is probably best not to change the &quot;for&quot; rules for this activity: &quot;before&quot;, and especially &quot;after&quot;, are another matter. (Note, however, that if Inform does reject a blank line and ask for another then this all happens inside the &quot;for&quot; rules: no &quot;after&quot; occurs after the blank line, nor does a &quot;before&quot; happen before the second attempt by the player. It is all a single round of the activity, not two.)
+<p>Inform allows us to create new, basically numerical kinds of value, like so:
 <p>
-<p><b>3. Examples.</b> (a) To lead absolute beginners in gently:
-<p>
-<blockquote><font color="#000080">Before reading a command while the turn count is 1, say &quot;(This is your chance to say what the protagonist should do next. After the '>', try typing 'take inventory'.)&quot;
+<blockquote><font color="#000080">A weight is a kind of value. 10kg specifies a weight.
 </font></blockquote><p>
 <p>
-<p>(b) The following responds politely but firmly if the player tries to type &quot;please look&quot;, say, instead of just &quot;look&quot;:
+<p>By contrast, the kinds of value seen so far have been set up thus:
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode66(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:[=0x000A=][=0x0009=]if the player[=0x0027=]s command includes [=0x0022=]please[=0x0022=] begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Please do not say please.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]reject the player[=0x0027=]s command;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode66()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Please do not say please.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">A colour is a kind of value. The colours are red, green and blue.
 </font></blockquote><p>
 <p>
-<p>To explain. Fragments of what the player has typed are called snippets: &quot;the player's command&quot; is the entire thing. We can test if a snippet matches a given pattern like so:
+<p>We can choose to make a new kind of value of either variety, but we can't mix the two in the same kind: it will either be numerical at heart (&quot;10kg&quot;) or verbal at heart (&quot;blue&quot;).
 <p>
-<blockquote><font color="#000080">if the player's command matches &quot;room [number]&quot;, ...
+<p>The effect of &quot;10kg specifies a weight&quot; is to tell Inform that text matching this form is a constant value of kind &quot;weight&quot;. So, for instance,
+<p>
+<blockquote><font color="#000080">The maximum load is a weight that varies. The maximum load is 8000kg.
 </font></blockquote><p>
 <p>
-<p>This requires an exact match: the weaker condition &quot;includes&quot; only means that the pattern occurs somewhere in the given snippet, so that
-<p>
-<blockquote><font color="#000080">if the player's command includes &quot;please&quot;, ...
+<blockquote><font color="#000080">if the maximum load <= 8000kg, ...
 </font></blockquote><p>
 <p>
-<p>matches &quot;please look&quot; or &quot;look please&quot;, etc. Lastly, the phrase
+<p>Weights behave just like numbers in the ways we can compare them: but Inform respects the fact that a weight is not just any number, so it would not allow us to compare (say) &quot;8000kg&quot; and &quot;5 foot 8&quot;. Weights can meaningfully be compared only with other weights.
 <p>
-<blockquote><font color="#000080">reject the player's command
+<p>We can also say weights:
+<p>
+<blockquote><font color="#000080">The Weighbridge is a room. &quot;A sign declares that the maximum load is [maximum load].&quot;
 </font></blockquote><p>
 <p>
-<p>tells Inform not to bother analysing the text further, but to go back to the keyboard. (No time passes; no turn elapses; nothing happens in the simulated world.)
-<p>
-<p>(c) An improved version takes commands like &quot;please drop the coin&quot; and strips &quot;please&quot; from them, but then allows them to proceed normally:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode67(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:[=0x000A=][=0x0009=]if the player[=0x0027=]s command includes [=0x0022=]please[=0x0022=] begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=](Quelle politesse! But no need to say please.)[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]cut the matched text;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode67()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command includes &quot;please&quot; begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(Quelle politesse! But no need to say please.)&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cut the matched text;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
-</font></blockquote><p>
-<p>
-<p>&quot;Matched text&quot; is a snippet containing the words which matched against the pattern in the most recent &quot;includes&quot; condition, so in this case it contains just the single word &quot;please&quot;. Two phrases allow snippets to be altered:
-<p>
-<blockquote><font color="#000080">replace (... snippet ...) with (... text ...)
-<br>cut (...snippet ...)
-</font></blockquote><p>
-<p>
-<p>Note that &quot;replace&quot; and &quot;cut&quot; can only be used in &quot;after reading a command&quot; rules: not when an action has been chosen and has gone ahead into its rulebooks. Once the reading a command activity has finished, the command is final.
-<p>
-<p>(d) To make the word &quot;grab&quot; an abbreviation for &quot;take all&quot;:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode68(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('After reading a command:[=0x000A=][=0x0009=]if the player[=0x0027=]s command matches [=0x0022=]grab[=0x0022=], replace the player[=0x0027=]s command with [=0x0022=]take all[=0x0022=].[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode68()"><img border=0 src=../doc_images/paste.png></a> After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player's command matches &quot;grab&quot;, replace the player's command with &quot;take all&quot;.
-</font></blockquote><p>
-<p>
-<p>(&quot;Snippet&quot; is actually a kind of value, so we could say &quot;Ah, you typed '[the player's command]'!&quot; or some such if we liked. But in practice only three snippets are likely to be useful: the two mentioned above, &quot;player's command&quot; and &quot;matched text&quot;, and the &quot;topic understood&quot;, used when matching the &quot;[text]&quot; token in command grammar.)
-<p>
-<p>(e) Finally, we can make still more detailed alterations to the text of the command using the techniques for indexed text presented in the Advanced Text chapter. For instance:
-<p>
-<blockquote><font color="#000080">After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let T be indexed text;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let T be the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;replace the regular expression &quot;\p&quot; in T with &quot;&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the text of the player's command to T.
-</font></blockquote><p>
-<p>
-<p>This converts the player's command to indexed text, which is then manipulated by searching for any punctuation mark and replacing it with blank text (that is, deleted), and then put back again as the new command.
+<p>...which will produce the text &quot;A sign declares that the maximum load is 8000kg.&quot;
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e354"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc288.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>323</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc288.html#e354 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Fore</font></b></a><br>Understand "fore", "aft", "port", and "starboard", but only when the player is on a vessel.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex354.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e354"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc219.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>232</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc219.html#e354 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> rBGH</font></b></a><br>The player character's height is selected randomly at the start of play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex354.html#e354 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to understand shipboard directions, but only when the player is aboard a vessel. It might be tempting to do only:
+<p>As with ordinary numbers, we can choose random units when this is useful:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode411(code) {
+function pasteCode326(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Fore[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]fore[=0x0022=] or [=0x0022=]f[=0x0022=] as north when the location is in the Ship. Understand [=0x0022=]aft[=0x0022=] or [=0x0022=]a[=0x0022=] as south when the location is in the Ship. Understand [=0x0022=]port[=0x0022=] or [=0x0022=]p[=0x0022=] as west when the location is in the Ship. Understand [=0x0022=]starboard[=0x0022=] or [=0x0022=]sb[=0x0022=] as east when the location is in the Ship.[=0x000A=][=0x000A=][but then we get [=0x0022=]that[=0x0027=]s not a verb I understand[=0x0022=] when the player tries ship directions on land, and that[=0x0027=]s obviously wrong.][=0x000A=][=0x000A=][Similarly, we don[=0x0027=]t want to use [=0x0022=]understand... as a mistake[=0x0022=] with this set of things because we are correcting the name of a noun, not the phrasing of a verb.][=0x000A=][=0x000A=][So we might choose to catch and correct mistakes at the reading a command stage:][=0x000A=][=0x000A=]Understand [=0x0022=]fore[=0x0022=] or [=0x0022=]f[=0x0022=] or [=0x0022=]aft[=0x0022=] or [=0x0022=]port[=0x0022=] or [=0x0022=]p[=0x0022=] or [=0x0022=]starboard[=0x0022=] or [=0x0022=]sb[=0x0022=] as [=0x0022=][shipboard direction][=0x0022=]. Understand [=0x0022=]a[=0x0022=] or [=0x0022=]go a[=0x0022=] as [=0x0022=][going aft][=0x0022=].[=0x000A=][=0x000A=]After reading a command:[=0x000A=][=0x0009=]if the location is not in the Ship and the player[=0x0027=]s command includes [=0x0022=][shipboard direction][=0x0022=][=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You[=0x0027=]re not at sea now, sailor.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]reject the player[=0x0027=]s command;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]if the location is not in the Ship and the player[=0x0027=]s command matches [=0x0022=][going aft][=0x0022=][=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You[=0x0027=]re not at sea now, sailor.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]reject the player[=0x0027=]s command;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]Bow is a room. South of Bow is By Foremast. South of By Foremast is By Mainmast. South of By Mainmast is By Mizzenmast. South of By Mizzenmast is By Jiggermast. South of By Jiggermast is Stern.[=0x000A=][=0x000A=]The Ship is a region. Bow, By Foremast, By Mainmast, By Mizzenmast, By Jiggermast, and Stern are in Ship.[=0x000A=][=0x000A=]The Dock is west of By Mainmast.[=0x000A=][=0x000A=]Test me with [=0x0022=]aft / port / a / p / starboard[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]rBGH[=0x0022=][=0x000A=][=0x000A=]The Pharmaceutical Testing Facility is a room. [=0x0022=]A [if the player is short]large [end if][if the player is tall]cramped [end if]white space with sterile counters and a[if the player is tall]n uncomfortable little[end if] stool. There is also a mirror, behind which someone must be watching you. But you can[=0x0027=]t see through to that.[=0x0022=][=0x000A=][=0x000A=]A counter, a one-way mirror, and a stool are scenery in the Facility. The stool is an enterable supporter. The counter supports a plate.[=0x000A=][=0x000A=]Height is a kind of value. 5 feet 11 inches specifies a height. 5[=0x0027=]11 specifies a height. A person has a height.[=0x000A=][=0x000A=]Definition: a person is tall if its height is 6 feet 0 inches or more.[=0x000A=][=0x000A=]Definition: a person is short if its height is 5 feet 4 inches or less.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]change the height of the player to a random height between 5 feet 2 inches and 6 feet 4 inches;[=0x000A=][=0x0009=]change the right hand status line to [=0x0022=][height of player][=0x0022=].[=0x000A=][=0x000A=]Instead of examining the player:[=0x000A=][=0x0009=]say [=0x0022=]You, Test Subject, are [height of the player] tall.[=0x0022=][=0x000A=][=0x000A=]The growth pill is a kind of thing. A growth pill is always edible. The description is usually [=0x0022=]It is leaf-green and has a reassuring logo of a curling vine on the side. Nothing to worry about, nothing at all.[=0x0022=] Two growth pills are on the plate.[=0x000A=][=0x000A=]After eating the growth pill:[=0x000A=][=0x0009=]change the height of the player to the height of the player + 0 feet 6 inches;[=0x000A=][=0x0009=]say [=0x0022=]Your spine does something frightening and painful, and you find yourself looking down on the room from a wholly new angle.[=0x0022=];[=0x000A=][=0x0009=]try looking.[=0x000A=][=0x000A=]Test me with [=0x0022=]examine me / eat pill / examine me / eat pill / examine me[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode411()"><img border=0 src=../doc_images/paste.png></a> &quot;Fore&quot;
+<a href="javascript:pasteCode326()"><img border=0 src=../doc_images/paste.png></a> &quot;rBGH&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;fore&quot; or &quot;f&quot; as north when the location is in the Ship. Understand &quot;aft&quot; or &quot;a&quot; as south when the location is in the Ship. Understand &quot;port&quot; or &quot;p&quot; as west when the location is in the Ship. Understand &quot;starboard&quot; or &quot;sb&quot; as east when the location is in the Ship.
+<blockquote><font color="#000080">The Pharmaceutical Testing Facility is a room. &quot;A [if the player is short]large [end if][if the player is tall]cramped [end if]white space with sterile counters and a[if the player is tall]n uncomfortable little[end if] stool. There is also a mirror, behind which someone must be watching you. But you can't see through to that.&quot;
 </font></blockquote><p>
 <p>
-<p>but then we get &quot;that's not a verb I understand&quot; when the player tries ship directions on land, and that's obviously wrong.
-<p>
-<p>Similarly, we don't want to use &quot;understand... as a mistake&quot; with this set of things because we are correcting the name of a noun, not the phrasing of a verb.
-<p>
-<p>So we might choose to catch and correct mistakes at the reading a command stage:
-<p>
-<blockquote><font color="#000080">Understand &quot;fore&quot; or &quot;f&quot; or &quot;aft&quot; or &quot;port&quot; or &quot;p&quot; or &quot;starboard&quot; or &quot;sb&quot; as &quot;[shipboard direction]&quot;. Understand &quot;a&quot; or &quot;go a&quot; as &quot;[going aft]&quot;.
+<blockquote><font color="#000080">A counter, a one-way mirror, and a stool are scenery in the Facility. The stool is an enterable supporter. The counter supports a plate.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After reading a command:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is not in the Ship and the player's command includes &quot;[shipboard direction]&quot;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're not at sea now, sailor.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the location is not in the Ship and the player's command matches &quot;[going aft]&quot;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're not at sea now, sailor.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Height is a kind of value. 5 feet 11 inches specifies a height. 5'11 specifies a height. A person has a height.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Bow is a room. South of Bow is By Foremast. South of By Foremast is By Mainmast. South of By Mainmast is By Mizzenmast. South of By Mizzenmast is By Jiggermast. South of By Jiggermast is Stern.
+<blockquote><font color="#000080">Definition: a person is tall if its height is 6 feet 0 inches or more.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Ship is a region. Bow, By Foremast, By Mainmast, By Mizzenmast, By Jiggermast, and Stern are in Ship.
+<blockquote><font color="#000080">Definition: a person is short if its height is 5 feet 4 inches or less.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Dock is west of By Mainmast.
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the height of the player to a random height between 5 feet 2 inches and 6 feet 4 inches;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the right hand status line to &quot;[height of player]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;aft / port / a / p / starboard&quot;.
+<blockquote><font color="#000080">Instead of examining the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You, Test Subject, are [height of the player] tall.&quot;
 </font></blockquote><p>
 <p>
-<p>If desired, we could insert an equivalent set of refusals if the player tried to use north, south, etc., aboard ship.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc288.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">The growth pill is a kind of thing. A growth pill is always edible. The description is usually &quot;It is leaf-green and has a reassuring logo of a curling vine on the side. Nothing to worry about, nothing at all.&quot; Two growth pills are on the plate.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After eating the growth pill:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the height of the player to the height of the player + 0 feet 6 inches;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your spine does something frightening and painful, and you find yourself looking down on the room from a wholly new angle.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try looking.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;examine me / eat pill / examine me / eat pill / examine me&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc219.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e110"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex110.html#e110 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>324</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex110.html#e110 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Fragment of a Greek Tragedy</font></b></a><br>Responding to the player's input based on keywords only, and overriding the original parser entirely.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex110.html#e110 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e174"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex174.html#e174 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>325</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex174.html#e174 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cloves</font></b></a><br>Accepting adverbs anywhere in a command, registering what the player typed but then cutting them out before interpreting the command.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex174.html#e174 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e90"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex90.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>326</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex90.html#e90 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Complimentary Peanuts</font></b></a><br>A character who responds to keywords in the player's instructions and remarks, even if there are other words included.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex90.html#e90 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc287.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc289.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e238"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex238.html#e238 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>233</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex238.html#e238 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Wonderland</font></b></a><br>Hiking Mount Rainier, with attention to which locations are higher and which lower than the present location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex238.html#e238 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc218.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc220.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

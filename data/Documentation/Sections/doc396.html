@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>23.24. Invocation labels, counters and storage</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.2. The Standard Rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,54 +19,25 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Invocation labels, counters and storage" -->
-<!-- SEARCH SECTION "23.24" -->
-<!-- SEARCH SORT "023-024-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc395.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap23.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 23: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc397.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>23.24. Invocation labels, counters and storage</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Standard Rules" -->
+<!-- SEARCH SECTION "24.2" -->
+<!-- SEARCH SORT "024-002-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc395.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc397.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.2. The Standard Rules</b></font></td></tr></table>
 <p>
-<p>The process of expanding the I6 code which represents a phrase is called &quot;invocation&quot;. As we have seen, when a phrase is defined using a single piece of I6 code, invocation consists of copying out that I6 code, except that tokens in braces &quot;{thus}&quot; are replaced:
+<p>When any source text is run through Inform, a secret first line is inserted, which reads:
 <p>
-<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
+<blockquote><font color="#000080">Include the Standard Rules by Graham Nelson.
 </font></blockquote><p>
 <p>
-<p>Ordinarily the only token names allowed are those matching up with names in the prototype, as here, but we have already seen one special syntax: &quot;{phrase options}&quot;, which expands as a bitmap of the options chosen. And in fact the invocation language is larger still, as a skim through the Standard Rules will show. The notes below deliberately cover only some of its features: those which are likely to remain part of the permanent design of Inform, and which are adaptable to many uses. <b>Please do not use any of the undocumented invocation syntaxes: they change frequently, without notice or even mention in the change log.</b>
+<p>The &quot;Standard Rules&quot; file contains the definitions of the basic kinds, phrases, actions and grammar described in this documentation: for instance, it includes lines like
 <p>
-<p>The first special syntaxes are textual tricks. {-delete} deletes the most recent character in the I6 expansion of the phrase so far. {-erase} erases the I6 expansion of the phrase so far. {-open-brace} and {-close-brace} produce literal &quot;{&quot; and &quot;}&quot; characters.
-<p>
-<p>The following:
-<p>
-<blockquote><font color="#000080">{-counter:NAME}
-<br>{-advance-counter:NAME}
-<br>{-zero-counter:NAME}
-<br>{-allocate-storage:NAME}
+<blockquote><font color="#000080">A container is a kind of thing.
 </font></blockquote><p>
 <p>
-<p>create (if one does not already exist) a counter called NAME. This is initially zero, and can be reset back to zero using &quot;{-zero-counter:NAME}&quot;, which expands into no text. The token &quot;{-counter:NAME}&quot; expands into the current value of the counter, as a literal decimal number. The token &quot;{-advance-counter:NAME}&quot; does the same, but then also increases it by one. Finally, the token &quot;{-allocate-storage:NAME}&quot; expands to nothing, but tells Inform to create an &quot;-->&quot; array called &quot;I7_ST_NAME&quot; which includes entries from 0 up to the final value of the NAME counter.
+<p>...without which Inform would be lost. Although including the Standard Rules is compulsory, it is treated internally as if it were any other &quot;extension&quot;.
 <p>
-<p>This allows each instance in the source text of a given phrase to have both (i) a unique ID number for that invocation, and (ii) its own word of run-time storage, which can allow it to have a state preserved in between times when it is executed. For example:
+<p>What happens when an &quot;Include&quot; sentence is reached is that the sentence is replaced with the whole text of the file in question, often many paragraphs long.
 <p>
-<blockquote><font color="#000080">To say once only -- beginning say_once_only:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-allocate-storage:say_once_only}if (I7_ST_say_once_only-->{-counter:say_once_only} == false) {-open-brace} I7_ST_say_once_only-->{-advance-counter:say_once_only} = true; -).
-<br>To say end once only -- ending say_once_only:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- {-close-brace} -).
-</font></blockquote><p>
-<p>
-<p>To complete the tools available for defining a segmented substitution, we need a way for the definition of the head to know about the middle segments and the tail:
-<p>
-<p>When invoking either the head or the tail, {-segment-count} expands to the literal decimal number of pieces of text in between the two, which is always one more than the number of middle segments, since the text comes in between the segments. When invoking any middle segment, {-segment-count} expands to the number of pieces of text so far -- thus it expands to 1 on the first middle segment invoked, 2 on the next, and so on.
-<p>
-<p>Lastly {-final-segment-marker} expands to the I6 identifier which marks the end segment, or to I6_NULL if the end segment has no marker. The idea of markers is to enable the head's definition to know which of a number of choices has been used for the tail, supposing that this is a construction with a variety of legal endings. For example:
-<p>
-<blockquote><font color="#000080">To say emphasise -- beginning say_emphasise:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- style {-final-segment-marker}; -).
-<br>To say with italics -- ending say_emphasise with marker underline:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- style roman; -).
-<br>To say with fixed space type -- ending say_emphasise with marker fixed:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- style roman; -).
-</font></blockquote><p>
-<p>
-<p>The markers used for the tails here are &quot;underline&quot; and &quot;fixed&quot;, and when the head is invoked, the marker for its tail is expanded into the argument of I6's &quot;style&quot; statement.
-<p>
-<p>The examples above are all to do with segmented substitutions, which is where they are most useful, but most of the syntaxes above work equally well for ordinary &quot;To...&quot; phrase definitions.
+<p>If the file has already been included, then the sentence is simply ignored. This is so that we can have two extensions, each of which needs the other: if A says to include B, and B says to include A, the result is that including one automatically includes the other, so we always get both which ever we ask for - not that there is a hideous infinite regress.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc395.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc397.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

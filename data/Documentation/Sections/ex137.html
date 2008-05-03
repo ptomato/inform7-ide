@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.7. Indexed text in variables, properties and tables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.23. Listing nondescript items of something</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,147 +19,109 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Identity Theft" -->
-<!-- SEARCH SECTION "Ex 362" -->
-<!-- SEARCH SORT "Ex 019-007-362" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc321.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc323.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.7. Indexed text in variables, properties and tables</b></font></td></tr></table>
+<!-- SEARCH TITLE "Rip" -->
+<!-- SEARCH SECTION "Ex 322" -->
+<!-- SEARCH SORT "Ex 017-023-322" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc291.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc293.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.23. Listing nondescript items of something</b></font></td></tr></table>
 <p>
-<p>So far we have been able to ignore the difference between &quot;text&quot; and &quot;indexed text&quot; because Inform has always been able to convert the former to the latter when needed. But the reverse conversion cannot be made. Ordinary text is stored in a specially compacted, read-only form: it's really part of the program, not part of the data.
+<p><b>1. When it happens.</b> This activity prints up the also-ran paragraph at the end of a room description. These are nondescript items because they don't merit paragraphs of their own: if, as sometimes happens, there are none in the room, then no such paragraph is printed and this activity does not happen. (So to add a further paragraph to a room description, a simpler &quot;after looking&quot; rule should be used, not an &quot;after listing nondescript items&quot; rule.)
 <p>
-<p>The upshot of this is that if we need a variable to contain text which can be internally altered during play, then we must declare this. Instead of writing
+<p><b>2. The default behaviour.</b> The paragraph ordinarily reads as &quot;You can also see a cask and a clock.&quot; or similar. Before the activity begins, those objects which are nondescript - in this case the cask and the clock - are given the property of being &quot;marked for listing&quot;. If it turns out that nothing is marked for listing, because of before rules like the one in the example below, then nothing is printed.
 <p>
-<blockquote><font color="#000080">The player's forename is a text that varies.
-</font></blockquote><p>
-<p>
-<p>we must write:
-<p>
-<blockquote><font color="#000080">The player's forename is an indexed text that varies.
-</font></blockquote><p>
-<p>
-<p>Similarly for a property:
-<p>
-<blockquote><font color="#000080">A person has an indexed text called nickname.
-</font></blockquote><p>
-<p>
-<p>For a named &quot;let&quot; value, we have a dilemma. These are normally created by writing something like:
-<p>
-<blockquote><font color="#000080">let the target be 17;
-</font></blockquote><p>
-<p>
-<p>and Inform looks at the value - here 17, a number - to deduce that the new value, called &quot;target&quot;, must be a number. So if we write:
-<p>
-<blockquote><font color="#000080">let the target be &quot;excellent&quot;;
-</font></blockquote><p>
-<p>
-<p>the result is that &quot;target&quot; is just a text, not an indexed text. We get around this by writing instead:
-<p>
-<blockquote><font color="#000080">let the target be an indexed text;
-</font></blockquote><p>
-<p>
-<p>which creates the value, initially having the empty text as contents, and then
-<p>
-<blockquote><font color="#000080">let the target be &quot;excellent&quot;;
-</font></blockquote><p>
-<p>
-<p>to subsequently set its initial state.
-<p>
-<p>The same issue arises for table columns, because we are allowed to simply write out values in table columns, and let Inform work out what kind they are. If there are blank entries, we can always write in the kind of value by hand, but suppose the entries are initially all filled in? The answer is that we can imitate this:
-<p>
-<blockquote><font color="#000080">Table of Neptune's Moons
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">moon</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">surface (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Nereid&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;utterly unknown&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Triton&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cryovolcanic ridges&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Proteus&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highly irregular and sooty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<p>Here the two columns are called &quot;moon&quot; and &quot;surface&quot;, so we can talk about the &quot;moon entry&quot; and the &quot;surface entry&quot; once a row has been chosen: but the moon entry is text, and the surface entry is indexed text.
-<p>
-<p>Lastly, suppose we want to define new phrases which deal with text. Here we have two things to remember. First, we need to say that the value decided is indexed text, not text; secondly, that text converts to indexed text by magic, but not vice versa. So:
-<p>
-<blockquote><font color="#000080">To decide what indexed text is (T - text) doubled:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on &quot;[T][T]&quot;.
-</font></blockquote><p>
-<p>
-<p>works fine so long as we only want to pass text to it, but would not let us double indexed text. This, on the other hand, handles both:
-<p>
-<blockquote><font color="#000080">To decide what indexed text is (T - indexed text) doubled:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on &quot;[T][T]&quot;.
-</font></blockquote><p>
-<p>
-<p>So for instance:
-<p>
-<blockquote><font color="#000080">say &quot;Neptune&quot; doubled.
-</font></blockquote><p>
-<p>
-<p>prints &quot;NeptuneNeptune&quot; because Inform automatically converts &quot;Neptune&quot; to indexed text when &quot;doubled&quot; is used on it.
-<p>
-<p><hr><p>
-<!-- EXAMPLE START -->
-<a name="e137"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc322.html#e137 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>362</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc322.html#e137 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Identity Theft</font></b></a><br>Allowing the player to enter a name to be used for the player character during the game.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex137.html#e137 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Let's say we want to allow the player to enter any name he likes for his character. Moreover, we want to reject very long names (which are likely to be mistakes anyway), and we want to extract the player's chosen first name from the rest.
+<p><b>3. Examples.</b> (a) Promoting something out of the nondescript category, by unmarking it.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode451(code) {
+function pasteCode66(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode(' [=0x0022=]Identity Theft[=0x0022=][=0x000A=][=0x000A=]The player[=0x0027=]s forename is an indexed text that varies. The player[=0x0027=]s full name is an indexed text that varies.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]change the command prompt to [=0x0022=]What is your name? [=0x003E=] [=0x0022=][=0x000A=][=0x000A=]To decide whether collecting names:[=0x000A=][=0x0009=]if the command prompt is [=0x0022=]What is your name? [=0x003E=] [=0x0022=], yes;[=0x000A=][=0x0009=]no.[=0x000A=][=0x000A=]After reading a command when collecting names:[=0x000A=][=0x0009=]if the number of words in the player[=0x0027=]s command is greater than 5[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][paragraph break]Who are you, a member of the British royal family? No one has that many names. Let[=0x0027=]s try this again.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]reject the player[=0x0027=]s command;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]change the player[=0x0027=]s full name to the player[=0x0027=]s command;[=0x000A=][=0x0009=]change the player[=0x0027=]s forename to word number 1 in the player[=0x0027=]s command;[=0x000A=][=0x0009=]change the command prompt to [=0x0022=][=0x003E=][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=]Hi, [player[=0x0027=]s forename]![=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=][banner text][=0x0022=];[=0x000A=][=0x0009=]move the player to the location;[=0x000A=][=0x0009=]reject the player[=0x0027=]s command.[=0x000A=][=0x000A=][We also want to postpone the proper beginning of the game until we[=0x0027=]ve gotten the name:][=0x000A=][=0x000A=]Instead of looking when collecting names: do nothing.[=0x000A=][=0x000A=]Rule for printing the banner text when collecting names: do nothing.[=0x000A=][=0x000A=]Rule for constructing the status line when collecting names: do nothing.[=0x000A=][=0x000A=]Procedural rule: if collecting names, ignore the turn sequence rules.[=0x000A=][=0x000A=]Your Bedroom is a room. The printed name of Your Bedroom is [=0x0022=][player[=0x0027=]s forename][=0x0027=]s Bedroom[=0x0022=].[=0x000A=][=0x000A=]The player carries a letter. The description of the letter is [=0x0022=]Dear [player[=0x0027=]s full name], [paragraph break]You have won the Norwegian Daily Lottery! ...[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('Before listing nondescript items:[=0x000A=][=0x0009=]if the watch is marked for listing:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]The watch catches your eye.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]change the watch to not marked for listing.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode451()"><img border=0 src=../doc_images/paste.png></a>  &quot;Identity Theft&quot;
+<a href="javascript:pasteCode66()"><img border=0 src=../doc_images/paste.png></a> Before listing nondescript items:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the watch is marked for listing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The watch catches your eye.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the watch to not marked for listing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player's forename is an indexed text that varies. The player's full name is an indexed text that varies.
+<p>(b) Changing the normal phrasing of the paragraph. Note that we can also change the listing style; the one below is the default.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode67(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('Rule for listing nondescript items of the Distressingly Messy Room:[=0x000A=][=0x0009=]say [=0x0022=]Strewn carelessly on the floor[=0x0022=];[=0x000A=][=0x0009=]list the contents of the Distressingly Messy Room, as a sentence,[=0x000A=][=0x0009=][=0x0009=]tersely, listing marked items only, prefacing with is/are,[=0x000A=][=0x0009=][=0x0009=]including contents and giving brief inventory information;[=0x000A=][=0x0009=]say [=0x0022=].[=0x0022=][=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode67()"><img border=0 src=../doc_images/paste.png></a> Rule for listing nondescript items of the Distressingly Messy Room:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Strewn carelessly on the floor&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;list the contents of the Distressingly Messy Room, as a sentence,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tersely, listing marked items only, prefacing with is/are,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;including contents and giving brief inventory information;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;What is your name? > &quot;
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e137"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc292.html#e137 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>322</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc292.html#e137 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Rip</font></b></a><br>A simple way to allow objects in certain places to be described in the room description body text rather than in paragraphs following the room description.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex137.html#e137 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>There are times when, for greater elegance of prose, we'd like to mention an object in the main body text of a room. For instance:
+<p>
+<blockquote><font color="#000080">Here is a lovely, secluded fold in the mountains, far from civilization: as though to prove it, Rip Van Winkle is sleeping under a tree.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To decide whether collecting names:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the command prompt is &quot;What is your name? > &quot;, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;no.
+<p>As we've already seen, that's no problem if Rip is scenery. He'll stay there motionless.
+<p>
+<p>But what if something in the game allows Rip to wake up? Or what if we want to use the same technique on a portable object that the player should be allowed to take? Clearly in that case it's not appropriate to make the mentioned thing be scenery, and at the same time, we need to keep Inform from adding a superfluous
+<p>
+<blockquote><font color="#000080">You can see Rip Van Winkle here.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After reading a command when collecting names:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of words in the player's command is greater than 5
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[paragraph break]Who are you, a member of the British royal family? No one has that many names. Let's try this again.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the player's full name to the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the player's forename to word number 1 in the player's command;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the command prompt to &quot;>&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Hi, [player's forename]!&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[banner text]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the player to the location;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;reject the player's command.
+<p>to the end of our description.
+<p>
+<p>Here is how:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode418(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode(' [=0x0022=]Rip Van Winkle[=0x0022=][=0x000A=][=0x000A=]A person can be asleep.[=0x000A=][=0x000A=]The Catskills is a room. [=0x0022=]Here is a lovely, secluded fold in the mountains, far from civilization[if Rip Van Winkle is asleep]: as though to prove it, Rip Van Winkle is sleeping under a tree[end if].[=0x0022=][=0x000A=][=0x000A=]A tree is scenery in the Catskills.[=0x000A=][=0x000A=]Rip Van Winkle is a man in the Catskills. Rip Van Winkle is asleep.[=0x000A=][=0x000A=]Before listing nondescript items of the Catskills:[=0x000A=][=0x0009=]if Rip Van Winkle is marked for listing:[=0x000A=][=0x0009=][=0x0009=]now Rip Van Winkle is not marked for listing;[=0x000A=][=0x0009=][=0x0009=]if Rip Van Winkle is not asleep,[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]Rip Van Winkle stands here, looking mightily confused.[=0x0022=][=0x000A=][=0x000A=]Instead of waiting:[=0x000A=][=0x0009=]say [=0x0022=]Rip Van Winkle wakes up with a snort.[=0x0022=];[=0x000A=][=0x0009=]now Rip Van Winkle is not asleep.[=0x000A=][=0x000A=]Test me with [=0x0022=]look / z / look[=0x0022=].[=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode418()"><img border=0 src=../doc_images/paste.png></a>  &quot;Rip Van Winkle&quot;
 </font></blockquote><p>
 <p>
-<p>We also want to postpone the proper beginning of the game until we've gotten the name:
-<p>
-<blockquote><font color="#000080">Instead of looking when collecting names: do nothing.
+<blockquote><font color="#000080">A person can be asleep.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for printing the banner text when collecting names: do nothing.
+<blockquote><font color="#000080">The Catskills is a room. &quot;Here is a lovely, secluded fold in the mountains, far from civilization[if Rip Van Winkle is asleep]: as though to prove it, Rip Van Winkle is sleeping under a tree[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for constructing the status line when collecting names: do nothing.
+<blockquote><font color="#000080">A tree is scenery in the Catskills.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Procedural rule: if collecting names, ignore the turn sequence rules.
+<blockquote><font color="#000080">Rip Van Winkle is a man in the Catskills. Rip Van Winkle is asleep.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Your Bedroom is a room. The printed name of Your Bedroom is &quot;[player's forename]'s Bedroom&quot;.
+<blockquote><font color="#000080">Before listing nondescript items of the Catskills:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Rip Van Winkle is marked for listing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now Rip Van Winkle is not marked for listing;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if Rip Van Winkle is not asleep,
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Rip Van Winkle stands here, looking mightily confused.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries a letter. The description of the letter is &quot;Dear [player's full name], [paragraph break]You have won the Norwegian Daily Lottery! ...&quot;.
+<blockquote><font color="#000080">Instead of waiting:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Rip Van Winkle wakes up with a snort.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now Rip Van Winkle is not asleep.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc322.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;look / z / look&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc292.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e39"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex39.html#e39 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>363</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex39.html#e39 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Mirror, Mirror</font></b></a><br>The sorcerer's mirror can, when held up high, form an impression of its surroundings which it then preserves.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex39.html#e39 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e222"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex222.html#e222 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>364</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex222.html#e222 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Cow Exonerated</font></b></a><br>Creating a class of matches that burn for a time and then go out, with elegant reporting when several matches go out at once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex222.html#e222 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc321.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc323.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e263"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex263.html#e263 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>323</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex263.html#e263 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Eye of the Idol</font></b></a><br>A systematic way to allow objects in certain places to be described in the room description body text rather than in paragraphs following the room description, and to control whether supporters list their contents or not.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex263.html#e263 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e70"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex70.html#e70 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>324</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex70.html#e70 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Happy Hour</font></b></a><br>Listing visible characters as a group, then giving some followup details in the same paragraph about specific ones.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex70.html#e70 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc291.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc293.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

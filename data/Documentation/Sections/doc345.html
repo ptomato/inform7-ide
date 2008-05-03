@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.11. Declaring files</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.9. Lengthening or shortening a list</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,33 +19,55 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Declaring files" -->
-<!-- SEARCH SECTION "21.11" -->
-<!-- SEARCH SORT "021-011-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc344.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc346.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.11. Declaring files</b></font></td></tr></table>
+<!-- SEARCH TITLE "Lengthening or shortening a list" -->
+<!-- SEARCH SECTION "20.9" -->
+<!-- SEARCH SORT "020-009-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc344.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc346.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.9. Lengthening or shortening a list</b></font></td></tr></table>
 <p>
-<p>Like figures and sounds, files must be declared before they can be used. For instance:
+<p>We can explicitly change the length of a list like so:
 <p>
-<blockquote><font color="#000080">The File of Glaciers is called &quot;ice&quot;.
+<blockquote><font color="#000080">change L to have 21 entries;
 </font></blockquote><p>
 <p>
-<p>This creates a new named constant &quot;File of Glaciers&quot; to refer to the file, throughout the source text. We use this name for it whether or not the actual disc file exists yet: it might be one that will only be created if something unusual happens in play, for instance.
+<p>If L previously had more than 21 entries, they are thrown away (and lost forever); if L previously had fewer, then new entries are created, using the default value for whatever kind of value L holds. So extending a list of numbers will pad it out with 0s, but extending a list of texts will pad it out with the empty text &quot;&quot;, and so on.
 <p>
-<p>Quoted filenames should contain only letters and digits, should be 23 characters or fewer, and should begin with a letter. (In particular they can contain no slashes or dots - no subfolders or extensions can be indicated.) The actual filename this translates to will vary from platform to platform, but &quot;ice.glkdata&quot; is typical, stored in some sensible folder.
+<p>We can also write the slightly different phrases:
 <p>
-<p>Every file has an owner - not a person, but the project which normally writes to it. Inform assumes that the current project will be owning any file which it declares - the File of Glaciers, for instance. But we can optionally specify that it is owned by somebody else:
-<p>
-<blockquote><font color="#000080">The file of Boundaries (owned by another project) is called &quot;milnor&quot;.
-<br>The file of Spectral Sequences (owned by project &quot;4122DDA8-A153-46BC-8F57-42220F9D8795&quot;) is called &quot;adams&quot;.
+<blockquote><font color="#000080">truncate L to 8 entries;
+<br>truncate L to the last 4 entries;
+<br>extend L to 80 entries;
 </font></blockquote><p>
 <p>
-<p>Inform uses ownership to make sure that we do not accidentally read in a file which has nothing to do with us, but merely happens to use the same name. Thus it is an error to read a file whose ownership does not agree with our declaration. Saying that a file is owned by &quot;another project&quot; allows us to read it whatever the owner is (so this can be used for files shared between multiple projects); specifying exactly where it needs to come from allows us to pass information from one project to another. Note that we identify projects using the IFID number - this can be found in the Contents index for a project, or by typing VERSION during play; see the chapter on Publishing for more about IFIDs.
+<p>The first means &quot;shorten L to length 8 if it is currently longer than that&quot;, and would (for instance) leave a list of length 3 unchanged; the second is similar, but trims excess entries from the front rather than the back; the third means &quot;lengthen L to length 80 if it is currently shorter than that&quot;. Note that
 <p>
-<p>Files are indexed in the Contents index, alongside figures and sound effects.
-<p>
-<p>Two technicalities. First, constants such as &quot;File of Glaciers&quot; are of a kind of value called &quot;external-file&quot; (compare &quot;figure-name&quot; and &quot;sound-name&quot;). Second, Inform's file-handling is provided for the Glulx machine, which in turn uses the Glk interface. This allows for either text or binary files. Inform's higher-level phrases to do with files, described in this chapter, all use text files, and all declared files are text files by default. But we can optionally add the keyword &quot;binary&quot; to declare a binary file, if needed:
-<p>
-<blockquote><font color="#000080">The binary File of Glaciation Data is called &quot;icedata&quot;.
+<blockquote><font color="#000080">truncate L to 0 entries;
 </font></blockquote><p>
 <p>
+<p>shortens L right back down to the empty list, the shortest it can be.
+<p>
+<p>For example,
+<p>
+<blockquote><font color="#000080">To check sorting (N - a number):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let L be a list of numbers;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;extend L to N entries;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with X running from 1 to N:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change entry X of L to X;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;L unrandomised is [L].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort L in random order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;L randomised is [L].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;sort L;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;L in ascending order is [L].&quot;
+</font></blockquote><p>
+<p>
+<p>builds a list of N numbers (initially all 0), fills it with the numbers 1, 2, 3, ..., N, then randomly reorders them, then sorts them back again, recovering the original order. The text produced by &quot;check sorting 10&quot; depends partly on chance but might for instance be:
+<p>
+<blockquote><font color="#000080">L unrandomised is 1, 2, 3, 4, 5, 6, 7, 8, 9 and 10.
+<br>L randomised is 6, 2, 9, 3, 10, 1, 7, 4, 8 and 5.
+<br>L in ascending order is 1, 2, 3, 4, 5, 6, 7, 8, 9 and 10.
+</font></blockquote><p>
+<p>
+<p>As with indexed text in the previous chapter, a project which needs really long lists should use the Glulx virtual machine - &quot;check sorting 10000&quot;, for instance, would break the default memory environment on the Z-machine, which is very tight, but works fine (if not very rapidly) on Glulx.
+<p>
+<p><hr><p>
+<a name="e200"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex200.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>395</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex200.html#e200 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Leopard-skin</font></b></a><br>A maze that the player can escape if he performs an exact sequence of actions.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex200.html#e200 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc344.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc346.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

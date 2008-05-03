@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.21. Guidelines on how to write rules about actions</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.16. Reaching inside and reaching outside rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,70 +19,45 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Guidelines on how to write rules about actions" -->
-<!-- SEARCH SECTION "12.21" -->
-<!-- SEARCH SORT "012-021-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc192.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc194.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.21. Guidelines on how to write rules about actions</b></font></td></tr></table>
+<!-- SEARCH TITLE "Reaching inside and reaching outside rules" -->
+<!-- SEARCH SECTION "12.16" -->
+<!-- SEARCH SORT "012-016-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc192.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc194.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.16. Reaching inside and reaching outside rules</b></font></td></tr></table>
 <p>
-<p>Looking at the action-processing diagram, there seem to be a bewildering number of ways to intervene. For instance, suppose it must be fatal to pick up a land mine. All six of the following rules would do the business:
+<p>The flow chart back at the start of this chapter shows that, early on in processing an action (between Before and Instead), Inform asks the question &quot;Can we see or touch things?&quot; This is where it enforces the requirements in the action's definition:
 <p>
-<blockquote><font color="#000080">Before taking the land mine: end the game saying &quot;Bang!&quot;
-<br>Instead of taking the land mine: end the game saying &quot;Bang!&quot;
-<br>Check taking the land mine: end the game saying &quot;Bang!&quot;
-<br>Carry out taking the land mine: end the game saying &quot;Bang!&quot;
-<br>After taking the land mine: end the game saying &quot;Bang!&quot;
-<br>Report taking the land mine: end the game saying &quot;Bang!&quot;
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light.
+<br>Scraping it with is an action applying to two things.
 </font></blockquote><p>
 <p>
-<p>So which should we use? Of course, we could decide that it really doesn't matter: what works, works. But it is a good idea to play along with the conventions used by Inform, if only because that will make our rules interact better with each other and with rules by other people which we may someday want to borrow. So this chapter ends by offering a few guidelines. Let us suppose that we have some effect which we want to achieve.
+<p>Seeing and touching are two different questions, which Inform answers in different ways. We shall see ways to modify or entirely alter what can be seen using the &quot;deciding the scope of something&quot; activity when we get to the Understanding and Activities chapters, and later in this chapter we will change the definition of touchability. What both have in common is that they are complicated questions, affected by the circumstances. We cannot simply declare that the player can touch a given lever, or can see in a given room: we must arrange for there to be no barriers between the player and the lever, or for there to be a light source in the room.
 <p>
-<p><b>1. Are we just trying to correct the player's typing?</b>
+<p>An example of rules applying to given objects is provided by the way that Inform decides whether the player can reach something or not. For instance, suppose the following:
 <p>
-<p>For instance, responding to the command &quot;STEAL GOLDEN EAGLE&quot; with a reply like &quot;To steal something, just try to TAKE it.&quot; It is bad style to make a special action for this, which does nothing except to print up this text: better is to use the &quot;Understand ... as a mistake&quot; technique, which will come up in the chapter on Understanding.
-<p>
-<p><b>2. Does the effect apply only to a particular situation, or is it a general phenomenon?</b>
-<p>
-<p>In other words, does the effect apply only to particular people, things or places, or is it a generic rule of play? In the case of the land mine, this is an easy question to answer: it is a unique situation. On the other hand, stopping the player from carrying unduly heavy weights would be a generic rule of play.
-<p>
-<p>Rules like the one saying that photography is only possible if one holds the camera are, by convention, also counted as generic rules of play: they are not really special rules about the camera, but apply to all possible acts of photography anywhere, so are actually generic.
-<p>
-<p>Sometimes we can choose our own answer to this question, and go either way. Suppose we want a certain place to be muddy-floored, affecting things that happen there. One way would be to write exceptional rules applying to that one room. But we could alternatively create a general concept of muddiness (&quot;A room can be clean or muddy. A room is usually clean.&quot;) and then regard the new behaviour as being a set of generic rules applying in muddy rooms. We could then, of course, create a second muddy room with much greater ease, or transplant these rules to other works and have muddy rooms in those too.
-<p>
-<p><b>3. Particular situations: use Instead or After (or sometimes Before).</b>
-<p>
-<p>The next question is: does the effect kick in after the hoped-for action has taken place, or not? In the case of the land mine, to answer that means deciding whether we think the detonator is sensitive to the slightest touch - in which case the explosion would happen at the first touch, and should be in an &quot;Instead&quot; rule - or whether one must actually pick up and disturb the mine - in which case an &quot;After&quot; should be used.
-<p>
-<p>That leaves us a choice of two rulebooks if the effect takes place when the merest impulse towards the action is felt: &quot;Before&quot; and &quot;Instead&quot;. Which to use? In cases of doubt, choose &quot;Instead&quot;. But if the effect is intended to absolutely suppress all such impulses - for instance, in a silent examination room there must be no talking - then &quot;Before&quot; might be more appropriate. We could imagine that someone about to say something first has a mental impulse to speak, then opens his mouth so that it becomes visible to others that some talking is about to go on, and finally utters words. Here are three possible responses:
-<p>
-<blockquote><font color="#000080">&quot;You cannot contemplate breaking this smothering silence.&quot; (<i>Before</i>)
-<br>&quot;The invigilator stares you down through her horn-rimmed glasses.&quot; (<i>Instead</i>)
-<br>&quot;Everyone turns, appalled, as the silence is broken like the surface of a swimming pool by a falling elephant.&quot; (<i>After</i>)
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode30(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('The Laboratory is a room. In the Laboratory is a conical flask. The flask is closed and transparent. In the flask is an antibumping granule.[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode30()"><img border=0 src=../doc_images/paste.png></a> The Laboratory is a room. In the Laboratory is a conical flask. The flask is closed and transparent. In the flask is an antibumping granule.
 </font></blockquote><p>
 <p>
-<p><b>4. Generic situations: work with action rules (or sometimes Before).</b>
+<p>The player will be able to examine the granule but not to take it, as that would require reaching through glass. Suppose the player does type TAKE GRANULE: then Inform looks for potential barriers between the player and the granule, and of course finds the conical flask. If, as in this case, the thing to be touched is on the inside, then Inform asks the &quot;reaching inside&quot; rules for permission. There are two reaching inside rules built in to Inform:
 <p>
-<p>(a) If the effect takes place only when an action is definitely being tried, then we should use one of the action's three rulebooks: check, carry out or report. Check rules should do nothing, and should say nothing either unless they block the action (in which case, they should say why).
+<blockquote><font color="#000080">can't reach inside rooms rule
+<br>can't reach inside closed containers rule
+</font></blockquote><p>
 <p>
-<p>Carry out rules must not block the action - it is too late for that - and should not say anything - that hasn't happened yet. (There are a few exceptions: if the action is to look at something, then carrying it out is in a sense the same thing as reporting it. But in all cases of doubt, a carry out rule should say nothing.) Adding a carry out rule to an existing action can make it do something extra.
+<p>and in fact the second of these rules will cause the taking action to fail, because the conical flask is a closed container. (The other rule has to do with a player in one room able to see another room through, say, a telescope - merely having a line of sight doesn't give the ability to reach into the frame.)
 <p>
-<p>Report rules must neither block the action nor do anything. Working with new report rules is a way to make more natural-seeming, or more informative, messages appear. For instance, an effect where we want to be able to see through a door when it is first opened (&quot;You open the panelled door, through which is the Board Room.&quot;) would be a case for a report rule.
+<p>Symmetrically, Inform also has &quot;reaching outside&quot; rules, used if the player is inside something and wants to reach an object in the wider room. (From a bed, probably yes; from a cage, probably no.) This ordinarily contains just one rule:
 <p>
-<p>In all cases, it is good style to write check, carry out or report rules in such a way that they could be used in other works too, or in situations that could conceivably have happened in this one (even if in fact it never does). We may one day want to put our new rules into an extension to be used by other people or in other projects, after all.
+<blockquote><font color="#000080">can't reach outside closed containers rule
+</font></blockquote><p>
 <p>
-<p>In this chapter, we have only seen the addition of new rules. We could add a new &quot;check taking&quot; rule, for instance, with the techniques seen so far. But what if the effect we want is not a matter of adding a rule but taking away, or restricting the applicability, of an existing one? In that case, we will need to use &quot;procedural rules&quot; (which will appear in later chapters) to work on the existing ones. The check, carry out and report rules for all of the built-in actions are named, and they appear in the Actions index.
-<p>
-<p>(b) If the effect takes place to divert or supplement an action, before that action actually takes place, then this should be done with a &quot;Before&quot; rule. This is the biggest practical use of &quot;Before&quot; rules: to try other actions, either instead or as well as the one just getting under way.
-<p>
-<p>For example, if we want an automatic mechanism to try opening a container before taking something inside it, that would be a classic case for &quot;Before&quot;. Indeed, that is the only way it could work - &quot;Before&quot; rules have a chance to get in before the touchability conditions are tested.
-<p>
-<p>If we wanted a special &quot;stealing&quot; action for the act of taking another person's possessions, we might want to divert any taking action for such items into our new &quot;stealing&quot; action - that too would be a &quot;Before&quot;. This would ensure that any &quot;Instead&quot; rules to do with taking do not apply.
-<p>
-<p><b>5. Changing the behaviour of out-of-world actions.</b>
-<p>
-<p>Remember that &quot;Instead&quot;, &quot;Before&quot; and &quot;After&quot; do not apply: so use &quot;check&quot; rules to forbid certain out-of-world activities, or procedural rules to abolish the usual &quot;carry out&quot; rule and replace it with a new one.
-<p>
-<p><b>Finally...</b>
-<p>
-<p>These are only guidelines. The system is designed to be flexible in order to give the author the widest possible range of options, and nobody should feel ashamed of making use of them.
-<p>
+<p><hr><p>
+<a name="e258"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex258.html#e258 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>203</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex258.html#e258 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Carnivale</font></b></a><br>An alternative to backdrops when we want something to be visible from a distance but only touchable from one room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex258.html#e258 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc192.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc194.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

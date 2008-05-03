@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>18.2. Named rules and rulebooks</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.5. Assemblies and body parts</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,93 +19,121 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Nine AM Appointment" -->
-<!-- SEARCH SECTION "Ex 333" -->
-<!-- SEARCH SORT "Ex 018-002-333" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc297.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap18.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 18: Rulebooks</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc299.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>18.2. Named rules and rulebooks</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Night Before" -->
+<!-- SEARCH SECTION "Ex 47" -->
+<!-- SEARCH SORT "Ex 004-005-047" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc57.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc59.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.5. Assemblies and body parts</b></font></td></tr></table>
 <p>
-<p>Most of the rules built into Inform have names. For instance, a rule called &quot;the advance time rule&quot; is the one which increments the number of turns - usually visible on the &quot;status line&quot; displayed above the window of a game in progress - and advances the clock, which is usually not visible, but ticking away behind the scenes.
+<p>In the previous chapter, we saw that it was possible to make sub-parts of things. For instance,
 <p>
-<p>A rulebook is a list of rules to be followed in sequence until one of them makes a decision. For instance, when actions get to the &quot;instead&quot; stage, each &quot;instead&quot; rule is tried until one of them chooses to do something. If the source text contains the rules
-<p>
-<blockquote><font color="#000080">Instead of taking something: say &quot;You have no particular need just now.&quot;
-<br>Instead of taking a fish: say &quot;It's all slimy.&quot;
+<blockquote><font color="#000080">The white door is in the Drawing Room. The handle is part of the white door.
 </font></blockquote><p>
 <p>
-<p>and a command to TAKE something is tried, then only one of these rules will have any effect. The &quot;instead&quot; rulebook contains:
+<p>creates a door with an attached handle. But what if we want to say that not just this door, but every door, should have a handle? To do this we first need to create a kind called &quot;handle&quot;, since there will clearly need to be many handles. The solution is:
 <p>
-<blockquote><font color="#000080">Rule (1) to be applied if the action matches &quot;taking a fish&quot;
-<br>Rule (2) to be applied if the action matches &quot;taking something&quot;
+<blockquote><font color="#000080">A handle is a kind of thing. A handle is part of every door.
 </font></blockquote><p>
 <p>
-<p>Inside their rulebook, the rules are not listed in the order of definition in the source text. Rule (1) comes before rule (2) because it applies in more specific circumstances. This is the main idea: a rulebook gathers together rules about making some decision, or taking some action, and sorts them in order to give the more specific rules first choice about whether they want to intervene.
+<p>&quot;Every&quot; is a loaded word and best used sparingly. A sentence like &quot;A handle is part of every handle&quot; would, if taken literally, mean that a handle takes forever to make and is never finished. Inform will reject this, but the moral is clear: we should think about what we are doing with &quot;every&quot;. Another restriction is it is not safe to meddle with the three fundamental kinds &quot;room&quot;, &quot;container&quot; or &quot;supporter&quot; by making them into assemblies, but in fact this one can be got around quite easily, like so -
 <p>
-<p>Whereas only some rules are named (the two &quot;instead&quot; rules above have no name, for instance), every rulebook has a name. For convenience, the following forms of rule and rulebook name are synonymous:
-<p>
-<blockquote><font color="#000080">advance time = the advance time rule
+<blockquote><font color="#000080">A silver coin is a kind of thing. A banking room is a kind of room. Five silver coins are in every banking room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">the instead rules = instead rulebook = instead
+<p>The effect of sentences like these is to make what we might call &quot;assemblies&quot; instead of single things. When a banking room is created, so are five more silver coins; when a door is created, so is another handle. Such sentences act not only on items created later on in the source text, but also on all those created so far.
+<p>
+<p>This is especially useful for body parts. If we would like to explore Voltaire's suggestion that history would have been very different if only Cleopatra's nose had been shorter, we will need noses:
+<p>
+<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person.
 </font></blockquote><p>
 <p>
-<p>The names of built-in rules have been chosen as descriptively as possible: the &quot;can't go through closed doors rule&quot;, for instance. Names for rules tend to be verbose, but this is a situation where clarity is very much better than brevity.
+<p>Something to bear in mind, though, is that in play the following may well happen:
+<p>
+<blockquote><font color="#000080">>examine nose
+<br>Which do you mean, your nose, Antony's nose or Cleopatra's nose?
+</font></blockquote><p>
+<p>
+<p>...because the player, being also a &quot;person&quot;, is as susceptible to the invention of noses as anyone else.
+<p>
+<p>Note that Inform names the otherwise nameless noses after their owners. It will always do this unless there are multiple indistinguishable things being created, as in the &quot;five silver coins are in every banking room&quot; example: those will all just be called &quot;silver coin&quot;.
+<p>
+<p>Something to watch out for is that if we write:
+<p>
+<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person. Antony and Cleopatra are people.
+</font></blockquote><p>
+<p>
+<p>then we can begin talking about &quot;Antony's nose&quot; and &quot;Cleopatra's nose&quot;: but it is not safe to discuss these before the sentence &quot;A nose is part of every person&quot; which creates them. Another pitfall is that if we then write:
+<p>
+<blockquote><font color="#000080">Marcus Tullius Cicero is a person.
+</font></blockquote><p>
+<p>
+<p>then although &quot;Marcus Tullius Cicero's nose&quot; and &quot;Cicero's nose&quot; are both valid names for the consular nose, &quot;Marcus's nose&quot; is not.
 <p>
 <p><hr><p>
+<a name="e80"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex80.html#e80 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>44</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex80.html#e80 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Being Prepared</font></b></a><br>A kind for jackets, which always includes a container called a pocket.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex80.html#e80 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e410"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex410.html#e410 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>45</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex410.html#e410 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Model Shop</font></b></a><br>An "on/off button" which controls whatever device it is part of.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex410.html#e410 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e125"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex125.html#e125 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>46</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex125.html#e125 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> U-Stor-It</font></b></a><br>A "chest" kind which consists of a container which has a lid as a supporter.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex125.html#e125 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e248"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc298.html#e248 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>333</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc298.html#e248 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Nine AM Appointment</font></b></a><br>A WAIT [number] MINUTES command which advances through an arbitrary number of turns.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex248.html#e248 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e248"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc58.html#e248 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>47</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc58.html#e248 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Night Before</font></b></a><br>Instructing Inform to prefer different interpretations of EXAMINE NOSE, depending on whether the player is alone, in company, or with Rudolph the Red-nosed Reindeer.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex248.html#e248 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>If there's some reason the player needs to be at a specific place and time, we might want to allow him to wait a number of minutes at once.
+<p>Suppose that we're going to give every person in the game a nose, but we want references to a nose always to mean the nose of someone *else*, if the player is with one other person. Moreover, on some occasions we're going to be in sight of Rudolph, so actions directed at an unspecified nose should always prefer his.
+<p>
+<p>This relies on a somewhat advanced technique from the Understanding chapter, but since it may become useful with assemblies and body parts, it is worth mentioning here.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode421(code) {
+function pasteCode140(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Nine AM Appointment[=0x0022=][=0x000A=][=0x000A=]Waiting more is an action applying to one number.[=0x000A=][=0x000A=]Understand [=0x0022=]wait [number] minutes/turns[=0x0022=] or [=0x0022=]wait [number][=0x0022=] as waiting more.[=0x000A=][=0x000A=]Carry out waiting more:[=0x000A=][=0x0009=]let duration be the number understood - 1;[=0x000A=][=0x0009=]repeat with X running from 1 to duration[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]follow the turn sequence rules;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=][The one nuance here is that after our wait command occurs, the turn sequence rules will occur one more time. So we need to subtract one from the parsed number to make it to the right number of minutes.][=0x000A=][=0x000A=]Report waiting more:[=0x000A=][=0x0009=]say [=0x0022=]It is now [time of day + 1 minute].[=0x0022=][=0x000A=][=0x000A=][And if we want to ensure that the player doesn[=0x0027=]t (accidentally or intentionally) put the interpreter through a really long loop, we could put an upper limit on his patience:][=0x000A=][=0x000A=]Check waiting more:[=0x000A=][=0x0009=]if the number understood [=0x003E=] 59, say [=0x0022=]You really haven[=0x0027=]t got that kind of patience.[=0x0022=] instead.[=0x000A=][=0x000A=]The Specialist[=0x0027=]s Office is a room. The secretary is a woman in the Office. Instead of asking the secretary about [=0x0022=][appointment][=0x0022=], say [=0x0022=][=0x0027=]Hang on just five more minutes,[=0x0027=] she says, in a distracted manner.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]appointment[=0x0022=] or [=0x0022=]specialist[=0x0022=] or [=0x0022=]doctor[=0x0022=] as [=0x0022=][appointment][=0x0022=].[=0x000A=][=0x000A=]At 9:45 AM: say [=0x0022=]The secretary glances at you and gives a reassuring smile.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]ask secretary about appointment / wait five minutes / g / g / wait 60 minutes / wait 30 minutes[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]The Night Before[=0x0022=][=0x000A=][=0x000A=]The North Pole is a room. [=0x0022=]Here it is: the famous Pole. From here you can go south (or south-south, or south-south-by-south); or, alternatively, take refuge inside a red-and-white-striped cabin.[=0x0022=] The cabin is scenery in the North Pole. Instead of entering the cabin, try going inside.[=0x000A=][=0x000A=]Santa is a man in the North Pole. [=0x0022=]Santa is pacing around in the snow and trying to psych himself up for the big night.[=0x0022=][=0x000A=][=0x000A=]Inside from North Pole is the Candy Cane Cabin. The description of the Cabin is [=0x0022=]Striped red and white, but nothing can make this place seem warm and inviting since Mrs. Santa ran off with the Tooth Fairy.[=0x0022=][=0x000A=][=0x000A=]The Ice Shelf is south of North Pole. [=0x0022=]The ice here has been smoothed into a kind of runway for easy take-off, and ends in a cliff and cold arctic sea.[=0x0022=] Donner, Vixen, Blixen, and Rudolph are animals in the Ice Shelf.[=0x000A=][=0x000A=]A nose is a kind of thing. A nose is part of every person. The description of Santa[=0x0027=]s nose is [=0x0022=]It[=0x0027=]s a bit ruddy. You don[=0x0027=]t like to mention it, but Santa[=0x0027=]s been dipping heavily into the Grey Goose since Mrs. Santa left town.[=0x0022=] The description of a nose is usually [=0x0022=]Not terribly exciting.[=0x0022=]  The description of Rudolph[=0x0027=]s nose is [=0x0022=]See how it glows![=0x0022=][=0x000A=][=0x000A=][Next, we[=0x0027=]ll teach Inform some vocabulary to distinguish between the player and everyone else:][=0x000A=][=0x000A=]Definition: a person is other if it is not the player.[=0x000A=][=0x000A=]Definition: a thing is selfish if it is part of the player and the player can see an other person.[=0x000A=][=0x000A=]Instead of examining a selfish nose:[=0x000A=][=0x0009=]say [=0x0022=]You cross your eyes, but can[=0x0027=]t get a good look.[=0x0022=][=0x000A=][=0x000A=][Here is the part that actually determines the preferences. [=0x0022=]Does the player mean...[=0x0022=] can result in five outcomes: [=0x0022=]it is very unlikely[=0x0022=], [=0x0022=]it is unlikely[=0x0022=], [=0x0022=]it is possible[=0x0022=] (the neutral default), [=0x0022=]it is likely[=0x0022=], and [=0x0022=]it is very likely[=0x0022=]. This is discussed in greater detail in the Understanding chapter. Here, we want to discourage references to the player[=0x0027=]s own nose and encourage references to the nose of Rudolph, so:][=0x000A=][=0x000A=]Does the player mean doing something when the noun is a selfish nose or the second noun is a selfish nose: it is very unlikely.[=0x000A=][=0x000A=]Does the player mean doing something to Rudolph[=0x0027=]s nose: it is very likely.[=0x000A=][=0x000A=][And this part is just for decoration:][=0x000A=][=0x000A=]Rule for writing a paragraph about Rudolph:[=0x000A=][=0x0009=]say [=0x0022=]The reindeer are already harnessed and waiting impatiently. The brilliance of [Rudolph][=0x0027=]s nose casts an eerie red glow over [the list of unmentioned animals in the location].[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]x nose / x my nose / x santa[=0x0027=]s nose / in / x nose / out / s / x my nose / x nose / x rudolph[=0x0027=]s nose / x donner[=0x0027=]s nose[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode421()"><img border=0 src=../doc_images/paste.png></a> &quot;Nine AM Appointment&quot;
+<a href="javascript:pasteCode140()"><img border=0 src=../doc_images/paste.png></a> &quot;The Night Before&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Waiting more is an action applying to one number.
+<blockquote><font color="#000080">The North Pole is a room. &quot;Here it is: the famous Pole. From here you can go south (or south-south, or south-south-by-south); or, alternatively, take refuge inside a red-and-white-striped cabin.&quot; The cabin is scenery in the North Pole. Instead of entering the cabin, try going inside.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;wait [number] minutes/turns&quot; or &quot;wait [number]&quot; as waiting more.
+<blockquote><font color="#000080">Santa is a man in the North Pole. &quot;Santa is pacing around in the snow and trying to psych himself up for the big night.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out waiting more:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let duration be the number understood - 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with X running from 1 to duration
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;follow the turn sequence rules;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">Inside from North Pole is the Candy Cane Cabin. The description of the Cabin is &quot;Striped red and white, but nothing can make this place seem warm and inviting since Mrs. Santa ran off with the Tooth Fairy.&quot;
 </font></blockquote><p>
 <p>
-<p>The one nuance here is that after our wait command occurs, the turn sequence rules will occur one more time. So we need to subtract one from the parsed number to make it to the right number of minutes.
-<p>
-<blockquote><font color="#000080">Report waiting more:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is now [time of day + 1 minute].&quot;
+<blockquote><font color="#000080">The Ice Shelf is south of North Pole. &quot;The ice here has been smoothed into a kind of runway for easy take-off, and ends in a cliff and cold arctic sea.&quot; Donner, Vixen, Blixen, and Rudolph are animals in the Ice Shelf.
 </font></blockquote><p>
 <p>
-<p>And if we want to ensure that the player doesn't (accidentally or intentionally) put the interpreter through a really long loop, we could put an upper limit on his patience:
-<p>
-<blockquote><font color="#000080">Check waiting more:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number understood > 59, say &quot;You really haven't got that kind of patience.&quot; instead.
+<blockquote><font color="#000080">A nose is a kind of thing. A nose is part of every person. The description of Santa's nose is &quot;It's a bit ruddy. You don't like to mention it, but Santa's been dipping heavily into the Grey Goose since Mrs. Santa left town.&quot; The description of a nose is usually &quot;Not terribly exciting.&quot;  The description of Rudolph's nose is &quot;See how it glows!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Specialist's Office is a room. The secretary is a woman in the Office. Instead of asking the secretary about &quot;[appointment]&quot;, say &quot;'Hang on just five more minutes,' she says, in a distracted manner.&quot;
+<p>Next, we'll teach Inform some vocabulary to distinguish between the player and everyone else:
+<p>
+<blockquote><font color="#000080">Definition: a person is other if it is not the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;appointment&quot; or &quot;specialist&quot; or &quot;doctor&quot; as &quot;[appointment]&quot;.
+<blockquote><font color="#000080">Definition: a thing is selfish if it is part of the player and the player can see an other person.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">At 9:45 AM: say &quot;The secretary glances at you and gives a reassuring smile.&quot;
+<blockquote><font color="#000080">Instead of examining a selfish nose:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You cross your eyes, but can't get a good look.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;ask secretary about appointment / wait five minutes / g / g / wait 60 minutes / wait 30 minutes&quot;.
+<p>Here is the part that actually determines the preferences. &quot;Does the player mean...&quot; can result in five outcomes: &quot;it is very unlikely&quot;, &quot;it is unlikely&quot;, &quot;it is possible&quot; (the neutral default), &quot;it is likely&quot;, and &quot;it is very likely&quot;. This is discussed in greater detail in the Understanding chapter. Here, we want to discourage references to the player's own nose and encourage references to the nose of Rudolph, so:
+<p>
+<blockquote><font color="#000080">Does the player mean doing something when the noun is a selfish nose or the second noun is a selfish nose: it is very unlikely.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc298.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Does the player mean doing something to Rudolph's nose: it is very likely.
+</font></blockquote><p>
+<p>
+<p>And this part is just for decoration:
+<p>
+<blockquote><font color="#000080">Rule for writing a paragraph about Rudolph:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The reindeer are already harnessed and waiting impatiently. The brilliance of [Rudolph]'s nose casts an eerie red glow over [the list of unmentioned animals in the location].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x nose / x my nose / x santa's nose / in / x nose / out / s / x my nose / x nose / x rudolph's nose / x donner's nose&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc58.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e173"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex173.html#e173 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>334</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex173.html#e173 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Delayed Gratification</font></b></a><br>A WAIT UNTIL [time] command which advances until the game clock reaches the correct hour.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex173.html#e173 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc297.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc299.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc57.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

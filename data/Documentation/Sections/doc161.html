@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.8. Otherwise</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.5. If</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,51 +19,64 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Otherwise" -->
-<!-- SEARCH SECTION "11.8" -->
-<!-- SEARCH SORT "011-008-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc160.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc162.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.8. Otherwise</b></font></td></tr></table>
+<!-- SEARCH TITLE "If" -->
+<!-- SEARCH SECTION "11.5" -->
+<!-- SEARCH SORT "011-005-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc160.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc162.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.5. If</b></font></td></tr></table>
 <p>
-<p>We often need code which does one thing in one circumstance, and another the rest of the time. We could do this like so:
+<p>We now run through a few special phrases which control other phrases: causing them to repeat, perhaps, or to be skipped. These phrases are equivalent to the &quot;control structures&quot; of other computer programming languages: no system for interactive fiction can possibly be adequate unless it allows us to carry out arbitrary computations, so the pretence that Inform is not really a programming language must be dropped sooner or later. That time is now.
 <p>
-<blockquote><font color="#000080">if N is 2 begin; ...; end if;
-<br>if N is not 2 begin; ...; end if;
+<p>The phrase:
+<p>
+<blockquote><font color="#000080">if (... condition ...) then (... another whole phrase ...)
 </font></blockquote><p>
 <p>
-<p>but this is not very elegant, and besides, what if the action we take when N is 2 changes N so that it becomes something else?
+<p>causes the phrase after &quot;then&quot; to be followed only if the condition holds. Some people prefer to use a comma, which is treated just the same:
 <p>
-<p>Instead we use &quot;otherwise&quot;:
-<p>
-<blockquote><font color="#000080">if N is 2 begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>otherwise;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>end if;
+<blockquote><font color="#000080">if (... condition ...), (... another whole phrase ...)
 </font></blockquote><p>
 <p>
-<p>Note that there is only one &quot;end if&quot;: the &quot;otherwise&quot; phrase occurs inside the &quot;if ... end if&quot; block of phrases.
+<p>Because of this conventional use of a comma, it is a good idea to avoid using a comma in the condition itself:
 <p>
-<p>When there is only a single phrase we can use the shortened form:
-<p>
-<blockquote><font color="#000080">if N is 2 then say &quot;Hooray, N is 2!&quot;;
-<br>otherwise say &quot;Boo, N is not 2...&quot;
+<blockquote><font color="#000080">if opening, closing a door, ...
 </font></blockquote><p>
 <p>
-<p>Often, though, what we want is to divide up a situation into many cases, and for this the abbreviation &quot;otherwise if&quot; is allowed:
+<p>tends to confuse Inform.
 <p>
-<blockquote><font color="#000080">if N is 1 begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>otherwise if N is 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>otherwise if N is greater than 4;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;...;
-<br>end if;
+<p>The sense of an &quot;if&quot; can be reversed by using the word &quot;unless&quot; instead. For example,
+<p>
+<blockquote><font color="#000080">if the red door is not closed, ...
 </font></blockquote><p>
 <p>
-<p>At most one of the &quot;...&quot; clauses is ever reached - the first which works out. Note that there is only a single &quot;end if&quot;, at the end: it all counts as a single &quot;if&quot; construction.
+<p>means the same as
 <p>
-<p>(In almost every computer programming language ever devised, including previous versions of Inform, the word &quot;else&quot; is used rather than &quot;otherwise&quot;: for the sake of familiarity, &quot;else&quot; can also be used here. All the same, &quot;otherwise&quot; seems closer to natural English.)
+<blockquote><font color="#000080">unless the red door is closed, ...
+</font></blockquote><p>
 <p>
-<p><hr><p>
-<a name="e231"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex231.html#e231 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>159</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex231.html#e231 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Numberless</font></b></a><br>A simple exercise in printing the names of random numbers, using "otherwise if..." and also a table-based alternative. (Or, in programming terms, how to emulate a switch statement.)<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex231.html#e231 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p>&quot;Unless&quot; can be a good way to make the source text easier for humans to read.
+<p>
+<p>There are many different forms of condition in Inform (and, as we shall see, we can easily add more), but the simplest is:
+<p>
+<blockquote><font color="#000080">(first value) is (second value)
+</font></blockquote><p>
+<p>
+<p>As always, Inform checks that these two values are of kinds which can be compared. The following will produce an objection, for instance:
+<p>
+<blockquote><font color="#000080">if 10 is a door then say &quot;Huzzah!&quot;
+</font></blockquote><p>
+<p>
+<p>since it makes no sense to ask the question, and the only result will be the baffled reply:
+<p>
+<blockquote><font color="#000080"><b>Problem.</b> In the line 'if 10 is a door then say &quot;Huzzah!&quot;' <img border=0 src=../doc_images/Reveal.png>, I can't determine whether or not '10 is a door', because it seems to ask if a number is some sort of door.
+</font></blockquote><p>
+<p>
+<p>This, however, would be fine:
+<p>
+<blockquote><font color="#000080">To comment upon (whatever - a thing):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is transparent then say &quot;I see right through this!&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if whatever is an open door then say &quot;Oh look, an open door!&quot;.
+</font></blockquote><p>
+<p>
+<p>since &quot;whatever&quot; is known to be a thing, and Inform knows that things are indeed sometimes transparent and sometimes open doors.
+<p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc160.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc162.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

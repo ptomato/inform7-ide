@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>10.5. Linking scenes together</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.10. Action variables</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,161 +19,154 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Pine 2" -->
-<!-- SEARCH SECTION "Ex 147" -->
-<!-- SEARCH SORT "Ex 010-005-147" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc147.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap10.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 10: Scenes</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc149.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>10.5. Linking scenes together</b></font></td></tr></table>
+<!-- SEARCH TITLE "Further Reasons Why All Poets Are Liars" -->
+<!-- SEARCH SECTION "Ex 189" -->
+<!-- SEARCH SORT "Ex 012-010-189" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc186.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc188.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.10. Action variables</b></font></td></tr></table>
 <p>
-<p>Let us suppose that somebody gets off the train, after all, so that a second scene follows on.
+<p>For some complex situations, it can be useful to keep track of a few values throughout the processing of the action. This is not an everyday occurrence: in the Standard Rules, for instance, only two or three out of 90 actions need to do this. But suppose we want to write a more deluxe version of our &quot;photographing&quot; action. This time, rather than having a single thing called the &quot;camera&quot;, we will provide a whole range of possible cameras, varying in quality:
 <p>
-<blockquote><font color="#000080">Brief Encounter is a scene. Brief Encounter begins when Train Stop ends.
+<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light. Understand &quot;photograph [something]&quot; as photographing.
 </font></blockquote><p>
 <p>
-<p>The effect of this is that they occur in sequence. If we add a third to the chain of scenes:
-<p>
-<blockquote><font color="#000080">Village Exploration is a scene. Village Exploration begins when Brief Encounter ends.
+<blockquote><font color="#000080">The Studio is a room. Sally is a woman in the Studio. A foam-lined tote bag is in the Studio.
 </font></blockquote><p>
 <p>
-<p>...we find another chance to fool ourselves: if we check the Scenes index again, we can see the linkages between these scenes, but we also see that Brief Encounter never ends (despite its name). All we have said is that another scene begins where Brief Encounter leaves off, but it never does, so this is moot.
+<blockquote><font color="#000080">A camera is a kind of thing. A camera has a number called picture quality. The digital SLR camera is a camera in the tote bag. The player carries a camera called the instant one-shot camera. The picture quality of the SLR camera is 10. The picture quality of the one-shot is 2. Definition: a camera is sharp if its picture quality is 5 or more.
+</font></blockquote><p>
+<p>
+<p>And we will want the photographing action to have the player use the best-quality camera which comes to hand. We will give the action a variable called the 'camera photographed with', thus:
+<p>
+<blockquote><font color="#000080">The photographing action has an object called the camera photographed with.
+</font></blockquote><p>
+<p>
+<p>Every action's variables must be named differently from those of all other actions, because there are some &quot;before&quot; rules (for instance) which take effect for many different actions, and which might need access to any of their variables. So action variables should be named in a way marking out to which action they belong. The best way to do this is to include the past participle of the action name - just as &quot;camera photographed with&quot; contains the past participle &quot;photographed&quot; of the action &quot;photographing&quot;.
+<p>
+<p>This value is created when the action begins, and disappears when the action ends. (If the action should happen a second time before the first time was completed, a second copy of the value is created, leaving the original undisturbed.) When the action begins, the value starts out as something neutral - so if it is a number, it starts out as 0, if a text, it starts out as the blank text &quot;&quot;, and so on. Here it is an object, so it starts out as nothing - the value meaning no object at all. But of course we want to give it a value ourselves. We can do that using the &quot;setting action variables&quot; rulebook. For instance:
+<p>
+<blockquote><font color="#000080">Setting action variables for photographing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the camera photographed with is the sharpest camera which is carried by the actor.
+</font></blockquote><p>
+<p>
+<p>The &quot;setting action variables&quot; rulebook is run through before even the before rules, and it has no power to stop or change the action. Its rules should say nothing and do nothing other than to set rulebook variables like this one. Note that it is intended to work for any actor, not only the player: so rather than referring to the player as the performer of the action, we need to write &quot;the actor&quot;, as in the example above. (See subsequent sections for more on actors.)
+<p>
+<p>We can now write rules such as:
+<p>
+<blockquote><font color="#000080">A check photographing rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the camera photographed with is nothing then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
+</font></blockquote><p>
+<p>
+<p>Only rules to do with the photographing action - before, instead, after, check, carry out, or report rules, and so on - are allowed to see the 'camera photographed with' value: it's the private property of the action.
+<p>
+<p>A further elaboration allows us to make rules about photographing neater to write. If we create our variable like so:
+<p>
+<blockquote><font color="#000080">The photographing action has an object called the camera photographed with (matched as &quot;using&quot;).
+</font></blockquote><p>
+<p>
+<p>...then we are now allowed to add an optional 'using ...' clause onto a description of the action. The clause has to be introduced with a single word: here, it's 'using'. For instance, we could write rules such as
+<p>
+<blockquote><font color="#000080">Instead of photographing something using the one-shot camera:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;But you promised to give this to Sally's nephew.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check photographing something using the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That would require some sort of contraption with mirrors.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report photographing something using a sharp camera:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You feel cool and important as the shutter clicks.&quot;
+</font></blockquote><p>
+<p>
+<p>(This is the method used by the Standard Rules to attach optional clauses such as 'to', 'with' and 'through' to the going action.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e228"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc148.html#e228 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>147</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc148.html#e228 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Pine 2</font></b></a><br>Pine: Adding a conversation with the princess, in which a basic set of facts must be covered before the scene is allowed to end.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex228.html#e228 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e228"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc187.html#e228 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>189</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc187.html#e228 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Further Reasons Why All Poets Are Liars</font></b></a><br>The young William Wordsworth, pushing a box about in his room, must struggle to achieve a Romantic point of view.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex228.html#e228 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>We begin with the location and its fittings, and we create a kind of value which names the different internal positions we will allow.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode237(code) {
+function pasteCode288(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Pine[=0x0022=][=0x000A=][=0x000A=]A person can be asleep or awake. A person can be active or passive.[=0x000A=][=0x000A=]The Spinning Tower is a room. [=0x0022=]A remote corner of the old castle, reserved for spinning and weaving tasks.[=0x0022=][=0x000A=][=0x000A=]Sleeping Beauty is an asleep woman in the Spinning Tower. [=0x0022=][if asleep]Sleeping Beauty lies here, oblivious to your presence[otherwise]Sleeping Beauty stands beside you, looking a little confused[end if].[=0x0022=] The description is [=0x0022=]She is even more magnificent than the rumors suggested.[=0x0022=] Understand [=0x0022=]woman[=0x0022=] or [=0x0022=]girl[=0x0022=] or [=0x0022=]princess[=0x0022=] or [=0x0022=]lady[=0x0022=] as Sleeping Beauty.[=0x000A=][=0x000A=]Discovery is a scene. Discovery begins when play begins. Discovery ends when Sleeping Beauty is awake. Marriage Proposal is a scene. Marriage Proposal begins when Discovery ends.[=0x000A=][=0x000A=]When Discovery ends: say [=0x0022=]Throughout the palace you can hear the other sounds of stirring and movement as the spell of centuries is broken.[=0x0022=][=0x000A=][=0x000A=]Instead of waking an awake person: say [=0x0022=]Redundant.[=0x0022=][=0x000A=][=0x000A=]Instead of waking an asleep person: say [=0x0022=]Yes, but how?[=0x0022=][=0x000A=][=0x000A=]Instead of attacking an asleep person:[=0x000A=][=0x0009=]now the noun is awake;[=0x000A=][=0x0009=]say [=0x0022=][The noun] sits bolt upright. [=0x0027=]Hey! Ow![=0x0027=] So much for that true love[=0x0027=]s kiss nonsense.[=0x0022=][=0x000A=][=0x000A=]Instead of kissing an asleep person:[=0x000A=][=0x0009=]now the noun is awake;[=0x000A=][=0x0009=]say [=0x0022=][The noun] slowly stirs to wakefulness![=0x0022=][=0x000A=][=0x000A=]Instead of throwing water at an asleep person:[=0x000A=][=0x0009=]now the second noun is awake;[=0x000A=][=0x0009=]remove the noun from play;[=0x000A=][=0x0009=]say [=0x0022=]You pour out [the noun] on [the second noun].[=0x000A=][=0x000A=][The second noun] wakes, shuddering. [=0x0027=]Agh! I had a terrible dream about drowning and then-- Hey![=0x0027=][=0x0022=][=0x000A=][=0x000A=]The player carries a jug of water. Understand [=0x0022=]pour [something] on [something][=0x0022=] or [=0x0022=]splash [something] at/on [something][=0x0022=] as throwing it at.[=0x000A=][=0x000A=][So much, we had before. Now, suppose we want a conversation style which allows the player to move conversation forward by asking appropriate questions, but which will keep moving forward even if he doesn[=0x0027=]t. To this end, we provide a table -- a borrowing from a later chapter. In the table, we record two ways of performing each conversation bit, one which reflects the player[=0x0027=]s participation, and one in which the character moves things onward:][=0x000A=][=0x000A=]Table of Conversation[=0x000A=]topic[=0x0009=]reply[=0x0009=]quip[=0x000A=][=0x0022=]dream/dreams/nightmare/nightmares/sleep[=0x0022=][=0x0009=][=0x0022=][=0x0027=]Sleep well?[=0x0027=] you ask solicitously.[=0x000A=][=0x000A=][=0x0027=]Not really,[=0x0027=] she replies, edging away from you. So much for that angle.[=0x0022=][=0x0009=][=0x0022=][=0x0027=]Ghastly nightmares,[=0x0027=] she remarks. You nod politely.[=0x0022=][=0x000A=][=0x0022=]marriage/love/wedding/boyfriend/beau/lover[=0x0022=][=0x0009=][=0x0022=][=0x0027=]So,[=0x0027=] you say. [=0x0027=]This is a little weird since we just met, but, um. Would you like to get married?[=0x0027=][=0x000A=][=0x000A=]She looks at you nervously. [=0x0027=]Do I have to?[=0x0027=][=0x0022=][=0x0009=][=0x0022=][=0x0027=]I, er,[=0x0027=] she says. [=0x0027=]I hope I[=0x0027=]m not supposed to marry you or something.[=0x0027=][=0x0022=][=0x000A=][=0x0022=]marriage/love/wedding/boyfriend/beau/lover[=0x0022=][=0x0009=][=0x0022=][=0x0027=]I was told I was going to marry you and inherit the kingdom,[=0x0027=] you say, apologetically. [=0x0027=]Would that be very bad?[=0x0027=][=0x000A=][=0x000A=][=0x0027=]Oh, it[=0x0027=]s not you -- I[=0x0027=]m seeing someone,[=0x0027=] she says, smiling quickly.[=0x000A=][=0x000A=]You try to think how to point out that it[=0x0027=]s been a hundred years since she last saw her boyfriend.[=0x0022=][=0x0009=][=0x0022=][=0x0027=]Do you think I could go look for someone? I[=0x0027=]m seeing him, you see, and I think I[=0x0027=]ve been... sick... for a while, so he might be worried.[=0x0027=][=0x000A=][=0x000A=]You try to think how to point out that it[=0x0027=]s been a hundred years since she last saw her boyfriend.[=0x0022=][=0x000A=][=0x0022=]marriage/love/wedding/boyfriend/beau/lover[=0x0022=][=0x0009=][=0x0022=][=0x0027=]You[=0x0027=]ve been up here for a hundred years,[=0x0027=] you say. An unpleasant thought occurs to you. [=0x0027=]Was your young man in the castle somewhere?[=0x0027=][=0x000A=][=0x000A=]She shakes her head mutely.[=0x0022=][=0x0009=][=0x0022=]She goes to the window and looks out at the now-fading thicket of briar. [=0x0027=]That took a while to grow,[=0x0027=] she observes. [=0x0027=]I[=0x0027=]ve been up here longer than I thought.[=0x0027=][=0x000A=][=0x000A=]You shrug, uncomfortable.[=0x0022=][=0x000A=][=0x000A=]Instead of asking an awake beauty about a topic listed in the Table of Conversation:[=0x000A=][=0x0009=]now Beauty is passive;[=0x000A=][=0x0009=]say [=0x0022=][reply entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=]blank out the whole row.[=0x000A=][=0x000A=][The [=0x0022=]now Beauty is passive[=0x0022=] line prevents her from making any conversation of her own on a turn when we[=0x0027=]ve spoken to her. This keeps the conversation from progressing too quickly.][=0x000A=][=0x000A=]Instead of telling an awake beauty about something: try asking the noun about it.[=0x000A=][=0x000A=]Instead of asking an asleep person about something:[=0x000A=][=0x0009=]say [=0x0022=][The noun] snores.[=0x0022=][=0x000A=][=0x000A=]Marriage Proposal ends when the number of filled rows in the Table of Conversation is 0.[=0x000A=][=0x000A=]Every turn during Marriage Proposal:[=0x000A=][=0x0009=]if Beauty is active[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]repeat through Table of Conversation[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][quip entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=][=0x0009=]blank out the whole row;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]make no decision;[=0x000A=][=0x0009=][=0x0009=]end repeat;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x000A=][After we[=0x0027=]ve generated any spontaneous conversation, we return her to her regular active state.][=0x000A=][=0x000A=]Every turn: now Beauty is active.[=0x000A=][=0x000A=]When Marriage Proposal ends: end the game saying [=0x0022=]This is going to take some explaining.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]x beauty / wake beauty / pour water on beauty / ask beauty about sleep / z / ask beauty about marriage[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Further Reasons Why All Poets Are Liars[=0x0022=][=0x000A=][=0x000A=]Nook Obscure is a room. [=0x0022=]Above the College kitchens, which make a humming sound, less tuneable than bees, but hardly less industrious, with shrill notes of sharp command and scolding intermixed: and below Trinity[=0x0027=]s loquacious clock, who never lets the quarters, night or day, slip by him unproclaimed, and tells the hours twice over with a male and female voice. In short, the kind of rubbish room they give to a northern villager. But you get a bed and a high shelf all of your own. And you long to find some Romantic way to look out of the window.[=0x0022=][=0x000A=][=0x000A=]The window, the shelf and the bed are scenery in the Nook Obscure. The shelf and the bed are supporters. The bed is enterable.[=0x000A=][=0x000A=]Internal position is a kind of value. The internal positions are nowhere at all, over by the window, under the shelf and near the bed.[=0x000A=][=0x000A=]The box is an enterable supporter in Nook Obscure. The current box position is an internal position that varies. The current box position is near the bed. [=0x0022=]Your packing case, stamped W. WORDSWORTH (KENDAL), is [current box position].[=0x0022=] Instead of taking the box, say [=0x0022=]It is filled with your peerless rock collection and too heavy to lift, but could be pushed.[=0x0022=] Instead of opening the box, say [=0x0022=]It is securely nailed shut.[=0x0022=][=0x000A=][=0x000A=][We create an action, [=0x0022=]pushing it over to[=0x0022=], for pushing a box around on the floor of a single location. (Calling this [=0x0022=]pushing it over to[=0x0022=] prevents clashes with the existing [=0x0022=]pushing it to[=0x0022=] action, which is for pushing things from one room to another.) Almost half of the text which defines the action is concerned with the two action variables, but they make the implementation of everything else so much easier that we end up writing less than if we hadn[=0x0027=]t used them.][=0x000A=][=0x000A=]Understand [=0x0022=]push [something] to [something][=0x0022=] as pushing it over to. Pushing it over to is an action applying to two things.[=0x000A=][=0x000A=]The pushing it over to action has an internal position called the old position.[=0x000A=]The pushing it over to action has an internal position called the new position.[=0x000A=]Setting action variables for pushing something over to something:[=0x000A=][=0x0009=]now the old position is the current box position;[=0x000A=][=0x0009=]now the new position is nowhere at all;[=0x000A=][=0x0009=]if the second noun is the window, now the new position is over by the window;[=0x000A=][=0x0009=]if the second noun is the bed, now the new position is near the bed;[=0x000A=][=0x0009=]if the second noun is the shelf, now the new position is under the shelf.[=0x000A=][=0x000A=]Check pushing it over to:[=0x000A=][=0x0009=]if the noun is not the box, say [=0x0022=]That[=0x0027=]s not something you can push.[=0x0022=] instead;[=0x000A=][=0x0009=]if the player is on the noun, say [=0x0022=]Not while you are standing on [the noun].[=0x0022=] instead;[=0x000A=][=0x0009=]if the new position is nowhere at all, say [=0x0022=]You can only push [the noun] to the window, the bed or the shelf.[=0x0022=] instead;[=0x000A=][=0x0009=]if the new position is the old position, say [=0x0022=]The [noun] is already [new position].[=0x0022=] instead.[=0x000A=]Carry out pushing it over to:[=0x000A=][=0x0009=]change the current box position to the new position.[=0x000A=]Report pushing it over to:[=0x000A=][=0x0009=]say [=0x0022=]With some effort, you shove [the noun] from [old position] to [new position].[=0x0022=][=0x000A=][=0x000A=][Everything which remains simply provides a couple of puzzles to test this arrangement.][=0x000A=][=0x000A=]Euclid[=0x0027=]s Elements is on the shelf. Understand [=0x0022=]euclid[=0x0022=] or [=0x0022=]book[=0x0022=] as the Elements.[=0x000A=]Instead of taking something (called the item) which is on the shelf:[=0x000A=][=0x0009=]if the player is on the box and the current box position is under the shelf, continue the action;[=0x000A=][=0x0009=]say [=0x0022=]You cannot reach [the item], which is up on the shelf.[=0x0022=][=0x000A=][=0x000A=]Instead of examining the window:[=0x000A=][=0x0009=]say [=0x0022=]This window opens rather unpromisingly onto the chapel wall opposite, so even granted the moonlight it is dark in here. Still, surely there[=0x0027=]s a poem here somewhere?[=0x0022=][=0x000A=][=0x000A=]Instead of examining the window when the player is on the bed:[=0x000A=][=0x0009=]say [=0x0022=]Just a blank patch of chapel wall.[=0x0022=][=0x000A=][=0x000A=]Instead of examining the window when the player is on the box:[=0x000A=][=0x0009=]if the current box position is near the bed:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Tantalisingly, you are not quite able to spy the statue.[=0x0022=];[=0x000A=][=0x0009=]otherwise if the current box position is under the shelf:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]All you can see is the antechapel wall, and the dull silver gleam of the pealing organ.[=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]At last! You can just, standing on tiptoes on the box right up at the window, make out the top of the statue! Of such epiphanies are Poesy born. Let[=0x0027=]s see now... oh yes...[paragraph break]And from my pillow, looking forth by light[line break]Of moon or favouring stars, I could behold[line break]The antechapel where the statue stood[line break]Of Newton with his prism and silent face,[line break]The marble index of a mind for ever[line break]Voyaging through strange seas of Thought, alone.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]end the game in victory.[=0x000A=][=0x000A=]Test me with [=0x0022=]get on bed / x window / get off / x window /get elements / get on box / x window / get elements / push box to shelf / get off / push box to shelf / get on box / get elements / x window / get off / push box to window / get on box / x window[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode237()"><img border=0 src=../doc_images/paste.png></a> &quot;Pine&quot;
+<a href="javascript:pasteCode288()"><img border=0 src=../doc_images/paste.png></a> &quot;Further Reasons Why All Poets Are Liars&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A person can be asleep or awake. A person can be active or passive.
+<blockquote><font color="#000080">Nook Obscure is a room. &quot;Above the College kitchens, which make a humming sound, less tuneable than bees, but hardly less industrious, with shrill notes of sharp command and scolding intermixed: and below Trinity's loquacious clock, who never lets the quarters, night or day, slip by him unproclaimed, and tells the hours twice over with a male and female voice. In short, the kind of rubbish room they give to a northern villager. But you get a bed and a high shelf all of your own. And you long to find some Romantic way to look out of the window.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Spinning Tower is a room. &quot;A remote corner of the old castle, reserved for spinning and weaving tasks.&quot;
+<blockquote><font color="#000080">The window, the shelf and the bed are scenery in the Nook Obscure. The shelf and the bed are supporters. The bed is enterable.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Sleeping Beauty is an asleep woman in the Spinning Tower. &quot;[if asleep]Sleeping Beauty lies here, oblivious to your presence[otherwise]Sleeping Beauty stands beside you, looking a little confused[end if].&quot; The description is &quot;She is even more magnificent than the rumors suggested.&quot; Understand &quot;woman&quot; or &quot;girl&quot; or &quot;princess&quot; or &quot;lady&quot; as Sleeping Beauty.
+<blockquote><font color="#000080">Internal position is a kind of value. The internal positions are nowhere at all, over by the window, under the shelf and near the bed.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Discovery is a scene. Discovery begins when play begins. Discovery ends when Sleeping Beauty is awake. Marriage Proposal is a scene. Marriage Proposal begins when Discovery ends.
+<blockquote><font color="#000080">The box is an enterable supporter in Nook Obscure. The current box position is an internal position that varies. The current box position is near the bed. &quot;Your packing case, stamped W. WORDSWORTH (KENDAL), is [current box position].&quot; Instead of taking the box, say &quot;It is filled with your peerless rock collection and too heavy to lift, but could be pushed.&quot; Instead of opening the box, say &quot;It is securely nailed shut.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">When Discovery ends: say &quot;Throughout the palace you can hear the other sounds of stirring and movement as the spell of centuries is broken.&quot;
+<p>We create an action, &quot;pushing it over to&quot;, for pushing a box around on the floor of a single location. (Calling this &quot;pushing it over to&quot; prevents clashes with the existing &quot;pushing it to&quot; action, which is for pushing things from one room to another.) Almost half of the text which defines the action is concerned with the two action variables, but they make the implementation of everything else so much easier that we end up writing less than if we hadn't used them.
+<p>
+<blockquote><font color="#000080">Understand &quot;push [something] to [something]&quot; as pushing it over to. Pushing it over to is an action applying to two things.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of waking an awake person: say &quot;Redundant.&quot;
+<blockquote><font color="#000080">The pushing it over to action has an internal position called the old position.
+<br>The pushing it over to action has an internal position called the new position.
+<br>Setting action variables for pushing something over to something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the old position is the current box position;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the new position is nowhere at all;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is the window, now the new position is over by the window;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is the bed, now the new position is near the bed;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is the shelf, now the new position is under the shelf.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of waking an asleep person: say &quot;Yes, but how?&quot;
+<blockquote><font color="#000080">Check pushing it over to:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not the box, say &quot;That's not something you can push.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is on the noun, say &quot;Not while you are standing on [the noun].&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the new position is nowhere at all, say &quot;You can only push [the noun] to the window, the bed or the shelf.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the new position is the old position, say &quot;The [noun] is already [new position].&quot; instead.
+<br>Carry out pushing it over to:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the current box position to the new position.
+<br>Report pushing it over to:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;With some effort, you shove [the noun] from [old position] to [new position].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of attacking an asleep person:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is awake;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] sits bolt upright. 'Hey! Ow!' So much for that true love's kiss nonsense.&quot;
+<p>Everything which remains simply provides a couple of puzzles to test this arrangement.
+<p>
+<blockquote><font color="#000080">Euclid's Elements is on the shelf. Understand &quot;euclid&quot; or &quot;book&quot; as the Elements.
+<br>Instead of taking something (called the item) which is on the shelf:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is on the box and the current box position is under the shelf, continue the action;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You cannot reach [the item], which is up on the shelf.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of kissing an asleep person:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is awake;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] slowly stirs to wakefulness!&quot;
+<blockquote><font color="#000080">Instead of examining the window:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;This window opens rather unpromisingly onto the chapel wall opposite, so even granted the moonlight it is dark in here. Still, surely there's a poem here somewhere?&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of throwing water at an asleep person:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the second noun is awake;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the noun from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You pour out [the noun] on [the second noun].
+<blockquote><font color="#000080">Instead of examining the window when the player is on the bed:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Just a blank patch of chapel wall.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">[The second noun] wakes, shuddering. 'Agh! I had a terrible dream about drowning and then-- Hey!'&quot;
+<blockquote><font color="#000080">Instead of examining the window when the player is on the box:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the current box position is near the bed:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Tantalisingly, you are not quite able to spy the statue.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise if the current box position is under the shelf:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;All you can see is the antechapel wall, and the dull silver gleam of the pealing organ.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;At last! You can just, standing on tiptoes on the box right up at the window, make out the top of the statue! Of such epiphanies are Poesy born. Let's see now... oh yes...[paragraph break]And from my pillow, looking forth by light[line break]Of moon or favouring stars, I could behold[line break]The antechapel where the statue stood[line break]Of Newton with his prism and silent face,[line break]The marble index of a mind for ever[line break]Voyaging through strange seas of Thought, alone.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game in victory.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries a jug of water. Understand &quot;pour [something] on [something]&quot; or &quot;splash [something] at/on [something]&quot; as throwing it at.
+<blockquote><font color="#000080">Test me with &quot;get on bed / x window / get off / x window /get elements / get on box / x window / get elements / push box to shelf / get off / push box to shelf / get on box / get elements / x window / get off / push box to window / get on box / x window&quot;.
 </font></blockquote><p>
-<p>
-<p>So much, we had before. Now, suppose we want a conversation style which allows the player to move conversation forward by asking appropriate questions, but which will keep moving forward even if he doesn't. To this end, we provide a table -- a borrowing from a later chapter. In the table, we record two ways of performing each conversation bit, one which reflects the player's participation, and one in which the character moves things onward:
-<p>
-<blockquote><font color="#000080">Table of Conversation
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">quip</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;dream/dreams/nightmare/nightmares/sleep&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Sleep well?' you ask solicitously.</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080"><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">'Not really,' she replies, edging away from you. So much for that angle.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Ghastly nightmares,' she remarks. You nod politely.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'So,' you say. 'This is a little weird since we just met, but, um. Would you like to get married?'</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080"><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">She looks at you nervously. 'Do I have to?'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'I, er,' she says. 'I hope I'm not supposed to marry you or something.'&quot;</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'I was told I was going to marry you and inherit the kingdom,' you say, apologetically. 'Would that be very bad?'</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">'Oh, it's not you -- I'm seeing someone,' she says, smiling quickly.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080"><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">You try to think how to point out that it's been a hundred years since she last saw her boyfriend.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Do you think I could go look for someone? I'm seeing him, you see, and I think I've been... sick... for a while, so he might be worried.'</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">You try to think how to point out that it's been a hundred years since she last saw her boyfriend.&quot;
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;marriage/love/wedding/boyfriend/beau/lover&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'You've been up here for a hundred years,' you say. An unpleasant thought occurs to you. 'Was your young man in the castle somewhere?'</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080"><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">She shakes her head mutely.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;She goes to the window and looks out at the now-fading thicket of briar. 'That took a while to grow,' she observes. 'I've been up here longer than I thought.'</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">You shrug, uncomfortable.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking an awake beauty about a topic listed in the Table of Conversation:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now Beauty is passive;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row.
-</font></blockquote><p>
-<p>
-<p>The &quot;now Beauty is passive&quot; line prevents her from making any conversation of her own on a turn when we've spoken to her. This keeps the conversation from progressing too quickly.
-<p>
-<blockquote><font color="#000080">Instead of telling an awake beauty about something: try asking the noun about it.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of asking an asleep person about something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] snores.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Marriage Proposal ends when the number of filled rows in the Table of Conversation is 0.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Every turn during Marriage Proposal:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if Beauty is active
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Conversation
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[quip entry][paragraph break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blank out the whole row;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make no decision;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-</font></blockquote><p>
-<p>
-<p>After we've generated any spontaneous conversation, we return her to her regular active state.
-<p>
-<blockquote><font color="#000080">Every turn: now Beauty is active.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">When Marriage Proposal ends: end the game saying &quot;This is going to take some explaining.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x beauty / wake beauty / pour water on beauty / ask beauty about sleep / z / ask beauty about marriage&quot;.
-</font></blockquote><p>
-<p>
-<p>Now we have a scenario in which the player can ask her some questions out of order if he really wants to, but the scene will not end until the basic conversation topics have been exhausted. If we wanted to add some other chit-chat, not as part of the main conversation strand, but by way of optional enrichment, we might make a second conversation table and record alternative outcomes in it.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc148.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc187.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc147.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc149.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e346"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex346.html#e346 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>190</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex346.html#e346 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Removal</font></b></a><br>TAKE expanded to give responses such as "You take the book from the shelf." or "You pick up the toy from the ground."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex346.html#e346 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e8"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex8.html#e8 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>191</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex8.html#e8 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Second Oldest Problem</font></b></a><br>Adapting the going action so that something special can happen when going from a dark room to another dark room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex8.html#e8 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e163"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex163.html#e163 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>192</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex163.html#e163 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Puff of Orange Smoke</font></b></a><br>A system in which every character has a body, which is left behind when the person dies; attempts to do something to the body are redirected to the person while the person is alive.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex163.html#e163 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e209"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex209.html#e209 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>193</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex209.html#e209 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Croft</font></b></a><br>Adding special reporting and handling for objects dropped when the player is on a supporter, and special entering rules for moving from one supporter to another.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex209.html#e209 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc186.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc188.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

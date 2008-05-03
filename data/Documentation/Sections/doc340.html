@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.6. Displaying the figures</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.4. Testing and iterating over lists</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,30 +19,27 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Displaying the figures" -->
-<!-- SEARCH SECTION "21.6" -->
-<!-- SEARCH SORT "021-006-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc339.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc341.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.6. Displaying the figures</b></font></td></tr></table>
+<!-- SEARCH TITLE "Testing and iterating over lists" -->
+<!-- SEARCH SECTION "20.4" -->
+<!-- SEARCH SORT "020-004-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc339.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc341.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.4. Testing and iterating over lists</b></font></td></tr></table>
 <p>
-<p>Inform's basic picture support simply allows figures to be shown at particular times. Once seen, they scroll away, just as text does once it has been printed. These pictures are really part of the stream of narrative. (If we would like icons or other images to be permanently present on screen, and divide the screen up in pictorial ways to achieve interesting layouts, we need to use special extensions to access Glulx's more exotic features.)
+<p>If L is a list, we can interrogate it to see whether it does or does not contain (at least one instance of) any compatible value V:
 <p>
-<p>Displaying a picture is therefore like printing some text. Rather than
-<p>
-<blockquote><font color="#000080">say &quot;The woodlands stretch from here to the horizon.&quot;;
+<blockquote><font color="#000080">if V is listed in L, ...
+<br>if V is not listed in L, ...
 </font></blockquote><p>
 <p>
-<p>we would write
+<p>As always, V must be a value compatible with the entries of L, or else the question is meaningless and Inform will raise a problem message. For instance, if L is our list of the numbers 2, 3, 5, 7 and 11 then 5 is listed in it but 6 is not.
 <p>
-<blockquote><font color="#000080">display the Figure of Woodlands;
+<p>We can also repeat running through a list (just as we can with table rows). Thus:
+<p>
+<blockquote><font color="#000080">repeat with item running through L:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;...
 </font></blockquote><p>
 <p>
-<p>As an option, we could also write
+<p>repeats &quot;...&quot; for each entry of L, with item set to the value of that entry. (Thus if L is a list of numbers then &quot;item&quot; will be a number variable, and so on.) If the list is empty, nothing happens: the &quot;...&quot; phrase(s) are never tried.
 <p>
-<blockquote><font color="#000080">display the Figure of Woodlands, one time only;
-</font></blockquote><p>
-<p>
-<p>which causes the image to be shown only the first time this phrase is reached.
-<p>
-<p>Once again, note that the &quot;display&quot; phrase does nothing unless the Settings for the project are set to the Glulx story file format. When a Glulx work is released as a blorb (the default setting for the way releases occur: see the chapter on Publishing), all the images used are automatically included.
+<p>In the next sections, we shall see that it is possible to change, reorder and resize lists: it is a good idea not to do this to a list that we are currently repeating through.
 <p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc339.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc341.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

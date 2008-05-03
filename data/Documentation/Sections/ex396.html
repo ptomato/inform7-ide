@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.15. Understanding things by their relations</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>7.3. Before rules</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,84 +19,95 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Cinco" -->
-<!-- SEARCH SECTION "Ex 284" -->
-<!-- SEARCH SORT "Ex 016-015-284" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc256.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc258.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.15. Understanding things by their relations</b></font></td></tr></table>
+<!-- SEARCH TITLE "Democratic Process" -->
+<!-- SEARCH SECTION "Ex 79" -->
+<!-- SEARCH SORT "Ex 007-003-079" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc94.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap7.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 7: Basic Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc96.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>7.3. Before rules</b></font></td></tr></table>
 <p>
-<p>Sometimes it makes sense for the name of something to involve the names of other things to which it is related. For instance, if we say TAKE THE BOTTLE OF WINE, we mean that the bottle currently contains wine - if it were the very same bottle containing water, we would call it something else.
+<p>Despite what was said in the previous section, instead rules do not quite bypass all of the usual rules. Inform knows that certain actions require light: for instance,
 <p>
-<p>For names which must involve related names, a special form of token is provided. For instance, we could say:
-<p>
-<blockquote><font color="#000080">A box is a kind of container. Understand &quot;box of [something related by containment]&quot; as a box.
+<blockquote><font color="#000080">examining the napkin; looking; looking under the dining table
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Toyshop is a room. The red box is a box in the Toyshop. Some crayons are in the red box.
+<p>and if it is dark then none of these actions will be allowed, and any instead rules about them will not even be reached. Similarly, Inform knows that most actions require physical access to their objects: so &quot;taking the napkin&quot; would be blocked if the napkin were, say, inside a closed glass bottle, whereas &quot;examining the napkin&quot; would not. So an instead rule can only take effect if the action has already passed these basic reasonability tests.
+<p>
+<p>&quot;Before&quot; rules genuinely precede checking of any kind. They also differ from instead rules in that they do not automatically stop the action in its tracks. Rather, they are provided as an opportunity to ensure that something else is done first. For example:
+<p>
+<blockquote><font color="#000080">Before taking the napkin, say &quot;(first unfolding its delicate origami swan)&quot;.
 </font></blockquote><p>
 <p>
-<p>and now TAKE BOX OF CRAYONS will work, because CRAYONS matches against &quot;[something related by containment]&quot; for the red box - or it does for as long as the crayons are there. We can have similar matches against relations of all kinds, but have to name the relation explicitly, using its one-word name. (See the examples at the end of this section for plenty of cases.)
+<p>whence
 <p>
-<p>We can also reverse the sense. If we write:
-<p>
-<blockquote><font color="#000080">A box is a kind of container. Understand &quot;box in [something related by reversed containment]&quot; as a box.
+<blockquote><font color="#000080">&gt;GET NAPKIN
+<br>(first unfolding its delicate origami swan)
+<br>Taken.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Toyshop is a room. The crate and the hammock are in the Toyshop. In the crate is a box. In the hammock is a box.
+<p>We have seen that instead rules automatically stop actions, whereas before rules automatically allow them to continue. We sometimes want to change this. The magic word &quot;instead&quot; can therefore be tacked on to any instruction in a before rule, and will have the effect of immediately stopping the action at that instruction. Thus the following two rules are (almost) equivalent:
+<p>
+<blockquote><font color="#000080">Before taking the key, instead say &quot;It seems to be soldered to the keyhole.&quot;
 </font></blockquote><p>
 <p>
-<p>then TAKE THE BOX IN THE HAMMOCK will work: here, the relation goes the other way, because the box is being contained by the other-named item, rather than doing the containing.
+<blockquote><font color="#000080">Instead of taking the key, say &quot;It seems to be soldered to the keyhole.&quot;
+</font></blockquote><p>
+<p>
+<p>Two special phrases can also be used: &quot;stop the action&quot; and &quot;continue the action&quot;. Yet a third way to achieve the same effect, then, would be:
+<p>
+<blockquote><font color="#000080">Before taking the key: say &quot;It seems to be soldered to the keyhole.&quot;; stop the action.
+</font></blockquote><p>
+<p>
+<p>And to round off the discussion, these are also (almost) equivalent:
+<p>
+<blockquote><font color="#000080">Before taking the napkin, say &quot;(first unfolding its delicate origami swan)&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of taking the napkin: say &quot;(first unfolding its delicate origami swan)&quot;; continue the action.
+</font></blockquote><p>
+<p>
+<p>As a general principle, it is good style to use instead rules whenever blocking actions, and before rules only when it is genuinely necessary to do something first but then to continue: in fact, it is good style to use &quot;stop the action&quot; or &quot;continue the action&quot; as little as possible.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e396"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc257.html#e396 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>284</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc257.html#e396 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Cinco</font></b></a><br>A taco shell that can be referred to (when it contains things) in terms of its contents.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex396.html#e396 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e396"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc95.html#e396 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>79</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc95.html#e396 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Democratic Process</font></b></a><br>Make PUT and INSERT commands automatically take objects if the player is not holding them.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex396.html#e396 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>It's fairly common that we want to be able to refer to a container in terms of what it has in it: a bottle of wine, a salt shaker, a chicken sandwich. The player is free to remove the contents again, and the object will go back to using its usual name:
+<p>&quot;Stop&quot; and &quot;Continue&quot; are most useful when we need to write rules that will have to stop the action some of the time but at other times let it pass; so for instance:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode371(code) {
+function pasteCode172(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Cinco[=0x0022=][=0x000A=][=0x000A=]Cinco de Mayo Fundraiser is a room.[=0x000A=][=0x000A=]The taco shell is an edible thing in the Fundraiser. It is a portable container. It has carrying capacity 1.[=0x000A=][=0x000A=]Understand [=0x0022=][something related by containment] taco[=0x0022=] as the taco.[=0x000A=][=0x000A=]Rule for printing the name of the taco shell while not inserting or removing:[=0x000A=][=0x0009=]if the taco contains something (called filling), say [=0x0022=][filling] taco[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]taco shell[=0x0022=];[=0x000A=][=0x0009=]omit contents in listing.[=0x000A=][=0x000A=]The player carries shredded beef. It is edible.[=0x000A=][=0x000A=]The taking action has an object called source (matched as [=0x0022=]from[=0x0022=]).[=0x000A=][=0x000A=]Setting action variables for taking:[=0x000A=][=0x0009=]now source is the holder of the noun.[=0x000A=][=0x000A=]Report taking something from the taco shell:[=0x000A=][=0x0009=]say [=0x0022=]You gingerly pick [the noun] out of the taco shell.[=0x0022=] instead.[=0x000A=][=0x000A=]Test me with [=0x0022=]x taco / put shredded beef in taco / get taco / i / x shredded beef taco / get shredded beef / x shredded beef taco[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Democratic Process[=0x0022=][=0x000A=][=0x000A=]Before inserting something which is not carried by the player into something:[=0x000A=][=0x0009=]if the noun is in the second noun, say [=0x0022=]Already done.[=0x0022=] instead;[=0x000A=][=0x0009=]say [=0x0022=](first taking [the noun])[line break][=0x0022=];[=0x000A=][=0x0009=]silently try taking the noun;[=0x000A=][=0x0009=]if the player is not holding the noun, stop the action.[=0x000A=][=0x000A=]Before putting something which is not carried by the player on something:[=0x000A=][=0x0009=]if the noun is on the second noun, say [=0x0022=]Already done.[=0x0022=] instead;[=0x000A=][=0x0009=]say [=0x0022=](first taking [the noun])[line break][=0x0022=];[=0x000A=][=0x0009=]silently try taking the noun;[=0x000A=][=0x0009=]if the player is not holding the noun, stop the action.[=0x000A=][=0x000A=]The Assembly Room is a room. [=0x0022=]On most days, this room is used for elementary school assemblies; at the moment, it serves as a voting place.[=0x0022=] The ballot is on the desk. The desk is in the Assembly Room.[=0x000A=][=0x000A=]The machine is a container in the Assembly Room. [=0x0022=]On the ballot machine is a sign which reads [=0x0027=]PUT BALLOTS IN ME :)[=0x0027=].[=0x0022=] Understand [=0x0022=]ballot machine[=0x0022=] as the machine.[=0x000A=][=0x000A=]Test me with [=0x0022=]put ballot in machine[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode371()"><img border=0 src=../doc_images/paste.png></a> &quot;Cinco&quot;
+<a href="javascript:pasteCode172()"><img border=0 src=../doc_images/paste.png></a> &quot;Democratic Process&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Cinco de Mayo Fundraiser is a room.
+<blockquote><font color="#000080">Before inserting something which is not carried by the player into something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is in the second noun, say &quot;Already done.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking [the noun])[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not holding the noun, stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The taco shell is an edible thing in the Fundraiser. It is a portable container. It has carrying capacity 1.
+<blockquote><font color="#000080">Before putting something which is not carried by the player on something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is on the second noun, say &quot;Already done.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first taking [the noun])[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try taking the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is not holding the noun, stop the action.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;[something related by containment] taco&quot; as the taco.
+<blockquote><font color="#000080">The Assembly Room is a room. &quot;On most days, this room is used for elementary school assemblies; at the moment, it serves as a voting place.&quot; The ballot is on the desk. The desk is in the Assembly Room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for printing the name of the taco shell while not inserting or removing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the taco contains something (called filling), say &quot;[filling] taco&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;taco shell&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;omit contents in listing.
+<blockquote><font color="#000080">The machine is a container in the Assembly Room. &quot;On the ballot machine is a sign which reads 'PUT BALLOTS IN ME :)'.&quot; Understand &quot;ballot machine&quot; as the machine.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The player carries shredded beef. It is edible.
+<blockquote><font color="#000080">Test me with &quot;put ballot in machine&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The taking action has an object called source (matched as &quot;from&quot;).
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Setting action variables for taking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now source is the holder of the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report taking something from the taco shell:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You gingerly pick [the noun] out of the taco shell.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x taco / put shredded beef in taco / get taco / i / x shredded beef taco / get shredded beef / x shredded beef taco&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc257.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc95.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e63"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex63.html#e63 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>285</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex63.html#e63 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Puncak Jaya</font></b></a><br>When a character is not visible, responding to such commands as EXAMINE PETER and PETER, HELLO with a short note that the person in question is no longer visible.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex63.html#e63 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e149"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex149.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>286</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex149.html#e149 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Claims Adjustment</font></b></a><br>An instant camera that spits out photographs of anything the player chooses to take a picture of.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex149.html#e149 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc256.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc258.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e63"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex63.html#e63 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>80</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex63.html#e63 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Sand</font></b></a><br>Extend PUT and INSERT handling to cases where multiple objects are intended at once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex63.html#e63 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc94.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc96.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

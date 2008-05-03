@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.12. Doors</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.18. The value after and the value before</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,96 +19,88 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Escape" -->
-<!-- SEARCH SECTION "Ex 20" -->
-<!-- SEARCH SORT "Ex 003-012-020" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc37.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc39.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.12. Doors</b></font></td></tr></table>
+<!-- SEARCH TITLE "Entropy" -->
+<!-- SEARCH SECTION "Ex 172" -->
+<!-- SEARCH SORT "Ex 011-018-172" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc173.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc175.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.18. The value after and the value before</b></font></td></tr></table>
 <p>
-<p>The map of an interactive fiction is the layout of rooms and the entrances and exits which connect them. So far, these map connections have always run from one room to another, like so:
+<p>Arithmetic is fundamental to most systems for computer programming: with Inform that is less true, so we only now come to the first mention of the addition of numbers. As might be expected, &quot;+&quot; can be used to combine two number values into one:
 <p>
-<blockquote><font color="#000080">The Painted Room is north of the Undertomb.
+<blockquote><font color="#000080">change the score to the score + 4
 </font></blockquote><p>
 <p>
-<p>However, we can also interpose doors between rooms, like so:
+<p>(This can also be spelled out &quot;plus&quot;: or we could have written &quot;increase the score by 4&quot;. Similarly, we can &quot;decrease&quot;.) Inform generally expects to apply addition only to two numbers, so we cannot normally apply &quot;+&quot; to values like these:
 <p>
-<blockquote><font color="#000080">The heavy iron grating is east of the Orchard and west of the Undertomb. The grating is a door.
+<blockquote><font color="#000080">Colour is a kind of value. The colours are red, orange, yellow, green, blue, indigo and violet.
 </font></blockquote><p>
 <p>
-<p>The second sentence is needed since otherwise Inform will take &quot;heavy iron grating&quot; to be the name of a third room, whereas what we want is for the grating to be something physically present in both the Orchard and in the Undertomb, and acting as a conduit between them. To this end it needs to be a &quot;door&quot;, a kind we have not so far seen. In the absence of any other instruction, a newly created door will be fixed in place, closed and openable.
+<p>There will be more about arithmetic on new kinds of value in the chapter on Units, but it may be useful to note that although we cannot (ordinarily) add up colours, we do automatically have two ways to make new colours from old:
 <p>
-<p>The grating really does come in between the two rooms: the grating is what lies immediately east of the Orchard, not the Undertomb room. So if we wrote the following:
-<p>
-<blockquote><font color="#000080">The Undertomb is east of the Orchard. The heavy iron grating is east of the Orchard and west of the Undertomb. The grating is a door.
+<blockquote><font color="#000080">the colour after C
+<br>the colour before C
 </font></blockquote><p>
 <p>
-<p>then Inform would say that this is a contradiction: we said the Undertomb was east of the Orchard, but then we said that the grating was east of the Orchard.
+<p>produce the next, and the previous colour respectively, in order of their declaration. Thus &quot;the colour after red&quot; is orange; &quot;the colour before blue&quot; is green. The values wrap around, that is, &quot;the colour before red&quot; is violet and &quot;the colour after violet&quot; is red.
 <p>
-<p>Inform's &quot;door&quot; kind can be used for all manner of conduits, so the word door need not be taken literally. In Ursula K. LeGuin's beguiling novel &quot;The Tombs of Atuan&quot;, from which the above rooms are stolen, it is not a grating which interposes, but:
-<p>
-<blockquote><font color="#000080">The red rock stair is east of the Orchard and above the Undertomb. The stair is an open door. The stair is not openable.
-</font></blockquote><p>
-<p>
-<p>In real life, most doors are two-sided, and can be used from either of the rooms which they join, but this is not always convenient for interactive fiction. Here is a one-sided door:
-<p>
-<blockquote><font color="#000080">The blue door is a door. It is south of Notting Hill. Through it is the Flat Landing.
-</font></blockquote><p>
-<p>
-<p>(Note the use of &quot;it&quot; here as an optional abbreviation.) This will make a door visible only on the Notting Hill side; no map connection will be made in the reverse direction, unless we ask for one.
-<p>
-<p>Should we ever need it, the values &quot;front side of ...&quot; and &quot;back side of ...&quot; reveal where a door is placed. (For instance, &quot;front side of the heavy iron grating&quot; is the Orchard.)
+<p>We are also allowed to use number-like comparisons with new kinds of value. Thus &quot;red &lt; yellow&quot; is true, while &quot;green &gt;= violet&quot; is not. Again, more on comparisons in the chapter on units.
 <p>
 <p><hr><p>
-<a name="e209"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex209.html#e209 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>19</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex209.html#e209 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Disenchantment Bay 5</font></b></a><br>Disenchantment Bay: adding the door and the deck to our charter boat.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex209.html#e209 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e366"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc38.html#e366 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>20</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc38.html#e366 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Escape</font></b></a><br>Window that can be climbed through or looked through.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex366.html#e366 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e366"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc174.html#e366 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>172</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc174.html#e366 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Entropy</font></b></a><br>All objects in the game have a heat, but if not kept insulated they will tend toward room temperature (and at a somewhat exaggerated rate).<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex366.html#e366 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want to offer the player a window he can climb through, instead of a boring ordinary door. Our window will be like a door in that it connects two rooms, appears in both places, and impedes movement when it is shut. But we also want to add that we can look through it and see what lies on the other side; and we further want to understand &quot;climb through window&quot; or &quot;jump through window&quot; as attempts to pass through it.
-<p>
-<p>We'll start by defining a couple of rooms and making the window a door between them.
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode99(code) {
+function pasteCode271(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Escape[=0x0022=][=0x000A=][=0x000A=]Your Bedroom is a room. The bedroom window is a door. It is west of Your Bedroom and east of the Grassy Slope.[=0x000A=][=0x000A=][Now we have a [=0x0022=]bedroom window[=0x0022=] object which can be entered. Now, to catch the case where the player types [=0x0022=]LOOK THROUGH WINDOW[=0x0022=]:][=0x000A=][=0x000A=]Instead of searching the window:[=0x000A=][=0x0009=]say [=0x0022=]Through the window, you make out [the other side of the window].[=0x0022=][=0x000A=][=0x000A=][The other side of a door is always defined to be the room that we are not currently in when doing the check. When we are in the bedrooom, the other side will be the grassy slope, and vice versa. [=0x0022=]Searching[=0x0022=] is the action that occurs when the player attempts to LOOK THROUGH something. (To review what grammar gives rise to what actions, we can always consult the Actions portion of the Index.)][=0x000A=][=0x000A=][Next we want to cover the case where we climb through the window:][=0x000A=][=0x000A=]Instead of climbing the window:[=0x000A=][=0x0009=]try entering the window.[=0x000A=][=0x000A=][And because [=0x0022=]climb window[=0x0022=] is understood but [=0x0022=]climb THROUGH window[=0x0022=] is not, we will have to borrow from the chapter on Understanding to add some new vocabulary to the game (and we[=0x0027=]ll add Jump too, while we[=0x0027=]re at it):][=0x000A=][=0x000A=]Understand [=0x0022=]climb through [something][=0x0022=] as climbing. Understand [=0x0022=]jump through [something][=0x0022=] as climbing.[=0x000A=][=0x000A=][Now the final piece: Inform will already keep the player from going through a closed window, but it will say [=0x0022=]You can[=0x0027=]t, since the bedroom window is in the way.[=0x0022=] This is probably not ideal, so we can replace the instruction thus:][=0x000A=][=0x000A=]Instead of going through the closed window:[=0x000A=][=0x0009=]say [=0x0022=]The window is shut: you[=0x0027=]d break the glass.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]look through window / climb through window / open window / climb through window / look through window / close window / e / open window / e[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Entropy[=0x0022=][=0x000A=][=0x000A=]Heat is a kind of value. The heats are frosty, cold, cool, room temperature, warm, hot, and scalding. Everything has a heat. The heat of a thing is usually room temperature.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]repeat with item running through things which are not in an insulated container:[=0x000A=][=0x0009=][=0x0009=]if the heat of the item is greater than room temperature, change the heat of the item to the heat before the heat of the item;[=0x000A=][=0x0009=][=0x0009=]if the heat of the item is less than room temperature, change the heat of the item to the heat after the heat of the item.[=0x000A=][=0x000A=]Definition: a container is insulated if it is closed and it is opaque.[=0x000A=][=0x000A=]The vacuum thermos is an opaque closed openable container carried by the player. In the vacuum thermos is a frosty thing called an ice cube.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]if the heat of the ice cube is greater than cold:[=0x000A=][=0x0009=][=0x0009=]if the ice cube is visible, say [=0x0022=]The ice cube melts! [=0x0027=]HA ha,[=0x0027=] says Maxwell, in a very unsporting, some might say demonic, way.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]remove the ice cube from play.[=0x000A=][=0x000A=]Before printing the name of something: say [=0x0022=][heat] [=0x0022=].[=0x000A=][=0x000A=]Equilibrium is a room. [=0x0022=]A perfectly smooth chamber sealed from the outside world. You can[=0x0027=]t at this moment work out where the exit is, though possibly that is just because the lighting is so very very even and diffuse. And doesn[=0x0027=]t come from anywhere that you can see, either.[=0x0022=][=0x000A=][=0x000A=]Maxwell is a man in Equilibrium.  [=0x0022=]Maxwell perches awkwardly on a stool across from you[if Maxwell has something], holding [a list of things carried by Maxwell][end if].[=0x0022=] He is carrying a box of Chinese food. The Chinese food is scalding. [=0x0022=]A discarded [item described] lies on the floor.[=0x0022=] The description of Maxwell is [=0x0022=]He has the faintly peevish look of one who has not been properly fed.[=0x0022=][=0x000A=][=0x000A=]Every turn when Maxwell has the food:[=0x000A=][=0x0009=]if the heat of the Chinese food is greater than warm, say [=0x0022=]Maxwell takes a bite, and swears.[=0x0022=];[=0x000A=][=0x0009=]if the heat of the Chinese food is warm, say [=0x0022=]Maxwell eats as fast as he can, enjoying the food while it[=0x0027=]s at just the right temperature.[=0x0022=];[=0x000A=][=0x0009=]if the heat of the Chinese food is less than warm:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Maxwell sadly stabs at his leftovers with a chopstick, but does not try to eat any more.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]move the food to the location.[=0x000A=][=0x000A=]Test me with [=0x0022=]z / z / open thermos / close thermos / open thermos[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode99()"><img border=0 src=../doc_images/paste.png></a> &quot;Escape&quot;
+<a href="javascript:pasteCode271()"><img border=0 src=../doc_images/paste.png></a> &quot;Entropy&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Your Bedroom is a room. The bedroom window is a door. It is west of Your Bedroom and east of the Grassy Slope.
+<blockquote><font color="#000080">Heat is a kind of value. The heats are frosty, cold, cool, room temperature, warm, hot, and scalding. Everything has a heat. The heat of a thing is usually room temperature.
 </font></blockquote><p>
 <p>
-<p>Now we have a &quot;bedroom window&quot; object which can be entered. Now, to catch the case where the player types &quot;LOOK THROUGH WINDOW&quot;:
-<p>
-<blockquote><font color="#000080">Instead of searching the window:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Through the window, you make out [the other side of the window].&quot;
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through things which are not in an insulated container:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the heat of the item is greater than room temperature, change the heat of the item to the heat before the heat of the item;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the heat of the item is less than room temperature, change the heat of the item to the heat after the heat of the item.
 </font></blockquote><p>
 <p>
-<p>The other side of a door is always defined to be the room that we are not currently in when doing the check. When we are in the bedrooom, the other side will be the grassy slope, and vice versa. &quot;Searching&quot; is the action that occurs when the player attempts to LOOK THROUGH something. (To review what grammar gives rise to what actions, we can always consult the Actions portion of the Index.)
-<p>
-<p>Next we want to cover the case where we climb through the window:
-<p>
-<blockquote><font color="#000080">Instead of climbing the window:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try entering the window.
+<blockquote><font color="#000080">Definition: a container is insulated if it is closed and it is opaque.
 </font></blockquote><p>
 <p>
-<p>And because &quot;climb window&quot; is understood but &quot;climb THROUGH window&quot; is not, we will have to borrow from the chapter on Understanding to add some new vocabulary to the game (and we'll add Jump too, while we're at it):
-<p>
-<blockquote><font color="#000080">Understand &quot;climb through [something]&quot; as climbing. Understand &quot;jump through [something]&quot; as climbing.
+<blockquote><font color="#000080">The vacuum thermos is an opaque closed openable container carried by the player. In the vacuum thermos is a frosty thing called an ice cube.
 </font></blockquote><p>
 <p>
-<p>Now the final piece: Inform will already keep the player from going through a closed window, but it will say &quot;You can't, since the bedroom window is in the way.&quot; This is probably not ideal, so we can replace the instruction thus:
-<p>
-<blockquote><font color="#000080">Instead of going through the closed window:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The window is shut: you'd break the glass.&quot;
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the heat of the ice cube is greater than cold:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the ice cube is visible, say &quot;The ice cube melts! 'HA ha,' says Maxwell, in a very unsporting, some might say demonic, way.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the ice cube from play.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look through window / climb through window / open window / climb through window / look through window / close window / e / open window / e&quot;.
+<blockquote><font color="#000080">Before printing the name of something: say &quot;[heat] &quot;.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc38.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Equilibrium is a room. &quot;A perfectly smooth chamber sealed from the outside world. You can't at this moment work out where the exit is, though possibly that is just because the lighting is so very very even and diffuse. And doesn't come from anywhere that you can see, either.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Maxwell is a man in Equilibrium.  &quot;Maxwell perches awkwardly on a stool across from you[if Maxwell has something], holding [a list of things carried by Maxwell][end if].&quot; He is carrying a box of Chinese food. The Chinese food is scalding. &quot;A discarded [item described] lies on the floor.&quot; The description of Maxwell is &quot;He has the faintly peevish look of one who has not been properly fed.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Every turn when Maxwell has the food:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the heat of the Chinese food is greater than warm, say &quot;Maxwell takes a bite, and swears.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the heat of the Chinese food is warm, say &quot;Maxwell eats as fast as he can, enjoying the food while it's at just the right temperature.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the heat of the Chinese food is less than warm:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Maxwell sadly stabs at his leftovers with a chopstick, but does not try to eat any more.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the food to the location.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;z / z / open thermos / close thermos / open thermos&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc174.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e283"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex283.html#e283 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>21</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex283.html#e283 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Garibaldi 1</font></b></a><br>Providing a security readout device by which the player can check on the status of all doors in the game.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex283.html#e283 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc37.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc39.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e330"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex330.html#e330 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>173</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex330.html#e330 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Hang of Thursdays</font></b></a><br>Turns take a quarter day each, and the game rotates through the days of the week.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex330.html#e330 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc173.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc175.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

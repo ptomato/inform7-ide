@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.24. Concealment</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.16. Understanding things by their relations</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,132 +19,94 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Search and Seizure" -->
-<!-- SEARCH SECTION "Ex 36" -->
-<!-- SEARCH SORT "Ex 003-024-036" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc49.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc51.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.24. Concealment</b></font></td></tr></table>
+<!-- SEARCH TITLE "Puncak Jaya" -->
+<!-- SEARCH SECTION "Ex 292" -->
+<!-- SEARCH SORT "Ex 016-016-292" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc263.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc265.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.16. Understanding things by their relations</b></font></td></tr></table>
 <p>
-<p>Though realism can become tiresome in interactive fiction, there are times when we cannot go along with Inform's normal assumption that all of a person's possessions are visible to everybody else. People are not like containers, which either show all of their holdings or not, according to whether they are open or transparent. If a man is carrying a fishing rod and a wallet, one will be on open show, the other not. Some clothing is outwardly visible, but not all.
+<p>Sometimes it makes sense for the name of something to involve the names of other things to which it is related. For instance, if we say TAKE THE BOTTLE OF WINE, we mean that the bottle currently contains wine - if it were the very same bottle containing water, we would call it something else.
 <p>
-<p>Whether or not something is concealed is not like the either/or properties we have seen so far - such as being &quot;open&quot; or &quot;closed&quot; - because it is not really a property of the thing itself, but depends on the habitual behaviour of its current owner. To talk about behaviour we have to use sentences of a kind not seen so far, and which will not fully be explained for some chapters to come.
-<p>But straightforward cases are easy to write, if only by imitating the following examples.
+<p>For names which must involve related names, a special form of token is provided. For instance, we could say:
 <p>
-<p>Here we make the Cloaked Villain invariably conceal anything she is holding or wearing:
-<p>
-<blockquote><font color="#000080">Rule for deciding the concealed possessions of the Cloaked Villain: yes.
+<blockquote><font color="#000080">A box is a kind of container. Understand &quot;box of [something related by containment]&quot; as a box.
 </font></blockquote><p>
 <p>
-<p>At which point we think about it more carefully, and then rewrite:
-<p>
-<blockquote><font color="#000080">Rule for deciding the concealed possessions of the Cloaked Villain: if the particular possession is the sable cloak, no; otherwise yes.
+<blockquote><font color="#000080">The Toyshop is a room. The red box is a box in the Toyshop. Some crayons are in the red box.
 </font></blockquote><p>
 <p>
-<p>Parts are treated exactly as if clothes or items being held, and the following will make the face and inscription on a coin invisible unless the player is holding it - the idea being that they are too small to be seen from farther away.
+<p>and now TAKE BOX OF CRAYONS will work, because CRAYONS matches against &quot;[something related by containment]&quot; for the red box - or it does for as long as the crayons are there. We can have similar matches against relations of all kinds, but have to name the relation explicitly, using its one-word name. (See the examples at the end of this section for plenty of cases.)
 <p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode8(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('The coin is in the Roman Villa. The face and inscription are parts of the coin. Rule for deciding the concealed possessions of the coin: if the coin is carried, no; otherwise yes.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode8()"><img border=0 src=../doc_images/paste.png></a> The coin is in the Roman Villa. The face and inscription are parts of the coin. Rule for deciding the concealed possessions of the coin: if the coin is carried, no; otherwise yes.
+<p>We can also reverse the sense. If we write:
+<p>
+<blockquote><font color="#000080">A box is a kind of container. Understand &quot;box in [something related by reversed containment]&quot; as a box.
 </font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Toyshop is a room. The crate and the hammock are in the Toyshop. In the crate is a box. In the hammock is a box.
+</font></blockquote><p>
+<p>
+<p>then TAKE THE BOX IN THE HAMMOCK will work: here, the relation goes the other way, because the box is being contained by the other-named item, rather than doing the containing.
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e116"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc50.html#e116 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>36</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc50.html#e116 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Search and Seizure</font></b></a><br>A smuggler who has items, some of which are hidden.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex116.html#e116 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e116"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc264.html#e116 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>292</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc264.html#e116 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Puncak Jaya</font></b></a><br>When a character is not visible, responding to such commands as EXAMINE PETER and PETER, HELLO with a short note that the person in question is no longer visible.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex116.html#e116 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we want a character who carries hidden objects, but only while he is wearing his jacket. If we deprive him of this, his other possessions become known. Furthermore, if we ever search him, his possessions also become known, and can thereafter be mentioned by us.
+<p>By default, when something is not present, Inform does not allow a player to refer to it. But there are times when we might like to acknowledge that the thing mentioned in a command does exist somewhere in the game; it just happens not to be on hand right now.
+<p>
+<p>One way to do this is to make an object that appears everywhere and responds to the name of its owner only when the owner itself is not in view.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode117(code) {
+function pasteCode388(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Search and Seizure[=0x0022=][=0x000A=][=0x000A=]Size is a kind of value. The sizes are small, medium, and large. A thing has a size. A thing is usually small.[=0x000A=][=0x000A=]A thing can be licit or contraband. A thing is usually licit.[=0x000A=][=0x000A=]A thing can be discovered or secret. A thing is usually secret.[=0x000A=][=0x000A=][Now, we want the character to be able to hide small things if he has some sort of concealing garment on. We also want to be able to see anything that the player has already found once, perhaps by using the [=0x003E=]SEARCH PERSON command. So:][=0x000A=][=0x000A=]Rule for deciding the concealed possessions of someone (called the suspect):[=0x000A=][=0x0009=]if the particular possession is discovered, no;[=0x000A=][=0x0009=]if the suspect wears something and the particular possession is small, yes;[=0x000A=][=0x0009=]otherwise no.[=0x000A=][=0x000A=][The following rule, borrowed from a later chapter, assures that any items that are ever mentioned to the player will be treated as known from then on:][=0x000A=][=0x000A=]Before printing the name of something (called discovery): now the discovery is discovered.[=0x000A=][=0x000A=]The Customs House is a room. The smuggler is a man in the Customs House. The smuggler wears a leather jacket. He carries a bottle of Altairan rum, some raspberries, and a laser pistol. The pistol is large. The jacket is large. The rum and the raspberries are contraband. The description of the smuggler is [=0x0022=]He has a bestubbled chin and a sinister eye.[=0x0022=][=0x000A=][=0x000A=]The tourist is a woman in the customs house. The description is [=0x0022=]The type who walks off home with a dozen contraband items in her pocket not because she means to steal things but because she[=0x0027=]s too stupid to understand that the law applies to herself.[=0x0022=] She wears a tight-fitting dress. The dress is large. The tourist carries a grapevine and an archaeological artifact. The grapevine is large and contraband. The artifact is contraband.[=0x000A=][=0x000A=]Report examining someone: say [=0x0022=][The noun] is [if the noun is wearing something]wearing [a list of unconcealed things worn by the noun] and [end if]carrying [a list of unconcealed things carried by the noun].[=0x0022=][=0x000A=][=0x000A=]Report examining someone who is concealing something contraband:[=0x000A=][=0x0009=]say [=0x0022=][The noun] looks nervous. You can just tell.[=0x0022=][=0x000A=][=0x000A=]Report examining someone who is carrying an unconcealed contraband thing:[=0x000A=][=0x0009=]say [=0x0022=]Your eye goes at once to [the list of unconcealed contraband things carried by the noun] which [the noun] is unable to hide[=0x0022=];[=0x000A=][=0x0009=]if an unconcealed licit thing is had by the noun, say [=0x0022=], though [if the noun is female]s[end if]he also has [a list of unconcealed licit things had by the noun][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=].[=0x0022=] instead.[=0x000A=][=0x000A=][Notice that we can talk about what the smuggler wears, what he carries, and what he [=0x0022=]has[=0x0022=]: things the smuggler has can be either worn or carried, so the phrase is useful if we don[=0x0027=]t care to make that distinction.][=0x000A=][=0x000A=]Instead of searching someone:[=0x000A=][=0x0009=]say [=0x0022=][The noun] is revealed to be carrying [a list of things carried by the noun].[=0x0022=][=0x000A=][=0x000A=]Instead of confiscating the dress:[=0x000A=][=0x0009=]say [=0x0022=]You are not allowed to perform strip-searches in the public customs area.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]confiscate [something][=0x0022=] as confiscating.[=0x000A=][=0x000A=]Confiscating is an action applying to one thing.[=0x000A=][=0x000A=]Check confiscating:[=0x000A=][=0x0009=]if the noun is had by someone who is not the player, do nothing;[=0x000A=][=0x0009=]otherwise say [=0x0022=]You can only confiscate other people[=0x0027=]s possessions.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out confiscating:[=0x000A=][=0x0009=]now the noun is carried by the player.[=0x000A=][=0x000A=]Report confiscating:[=0x000A=][=0x0009=]say [=0x0022=]Through the authority vested in you by the power of the Sovereign of Centauri Proxima, you make [the noun] your own.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]x smuggler / search smuggler / x smuggler / confiscate jacket / x smuggler / confiscate rum / confiscate pistol / x smuggler / confiscate raspberries / x smuggler[=0x0022=].[=0x000A=][=0x000A=]Test more with [=0x0022=]x tourist / confiscate dress / confiscate grapevine / x tourist / search tourist / confiscate artifact / x tourist[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Puncak Jaya[=0x0022=][=0x000A=][=0x000A=]A ghost is a kind of person. A man-ghost is a kind of ghost. A man-ghost is always male. A woman-ghost is a kind of ghost. A woman-ghost is always female.[=0x000A=][=0x000A=][We make the ghost a person rather than some other kind of thing so that it will be able to respond to commands such as KISS BOB or (even trickier) BOB, JUMP: if Inform did not recognize the ghost as an animate creature, it would not accept such input.][=0x000A=][=0x000A=]Representation relates one ghost to one person. The verb to represent (he represents, they represent, he represented, it is represented) implies the representation relation.[=0x000A=][=0x000A=]One man-ghost represents every man. One woman-ghost represents every woman.[=0x000A=][=0x000A=][This is, technically, an assembly -- except instead of saying that every device has a button part, or that there are three daffodils in every garden room, the assembly is based on a non-physical relation that we just designed.][=0x000A=][=0x000A=][Based on the [=0x0022=]representation[=0x0022=] relation, we now devise a conditional relation that applies only when the represented thing is not itself in view:][=0x000A=][=0x000A=]Indication relates a ghost (called X) to a person (called Y) when X represents Y and Y is not visible.[=0x000A=][=0x000A=]Understand [=0x0022=][something related by indication][=0x0022=] as a ghost.[=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]now every ghost is in the concept-repository.[=0x000A=][=0x000A=]Instead of doing something to a ghost:[=0x000A=][=0x0009=]say [=0x0022=]You seem to have left [a random person which is represented by the noun] behind.[=0x0022=][=0x000A=][=0x000A=]The concept-repository is a closed unopenable transparent container. It is part of the air. The air is a backdrop. It is everywhere.[=0x000A=][=0x000A=]Base of Puncak Jaya is a room. Temple, Kippax, and Huizenga are men in Base. Peak of Puncak Jaya is above Base of Puncak Jaya.[=0x000A=][=0x000A=]Test me with [=0x0022=]x kippax / up / x kippax / kiss kippax / kippax, hello[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode117()"><img border=0 src=../doc_images/paste.png></a> &quot;Search and Seizure&quot;
+<a href="javascript:pasteCode388()"><img border=0 src=../doc_images/paste.png></a> &quot;Puncak Jaya&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Size is a kind of value. The sizes are small, medium, and large. A thing has a size. A thing is usually small.
+<blockquote><font color="#000080">A ghost is a kind of person. A man-ghost is a kind of ghost. A man-ghost is always male. A woman-ghost is a kind of ghost. A woman-ghost is always female.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be licit or contraband. A thing is usually licit.
+<p>We make the ghost a person rather than some other kind of thing so that it will be able to respond to commands such as KISS BOB or (even trickier) BOB, JUMP: if Inform did not recognize the ghost as an animate creature, it would not accept such input.
+<p>
+<blockquote><font color="#000080">Representation relates one ghost to one person. The verb to represent (he represents, they represent, he represented, it is represented) implies the representation relation.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be discovered or secret. A thing is usually secret.
+<blockquote><font color="#000080">One man-ghost represents every man. One woman-ghost represents every woman.
 </font></blockquote><p>
 <p>
-<p>Now, we want the character to be able to hide small things if he has some sort of concealing garment on. We also want to be able to see anything that the player has already found once, perhaps by using the >SEARCH PERSON command. So:
+<p>This is, technically, an assembly -- except instead of saying that every device has a button part, or that there are three daffodils in every garden room, the assembly is based on a non-physical relation that we just designed.
 <p>
-<blockquote><font color="#000080">Rule for deciding the concealed possessions of someone (called the suspect):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the particular possession is discovered, no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the suspect wears something and the particular possession is small, yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise no.
+<p>Based on the &quot;representation&quot; relation, we now devise a conditional relation that applies only when the represented thing is not itself in view:
+<p>
+<blockquote><font color="#000080">Indication relates a ghost (called X) to a person (called Y) when X represents Y and Y is not visible.
 </font></blockquote><p>
 <p>
-<p>The following rule, borrowed from a later chapter, assures that any items that are ever mentioned to the player will be treated as known from then on:
-<p>
-<blockquote><font color="#000080">Before printing the name of something (called discovery): now the discovery is discovered.
+<blockquote><font color="#000080">Understand &quot;[something related by indication]&quot; as a ghost.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Customs House is a room. The smuggler is a man in the Customs House. The smuggler wears a leather jacket. He carries a bottle of Altairan rum, some raspberries, and a laser pistol. The pistol is large. The jacket is large. The rum and the raspberries are contraband. The description of the smuggler is &quot;He has a bestubbled chin and a sinister eye.&quot;
+<blockquote><font color="#000080">When play begins:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every ghost is in the concept-repository.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The tourist is a woman in the customs house. The description is &quot;The type who walks off home with a dozen contraband items in her pocket not because she means to steal things but because she's too stupid to understand that the law applies to herself.&quot; She wears a tight-fitting dress. The dress is large. The tourist carries a grapevine and an archaeological artifact. The grapevine is large and contraband. The artifact is contraband.
+<blockquote><font color="#000080">Instead of doing something to a ghost:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You seem to have left [a random person which is represented by the noun] behind.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report examining someone: say &quot;[The noun] is [if the noun is wearing something]wearing [a list of unconcealed things worn by the noun] and [end if]carrying [a list of unconcealed things carried by the noun].&quot;
+<blockquote><font color="#000080">The concept-repository is a closed unopenable transparent container. It is part of the air. The air is a backdrop. It is everywhere.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report examining someone who is concealing something contraband:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] looks nervous. You can just tell.&quot;
+<blockquote><font color="#000080">Base of Puncak Jaya is a room. Temple, Kippax, and Huizenga are men in Base. Peak of Puncak Jaya is above Base of Puncak Jaya.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report examining someone who is carrying an unconcealed contraband thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your eye goes at once to [the list of unconcealed contraband things carried by the noun] which [the noun] is unable to hide&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if an unconcealed licit thing is had by the noun, say &quot;, though [if the noun is female]s[end if]he also has [a list of unconcealed licit things had by the noun]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot; instead.
+<blockquote><font color="#000080">Test me with &quot;x kippax / up / x kippax / kiss kippax / kippax, hello&quot;.
 </font></blockquote><p>
 <p>
-<p>Notice that we can talk about what the smuggler wears, what he carries, and what he &quot;has&quot;: things the smuggler has can be either worn or carried, so the phrase is useful if we don't care to make that distinction.
-<p>
-<blockquote><font color="#000080">Instead of searching someone:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is revealed to be carrying [a list of things carried by the noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of confiscating the dress:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are not allowed to perform strip-searches in the public customs area.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;confiscate [something]&quot; as confiscating.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Confiscating is an action applying to one thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check confiscating:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is had by someone who is not the player, do nothing;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;You can only confiscate other people's possessions.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out confiscating:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is carried by the player.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report confiscating:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Through the authority vested in you by the power of the Sovereign of Centauri Proxima, you make [the noun] your own.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x smuggler / search smuggler / x smuggler / confiscate jacket / x smuggler / confiscate rum / confiscate pistol / x smuggler / confiscate raspberries / x smuggler&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test more with &quot;x tourist / confiscate dress / confiscate grapevine / x tourist / search tourist / confiscate artifact / x tourist&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc50.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>Further complications of this example might require that the player meet a character before being able to refer to him or her.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc264.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc49.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc51.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e198"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex198.html#e198 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>293</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex198.html#e198 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cinco</font></b></a><br>A taco shell that can be referred to (when it contains things) in terms of its contents.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex198.html#e198 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e336"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex336.html#e336 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>294</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex336.html#e336 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Claims Adjustment</font></b></a><br>An instant camera that spits out photographs of anything the player chooses to take a picture of.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex336.html#e336 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc263.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc265.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

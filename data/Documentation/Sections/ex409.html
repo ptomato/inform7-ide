@@ -1,0 +1,94 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>24.26. Segmented substitutions</title></head>
+<STYLE TYPE="text/css">
+<!--
+.oval, .oval TD
+{
+background-image:url('../doc_images/ovoid.png');
+color:white;
+}
+.wiarrow, .wiarrow TD
+{
+background-image:url('../doc_images/wiarrow.png');
+color:white;
+}
+.rbarrow, .rbarrow TD
+{
+background-image:url('../doc_images/rbarrow.png');
+color:white;
+}
+-->
+</STYLE>
+<body bgcolor="#ffffff">
+<!-- SEARCH TITLE "Chanel Version 1" -->
+<!-- SEARCH SECTION "Ex 417" -->
+<!-- SEARCH SORT "Ex 024-026-417" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc419.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap24.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 24: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc421.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>24.26. Segmented substitutions</b></font></td></tr></table>
+<p>
+<p>A &quot;segmented&quot; substitution is a syntax where text is placed between two or more different text substitutions. Examples include:
+<p>
+<blockquote><font color="#000080">&quot;This hotel is [if the player is female]just awful[otherwise]basic[end if].&quot;
+<br>&quot;Annie [one of]dances[or]sulks[or]hangs out at Remo's[at random].&quot;
+</font></blockquote><p>
+<p>
+<p>To create such syntaxes, it is not enough just to define how each expands into I6 code: for one thing we may need to know about the later terms in order to expand the earlier ones, which is normally impossible, and for another thing, the individual text substitutions mean nothing in isolation. For instance, Inform produces a problem if the following is tried:
+<p>
+<blockquote><font color="#000080">&quot;The hotel [at random] is on fire.&quot;
+</font></blockquote><p>
+<p>
+<p>because &quot;[at random]&quot; is only legal when closing a &quot;[one of] ...&quot; construction. But if &quot;[at random]&quot; had been defined as just another text substitution, Inform would not have been able to detect such problems.
+<p>
+<p>Inform therefore allows us to mark text substitutions as being any of three special kinds: beginning, in the middle of, or ending a segmented substitution. There can be any number of alternative forms for each of these three variants. The syntax policed is that
+<p>
+<blockquote><font color="#000080">(a) Any usage must lie entirely within a single say or piece of text.
+<br>(b) It must begin with exactly one of the substitutions marked as &quot;beginning&quot;.
+<br>(c) It can contain any number, including none, of the substitutions marked as &quot;middle&quot; (if there are any).
+<br>(d) It must end with exactly one of the substitutions marked as &quot;ending&quot;.
+</font></blockquote><p>
+<p>
+<p>A simple example:
+<p>
+<blockquote><font color="#000080">To say emphasis on -- beginning say_emphasis_on: (- style underline; -).
+<br>To say emphasis off -- ending say_emphasis_on: (- style roman; -).
+</font></blockquote><p>
+<p>
+<p>This creates &quot;[emphasis on]&quot; and &quot;[emphasis off]&quot; such that they can only be used as a pair. The keyword &quot;say_emphasis_on&quot;, which must be a valid I6 identifier (and hence a single word), is never seen by the user: it is simply an ID token so that Inform can identify the construction to which these belong. (We recommend that anybody creating such constructions should choose an ID token which consists of the construction's name but with underscores in place of spaces: this means that the namespace for ID tokens will only clash if the primary definitions would have clashed in any case.)
+<p>
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e409"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc420.html#e409 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>417</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc420.html#e409 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Chanel Version 1</font></b></a><br>Making paired italic and boldface tags like those used by HTML for web pages.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex409.html#e409 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>HTML uses angled brackets to achieve effects, and places italicised text between &lt;i&gt; and &lt;/i&gt; tags; and similarly boldface between &lt;b&gt; and &lt;/b&gt;. We can mimic this very easily by setting each up as a segmented substitution:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode516(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Chanel Version 1[=0x0022=][=0x000A=][=0x000A=]To say i  -- beginning say_i -- running on: (- style underline; -).[=0x000A=]To say /i  -- ending say_i -- running on: (- style roman; -).[=0x000A=]To say b -- beginning say_b -- running on: (- style bold; -).[=0x000A=]To say /b -- ending say_b -- running on: (- style roman; -).[=0x000A=][=0x000A=]Place Vendôme is a room. [=0x0022=][i]Fashion fades, only style remains the same[/i] ([b]Coco Chanel[/b]). And this elegant drawing-room, once a milliner[=0x0027=]s shop, is a case in point.[=0x0022=][=0x000A=][=0x000A=]Instead of going nowhere, say [=0x0022=][i]Don[=0x0027=]t spend time beating on a wall, hoping to transform it into a door.[/i] ([b]Coco Chanel[/b]) This one is a wall.[=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]look / e[=0x0022=].[=0x000A=][=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode516()"><img border=0 src=../doc_images/paste.png></a> &quot;Chanel Version 1&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">To say i  -- beginning say_i -- running on: (- style underline; -).
+<br>To say /i  -- ending say_i -- running on: (- style roman; -).
+<br>To say b -- beginning say_b -- running on: (- style bold; -).
+<br>To say /b -- ending say_b -- running on: (- style roman; -).
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Place Vendôme is a room. &quot;[i]Fashion fades, only style remains the same[/i] ([b]Coco Chanel[/b]). And this elegant drawing-room, once a milliner's shop, is a case in point.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of going nowhere, say &quot;[i]Don't spend time beating on a wall, hoping to transform it into a door.[/i] ([b]Coco Chanel[/b]) This one is a wall.&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;look / e&quot;.
+</font></blockquote><p>
+<p>
+<p>We have had to use square instead of angle brackets, but then, &quot;in order to be irreplaceable one must always be different&quot; (Coco Chanel).
+<p>
+<p>(Marking these as substitutions which run on prevents unexpected paragraph breaks if they should appear immediately after the end of a sentence.)
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc420.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<!-- EXAMPLE END -->
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc419.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc421.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>20.10. Variations: arrays, logs, queues, stacks, sets, sieves and rings</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.20. Stored actions</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,193 +19,148 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Sieve of Eratosthenes" -->
-<!-- SEARCH SECTION "Ex 379" -->
-<!-- SEARCH SORT "Ex 020-010-379" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc333.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap20.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 20: Lists</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc335.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>20.10. Variations: arrays, logs, queues, stacks, sets, sieves and rings</b></font></td></tr></table>
+<!-- SEARCH TITLE "Anteaters" -->
+<!-- SEARCH SECTION "Ex 211" -->
+<!-- SEARCH SORT "Ex 012-020-211" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc196.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc198.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.20. Stored actions</b></font></td></tr></table>
 <p>
-<p>Lists are highly adaptable, and many other collection-like constructions can be made using them. This section introduces no new material, but simply suggests some of the variations which are possible.
+<p>As we have seen, to describe an action fully takes a complicated little bundle of information - we need to know what is to be done, who will do it, and what it will be done to. There are times when we would like to remember an action and look back on it later (perhaps many turns later, after many other actions have taken effect) - but this is not easy to do with only the techniques we have seen so far. There are quite a few cases to get right, and it would be easy to not store quite enough of the details.
 <p>
-<p>1. The traditional computing term <b>array</b> means a list of values accessed by their entry numbers, often used in mathematical computations. The difference between an array and a list is mostly one of attitude, but usually arrays are fixed in length whereas lists can expand or contract.
+<p>Fortunately, Inform provides a kind of value called &quot;stored action&quot; which can do all of this automatically. As with most other kinds of value, stored actions can be held in variables, &quot;let&quot; values, properties or table columns. For example:
 <p>
-<p>2. A <b>log</b> is a list which records the most recently arrived values, but does not allow itself to grow indefinitely. In the following, which remembers the seven most recently taken items, new values arrive at the end while old ones eventually disappear from the front:
-<p>
-<blockquote><font color="#000080">The most-recently-taken list is a list of objects that varies.
-<br>Carry out taking something (called the item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;truncate the most-recently-taken list to the last 6 entries;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;add the item to the most-recently-taken list.
-<br>After taking:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Taken. (So, your recent acquisitions: [most-recently-taken list].)&quot;
+<blockquote><font color="#000080">The best idea yet is a stored action that varies.
 </font></blockquote><p>
 <p>
-<p>Note that the most-recently-taken list begins play as the empty list, grows as the first few items are taken, but then stabilises at length 7 thereafter. If we need to remember recent history, but only <i>recent</i> history, then a log is better than a list which can grow indefinitely, because there is no risk of speed reduction or memory exhaustion in a very long game.
+<p>creates a variable called &quot;the best idea yet&quot; which holds a stored action. This will normally be created holding the default value - the player waiting - but can instead be set explicitly:
 <p>
-<p>3. A <b>queue</b> is a list of values which are waiting for attention. New values join at the back, while those being dealt with are removed from the front (whereupon the whole queue moves up one). An empty queue means that nobody is waiting for attention: but there is, in principle, no upper limit to the size of a queue, as anyone who has tried to make a couchette reservation at Roma Termini will know.
-<p>
-<p>Queues typically form when two independent processes are at work, but going at different or variable speeds. An empty queue looks just like any other list:
-<p>
-<blockquote><font color="#000080">The queue is a list of objects that varies.
+<blockquote><font color="#000080">The best idea yet is the action of pushing the button.
 </font></blockquote><p>
 <p>
-<p>(Invariably people, in fact, but lists can only be of kinds of value: so, &quot;list of objects&quot;.) Once we identify a &quot;new customer&quot;, we can join him to the queue thus:
+<p>Note the words &quot;action of...&quot;, which convert any sufficiently exact description of an action into its stored action form.
 <p>
-<blockquote><font color="#000080">add the new customer to the queue;
+<p>In rules and phrases, we can always obtain the action currently going on (if there is one) with the value &quot;current action&quot;:
+<p>
+<blockquote><font color="#000080">let the present whim be the current action;
 </font></blockquote><p>
 <p>
-<p>The process of serving the customers needs to make sure there is actually somebody waiting in the queue before it does anything:
+<p>Moreover, just as we can &quot;try&quot; any action, so we can also try a stored one:
 <p>
-<blockquote><font color="#000080">Every turn when the number of entries in the queue is not 0:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the next customer be entry 1 of the queue;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The next customer] is served and leaves.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove entry 1 from the queue.
+<blockquote><font color="#000080">try the present whim;
+<br>silently try the present whim;
 </font></blockquote><p>
 <p>
-<p>Of course queues can also be constructed which empty from other positions, rather than the front: or we could make what computer scientists sometimes call a <b>deque</b>, a &quot;double-ended queue&quot; where new values arrive at both ends.
+<p>would each work in the natural way. A stored action can do anything that actions can do: in particular, they remember, if necessary, the exact wording of the player's command at the time they were stored - so that even actions like &quot;looking up 'x100' in the code book&quot; will work if stored and tried on some future turn.
 <p>
-<p>4. A <b>stack</b> is like a queue except that values arrive at, and are removed from, the same end. Stacks are slightly faster if the active end is the back rather than the front, though this will only be noticeable if they grow quite large.
+<p>As with any other kind of value, we can also say a stored action, and this produces a fairly natural description of what the action is:
 <p>
-<p>To put a value V onto a stack S (which is known as &quot;pushing&quot;) is simple:
-<p>
-<blockquote><font color="#000080">add V to S;
+<blockquote><font color="#000080">Before doing something in the presence of the bearded psychiatrist: say &quot;'Zo, the subject wishes to engage in [the current action]. Zis is very interesting.'&quot;
 </font></blockquote><p>
 <p>
-<p>And to remove a value from the top of the stack (which is known as &quot;pulling&quot;):
+<p>will produce text such as:
 <p>
-<blockquote><font color="#000080">let N be the number of entries in S;
-<br>let V be entry N of S;
-<br>remove entry N of S;
+<blockquote><font color="#000080">&quot;So, the subject vishes to engage in rubbing the fireman's pole. Zis is very interesting.&quot;
 </font></blockquote><p>
 <p>
-<p>Note that the middle line, accessing entry N, will fail if N = 0, that is, if the stack is empty: Inform's list routines will produce a run-time problem message.
+<p>One of Inform's most convenient features is its ability to test if the action being processed matches vague or complicated descriptions of whole classes of actions. Now, it would not make sense to write
 <p>
-<p>Stacks are useful if some long-term process is constantly being interrupted by newer and more urgent demands, but they can also be used in planning. If a character has a long-term goal, which needs various short-term goals to be achieved along the way, then a stack can represent the goals currently being pursued. The top of the stack represents what the character is trying to achieve now. If the character realises that it needs to achieve something else first, we put that new goal onto the top of the stack, and it becomes the new current goal. When the character completes a task, it can be removed, and we can go back to trying to finish whatever is now on top. When the stack is empty, the character has achieved the original goal.
-<p>
-<p>5. Notoriously, <b>set</b> has 464 distinct meanings in the Oxford English Dictionary, making it the single most ambiguous word in the language. Here we mean not the home of a badger or the Egyptian god of the desert, but the mathematical sense: a collection of values (sometimes called &quot;elements&quot;) without duplicates, and which is normally written in brace notation and in some natural order for the reader's convenience.
-<p>
-<p>The trick here is to maintain the principle that, at all times, our list is sorted in order and contains no duplicates. To provide an example, we start with two sets of numbers:
-<p>
-<blockquote><font color="#000080">let S be {2, 4, 8, 16, 32, 64};
-<br>let T be {2, 4, 6, 10};
+<blockquote><font color="#000080">if the best idea yet is the action of taking something, ...
 </font></blockquote><p>
 <p>
-<p>Here we add an element to T:
+<p>because &quot;action of ...&quot; has to make an exact action, which clearly this is not: so Inform will produce a problem message if we try. But we do not need to, because Inform also allows us to compare a stored action against any description of an action, however vague:
 <p>
-<blockquote><font color="#000080">add 8 to T, if absent; sort T;
+<blockquote><font color="#000080">if the best idea yet is taking something, ...
+<br>if the best idea yet is doing something to the lever, ...
 </font></blockquote><p>
 <p>
-<p>The &quot;if absent&quot; clause ensures that no duplicate can occur, and by sorting T afterwards, we maintain the principle that a set must remain in order - so T is now {2, 4, 6, 8, 10}, not {2, 4, 6, 10, 8}. (Inform's sorting algorithm is fast on nearly-sorted lists, so frequent sorting is not as inefficient as it might look.)
+<p>When dealing with stored actions, we sometimes want to know what they are dealing with. We can extract this information using the following phrases:
 <p>
-<p>We next take the union of T and S, that is, the set containing everything which is in either or both:
-<p>
-<blockquote><font color="#000080">let U be S; add T to U, if absent; sort U;
+<blockquote><font color="#000080">action-name part of S
+<br>noun part of S
+<br>second noun part of S
+<br>actor part of S
 </font></blockquote><p>
 <p>
-<p>This makes U = {2, 4, 6, 8, 10, 16, 32, 64}, and once again no duplicates occur and we preserve the sorting. The intersection of T and S, the set of elements in both of them, is a little trickier:
+<p>For example, if S is &quot;Algy trying throwing the brick at Biggles&quot; then saying these four values will produce
 <p>
-<blockquote><font color="#000080">let I be T;
-<br>repeat with the element running through T
-<br>begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the element is not listed in S, remove the element from I;
-<br>end repeat;
+<blockquote><font color="#000080">throwing it at
+<br>brick
+<br>Biggles
+<br>Algy
 </font></blockquote><p>
 <p>
-<p>(Faster methods could be devised which exploit the sortedness of T and S, but are not worth it for shortish lists.) This produces I = {2, 4, 8}. Lastly, we can form the set difference, consisting of those elements which are in S but not in T:
+<p>Should the action be one which does not involve objects, the noun and second noun may be &quot;nothing&quot;: for instance if S is &quot;setting the dial to 3417&quot; then the noun part of S is the dial but the second noun part is nothing. (This has to be true, as otherwise Inform could never know what kind of value &quot;the noun part of S&quot; would have.)
 <p>
-<blockquote><font color="#000080">let D be S; remove T from D, if present;
+<p>As a convenience, the condition
+<p>
+<blockquote><font color="#000080">if S involves X, ...
 </font></blockquote><p>
 <p>
-<p>Here, as with intersection, since all we do is to strike out unwanted elements, the surviving ones remain in order and there is no need to sort when we are finished. This produces D = {16, 32, 64}.
+<p>is true if the object X appears as any of the actor, the noun or the second noun: for instance,
 <p>
-<p>6. A <b>sieve</b> is used to make a complicated choice where there are many constraints, by ruling out impossible cases to see what is left. The term derives from the kitchen utensil (for sieving fine grains of flour), but via the name of the &quot;sieve of Eratosthenes&quot;, an ancient Greek method for determining the prime numbers.
-<p>
-<p>Using a sieve is much like using a set, and the difference is mainly one of outlook - we are interested in what does not belong, rather than what does.
-<p>
-<p>7. A <b>ring</b> is not so much a row of values, more a circle, with the last and first entries thought of as adjacent. One position is usually thought of as special, and is the place where new items are added: this may as well be entry 1. For instance, to add &quot;new item&quot; to the ring:
-<p>
-<blockquote><font color="#000080">add the item at entry 1 in the ring;
+<blockquote><font color="#000080">if the current action involves Algy
 </font></blockquote><p>
 <p>
-<p>To set &quot;item&quot; to the frontmost value and extract it from the ring:
-<p>
-<blockquote><font color="#000080">let the item be entry 1 of the ring;
-<br>remove entry 1 from the ring;
-</font></blockquote><p>
-<p>
-<p>And we can rotate the ring in either direction, making a different entry the new entry 1 and therefore the new frontmost value:
-<p>
-<blockquote><font color="#000080">rotate the ring;
-<br>rotate the ring backwards;
-</font></blockquote><p>
+<p>would be true for &quot;give revolver to Algy&quot;, &quot;Algy trying flying the Sopwith Camel&quot;, &quot;examine Algy&quot; and so on, but false for &quot;ask Raymond about secret airfield&quot;.
 <p>
 <p><hr><p>
-<a name="e273"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex273.html#e273 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>374</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex273.html#e273 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Circle of Misery</font></b></a><br>Retrieving items from an airport luggage carousel is such fun, how can we resist simulating it, using a list as a ring buffer?<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex273.html#e273 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e28"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex28.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>375</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex28.html#e28 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> I Didn't Come All The Way From Great Portland Street</font></b></a><br>In this fiendishly difficult puzzle, which may perhaps owe some inspiration to a certain BBC Radio panel game (1967-), a list is used as a set of actions to help enforce the rule that the player must keep going for ten turns without hesitation, repetition, or deviating from the subject on the card.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex28.html#e28 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e319"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex319.html#e319 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>376</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex319.html#e319 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Fibonacci Sequence</font></b></a><br>The modest Leonardo Fibonacci of Pisa will be only too happy to construct his sequence on request, using an array.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex319.html#e319 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e328"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex328.html#e328 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>377</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex328.html#e328 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Your Mother Doesn't Work Here</font></b></a><br>Your hard-working mother uses a list as a stack: urgent tasks are added to the end of the list, interrupting longer-term plans.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex328.html#e328 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e51"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex51.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>378</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex51.html#e51 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Lugubrious Pete's Delicatessen</font></b></a><br>In this evocation of supermarket deli counter life, a list is used as a queue to keep track of who is waiting to be served.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex51.html#e51 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e186"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex186.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>208</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex186.html#e186 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Cactus Will Outlive Us All</font></b></a><br>For every character besides the player, there is an action that will cause that character to wither right up and die.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex186.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e191"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex191.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>209</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex191.html#e191 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Bosch</font></b></a><br>Creating a list of actions that will earn the player points, and using this both to change the score and to give FULL SCORE reports.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex191.html#e191 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e101"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex101.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>210</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex101.html#e101 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Actor's Studio</font></b></a><br>A video camera that records actions performed in its presence, and plays them back with time-stamps.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex101.html#e101 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e83"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc334.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>379</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc334.html#e83 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Sieve of Eratosthenes</font></b></a><br>The haughty Eratosthenes of Cyrene will nevertheless consent to sieve prime numbers on request.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e83"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc197.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>211</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc197.html#e83 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Anteaters</font></b></a><br>The player carries a gizmo that is able to record actions performed by the player, then force him to repeat them when the gizmo is dropped. This includes storing actions that apply to topics, as in "look up anteater colonies in the guide".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex83.html#e83 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>In the words of Wikipedia: &quot;Eratosthenes of Cyrene (Greek Eρατοσθένης; 276 BC-194 BC) was a Greek mathematician, poet, athlete, geographer and astronomer.&quot; In the words of Tom Lehrer: &quot;It's people like that who make you realise how little you've achieved in life.&quot;
-<p>
-<p>A prime number is a number greater than 1 which is not a multiple of anything, so we can find the primes by starting with all the numbers and sieving out all the multiples of 2, then all the multiples of 3, and so on. Here we make our sieve of the unacceptable numbers (the &quot;composite&quot; or non-prime ones) first, then form a list of all the numbers, then sieve out the composites: what are left must be the primes.
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode468(code) {
+function pasteCode308(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Sieve of Eratosthenes[=0x0022=][=0x000A=][=0x000A=]Alexandria is a room. Eratosthenes is a man in Alexandria. [=0x0022=]The haughty Greek mathematician, Eratosthenes, glowers at you.[=0x0022=][=0x000A=][=0x000A=]Sieving is an action applying to one number. Understand [=0x0022=]sieve [number][=0x0022=] as sieving.[=0x000A=][=0x000A=]Instead of sieving, say [=0x0022=]You make a feeble attempt, sketching in the sand, but it goes nowhere. Eratosthenes smirks. [=0x0027=]I expect your friends call you gamma, then?[=0x0027=][=0x0022=][=0x000A=][=0x000A=]Persuasion rule for asking Eratosthenes to try sieving: persuasion succeeds.[=0x000A=][=0x000A=]Report Eratosthenes sieving:[=0x000A=][=0x0009=]let N be the number understood;[=0x000A=][=0x0009=]let the composites be a list of numbers;[=0x000A=][=0x0009=]let I be 2;[=0x000A=][=0x0009=]while I times I is at most N[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if I is not listed in the composites[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let J be I times 2;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]while J is at most N[=0x000A=][=0x0009=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]add J to the composites, if absent;[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]increase J by I;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]end while;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=][=0x0009=]increase I by 1;[=0x000A=][=0x0009=]end while;[=0x000A=][=0x0009=]sort the composites;[=0x000A=][=0x0009=]let the primes be a list of numbers;[=0x000A=][=0x0009=]repeat with P running from 2 to N[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]add P to the primes;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=]remove the composites from the primes;[=0x000A=][=0x0009=]say [=0x0022=]Eratosthenes sketches lines in the sand with the air of much practice. [=0x0027=]The primes up to [N] are [the primes]. The composites are [the composites].[=0x0027=][=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]sieve 10 / eratosthenes, sieve 100[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode(' [=0x0022=]Anteaters[=0x0022=][=0x000A=][=0x000A=]A book is a kind of thing. Understand [=0x0022=]book[=0x0022=] as a book. A book has a table-name called the contents.[=0x000A=][=0x000A=]Report consulting a book about:[=0x000A=][=0x0009=]say [=0x0022=]You flip through [the noun], but find no reference to [the topic understood].[=0x0022=] instead.[=0x000A=][=0x000A=]Instead of consulting a book about a topic listed in the contents of the noun:[=0x000A=][=0x0009=]say [=0x0022=][reply entry][paragraph break][=0x0022=].[=0x000A=][=0x000A=]The Guide to Desert Fauna is a book. The contents of the Guide is the Table of Critters.[=0x000A=][=0x000A=]Table of Critters[=0x000A=]topic[=0x0009=]reply[=0x000A=][=0x0022=]spines[=0x0022=][=0x0009=][=0x0022=]You flip through the Guide for a while and eventually realise that spines are flora, not fauna.[=0x0022=][=0x000A=][=0x0022=]anteater colonies[=0x0022=][=0x0009=][=0x0022=]The giant anteater, which grows to six feet in size and can kill a jaguar, is a solitary animal, found in many habitats, including grasslands, deciduous forests and rainforests. It does not form colonies. That[=0x0027=]s ants. They[=0x0027=]re actually quite easy to tell apart.[=0x0022=][=0x000A=][=0x000A=]Death Valley is a room. The Guide is in the Valley.[=0x000A=][=0x000A=]The gizmo is in Death Valley. The gizmo has a stored action called idea. The description of the gizmo is [=0x0022=]The gizmo is hard to describe, but it projects an idea of [idea].[=0x0022=][=0x000A=][=0x000A=]Before when the player carries the gizmo and the idea of the gizmo is waiting:[=0x000A=][=0x0009=]say [=0x0022=][The gizmo] eagerly soaks up the whole idea of [the current action].[=0x0022=];[=0x000A=][=0x0009=]now the idea of the gizmo is the current action.[=0x000A=][=0x000A=]After dropping the gizmo:[=0x000A=][=0x0009=]say [=0x0022=]The percussion of the fall seems to have shaken the gizmo[=0x0027=]s idea loose! There[=0x0027=]s nothing for it now but [idea of the gizmo].[=0x0022=];[=0x000A=][=0x0009=]try the idea of the gizmo;[=0x000A=][=0x0009=]now the idea of the gizmo is the action of waiting.[=0x000A=][=0x000A=]Test me with [=0x0022=]get guide / look up spines in guide / x gizmo / get gizmo / i / x gizmo / drop gizmo / get gizmo / look up anteater colonies in guide / x gizmo / drop gizmo[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode468()"><img border=0 src=../doc_images/paste.png></a> &quot;Sieve of Eratosthenes&quot;
+<a href="javascript:pasteCode308()"><img border=0 src=../doc_images/paste.png></a>  &quot;Anteaters&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Alexandria is a room. Eratosthenes is a man in Alexandria. &quot;The haughty Greek mathematician, Eratosthenes, glowers at you.&quot;
+<blockquote><font color="#000080">A book is a kind of thing. Understand &quot;book&quot; as a book. A book has a table-name called the contents.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Sieving is an action applying to one number. Understand &quot;sieve [number]&quot; as sieving.
+<blockquote><font color="#000080">Report consulting a book about:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You flip through [the noun], but find no reference to [the topic understood].&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of sieving, say &quot;You make a feeble attempt, sketching in the sand, but it goes nowhere. Eratosthenes smirks. 'I expect your friends call you gamma, then?'&quot;
+<blockquote><font color="#000080">Instead of consulting a book about a topic listed in the contents of the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Persuasion rule for asking Eratosthenes to try sieving: persuasion succeeds.
+<blockquote><font color="#000080">The Guide to Desert Fauna is a book. The contents of the Guide is the Table of Critters.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report Eratosthenes sieving:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let N be the number understood;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the composites be a list of numbers;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let I be 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;while I times I is at most N
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if I is not listed in the composites
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let J be I times 2;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while J is at most N
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add J to the composites, if absent;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase J by I;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end while;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;increase I by 1;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end while;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the composites;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let the primes be a list of numbers;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with P running from 2 to N
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add P to the primes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;remove the composites from the primes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Eratosthenes sketches lines in the sand with the air of much practice. 'The primes up to [N] are [the primes]. The composites are [the composites].'&quot;
+<blockquote><font color="#000080">Table of Critters
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;spines&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;You flip through the Guide for a while and eventually realise that spines are flora, not fauna.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;anteater colonies&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;The giant anteater, which grows to six feet in size and can kill a jaguar, is a solitary animal, found in many habitats, including grasslands, deciduous forests and rainforests. It does not form colonies. That's ants. They're actually quite easy to tell apart.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;sieve 10 / eratosthenes, sieve 100&quot;.
+<blockquote><font color="#000080">Death Valley is a room. The Guide is in the Valley.
 </font></blockquote><p>
 <p>
-<p>While this could all be done more efficiently with an array, that's only because what we are sieving are numbers: sieving is a technique which can be used for non-numerical decisions, too.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc334.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">The gizmo is in Death Valley. The gizmo has a stored action called idea. The description of the gizmo is &quot;The gizmo is hard to describe, but it projects an idea of [idea].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Before when the player carries the gizmo and the idea of the gizmo is waiting:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The gizmo] eagerly soaks up the whole idea of [the current action].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the idea of the gizmo is the current action.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After dropping the gizmo:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The percussion of the fall seems to have shaken the gizmo's idea loose! There's nothing for it now but [idea of the gizmo].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try the idea of the gizmo;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the idea of the gizmo is the action of waiting.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get guide / look up spines in guide / x gizmo / get gizmo / i / x gizmo / drop gizmo / get gizmo / look up anteater colonies in guide / x gizmo / drop gizmo&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc197.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e87"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex87.html#e87 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>380</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex87.html#e87 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Eyes, Fingers, Toes</font></b></a><br>A safe with a multi-number combination, meant to be dialed over multiple turns, is implemented using a log of the last three numbers dialed. The log can then be compared to the safe's correct combination.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex87.html#e87 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc333.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc335.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc196.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc198.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

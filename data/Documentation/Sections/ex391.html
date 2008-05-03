@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.5. New activities</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.13. Report rules for actions by other people</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,148 +19,129 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Aftershock" -->
-<!-- SEARCH SECTION "Ex 296" -->
-<!-- SEARCH SORT "Ex 017-005-296" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc266.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc268.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.5. New activities</b></font></td></tr></table>
+<!-- SEARCH TITLE "Fate Steps In" -->
+<!-- SEARCH SECTION "Ex 200" -->
+<!-- SEARCH SORT "Ex 012-013-200" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc189.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc191.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.13. Report rules for actions by other people</b></font></td></tr></table>
 <p>
-<p>Activities are all about influencing the standard mechanisms which Inform uses, so it might at first seem that there is no need to create new activities: but on further reflection, quite a lot of the writing of interactive fiction involves creating new and systematic ways to do things, and as soon as we have a general rule, we will want to have exceptions. Inform therefore allows us to create our own activities, giving us ways to influence the operation of our own mechanisms.
+<p>Report rules for the player's actions are easy to write, and for many actions, they are not much harder for other people either:
 <p>
-<p>There are two kinds of activity: those which relate to a specific thing or room, and those which do not. The following creates one of each kind:
-<p>
-<blockquote><font color="#000080">Analysing something is an activity.
-<br>Assaying is an activity.
+<blockquote><font color="#000080">Report photographing: say &quot;Click!&quot;
+<br>Report someone photographing: say &quot;Click! [The person asked] takes a snapshot of [the noun].&quot;
 </font></blockquote><p>
 <p>
-<p>Here &quot;analysing something&quot; relates to a specific item: Inform knows this because it looks for the clue &quot;something&quot; (or &quot;of something&quot;) after the activity's name, which in the first case above is simply &quot;analysing&quot;.
+<p>But once other people are involved, we have to go to some trouble to get all of the possibilities right. Here is a case which did not immediately occur to the author of the &quot;going&quot; action, for instance:
 <p>
-<p>Creating an activity is like creating an action: it automatically makes new rulebooks - &quot;before analysing&quot;, &quot;for analysing&quot; and &quot;after analysing&quot; - but they start out empty, so the activity does nothing yet. Moreover, it never happens. We can make an activity happen at any time by writing phrases like so:
-<p>
-<blockquote><font color="#000080">carry out the analysing activity with the pitchblende;
-<br>carry out the assaying activity;
+<blockquote><font color="#000080">>get in cage
+<br>You get into the cage.
+<br>>clark, get in automobile
+<br>Clark Gable gets into the automobile.
+<br>>clark, push cage west
+<br>Clark Gable goes west in the automobile, pushing the cage in front, and you along too.
 </font></blockquote><p>
 <p>
-<p>To make the activity do something useful, we need to put a rule into its &quot;for&quot; rulebook:
-<p>
-<blockquote><font color="#000080">The last for assaying rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Professionally, you cast an eye around mineral deposits nearby, noticing [list of rocks in the location].&quot;
+<blockquote><font color="#000080"><b>The Lot</b> (in the cage)
+<br>In the Lot you can see an automobile (in which is Clark Gable).
 </font></blockquote><p>
 <p>
-<p>&quot;The last&quot; is a technicality about rulebooks (see the next chapter) which, put briefly, guarantees that this rule comes last among all possible &quot;for assaying&quot; rules. This is good form because the whole point of an activity is to make it easy for further rules to interfere - so we deliberately hang back to last place, giving precedence to anybody else who wants it.
+<p>We said before that report rules are skipped if the action is running &quot;silently&quot;, or if the action is one that the player does not witness. But that is also a tricky concept. Inform's doctrine is that you witness an action if you can see any of the actor, the noun or the second noun at either the beginning or the end of the action; except that being able to see a backdrop does not count. Thus if Clark Gable, in Beverly Hills, photographs the Hollywood sign then we do not witness this from Sunset Boulevard merely because we, too, can see the Hollywood sign.
 <p>
-<p>It may look rather pretentious to dress up the footling little &quot;assaying&quot; example as an activity, but it gains us more than might first appear. Every new activity created provides a context which other activities can observe. We could, for instance, define
-<p>
-<blockquote><font color="#000080">Rule for printing the name of a rock while assaying: ...
-</font></blockquote><p>
-<p>
-<p>so that during assays more technical names are used.
+<p>While the report rules for actions by the player must actually report something, report rules for other people's actions are under no such obligation. For instance, if Clark unlocks a door from the other side to the player, then this counts as an action that the player witnesses - and after all, it could be argued that the player should hear the key turning in the lock - but in fact the standard rules for reporting locking choose to say nothing.
 <p>
 <p><hr><p>
-<a name="e211"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex211.html#e211 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>294</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex211.html#e211 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> AARP-Gnosis</font></b></a><br>An Encyclopedia set which treats volumes in the same place as a single object, but can also be split up.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex211.html#e211 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e255"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex255.html#e255 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>295</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex255.html#e255 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Crusoe</font></b></a><br>Adding a "printing the description of something" activity.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex255.html#e255 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e162"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex162.html#e162 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>199</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex162.html#e162 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Reporting rules for other characters' behavior</font></b></a><br>Elaborating the report rules to be more interesting than "Clark goes west."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex162.html#e162 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e391"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc267.html#e391 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>296</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc267.html#e391 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Aftershock</font></b></a><br>Modifying the rules for examining a device so that all devices have some specific behavior when switched on, which is described at various times.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex391.html#e391 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e391"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc190.html#e391 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>200</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc190.html#e391 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Fate Steps In</font></b></a><br>Fate entity which attempts to make things happen, by hook or by crook, including taking preliminary actions to set the player up a bit.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex391.html#e391 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The built-in behavior of Inform is to print a line after a device is examined, saying whether the item is on or off. This is often inappropriate, and we could simply turn off that behavior in general by instructing Inform to ignore the &quot;examine described devices rule&quot; (see the chapter on rulebooks).
+<p>One of the nice things about before rules for actions is that they allow us to express some planning for characters other than the player: we've already seen how this works, a bit. But we could also use before rules to write plans for an abstract story-driving entity, rather than for other individual characters. This story-driver could be in charge of all the non-player characters, as well as spontaneous or natural changes in the environment, shaping the narrative around the player's behavior.
 <p>
-<p>Perhaps, though, we would like continue to have a short passage about the action of any switched on device; we'd just like a little more control over what it says from time to time. And in that case, we might change the rule to give a new activity control over that portion of the description:
+<p>The following example is a very simple one, but the same concept could be worked out in a great deal more complexity, with all sorts of alternative procedures available to our story-manager:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode383(code) {
+function pasteCode299(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Aftershock[=0x0022=][=0x000A=][=0x000A=]Section 1 - Showing actions[=0x000A=][=0x000A=]Showing action of something is an activity.[=0x000A=][=0x000A=]Rule for showing action of something (called item):[=0x000A=][=0x0009=]if the item is switched on, say [=0x0022=][The item] is switched on.[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=][The item] is switched off.[=0x0022=][=0x000A=][=0x000A=][Borrowing from the rulebooks chapter, we can replace the standard [=0x0022=]examine described devices[=0x0022=] rule with something that uses this activity.][=0x000A=][=0x000A=]The new described devices rule is listed instead of the examine described devices rule in the carry out examining rules.[=0x000A=][=0x000A=]This is the new described devices rule:[=0x000A=][=0x0009=]if the noun is a device, carry out the showing action activity with the noun.[=0x000A=][=0x000A=][Thus far we have essentially replicated the original behavior, but we[=0x0027=]ve made it possible to write specialized behavior for devices, and to invoke that behavior in other places:][=0x000A=][=0x000A=]Report switching on something:[=0x000A=][=0x0009=]say [=0x0022=]You flip a switch. [=0x0022=];[=0x000A=][=0x0009=]carry out the showing action activity with the noun instead.[=0x000A=][=0x000A=][This might be useful for an electric lamp kind:][=0x000A=][=0x000A=]Section 2 - Electric Lamps[=0x000A=][=0x000A=]An electric lamp is a kind of device.[=0x000A=][=0x000A=]Rule for showing action of an electric lamp (called item):[=0x000A=][=0x0009=]if the item is switched on, say [=0x0022=][The item] is lit[if the number of visible lit things is greater than 1], competing with [the list of visible lit things which are not the item][end if].[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=][The item] is dark.[=0x0022=][=0x000A=][=0x000A=]Carry out switching on an electric lamp: now the noun is lit. Carry out switching off an electric lamp: now the noun is unlit.[=0x000A=][=0x000A=]Section 2 - The Scenario[=0x000A=][=0x000A=]The time of day is 3:47 AM. When play begins, change the right hand status line to [=0x0022=][time of day][=0x0022=][=0x000A=][=0x000A=]The Downstairs Hallway is a dark room. [=0x0022=]The only room in the house with no furniture and almost nothing on the walls. At times like this you always notice the crack in the plaster, originating near the light fixture and running almost all the way to the wall.[=0x0022=][=0x000A=][=0x000A=]A plastic jug of filtered water is in the Downstairs Hallway. The description is [=0x0022=]Five gallons, not that that will last you very long, hot as it has been lately.[=0x0022=][=0x000A=][=0x000A=]The crack is scenery in the Hallway. The description is [=0x0022=]No, the ceiling isn[=0x0027=]t going to fall on you today.[=0x0022=][=0x000A=][=0x000A=]The light fixture is an electric lamp in the Hallway. It is switched on, lit, and scenery. The description is [=0x0022=]A plain globe of frosted glass containing the light bulb. Nothing special, and you never think about it except when, as now, you are forced to spend hours in this room.[=0x0022=][=0x000A=][=0x000A=]The flashlight is an electric lamp carried by the player. The description is [=0x0022=]A shiny red flashlight.[=0x0022=] The portable radio is a device carried by the player. The description is [=0x0022=]A small battery-operated radio which you received for free with your subscription to US News [=0x0026=] World Report. It has served you well through many earthquakes past.[=0x0022=][=0x000A=][=0x000A=][And with our activity, we can override the flashlight[=0x0027=]s electric lamp behavior with new behavior:][=0x000A=][=0x000A=]Rule for showing action of the flashlight:[=0x000A=][=0x0009=]if the flashlight is switched on, say [=0x0022=]A strong, narrow beam of light shines from the flashlight.[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]It is currently switched off.[=0x0022=][=0x000A=][=0x000A=][...or give special actions for the radio:][=0x000A=][=0x000A=]Rule for showing action of the radio:[=0x000A=][=0x0009=]if the radio is switched on, say [=0x0022=]Through the static, you pick up pieces of discussion: a 6.7 on the Richter scale, epicenter... something about Topanga... but it crackles out again.[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]The radio is silent. You[=0x0027=]re saving the batteries.[=0x0022=][=0x000A=][=0x000A=]Instead of listening in the presence of the switched on radio:[=0x000A=][=0x0009=]carry out the showing action activity with the radio instead.[=0x000A=][=0x000A=]Test me with [=0x0022=]examine light / switch light off / switch flashlight on / switch radio on / examine radio / examine flashlight[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Fate Steps In[=0x0022=][=0x000A=][=0x000A=]Fate is a woman. After deciding the scope of the player: place Fate in scope. The description of Fate is [=0x0022=]Not smiling.[=0x0022=] Instead of doing something other than examining to fate: say [=0x0022=]As if.[=0x0022=][=0x000A=][=0x000A=]Every turn: try fate tripping.[=0x000A=][=0x000A=]Tripping is an action applying to nothing.[=0x000A=][=0x000A=]Carry out someone tripping:[=0x000A=][=0x0009=]if something dangerous (called the trap) is in the location:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]Lise chooses this moment to lick her fingers -- it[=0x0027=]s not gross, it[=0x0027=]s natural, you decide -- stand up, and head for the door. Unfortunately, her path crosses directly over [the trap]. There is a vaudevillesque moment where you try to warn or catch her; the next moment she[=0x0027=]s on the floor, looking shocked and also in quite a lot of pain. [=0x0027=]I[=0x0027=]m not sure,[=0x0027=] she says to you steadily but with unfocused gaze, [=0x0027=]but I think I might have broken my tailbone.[=0x0027=][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]end the game saying [=0x0022=]Well, she[=0x0027=]s paying attention to you now[=0x0022=].[=0x000A=][=0x000A=]Before someone tripping when the location does not contain a dangerous thing: try the person asked making a mess instead.[=0x000A=][=0x000A=]Making a mess is an action applying to nothing.[=0x000A=][=0x000A=]Carry out someone making a mess:[=0x000A=][=0x0009=]let calamitous object be a random visible supporter which supports at least three things;[=0x000A=][=0x0009=]if calamitous object is a supporter:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The calamitous object] tips over, spilling [the list of things on calamitous object] all over the place.[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]move the calamitous object to the location;[=0x000A=][=0x0009=][=0x0009=]now every thing on the calamitous object is in the location.[=0x000A=][=0x000A=]Definition: a thing is dangerous if it is not the carton and it is not the table and it is not a person.[=0x000A=][=0x000A=]Before someone making a mess when a safe supporter (called target) is visible:[=0x000A=][=0x0009=]if Lise carries something, try Lise putting a random thing carried by Lise on the target instead.[=0x000A=][=0x000A=]Instead of someone making a mess when the tray is on the table:[=0x000A=][=0x0009=]say [=0x0022=]Just at that moment, a large blond man-thing in a red jacket walks more or less through you, and you come into violent contact with the table, knocking [the list of the things on the table] onto the floor.[=0x0022=];[=0x000A=][=0x0009=]now every thing on the table is in the location;[=0x000A=][=0x0009=]now every thing on the tray is in the location instead.[=0x000A=][=0x000A=]Definition: a supporter is safe if the number of things on it is less than two.[=0x000A=][=0x000A=]McQuerry Dining Hall is a room.[=0x000A=][=0x000A=]The table is scenery in the dining hall. The table is a supporter.[=0x000A=][=0x000A=]Lise Fitzwallace is a woman in the Dining Hall. [=0x0022=]Lise is at the nearest table, not apparently paying any attention to you.[=0x0022=] The description of Lise is [=0x0022=]A capella singer, women[=0x0027=]s rugby champion, general object of attention from all genders. Unlikely to notice you unless fate smiles broadly.[=0x0022=] Lise carries a fork, a napkin, an empty glass, and a plate of half-eaten eggplant parmesan.[=0x000A=][=0x000A=]Report Lise putting something on something:[=0x000A=][=0x0009=]say [=0x0022=]Lise, still deep in thought, absently puts [the noun] on [the second noun].[=0x0022=] instead.[=0x000A=][=0x000A=]The carrying capacity of the player is 2. The carton of chocolate milk is in the Hall. [=0x0022=]There[=0x0027=]s a carton of milk beside you, which you set down for a moment -- but you do want it.[=0x0022=][=0x000A=][=0x000A=]Instead of taking something when the player carries the tray:[=0x000A=][=0x0009=]say [=0x0022=]You[=0x0027=]ve got both hands full with this tray.[=0x0022=][=0x000A=][=0x000A=]The player carries the tray. On the tray is some macaroni and some overdone chicken. The macaroni and the chicken are edible. The tray is portable.[=0x000A=][=0x000A=]Test me with [=0x0022=]get milk / put tray on table / get milk[=0x0022=].[=0x000A=][=0x000A=]Test again with [=0x0022=]drop tray[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode383()"><img border=0 src=../doc_images/paste.png></a> &quot;Aftershock&quot;
+<a href="javascript:pasteCode299()"><img border=0 src=../doc_images/paste.png></a> &quot;Fate Steps In&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 1 - Showing actions
+<blockquote><font color="#000080">Fate is a woman. After deciding the scope of the player: place Fate in scope. The description of Fate is &quot;Not smiling.&quot; Instead of doing something other than examining to fate: say &quot;As if.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Showing action of something is an activity.
+<blockquote><font color="#000080">Every turn: try fate tripping.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for showing action of something (called item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is switched on, say &quot;[The item] is switched on.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The item] is switched off.&quot;
+<blockquote><font color="#000080">Tripping is an action applying to nothing.
 </font></blockquote><p>
 <p>
-<p>Borrowing from the rulebooks chapter, we can replace the standard &quot;examine described devices&quot; rule with something that uses this activity.
-<p>
-<blockquote><font color="#000080">The new described devices rule is listed instead of the examine described devices rule in the carry out examining rules.
+<blockquote><font color="#000080">Carry out someone tripping:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if something dangerous (called the trap) is in the location:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lise chooses this moment to lick her fingers -- it's not gross, it's natural, you decide -- stand up, and head for the door. Unfortunately, her path crosses directly over [the trap]. There is a vaudevillesque moment where you try to warn or catch her; the next moment she's on the floor, looking shocked and also in quite a lot of pain. 'I'm not sure,' she says to you steadily but with unfocused gaze, 'but I think I might have broken my tailbone.'&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end the game saying &quot;Well, she's paying attention to you now&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">This is the new described devices rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is a device, carry out the showing action activity with the noun.
+<blockquote><font color="#000080">Before someone tripping when the location does not contain a dangerous thing: try the person asked making a mess instead.
 </font></blockquote><p>
 <p>
-<p>Thus far we have essentially replicated the original behavior, but we've made it possible to write specialized behavior for devices, and to invoke that behavior in other places:
-<p>
-<blockquote><font color="#000080">Report switching on something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You flip a switch. &quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;carry out the showing action activity with the noun instead.
+<blockquote><font color="#000080">Making a mess is an action applying to nothing.
 </font></blockquote><p>
 <p>
-<p>This might be useful for an electric lamp kind:
-<p>
-<blockquote><font color="#000080">Section 2 - Electric Lamps
+<blockquote><font color="#000080">Carry out someone making a mess:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let calamitous object be a random visible supporter which supports at least three things;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if calamitous object is a supporter:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The calamitous object] tips over, spilling [the list of things on calamitous object] all over the place.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the calamitous object to the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;now every thing on the calamitous object is in the location.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">An electric lamp is a kind of device.
+<blockquote><font color="#000080">Definition: a thing is dangerous if it is not the carton and it is not the table and it is not a person.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for showing action of an electric lamp (called item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the item is switched on, say &quot;[The item] is lit[if the number of visible lit things is greater than 1], competing with [the list of visible lit things which are not the item][end if].&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The item] is dark.&quot;
+<blockquote><font color="#000080">Before someone making a mess when a safe supporter (called target) is visible:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Lise carries something, try Lise putting a random thing carried by Lise on the target instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out switching on an electric lamp: now the noun is lit. Carry out switching off an electric lamp: now the noun is unlit.
+<blockquote><font color="#000080">Instead of someone making a mess when the tray is on the table:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Just at that moment, a large blond man-thing in a red jacket walks more or less through you, and you come into violent contact with the table, knocking [the list of the things on the table] onto the floor.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing on the table is in the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now every thing on the tray is in the location instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Section 2 - The Scenario
+<blockquote><font color="#000080">Definition: a supporter is safe if the number of things on it is less than two.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The time of day is 3:47 AM. When play begins, change the right hand status line to &quot;[time of day]&quot;
+<blockquote><font color="#000080">McQuerry Dining Hall is a room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Downstairs Hallway is a dark room. &quot;The only room in the house with no furniture and almost nothing on the walls. At times like this you always notice the crack in the plaster, originating near the light fixture and running almost all the way to the wall.&quot;
+<blockquote><font color="#000080">The table is scenery in the dining hall. The table is a supporter.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A plastic jug of filtered water is in the Downstairs Hallway. The description is &quot;Five gallons, not that that will last you very long, hot as it has been lately.&quot;
+<blockquote><font color="#000080">Lise Fitzwallace is a woman in the Dining Hall. &quot;Lise is at the nearest table, not apparently paying any attention to you.&quot; The description of Lise is &quot;A capella singer, women's rugby champion, general object of attention from all genders. Unlikely to notice you unless fate smiles broadly.&quot; Lise carries a fork, a napkin, an empty glass, and a plate of half-eaten eggplant parmesan.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The crack is scenery in the Hallway. The description is &quot;No, the ceiling isn't going to fall on you today.&quot;
+<blockquote><font color="#000080">Report Lise putting something on something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lise, still deep in thought, absently puts [the noun] on [the second noun].&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The light fixture is an electric lamp in the Hallway. It is switched on, lit, and scenery. The description is &quot;A plain globe of frosted glass containing the light bulb. Nothing special, and you never think about it except when, as now, you are forced to spend hours in this room.&quot;
+<blockquote><font color="#000080">The carrying capacity of the player is 2. The carton of chocolate milk is in the Hall. &quot;There's a carton of milk beside you, which you set down for a moment -- but you do want it.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The flashlight is an electric lamp carried by the player. The description is &quot;A shiny red flashlight.&quot; The portable radio is a device carried by the player. The description is &quot;A small battery-operated radio which you received for free with your subscription to US News & World Report. It has served you well through many earthquakes past.&quot;
+<blockquote><font color="#000080">Instead of taking something when the player carries the tray:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You've got both hands full with this tray.&quot;
 </font></blockquote><p>
 <p>
-<p>And with our activity, we can override the flashlight's electric lamp behavior with new behavior:
-<p>
-<blockquote><font color="#000080">Rule for showing action of the flashlight:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the flashlight is switched on, say &quot;A strong, narrow beam of light shines from the flashlight.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;It is currently switched off.&quot;
+<blockquote><font color="#000080">The player carries the tray. On the tray is some macaroni and some overdone chicken. The macaroni and the chicken are edible. The tray is portable.
 </font></blockquote><p>
 <p>
-<p>...or give special actions for the radio:
-<p>
-<blockquote><font color="#000080">Rule for showing action of the radio:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the radio is switched on, say &quot;Through the static, you pick up pieces of discussion: a 6.7 on the Richter scale, epicenter... something about Topanga... but it crackles out again.&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;The radio is silent. You're saving the batteries.&quot;
+<blockquote><font color="#000080">Test me with &quot;get milk / put tray on table / get milk&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of listening in the presence of the switched on radio:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;carry out the showing action activity with the radio instead.
+<blockquote><font color="#000080">Test again with &quot;drop tray&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;examine light / switch light off / switch flashlight on / switch radio on / examine radio / examine flashlight&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc267.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc190.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc266.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc268.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc189.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc191.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

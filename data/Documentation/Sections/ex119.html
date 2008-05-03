@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>23.13. Defining phrases in Inform 6</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>4.7. New value properties</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,107 +19,85 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Odins" -->
-<!-- SEARCH SECTION "Ex 392" -->
-<!-- SEARCH SORT "Ex 023-013-392" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc384.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap23.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 23: Extensions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc386.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>23.13. Defining phrases in Inform 6</b></font></td></tr></table>
+<!-- SEARCH TITLE "Would you...?" -->
+<!-- SEARCH SECTION "Ex 49" -->
+<!-- SEARCH SORT "Ex 004-007-049" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc59.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap4.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 4: Kinds</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc61.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>4.7. New value properties</b></font></td></tr></table>
 <p>
-<p>The phrases described in this documentation, such as &quot;end the game in death&quot;, are all defined in the Standard Rules, and are for the most part defined not in terms of other I7 phrases but instead reduced to equivalents in I6. For instance:
+<p>Moving on to properties which contain values, such as the &quot;matching key&quot; property of a door or a container, we need to use a different formulation.
 <p>
-<blockquote><font color="#000080">To end the game in death: (- deadflag=1; -).
+<blockquote><font color="#000080">A dead end has some text called river sound. The river sound of a dead end is usually &quot;a faint whispering of running water&quot;. The Tortuous Alcove has river sound &quot;a gurgle of running water&quot;.
 </font></blockquote><p>
 <p>
-<p>The notation &quot;(-&quot; and &quot;-)&quot; indicates that what comes in between is I6 code. The minus sign is supposed to be a mnemonic for the decrease from 7 to 6: later we shall use &quot;(+&quot; and &quot;+)&quot; to go back up the other way, from 6 to 7.
+<p>The property &quot;river sound&quot; is now applicable only to dead ends, and we would not be allowed to talk about it in any other context. As can be seen, it holds a piece of text. If we tried the following:
 <p>
-<p>When a phrase is defined as containing only a single command, and that command is defined using I6 - as here - it is compiled in-line. This means that the phrase &quot;end the game in death&quot; will always be translated as &quot;deadflag=1;&quot;, rather than being translated into a call to a suitable function whose only statement is &quot;deadflag=1;&quot;.
-<p>
-<p>This is an easy case since the wording never varies. More typical examples would be:
-<p>
-<blockquote><font color="#000080">To say (something - number): (- print {something}; -).
-<br>To sort (T - table-name) in (TC - table-column) order:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;(- TableSort({T}, {TC}, 1); -).
+<blockquote><font color="#000080">The river sound of the Tortuous Alcove is 7.
 </font></blockquote><p>
 <p>
-<p>When the braced name of one of the variables in the phrase preamble appears, this is compiled to the corresponding I6 expression at the relevant position in the I6 code. So, for instance,
+<p>...then Inform would object, because the number 7 is the wrong kind of value to go into the &quot;river sound&quot; property. If we need a numerical property, we can try this instead:
 <p>
-<blockquote><font color="#000080">say the capacity of the basket
+<blockquote><font color="#000080">A dead end has a number called the difficulty rating. The Tortuous Alcove has difficulty rating 7.
 </font></blockquote><p>
 <p>
-<p>might be compiled to
+<p>Suppose that we were to add:
 <p>
-<blockquote><font color="#000080">print O17_basket.capacity;
+<blockquote><font color="#000080">The Exquisitely Narrow Defile is a dead end.
 </font></blockquote><p>
 <p>
-<p>because &quot;{something}&quot; is expanded to &quot;capacity of the basket&quot; (I7 code) and then translated to &quot;O17_basket.capacity&quot; (I6 code), which is then spliced into the original I6 definition &quot;print {something};&quot;.
+<p>The Defile must have a river sound, of course, because we said that every dead end would have one. Now in fact the Defile will be provided for because we also said:
 <p>
-<p>Braces &quot;{&quot; are of course significant in I6. A real brace can be obtained by making the character following it a space, and then I7 will not attempt to read it as a request for substitution.
-<p>
-<p>Finally, note that while a normal I7 phrase definition can give a kind as what must be matched, e.g.,
-<p>
-<blockquote><font color="#000080">To release wild tigers into (arena - a room): ...
+<blockquote><font color="#000080">The river sound of a dead end is usually &quot;a faint whispering of running water&quot;.
 </font></blockquote><p>
 <p>
-<p>it is in general a bad idea, and will result in inefficient code, for an phrase defined using I6 to do this. Instead, if possible, match against &quot;object&quot;, where any room, region, thing or direction will be a valid match:
-<p>
-<blockquote><font color="#000080">To release wild tigers into (arena - an object): ...
-</font></blockquote><p>
+<p>But suppose there are no instructions at all about the value of a property? What Inform does is to start off the property holding the &quot;default value&quot; for this kind of value: for instance, it sees that the river sound has to be &quot;some text&quot;, and it fills in the default value for text: which is the empty text, consisting of no words at all, and written &quot;&quot;. Similarly, its difficulty rating is set to 0. (A table of the kinds which can be used for properties, and their default values, can be found in the Kinds index.)
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e119"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc385.html#e119 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>392</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc385.html#e119 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Odins</font></b></a><br>Making [is-are] and [it-they] say tokens that will choose appropriately based on the last object mentioned.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex119.html#e119 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e119"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc60.html#e119 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>49</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc60.html#e119 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Would you...?</font></b></a><br>Adding new properties to objects, and checking for their presence.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex119.html#e119 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>The faithful reader may recall this example from the previous chapter. It was always a bit flawed, though, because it didn't account very well for the possibility that our game might contain some intrinsically plural items. Here we define a &quot;to say is-are&quot; ability, checking the appropriate either/or property - &quot;plural-named&quot;.
+<p>For instance, if we want to give some objects a flavor:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode481(code) {
+function pasteCode142(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Odins[=0x0022=][=0x000A=][=0x000A=]The House of a Mortal Farmer is a room. [=0x0022=]Having two separate rooms, this house bespeaks considerable wealth and success at agriculture.[=0x0022=][=0x000A=][=0x000A=]The Bedroom is inside from the House.[=0x000A=][=0x000A=]A chair is a kind of supporter. A chair is always enterable.[=0x000A=][=0x000A=]In the House are a table, two chairs, a basket, and a hearth. On the table is a loaf of bread. Some shoes are on the table.[=0x000A=][=0x000A=]The description of a thing is usually [=0x0022=]You give [the noun] a glance, but [it-they] [is-are] plainly beneath your attention.[=0x0022=][=0x000A=][=0x000A=]The infant is a man in the basket. The description of the infant is [=0x0022=]So strong and fat that you wonder whether one of your fellow gods is acquainted with the mistress of the house-- but it[=0x0027=]s no concern of yours, of course.[=0x0022=][=0x000A=][=0x000A=]The last mentioned thing is a thing that varies.[=0x000A=][=0x000A=]After printing the name of something (called the target):[=0x000A=][=0x0009=]change the last mentioned thing to the target.[=0x000A=][=0x000A=]To say is-are:[=0x000A=][=0x0009=]if the last mentioned thing is plural-named, say [=0x0022=]are[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]is[=0x0022=].[=0x000A=][=0x000A=]To say it-they:[=0x000A=][=0x0009=]if the last mentioned thing is plural-named, say [=0x0022=]they[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]it[=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]x chair / x basket / x infant / x shoes[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Would you...?[=0x0022=][=0x000A=][=0x000A=]The House is a room. The mouse is an animal in the House.[=0x000A=][=0x000A=]The player carries some green eggs and a ham.[=0x000A=][=0x000A=]A food is a kind of thing that is edible. Food has some text called flavor. The flavor of food is usually [=0x0022=]Tolerable.[=0x0022=][=0x000A=][=0x000A=][Things are, in general, not edible by default, so we have to make them edible specifically in order to allow them to be eaten by the player. Here we[=0x0027=]ve defined food to be edible by default, and we have given it a standard piece of flavor text.][=0x000A=][=0x000A=]The ham and the green eggs are food. The flavor of the green eggs is [=0x0022=]Delicious![=0x0022=][=0x000A=][=0x000A=]After eating something:[=0x000A=][=0x0009=]if the noun provides the property flavor, say [=0x0022=][the flavor of the noun][paragraph break][=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=]It[=0x0027=]s [noun]-flavored.[=0x0022=][=0x000A=][=0x000A=][Note that we use [=0x0022=]if the noun provides a flavor...[=0x0022=] to make sure that the property exists before attempting to use it. Otherwise, there is the risk that we will try to print a property that does not exist, resulting in errors in the game.][=0x000A=][=0x000A=][We will only get the [=0x0022=]It[=0x0027=]s [noun]-flavored.[=0x0022=] response if we successfully eat something that is not a food and does not have flavor text. To test this feature, let[=0x0027=]s suppose something that isn[=0x0027=]t exactly food but can theoretically be chewed on:][=0x000A=][=0x000A=]The player carries some paper. The paper is edible.[=0x000A=][=0x000A=]Test me with [=0x0022=]eat ham / eat green eggs / eat paper[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode481()"><img border=0 src=../doc_images/paste.png></a> &quot;Odins&quot;
+<a href="javascript:pasteCode142()"><img border=0 src=../doc_images/paste.png></a> &quot;Would you...?&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The House of a Mortal Farmer is a room. &quot;Having two separate rooms, this house bespeaks considerable wealth and success at agriculture.&quot;
+<blockquote><font color="#000080">The House is a room. The mouse is an animal in the House.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Bedroom is inside from the House.
+<blockquote><font color="#000080">The player carries some green eggs and a ham.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A chair is a kind of supporter. A chair is always enterable.
+<blockquote><font color="#000080">A food is a kind of thing that is edible. Food has some text called flavor. The flavor of food is usually &quot;Tolerable.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">In the House are a table, two chairs, a basket, and a hearth. On the table is a loaf of bread. Some shoes are on the table.
+<p>Things are, in general, not edible by default, so we have to make them edible specifically in order to allow them to be eaten by the player. Here we've defined food to be edible by default, and we have given it a standard piece of flavor text.
+<p>
+<blockquote><font color="#000080">The ham and the green eggs are food. The flavor of the green eggs is &quot;Delicious!&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of a thing is usually &quot;You give [the noun] a glance, but [it-they] [is-are] plainly beneath your attention.&quot;
+<blockquote><font color="#000080">After eating something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun provides the property flavor, say &quot;[the flavor of the noun][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;It's [noun]-flavored.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The infant is a man in the basket. The description of the infant is &quot;So strong and fat that you wonder whether one of your fellow gods is acquainted with the mistress of the house-- but it's no concern of yours, of course.&quot;
+<p>Note that we use &quot;if the noun provides a flavor...&quot; to make sure that the property exists before attempting to use it. Otherwise, there is the risk that we will try to print a property that does not exist, resulting in errors in the game.
+<p>
+<p>We will only get the &quot;It's [noun]-flavored.&quot; response if we successfully eat something that is not a food and does not have flavor text. To test this feature, let's suppose something that isn't exactly food but can theoretically be chewed on:
+<p>
+<blockquote><font color="#000080">The player carries some paper. The paper is edible.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The last mentioned thing is a thing that varies.
+<blockquote><font color="#000080">Test me with &quot;eat ham / eat green eggs / eat paper&quot;.
 </font></blockquote><p>
-<p>
-<blockquote><font color="#000080">After printing the name of something (called the target):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last mentioned thing to the target.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say is-are:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last mentioned thing is plural-named, say &quot;are&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;is&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">To say it-they:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last mentioned thing is plural-named, say &quot;they&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;it&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;x chair / x basket / x infant / x shoes&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc385.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc60.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e226"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex226.html#e226 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>393</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex226.html#e226 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Pink or Blue</font></b></a><br>Asking the player to select a gender to begin play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex226.html#e226 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc384.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc386.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e368"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex368.html#e368 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>50</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex368.html#e368 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Straw Boater</font></b></a><br>Using text properties that apply only to some things and are not defined for others.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex368.html#e368 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc59.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc61.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

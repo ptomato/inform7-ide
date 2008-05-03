@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.2. Examining</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.2. Writing New Commands</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,28 +19,116 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "Examining" -->
+<!-- SEARCH TITLE "Writing New Commands" -->
 <!-- SEARCH SECTION "6.2" -->
 <!-- SEARCH SORT "006-002-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc27.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap6.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 6: Commands</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc29.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.2. Examining</b></font></td></tr></table>
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc27.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap6.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 6: Commands</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc29.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.2. Writing New Commands</b></font></td></tr></table>
 <p>
-<p>By default, examining an object shows its description, and - for devices - tells us whether the object is switched on or switched off.
+<p>Once we've considered all the design issues pertaining to a new action, we're ready to start writing the source text. First we need to give the player a way to issue the command:
 <p>
-<p>This kind of additional information is not always what we want, so if we have a device whose on/off status we want to conceal, we may write
-<p>
-<blockquote><font color="#000080">The examine described devices rule is not listed in any rulebook.
+<blockquote><font color="#000080">Understand &quot;smile&quot; as smiling.
+<br>Understand &quot;fold [something]&quot; as folding.
+<br>Understand &quot;shoot [something preferably held] at [something]&quot; as shooting it with.
+<br>Understand &quot;wrap [something preferably held] in [something preferably held]&quot; as wrapping it in.
 </font></blockquote><p>
 <p>
-<p>On the other hand, there are times when we may want to add a similar line or two to the descriptions of other kinds of objects. <b>Waxwork</b> shows how to make containers and supporters automatically list everything they're holding when examined, while <b>Crusoe</b> allows us to append an &quot;It is charred.&quot; sentence to the end of descriptions of things we have burned in the fire. Since it works by introducing a &quot;printing the description&quot; activity, Crusoe is also a good example to start from if we want to introduce more complex, flexible descriptions of items throughout our game.
+<p>(Note how &quot;it&quot; stands in for the first item when we have an action requiring two objects.) The things that go in square brackets are called &quot;tokens&quot;: they are blank spaces for the player to fill in with game objects. The different kinds of tokens are explained in the chapter on Understanding.
 <p>
-<p><b>Odin</b> rewrites the &quot;You see nothing special...&quot; line with other text of our own, for items that otherwise do not have a description.
+<p>We can add synonyms with
 <p>
-<p>Finally, <b>Shawn's Bad Day</b> allows the player to EXAMINE ALL, while <b>Examining everything at once</b> provides a SEARCH command that will show the descriptions of all the scenery in the current location.
+<blockquote><font color="#000080">Understand the command &quot;grin&quot; as &quot;smile&quot;.
+</font></blockquote><p>
 <p>
-<p><hr><p>
-<a name="e334"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex334.html#e334 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>180</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex334.html#e334 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Waxwork</font></b></a><br>Containers and supporters that report their contents when you EXAMINE them.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex334.html#e334 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e255"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex255.html#e255 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>295</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex255.html#e255 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Crusoe</font></b></a><br>Adding a "printing the description of something" activity.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex255.html#e255 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e236"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex236.html#e236 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>39</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex236.html#e236 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Odin</font></b></a><br>Replacing "You see nothing special..." with a different default message for looking at something nondescript.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex236.html#e236 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e293"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex293.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>261</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex293.html#e293 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Shawn's Bad Day</font></b></a><br>Allowing the player to EXAMINE ALL.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex293.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e388"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex388.html#e388 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>63</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex388.html#e388 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Examining everything at once</font></b></a><br>Making the SEARCH command examine all the scenery in the current location.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex388.html#e388 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<p>and we can create reversed versions of commands with
+<p>
+<blockquote><font color="#000080">Understand &quot;shoot [something] with [something preferably held]&quot; as shooting it with (with nouns reversed).
+</font></blockquote><p>
+<p>
+<p>These variations are also covered in the Understanding chapter. If the action needs to work on things that aren't within the player's sight or reach in the normal way, we may need to use an [any thing] token (see the Understanding chapter), as in
+<p>
+<blockquote><font color="#000080">Understand &quot;contemplate [any thing]&quot; as considering.
+</font></blockquote><p>
+<p>
+<p>We may also need to modify reach or light levels (see Changing reachability and Changing visibility in the Advanced Actions chapter), or rely on the Deciding the scope of... activity.
+<p>
+<p>As for guessing the player's intention when he isn't clear, we may want to consult the Does the player mean rules (to help Inform make guesses between multiple possible targets) and the activities Supplying a missing noun and Supplying a missing second noun (to help Inform guess an appropriate item when the player leaves something entirely out of his command). For instance, if the player typed SHOOT HENRY, it is the supplying a missing noun/second noun activity that would allow us to make Inform draw the obvious conclusion that he shoots Henry with the pistol in his hand. The Does the player mean rules are discussed in the chapter on Advanced Actions; the activities in the Activities chapter.
+<p>
+<p>Next we need to define our new action, as in
+<p>
+<blockquote><font color="#000080">Smiling is an action applying to nothing.
+<br>Folding is an action applying to one thing.
+<br>Wrapping it in is an action applying to two carried things.
+</font></blockquote><p>
+<p>
+<p>In cases where we're using an &quot;[any thing]&quot; token to let the player affect objects that aren't normally visible or reachable, we'll need to define the action to apply to <i>visible objects</i>. This tells Inform that the player doesn't have to be able to touch the object for it to work. So for instance
+<p>
+<blockquote><font color="#000080">Considering is an action applying to one visible thing.
+</font></blockquote><p>
+<p>
+<p>For more on this topic, see Visible vs. touchable vs. carried in the Advanced Actions chapter.
+<p>
+<p>The next step is to create rules for Inform to follow when the action happens. These can be check rules (which make sure that the conditions for the action to occur are fulfilled); carry out rules (which perform the action); and report rules (which describe the results of the action to the player). Any new action should have at least a report rule to let the player know what has happened (if anything), and a carry out rule if there are any ramifications for the world model. For instance:
+<p>
+<blockquote><font color="#000080">Carry out folding:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is swan-like.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report folding:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You deftly fold [the noun] into the shape of a swan.&quot;
+</font></blockquote><p>
+<p>
+<p>It's important to remember that report rules may be describing something whose name is plural, such as papers or shoes, and write our text so that it sounds right either way. The Plurality extension provides some convenient short-cuts for writing text that adapts to plural nouns. So for instance
+<p>
+<blockquote><font color="#000080">Include Plurality by Emily Short.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report burning something with something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You light [the noun], and [it-they] quickly burn[s] away.&quot;
+</font></blockquote><p>
+<p>
+<p>More about defining actions and creating carry out and report rules may be found in the chapter on Advanced Actions.
+<p>
+<p>Meanwhile, the check rules give us a chance to provide sensible restrictions on how the command works, as in
+<p>
+<blockquote><font color="#000080">Check folding:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a napkin:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] won't bend.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check shooting something with the noun:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is incapable of aiming at itself.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check burning something which contains the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You're not quite desperate enough to make a funeral pyre for yourself just yet.&quot; instead.
+</font></blockquote><p>
+<p>
+<p>The chapter on Advanced Actions explains how check rules work. In the special case where we want the player to take things automatically before using them, we may want to define the action to work only on carried objects, as in
+<p>
+<blockquote><font color="#000080">Wrapping it in is an action applying to two carried things.
+</font></blockquote><p>
+<p>
+<p>The activity Implicitly taking something (documented in the Activities chapter) allows us to modify what should happen during this process.
+<p>
+<p>Lastly, a word or two about trouble-shooting. If a newly created command seems not to be working, we can discover what action Inform is really generating with the ACTIONS testing command, as in
+<p>
+<blockquote><font color="#000080">>actions
+<br>Actions listing on.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">>i
+<br>[taking inventory]
+<br>You are carrying nothing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">[taking inventory - succeeded]
+</font></blockquote><p>
+<p>
+<p>If the desired command is not happening, we may need to review our understand lines. A common problem is that our new action conflicts with one already defined by default. In that case, we may want to check the Actions index and see whether there are already-defined actions which might conflict with it. If so, we may need to redefine a command with a line like
+<p>
+<blockquote><font color="#000080">Understand the command &quot;stand&quot; as something new.
+</font></blockquote><p>
+<p>
+<p>If that's not enough, we can get a comprehensive view of everything that happens during an action with RULES: this will list all the check, carry out, and report rules that Inform is using to perform the command.
+<p>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc27.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc29.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

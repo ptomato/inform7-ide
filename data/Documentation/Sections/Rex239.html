@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.4. Scoring</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>6.14. Actions on Multiple Objects</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,105 +19,120 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#FFFFE0">
-<!-- SEARCH TITLE "Bosch" -->
-<!-- SEARCH SECTION "Ex 202" -->
-<!-- SEARCH SORT "Ex 011-004-202" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc84.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap11.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 11: Out Of World Actions and Effects</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc86.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.4. Scoring</b></font></td></tr></table>
+<!-- SEARCH TITLE "Formicidae" -->
+<!-- SEARCH SECTION "Ex 393" -->
+<!-- SEARCH SORT "Ex 006-014-393" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=Rdoc39.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../Rchap6.html STYLE="text-decoration: none"><font color="#FFFFE0" size=2>Chapter 6: Commands</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../Rindex.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=Rdoc41.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>6.14. Actions on Multiple Objects</b></font></td></tr></table>
 <p>
-<p>Not every work of IF allots a numerical score to the player: for some authors, this emphasises the idea of a game rather than a narrative. The simple sentence
+<p>Inform allows a handful of actions - TAKE, DROP, PUT, INSERT - to apply to more than one item at a time, so that the player can move things around easily.
 <p>
-<blockquote><font color="#000080">Use no scoring.
+<p>The general principle is that multiple objects are allowed if the actions are likely to be successful but not interesting most of the time, and if they're things that the player could plausibly do all at once. For most actions, the use of ALL would seem weirdly indiscriminate: EAT ALL, say, describes very implausible behavior, and EXAMINE ALL would likely generate a screenful of text at once.
+<p>
+<p>But this is all under our control. If we'd like to create a new action of this kind, we need the &quot;things&quot; token, as in
+<p>
+<blockquote><font color="#000080">Understand &quot;take [things]&quot; as taking.
 </font></blockquote><p>
 <p>
-<p>abolishes the concept. Otherwise, Inform will provide built-in support for a single number measuring progress (&quot;score&quot;), and will expect to measure this against a maximum possible (&quot;maximum score&quot;, which can either be set by hand or worked out automatically from a table of ranks).
+<p>By default, the result will be that the normal taking action is applied to each of the relevant things in turn.
 <p>
-<p>An especially insidious style of bug allows the player to type the same sequence of commands over and over, earning score endlessly for the same insight, and to avoid this it is usually safest to write source like:
+<p>We can manipulate what Inform includes in &quot;ALL&quot; in sentences like TAKE ALL with the &quot;deciding whether all includes...&quot; activity; for instance
 <p>
-<blockquote><font color="#000080">After taking the Picasso miniature for the first time: award 10 points; say &quot;As they say in Montmartre: dude!&quot;
+<blockquote><font color="#000080">Rule for deciding whether all includes scenery: it does not.
 </font></blockquote><p>
 <p>
-<p>If there are many &quot;treasure&quot; items like this, it is best to be systematic, as in <b>No Place Like Home</b>. <b>Bosch</b> takes another approach to the same idea, by creating a table of point-earning actions that the player will be rewarded for doing; the FULL SCORE command will then play these back.
+<p>prevents TAKE ALL from applying to things that can't be moved anyway, avoiding lots of lines like
 <p>
-<p>A single number does not really sum up a life, or even an afternoon, and <b>Goat-Cheese and Sage Chicken</b> and <b>Panache</b> offer more detailed citations. Works that are more story than game may prefer to offer a plot summary of the player's experience to date in lieu of more conventional scoring.
+<blockquote><font color="#000080">tree: That's hardly portable.
+<br>swing set: That's hardly portable.
+</font></blockquote><p>
 <p>
-<p>Finally, <b>Rubies</b> provides a scoreboard that keeps track of the ten highest-scoring players from one playthrough to the next.
+<p><b>Escape from the Seraglio</b> demonstrates how we might lightly modify such text as &quot;grapes: Taken.&quot; in long lists of affected items. <b>Formicidae</b> shows how to control the order in which those objects are handled, so that the most interesting object is always taken last.
 <p>
+<a href=Rdoc31.html STYLE="text-decoration: none"><font color=\"#000000\"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/diamond.png'>&nbsp;<i>See </i><b>Examining</b></font></a><i> for groups of objects that have a collective description different from their individual descriptions, and for commands that search multiple things at once</i><p><p>
 <p><hr><p>
-<a name="e36"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex36.html#e36 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>125</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex36.html#e36 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> No Place Like Home</font></b></a><br>Recording a whole table of scores for specific treasures.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex36.html#e36 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e1"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex1.html#e1 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>376</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex1.html#e1 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Escape from the Seraglio</font></b></a><br>Replacing the usual response to TAKE ALL so that instead of output such as "grapes: Taken. orange: Taken.", Inform produces variable responses in place of "grapes:".<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex1.html#e1 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e239"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc85.html#e239 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>202</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc85.html#e239 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bosch</font></b></a><br>Creating a list of actions that will earn the player points, and using this both to change the score and to give FULL SCORE reports.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex239.html#e239 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e239"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rdoc40.html#e239 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>393</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rdoc40.html#e239 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Formicidae</font></b></a><br>Manipulating the order in which items are handled after TAKE ALL.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex239.html#e239 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#ffffc0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>We could, if we wanted, make a table of stored actions all of which represent things that will earn points for the player. For instance:
+<p>Suppose we have an item that produces an interesting result the first time the player lifts it -- a rock with dangerous ants revealed underneath. The effect of the surprise is a little weakened, though, if the player sees that response as the result of a TAKE ALL, when it might be printed like this:
+<p>
+<blockquote><font color="#000080">>[3] get all
+<br>tent peg: Taken.
+<br>water flask: Taken.
+<br>trading permit: Taken.
+<br>innocent-looking rock: You reach for the rock and turn it over to reveal a thriving colony of flesh-eating ants. Needless to say, you drop the rock and jump back with a decidedly effeminate scream. They can probably hear you all the way back in the base camp.
+<br>rusty nail: Taken.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">[Your score has just gone down by two points.]
+</font></blockquote><p>
+<p>
+<p>The calm response to &quot;rusty nail&quot; looks odd now, and the score change is disconnected from the event that caused it.
+<p>
+<p>To manage this, we might institute a system so that interesting objects are handled last in their list, like so:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode697(code) {
+function pasteCode923(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Bosch[=0x0022=][=0x000A=][=0x000A=]The Garden of Excess is a room. The gilded lily is an edible thing in the Garden of Excess.[=0x000A=][=0x000A=]The Pathway to Desire is west of the Garden of Excess. The emerald leaf is in the Pathway.[=0x000A=][=0x000A=]Table of Valuable Actions[=0x000A=]relevant action[=0x0009=]point value[=0x0009=]turn stamp[=0x000A=]taking the emerald leaf[=0x0009=]15[=0x0009=]-1[=0x000A=]eating the gilded lily[=0x0009=]5[=0x0009=]-1[=0x000A=][=0x000A=][(And our list would presumably continue from there, in the full game.)][=0x000A=][=0x000A=]The maximum score is 25.[=0x000A=][=0x000A=]After doing something:[=0x000A=][=0x0009=]repeat through Table of Valuable Actions[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the current action is the relevant action entry and turn stamp entry is less than 0[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]change the turn stamp entry to the turn count;[=0x000A=][=0x0009=][=0x0009=]award point value entry points;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]Understand [=0x0022=]full score[=0x0022=] or [=0x0022=]full[=0x0022=] as requesting the complete score. Requesting the complete score is an action out of world.[=0x000A=][=0x000A=]Check requesting the complete score:[=0x000A=][=0x0009=]if the score is 0, say [=0x0022=]You have not yet achieved anything of note.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out requesting the complete score:[=0x000A=][=0x0009=]say [=0x0022=]So far you have received points for the following: [line break][=0x0022=];[=0x000A=][=0x0009=]sort the Table of Valuable Actions in turn stamp order;[=0x000A=][=0x0009=]repeat through the Table of Valuable Actions[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if the turn stamp entry is greater than 0[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][line break]  [relevant action entry]: [point value entry] points[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end repeat;[=0x000A=][=0x0009=]say line break.[=0x000A=][=0x000A=]Test me with [=0x0022=]eat lily / w / full score / get leaf / full[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Formicidae[=0x0022=][=0x000A=][=0x000A=]Section 1 - Procedure[=0x000A=][=0x000A=]The magic rule is listed before the generate action rule in the turn sequence rules.[=0x000A=][=0x000A=]A thing has a number called dramatic potential.[=0x000A=][=0x000A=]This is the magic rule:[=0x000A=][=0x0009=]let L be the multiple object list;[=0x000A=][=0x0009=]if the number of entries in L is greater than 1:[=0x000A=][=0x0009=][=0x0009=]sort L in dramatic potential order;[=0x000A=][=0x0009=][=0x0009=]alter the multiple object list to L.[=0x000A=][=0x000A=]Section 2 - Scenario[=0x000A=][=0x000A=]The Foothills is a room. [=0x0022=]The land has become hilly; though the soil is still mostly coarse yellow sand, clumps of grass are able to grow in the shadier places. Deep wagon ruts running from the southwest towards the mountains in the northeast show where generations of caravans have already passed.[=0x0022=][=0x000A=][=0x000A=]The water flask, the tent peg, and the trading permit are things in Foothills.[=0x000A=][=0x000A=]The rock is a thing in Foothills. Before printing the name of the rock when the rock is not handled: say [=0x0022=]innocent-looking [=0x0022=]. The dramatic potential of the rock is 10.[=0x000A=][=0x000A=]The rusty nail is a thing in Foothills.[=0x000A=][=0x000A=]The ant colony is a fixed in place thing. [=0x0022=]A busy group of ants are crawling to and fro in the unaccustomed sun.[=0x0022=] Rule for deciding whether all includes the ant colony while taking: it does not.[=0x000A=][=0x000A=]Instead of taking the rock when the rock is handled:[=0x000A=][=0x0009=]say [=0x0022=]It might still have a stray ant or two on it.[=0x0022=][=0x000A=][=0x000A=]After taking the rock:[=0x000A=][=0x0009=]now the rock is handled;[=0x000A=][=0x0009=]move ant colony to the location;[=0x000A=][=0x0009=]move the rock to the location;[=0x000A=][=0x0009=]say [=0x0022=]You reach for the rock and turn it over to reveal a thriving colony of flesh-eating ants. Needless to say, you drop the rock and jump back with a decidedly effeminate scream. They can probably hear you all the way back in the base camp.[=0x0022=];[=0x000A=][=0x0009=]decrease score by 2.[=0x000A=][=0x000A=]Test me with [=0x0022=]get peg / drop peg / get all / get rock[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode697()"><img border=0 src=../doc_images/paste.png></a> &quot;Bosch&quot;
+<a href="javascript:pasteCode923()"><img border=0 src=../doc_images/paste.png></a> &quot;Formicidae&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Garden of Excess is a room. The gilded lily is an edible thing in the Garden of Excess.
+<blockquote><font color="#000080">Section 1 - Procedure
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Pathway to Desire is west of the Garden of Excess. The emerald leaf is in the Pathway.
+<blockquote><font color="#000080">The magic rule is listed before the generate action rule in the turn sequence rules.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Table of Valuable Actions
-<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">relevant action</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">point value</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">turn stamp</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">taking the emerald leaf</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">15</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">-1</font>&nbsp;&nbsp;&nbsp;</td>
-</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">eating the gilded lily</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">5</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">-1</font>&nbsp;&nbsp;&nbsp;</td>
-</tr></table>
+<blockquote><font color="#000080">A thing has a number called dramatic potential.
 </font></blockquote><p>
 <p>
-<p>(And our list would presumably continue from there, in the full game.)
-<p>
-<blockquote><font color="#000080">The maximum score is 25.
+<blockquote><font color="#000080">This is the magic rule:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let L be the multiple object list;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the number of entries in L is greater than 1:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sort L in dramatic potential order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alter the multiple object list to L.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">After doing something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through Table of Valuable Actions
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the current action is the relevant action entry and turn stamp entry is less than 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change the turn stamp entry to the turn count;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;award point value entry points;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
+<blockquote><font color="#000080">Section 2 - Scenario
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;full score&quot; or &quot;full&quot; as requesting the complete score. Requesting the complete score is an action out of world.
+<blockquote><font color="#000080">The Foothills is a room. &quot;The land has become hilly; though the soil is still mostly coarse yellow sand, clumps of grass are able to grow in the shadier places. Deep wagon ruts running from the southwest towards the mountains in the northeast show where generations of caravans have already passed.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Check requesting the complete score:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the score is 0, say &quot;You have not yet achieved anything of note.&quot; instead.
+<blockquote><font color="#000080">The water flask, the tent peg, and the trading permit are things in Foothills.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out requesting the complete score:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;So far you have received points for the following: [line break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;sort the Table of Valuable Actions in turn stamp order;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat through the Table of Valuable Actions
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the turn stamp entry is greater than 0
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[line break]  [relevant action entry]: [point value entry] points&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say line break.
+<blockquote><font color="#000080">The rock is a thing in Foothills. Before printing the name of the rock when the rock is not handled: say &quot;innocent-looking &quot;. The dramatic potential of the rock is 10.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;eat lily / w / full score / get leaf / full&quot;.
+<blockquote><font color="#000080">The rusty nail is a thing in Foothills.
 </font></blockquote><p>
 <p>
-<p>This system is tidy, but limited: we cannot give actions interesting names in the score list, like &quot;seducing the pirate's daughter&quot; or &quot;collecting a valuable artifact&quot;. So it will not be ideal in all situations, but it has the virtue of being easy to extend, and of listing all of the player's successes in the order in which they occurred in his play-through.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc85.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">The ant colony is a fixed in place thing. &quot;A busy group of ants are crawling to and fro in the unaccustomed sun.&quot; Rule for deciding whether all includes the ant colony while taking: it does not.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of taking the rock when the rock is handled:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It might still have a stray ant or two on it.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">After taking the rock:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the rock is handled;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move ant colony to the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the rock to the location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You reach for the rock and turn it over to reveal a thriving colony of flesh-eating ants. Needless to say, you drop the rock and jump back with a decidedly effeminate scream. They can probably hear you all the way back in the base camp.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decrease score by 2.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;get peg / drop peg / get all / get rock&quot;.
+</font></blockquote><p>
+<p>
+<p>Note that while one could also manipulate the object list to add or remove items at this stage, there's a simpler way to control what Inform considers &quot;ALL&quot; to mean in commands: see the activity &quot;Deciding whether all includes&quot; in the activities chapter.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=Rdoc40.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e127"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex127.html#e127 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>248</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex127.html#e127 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Goat-Cheese and Sage Chicken</font></b></a><br>Implementing a FULL SCORE command which lists more information than the regular SCORE command, adding times and rankings, as an extension of the example given in this chapter.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex127.html#e127 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e92"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex92.html#e92 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>152</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex92.html#e92 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Panache</font></b></a><br>Replacing the score with a plot summary that records the events of the plot, scene by scene.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex92.html#e92 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e32"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=Rex32.html#e32 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>383</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=Rex32.html#e32 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Rubies</font></b></a><br>A scoreboard that keeps track of the ten highest-scoring players from one playthrough to the next, adding the player's name if he has done well enough.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="wiarrow"><TD width=38px height=30px align="left" valign="center"><a  href=ex32.html#e32 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>WI</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc84.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc86.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=Rdoc39.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../Rindex.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=Rdoc41.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

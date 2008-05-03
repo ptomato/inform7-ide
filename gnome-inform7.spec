@@ -2,8 +2,8 @@
 # Spec file for GNOME Inform 7
 # Change 1.fc8 to ubuntu1 for ubuntu-style release number
 #
-%define  ver     5J39
-%define  rel     1.fc8
+%define  ver     5T18
+%define  rel     2.fc8
 %define  prefix  /usr
 
 Summary: An IDE for the Inform 7 interactive fiction programming language
@@ -46,7 +46,7 @@ rm -rf %{buildroot}
 %{_datadir}/applications/gnome-inform7.desktop
 %{_datadir}/gnome-inform7/*.png
 %{_datadir}/gnome-inform7/*.lang
-%{_datadir}/gnome-inform7/*.xml
+%{_datadir}/gnome-inform7/styles/*.xml
 %{_datadir}/gnome-inform7/Compilers/cBlorb
 %{_datadir}/gnome-inform7/Compilers/inform-6.31-biplatform
 %{_datadir}/gnome-inform7/Compilers/ni
@@ -56,11 +56,10 @@ rm -rf %{buildroot}
 %{_datadir}/gnome-inform7/Documentation/gnome/gnome.html
 %{_datadir}/gnome-inform7/Documentation/licenses/*.html
 %{_datadir}/gnome-inform7/Documentation/Sections/*.html
+%{_datadir}/gnome-inform7/Inform7/Extensions/David*/*
 %{_datadir}/gnome-inform7/Inform7/Extensions/Emily*/*
-%{_datadir}/gnome-inform7/Inform7/Extensions/emily*
 %{_datadir}/gnome-inform7/Inform7/Extensions/Graham*/*
-%{_datadir}/gnome-inform7/Inform7/Extensions/graham*
-%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/*.i6
+%{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/*.i6t
 %{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/*.html
 %{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/IntroductionToIF.pdf
 %{_datadir}/gnome-inform7/Inform7/Extensions/Reserved/Templates/Standard.html
@@ -72,6 +71,10 @@ rm -rf %{buildroot}
 %{_datadir}/pixmaps/gnome-inform7/*
 
 %changelog
+* Sat May 3 2008 P.F. Chimento <philip.chimento@gmail.com>
+- Fedora 8 release bumped to 2, replacing outdated Glulx Entry Points.
+* Wed Apr 30 2008 P.F. Chimento <philip.chimento@gmail.com>
+- Updated to Public Beta Build 5T18.
 * Mon Dec 3 2007 P.F. Chimento <philip.chimento@gmail.com>
 - Updated to Public Beta Build 5J39.
 * Tue Nov 13 2007 P.F. Chimento <philip.chimento@gmail.com>

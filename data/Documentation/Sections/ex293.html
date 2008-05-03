@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.4. Standard tokens of grammar</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.7. Understanding any, understanding rooms</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,74 +19,105 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Shawn's Bad Day" -->
-<!-- SEARCH SECTION "Ex 261" -->
-<!-- SEARCH SORT "Ex 016-004-261" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc245.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc247.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.4. Standard tokens of grammar</b></font></td></tr></table>
+<!-- SEARCH TITLE "Actaeon" -->
+<!-- SEARCH SECTION "Ex 276" -->
+<!-- SEARCH SORT "Ex 016-007-276" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc254.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc256.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.7. Understanding any, understanding rooms</b></font></td></tr></table>
 <p>
-<p>We have already seen &quot;[something]&quot; and &quot;[someone]&quot;, which are standard examples of &quot;tokens of grammar&quot; - patterns matched by suitable named things. There are several other standard tokens, provided not so much from necessity but to allow the game parser to be more graceful and responsive. &quot;[someone]&quot; matches the same possibilities as &quot;[a person]&quot; would, but the parser handles it a little better in cases of failure. These special tokens are best explained by looking at some of the examples in the standard grammar, which can be browsed in the Index of any game.
+<p>Ordinarily, if we write
 <p>
-<blockquote><font color="#000080">Understand &quot;wear [something preferably held]&quot; as wearing.
+<blockquote><font color="#000080">Understand &quot;manipulate [something]&quot;.
 </font></blockquote><p>
 <p>
-<p>Here we expect that the named item will be one that is held by the player, and the parser will use this to resolve ambiguities between names of things carried and not carried. (If the action is one which positively requires that its noun be something carried, such as &quot;eating&quot;, then a command matching this token against something not carried will generate an automatic attempt to take it.)
+<p>then the &quot;[something]&quot; will only match what is within reach or sight: this is the concept of &quot;scope&quot;, which is what prevents a player from spookily acting on objects from a distance. The parser itself prevents the manipulation rules from ever being invoked on such distant items, which is as it should be.
 <p>
-<blockquote><font color="#000080">Understand &quot;take [things]&quot; as taking.
-<br>Understand &quot;drop [things preferably held]&quot; as dropping.
+<p>Sometimes, though, we positively want to allow this possibility. If we use the special word &quot;any&quot;, as in
+<p>
+<blockquote><font color="#000080">Understand &quot;manipulate [any door]&quot;.
 </font></blockquote><p>
 <p>
-<p>&quot;[things]&quot; is like &quot;[something]&quot; but allows a list of items, or a vague plural like &quot;all&quot;, to be typed. The result will be a sequence of actions, one for each item thus described. &quot;[things preferably held]&quot; is the analogous token for &quot;[something preferably held]&quot;.
+<p>then any door, anywhere in the model world, can be allowed in the player's command. (Of course, the manipulation rules may not do what the player hopes: all that has happened is that the command is now possible to type.) The &quot;any&quot; can be followed by any description of items or rooms, and the latter opens up new possibilities, since rooms are ordinarily never allowed to be named in the player's commands.
 <p>
-<blockquote><font color="#000080">Understand &quot;take [things inside] from [something]&quot; as removing.
+<p>For example, the following gives the player the ability to walk between rooms without giving explicit directions of movement.
+<p>
+<blockquote><font color="#000080">Going by name is an action applying to one thing.
 </font></blockquote><p>
 <p>
-<p>&quot;[things inside]&quot; matches only what is inside the second-named thing, and ensures that (for instance) the command &quot;take all from box&quot; does not also try to take the box.
-<p>
-<blockquote><font color="#000080">Understand &quot;put [other things] in/inside/into [something]&quot; as inserting it into.
+<blockquote><font color="#000080">Carry out going by name: say &quot;You walk to [the noun].&quot;; move the player to the noun.
 </font></blockquote><p>
 <p>
-<p>Similarly, &quot;[other things]&quot; will allow anything except the second-named thing. (Like &quot;[things inside]&quot; it is really only needed for handling containers.)
+<blockquote><font color="#000080">Understand &quot;go to [any adjacent visited room]&quot; as going by name.
+</font></blockquote><p>
+<p>
+<p>(This is really only a sketch: in a finished work, &quot;go to&quot; would produce helpful errors if non-adjacent but visited rooms were named, and we might also worry about rules applying to movement, because the method above will circumvent them.)
 <p>
 <p><hr><p>
+<a name="e403"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex403.html#e403 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>275</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex403.html#e403 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> One of Those Mornings</font></b></a><br>A FIND command that allows the player to find a lost object anywhere<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex403.html#e403 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e293"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc246.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>261</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc246.html#e293 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Shawn's Bad Day</font></b></a><br>Allowing the player to EXAMINE ALL.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex293.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e293"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc255.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>276</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc255.html#e293 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Actaeon</font></b></a><br>A FOLLOW command allowing the player to pursue a person who has just left the room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex293.html#e293 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Suppose we want the player to be able to go after characters who are moving around the map. The trick, of course, is that once characters are gone they are no longer visible to &quot;follow [person]&quot;, so we need &quot;follow [any person]&quot; to find them.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode348(code) {
+function pasteCode372(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Shawn[=0x0027=]s Bad Day[=0x0022=][=0x000A=][=0x000A=]The Treasury is a room. The vault is a lockable locked closed openable container in the Treasury. It is fixed in place. [=0x0022=]A massive vault fills up one wall.[=0x0022=] The description is [=0x0022=]The vault[=0x0027=]s system includes [a list of things which are part of the vault].[=0x0022=][=0x000A=][=0x000A=]A little green light, a little blue light, a little red light, a thin black pane of glass, a laser beam, a retinal scanner, a thumbprint ID plate, a dial, and a large lever are part of the vault.[=0x000A=][=0x000A=]The security guard is a man in the Treasury. The description is [=0x0022=]His name is Shawn, and he doesn[=0x0027=]t look happy.[=0x0022=][=0x000A=][=0x000A=]The description of the green light is [=0x0022=]Off.[=0x0022=] The description of the blue light is [=0x0022=]Tranquilly on.[=0x0022=] The description of the red light is [=0x0022=]Angrily flashing.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]examine [things][=0x0022=] as multiply examining.[=0x000A=][=0x000A=]Multiply examining is an action applying to one thing.[=0x000A=][=0x000A=]Carry out multiply examining:[=0x000A=][=0x0009=]try examining the noun.[=0x000A=][=0x000A=]Test me with [=0x0022=]examine all[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Actaeon[=0x0022=][=0x000A=][=0x000A=]A person has a room called last location.[=0x000A=][=0x000A=]Understand [=0x0022=]follow [any person][=0x0022=] as following. Understand the commands [=0x0022=]chase[=0x0022=] and [=0x0022=]pursue[=0x0022=] as [=0x0022=]follow[=0x0022=].[=0x000A=][=0x000A=]Following is an action applying to one visible thing.[=0x000A=][=0x000A=]Check following:[=0x000A=][=0x0009=]if the noun is the player, say [=0x0022=]Wherever you go, there you are.[=0x0022=] instead;[=0x000A=][=0x0009=]if the noun is visible, say [=0x0022=][The noun] is right here.[=0x0022=] instead;[=0x000A=][=0x0009=]if the last location of the noun is not the location, say [=0x0022=]It[=0x0027=]s not clear where [the noun] has gone.[=0x0022=] instead.[=0x000A=][=0x000A=][Here again the best route comes in handy:][=0x000A=][=0x000A=]Carry out following:[=0x000A=][=0x0009=]let the destination be the location of the noun;[=0x000A=][=0x0009=]if the destination is not a room, say [=0x0022=][The noun] isn[=0x0027=]t anywhere you can follow.[=0x0022=] instead;[=0x000A=][=0x0009=]let aim be the best route from the location to the destination;[=0x000A=][=0x0009=]say [=0x0022=](heading [aim])[line break][=0x0022=];[=0x000A=][=0x0009=]try going aim.[=0x000A=][=0x000A=]Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.[=0x000A=][=0x000A=]Artemis is a woman in Corinth.[=0x000A=][=0x000A=][We do also have to make sure that whenever we move a person from room to room, we record where they were moved from; otherwise, our clever restrictions about whom the player can pursue will not work properly.][=0x000A=][=0x000A=]To move (pawn - a person) tidily to (target - a room):[=0x000A=][=0x0009=]change the last location of the pawn to the holder of the pawn;[=0x000A=][=0x0009=]move the pawn to the target.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]let current location be the location of Artemis;[=0x000A=][=0x0009=]let next location be a random room which is adjacent to the current location;[=0x000A=][=0x0009=]if Artemis is visible, say [=0x0022=]Artemis heads to [the next location].[=0x0022=];[=0x000A=][=0x0009=]move Artemis tidily to next location;[=0x000A=][=0x0009=]if Artemis is visible, say [=0x0022=]Artemis arrives from [the current location].[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]wait / follow artemis / follow artemis / follow artemis[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode348()"><img border=0 src=../doc_images/paste.png></a> &quot;Shawn's Bad Day&quot;
+<a href="javascript:pasteCode372()"><img border=0 src=../doc_images/paste.png></a> &quot;Actaeon&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Treasury is a room. The vault is a lockable locked closed openable container in the Treasury. It is fixed in place. &quot;A massive vault fills up one wall.&quot; The description is &quot;The vault's system includes [a list of things which are part of the vault].&quot;
+<blockquote><font color="#000080">A person has a room called last location.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A little green light, a little blue light, a little red light, a thin black pane of glass, a laser beam, a retinal scanner, a thumbprint ID plate, a dial, and a large lever are part of the vault.
+<blockquote><font color="#000080">Understand &quot;follow [any person]&quot; as following. Understand the commands &quot;chase&quot; and &quot;pursue&quot; as &quot;follow&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The security guard is a man in the Treasury. The description is &quot;His name is Shawn, and he doesn't look happy.&quot;
+<blockquote><font color="#000080">Following is an action applying to one visible thing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The description of the green light is &quot;Off.&quot; The description of the blue light is &quot;Tranquilly on.&quot; The description of the red light is &quot;Angrily flashing.&quot;
+<blockquote><font color="#000080">Check following:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is the player, say &quot;Wherever you go, there you are.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is visible, say &quot;[The noun] is right here.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the last location of the noun is not the location, say &quot;It's not clear where [the noun] has gone.&quot; instead.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;examine [things]&quot; as multiply examining.
+<p>Here again the best route comes in handy:
+<p>
+<blockquote><font color="#000080">Carry out following:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the destination be the location of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the destination is not a room, say &quot;[The noun] isn't anywhere you can follow.&quot; instead;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let aim be the best route from the location to the destination;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(heading [aim])[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try going aim.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Multiply examining is an action applying to one thing.
+<blockquote><font color="#000080">Corinth is a room. Athens is east of Corinth. Epidaurus is southeast of Corinth and east of Mycenae. Mycenae is south of Corinth. Olympia is west of Mycenae. Argos is south of Mycenae. Thebes is northwest of Athens. Pylos is south of Olympia. Sparta is east of Pylos and south of Argos. Delphi is northwest of Thebes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Carry out multiply examining:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;try examining the noun.
+<blockquote><font color="#000080">Artemis is a woman in Corinth.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;examine all&quot;.
+<p>We do also have to make sure that whenever we move a person from room to room, we record where they were moved from; otherwise, our clever restrictions about whom the player can pursue will not work properly.
+<p>
+<blockquote><font color="#000080">To move (pawn - a person) tidily to (target - a room):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change the last location of the pawn to the holder of the pawn;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the pawn to the target.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc246.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<p>
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let current location be the location of Artemis;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let next location be a random room which is adjacent to the current location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis heads to [the next location].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move Artemis tidily to next location;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if Artemis is visible, say &quot;Artemis arrives from [the current location].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;wait / follow artemis / follow artemis / follow artemis&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc255.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc245.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc247.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc254.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc256.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

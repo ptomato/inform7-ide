@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.18. Understanding mistakes</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.24. Concealment</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,75 +19,132 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Responding to questions starting with WHO, WHAT, etc." -->
-<!-- SEARCH SECTION "Ex 290" -->
-<!-- SEARCH SORT "Ex 016-018-290" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc259.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc261.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.18. Understanding mistakes</b></font></td></tr></table>
+<!-- SEARCH TITLE "Search and Seizure" -->
+<!-- SEARCH SECTION "Ex 36" -->
+<!-- SEARCH SORT "Ex 003-024-036" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc49.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc51.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.24. Concealment</b></font></td></tr></table>
 <p>
-<p>When inspiration strikes the player, he can usually be relied upon to make a good-faith effort to communicate the new idea: he will guess the right command. If he guesses wrongly, the mistake is probably the author's, because a good author will try to anticipate all possible wordings and make all of them work.
+<p>Though realism can become tiresome in interactive fiction, there are times when we cannot go along with Inform's normal assumption that all of a person's possessions are visible to everybody else. People are not like containers, which either show all of their holdings or not, according to whether they are open or transparent. If a man is carrying a fishing rod and a wallet, one will be on open show, the other not. Some clothing is outwardly visible, but not all.
 <p>
-<p>Nevertheless it is sometimes good practice to nudge the player towards the right wording - particularly if the player has the right idea but is not explicit enough: for instance, typing TALK TO JUDGE when we really want to know what is to be said (JUDGE, GUILTY); or if the player tries something like PLAY CHESS rather than MOVE PAWN TO KING 4. Similarly, if we make a casual reference such as &quot;In your childhood days, you loved sliding in stocking feet across this hallway&quot;, a player might type SLIDE IN STOCKING FEET: a nice idea, and which deserves a nice response, even though it asks to do something beyond the scope of the game.
+<p>Whether or not something is concealed is not like the either/or properties we have seen so far - such as being &quot;open&quot; or &quot;closed&quot; - because it is not really a property of the thing itself, but depends on the habitual behaviour of its current owner. To talk about behaviour we have to use sentences of a kind not seen so far, and which will not fully be explained for some chapters to come.
+<p>But straightforward cases are easy to write, if only by imitating the following examples.
 <p>
-<p>Inform provides a simple mechanism for recognising a command but at the same time recognising that <i>it does not properly specify an action</i>. Such commands are called &quot;mistakes&quot;, for the sake of a memorable term, but the player has not really behaved badly, and should be helped rather than reproved. For instance:
+<p>Here we make the Cloaked Villain invariably conceal anything she is holding or wearing:
 <p>
-<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake.
+<blockquote><font color="#000080">Rule for deciding the concealed possessions of the Cloaked Villain: yes.
 </font></blockquote><p>
 <p>
-<p>While that works - the command to &quot;act&quot; is indeed rejected - it is not very good, because no very helpful message is brought up. The following is much better:
+<p>At which point we think about it more carefully, and then rewrite:
 <p>
-<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;).
+<blockquote><font color="#000080">Rule for deciding the concealed possessions of the Cloaked Villain: if the particular possession is the sable cloak, no; otherwise yes.
 </font></blockquote><p>
 <p>
-<p>Or we could once again insist on a given context:
-<p>
-<blockquote><font color="#000080">Understand &quot;act&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;) when the location is the Garden Theatre.
-</font></blockquote><p>
-<p>
-<p>That still has the drawback that the command &quot;act hamlet&quot; will not be recognised: so the final version we want is probably
-<p>
-<blockquote><font color="#000080">Understand &quot;act [text]&quot; as a mistake (&quot;To join the actors, you have to adopt a role in the play! Try PLAY HAMLET or similar.&quot;) when the location is the Garden Theatre.
-</font></blockquote><p>
-<p>
-<p>since the &quot;[text]&quot; part will soak up any words the player types (or none), meaning that any command at all whose first word is &quot;act&quot; will be matched.
-<p>
-<p>The following is often useful during beta-testing of a new work, though we would not want it in the final published edition. Many authors like to ask their testers not to try anything in particular, simply to play naturally: but to record the transcript of the session, and email it back to the author. The following command is a device to allow the tester to type a comment in to the transcript:
-<p>
-<blockquote><font color="#000080">Understand &quot;! [text]&quot; as a mistake (&quot;Noted.&quot;).
-</font></blockquote><p>
-<p>
-<p>For instance, the tester might type &quot;! DIDN'T WE SAY DARCY WAS TALL?&quot;, to which the game would reply &quot;Noted.&quot; - and the author can search for such comments when receiving the transcript.
-<p>
-<p>If we are careful, we can make the reply depend on what was typed in the mistaken command:
-<p>
-<blockquote><font color="#000080">Understand &quot;steal [something]&quot; as a mistake (&quot;Just TAKE [the noun] and leave without paying: that's stealing in my book.&quot;).
-</font></blockquote><p>
-<p>
-<p>The care comes in because Inform applies much less checking to mistakes than to other actions, and odd errors will result if we try to refer to (say) &quot;the second noun&quot; in a command which did not have a second noun.
-<p>
-<p><hr><p>
-<a name="e128"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex128.html#e128 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>289</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex128.html#e128 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Gorge at George</font></b></a><br>If the player tries to TALK TO a character, suggest alternative modes of conversation.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex128.html#e128 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<!-- EXAMPLE START -->
-<a name="e220"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc260.html#e220 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>290</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc260.html#e220 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000">Responding to questions starting with WHO, WHAT, etc.</font></b></a><br>Catching all questions that begin with WHO, WHAT, WHERE, and similar question words, and responding with the instruction to use commands, instead.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex220.html#e220 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>First, we create a single &quot;[query]&quot; token so that we can capture all instances of such sentences in a single line:
+<p>Parts are treated exactly as if clothes or items being held, and the following will make the face and inscription on a coin invisible unless the player is holding it - the idea being that they are too small to be seen from farther away.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode377(code) {
+function pasteCode8(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('Understand [=0x0022=]who[=0x0022=] or [=0x0022=]what[=0x0022=] or [=0x0022=]when[=0x0022=] or [=0x0022=]where[=0x0022=] or [=0x0022=]why[=0x0022=] or [=0x0022=]how[=0x0022=] or [=0x0022=]who[=0x0027=]s[=0x0022=] or [=0x0022=]what[=0x0027=]s[=0x0022=] or [=0x0022=]when[=0x0027=]s[=0x0022=] or [=0x0022=]where[=0x0027=]s[=0x0022=] or [=0x0022=]why[=0x0027=]s[=0x0022=] or [=0x0022=]how[=0x0027=]s[=0x0022=] as [=0x0022=][query][=0x0022=].[=0x000A=][=0x000A=]Understand [=0x0022=][query] [text][=0x0022=] as a mistake ([=0x0022=][story title] understands commands, such as [=0x0027=][command prompt]examine [a random thing that can be seen by the player][=0x0027=], but not questions. For more instructions, type HELP.[=0x0022=]).[=0x000A=][=0x000A=]');
+    myProject.pasteCode('The coin is in the Roman Villa. The face and inscription are parts of the coin. Rule for deciding the concealed possessions of the coin: if the coin is carried, no; otherwise yes.[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode377()"><img border=0 src=../doc_images/paste.png></a> Understand &quot;who&quot; or &quot;what&quot; or &quot;when&quot; or &quot;where&quot; or &quot;why&quot; or &quot;how&quot; or &quot;who's&quot; or &quot;what's&quot; or &quot;when's&quot; or &quot;where's&quot; or &quot;why's&quot; or &quot;how's&quot; as &quot;[query]&quot;.
+<a href="javascript:pasteCode8()"><img border=0 src=../doc_images/paste.png></a> The coin is in the Roman Villa. The face and inscription are parts of the coin. Rule for deciding the concealed possessions of the coin: if the coin is carried, no; otherwise yes.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Understand &quot;[query] [text]&quot; as a mistake (&quot;[story title] understands commands, such as '[command prompt]examine [a random thing that can be seen by the player]', but not questions. For more instructions, type HELP.&quot;).
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e220"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc50.html#e220 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>36</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc50.html#e220 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Search and Seizure</font></b></a><br>A smuggler who has items, some of which are hidden.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex220.html#e220 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>Suppose we want a character who carries hidden objects, but only while he is wearing his jacket. If we deprive him of this, his other possessions become known. Furthermore, if we ever search him, his possessions also become known, and can thereafter be mentioned by us.
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode125(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Search and Seizure[=0x0022=][=0x000A=][=0x000A=]Size is a kind of value. The sizes are small, medium, and large. A thing has a size. A thing is usually small.[=0x000A=][=0x000A=]A thing can be licit or contraband. A thing is usually licit.[=0x000A=][=0x000A=]A thing can be discovered or secret. A thing is usually secret.[=0x000A=][=0x000A=][Now, we want the character to be able to hide small things if he has some sort of concealing garment on. We also want to be able to see anything that the player has already found once, perhaps by using the [=0x003E=]SEARCH PERSON command. So:][=0x000A=][=0x000A=]Rule for deciding the concealed possessions of someone (called the suspect):[=0x000A=][=0x0009=]if the particular possession is discovered, no;[=0x000A=][=0x0009=]if the suspect wears something and the particular possession is small, yes;[=0x000A=][=0x0009=]otherwise no.[=0x000A=][=0x000A=][The following rule, borrowed from a later chapter, assures that any items that are ever mentioned to the player will be treated as known from then on:][=0x000A=][=0x000A=]Before printing the name of something (called discovery): now the discovery is discovered.[=0x000A=][=0x000A=]The Customs House is a room. The smuggler is a man in the Customs House. The smuggler wears a leather jacket. He carries a bottle of Altairan rum, some raspberries, and a laser pistol. The pistol is large. The jacket is large. The rum and the raspberries are contraband. The description of the smuggler is [=0x0022=]He has a bestubbled chin and a sinister eye.[=0x0022=][=0x000A=][=0x000A=]The tourist is a woman in the customs house. The description is [=0x0022=]The type who walks off home with a dozen contraband items in her pocket not because she means to steal things but because she[=0x0027=]s too stupid to understand that the law applies to herself.[=0x0022=] She wears a tight-fitting dress. The dress is large. The tourist carries a grapevine and an archaeological artifact. The grapevine is large and contraband. The artifact is contraband.[=0x000A=][=0x000A=]Report examining someone: say [=0x0022=][The noun] is [if the noun is wearing something]wearing [a list of unconcealed things worn by the noun] and [end if]carrying [a list of unconcealed things carried by the noun].[=0x0022=][=0x000A=][=0x000A=]Report examining someone who is concealing something contraband:[=0x000A=][=0x0009=]say [=0x0022=][The noun] looks nervous. You can just tell.[=0x0022=][=0x000A=][=0x000A=]Report examining someone who is carrying an unconcealed contraband thing:[=0x000A=][=0x0009=]say [=0x0022=]Your eye goes at once to [the list of unconcealed contraband things carried by the noun] which [the noun] is unable to hide[=0x0022=];[=0x000A=][=0x0009=]if an unconcealed licit thing is had by the noun, say [=0x0022=], though [if the noun is female]s[end if]he also has [a list of unconcealed licit things had by the noun][=0x0022=];[=0x000A=][=0x0009=]say [=0x0022=].[=0x0022=] instead.[=0x000A=][=0x000A=][Notice that we can talk about what the smuggler wears, what he carries, and what he [=0x0022=]has[=0x0022=]: things the smuggler has can be either worn or carried, so the phrase is useful if we don[=0x0027=]t care to make that distinction.][=0x000A=][=0x000A=]Instead of searching someone:[=0x000A=][=0x0009=]say [=0x0022=][The noun] is revealed to be carrying [a list of things carried by the noun].[=0x0022=][=0x000A=][=0x000A=]Instead of confiscating the dress:[=0x000A=][=0x0009=]say [=0x0022=]You are not allowed to perform strip-searches in the public customs area.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]confiscate [something][=0x0022=] as confiscating.[=0x000A=][=0x000A=]Confiscating is an action applying to one thing.[=0x000A=][=0x000A=]Check confiscating:[=0x000A=][=0x0009=]unless the noun is had by someone who is not the player:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You can only confiscate other people[=0x0027=]s possessions.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out confiscating:[=0x000A=][=0x0009=]now the noun is carried by the player.[=0x000A=][=0x000A=]Report confiscating:[=0x000A=][=0x0009=]say [=0x0022=]Through the authority vested in you by the power of the Sovereign of Centauri Proxima, you make [the noun] your own.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]x smuggler / search smuggler / x smuggler / confiscate jacket / x smuggler / confiscate rum / confiscate pistol / x smuggler / confiscate raspberries / x smuggler[=0x0022=].[=0x000A=][=0x000A=]Test more with [=0x0022=]x tourist / confiscate dress / confiscate grapevine / x tourist / search tourist / confiscate artifact / x tourist[=0x0022=].[=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode125()"><img border=0 src=../doc_images/paste.png></a> &quot;Search and Seizure&quot;
 </font></blockquote><p>
 <p>
-<p>Now the game will respond to all questions novice players might type with this reminder to look for help information.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc260.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Size is a kind of value. The sizes are small, medium, and large. A thing has a size. A thing is usually small.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A thing can be licit or contraband. A thing is usually licit.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">A thing can be discovered or secret. A thing is usually secret.
+</font></blockquote><p>
+<p>
+<p>Now, we want the character to be able to hide small things if he has some sort of concealing garment on. We also want to be able to see anything that the player has already found once, perhaps by using the >SEARCH PERSON command. So:
+<p>
+<blockquote><font color="#000080">Rule for deciding the concealed possessions of someone (called the suspect):
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the particular possession is discovered, no;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the suspect wears something and the particular possession is small, yes;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise no.
+</font></blockquote><p>
+<p>
+<p>The following rule, borrowed from a later chapter, assures that any items that are ever mentioned to the player will be treated as known from then on:
+<p>
+<blockquote><font color="#000080">Before printing the name of something (called discovery): now the discovery is discovered.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The Customs House is a room. The smuggler is a man in the Customs House. The smuggler wears a leather jacket. He carries a bottle of Altairan rum, some raspberries, and a laser pistol. The pistol is large. The jacket is large. The rum and the raspberries are contraband. The description of the smuggler is &quot;He has a bestubbled chin and a sinister eye.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">The tourist is a woman in the customs house. The description is &quot;The type who walks off home with a dozen contraband items in her pocket not because she means to steal things but because she's too stupid to understand that the law applies to herself.&quot; She wears a tight-fitting dress. The dress is large. The tourist carries a grapevine and an archaeological artifact. The grapevine is large and contraband. The artifact is contraband.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report examining someone: say &quot;[The noun] is [if the noun is wearing something]wearing [a list of unconcealed things worn by the noun] and [end if]carrying [a list of unconcealed things carried by the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report examining someone who is concealing something contraband:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] looks nervous. You can just tell.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report examining someone who is carrying an unconcealed contraband thing:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your eye goes at once to [the list of unconcealed contraband things carried by the noun] which [the noun] is unable to hide&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if an unconcealed licit thing is had by the noun, say &quot;, though [if the noun is female]s[end if]he also has [a list of unconcealed licit things had by the noun]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;.&quot; instead.
+</font></blockquote><p>
+<p>
+<p>Notice that we can talk about what the smuggler wears, what he carries, and what he &quot;has&quot;: things the smuggler has can be either worn or carried, so the phrase is useful if we don't care to make that distinction.
+<p>
+<blockquote><font color="#000080">Instead of searching someone:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] is revealed to be carrying [a list of things carried by the noun].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Instead of confiscating the dress:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You are not allowed to perform strip-searches in the public customs area.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Understand &quot;confiscate [something]&quot; as confiscating.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Confiscating is an action applying to one thing.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Check confiscating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;unless the noun is had by someone who is not the player:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can only confiscate other people's possessions.&quot; instead.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Carry out confiscating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;now the noun is carried by the player.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Report confiscating:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Through the authority vested in you by the power of the Sovereign of Centauri Proxima, you make [the noun] your own.&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;x smuggler / search smuggler / x smuggler / confiscate jacket / x smuggler / confiscate rum / confiscate pistol / x smuggler / confiscate raspberries / x smuggler&quot;.
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test more with &quot;x tourist / confiscate dress / confiscate grapevine / x tourist / search tourist / confiscate artifact / x tourist&quot;.
+</font></blockquote><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc50.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e343"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex343.html#e343 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>291</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex343.html#e343 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Hot Glass Looks Like Cold Glass</font></b></a><br>Responding to references to a property that the player isn't yet allowed to mention (or when not to use "understand as a mistake").<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex343.html#e343 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc259.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc261.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc49.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc51.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.2. Rooms and the map</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>9.15. How many turns?</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,112 +19,73 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Starry Void" -->
-<!-- SEARCH SECTION "Ex 6" -->
-<!-- SEARCH SORT "Ex 003-002-006" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc27.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc29.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.2. Rooms and the map</b></font></td></tr></table>
+<!-- SEARCH TITLE "Annoyotron Jr" -->
+<!-- SEARCH SECTION "Ex 144" -->
+<!-- SEARCH SORT "Ex 009-015-144" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc144.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap9.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 9: Time</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc146.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>9.15. How many turns?</b></font></td></tr></table>
 <p>
-<p>Rooms are joined together at their edges by &quot;map connections&quot;, most of which are pathways in one of the eight cardinal compass directions: north, northeast (written without a hyphen), east, southeast, south, southwest, west, northwest. We also have up and down, suitable for staircases or ladders. In real life, people are seldom conscious of their compass bearing when walking around buildings, but it makes a concise and unconfusing way for the player to say where to go next, so is generally accepted as a convention of the genre.
+<p>So much for &quot;times&quot; - spells in which a condition is true. We can also test the length of time, in turns of play, that something has been true. Thus:
 <p>
-<p>Two more directions are provided by Inform: &quot;inside&quot; and &quot;outside&quot;. These are best used when one location is, say, a meadow and the other is a woodcutter's hut in the middle of it; we might then say
-<p>
-<blockquote><font color="#000080">Inside from the Meadow is the woodcutter's hut.
+<blockquote><font color="#000080">if ... for three turns;
 </font></blockquote><p>
 <p>
-<p>The &quot;from&quot; is important, as it clarifies that we intend to link two different locations, not to create an item - the hut - in a single location - the meadow.
+<p>means that the condition holds now, and held at the start of this turn, at the start of last turn, and at the start of the turn before that. In particular:
 <p>
-<p>A problem which sometimes arises when laying out maps is that Inform allows short forms of room names to be used as abbreviations. This is usually a good idea, but has unfortunate results if we write:
-<p>
-<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. The Airport is west of the Airport Road.
+<blockquote><font color="#000080">if the floppy hat has been worn for three turns ...
 </font></blockquote><p>
 <p>
-<p>...because &quot;Airport&quot; is taken as a reference to &quot;Airport Road&quot;, so Inform makes only two locations, one of which supernaturally leads to itself. We can avoid this by writing:
+<p>will be false if the hat is not currently worn (even if it has been often in the past) and, on the other hand, will be true if the hat has been worn for twenty turns. Here again we can be more specific. These are synonymous:
 <p>
-<blockquote><font color="#000080">The Airport Road is west of the Fish Packing Plant. A room called the Airport is west of the Airport Road.
+<blockquote><font color="#000080">if the floppy hat is worn for the third turn ...
+<br>if the floppy hat has been worn for only 3 turns ...
+<br>if the floppy hat has been worn for exactly three turns ...
 </font></blockquote><p>
 <p>
-<p>Using &quot;called&quot; is often a good way to specify something whose name might give rise to confusion otherwise. It always makes something new, and it is also neatly concise, because we can establish something's kind and name in the same sentence. As another example, suppose we want to create a room called &quot;South of the Hut&quot;, to south of the Hut. We can't do so like this:
+<p>all requiring that the hat wasn't worn four turns ago. As before, &quot;more than&quot;, &quot;less than&quot;, &quot;at least&quot; and &quot;at most&quot; so forth can also be used - say, &quot;for at least 21 turns&quot;.
 <p>
-<blockquote><font color="#000080">South of the Hut is a room. South of the Hut is south of the Hut.
+<p>A warning: we must be careful when writing something like
+<p>
+<blockquote><font color="#000080">if the noun has been open ...
 </font></blockquote><p>
 <p>
-<p>...because Inform will read that first sentence as placing a (nameless) room to the south of a room called &quot;Hut&quot;. Once again &quot;called&quot; can save the day:
+<p>since this tests whether it has ever been true that the noun of the then action was open: not whether the current noun-object has ever been open.
 <p>
-<blockquote><font color="#000080">South of the Hut is a room called South of the Hut.
-</font></blockquote><p>
-<p>
-<p>It is best to use &quot;called&quot; in the simplest way possible, and in particular, best not to use &quot;called&quot; twice in the same sentence. Consider:
-<p>
-<blockquote><font color="#000080">The kitchen cabinet contains a container called a mixing bowl and a portable supporter called a platter.
-</font></blockquote><p>
-<p>
-<p>It is unlikely that anyone would want to name something &quot;a mixing bowl and a portable supporter called a platter&quot;, but not impossible, and Inform tends not to be a good judge of what is likely.
+<p>Lastly, note that the beginning of play - when (usually) initial text and a banner is printed, followed by a room description - counts towards these counts. In effect, this is a turn: one in which the player compulsorily performs the looking action, rather than being asked for a command. (By convention it is numbered as turn number 0, and doesn't contribute towards the turn count.)
 <p>
 <p><hr><p>
-<a name="e186"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex186.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>4</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex186.html#e186 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Port Royal 1</font></b></a><br>A partial implementation of Port Royal, Jamaica, set before the earthquake of 1692 demolished large portions of the city.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex186.html#e186 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e274"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex274.html#e274 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>5</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex274.html#e274 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Up and Up</font></b></a><br>Adding a short message as the player approaches a room, before the room description itself appears.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex274.html#e274 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e88"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc28.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>6</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc28.html#e88 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Starry Void</font></b></a><br>Creating a booth that can be seen from the outside, opened and closed, and entered as a separate room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex88.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e88"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc145.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>144</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc145.html#e88 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Annoyotron Jr</font></b></a><br>A child who after a certain period in the car starts asking annoying questions.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex88.html#e88 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Sometimes we may want a room to be visible from the outside in one location, but treated as a separate location when we are inside. The simplest way to do this is to make the exterior form of the object into a door object, and to describe it differently from different vantage points. (Doors in general are described more fully in the Doors section of the Things chapter.)
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode85(code) {
+function pasteCode243(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode(' [=0x0022=]Starry Void[=0x0022=][=0x000A=][=0x000A=]The Center Ring is a room.[=0x000A=][=0x000A=]The magician[=0x0027=]s booth is a door. [=0x0022=][if in Center Ring]A magician[=0x0027=]s booth stands in the corner, painted dark blue with glittering gold stars.[otherwise if the magician[=0x0027=]s booth is closed]A crack of light indicates the way back out to the center ring.[otherwise]The door stands open to the outside.[end if][=0x0022=].[=0x000A=][=0x000A=][Here we[=0x0027=]ve arranged for the booth to be described in the initial room description in different ways depending on where the player is when viewing it. We might like to do the same if the player takes a closer look:][=0x000A=][=0x000A=]Instead of examining the magician[=0x0027=]s booth in the Center Ring:[=0x000A=][=0x0009=]say [=0x0022=]It is dark blue and glittering with gold stars. [if the booth is open]The door currently stands open[otherwise]It has been firmly shut[end if].[=0x0022=][=0x000A=][=0x000A=]Instead of examining the magician[=0x0027=]s booth in the Starry Void:[=0x000A=][=0x0009=]say [=0x0022=]The booth door is [if the magician[=0x0027=]s booth is open]wide open[otherwise]shut, admitting only a thin crack of light[end if].[=0x0022=][=0x000A=][=0x000A=][And now we put it in place:][=0x000A=][=0x000A=]The magician[=0x0027=]s booth is inside from Center Ring and outside from Starry Void.[=0x000A=][=0x000A=][...and make sure that the booth-and-door object responds to all the names we have used for it in different places:][=0x000A=][=0x000A=]Understand [=0x0022=]door[=0x0022=] or [=0x0022=]of[=0x0022=] or [=0x0022=]the[=0x0022=] or [=0x0022=]light[=0x0022=] or [=0x0022=]crack[=0x0022=] or [=0x0022=]thin crack[=0x0022=] as the booth.[=0x000A=][=0x000A=]Test me with [=0x0022=]in / examine booth / open door of the booth / in / examine door / close door / look / examine crack of light[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Annoyotron Jr[=0x0022=][=0x000A=][=0x000A=]The Minivan is a room. The Open Road is outside from the Minivan. Pete is a man in the Minivan. [=0x0022=]Pete [if the player has been in the Minivan for 3 turns]is starting to look bored[otherwise]is playing with his travel activity book[end if].[=0x0022=][=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]if the player has been in the Minivan for 5 turns, say [=0x0022=][=0x0027=]Are we there [if saying no]now?[=0x0027=][otherwise]yet?[=0x0027=] asks Pete.[end if][=0x0022=][=0x000A=][=0x000A=]Instead of saying no:[=0x000A=][=0x0009=]say [=0x0022=][=0x0027=]Oh,[=0x0027=] says Pete. There is a blessed, momentary silence.[=0x0022=][=0x000A=][=0x000A=]Instead of going to the Open Road:[=0x000A=][=0x0009=]say [=0x0022=]You leap to your death.[=0x0022=];[=0x000A=][=0x0009=]end the game in death.[=0x000A=][=0x000A=]Test me with [=0x0022=]z / z / look / g / g / g / no / z / z / z / no / z / out[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode85()"><img border=0 src=../doc_images/paste.png></a>  &quot;Starry Void&quot;
+<a href="javascript:pasteCode243()"><img border=0 src=../doc_images/paste.png></a> &quot;Annoyotron Jr&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Center Ring is a room.
+<blockquote><font color="#000080">The Minivan is a room. The Open Road is outside from the Minivan. Pete is a man in the Minivan. &quot;Pete [if the player has been in the Minivan for 3 turns]is starting to look bored[otherwise]is playing with his travel activity book[end if].&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The magician's booth is a door. &quot;[if in Center Ring]A magician's booth stands in the corner, painted dark blue with glittering gold stars.[otherwise if the magician's booth is closed]A crack of light indicates the way back out to the center ring.[otherwise]The door stands open to the outside.[end if]&quot;.
+<blockquote><font color="#000080">Every turn:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player has been in the Minivan for 5 turns, say &quot;'Are we there [if saying no]now?'[otherwise]yet?' asks Pete.[end if]&quot;
 </font></blockquote><p>
 <p>
-<p>Here we've arranged for the booth to be described in the initial room description in different ways depending on where the player is when viewing it. We might like to do the same if the player takes a closer look:
-<p>
-<blockquote><font color="#000080">Instead of examining the magician's booth in the Center Ring:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;It is dark blue and glittering with gold stars. [if the booth is open]The door currently stands open[otherwise]It has been firmly shut[end if].&quot;
+<blockquote><font color="#000080">Instead of saying no:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;'Oh,' says Pete. There is a blessed, momentary silence.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining the magician's booth in the Starry Void:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The booth door is [if the magician's booth is open]wide open[otherwise]shut, admitting only a thin crack of light[end if].&quot;
+<blockquote><font color="#000080">Instead of going to the Open Road:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You leap to your death.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;end the game in death.
 </font></blockquote><p>
 <p>
-<p>And now we put it in place:
-<p>
-<blockquote><font color="#000080">The magician's booth is inside from Center Ring and outside from Starry Void.
+<blockquote><font color="#000080">Test me with &quot;z / z / look / g / g / g / no / z / z / z / no / z / out&quot;.
 </font></blockquote><p>
-<p>
-<p>...and make sure that the booth-and-door object responds to all the names we have used for it in different places:
-<p>
-<blockquote><font color="#000080">Understand &quot;door&quot; or &quot;of&quot; or &quot;the&quot; or &quot;light&quot; or &quot;crack&quot; or &quot;thin crack&quot; as the booth.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;in / examine booth / open door of the booth / in / examine door / close door / look / examine crack of light&quot;.
-</font></blockquote><p>
-<p>
-<p>A final nice touch, if we're so inclined, is to borrow from the Basic Actions chapter and make the player automatically open the booth door before trying to enter:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode86(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode(' Before going through the closed magician[=0x0027=]s booth:[=0x000A=][=0x0009=]say [=0x0022=](first opening the door of the booth)[command clarification break][=0x0022=];[=0x000A=][=0x0009=]silently try opening the booth.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode86()"><img border=0 src=../doc_images/paste.png></a>  Before going through the closed magician's booth:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;(first opening the door of the booth)[command clarification break]&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;silently try opening the booth.
-</font></blockquote><p>
-<p>
-<p>For the contrasting case of a space that is nested inside another place and is not its own room -- say a stall at an open-air market, or a rowboat on a lake -- see the example &quot;Tamed&quot;.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc28.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc145.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc27.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc29.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc144.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc146.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

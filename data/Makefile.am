@@ -1,5 +1,5 @@
-SUBDIRS = Compilers Documentation Inform7 Library map_icons \
-scene_icons styles
+SUBDIRS = Compilers Documentation Inform7 Library map_icons scene_icons \
+styles
 
 pkgdata_DATA = Beneath.png cblorb_failed.png cblorb_succeeded.png crash.png \
 ni_failed.png ni_failed_2.png ni_failed_3.png ni_succeeded.png \

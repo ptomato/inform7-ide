@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>17.5. New activities</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>19.7. Indexed text in variables, properties and tables</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,137 +19,131 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "AARP-Gnosis" -->
-<!-- SEARCH SECTION "Ex 294" -->
-<!-- SEARCH SORT "Ex 017-005-294" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc266.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap17.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 17: Activities</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc268.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>17.5. New activities</b></font></td></tr></table>
+<!-- SEARCH TITLE "Mirror, Mirror" -->
+<!-- SEARCH SECTION "Ex 383" -->
+<!-- SEARCH SORT "Ex 019-007-383" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc333.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap19.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 19: Advanced Text</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc335.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>19.7. Indexed text in variables, properties and tables</b></font></td></tr></table>
 <p>
-<p>Activities are all about influencing the standard mechanisms which Inform uses, so it might at first seem that there is no need to create new activities: but on further reflection, quite a lot of the writing of interactive fiction involves creating new and systematic ways to do things, and as soon as we have a general rule, we will want to have exceptions. Inform therefore allows us to create our own activities, giving us ways to influence the operation of our own mechanisms.
+<p>So far we have been able to ignore the difference between &quot;text&quot; and &quot;indexed text&quot; because Inform has always been able to convert the former to the latter when needed. But the reverse conversion cannot be made. Ordinary text is stored in a specially compacted, read-only form: it's really part of the program, not part of the data.
 <p>
-<p>There are two kinds of activity: those which relate to a specific thing or room, and those which do not. The following creates one of each kind:
+<p>The upshot of this is that if we need a variable to contain text which can be internally altered during play, then we must declare this. Instead of writing
 <p>
-<blockquote><font color="#000080">Analysing something is an activity.
-<br>Assaying is an activity.
+<blockquote><font color="#000080">The player's forename is a text that varies.
 </font></blockquote><p>
 <p>
-<p>Here &quot;analysing something&quot; relates to a specific item: Inform knows this because it looks for the clue &quot;something&quot; (or &quot;of something&quot;) after the activity's name, which in the first case above is simply &quot;analysing&quot;.
+<p>we must write:
 <p>
-<p>Creating an activity is like creating an action: it automatically makes new rulebooks - &quot;before analysing&quot;, &quot;for analysing&quot; and &quot;after analysing&quot; - but they start out empty, so the activity does nothing yet. Moreover, it never happens. We can make an activity happen at any time by writing phrases like so:
-<p>
-<blockquote><font color="#000080">carry out the analysing activity with the pitchblende;
-<br>carry out the assaying activity;
+<blockquote><font color="#000080">The player's forename is an indexed text that varies.
 </font></blockquote><p>
 <p>
-<p>To make the activity do something useful, we need to put a rule into its &quot;for&quot; rulebook:
+<p>Similarly for a property:
 <p>
-<blockquote><font color="#000080">The last for assaying rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Professionally, you cast an eye around mineral deposits nearby, noticing [list of rocks in the location].&quot;
+<blockquote><font color="#000080">A person has an indexed text called nickname.
 </font></blockquote><p>
 <p>
-<p>&quot;The last&quot; is a technicality about rulebooks (see the next chapter) which, put briefly, guarantees that this rule comes last among all possible &quot;for assaying&quot; rules. This is good form because the whole point of an activity is to make it easy for further rules to interfere - so we deliberately hang back to last place, giving precedence to anybody else who wants it.
+<p>For a named &quot;let&quot; value, we have a dilemma. These are normally created by writing something like:
 <p>
-<p>It may look rather pretentious to dress up the footling little &quot;assaying&quot; example as an activity, but it gains us more than might first appear. Every new activity created provides a context which other activities can observe. We could, for instance, define
-<p>
-<blockquote><font color="#000080">Rule for printing the name of a rock while assaying: ...
+<blockquote><font color="#000080">let the target be 17;
 </font></blockquote><p>
 <p>
-<p>so that during assays more technical names are used.
+<p>and Inform looks at the value - here 17, a number - to deduce that the new value, called &quot;target&quot;, must be a number. So if we write:
+<p>
+<blockquote><font color="#000080">let the target be &quot;excellent&quot;;
+</font></blockquote><p>
+<p>
+<p>the result is that &quot;target&quot; is just a text, not an indexed text. We get around this by writing instead:
+<p>
+<blockquote><font color="#000080">let the target be an indexed text;
+</font></blockquote><p>
+<p>
+<p>which creates the value, initially having the empty text as contents, and then
+<p>
+<blockquote><font color="#000080">let the target be &quot;excellent&quot;;
+</font></blockquote><p>
+<p>
+<p>to subsequently set its initial state.
+<p>
+<p>The same issue arises for table columns, because we are allowed to simply write out values in table columns, and let Inform work out what kind they are. If there are blank entries, we can always write in the kind of value by hand, but suppose the entries are initially all filled in? The answer is that we can imitate this:
+<p>
+<blockquote><font color="#000080">Table of Neptune's Moons
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">moon</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">surface (indexed text)</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Nereid&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;utterly unknown&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Triton&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;cryovolcanic ridges&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Proteus&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;highly irregular and sooty&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<p>Here the two columns are called &quot;moon&quot; and &quot;surface&quot;, so we can talk about the &quot;moon entry&quot; and the &quot;surface entry&quot; once a row has been chosen: but the moon entry is text, and the surface entry is indexed text.
+<p>
+<p>Lastly, suppose we want to define new phrases which deal with text. Here we have two things to remember. First, we need to say that the value decided is indexed text, not text; secondly, that text converts to indexed text by magic, but not vice versa. So:
+<p>
+<blockquote><font color="#000080">To decide what indexed text is (T - text) doubled:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on &quot;[T][T]&quot;.
+</font></blockquote><p>
+<p>
+<p>works fine so long as we only want to pass text to it, but would not let us double indexed text. This, on the other hand, handles both:
+<p>
+<blockquote><font color="#000080">To decide what indexed text is (T - indexed text) doubled:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;decide on &quot;[T][T]&quot;.
+</font></blockquote><p>
+<p>
+<p>So for instance:
+<p>
+<blockquote><font color="#000080">say &quot;Neptune&quot; doubled.
+</font></blockquote><p>
+<p>
+<p>prints &quot;NeptuneNeptune&quot; because Inform automatically converts &quot;Neptune&quot; to indexed text when &quot;doubled&quot; is used on it.
 <p>
 <p><hr><p>
+<a name="e179"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex179.html#e179 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>382</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex179.html#e179 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Identity Theft</font></b></a><br>Allowing the player to enter a name to be used for the player character during the game.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex179.html#e179 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e211"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc267.html#e211 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>294</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc267.html#e211 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> AARP-Gnosis</font></b></a><br>An Encyclopedia set which treats volumes in the same place as a single object, but can also be split up.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex211.html#e211 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e211"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc334.html#e211 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>383</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc334.html#e211 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Mirror, Mirror</font></b></a><br>The sorcerer's mirror can, when held up high, form an impression of its surroundings which it then preserves.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex211.html#e211 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Suppose we have a complete Encyclopedia in our game. The player is allowed to pick up the whole set (there must not be too many volumes), but also to do things with individual volumes, and indeed to scatter these volumes all over the place. Putting a volume back in the same place as the rest of the Encyclopedia should, however, restore it to the collective. We will start out by defining general rules for collectives like this:
-<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode381(code) {
+function pasteCode482(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]AARP-Gnosis[=0x0022=][=0x000A=][=0x000A=]Fitting relates various things to one thing (called the home). The verb to fit (it fits, they fit, it is fitted) implies the fitting relation. Definition: a thing is missing if it is not part of the home of it.[=0x000A=][=0x000A=]A collective is a kind of thing.[=0x000A=][=0x000A=]Before doing something to something which is part of a collective:[=0x000A=][=0x0009=]let space be the holder of the home of the noun;[=0x000A=][=0x0009=]move the noun to the space.[=0x000A=][=0x000A=]Instead of examining a collective:[=0x000A=][=0x0009=]say [=0x0022=][The noun] consists of [the list of things which are part of the noun].[=0x0022=][=0x000A=][=0x000A=][Now the real work begins. One reason to make this an activity is that we might easily want to override it for specific objects; for instance, the generic collecting activity here would not deal properly with collectives of clothing where some items might be worn and others not. In that case, we would want to write another, more specific [=0x0022=]collecting[=0x0022=] activity to handle the complexities of fashion.][=0x000A=][=0x000A=]Collecting something is an activity.[=0x000A=][=0x000A=]Every turn:[=0x000A=][=0x0009=]repeat with item running through collectives[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]carry out the collecting activity with the item;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=]Before collecting a thing (called the item):[=0x000A=][=0x0009=]let space be the holder of the item;[=0x000A=][=0x0009=]if space is not a thing and space is not a room[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]if something (called the other space) contains at least two things which fit the item, move item to the other space;[=0x000A=][=0x0009=][=0x0009=]if a room (called the other space) contains at least two things which fit the item, move item to the other space;[=0x000A=][=0x0009=][=0x0009=]if someone (called the owner) carries at least two things which fit the item, move item to the owner;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=]Rule for collecting a thing (called the item):[=0x000A=][=0x0009=]let space be the holder of the item;[=0x000A=][=0x0009=]if space is a thing or space is a room[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]repeat with component running through things held by the space[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if the component fits the item, now the component is part of the item;[=0x000A=][=0x0009=][=0x0009=]end repeat;[=0x000A=][=0x0009=][=0x0009=]if the number of things which are part of the item is 0, remove the item from play;[=0x000A=][=0x0009=][=0x0009=]if the number of things which are part of the item is 1[=0x000A=][=0x0009=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]let the last thing be a random thing which is part of the item;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]move the last thing to the space;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]remove the item from play;[=0x000A=][=0x0009=][=0x0009=]end if;[=0x000A=][=0x0009=]end if.[=0x000A=][=0x000A=][And now for a cheerful scenario:][=0x000A=][=0x000A=]The Boise Memorial Library is a room. [=0x0022=]A concrete box of a room, roughly eight feet by fourteen, which contains all the fallout shelter has to offer by way of entertainment. Someone with a grim sense of humor has tacked a READ! literacy poster to the door, as though there were anything else to do while you await the calming of the Geiger counters.[=0x0022=] The shelf is a supporter in the Library. [=0x0022=]A battered utility shelf stands against the south wall.[=0x0022=][=0x000A=][=0x000A=]The New Idahoan Encyclopedia Set is a collective. Volume A-Aalto fits the Encyclopedia. It is part of the Set. Volume AAM-Aardvark fits the Encyclopedia. It is part of the Set. Volume Aarhus-Aaron fits the Encyclopedia. It is part of the Set. Volume AARP-Gnosis fits the Encyclopedia. It is part of the Set. Volume Gnu-Zygote fits the Encyclopedia. It is part of the Set. The Set is on the shelf.[=0x000A=][=0x000A=][Let[=0x0027=]s have the Encyclopedia describe itself differently depending on whether it[=0x0027=]s all in one place:][=0x000A=][=0x000A=]After printing the name of the Set when something missing fits the Set:[=0x000A=][=0x0009=]say [=0x0022=] (missing [a list of missing things which fit the Set])[=0x0022=][=0x000A=][=0x000A=]Before printing the name of the Set when the number of missing things which fit the set is 0:[=0x000A=][=0x0009=]say [=0x0022=]complete [=0x0022=];[=0x000A=][=0x000A=]Test me with [=0x0022=]get aarhus-aaron / look / inventory / get aam-aardvark / look / get gnu-zygote / look / get aarp-gnosis / look / inventory / drop set / look / get set / get a-aalto / inventory[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Mirror, Mirror[=0x0022=][=0x000A=][=0x000A=]The Sorcerer[=0x0027=]s Workshop is a room. [=0x0022=]The sorcerer[=0x0027=]s den is a dusty, whispering place. A grandfather clock with skeletal hands reads [the time of day in words]. The floorboards are stained where that porridge just wouldn[=0x0027=]t come out.[=0x0022=][=0x000A=][=0x000A=]The Apprentice[=0x0027=]s Pantry is east of the Workshop. [=0x0022=]This is where the aproned apprentice traditionally makes the camomile tea, cleans out the jackdaw cages and furtively examines purloined artefacts.[=0x0022=][=0x000A=][=0x000A=]When play begins: erase the mirror.[=0x000A=][=0x000A=]The player carries a magic mirror. The magic mirror has indexed text called mirror vision.[=0x000A=][=0x000A=]To erase the mirror: change mirror vision of the mirror to [=0x0022=]The mirror is polished clean, and has no impression upon it.[=0x0022=][=0x000A=][=0x000A=]To say current room description: try looking.[=0x000A=]To expose the mirror:[=0x000A=][=0x0009=]say [=0x0022=]The mirror shines momentarily with a dazzling light.[paragraph break][=0x0022=];[=0x000A=][=0x0009=]change mirror vision to [=0x0022=]The hazy image in the mirror preserves a past sight:[line break][current room description]All is distorted and yet living, as though the past and present are coterminous in the mirror.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]hold up [something preferably held][=0x0022=] or [=0x0022=]hold [something preferably held] up[=0x0022=] as holding aloft. Holding aloft is an action applying to one carried thing. Report holding aloft: say [=0x0022=]You hold [the noun] aloft.[=0x0022=][=0x000A=][=0x000A=]Instead of rubbing the mirror: erase the mirror; try examining the mirror. Instead of holding aloft the mirror: expose the mirror.[=0x000A=][=0x000A=]The description of the mirror is [=0x0022=][mirror vision of the mirror][=0x0022=].[=0x000A=][=0x000A=]Test me with [=0x0022=]look / examine mirror / hold up mirror / z / look / x mirror / rub mirror / east / hold mirror up / west / x mirror[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode381()"><img border=0 src=../doc_images/paste.png></a> &quot;AARP-Gnosis&quot;
+<a href="javascript:pasteCode482()"><img border=0 src=../doc_images/paste.png></a> &quot;Mirror, Mirror&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Fitting relates various things to one thing (called the home). The verb to fit (it fits, they fit, it is fitted) implies the fitting relation. Definition: a thing is missing if it is not part of the home of it.
+<blockquote><font color="#000080">The Sorcerer's Workshop is a room. &quot;The sorcerer's den is a dusty, whispering place. A grandfather clock with skeletal hands reads [the time of day in words]. The floorboards are stained where that porridge just wouldn't come out.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A collective is a kind of thing.
+<blockquote><font color="#000080">The Apprentice's Pantry is east of the Workshop. &quot;This is where the aproned apprentice traditionally makes the camomile tea, cleans out the jackdaw cages and furtively examines purloined artefacts.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before doing something to something which is part of a collective:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let space be the holder of the home of the noun;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the noun to the space.
+<blockquote><font color="#000080">When play begins: erase the mirror.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining a collective:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] consists of [the list of things which are part of the noun].&quot;
+<blockquote><font color="#000080">The player carries a magic mirror. The magic mirror has indexed text called mirror vision.
 </font></blockquote><p>
 <p>
-<p>Now the real work begins. One reason to make this an activity is that we might easily want to override it for specific objects; for instance, the generic collecting activity here would not deal properly with collectives of clothing where some items might be worn and others not. In that case, we would want to write another, more specific &quot;collecting&quot; activity to handle the complexities of fashion.
-<p>
-<blockquote><font color="#000080">Collecting something is an activity.
+<blockquote><font color="#000080">To erase the mirror: change mirror vision of the mirror to &quot;The mirror is polished clean, and has no impression upon it.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Every turn:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with item running through collectives
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;carry out the collecting activity with the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">To say current room description: try looking.
+<br>To expose the mirror:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The mirror shines momentarily with a dazzling light.[paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;change mirror vision to &quot;The hazy image in the mirror preserves a past sight:[line break][current room description]All is distorted and yet living, as though the past and present are coterminous in the mirror.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Before collecting a thing (called the item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let space be the holder of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if space is not a thing and space is not a room
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if something (called the other space) contains at least two things which fit the item, move item to the other space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if a room (called the other space) contains at least two things which fit the item, move item to the other space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if someone (called the owner) carries at least two things which fit the item, move item to the owner;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Understand &quot;hold up [something preferably held]&quot; or &quot;hold [something preferably held] up&quot; as holding aloft. Holding aloft is an action applying to one carried thing. Report holding aloft: say &quot;You hold [the noun] aloft.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for collecting a thing (called the item):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;let space be the holder of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if space is a thing or space is a room
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat with component running through things held by the space
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the component fits the item, now the component is part of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end repeat;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the number of things which are part of the item is 0, remove the item from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if the number of things which are part of the item is 1
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let the last thing be a random thing which is part of the item;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;move the last thing to the space;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove the item from play;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if.
+<blockquote><font color="#000080">Instead of rubbing the mirror: erase the mirror; try examining the mirror. Instead of holding aloft the mirror: expose the mirror.
 </font></blockquote><p>
 <p>
-<p>And now for a cheerful scenario:
-<p>
-<blockquote><font color="#000080">The Boise Memorial Library is a room. &quot;A concrete box of a room, roughly eight feet by fourteen, which contains all the fallout shelter has to offer by way of entertainment. Someone with a grim sense of humor has tacked a READ! literacy poster to the door, as though there were anything else to do while you await the calming of the Geiger counters.&quot; The shelf is a supporter in the Library. &quot;A battered utility shelf stands against the south wall.&quot;
+<blockquote><font color="#000080">The description of the mirror is &quot;[mirror vision of the mirror]&quot;.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The New Idahoan Encyclopedia Set is a collective. Volume A-Aalto fits the Encyclopedia. It is part of the Set. Volume AAM-Aardvark fits the Encyclopedia. It is part of the Set. Volume Aarhus-Aaron fits the Encyclopedia. It is part of the Set. Volume AARP-Gnosis fits the Encyclopedia. It is part of the Set. Volume Gnu-Zygote fits the Encyclopedia. It is part of the Set. The Set is on the shelf.
+<blockquote><font color="#000080">Test me with &quot;look / examine mirror / hold up mirror / z / look / x mirror / rub mirror / east / hold mirror up / west / x mirror&quot;.
 </font></blockquote><p>
-<p>
-<p>Let's have the Encyclopedia describe itself differently depending on whether it's all in one place:
-<p>
-<blockquote><font color="#000080">After printing the name of the Set when something missing fits the Set:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot; (missing [a list of missing things which fit the Set])&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Before printing the name of the Set when the number of missing things which fit the set is 0:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;complete &quot;;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Test me with &quot;get aarhus-aaron / look / inventory / get aam-aardvark / look / get gnu-zygote / look / get aarp-gnosis / look / inventory / drop set / look / get set / get a-aalto / inventory&quot;.
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc267.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc334.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e255"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex255.html#e255 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>295</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex255.html#e255 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Crusoe</font></b></a><br>Adding a "printing the description of something" activity.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex255.html#e255 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e391"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex391.html#e391 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>296</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex391.html#e391 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Aftershock</font></b></a><br>Modifying the rules for examining a device so that all devices have some specific behavior when switched on, which is described at various times.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex391.html#e391 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc266.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc268.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e286"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex286.html#e286 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>384</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex286.html#e286 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Cow Exonerated</font></b></a><br>Creating a class of matches that burn for a time and then go out, with elegant reporting when several matches go out at once.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex286.html#e286 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc333.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc335.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

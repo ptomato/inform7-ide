@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>21.13. Writing, reading and appending text to files</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>3.3. One-way connections</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,142 +19,70 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "The Fourth Body" -->
-<!-- SEARCH SECTION "Ex 384" -->
-<!-- SEARCH SORT "Ex 021-013-384" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc346.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap21.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 21: Figures, Sounds and Files</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc348.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>21.13. Writing, reading and appending text to files</b></font></td></tr></table>
+<!-- SEARCH TITLE "The Unbuttoned Elevator Affair" -->
+<!-- SEARCH SECTION "Ex 7" -->
+<!-- SEARCH SORT "Ex 003-003-007" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc28.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap3.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 3: Things</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc30.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>3.3. One-way connections</b></font></td></tr></table>
 <p>
-<p>Text can also be saved to a file, and again all file-handling is automatic:
+<p>Connections are ordinarily two-way, but do not have to be. One of the map connections in the Mammoth Cave simulation was made by the sentence:
 <p>
-<blockquote><font color="#000080">write &quot;Jackdaws love my big sphinx of quartz.&quot; to the file of Abecedary Wisdom;
-<br>append &quot;Jinxed wizards pluck ivy from the big quilt.&quot; to the file of Abecedary Wisdom;
+<blockquote><font color="#000080">The Debris Room is west of the Crawl.
 </font></blockquote><p>
 <p>
-<p>The difference between &quot;write&quot; and &quot;append&quot; here is that &quot;write&quot; makes this text the entire contents of the file, whereas &quot;append&quot; adds it the end (creating the file if it did not previously exist).
+<p>Besides reading this sentence at face value, Inform also deduced that the Crawl was probably meant to be east of the Debris Room: in other words, that the path between them is a two-way one. When Inform makes guesses like this, it treats them as being less certain than anything explicitly stated in the source. Inform will quietly overturn its assumption if information comes to hand which shows that it was wrong. That might happen in this case if another sentence read:
 <p>
-<p>The quoted text can, of course, contain substitutions, so can be long and complex if need be.
-<p>
-<p>Text from a file is printed back with the text substitution:
-<p>
-<blockquote><font color="#000080">&quot;[text of the File of Abecedary Wisdom]&quot;
+<blockquote><font color="#000080">The Hidden Alcove is east of the Debris Room.
 </font></blockquote><p>
 <p>
-<p>To copy one file to another, for instance,
+<p>These two sentences are not contradictory: Inform allows them both, simply accepting that the world is more complicated than it first assumed. There are relatively few situations where Inform has to make educated guesses, but when it does, it tries always to follow Occam's Razor by constructing the simplest model world consistent with the information in the Source text.
 <p>
-<blockquote><font color="#000080">write &quot;[text of the file of Abecedary Wisdom]&quot; to the file of Secondary Wisdom;
+<p>We can even explicitly make a route which turns around as it leads between two rooms:
+<p>
+<blockquote><font color="#000080">West of the Garden is south of the Meadow.
+</font></blockquote><p>
+<p>
+<p>Finally, if we want to establish a route which cannot be retraced at all, we can specify that a particular direction leads nowhere:
+<p>
+<blockquote><font color="#000080">East of the Debris Room is nowhere.
 </font></blockquote><p>
 <p>
 <p><hr><p>
 <!-- EXAMPLE START -->
-<a name="e18"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc347.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>384</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc347.html#e18 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Fourth Body</font></b></a><br>Notebooks in which the player can record assorted notes throughout play.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex18.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e18"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc29.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>7</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc29.html#e18 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> The Unbuttoned Elevator Affair</font></b></a><br>A simple elevator connecting two floors which is operated simply by walking in and out, and has no buttons or fancy doors.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex18.html#e18 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
-<p>Some mystery games supply the player with an in-game system for taking notes, in case he doesn't want to rely on scraps of paper next to the computer. One way of doing this is to write out all the player's notes and observations into a notebook file, whose contents can be retrieved during play (or, indeed, after it).
-<p>
-<p>We'll first invent a general system for writing text into notebooks, by creating a new kind called jotter. Each individual jotter will have its own disc file, and there will be basically three things which can be done with jotters: erasing, reading and writing.
+<p>This is very simple. The interior of the elevator is a single room, but which is mapped east of both of its termini. The reverse map connection, west from the elevator, can only go to a single room, and that's what determines which floor the elevator is on.
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode473(code) {
+function pasteCode95(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]The Fourth Body[=0x0022=][=0x000A=][=0x000A=]A jotter is a kind of thing. A jotter has an external-file called the text file. A jotter can be fresh or used. A jotter is usually fresh. A jotter has a text called the heading.[=0x000A=][=0x000A=]The currently erased jotter is an object that varies.[=0x000A=]To erase (pad - a jotter):[=0x000A=][=0x0009=]now the currently erased jotter is the pad;[=0x000A=][=0x0009=]write [=0x0022=][heading of the currently erased jotter][paragraph break][=0x0022=] to the text file of the pad;[=0x000A=][=0x0009=]now the pad is fresh.[=0x000A=][=0x000A=]To write in (pad - a jotter):[=0x000A=][=0x0009=]append [=0x0022=][the time of day]: [topic understood][line break][=0x0022=] to the text file of the pad;[=0x000A=][=0x0009=]now the pad is used.[=0x000A=][=0x000A=]To read (pad - a jotter):[=0x000A=][=0x0009=]say [=0x0022=]You read: [paragraph break][text of the text file of the pad][=0x0022=].[=0x000A=][=0x000A=][This is all as might be expected, except perhaps for the business of the [=0x0022=]currently erased jotter[=0x0022=]. Why copy [=0x0022=]pad[=0x0022=] into this - why not simply write [=0x0022=][heading of the pad][=0x0022=]? The answer is that [=0x0022=]pad[=0x0022=] is a temporary [=0x0022=]let[=0x0022=] value, and cannot be used inside other phrases, such as the [=0x0022=]write ... to ...[=0x0022=] phrase.][=0x000A=][=0x000A=][We want to erase any jotters when play begins, as otherwise text left over from any previous games will still be visible:][=0x000A=][=0x000A=]When play begins:[=0x000A=][=0x0009=]repeat with pad running through jotters[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]erase the pad;[=0x000A=][=0x0009=]end repeat.[=0x000A=][=0x000A=][Now we need to create rules to allow the player to control reading, writing and erasing. Reading we will handle with the ordinary examining action, but we create new actions for writing and erasing. A nice little trick allows WRITE WHATEVER to default to writing WHATEVER in a notebook being carried.][=0x000A=][=0x000A=]Instead of examining a used jotter (called the pad):[=0x000A=][=0x0009=]read the pad.[=0x000A=][=0x000A=]Instead of examining a fresh jotter (called the pad):[=0x000A=][=0x0009=]say [=0x0022=]There is nothing of note in [the pad].[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]write [text] in [something preferably held][=0x0022=] as writing it in. Understand [=0x0022=]write [text][=0x0022=] as writing it in. Writing it in is an action applying to a topic and one thing. Rule for supplying a missing second noun while writing: if a jotter (called the pad) is carried, change the second noun to the pad; otherwise say [=0x0022=]You will have to specify what to write that it.[=0x0022=][=0x000A=][=0x000A=]Check writing it in:[=0x000A=][=0x0009=]if the second noun is not a jotter, say [=0x0022=]It would be better to write in a notebook.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out writing it in:[=0x000A=][=0x0009=]write in the second noun.[=0x000A=][=0x000A=]Report writing it in:[=0x000A=][=0x0009=]say [=0x0022=]Under the current time, you write [=0x0027=][the topic understood][=0x0027=] into [the second noun].[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]erase [something preferably held][=0x0022=] as erasing. Erasing is an action applying to one carried thing.[=0x000A=][=0x000A=]Check erasing:[=0x000A=][=0x0009=]if the noun is not a jotter, say [=0x0022=]It[=0x0027=]s hard to see how.[=0x0022=] instead.[=0x000A=][=0x000A=]Carry out erasing:[=0x000A=][=0x0009=]erase the noun.[=0x000A=][=0x000A=]Report erasing:[=0x000A=][=0x0009=]say [=0x0022=]You scrub out all the entries in [the noun].[=0x0022=][=0x000A=][=0x000A=][That completes a general-purpose implementation of jotters, and we put it to use:][=0x000A=][=0x000A=]The player carries a jotter called your notebook. The file of Player[=0x0027=]s Observations is called [=0x0022=]notebook[=0x0022=]. The text file of your notebook is the file of Player[=0x0027=]s Observations. The heading of your notebook is [=0x0022=]Observations in the Pottingham Green Case[=0x0022=].[=0x000A=][=0x000A=]The Damp Hillside is a room. [=0x0022=]It is just after dawn: among the trees there is misty and pale blue light. [if Havers is in the location]The only saturated color in view is the orange-and-yellow jacket of [Detective Havers]. She is trying unsuccessfully to light a cigarette. [end if][paragraph break]The body itself is further down, closer to the bottom of the ravine. It would be foolish to speculate before seeing it, but the odds are that the corpse was rolled down after death. The ground is not steep enough for the fall itself to be deadly.[=0x0022=][=0x000A=][=0x000A=]Detective Havers is a woman in the Damp Hillside. The description is [=0x0022=]She gives you a weak smile when you look at her: you know she hasn[=0x0027=]t slept more than three hours any of the last few nights.[=0x0022=] Havers is scenery.[=0x000A=][=0x000A=]Havers is carrying a jotter called Barbara[=0x0027=]s notebook. The file of Barbara[=0x0027=]s Observations is called [=0x0022=]barbara[=0x0022=]. The text file of Barbara[=0x0027=]s notebook is the file of Barbara[=0x0027=]s Observations. The heading of Barbara[=0x0027=]s notebook is [=0x0022=]I could murder a cup of tea[=0x0022=].[=0x000A=][=0x000A=]The time of day is 6:32 AM.[=0x000A=][=0x000A=]Instead of examining your notebook when your notebook is fresh:[=0x000A=][=0x0009=]say [=0x0022=]Your notebook is blank. Back in the office, of course, there are a stack of others. But you brought a fresh notebook in a kind of weary hope. You[=0x0027=]re going to pretend, just for now, that this body might be unrelated to the graphic string of murders you[=0x0027=]re already investigating.[=0x0022=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]The Unbuttoned Elevator Affair[=0x0022=][=0x000A=][=0x000A=]UNCLE Headquarters is a room. [=0x0022=]The steel nerve-center of the free world[=0x0027=]s battle against the Technological Hierarchy for the Removal of Undesirables and the Subjugation of Humanity. Being against technology, we have only a very simple elevator to the east.[=0x0022=][=0x000A=][=0x000A=]Del Floria[=0x0027=]s Tailor Shop is a room. [=0x0022=]Only trained anti-THRUSH agents recognise the booth in the east wall as a secret elevator.[=0x0022=][=0x000A=][=0x000A=]The Secret Elevator is east of UNCLE Headquarters. The Secret Elevator is east of Del Floria[=0x0027=]s Tailor Shop.[=0x000A=][=0x000A=]After going to the Secret Elevator:[=0x000A=][=0x0009=]say [=0x0022=]The doors automatically close, there is a rush of motion, and they open again.[=0x0022=];[=0x000A=][=0x0009=]if UNCLE Headquarters is mapped west of the Secret Elevator, now Del Floria[=0x0027=]s Tailor Shop is mapped west of the Secret Elevator;[=0x000A=][=0x0009=]otherwise now UNCLE Headquarters is mapped west of the Secret Elevator;[=0x000A=][=0x0009=]continue the action.[=0x000A=][=0x000A=]Test me with [=0x0022=]east / west / east / west[=0x0022=].[=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode473()"><img border=0 src=../doc_images/paste.png></a> &quot;The Fourth Body&quot;
+<a href="javascript:pasteCode95()"><img border=0 src=../doc_images/paste.png></a> &quot;The Unbuttoned Elevator Affair&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A jotter is a kind of thing. A jotter has an external-file called the text file. A jotter can be fresh or used. A jotter is usually fresh. A jotter has a text called the heading.
+<blockquote><font color="#000080">UNCLE Headquarters is a room. &quot;The steel nerve-center of the free world's battle against the Technological Hierarchy for the Removal of Undesirables and the Subjugation of Humanity. Being against technology, we have only a very simple elevator to the east.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The currently erased jotter is an object that varies.
-<br>To erase (pad - a jotter):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the currently erased jotter is the pad;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;write &quot;[heading of the currently erased jotter][paragraph break]&quot; to the text file of the pad;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pad is fresh.
+<blockquote><font color="#000080">Del Floria's Tailor Shop is a room. &quot;Only trained anti-THRUSH agents recognise the booth in the east wall as a secret elevator.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To write in (pad - a jotter):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;append &quot;[the time of day]: [topic understood][line break]&quot; to the text file of the pad;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the pad is used.
+<blockquote><font color="#000080">The Secret Elevator is east of UNCLE Headquarters. The Secret Elevator is east of Del Floria's Tailor Shop.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">To read (pad - a jotter):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You read: [paragraph break][text of the text file of the pad]&quot;.
+<blockquote><font color="#000080">After going to the Secret Elevator:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;The doors automatically close, there is a rush of motion, and they open again.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if UNCLE Headquarters is mapped west of the Secret Elevator, now Del Floria's Tailor Shop is mapped west of the Secret Elevator;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise now UNCLE Headquarters is mapped west of the Secret Elevator;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;continue the action.
 </font></blockquote><p>
 <p>
-<p>This is all as might be expected, except perhaps for the business of the &quot;currently erased jotter&quot;. Why copy &quot;pad&quot; into this - why not simply write &quot;[heading of the pad]&quot;? The answer is that &quot;pad&quot; is a temporary &quot;let&quot; value, and cannot be used inside other phrases, such as the &quot;write ... to ...&quot; phrase.
-<p>
-<p>We want to erase any jotters when play begins, as otherwise text left over from any previous games will still be visible:
-<p>
-<blockquote><font color="#000080">When play begins:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with pad running through jotters
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;erase the pad;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end repeat.
+<blockquote><font color="#000080">Test me with &quot;east / west / east / west&quot;.
 </font></blockquote><p>
-<p>
-<p>Now we need to create rules to allow the player to control reading, writing and erasing. Reading we will handle with the ordinary examining action, but we create new actions for writing and erasing. A nice little trick allows WRITE WHATEVER to default to writing WHATEVER in a notebook being carried.
-<p>
-<blockquote><font color="#000080">Instead of examining a used jotter (called the pad):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;read the pad.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining a fresh jotter (called the pad):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;There is nothing of note in [the pad].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;write [text] in [something preferably held]&quot; as writing it in. Understand &quot;write [text]&quot; as writing it in. Writing it in is an action applying to a topic and one thing. Rule for supplying a missing second noun while writing: if a jotter (called the pad) is carried, change the second noun to the pad; otherwise say &quot;You will have to specify what to write that it.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check writing it in:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the second noun is not a jotter, say &quot;It would be better to write in a notebook.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out writing it in:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;write in the second noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report writing it in:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Under the current time, you write '[the topic understood]' into [the second noun].&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Understand &quot;erase [something preferably held]&quot; as erasing. Erasing is an action applying to one carried thing.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check erasing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the noun is not a jotter, say &quot;It's hard to see how.&quot; instead.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Carry out erasing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;erase the noun.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Report erasing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You scrub out all the entries in [the noun].&quot;
-</font></blockquote><p>
-<p>
-<p>That completes a general-purpose implementation of jotters, and we put it to use:
-<p>
-<blockquote><font color="#000080">The player carries a jotter called your notebook. The file of Player's Observations is called &quot;notebook&quot;. The text file of your notebook is the file of Player's Observations. The heading of your notebook is &quot;Observations in the Pottingham Green Case&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The Damp Hillside is a room. &quot;It is just after dawn: among the trees there is misty and pale blue light. [if Havers is in the location]The only saturated color in view is the orange-and-yellow jacket of [Detective Havers]. She is trying unsuccessfully to light a cigarette. [end if][paragraph break]The body itself is further down, closer to the bottom of the ravine. It would be foolish to speculate before seeing it, but the odds are that the corpse was rolled down after death. The ground is not steep enough for the fall itself to be deadly.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Detective Havers is a woman in the Damp Hillside. The description is &quot;She gives you a weak smile when you look at her: you know she hasn't slept more than three hours any of the last few nights.&quot; Havers is scenery.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Havers is carrying a jotter called Barbara's notebook. The file of Barbara's Observations is called &quot;barbara&quot;. The text file of Barbara's notebook is the file of Barbara's Observations. The heading of Barbara's notebook is &quot;I could murder a cup of tea&quot;.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">The time of day is 6:32 AM.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Instead of examining your notebook when your notebook is fresh:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Your notebook is blank. Back in the office, of course, there are a stack of others. But you brought a fresh notebook in a kind of weary hope. You're going to pretend, just for now, that this body might be unrelated to the graphic string of murders you're already investigating.&quot;
-</font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc347.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc29.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<a name="e142"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex142.html#e142 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>385</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex142.html#e142 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Fifth Body</font></b></a><br>An expansion on the notebook, allowing the player somewhat more room in which to type his recorded remark.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex142.html#e142 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc346.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc348.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<a name="e416"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex416.html#e416 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>8</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex416.html#e416 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000">Port Royal 2</font></b></a><br>Another part of Port Royal, with less typical map connections.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex416.html#e416 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc28.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc30.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

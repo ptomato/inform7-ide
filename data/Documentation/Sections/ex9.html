@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.10. Action variables</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>15.15. Varying which table to look at</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,162 +19,165 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Croft" -->
-<!-- SEARCH SECTION "Ex 187" -->
-<!-- SEARCH SORT "Ex 012-010-187" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc181.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc183.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.10. Action variables</b></font></td></tr></table>
+<!-- SEARCH TITLE "Farewell" -->
+<!-- SEARCH SECTION "Ex 255" -->
+<!-- SEARCH SORT "Ex 015-015-255" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc243.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap15.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 15: Tables</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc245.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>15.15. Varying which table to look at</b></font></td></tr></table>
 <p>
-<p>For some complex situations, it can be useful to keep track of a few values throughout the processing of the action. This is not an everyday occurrence: in the Standard Rules, for instance, only two or three out of 90 actions need to do this. But suppose we want to write a more deluxe version of our &quot;photographing&quot; action. This time, rather than having a single thing called the &quot;camera&quot;, we will provide a whole range of possible cameras, varying in quality:
+<p>So far, we have always used fixed table names when referring to tables: for instance in source like &quot;sort the Table of Recent Monarchs in accession order&quot;, we refer to the &quot;Table of Recent Monarchs&quot;, a definite and explicitly named table.
 <p>
-<blockquote><font color="#000080">Photographing is an action applying to one visible thing and requiring light. Understand &quot;photograph [something]&quot; as photographing.
-</font></blockquote><p>
+<p>With a little care, however, we are allowed to have variables which themselves hold the names of tables. This opens up the possibility of more elaborate ways of storing and interconnecting information in table form, but is probably best avoided until it becomes necessary.
 <p>
-<blockquote><font color="#000080">The Studio is a room. Sally is a woman in the Studio. A foam-lined tote bag is in the Studio.
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">A camera is a kind of thing. A camera has a number called picture quality. The digital SLR camera is a camera in the tote bag. The player carries a camera called the instant one-shot camera. The picture quality of the SLR camera is 10. The picture quality of the one-shot is 2. Definition: a camera is sharp if its picture quality is 5 or more.
-</font></blockquote><p>
-<p>
-<p>And we will want the photographing action to have the player use the best-quality camera which comes to hand. We will give the action a variable called the 'camera photographed with', thus:
-<p>
-<blockquote><font color="#000080">The photographing action has an object called the camera photographed with.
-</font></blockquote><p>
-<p>
-<p>This value is created when the action begins, and disappears when the action ends. (If the action should happen a second time before the first time was completed, a second copy of the value is created, leaving the original undisturbed.) When the action begins, the value starts out as something neutral - so if it is a number, it starts out as 0, if a text, it starts out as the blank text &quot;&quot;, and so on. Here it is an object, so it starts out as nothing - the value meaning no object at all. But of course we want to give it a value ourselves. We can do that using the &quot;setting action variables&quot; rulebook. For instance:
-<p>
-<blockquote><font color="#000080">Setting action variables for photographing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the camera photographed with is the sharpest camera which is carried by the actor.
-</font></blockquote><p>
-<p>
-<p>The &quot;setting action variables&quot; rulebook is run through before even the before rules, and it has no power to stop or change the action. Its rules should say nothing and do nothing other than to set rulebook variables like this one. Note that it is intended to work for any actor, not only the player: so rather than referring to the player as the performer of the action, we need to write &quot;the actor&quot;, as in the example above. (See subsequent sections for more on actors.)
-<p>
-<p>We can now write rules such as:
-<p>
-<blockquote><font color="#000080">A check photographing rule:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the camera photographed with is nothing then say &quot;You can hardly photograph without a camera, now can you?&quot; instead.
-</font></blockquote><p>
-<p>
-<p>Only rules to do with the photographing action - before, instead, after, check, carry out, or report rules, and so on - are allowed to see the 'camera photographed with' value: it's the private property of the action.
-<p>
-<p>A further elaboration allows us to make rules about photographing neater to write. If we create our variable like so:
-<p>
-<blockquote><font color="#000080">The photographing action has an object called the camera photographed with (matched as &quot;using&quot;).
-</font></blockquote><p>
-<p>
-<p>...then we are now allowed to add an optional 'using ...' clause onto a description of the action. For instance, we could write rules such as
-<p>
-<blockquote><font color="#000080">Instead of photographing something using the one-shot camera:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;But you promised to give this to Sally's nephew.&quot;
-</font></blockquote><p>
-<p>
-<blockquote><font color="#000080">Check photographing something using the noun:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;That would require some sort of contraption with mirrors.&quot; instead.
-</font></blockquote><p>
-<p>
-<p>
-<blockquote><font color="#000080">Report photographing something using a sharp camera:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You feel cool and important as the shutter clicks.&quot;
-</font></blockquote><p>
-<p>
-<p>(This is the method used by the Standard Rules to attach optional clauses such as 'to', 'with' and 'through' to the going action.)
-<p>
-<p><hr><p>
-<a name="e104"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex104.html#e104 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>183</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex104.html#e104 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Further Reasons Why All Poets Are Liars</font></b></a><br>The young William Wordsworth, pushing a box about in his room, must struggle to achieve a Romantic point of view.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex104.html#e104 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e169"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex169.html#e169 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>184</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex169.html#e169 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> The Second Oldest Problem</font></b></a><br>Adapting the going action so that something special can happen when going from a dark room to another dark room.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex169.html#e169 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e365"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex365.html#e365 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>185</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex365.html#e365 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Removal</font></b></a><br>TAKE expanded to give responses such as "You take the book from the shelf." or "You pick up the toy from the ground."<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex365.html#e365 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<a name="e168"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>186</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex168.html#e168 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Puff of Orange Smoke</font></b></a><br>A system in which every character has a body, which is left behind when the person dies; attempts to do something to the body are redirected to the person while the person is alive.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex168.html#e168 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<!-- EXAMPLE START -->
-<a name="e9"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc182.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>187</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc182.html#e9 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Croft</font></b></a><br>Adding special reporting and handling for objects dropped when the player is on a supporter, and special entering rules for moving from one supporter to another.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
-<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
-<p>
-<p>Suppose that we have a design in which the player spends lots of time on enterable supporters, and in which we want to report certain actions -- dropping things onto those supporters, or leaping from one to another -- in a new way. We might begin by adding some action variables to help us keep track of the situation:
+<p>For example, suppose we have two different tables with the same basic structure:
 <p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode277(code) {
+function pasteCode53(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode(' [=0x0022=]Croft[=0x0022=][=0x000A=][=0x000A=]The dropping action has an object called the container dropped into (matched as [=0x0022=]into[=0x0022=]).[=0x000A=][=0x000A=]The dropping action has an object called the supporter dropped onto (matched as [=0x0022=]onto[=0x0022=]).[=0x000A=][=0x000A=]Rule for setting action variables for dropping:[=0x000A=][=0x0009=]if the actor is in a container (called C), now the container dropped into is C;[=0x000A=][=0x0009=]if the actor is on a supporter (called C), now the supporter dropped onto is C.[=0x000A=][=0x000A=]Report dropping a heavy thing onto a metallic thing:[=0x000A=][=0x0009=]say [=0x0022=]You drop [the noun], and [the supporter dropped onto] clangs protestingly.[=0x0022=] instead.[=0x000A=][=0x000A=]Report someone dropping a heavy thing onto a metallic thing:[=0x000A=][=0x0009=]say [=0x0022=][The actor] drops [the noun] onto [the supporter dropped onto], which clangs protestingly.[=0x0022=] instead.[=0x000A=][=0x000A=]A thing can be heavy or light. A thing can be metallic or ordinary. A thing is usually ordinary. A thing is usually light.[=0x000A=][=0x000A=]The Ancient Cambodian Temple is a room. [=0x0022=]A vast space built for ancient and forgotten rituals. The stone floor crawls with vermin. Well above the floor, and separated by some feet, are twin platforms built into the wall: the one carved of jointed wood, the other of sheets of graven bronze.[=0x0022=][=0x000A=][=0x000A=]A platform is a kind of supporter. A platform is always enterable. A platform is usually scenery.[=0x000A=][=0x000A=]The bronze platform is a metallic platform in the Temple. Lara is a woman. She is on the bronze platform. She wears safari pants and a tank top. She carries a gun and a map. The gun is heavy.[=0x000A=][=0x000A=]The wood platform is an ordinary platform in the Temple. The player is on the wood platform. The player carries a rope, an Ancient Cambodian/English Phrasebook, a pickaxe, and a precious idol. The idol and the pickaxe are heavy.[=0x000A=][=0x000A=]Persuasion rule: persuasion succeeds.[=0x000A=][=0x000A=]The entering action has an object called the place left (matched as [=0x0022=]from[=0x0022=]).[=0x000A=][=0x0009=]Check entering a platform from a platform:[=0x000A=][=0x0009=][=0x0009=]if actor is the player, say [=0x0022=]You leap into midair to cross the distance...[=0x0022=];[=0x000A=][=0x0009=]otherwise say [=0x0022=][The actor] leaps gracefully across the distance...[=0x0022=];[=0x000A=][=0x0009=]move the actor to the holder of the noun, without printing a room description.[=0x000A=][=0x000A=][Because this rule occurs before the [=0x0022=]implicitly pass through other barriers rule[=0x0022=], that rule will not occur when we move from platform to platform; we[=0x0027=]ll use our own custom rule instead.][=0x000A=][=0x000A=]Rule for setting action variables for entering:[=0x000A=][=0x0009=]now the place left is the holder of the actor.[=0x000A=][=0x000A=]Report entering a platform from a platform:[=0x000A=][=0x0009=]say [=0x0022=]You land in a cat-like crouch on [the noun].[=0x0022=] instead.[=0x000A=][=0x000A=]Report Lara entering a platform from a platform:[=0x000A=][=0x0009=]say [=0x0022=]Lara lands soundlessly on [the noun][if the noun supports the player] beside you[end if].[=0x0022=] instead.[=0x000A=][=0x000A=]Report entering a platform from the location:[=0x000A=][=0x0009=]say [=0x0022=]You jump, catch the edge of [the noun] in your hands, and -- exerting considerable upper-body strength -- pull yourself up onto it.[=0x0022=] instead.[=0x000A=][=0x000A=]Report Lara entering a platform from a location:[=0x000A=][=0x0009=]say [=0x0022=]Lara jumps, catches the edge of [the noun], and is standing upright on it, all in less time than it takes to tell.[=0x0022=][=0x000A=][=0x000A=]Instead of examining a person who is not the player:[=0x000A=][=0x0009=]say [=0x0022=][The noun] carries [list of things carried by the noun] and wears [list of things worn by the noun].[=0x0022=][=0x000A=][=0x000A=]Instead of climbing a platform, try entering the noun.[=0x000A=][=0x000A=]Test me with [=0x0022=]Lara, drop map / lara, drop gun / drop idol / enter bronze platform / drop pickaxe / get off / climb wood[=0x0022=].[=0x000A=]');
+    myProject.pasteCode('Table 1 - Nifty Opening Plays in US Scrabble[=0x000A=]word[=0x0009=]score[=0x000A=][=0x0022=]muzjiks[=0x0022=][=0x0009=]128[=0x000A=][=0x000A=]Table 2 - Nifty Opening Plays in UK Scrabble[=0x000A=]word[=0x0009=]score[=0x000A=][=0x0022=]quartzy[=0x0022=][=0x0009=]126[=0x000A=][=0x0022=]squeezy[=0x0022=][=0x0009=]126[=0x000A=][=0x000A=][We could then record which one of these tables to use in a variable:][=0x000A=][=0x000A=]The lexicon is a table-name that varies. The lexicon is Table 1.[=0x000A=][=0x000A=][Note that for this purpose, the kind of value is a special kind called [=0x0022=]table-name[=0x0022=], not [=0x0022=]table[=0x0022=]. (The word [=0x0022=]table[=0x0022=] already has too many meanings and we must be careful to avoid ambiguities here.) We could make use of this as follows, for instance:][=0x000A=][=0x000A=]To flip tables:[=0x000A=][=0x0009=]say [=0x0022=]You exchange dictionaries, lexically crossing the Atlantic. [=0x0022=];[=0x000A=][=0x0009=]if the lexicon is Table 1, change the lexicon to Table 2;[=0x000A=][=0x0009=]otherwise change the lexicon to Table 1;[=0x000A=][=0x0009=]choose a random row in the lexicon;[=0x000A=][=0x0009=]say [=0x0022=]Did you know that according to [the lexicon], [word entry] scores [score entry]?[=0x0022=][=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode277()"><img border=0 src=../doc_images/paste.png></a>  &quot;Croft&quot;
+<a href="javascript:pasteCode53()"><img border=0 src=../doc_images/paste.png></a> Table 1 - Nifty Opening Plays in US Scrabble
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">word</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">score</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;muzjiks&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">128</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The dropping action has an object called the container dropped into (matched as &quot;into&quot;).
+<blockquote><font color="#000080">Table 2 - Nifty Opening Plays in UK Scrabble
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">word</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">score</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;quartzy&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">126</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;squeezy&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">126</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The dropping action has an object called the supporter dropped onto (matched as &quot;onto&quot;).
+<p>We could then record which one of these tables to use in a variable:
+<p>
+<blockquote><font color="#000080">The lexicon is a table-name that varies. The lexicon is Table 1.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Rule for setting action variables for dropping:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the actor is in a container (called C), now the container dropped into is C;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the actor is on a supporter (called C), now the supporter dropped onto is C.
+<p>Note that for this purpose, the kind of value is a special kind called &quot;table-name&quot;, not &quot;table&quot;. (The word &quot;table&quot; already has too many meanings and we must be careful to avoid ambiguities here.) We could make use of this as follows, for instance:
+<p>
+<blockquote><font color="#000080">To flip tables:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You exchange dictionaries, lexically crossing the Atlantic. &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if the lexicon is Table 1, change the lexicon to Table 2;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise change the lexicon to Table 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;choose a random row in the lexicon;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Did you know that according to [the lexicon], [word entry] scores [score entry]?&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report dropping a heavy thing onto a metallic thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You drop [the noun], and [the supporter dropped onto] clangs protestingly.&quot; instead.
+<p>which produces text such as
+<p>
+<blockquote><font color="#000080">You exchange dictionaries, lexically crossing the Atlantic. Did you know that according to Table 1 - Nifty Opening Plays in US Scrabble, muzjiks scores 128?
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report someone dropping a heavy thing onto a metallic thing:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The actor] drops [the noun] onto [the supporter dropped onto], which clangs protestingly.&quot; instead.
+<p><hr><p>
+<!-- EXAMPLE START -->
+<a name="e9"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc244.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>255</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc244.html#e9 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Farewell</font></b></a><br>People who respond to conversational gambits, summarize what they said before if asked again, and provide recap of conversation that is past.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex9.html#e9 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
+<p>
+<p>We begin with the idea that each person comes with his own table of things to say:
+<p>
+<blockquote><font color="#000080"><script language="JavaScript">
+function pasteCode351(code) {
+    var myProject = external.Project;
+
+    myProject.selectView('source');
+    myProject.pasteCode('[=0x0022=]Farewell[=0x0022=][=0x000A=][=0x000A=]A person has a table-name called conversation.[=0x000A=][=0x000A=]Instead of asking someone about something:[=0x000A=][=0x0009=]let the source be the conversation of the noun;[=0x000A=][=0x0009=]if topic understood is a topic listed in source:[=0x000A=][=0x0009=][=0x0009=]if there is a turn stamp entry:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][The noun] has already told you that [summary entry].[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]change turn stamp entry to the turn count;[=0x000A=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=][reply entry][paragraph break][=0x0022=];[=0x000A=][=0x0009=]otherwise:[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The noun] stares at you blankly.[=0x0022=][=0x000A=][=0x000A=][For the sake of simplicity, we[=0x0027=]ll conflate asking and telling here, though it would certainly be possible to have a more complex implementation if we want the characters to be told things as well.][=0x000A=][=0x000A=]Instead of telling someone about something:[=0x000A=][=0x0009=]try asking the noun about it.[=0x000A=][=0x000A=][Now we might want to add a recap command to review conversation that has already occurred.][=0x000A=][=0x000A=]Definition: a person is other if it is not the player.[=0x000A=][=0x000A=]Understand [=0x0022=]recap[=0x0022=] or [=0x0022=]recall[=0x0022=] or [=0x0022=]review[=0x0022=] as recalling conversations.[=0x000A=][=0x000A=]Recalling conversations is an action applying to nothing.[=0x000A=][=0x000A=][Since we[=0x0027=]ve been recording the turn count of each conversation bit, we can even present these in order by sorting the tables first.][=0x000A=][=0x000A=]Carry out recalling conversations:[=0x000A=][=0x0009=]repeat with speaker running through other people:[=0x000A=][=0x0009=][=0x0009=]let source be the conversation of the speaker;[=0x000A=][=0x0009=][=0x0009=]sort source in turn stamp order;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=][The speaker] has so far told you: [line break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]let index be 0;[=0x000A=][=0x0009=][=0x0009=]repeat through source:[=0x000A=][=0x0009=][=0x0009=][=0x0009=]if there is a turn stamp entry:[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]let index be 1;[=0x000A=][=0x0009=][=0x0009=][=0x0009=][=0x0009=]say [=0x0022=]  [summary entry][line break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]if index is 0, say [=0x0022=]  absolutely nothing[line break][=0x0022=];[=0x000A=][=0x0009=][=0x0009=]say conditional paragraph break.[=0x000A=][=0x000A=][Now it remains only to create a couple of characters and provide them both with something to say:][=0x000A=][=0x000A=] The Farewell Bend Cafe is a room. [=0x0022=]Beautiful Farewell Bend, Idaho -- or is it Oregon? An almost-abandoned truckstop, in any case, on one of those interminable American east-west highways.[=0x0022=][=0x000A=][=0x000A=]Tina is a woman in the Farewell Bend Cafe. The conversation of Tina is the Table of Tina[=0x0027=]s Chatter. [=0x0022=]Tina the waitress is slowly pouring coffee from the pot with a black neck into the pot with an orange neck.[=0x0022=][=0x000A=][=0x000A=]George is a man in the Farewell Bend Cafe. The conversation of George is the Table of George[=0x0027=]s Chatter. [=0x0022=]There is also a large man at table five. The tattoo on his arm says George. For the moment we will assume that it is his own name and not someone else[=0x0027=]s.[=0x0022=][=0x000A=][=0x000A=]Table of Tina[=0x0027=]s Chatter[=0x000A=]topic[=0x0009=]reply[=0x0009=]summary[=0x0009=]turn stamp[=0x000A=][=0x0022=]aasvogel[=0x0022=][=0x0009=][=0x0022=][=0x0027=]Oh, it[=0x0027=]s a vulture.[=0x0027=][=0x0022=][=0x0009=][=0x0022=]that an aasvogel is a vulture[=0x0022=][=0x0009=]a number[=0x000A=][=0x0022=]acaudate[=0x0022=][=0x0009=][=0x0022=]She shrugs, mid-pour. [=0x0027=]Means something doesn[=0x0027=]t have a tail.[=0x0027=][=0x0022=][=0x0009=][=0x0022=]that acaudate means [=0x0027=]tailless[=0x0027=][=0x0022=][=0x0009=]--[=0x000A=][=0x0022=]absorptiometer[=0x0022=][=0x0009=][=0x0022=][=0x0027=]It[=0x0027=]s a thing that measures the solubility of gases in a liquid,[=0x0027=] she explains gently, as to a child.[=0x0022=][=0x0009=][=0x0022=]that an absorptiometer measures solubility of gasses in a liquid[=0x0022=][=0x0009=]--[=0x000A=][=0x000A=]Table of George[=0x0027=]s Chatter[=0x000A=]topic[=0x0009=]reply[=0x0009=]summary[=0x0009=]turn stamp[=0x000A=][=0x0022=]baccaceous[=0x0022=][=0x0009=][=0x0022=][=0x0027=]Something that has or bears berries,[=0x0027=] says George, without looking up.[=0x0022=][=0x0009=][=0x0022=]that baccaceous means berry-bearing or berry-like[=0x0022=][=0x0009=]a number[=0x000A=][=0x0022=]bagheera[=0x0022=][=0x0009=][=0x0022=][=0x0027=]Oh, that[=0x0027=]d be a velvet-like textile.[=0x0027=][=0x0022=][=0x0009=][=0x0022=]that bagheera is a velvet-like textile[=0x0022=][=0x0009=]--[=0x000A=][=0x0022=]balistarius[=0x0022=][=0x0009=][=0x0022=][=0x0027=]That[=0x0027=]s a crossbow-man,[=0x0027=] George replies instantly.[=0x0022=][=0x0009=][=0x0022=]that a balistarius is a crossbow-man[=0x0022=][=0x0009=]--[=0x000A=][=0x000A=][A word of warning: this system does assume that every person in the game has a conversation table defined. If that were not the case, we would have to be a bit more careful.][=0x000A=][=0x000A=][As always, we can override specific words, too:][=0x000A=][=0x000A=]Instead of asking Tina about [=0x0022=]advertisement[=0x0022=] for the first time:[=0x000A=][=0x0009=]say [=0x0022=]Tina looks embarrassed. [=0x0027=]Of course! I almost forgot.[=0x0027=] She hands you a brochure.[=0x0022=];[=0x000A=][=0x0009=]move the brochure to the player.[=0x000A=][=0x000A=]The encyclopedia sales brochure is a thing. The description is [=0x0022=]A glossy flyer indicating that you can receive a free Volume A-Aalto of the New Idahoan Encyclopedia Set if you send back the business reply card, and then have the option of purchasing the remaining volumes at a very very reasonable price.[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]recap / ask tina about aasvogel / recap / ask george about baccaceous / ask tina about absorptiometer / recap / ask tina about advertisement / read brochure[=0x0022=].[=0x000A=]');
+}
+</script>
+<a href="javascript:pasteCode351()"><img border=0 src=../doc_images/paste.png></a> &quot;Farewell&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A thing can be heavy or light. A thing can be metallic or ordinary. A thing is usually ordinary. A thing is usually light.
+<blockquote><font color="#000080">A person has a table-name called conversation.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Ancient Cambodian Temple is a room. &quot;A vast space built for ancient and forgotten rituals. The stone floor crawls with vermin. Well above the floor, and separated by some feet, are twin platforms built into the wall: the one carved of jointed wood, the other of sheets of graven bronze.&quot;
+<blockquote><font color="#000080">Instead of asking someone about something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;let the source be the conversation of the noun;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if topic understood is a topic listed in source:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if there is a turn stamp entry:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] has already told you that [summary entry].&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;change turn stamp entry to the turn count;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[reply entry][paragraph break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] stares at you blankly.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">A platform is a kind of supporter. A platform is always enterable. A platform is usually scenery.
+<p>For the sake of simplicity, we'll conflate asking and telling here, though it would certainly be possible to have a more complex implementation if we want the characters to be told things as well.
+<p>
+<blockquote><font color="#000080">Instead of telling someone about something:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;try asking the noun about it.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The bronze platform is a metallic platform in the Temple. Lara is a woman. She is on the bronze platform. She wears safari pants and a tank top. She carries a gun and a map. The gun is heavy.
+<p>Now we might want to add a recap command to review conversation that has already occurred.
+<p>
+<blockquote><font color="#000080">Definition: a person is other if it is not the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The wood platform is an ordinary platform in the Temple. The player is on the wood platform. The player carries a rope, an Ancient Cambodian/English Phrasebook, a pickaxe, and a precious idol. The idol and the pickaxe are heavy.
+<blockquote><font color="#000080">Understand &quot;recap&quot; or &quot;recall&quot; or &quot;review&quot; as recalling conversations.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Persuasion rule: persuasion succeeds.
+<blockquote><font color="#000080">Recalling conversations is an action applying to nothing.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The entering action has an object called the place left (matched as &quot;from&quot;).
-<br>&nbsp;&nbsp;&nbsp;&nbsp;Check entering a platform from a platform:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if actor is the player, say &quot;You leap into midair to cross the distance...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;otherwise say &quot;[The actor] leaps gracefully across the distance...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the actor to the holder of the noun, without printing a room description.
+<p>Since we've been recording the turn count of each conversation bit, we can even present these in order by sorting the tables first.
+<p>
+<blockquote><font color="#000080">Carry out recalling conversations:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;repeat with speaker running through other people:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let source be the conversation of the speaker;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sort source in turn stamp order;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The speaker] has so far told you: [line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let index be 0;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;repeat through source:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if there is a turn stamp entry:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;let index be 1;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;  [summary entry][line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if index is 0, say &quot;  absolutely nothing[line break]&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say conditional paragraph break.
 </font></blockquote><p>
 <p>
-<p>Because this rule occurs before the &quot;implicitly pass through other barriers rule&quot;, that rule will not occur when we move from platform to platform; we'll use our own custom rule instead.
+<p>Now it remains only to create a couple of characters and provide them both with something to say:
 <p>
-<blockquote><font color="#000080">Rule for setting action variables for entering:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the place left is the holder of the actor.
+<blockquote><font color="#000080"> The Farewell Bend Cafe is a room. &quot;Beautiful Farewell Bend, Idaho -- or is it Oregon? An almost-abandoned truckstop, in any case, on one of those interminable American east-west highways.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report entering a platform from a platform:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You land in a cat-like crouch on [the noun].&quot; instead.
+<blockquote><font color="#000080">Tina is a woman in the Farewell Bend Cafe. The conversation of Tina is the Table of Tina's Chatter. &quot;Tina the waitress is slowly pouring coffee from the pot with a black neck into the pot with an orange neck.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report Lara entering a platform from a platform:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lara lands soundlessly on [the noun][if the noun supports the player] beside you[end if].&quot; instead.
+<blockquote><font color="#000080">George is a man in the Farewell Bend Cafe. The conversation of George is the Table of George's Chatter. &quot;There is also a large man at table five. The tattoo on his arm says George. For the moment we will assume that it is his own name and not someone else's.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report entering a platform from the location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You jump, catch the edge of [the noun] in your hands, and -- exerting considerable upper-body strength -- pull yourself up onto it.&quot; instead.
+<blockquote><font color="#000080">Table of Tina's Chatter
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">summary</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">turn stamp</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;aasvogel&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Oh, it's a vulture.'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that an aasvogel is a vulture&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;acaudate&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;She shrugs, mid-pour. 'Means something doesn't have a tail.'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that acaudate means 'tailless'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">--</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;absorptiometer&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'It's a thing that measures the solubility of gases in a liquid,' she explains gently, as to a child.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that an absorptiometer measures solubility of gasses in a liquid&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">--</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Report Lara entering a platform from a location:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Lara jumps, catches the edge of [the noun], and is standing upright on it, all in less time than it takes to tell.&quot;
+<blockquote><font color="#000080">Table of George's Chatter
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">reply</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">summary</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">turn stamp</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;baccaceous&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Something that has or bears berries,' says George, without looking up.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that baccaceous means berry-bearing or berry-like&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">a number</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;bagheera&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'Oh, that'd be a velvet-like textile.'&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that bagheera is a velvet-like textile&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">--</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;balistarius&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;'That's a crossbow-man,' George replies instantly.&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;that a balistarius is a crossbow-man&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">--</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of examining a person who is not the player:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[The noun] carries [list of things carried by the noun] and wears [list of things worn by the noun].&quot;
+<p>A word of warning: this system does assume that every person in the game has a conversation table defined. If that were not the case, we would have to be a bit more careful.
+<p>
+<p>As always, we can override specific words, too:
+<p>
+<blockquote><font color="#000080">Instead of asking Tina about &quot;advertisement&quot; for the first time:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Tina looks embarrassed. 'Of course! I almost forgot.' She hands you a brochure.&quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;move the brochure to the player.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of climbing a platform, try entering the noun.
+<blockquote><font color="#000080">The encyclopedia sales brochure is a thing. The description is &quot;A glossy flyer indicating that you can receive a free Volume A-Aalto of the New Idahoan Encyclopedia Set if you send back the business reply card, and then have the option of purchasing the remaining volumes at a very very reasonable price.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;Lara, drop map / lara, drop gun / drop idol / enter bronze platform / drop pickaxe / get off / climb wood&quot;.
+<blockquote><font color="#000080">Test me with &quot;recap / ask tina about aasvogel / recap / ask george about baccaceous / ask tina about absorptiometer / recap / ask tina about advertisement / read brochure&quot;.
 </font></blockquote><p>
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc182.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc244.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc181.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc183.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc243.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc245.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>12.19. Changing visibility</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>16.17. Context: understanding when</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,75 +19,130 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "Flashlight" -->
-<!-- SEARCH SECTION "Ex 201" -->
-<!-- SEARCH SORT "Ex 012-019-201" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc190.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap12.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 12: Advanced Actions</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc192.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>12.19. Changing visibility</b></font></td></tr></table>
+<!-- SEARCH TITLE "Bibliophilia" -->
+<!-- SEARCH SECTION "Ex 296" -->
+<!-- SEARCH SORT "Ex 016-017-296" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc264.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap16.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 16: Understanding</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc266.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>16.17. Context: understanding when</b></font></td></tr></table>
 <p>
-<p>Ordinarily, Inform has a simple model for visibility: it is either fully light or it is fully dark, and certain actions are impossible in the dark, such as examining something. If an action is tried which was defined as requiring light, Inform consults the visibility rules to see if it can go ahead. By default, there is only one visibility rule, which says &quot;yes&quot; in the light and &quot;no&quot; in darkness. Here, though, we create another one:
+<p>We have now seen several different forms of &quot;Understand&quot; sentence: for instance,
 <p>
-<blockquote><font color="#000080">Visibility rule when in darkness:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if examining the book begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You have to squint. Still...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;there is sufficient light;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;there is insufficient light.
+<blockquote><font color="#000080">Understand the colour property as describing a building block.
+<br>Understand &quot;mix [colour] paint&quot; as mixing paint.
+<br>Understand &quot;rouge&quot; as red.
+<br>Understand &quot;curious girl&quot; as Alice.
 </font></blockquote><p>
 <p>
-<p>A visibility rule must always conclude &quot;there is sufficient light&quot;, or &quot;there is insufficient light&quot;, or else do nothing and leave it to other rules to decide.
+<p>Any of these may optionally have a condition tacked on: for instance,
 <p>
-<p>It is a possibly unexpected fact that &quot;looking&quot; does not require light, but instead behaves differently in darkness - it prints a pseudo-room-description such as
-<p>
-<blockquote><font color="#000080"><b>Darkness</b>
-<br>It is pitch dark, and you can't see a thing.
+<blockquote><font color="#000080">Understand &quot;mix [colour] paint&quot; as mixing paint when the location is the Workshop.
+<br>Understand &quot;rouge&quot; as red when the make-up set is visible.
 </font></blockquote><p>
 <p>
-<p>instead of printing the description of the player's current room. This means that the &quot;looking&quot; action is unaffected by visibility rules. All the same, what &quot;looking&quot; does in the dark can be changed by using the two activities &quot;printing the name of a dark room&quot; and &quot;printing the description of a dark room&quot; (see the Activities chapter for details).
+<p>In principle, &quot;when ...&quot; can take in any condition at all. In practice a little care should be exercised not to do anything too slow, or which might have side-effects. (For instance, referring the decision to a phrase which then printed text up would be a bad idea.) Moreover, we must remember that the &quot;noun&quot; and &quot;second noun&quot; are not known yet, nor do we know what the action will be. So we cannot safely say &quot;when the noun is the fir cone&quot;, for instance. If we want more sophisticated handling of such cases, we need to write checking rules and so on in the usual way.
+<p>
+<p>Contexts can be useful to make sense of things having different names depending on who is being spoken to, as here:
+<p>
+<blockquote><font color="#000080">Understand &quot;your&quot; as a thing when the item described is held by the person asked.
+</font></blockquote><p>
+<p>
+<p>With this rule in place FRODO, GIVE ME YOUR RING means that Frodo will know which ring is meant, even if there are a couple of dozen other rings present.
+<p>
+<p>If the name of something has to change completely, perhaps because the player's understanding of events has changed completely, then Inform's standard way of handling names can be a nuisance. When an item or room is created, Inform automatically makes its name understood as referring to it (in fact, it makes each individual word in that name understood). For instance,
+<p>
+<blockquote><font color="#000080">The Wabe is a room. The blue peacock and the sundial are in the Wabe.
+</font></blockquote><p>
+<p>
+<p>means that the player can type EXAMINE BLUE PEACOCK or PUSH SUNDIAL or SHOWME WABE or TAKE BLUE, and so on. This is almost always a good thing, and here there's no problem, because peacocks and sundials are not usually disguised. But here is a case where a disguise is needed:
+<p>
+<blockquote><font color="#000080">The secret document is a privately-named thing in the drawer.
+<br>The printed name of the secret document is &quot;[if the secret document is handled]secret document[otherwise]dusty paper&quot;.
+<br>Understand &quot;dusty&quot; and &quot;paper&quot; as the secret document.
+<br>Understand &quot;secret&quot; and &quot;document&quot; as the secret document when the secret document is handled.
+<br>After taking the secret document for the first time: say &quot;Heavens! It is the secret document!&quot;
+</font></blockquote><p>
+<p>
+<p>
+<p>As this demonstrates, the either/or property &quot;privately-named&quot; makes Inform create a thing or room which starts out with no automatic understandings at all. The name it happens to have in the source text is ignored. If we simply write:
+<p>
+<blockquote><font color="#000080">The ungraspable concept is a privately-named thing in the Dining Room.
+</font></blockquote><p>
+<p>
+<p>then nothing the player can type will ever refer to it; though he will see it, and even be able to pick it up by typing TAKE ALL.
+<p>
+<p>The reverse property is &quot;publically-named&quot;, which all things and rooms are by default.
+<p>
+<p>(Privately-named is a property which only affects how Inform creates the object, and it can't usefully be given or taken away during play. &quot;Understand ... when ...&quot; is the way to change names during play.)
 <p>
 <p><hr><p>
+<a name="e104"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex104.html#e104 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>295</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex104.html#e104 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Quiz Show</font></b></a><br>In this example by Mike Tarbert, the player can occasionally be quizzed on random data from a table; the potential answers will only be understood if a question has just been asked.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex104.html#e104 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <!-- EXAMPLE START -->
-<a name="e140"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc191.html#e140 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>201</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc191.html#e140 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Flashlight</font></b></a><br>Visibility set so that looking under objects produces no result unless the player has a light source to shine there (regardless of the light level of the room).<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex140.html#e140 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
+<a name="e140"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=doc265.html#e140 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>296</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=doc265.html#e140 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;<b>Example</b>&nbsp;</font> <font color="#000000"> Bibliophilia</font></b></a><br>A bookshelf with a number of books, where the player's command to examine something will be interpreted as an attempt to look up titles if the bookshelf is present, but otherwise given the usual response.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex140.html#e140 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <table border=0 bgcolor="#f0f0f0" width=100%><tr><td><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2>
 <p>
+<p>Suppose we want a bookshelf with a very large number of books on it. They aren't to be taken or carried around in the game, but they should be mentioned, and the player should be allowed to look them up by name. Furthermore, the player's attempts to examine something unrecognized should be understood as an attempt to look up a title -- but only when the player is in the presence of the books. The rest of the time such requests should be rejected in the usual way.
+<p>
 <blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode289(code) {
+function pasteCode392(code) {
     var myProject = external.Project;
 
     myProject.selectView('source');
-    myProject.pasteCode('[=0x0022=]Flashlight[=0x0022=][=0x000A=][=0x000A=]The Schoolhouse is a room. [=0x0022=]Though normally comfortable, the room is dark and menacing during the storm; rain sheets on the windows, and you can barely see the flash of the lighthouse only a few miles away.[=0x0022=][=0x000A=][=0x000A=]The cabinet is a fixed in place openable container in the Schoolhouse. The hurricane lantern is a thing in the Schoolhouse. [=0x0022=]A hurricane lantern hangs from a peg.[=0x0022=] The lantern is lit.[=0x000A=][=0x000A=]Visibility rule when looking under something:[=0x000A=][=0x0009=]if the player is carrying a lit thing (called lamp)[=0x000A=][=0x0009=]begin;[=0x000A=][=0x0009=][=0x0009=]say [=0x0022=]You shine [the lamp] under [the noun]...[=0x0022=];[=0x000A=][=0x0009=][=0x0009=]there is sufficient light;[=0x000A=][=0x0009=]end if;[=0x000A=][=0x0009=]there is insufficient light.[=0x000A=][=0x000A=]The marble is a thing. The marble can be found or lost. The marble is lost.[=0x000A=][=0x000A=]Instead of looking under the cabinet when the marble is lost:[=0x000A=][=0x0009=]move the marble to the player;[=0x000A=][=0x0009=]now the marble is found;[=0x000A=][=0x0009=]say [=0x0022=]Billy[=0x0027=]s lost marble! So that[=0x0027=]s where it got to![=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]look under cabinet / get lantern / look under cabinet[=0x0022=].[=0x000A=][=0x000A=]');
+    myProject.pasteCode('[=0x0022=]Bibliophilia[=0x0022=][=0x000A=][=0x000A=]The Graduate Lounge is a room. [=0x0022=]Shabby sofas; plastic cups remaining from the afternoon[=0x0027=]s pre-lecture espresso; a collection of Xena and Hercules figurines posed for ironic effect. It[=0x0027=]s somewhat depressing at this hour, when everyone has gone home.[=0x0022=][=0x000A=][=0x000A=]The Classics Reading Room is south of the Lounge. [=0x0022=]Not as large a collection as the one in the Library, but it contains copies of everything really essential for reference.[=0x0022=][=0x000A=][=0x000A=]Understand [=0x0022=]examine [text][=0x0022=] as examining as a book when the player is in the Reading Room. Understand [=0x0022=]look up [text][=0x0022=] as examining as a book when the player is in the Reading Room.[=0x000A=][=0x000A=]Examining as a book is an action applying to one topic.[=0x000A=][=0x000A=]Carry out examining as a book:[=0x000A=][=0x0009=]say [=0x0022=]You can[=0x0027=]t find any such text.[=0x0022=][=0x000A=][=0x000A=]Instead of examining as a book a topic listed in the Table of Book Titles:[=0x000A=][=0x0009=]say [=0x0022=][description entry][paragraph break][=0x0022=][=0x000A=][=0x000A=]Table of Book Titles[=0x000A=]topic[=0x0009=]title[=0x0009=]description[=0x000A=][=0x0022=]Reading Greek Death[=0x0022=] or [=0x0022=]reading/greek/death[=0x0022=] or [=0x0022=]greek death[=0x0022=][=0x0009=][=0x0022=]Reading Greek Death[=0x0022=][=0x0009=][=0x0022=]A dense orange paperback treatise on the development of Greek eschatology.[=0x0022=][=0x000A=][=0x0022=]TAPA/Transactions/134-2[=0x0022=][=0x0009=][=0x0022=]TAPA 134-2[=0x0022=][=0x0009=][=0x0022=]Transactions of the American Philological Association from 2004.[=0x0022=][=0x000A=][=0x0022=]Oxford Classical Dictionary[=0x0022=] or [=0x0022=]OCD/dictionary/classical/oxford[=0x0022=][=0x0009=][=0x0022=]Oxford Classical Dictionary[=0x0022=][=0x0009=][=0x0022=]A hefty reference with short articles on everything from Greek meter to ancient cosmetics.[=0x0022=][=0x000A=][=0x0022=]Collected Dialogues of Plato[=0x0022=] or [=0x0022=]Plato/dialogues/hamilton/cairns[=0x0022=][=0x0009=][=0x0022=]Collected Dialogues of Plato[=0x0022=][=0x0009=][=0x0022=]All the Platonic dialogues -- some, admittedly, in rather tired translations -- but still a useful single volume, ed. Edith Hamilton and Huntington Cairns.[=0x0022=][=0x000A=][=0x0022=]Adobe Illustrator CS User Guide[=0x0022=] or [=0x0022=]user guide[=0x0022=] or [=0x0022=]adobe illustrator[=0x0022=] or [=0x0022=]adobe/illustrator/cs/user/guide[=0x0022=][=0x0009=][=0x0022=]Adobe Illustrator CS User Guide[=0x0022=][=0x0009=][=0x0022=]Hello, how did this get here? A suspiciously familiar name is scribbled inside the front cover...[=0x0022=][=0x000A=][=0x000A=]Some books are scenery in the Reading Room. Understand [=0x0022=]copies[=0x0022=] or [=0x0022=]book[=0x0022=] or [=0x0022=]shelf[=0x0022=] or [=0x0022=]shelves[=0x0022=] as the books. Instead of examining the books:[=0x000A=][=0x0009=]choose a random row in the Table of Book Titles;[=0x000A=][=0x0009=]say [=0x0022=]You scan the shelves and notice, among others, a volume entitled [italic type][title entry][roman type].[=0x0022=][=0x000A=][=0x000A=]Test me with [=0x0022=]south / examine ocd / examine books / examine books / examine plato / n / x hercules / s / x hercules[=0x0022=].[=0x000A=][=0x000A=]');
 }
 </script>
-<a href="javascript:pasteCode289()"><img border=0 src=../doc_images/paste.png></a> &quot;Flashlight&quot;
+<a href="javascript:pasteCode392()"><img border=0 src=../doc_images/paste.png></a> &quot;Bibliophilia&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The Schoolhouse is a room. &quot;Though normally comfortable, the room is dark and menacing during the storm; rain sheets on the windows, and you can barely see the flash of the lighthouse only a few miles away.&quot;
+<blockquote><font color="#000080">The Graduate Lounge is a room. &quot;Shabby sofas; plastic cups remaining from the afternoon's pre-lecture espresso; a collection of Xena and Hercules figurines posed for ironic effect. It's somewhat depressing at this hour, when everyone has gone home.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The cabinet is a fixed in place openable container in the Schoolhouse. The hurricane lantern is a thing in the Schoolhouse. &quot;A hurricane lantern hangs from a peg.&quot; The lantern is lit.
+<blockquote><font color="#000080">The Classics Reading Room is south of the Lounge. &quot;Not as large a collection as the one in the Library, but it contains copies of everything really essential for reference.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Visibility rule when looking under something:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the player is carrying a lit thing (called lamp)
-<br>&nbsp;&nbsp;&nbsp;&nbsp;begin;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You shine [the lamp] under [the noun]...&quot;;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;there is sufficient light;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;end if;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;there is insufficient light.
+<blockquote><font color="#000080">Understand &quot;examine [text]&quot; as examining as a book when the player is in the Reading Room. Understand &quot;look up [text]&quot; as examining as a book when the player is in the Reading Room.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">The marble is a thing. The marble can be found or lost. The marble is lost.
+<blockquote><font color="#000080">Examining as a book is an action applying to one topic.
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Instead of looking under the cabinet when the marble is lost:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;move the marble to the player;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;now the marble is found;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;Billy's lost marble! So that's where it got to!&quot;
+<blockquote><font color="#000080">Carry out examining as a book:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You can't find any such text.&quot;
 </font></blockquote><p>
 <p>
-<blockquote><font color="#000080">Test me with &quot;look under cabinet / get lantern / look under cabinet&quot;.
+<blockquote><font color="#000080">Instead of examining as a book a topic listed in the Table of Book Titles:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[description entry][paragraph break]&quot;
 </font></blockquote><p>
 <p>
-<p>Because visibility is checked before instead rules, this discovery will (correctly) occur only when the player does have enough light.
-<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc191.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
+<blockquote><font color="#000080">Table of Book Titles
+<br><table border="0" valign="top" cellpadding="0" cellspacing="0"><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">topic</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">title</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">description</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Reading Greek Death&quot; or &quot;reading/greek/death&quot; or &quot;greek death&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Reading Greek Death&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;A dense orange paperback treatise on the development of Greek eschatology.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;TAPA/Transactions/134-2&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;TAPA 134-2&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Transactions of the American Philological Association from 2004.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Oxford Classical Dictionary&quot; or &quot;OCD/dictionary/classical/oxford&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Oxford Classical Dictionary&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;A hefty reference with short articles on everything from Greek meter to ancient cosmetics.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Collected Dialogues of Plato&quot; or &quot;Plato/dialogues/hamilton/cairns&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Collected Dialogues of Plato&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;All the Platonic dialogues -- some, admittedly, in rather tired translations -- but still a useful single volume, ed. Edith Hamilton and Huntington Cairns.&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr><tr><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Adobe Illustrator CS User Guide&quot; or &quot;user guide&quot; or &quot;adobe illustrator&quot; or &quot;adobe/illustrator/cs/user/guide&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Adobe Illustrator CS User Guide&quot;</font>&nbsp;&nbsp;&nbsp;</td><td valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2 color="#000080">&quot;Hello, how did this get here? A suspiciously familiar name is scribbled inside the front cover...&quot;</font>&nbsp;&nbsp;&nbsp;</td>
+</tr></table>
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Some books are scenery in the Reading Room. Understand &quot;copies&quot; or &quot;book&quot; or &quot;shelf&quot; or &quot;shelves&quot; as the books. Instead of examining the books:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;choose a random row in the Table of Book Titles;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;You scan the shelves and notice, among others, a volume entitled [italic type][title entry][roman type].&quot;
+</font></blockquote><p>
+<p>
+<blockquote><font color="#000080">Test me with &quot;south / examine ocd / examine books / examine books / examine plato / n / x hercules / s / x hercules&quot;.
+</font></blockquote><p>
+<p>
+<p>Now if we type >X HERCULES in the Lounge, we will get
+<p>
+<blockquote><font color="#000080">>x hercules
+<br>You can't see any such thing.
+</font></blockquote><p>
+<p>
+<p>thanks to our somewhat slovenly implementation of the Lounge scenery; but in the Reading Room,
+<p>
+<blockquote><font color="#000080">>x hercules
+<br>You can't find any such text.
+</font></blockquote><p>
+<p>
+<p>In practice we might also want to extend our coverage somewhat to handle a case where the player tried to take books from the bookshelf: currently that would not be understood.
+<table CELLPADDING=0 CELLSPACING=0 width="100%" height=18><tr><td width="100%"> </td><td width=18 align="left" bgcolor="#000000"><a href=doc265.html><img src=../doc_images/Hookclose.png id="hookclose" style="height: 17px; width: 17px;" border="0"></a></td><td width=4></td></tr></table></td></tr></table><p>
 <!-- EXAMPLE END -->
-<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc190.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc192.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
+<p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc264.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc266.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>

@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.14. New conditions, new adjectives</title></head>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>11.11. Next and break</title></head>
 <STYLE TYPE="text/css">
 <!--
 .oval, .oval TD
@@ -19,57 +19,21 @@ color:white;
 -->
 </STYLE>
 <body bgcolor="#ffffff">
-<!-- SEARCH TITLE "New conditions, new adjectives" -->
-<!-- SEARCH SECTION "11.14" -->
-<!-- SEARCH SORT "011-014-000" -->
-<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc166.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc168.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.14. New conditions, new adjectives</b></font></td></tr></table>
+<!-- SEARCH TITLE "Next and break" -->
+<!-- SEARCH SECTION "11.11" -->
+<!-- SEARCH SORT "011-011-000" -->
+<font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><table CELLPADDING=0 CELLSPACING=0 width="100%" bgcolor="#000000"><tr><TD width=38px height=26px align="center" valign="center"><a href=doc166.html border=0><img border=0 src=../doc_images/Hookleft.png id="hookleft" style="height: 24px; width: 32px;" border=0></a></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><a href=../chap11.html STYLE="text-decoration: none"><font color="#FFFFFF" size=2>Chapter 11: Phrases</font></a></td><TD width=56px height=26px align="right" valign="center"><a href=../index.html border=0><img border=0 src=../doc_images/Hookup.png id="hookup" style="height: 24px; width: 24px;" border=0></a><a href=doc168.html border=0><img border=0 src=../doc_images/Hookright.png id="hookright" style="height: 24px; width: 32px;" border=0></a></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD height=8px halign="center" valign="center"></td></tr></table><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><TD width=38px halign="center" valign="center"></td><td halign="left" valign="center" CELLPADDING=0 CELLSPACING=0><font color="#000000" size="3"><b>11.11. Next and break</b></font></td></tr></table>
 <p>
-<p>We can create new conditions by defining a phrase with &quot;to decide whether&quot; (or equivalently &quot;to decide if&quot;):
+<p>Inside &quot;repeat&quot; and &quot;while&quot; loops, the new phrases &quot;next&quot; and &quot;break&quot; can be used to go directly to the next iteration, and to exit the loop immediately, respectively. (&quot;Next&quot; is called &quot;continue&quot; in a fair number of programming languages, so Inform issues a specific problem message to help people who forget this.) In Monopoly terms, &quot;next&quot; is &quot;Advance to Go&quot; rather than &quot;go directly, do not pass Go, do not collect $200&quot; - the next iteration begins with the variable, if there is one, having cleanly moved on to the next value, just as if the loop had been run through in the normal way.
 <p>
-<blockquote><font color="#000080">To decide whether danger lurks:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if in darkness then decide yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if the Control Room has been visited then decide no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide yes.
+<p>For instance:
+<p>
+<blockquote><font color="#000080">repeat with X running from 1 to 10:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if X is 4, next;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;say &quot;[X] &quot;;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;if X is 7, break;
 </font></blockquote><p>
 <p>
-<p>As can be seen, such a phrase must always resolve itself with &quot;yes&quot; or &quot;no&quot;: the first to be reached will be the answer. For instance, if the player is indeed in darkness, the decision is &quot;yes&quot; because the &quot;decide yes&quot; stops the process right there. We can now write, for instance,
+<p>prints the text &quot;1 2 3 5 6 7&quot;, because the iteration when X is 4 is skipped over by the &quot;next&quot;, whereas iterations 8, 9 and 10 never happen, since the &quot;break&quot; when X is 7 means they are never reached.
 <p>
-<blockquote><font color="#000080">if danger lurks then ...
-</font></blockquote><p>
-<p>
-<p>In fact, &quot;danger lurks&quot; is now a condition as good as any other, and can be used wherever a condition would be given. Rules can apply only &quot;when danger lurks&quot;, for instance.
-<p>
-<p>We can also supply definitions of adjectives like this. So far, new adjectives have been defined like so:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode27(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('Definition: a supporter is occupied if it is described and something is on it.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode27()"><img border=0 src=../doc_images/paste.png></a> Definition: a supporter is occupied if it is described and something is on it.
-</font></blockquote><p>
-<p>
-<p>If we want to give a definition which involves more complex logic, we can use a special form allowing us to make arbitrary decisions. In this longer format, the same definition would look like so:
-<p>
-<blockquote><font color="#000080"><script language="JavaScript">
-function pasteCode28(code) {
-    var myProject = external.Project;
-
-    myProject.selectView('source');
-    myProject.pasteCode('Definition: a supporter is occupied:[=0x000A=][=0x0009=]if it is undescribed then decide no;[=0x000A=][=0x0009=]if something is on it then decide yes;[=0x000A=][=0x0009=]decide no.[=0x000A=][=0x000A=]');
-}
-</script>
-<a href="javascript:pasteCode28()"><img border=0 src=../doc_images/paste.png></a> Definition: a supporter is occupied:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if it is undescribed then decide no;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;if something is on it then decide yes;
-<br>&nbsp;&nbsp;&nbsp;&nbsp;decide no.
-</font></blockquote><p>
-<p>
-<p>Here &quot;it&quot; refers to the supporter in question. Note that there are now two colons in this sentence, one after &quot;Definition&quot;, the other after the clause being defined. But that apart, it's a phrase like any other: it must end in &quot;yes&quot; or &quot;no&quot; just as the &quot;danger lurks&quot; example must.
-<p>
-<p><hr><p>
-<a name="e14"><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td halign="left" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="oval"><TD width=38px height=30px align="left" valign="center"><a href=ex14.html#e14 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><b>165</b></div></a></TD></TR></TABLE></td><td CELLPADDING=0 CELLSPACING=0 halign="left" valign="top"><font face="lucida grande,geneva,arial,tahoma,verdana,helvetica,helv" size=2><a href=ex14.html#e14 STYLE="text-decoration: none"><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><img border="0" style="height: 15px; width: 13px;" alt="*" src='../doc_images/asterisk.png'><b><font color="#505050">&nbsp;Example&nbsp;</font> <font color="#000000"> Owen's Law</font></b></a><br>OUT always means "move to an outdoors room, or else to a room with more exits than this one has"; IN always means the opposite.<p></td><td halign="right" valign="top" CELLPADDING=0 CELLSPACING=0 width=38px><TABLE align="left" CELLPADDING=0 CELLSPACING=0><TR CLASS="rbarrow"><TD width=38px height=30px align="left" valign="center"><a  href=Rex14.html#e14 STYLE="text-decoration: none"><div class="paragraph Body" style="line-height: 1px; margin-bottom: 0px; margin-top: 4px; padding-bottom: 0pt; padding-top: 4px; text-align: center; color: #202020; font-size: 14px; line-height: 1px;"><i>RB</i></div></a></TD></TR></TABLE></td></tr></table>
 <p><hr><table CELLPADDING=0 CELLSPACING=0 width="100%"><tr><td width="33%" align="left"><a href=doc166.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Previous</font></a></td><td width="33%" align="center"><a href=../index.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Contents</font></a></td><td width="33%" align="right"><a href=doc168.html border=0 STYLE="text-decoration: none"><font color="808080" size="2">Next</font></a></td></tr></table></font></body></html>
