@@ -60,7 +60,13 @@ static void after_source_buffer_insert_text(GtkTextBuffer *buffer,
             tab_count++;
         }
         gchar *tabs = g_strnfill(tab_count, '\t');
+        /* Preserve and restore iter position by creating a mark with right
+          gravity (FALSE) */
+        GtkTextMark *bookmark = gtk_text_buffer_create_mark(buffer, "bookmark",
+                                                            location, FALSE);
         gtk_text_buffer_insert_at_cursor(buffer, tabs, -1);
+        gtk_text_buffer_get_iter_at_mark(buffer, location, bookmark);
+        gtk_text_buffer_delete_mark(buffer, bookmark);
     }
     
     /* Return after that if we are not doing intelligent symbol following */    

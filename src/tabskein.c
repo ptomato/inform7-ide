@@ -54,6 +54,26 @@ typedef struct {
 } ClickedNode;
 
 static void
+destroy_gnome_canvas_item(gpointer item, gpointer data)
+{
+	if(item)
+		gtk_object_destroy(GTK_OBJECT(item));
+}
+
+/* Clear a GnomeCanvas by iterating over its private item_list member. This
+should probably not be done, but there's no other way to do it, so, well, there
+you go. */
+void 
+clear_gnome_canvas_impolitely(GnomeCanvas *canvas)
+{
+	g_return_if_fail(canvas);
+	GnomeCanvasGroup *rootgroup = gnome_canvas_root(canvas);
+	g_list_foreach(rootgroup->item_list, destroy_gnome_canvas_item, NULL);
+    g_list_free(rootgroup->item_list);
+    rootgroup->item_list = rootgroup->item_list_end = NULL;
+}
+
+static void
 clicked_node_free(gpointer data, GClosure *closure)
 {
     g_free(data);
@@ -857,18 +877,7 @@ skein_redraw(Story *thestory)
         }
 
         /* Create a new canvas group for the skein */
-		/* This is the polite way, but there should just be a way to do it given
-		only the canvas!
-        if(thestory->skeingroup[foo])
-            gtk_object_destroy(GTK_OBJECT(thestory->skeingroup[foo]));
-		*/
-		/* Impolite way: */
-		GnomeCanvasGroup *rootgroup = gnome_canvas_root(canvas);
-		GList *iter;
-		for(iter = rootgroup->item_list; iter; iter = iter->next)
-			gtk_object_destroy(GTK_OBJECT(iter->data));
-		g_list_free(rootgroup->item_list);
-		rootgroup->item_list = NULL;
+		clear_gnome_canvas_impolitely(canvas);
 		
         thestory->skeingroup[foo] = GNOME_CANVAS_GROUP(
             gnome_canvas_item_new(gnome_canvas_root(canvas),

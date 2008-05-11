@@ -148,7 +148,7 @@ on_inspector_window_delete             (GtkWidget       *widget,
                                         gpointer         user_data)
 {
     gtk_widget_hide(widget);
-    config_file_set_bool("Settings", "InspectorVisible", TRUE);
+    config_file_set_bool("Settings", "InspectorVisible", FALSE);
     return TRUE; /* Interrupt the event */
 }
 
@@ -221,10 +221,9 @@ void update_inspectors() {
 void refresh_inspector(Story *thestory) {
 #ifdef I_LIKE_SKEIN
     /* Erase the previous story's Skein canvas */
-    if(thestory->skeingroup[SKEIN_INSPECTOR]) {
-        gtk_object_destroy(GTK_OBJECT(thestory->skeingroup[SKEIN_INSPECTOR]));
-        thestory->skeingroup[SKEIN_INSPECTOR] = NULL;
-    }
+    GtkWidget *canvas = lookup_widget(inspector_window, 
+                                      "skein_inspector_canvas");
+    clear_gnome_canvas_impolitely(GNOME_CANVAS(canvas));
 #endif /* I_LIKE_SKEIN */
     
     /* Set the story we are currently inspecting */

@@ -378,10 +378,55 @@ skein_load(Skein *skein, const gchar *path)
     xmlFreeDoc(xmldoc);
 }
 
+/* Hacked up routine to remove &, < and > from text destined for XML strings */
+static gchar *
+escape_xml(const gchar *string)
+{
+    /* Check whether we have to go through this */
+    if(!string)
+        return NULL;
+    if(!(strchr(string, '&') || strchr(string, '<') || strchr(string, '>')))
+        return g_strdup(string);
+	
+    /* Reserve space for the main text */
+    int len = strlen(string);
+    GString *text = g_string_sized_new(5 * len);
+
+    /* Scan the text, replacing offending characters */
+    const gchar *p1 = string;
+    const gchar *p2 = p1 + len;
+    while(p1 < p2) {
+        switch(*p1) {
+        case '&':
+            g_string_append(text, "&amp;");
+            break;
+        case '<':
+            g_string_append(text, "&lt;");
+            break;
+        case '>':
+			g_string_append(text, "&gt;");
+            break;
+        default:
+            g_string_append_c(text, *p1);
+        }
+        p1++;
+    }
+
+    gchar *retval = g_strdup(text->str);
+    g_string_free(text, TRUE);
+    return retval;
+}
+
 static gboolean
 node_write_xml(GNode *node, FILE *fp)
 {
     NodeData *data = (NodeData *)node->data;
+    /* Escape the following strings if necessary */
+    gchar *line = escape_xml(data->line);
+    gchar *text_transcript = escape_xml(data->text_transcript);
+    gchar *text_expected = escape_xml(data->text_expected);
+    gchar *label = escape_xml(data->label);
+    
     fprintf(fp,
             "  <item nodeId=\"%s\">\n"
             "    <command xml:space=\"preserve\">%s</command>\n"
@@ -391,14 +436,14 @@ node_write_xml(GNode *node, FILE *fp)
             "    <changed>%s</changed>\n"
             "    <temporary score=\"%d\">%s</temporary>\n",
             data->id? data->id : "",
-            data->line? data->line : "",
-            data->text_transcript? data->text_transcript : "",
-            data->text_expected? data->text_expected : "",
+            line? line : "",
+            text_transcript? text_transcript : "",
+            text_expected? text_expected : "",
             data->played? "YES" : "NO",
             data->changed? "YES" : "NO",
             data->score,
             data->temp? "YES" : "NO");
-    if(data->label && strlen(data->label))
+    if(label && strlen(label))
         fprintf(fp, "    <annotation xml:space=\"preserve\">%s</annotation>\n",
                 data->label);
     if(node->children) {
@@ -410,6 +455,15 @@ node_write_xml(GNode *node, FILE *fp)
         fprintf(fp, "    </children>\n");
     }
     fprintf(fp, "  </item>\n");
+    /* Free strings if necessary */
+    if(line) 
+        g_free(line);
+    if(text_transcript)
+        g_free(text_transcript);
+    if(text_expected)
+        g_free(text_expected);
+    if(label)
+        g_free(label);
     return FALSE; /* Do not stop the traversal */
 }
     
@@ -503,7 +557,11 @@ skein_new_line(Skein *skein, const gchar *line)
     /* Is there a child node with the same line? */
     GNode *node = I7_SKEIN_PRIVATE(skein)->current->children;
     while(node != NULL) {
-        if(strcmp(((NodeData *)(node->data))->line, line) == 0)
+        /* Special case: NULL is treated as "" */
+        if(((NodeData *)(node->data))->line == NULL) {
+            if(line == NULL || strlen(line) == 0)
+                break;
+        } else if(strcmp(((NodeData *)(node->data))->line, line) == 0)
             break;
         node = node->next;
     }

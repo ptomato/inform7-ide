@@ -29,6 +29,7 @@
 #include "skein.h"
 #include "story.h"
 
+void clear_gnome_canvas_impolitely(GnomeCanvas *canvas);
 gboolean draw_node(GNode *node, Story *thestory);
 void skein_layout_and_redraw(Skein *skein, Story *thestory);
 void skein_schedule_redraw(Skein *skein, Story *thestory);

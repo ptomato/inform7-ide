@@ -40,22 +40,6 @@
     <definitions>
         <context id="inform7">
             <include>
-            
-                <context id="title-heading" style-ref="heading" first-line-only="true"
-                once-only="true">
-                    <match>^\s*".*"(\s+by\s+.*)?\s*$</match>
-                </context>
-                
-                <context id="string" style-ref="string">
-                    <start>(?&lt;=\s|^)"</start>
-                    <end>"</end>
-                    <include>
-                        <context id="string-markup" style-ref="markup">
-                            <start>\[</start>
-                            <end>\]</end>
-                        </context>
-                    </include>
-                </context>
                 
                 <context id="block-comment" style-ref="comment">
                     <start>\[</start>
@@ -66,10 +50,34 @@
                     </include>
                 </context>
                 
-                <context id="heading" style-ref="heading">
-                    <match>^(volume|book|part|chapter|section).*$</match>
+                <context id="title-heading" style-ref="heading" 
+                first-line-only="true" once-only="true">
+                    <start>"</start>
+                    <end>$</end>
+                    <include>
+                        <context ref="block-comment"/>
+                    </include>
                 </context>
-                
+
+                <context id="heading" style-ref="heading">
+                    <start>^(volume|book|part|chapter|section)</start>
+                    <end>$</end>
+                    <include>
+                        <context ref="block-comment"/>
+                    </include>
+                </context>
+                                
+                <context id="string" style-ref="string">
+                    <start>(?&lt;=\s|^)"</start>
+                    <end>"</end>
+                    <include>
+                        <context id="string-markup" style-ref="markup">
+                            <start>\[</start>
+                            <end>\]</end>
+                        </context>
+                    </include>
+                </context>
+
                 <context id="i6code" style-ref="i6code" style-inside="true">
                     <start>\(-</start>
                     <end>-\)</end>
