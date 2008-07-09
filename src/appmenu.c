@@ -439,10 +439,9 @@ void
 on_preferences_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-    GtkWidget *dialog = create_prefs_dialog();
-    gtk_widget_show(dialog);
+    extern GtkWidget *prefs_dialog;
+    gtk_window_present(GTK_WINDOW(prefs_dialog));
 }
-
 
 void
 on_shift_selection_right_activate      (GtkMenuItem     *menuitem,

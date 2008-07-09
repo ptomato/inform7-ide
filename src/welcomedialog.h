@@ -41,4 +41,8 @@ void
 on_welcome_reopen_button_clicked       (GtkButton       *button,
                                         gpointer         user_data);
 
+gboolean
+on_welcome_dialog_delete_event         (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data);
 #endif

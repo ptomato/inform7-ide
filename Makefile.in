@@ -62,10 +62,12 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(appicondir)" "$(DESTDIR)$(desktopdir)"
+am__installdirs = "$(DESTDIR)$(appicondir)" "$(DESTDIR)$(desktopdir)" \
+	"$(DESTDIR)$(schemadir)"
 appiconDATA_INSTALL = $(INSTALL_DATA)
 desktopDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(appicon_DATA) $(desktop_DATA)
+schemaDATA_INSTALL = $(INSTALL_DATA)
+DATA = $(appicon_DATA) $(desktop_DATA) $(schema_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 ETAGS = etags
@@ -104,6 +106,9 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+GCONFTOOL = @GCONFTOOL@
+GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
+GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
@@ -208,12 +213,15 @@ EXTRA_DIST = \
 	gnome-inform7.glade \
 	gnome-inform7.gladep \
 	gnome-inform7.desktop \
-	gnome-inform7.spec
+	gnome-inform7.spec \
+	gnome-inform7.schemas
 
 desktopdir = $(datadir)/applications
 desktop_DATA = gnome-inform7.desktop
 appicondir = $(datadir)/pixmaps
 appicon_DATA = pixmaps/Inform.png
+schemadir = @GCONF_SCHEMA_FILE_DIR@
+schema_DATA = gnome-inform7.schemas
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -301,6 +309,23 @@ uninstall-desktopDATA:
 	  f=$(am__strip_dir) \
 	  echo " rm -f '$(DESTDIR)$(desktopdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(desktopdir)/$$f"; \
+	done
+install-schemaDATA: $(schema_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(schemadir)" || $(MKDIR_P) "$(DESTDIR)$(schemadir)"
+	@list='$(schema_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(schemaDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(schemadir)/$$f'"; \
+	  $(schemaDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(schemadir)/$$f"; \
+	done
+
+uninstall-schemaDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(schema_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(schemadir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(schemadir)/$$f"; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -584,7 +609,7 @@ check: check-recursive
 all-am: Makefile $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(appicondir)" "$(DESTDIR)$(desktopdir)"; do \
+	for dir in "$(DESTDIR)$(appicondir)" "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(schemadir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -631,7 +656,7 @@ info: info-recursive
 info-am:
 
 install-data-am: install-appiconDATA install-data-local \
-	install-desktopDATA
+	install-desktopDATA install-schemaDATA
 
 install-dvi: install-dvi-recursive
 
@@ -667,7 +692,8 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-appiconDATA uninstall-desktopDATA
+uninstall-am: uninstall-appiconDATA uninstall-desktopDATA \
+	uninstall-local uninstall-schemaDATA
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) install-am \
 	install-strip
@@ -683,11 +709,12 @@ uninstall-am: uninstall-appiconDATA uninstall-desktopDATA
 	install-dvi install-dvi-am install-exec install-exec-am \
 	install-html install-html-am install-info install-info-am \
 	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
+	install-ps-am install-schemaDATA install-strip installcheck \
+	installcheck-am installdirs installdirs-am maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
 	pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
-	uninstall-appiconDATA uninstall-desktopDATA
+	uninstall-appiconDATA uninstall-desktopDATA uninstall-local \
+	uninstall-schemaDATA
 
 
 install-data-local:
@@ -699,7 +726,9 @@ install-data-local:
 	      $(INSTALL_DATA) $$pixmap $(DESTDIR)$(datadir)/pixmaps/$(PACKAGE); \
 	    fi \
 	  done \
-	fi; 
+	fi; \
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
+	$(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA)
 
 dist-hook:
 	if test -d pixmaps; then \
@@ -710,6 +739,10 @@ dist-hook:
 	    fi \
 	  done \
 	fi
+
+uninstall-local:
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
+	$(GCONFTOOL) --makefile-uninstall-rule $(srcdir)/$(schema_DATA)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

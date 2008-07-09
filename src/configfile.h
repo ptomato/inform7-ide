@@ -20,8 +20,18 @@
 #define CONFIG_FILE_H
 
 #include <gnome.h>
+#include <gconf/gconf.h>
 
-void check_config_file();
+#define GCONF_BASE_PATH "/apps/gnome-inform7/"
+/* The above are not directory separators, so they should be slashes! */
+
+/* Enum-to-string lookup tables */
+extern GConfEnumStringPair font_styling_lookup_table[];
+extern GConfEnumStringPair font_set_lookup_table[];
+extern GConfEnumStringPair font_size_lookup_table[];
+extern GConfEnumStringPair change_colors_lookup_table[];
+extern GConfEnumStringPair color_set_lookup_table[];
+
 void config_file_set_string(const gchar *path, const gchar *key,
                             const gchar *value);
 gchar *config_file_get_string(const gchar *path, const gchar *key);
@@ -30,5 +40,10 @@ gint config_file_get_int(const gchar *path, const gchar *key);
 void config_file_set_bool(const gchar *path, const gchar *key,
                           const gboolean value);
 gboolean config_file_get_bool(const gchar *path, const gchar *key);
-
+void config_file_set_enum(const gchar *path, const gchar *key, const gint value,
+                          GConfEnumStringPair lookup_table[]);
+gint config_file_get_enum(const gchar *path, const gchar *key,
+                          GConfEnumStringPair lookup_table[]);
+void init_config_file();
+void trigger_config_keys();
 #endif

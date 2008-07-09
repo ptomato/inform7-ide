@@ -964,6 +964,7 @@ void delete_build_files(Story *thestory) {
         delete_from_project_dir(thestory, "Build", "Debug log.txt");
         delete_from_project_dir(thestory, "Build", "Map.eps");
         delete_from_project_dir(thestory, "Build", "output.z5");
+        delete_from_project_dir(thestory, "Build", "output.z6");
         delete_from_project_dir(thestory, "Build", "output.z8");
         delete_from_project_dir(thestory, "Build", "output.ulx");
         delete_from_project_dir(thestory, "Build", "Problems.html");

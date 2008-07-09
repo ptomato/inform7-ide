@@ -10,9 +10,7 @@ INCLUDES = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	$(GTKTERP_CFLAGS)
 
-AM_CFLAGS =\
-	 -Wall\
-	 -g
+AM_CFLAGS = -Wall
 
 noinst_LIBRARIES = libgarglk.a
 

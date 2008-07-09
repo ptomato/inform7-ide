@@ -4745,7 +4745,7 @@ Contributions to the compiler:
   <property name="height_request">364</property>
   <property name="visible">True</property>
   <property name="title" translatable="yes">Welcome to Inform 7</property>
-  <property name="type">GTK_WINDOW_POPUP</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_CENTER_ALWAYS</property>
   <property name="modal">True</property>
   <property name="resizable">True</property>
@@ -4753,11 +4753,12 @@ Contributions to the compiler:
   <property name="decorated">True</property>
   <property name="skip_taskbar_hint">False</property>
   <property name="skip_pager_hint">False</property>
-  <property name="type_hint">GDK_WINDOW_TYPE_HINT_SPLASHSCREEN</property>
+  <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">True</property>
   <signal name="realize" handler="after_welcome_dialog_realize" after="yes" last_modification_time="Thu, 31 Aug 2006 01:55:02 GMT"/>
+  <signal name="delete_event" handler="on_welcome_dialog_delete_event" last_modification_time="Wed, 09 Jul 2008 21:20:32 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox14">
@@ -6791,6 +6792,7 @@ Full word</property>
   <property name="urgency_hint">False</property>
   <property name="has_separator">True</property>
   <signal name="realize" handler="on_prefs_dialog_realize" last_modification_time="Wed, 06 Sep 2006 13:01:46 GMT"/>
+  <signal name="delete_event" handler="gtk_widget_hide_on_delete" last_modification_time="Sun, 15 Jun 2008 22:42:58 GMT"/>
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox4">
@@ -6814,7 +6816,7 @@ Full word</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
 	      <property name="response_id">-7</property>
-	      <signal name="clicked" handler="on_prefs_close_clicked" last_modification_time="Wed, 06 Sep 2006 11:15:01 GMT"/>
+	      <signal name="clicked" handler="gtk_widget_hide" object="prefs_dialog" last_modification_time="Sun, 15 Jun 2008 22:43:29 GMT"/>
 	    </widget>
 	  </child>
 	</widget>
@@ -7647,7 +7649,6 @@ Often</property>
 				      <property name="active">False</property>
 				      <property name="inconsistent">False</property>
 				      <property name="draw_indicator">True</property>
-				      <signal name="toggled" handler="on_prefs_project_files_toggle_toggled" last_modification_time="Wed, 06 Sep 2006 12:04:18 GMT"/>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -7667,7 +7668,6 @@ Often</property>
 				      <property name="active">False</property>
 				      <property name="inconsistent">False</property>
 				      <property name="draw_indicator">True</property>
-				      <signal name="toggled" handler="on_prefs_watchpoints_toggle_toggled" last_modification_time="Wed, 06 Sep 2006 12:04:04 GMT"/>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -7687,7 +7687,6 @@ Often</property>
 				      <property name="active">False</property>
 				      <property name="inconsistent">False</property>
 				      <property name="draw_indicator">True</property>
-				      <signal name="toggled" handler="on_prefs_breakpoints_toggle_toggled" last_modification_time="Wed, 06 Sep 2006 12:04:01 GMT"/>
 				    </widget>
 				    <packing>
 				      <property name="padding">0</property>
@@ -7929,7 +7928,6 @@ Often</property>
 
 	      <child>
 		<widget class="GtkFrame" id="frame7">
-		  <property name="visible">True</property>
 		  <property name="label_xalign">0</property>
 		  <property name="label_yalign">0.5</property>
 		  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
@@ -7963,7 +7961,6 @@ Often</property>
 
 			      <child>
 				<widget class="GtkTreeView" id="prefs_i6_extensions_view">
-				  <property name="visible">True</property>
 				  <property name="tooltip" translatable="yes">This shows the list of installed Inform 6 extensions. Drag files or directories here to install new extensions.</property>
 				  <property name="can_focus">True</property>
 				  <property name="headers_visible">False</property>
@@ -7991,7 +7988,6 @@ Often</property>
 
 			      <child>
 				<widget class="GtkButton" id="prefs_i6_extension_add">
-				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="tooltip" translatable="yes">Adds a new Inform 6 extension using a file chooser.</property>
 				  <property name="can_default">True</property>
@@ -8000,13 +7996,11 @@ Often</property>
 				  <property name="use_stock">True</property>
 				  <property name="relief">GTK_RELIEF_NORMAL</property>
 				  <property name="focus_on_click">True</property>
-				  <signal name="clicked" handler="on_prefs_i6_extension_add_clicked" last_modification_time="Wed, 06 Sep 2006 12:10:25 GMT"/>
 				</widget>
 			      </child>
 
 			      <child>
 				<widget class="GtkButton" id="prefs_i6_extension_remove">
-				  <property name="visible">True</property>
 				  <property name="sensitive">False</property>
 				  <property name="tooltip" translatable="yes">Deletes the currently selected Inform 6 extension.</property>
 				  <property name="can_default">True</property>
@@ -8015,7 +8009,6 @@ Often</property>
 				  <property name="use_stock">True</property>
 				  <property name="relief">GTK_RELIEF_NORMAL</property>
 				  <property name="focus_on_click">True</property>
-				  <signal name="clicked" handler="on_prefs_i6_extension_remove_clicked" last_modification_time="Wed, 06 Sep 2006 12:10:29 GMT"/>
 				</widget>
 			      </child>
 			    </widget>
@@ -8118,7 +8111,6 @@ Often</property>
 
 	      <child>
 		<widget class="GtkCheckButton" id="prefs_indent_toggle">
-		  <property name="visible">True</property>
 		  <property name="sensitive">False</property>
 		  <property name="tooltip" translatable="yes">If this option is checked, Inform will indent wrapped lines by half a tab-stop. This makes it easier to see where a line-break happened because of a long line.</property>
 		  <property name="can_focus">True</property>
@@ -8129,7 +8121,6 @@ Often</property>
 		  <property name="active">False</property>
 		  <property name="inconsistent">False</property>
 		  <property name="draw_indicator">True</property>
-		  <signal name="toggled" handler="on_prefs_indent_toggle_toggled" last_modification_time="Wed, 06 Sep 2006 12:19:05 GMT"/>
 		</widget>
 		<packing>
 		  <property name="padding">0</property>
@@ -8770,7 +8761,7 @@ to especially advanced extension authors.</property>
       <child>
 	<widget class="GtkExpander" id="skein_inspector">
 	  <property name="can_focus">True</property>
-	  <property name="expanded">True</property>
+	  <property name="expanded">False</property>
 	  <property name="spacing">0</property>
 
 	  <child>

@@ -7,7 +7,7 @@ INCLUDES = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	@GNOMEINFORM7_CFLAGS@
 
-AM_CFLAGS = -Wall -O0 -g
+AM_CFLAGS = -Wall
 
 bin_PROGRAMS = gnome-inform7
 

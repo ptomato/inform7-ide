@@ -34,11 +34,11 @@
 
 static void after_source_buffer_delete_range(GtkTextBuffer *buffer,
   GtkTextIter *start, GtkTextIter *end, gpointer data) {
-    if(!config_file_get_bool("Syntax", "Intelligence"))
+    if(!config_file_get_bool("SyntaxSettings", "Intelligence"))
         return;
     /* Reindex the section headings anytime text is deleted, because running after
     the default signal handler means we have no access to the deleted text. */
-    if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
+    if(config_file_get_bool("SyntaxSettings", "IntelligentHeadingsInspector")) {
         g_idle_remove_by_data(GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
         g_idle_add((GSourceFunc)reindex_headings,
           GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
@@ -51,7 +51,7 @@ static void after_source_buffer_insert_text(GtkTextBuffer *buffer,
     /* We could use gtk_source_view_set_auto_indent(), but that auto-indents
       leading spaces as well as tabs, and we don't want that */
     if(g_str_has_suffix(text, "\n") &&
-      config_file_get_bool("Syntax", "AutoIndent")) {
+      config_file_get_bool("SyntaxSettings", "AutoIndent")) {
         int tab_count = 0;
         GtkTextIter prev_line = *location;
         gtk_text_iter_backward_line(&prev_line);
@@ -70,12 +70,12 @@ static void after_source_buffer_insert_text(GtkTextBuffer *buffer,
     }
     
     /* Return after that if we are not doing intelligent symbol following */    
-    if(!config_file_get_bool("Syntax", "Intelligence"))
+    if(!config_file_get_bool("SyntaxSettings", "Intelligence"))
         return;
     
     /* For any text, a section heading might have been entered or changed, so
     reindex the section headings */
-    if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
+    if(config_file_get_bool("SyntaxSettings", "IntelligentHeadingsInspector")) {
         g_idle_remove_by_data(GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
         g_idle_add((GSourceFunc)reindex_headings,
           GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
@@ -83,7 +83,7 @@ static void after_source_buffer_insert_text(GtkTextBuffer *buffer,
     
     /* If the text ends with a space, check whether it is a section heading that
     needs auto-numbering */
-    if(config_file_get_bool("Syntax", "AutoNumberSections")) {
+    if(config_file_get_bool("SyntaxSettings", "AutoNumberSections")) {
         if(g_str_has_suffix(text, " ")) {
             gint line = gtk_text_iter_get_line(location);
             GtkTextIter line_start;

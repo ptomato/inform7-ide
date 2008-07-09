@@ -89,7 +89,7 @@ static GdkColor scheme_psychedelic[] = {
 
 static GtkSourceStyleSchemeManager *scheme_manager = NULL;
 
-GtkSourceStyleSchemeManager *
+static GtkSourceStyleSchemeManager *
 get_style_scheme_manager(void)
 {
     if (!scheme_manager) {
@@ -109,9 +109,12 @@ GtkSourceStyleScheme *
 get_style_scheme(void)
 {
     GtkSourceStyleSchemeManager *manager = get_style_scheme_manager();
-    int set = config_file_get_int("Colors", "ColorSet");
-    int styling = config_file_get_int("Fonts", "FontStyling");
-    int colors = config_file_get_int("Colors", "ChangeColors");
+    int set = config_file_get_enum("EditorSettings", "ColorSet", 
+                                   color_set_lookup_table);
+    int styling = config_file_get_enum("EditorSettings", "FontStyling",
+                                       font_styling_lookup_table);
+    int colors = config_file_get_enum("EditorSettings", "ChangeColors",
+                                      change_colors_lookup_table);
     
     gchar *schemename = NULL;
     if(colors == CHANGE_COLORS_NEVER)
@@ -150,8 +153,8 @@ GdkColor
 get_scheme_color(int color) 
 {
     GdkColor *scheme;
-    int set = config_file_get_int("Colors", "ColorSet");
-    switch(set) {
+    switch(config_file_get_enum("EditorSettings", "ColorSet",
+      color_set_lookup_table)) {
         case COLOR_SET_SUBDUED:
             scheme = scheme_subdued;
             break;

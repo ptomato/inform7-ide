@@ -21,6 +21,7 @@
 
 #include <gnome.h>
 #include <gtksourceview/gtksourceview.h>
+#include <gconf/gconf.h>
 
 /* Three options for editor font */
 enum {
@@ -74,6 +75,13 @@ enum {
     TAB_INTELLIGENCE,
     TAB_ADVANCED
 };
+
+gboolean update_ext_window_fonts(GtkWidget *extwindow);
+gboolean update_app_window_fonts(GtkWidget *window);
+gboolean update_ext_window_tabs(GtkWidget *widget);
+gboolean update_app_window_tabs(GtkWidget *widget);
+gboolean update_app_window_font_sizes(GtkWidget *window);
+void update_source_highlight(GtkSourceBuffer *buffer);
 
 void
 on_prefs_dialog_realize                (GtkWidget       *widget,
@@ -150,10 +158,6 @@ gchar*
 on_tab_ruler_format_value              (GtkScale        *scale,
                                         gdouble          value,
                                         gpointer         user_data);
-                                        
-void
-on_prefs_project_files_toggle_toggled  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
 
 void
 on_prefs_notes_toggle_toggled          (GtkToggleButton *togglebutton,
@@ -165,14 +169,6 @@ on_prefs_headings_toggle_toggled       (GtkToggleButton *togglebutton,
 
 void
 on_prefs_skein_toggle_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_watchpoints_toggle_toggled    (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_breakpoints_toggle_toggled    (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
@@ -188,20 +184,8 @@ on_prefs_i7_extension_remove_clicked   (GtkButton       *button,
                                         gpointer         user_data);
 
 void
-on_prefs_i6_extension_add_clicked      (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_prefs_i6_extension_remove_clicked   (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
 on_prefs_enable_highlighting_toggle_toggled
                                         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_indent_toggle_toggled         (GtkToggleButton *togglebutton,
                                         gpointer         user_data);
 
 void
@@ -235,10 +219,6 @@ on_prefs_clean_index_toggle_toggled    (GtkToggleButton *togglebutton,
 
 void
 on_prefs_show_log_toggle_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_close_clicked                 (GtkButton       *button,
                                         gpointer         user_data);
                                         
 void update_style(GtkSourceView *thiswidget);

@@ -2587,13 +2587,13 @@ create_welcome_dialog (void)
   GtkWidget *image3;
   GtkWidget *label3;
 
-  welcome_dialog = gtk_window_new (GTK_WINDOW_POPUP);
+  welcome_dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_widget_set_size_request (welcome_dialog, 550, 364);
   gtk_window_set_title (GTK_WINDOW (welcome_dialog), _("Welcome to Inform 7"));
   gtk_window_set_position (GTK_WINDOW (welcome_dialog), GTK_WIN_POS_CENTER_ALWAYS);
   gtk_window_set_modal (GTK_WINDOW (welcome_dialog), TRUE);
   gtk_window_set_destroy_with_parent (GTK_WINDOW (welcome_dialog), TRUE);
-  gtk_window_set_type_hint (GTK_WINDOW (welcome_dialog), GDK_WINDOW_TYPE_HINT_SPLASHSCREEN);
+  gtk_window_set_type_hint (GTK_WINDOW (welcome_dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
   gtk_window_set_urgency_hint (GTK_WINDOW (welcome_dialog), TRUE);
 
   vbox14 = gtk_vbox_new (FALSE, 0);
@@ -2686,6 +2686,9 @@ create_welcome_dialog (void)
   g_signal_connect_after ((gpointer) welcome_dialog, "realize",
                           G_CALLBACK (after_welcome_dialog_realize),
                           NULL);
+  g_signal_connect ((gpointer) welcome_dialog, "delete_event",
+                    G_CALLBACK (on_welcome_dialog_delete_event),
+                    NULL);
   g_signal_connect ((gpointer) welcome_new_button, "clicked",
                     G_CALLBACK (on_welcome_new_button_clicked),
                     NULL);
@@ -4064,7 +4067,6 @@ create_prefs_dialog (void)
   gtk_label_set_use_markup (GTK_LABEL (label71), TRUE);
 
   frame7 = gtk_frame_new (NULL);
-  gtk_widget_show (frame7);
   gtk_box_pack_start (GTK_BOX (vbox23), frame7, TRUE, TRUE, 0);
 
   alignment12 = gtk_alignment_new (0.5, 0.5, 1, 1);
@@ -4083,7 +4085,6 @@ create_prefs_dialog (void)
   gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow38), GTK_SHADOW_IN);
 
   prefs_i6_extensions_view = gtk_tree_view_new ();
-  gtk_widget_show (prefs_i6_extensions_view);
   gtk_container_add (GTK_CONTAINER (scrolledwindow38), prefs_i6_extensions_view);
   gtk_tooltips_set_tip (tooltips, prefs_i6_extensions_view, _("This shows the list of installed Inform 6 extensions. Drag files or directories here to install new extensions."), NULL);
   gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (prefs_i6_extensions_view), FALSE);
@@ -4096,14 +4097,12 @@ create_prefs_dialog (void)
   gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox2), GTK_BUTTONBOX_END);
 
   prefs_i6_extension_add = gtk_button_new_from_stock ("gtk-add");
-  gtk_widget_show (prefs_i6_extension_add);
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), prefs_i6_extension_add);
   gtk_widget_set_sensitive (prefs_i6_extension_add, FALSE);
   GTK_WIDGET_SET_FLAGS (prefs_i6_extension_add, GTK_CAN_DEFAULT);
   gtk_tooltips_set_tip (tooltips, prefs_i6_extension_add, _("Adds a new Inform 6 extension using a file chooser."), NULL);
 
   prefs_i6_extension_remove = gtk_button_new_from_stock ("gtk-remove");
-  gtk_widget_show (prefs_i6_extension_remove);
   gtk_container_add (GTK_CONTAINER (hbuttonbox2), prefs_i6_extension_remove);
   gtk_widget_set_sensitive (prefs_i6_extension_remove, FALSE);
   GTK_WIDGET_SET_FLAGS (prefs_i6_extension_remove, GTK_CAN_DEFAULT);
@@ -4128,7 +4127,6 @@ create_prefs_dialog (void)
   gtk_tooltips_set_tip (tooltips, prefs_enable_highlighting_toggle, _("Syntax highlighting will automatically color and style your source code to indicate what different parts do. If you have a slow computer, you may see a performance benefit by turning this off."), NULL);
 
   prefs_indent_toggle = gtk_check_button_new_with_mnemonic (_("_Indent wrapped lines"));
-  gtk_widget_show (prefs_indent_toggle);
   gtk_box_pack_start (GTK_BOX (vbox26), prefs_indent_toggle, FALSE, FALSE, 0);
   gtk_widget_set_sensitive (prefs_indent_toggle, FALSE);
   gtk_tooltips_set_tip (tooltips, prefs_indent_toggle, _("If this option is checked, Inform will indent wrapped lines by half a tab-stop. This makes it easier to see where a line-break happened because of a long line."), NULL);
@@ -4263,6 +4261,9 @@ create_prefs_dialog (void)
   g_signal_connect ((gpointer) prefs_dialog, "realize",
                     G_CALLBACK (on_prefs_dialog_realize),
                     NULL);
+  g_signal_connect ((gpointer) prefs_dialog, "delete_event",
+                    G_CALLBACK (gtk_widget_hide_on_delete),
+                    NULL);
   g_signal_connect ((gpointer) prefs_font_set, "changed",
                     G_CALLBACK (on_prefs_font_set_changed),
                     NULL);
@@ -4299,15 +4300,6 @@ create_prefs_dialog (void)
   g_signal_connect ((gpointer) prefs_search_toggle, "toggled",
                     G_CALLBACK (on_prefs_search_toggle_toggled),
                     NULL);
-  g_signal_connect ((gpointer) prefs_project_files_toggle, "toggled",
-                    G_CALLBACK (on_prefs_project_files_toggle_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) prefs_watchpoints_toggle, "toggled",
-                    G_CALLBACK (on_prefs_watchpoints_toggle_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) prefs_breakpoints_toggle, "toggled",
-                    G_CALLBACK (on_prefs_breakpoints_toggle_toggled),
-                    NULL);
   g_signal_connect ((gpointer) prefs_i7_extensions_view, "drag_drop",
                     G_CALLBACK (on_prefs_i7_extensions_view_drag_drop),
                     NULL);
@@ -4320,17 +4312,8 @@ create_prefs_dialog (void)
   g_signal_connect ((gpointer) prefs_i7_extension_remove, "clicked",
                     G_CALLBACK (on_prefs_i7_extension_remove_clicked),
                     NULL);
-  g_signal_connect ((gpointer) prefs_i6_extension_add, "clicked",
-                    G_CALLBACK (on_prefs_i6_extension_add_clicked),
-                    NULL);
-  g_signal_connect ((gpointer) prefs_i6_extension_remove, "clicked",
-                    G_CALLBACK (on_prefs_i6_extension_remove_clicked),
-                    NULL);
   g_signal_connect ((gpointer) prefs_enable_highlighting_toggle, "toggled",
                     G_CALLBACK (on_prefs_enable_highlighting_toggle_toggled),
-                    NULL);
-  g_signal_connect ((gpointer) prefs_indent_toggle, "toggled",
-                    G_CALLBACK (on_prefs_indent_toggle_toggled),
                     NULL);
   g_signal_connect ((gpointer) prefs_auto_indent_toggle, "toggled",
                     G_CALLBACK (on_prefs_auto_indent_toggle_toggled),
@@ -4356,9 +4339,9 @@ create_prefs_dialog (void)
   g_signal_connect ((gpointer) prefs_show_log_toggle, "toggled",
                     G_CALLBACK (on_prefs_show_log_toggle_toggled),
                     NULL);
-  g_signal_connect ((gpointer) prefs_close, "clicked",
-                    G_CALLBACK (on_prefs_close_clicked),
-                    NULL);
+  g_signal_connect_swapped ((gpointer) prefs_close, "clicked",
+                            G_CALLBACK (gtk_widget_hide),
+                            GTK_OBJECT (prefs_dialog));
 
   gtk_label_set_mnemonic_widget (GTK_LABEL (label61), prefs_font_styling);
   gtk_label_set_mnemonic_widget (GTK_LABEL (label62), prefs_font_size);
@@ -4584,7 +4567,6 @@ create_inspector_window (void)
 
   skein_inspector = gtk_expander_new (NULL);
   gtk_box_pack_start (GTK_BOX (vbox34), skein_inspector, TRUE, TRUE, 0);
-  gtk_expander_set_expanded (GTK_EXPANDER (skein_inspector), TRUE);
 
   skein_inspector_scroll = gtk_scrolled_window_new (NULL, NULL);
   gtk_widget_show (skein_inspector_scroll);

@@ -1,20 +1,23 @@
 ## Process this file with automake to produce Makefile.in
 
 SUBDIRS = src po data
-## SUBDIRS = src po
 
 EXTRA_DIST = \
 	autogen.sh \
 	gnome-inform7.glade \
 	gnome-inform7.gladep \
 	gnome-inform7.desktop \
-	gnome-inform7.spec
+	gnome-inform7.spec \
+	gnome-inform7.schemas
 
 desktopdir = $(datadir)/applications
 desktop_DATA = gnome-inform7.desktop
 
 appicondir = $(datadir)/pixmaps
 appicon_DATA = pixmaps/Inform.png
+
+schemadir = @GCONF_SCHEMA_FILE_DIR@
+schema_DATA = gnome-inform7.schemas
 
 install-data-local:
 	@$(NORMAL_INSTALL)
@@ -25,7 +28,9 @@ install-data-local:
 	      $(INSTALL_DATA) $$pixmap $(DESTDIR)$(datadir)/pixmaps/$(PACKAGE); \
 	    fi \
 	  done \
-	fi; 
+	fi; \
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
+	$(GCONFTOOL) --makefile-install-rule $(srcdir)/$(schema_DATA)
 
 dist-hook:
 	if test -d pixmaps; then \
@@ -36,3 +41,7 @@ dist-hook:
 	    fi \
 	  done \
 	fi
+
+uninstall-local:
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) \
+	$(GCONFTOOL) --makefile-uninstall-rule $(srcdir)/$(schema_DATA)

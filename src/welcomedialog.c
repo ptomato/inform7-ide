@@ -219,3 +219,12 @@ on_welcome_reopen_button_clicked       (GtkButton       *button,
     gtk_widget_show(thestory->window);
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 }
+
+gboolean
+on_welcome_dialog_delete_event         (GtkWidget       *widget,
+                                        GdkEvent        *event,
+                                        gpointer         user_data)
+{
+    gtk_main_quit();
+    return FALSE;
+}

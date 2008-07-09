@@ -41,10 +41,11 @@
 #include "windowlist.h"
 
 int
-main (int argc, char *argv[])
+main(int argc, char *argv[])
 {
     GtkWidget *welcome_dialog;
     extern GtkWidget *inspector_window;
+    extern GtkWidget *prefs_dialog;
 
 #ifdef ENABLE_NLS
     bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -75,16 +76,18 @@ main (int argc, char *argv[])
     g_mkdir_with_parents(extensions_dir, 0777);
     g_free(extensions_dir);
     
-    /* Check the application settings and, if they don't exist, set them to the
-    defaults */
-    check_config_file();
-    
     /* Index the extensions in the background */
     run_census(FALSE);
     
-    /* Create the global inspector window, but keep it hidden */
+    /* Create the global inspector window and preferences dialog, but keep them 
+    hidden */
     inspector_window = create_inspector_window();
-    
+    prefs_dialog = create_prefs_dialog();
+
+    /* Check the application settings and, if they don't exist, set them to the
+    defaults */
+    init_config_file();
+
     /* Do stuff with the remaining command line arguments (files) */
     if(remaining_args != NULL) {
 	    gint i, num_args;

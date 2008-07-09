@@ -284,7 +284,7 @@ on_new_druid_inform7_page_finish       (GnomeDruidPage  *gnomedruidpage,
     }
 
     /* Save the author name to the config file */
-    config_file_set_string("User", "Name", author);
+    config_file_set_string("AppSettings", "AuthorName", author);
 
     /* Create a new story struct and initialize it */
     Story *thestory = new_story();

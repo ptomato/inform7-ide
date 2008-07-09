@@ -206,13 +206,13 @@ void update_inspectors() {
     hide it again */
     gtk_widget_show(lookup_widget(inspector_window, "no_inspector"));
     show_inspector(INSPECTOR_NOTES,
-      config_file_get_bool("Inspectors", "Notes"));
+      config_file_get_bool("InspectorSettings", "NotesVisible"));
     show_inspector(INSPECTOR_HEADINGS,
-      config_file_get_bool("Inspectors", "Headings"));
+      config_file_get_bool("InspectorSettings", "HeadingsVisible"));
     show_inspector(INSPECTOR_SKEIN,
-      config_file_get_bool("Inspectors", "Skein"));
+      config_file_get_bool("InspectorSettings", "SkeinVisible"));
     show_inspector(INSPECTOR_SEARCH_FILES,
-      config_file_get_bool("Inspectors", "Search"));
+      config_file_get_bool("InspectorSettings", "SearchVisible"));
 }
 
 /* Display the data from the story in the inspector. (Do not check whether we
@@ -242,7 +242,8 @@ void refresh_inspector(Story *thestory) {
         gtk_tree_view_set_model(
           GTK_TREE_VIEW(lookup_widget(inspector_window, "headings")),
           GTK_TREE_MODEL(thestory->headings));
-        if(config_file_get_bool("Syntax", "IntelligentIndexInspector")) {
+        if(config_file_get_bool("SyntaxSettings", 
+                                "IntelligentHeadingsInspector")) {
             g_idle_remove_by_data(GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));
             g_idle_add((GSourceFunc)reindex_headings,
               GINT_TO_POINTER(IDLE_REINDEX_HEADINGS));

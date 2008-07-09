@@ -19,9 +19,7 @@ INCLUDES = \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	$(GTKTERP_CFLAGS)
 
-AM_CFLAGS =\
-	 -Wall\
-	 -g
+AM_CFLAGS = -Wall
 
 noinst_LIBRARIES = libgtkterp.a
 libgtkterp_a_SOURCES = gtkterp.c gtkterp.h

@@ -696,6 +696,11 @@ CPP
 GREP
 EGREP
 RANLIB
+GCONF_SCHEMA_CONFIG_SOURCE
+GCONF_SCHEMA_FILE_DIR
+GCONF_SCHEMAS_INSTALL_TRUE
+GCONF_SCHEMAS_INSTALL_FALSE
+GCONFTOOL
 PKG_CONFIG
 GNOMEINFORM7_CFLAGS
 GNOMEINFORM7_LIBS
@@ -1334,6 +1339,13 @@ Optional Features:
 			  (and sometimes confusing) to the casual installer
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
+  --disable-schemas-install	Disable the schemas installation
+
+Optional Packages:
+  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
+  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-gconf-source=sourceaddress      Config database for installing schema files.
+  --with-gconf-schema-file-dir=dir        Directory for installing schema files.
 
 Some influential environment variables:
   CC          C compiler command
@@ -5833,6 +5845,98 @@ else
 fi
 
 
+  if test "x$GCONF_SCHEMA_INSTALL_SOURCE" = "x"; then
+    GCONF_SCHEMA_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+  else
+    GCONF_SCHEMA_CONFIG_SOURCE=$GCONF_SCHEMA_INSTALL_SOURCE
+  fi
+
+
+# Check whether --with-gconf-source was given.
+if test "${with_gconf_source+set}" = set; then
+  withval=$with_gconf_source; GCONF_SCHEMA_CONFIG_SOURCE="$withval"
+fi
+
+
+
+  { echo "$as_me:$LINENO: result: Using config source $GCONF_SCHEMA_CONFIG_SOURCE for schema installation" >&5
+echo "${ECHO_T}Using config source $GCONF_SCHEMA_CONFIG_SOURCE for schema installation" >&6; }
+
+  if test "x$GCONF_SCHEMA_FILE_DIR" = "x"; then
+    GCONF_SCHEMA_FILE_DIR='$(sysconfdir)/gconf/schemas'
+  fi
+
+
+# Check whether --with-gconf-schema-file-dir was given.
+if test "${with_gconf_schema_file_dir+set}" = set; then
+  withval=$with_gconf_schema_file_dir; GCONF_SCHEMA_FILE_DIR="$withval"
+fi
+
+
+
+  { echo "$as_me:$LINENO: result: Using $GCONF_SCHEMA_FILE_DIR as install directory for schema files" >&5
+echo "${ECHO_T}Using $GCONF_SCHEMA_FILE_DIR as install directory for schema files" >&6; }
+
+  # Check whether --enable-schemas-install was given.
+if test "${enable_schemas_install+set}" = set; then
+  enableval=$enable_schemas_install; case ${enableval} in
+       yes|no) ;;
+       *) { { echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-schemas-install" >&5
+echo "$as_me: error: bad value ${enableval} for --enable-schemas-install" >&2;}
+   { (exit 1); exit 1; }; } ;;
+      esac
+fi
+
+   if test "$enable_schemas_install" != no; then
+  GCONF_SCHEMAS_INSTALL_TRUE=
+  GCONF_SCHEMAS_INSTALL_FALSE='#'
+else
+  GCONF_SCHEMAS_INSTALL_TRUE='#'
+  GCONF_SCHEMAS_INSTALL_FALSE=
+fi
+
+
+# Extract the first word of "gconftool-2", so it can be a program name with args.
+set dummy gconftool-2; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_GCONFTOOL+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $GCONFTOOL in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_GCONFTOOL="$GCONFTOOL" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_GCONFTOOL="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+GCONFTOOL=$ac_cv_path_GCONFTOOL
+if test -n "$GCONFTOOL"; then
+  { echo "$as_me:$LINENO: result: $GCONFTOOL" >&5
+echo "${ECHO_T}$GCONFTOOL" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+
 pkg_modules="gtk+-2.0 >= 2.8.0 libgnomeui-2.0 gtksourceview-2.0 gtkspell-2.0"
 
 
@@ -8617,6 +8721,13 @@ echo "$as_me: error: conditional \"am__fastdepCC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${GCONF_SCHEMAS_INSTALL_TRUE}" && test -z "${GCONF_SCHEMAS_INSTALL_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"GCONF_SCHEMAS_INSTALL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"GCONF_SCHEMAS_INSTALL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 
 : ${CONFIG_STATUS=./config.status}
 ac_clean_files_save=$ac_clean_files
@@ -9258,6 +9369,11 @@ CPP!$CPP$ac_delim
 GREP!$GREP$ac_delim
 EGREP!$EGREP$ac_delim
 RANLIB!$RANLIB$ac_delim
+GCONF_SCHEMA_CONFIG_SOURCE!$GCONF_SCHEMA_CONFIG_SOURCE$ac_delim
+GCONF_SCHEMA_FILE_DIR!$GCONF_SCHEMA_FILE_DIR$ac_delim
+GCONF_SCHEMAS_INSTALL_TRUE!$GCONF_SCHEMAS_INSTALL_TRUE$ac_delim
+GCONF_SCHEMAS_INSTALL_FALSE!$GCONF_SCHEMAS_INSTALL_FALSE$ac_delim
+GCONFTOOL!$GCONFTOOL$ac_delim
 PKG_CONFIG!$PKG_CONFIG$ac_delim
 GNOMEINFORM7_CFLAGS!$GNOMEINFORM7_CFLAGS$ac_delim
 GNOMEINFORM7_LIBS!$GNOMEINFORM7_LIBS$ac_delim
@@ -9268,11 +9384,6 @@ GTKHTML_LIBS!$GTKHTML_LIBS$ac_delim
 GTKTERP_CFLAGS!$GTKTERP_CFLAGS$ac_delim
 GTKTERP_LIBS!$GTKTERP_LIBS$ac_delim
 GETTEXT_PACKAGE!$GETTEXT_PACKAGE$ac_delim
-build!$build$ac_delim
-build_cpu!$build_cpu$ac_delim
-build_vendor!$build_vendor$ac_delim
-build_os!$build_os$ac_delim
-host!$host$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -9314,6 +9425,11 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+build!$build$ac_delim
+build_cpu!$build_cpu$ac_delim
+build_vendor!$build_vendor$ac_delim
+build_os!$build_os$ac_delim
+host!$host$ac_delim
 host_cpu!$host_cpu$ac_delim
 host_vendor!$host_vendor$ac_delim
 host_os!$host_os$ac_delim
@@ -9337,7 +9453,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 21; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 26; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

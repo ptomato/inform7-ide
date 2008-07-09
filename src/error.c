@@ -24,7 +24,9 @@
 /* Create and display an error dialog box, with parent window parent, and
 message format string msg. If err is not NULL, tack the error message on to the
 end of the format string. */
-void error_dialog(GtkWindow *parent, GError *err, const gchar *msg, ...) {
+void 
+error_dialog(GtkWindow *parent, GError *err, const gchar *msg, ...) 
+{
     va_list ap;
     
     va_start(ap, msg);
