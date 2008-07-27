@@ -241,10 +241,10 @@ after_app_window_realize               (GtkWidget       *widget,
 {
     /* Set the last saved window size and slider position */
     gtk_window_resize(GTK_WINDOW(widget), 
-                      config_file_get_int("Settings", "AppWindowWidth"),
-                      config_file_get_int("Settings", "AppWindowHeight"));
+                      config_file_get_int("WindowSettings", "AppWindowWidth"),
+                      config_file_get_int("WindowSettings", "AppWindowHeight"));
     gtk_paned_set_position(GTK_PANED(lookup_widget(widget, "facingpages")),
-                           config_file_get_int("Settings", "SliderPosition"));
+                           config_file_get_int("WindowSettings", "SliderPosition"));
     
     /* Create some submenus and attach them */
     GtkWidget *menu;
@@ -288,14 +288,14 @@ after_app_window_realize               (GtkWidget       *widget,
     
     /* Attach the spelling checkers to the source views and ensure the correct
     state of the menu */
-    if(config_file_get_bool("Settings", "SpellCheck"))
+    if(config_file_get_bool("IDESettings", "SpellCheckDefault"))
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(lookup_widget(widget,
           "autocheck_spelling")), TRUE);
     else
         gtk_widget_set_sensitive(lookup_widget(widget, "check_spelling"),FALSE);
 
     /* Add extra pages in "Errors" if the user has them turned on */
-    if(config_file_get_bool("Debugging", "ShowLog"))
+    if(config_file_get_bool("IDESettings", "DebugLogVisible"))
         add_debug_tabs(widget);
     
     /* Load the documentation index page in "Documentation" */
@@ -332,7 +332,7 @@ after_app_window_realize               (GtkWidget       *widget,
                                   "skein_labels_r")), gtk_menu_new());
     
     /* Show the inspector window if necessary */
-    if(config_file_get_bool("Settings", "InspectorVisible")) {
+    if(config_file_get_bool("IDESettings", "InspectorVisible")) {
         extern GtkWidget *inspector_window;
         gtk_widget_show(inspector_window);
     }
@@ -515,9 +515,9 @@ save_app_window_size(GtkWindow *window)
 {
     gint w, h;
     gtk_window_get_size(window, &w, &h);
-    config_file_set_int("Settings", "AppWindowWidth", w);
-    config_file_set_int("Settings", "AppWindowHeight", h);
-    config_file_set_int("Settings", "SliderPosition",
+    config_file_set_int("WindowSettings", "AppWindowWidth", w);
+    config_file_set_int("WindowSettings", "AppWindowHeight", h);
+    config_file_set_int("WindowSettings", "SliderPosition",
                         gtk_paned_get_position(
                         GTK_PANED(lookup_widget(GTK_WIDGET(window),
                         "facingpages"))));

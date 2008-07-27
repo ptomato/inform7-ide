@@ -46,6 +46,7 @@ main(int argc, char *argv[])
     GtkWidget *welcome_dialog;
     extern GtkWidget *inspector_window;
     extern GtkWidget *prefs_dialog;
+    const char *datadir;
 
 #ifdef ENABLE_NLS
     bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -65,10 +66,13 @@ main(int argc, char *argv[])
       "[FILES...] - Interactive fiction IDE");
     g_option_context_add_main_entries(option_context, option_entries, NULL);
     
+    /* Retrieve data directory if set externally */
+    datadir = getenv("GNOME_INFORM_DATA_DIR");
+
     gnome_program_init(PACKAGE, VERSION, LIBGNOMEUI_MODULE,
       argc, argv,
       GNOME_PARAM_GOPTION_CONTEXT, option_context,
-      GNOME_PARAM_APP_DATADIR, PACKAGE_DATA_DIR,
+      GNOME_PARAM_APP_DATADIR, datadir == NULL ? PACKAGE_DATA_DIR : datadir,
       GNOME_PARAM_NONE);
     
     /* Create the Gnome Inform7 dir if it doesn't already exist */

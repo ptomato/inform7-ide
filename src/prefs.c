@@ -35,7 +35,6 @@
 #include "file.h"
 #include "prefs.h"
 #include "story.h"
-#include "taberrors.h"
 #include "tabsource.h"
 
 /* Global pointer to preferences window */
@@ -648,9 +647,8 @@ void
 on_prefs_author_changed                (GtkEditable     *editable,
                                         gpointer         user_data)
 {
-    config_file_set_string("User", "Name",
+    config_file_set_string("AppSettings", "AuthorName",
       gtk_entry_get_text(GTK_ENTRY(editable)));
-    /* do not free the string */
 }
 
 
@@ -658,11 +656,8 @@ void
 on_prefs_clean_build_toggle_toggled    (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-    gboolean state = gtk_toggle_button_get_active(togglebutton);
-    config_file_set_bool("Cleaning", "BuildFiles", state);
-    /* make the other checkboxes dependent on this checkbox active or inactive*/
-    gtk_widget_set_sensitive(lookup_widget(GTK_WIDGET(togglebutton),
-      "prefs_clean_index_toggle"), state);
+    config_file_set_bool("IDESettings", "CleanBuildFiles", 
+      gtk_toggle_button_get_active(togglebutton));
 }
 
 
@@ -670,7 +665,7 @@ void
 on_prefs_clean_index_toggle_toggled    (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-    config_file_set_bool("Cleaning", "IndexFiles",
+    config_file_set_bool("IDESettings", "CleanIndexFiles",
       gtk_toggle_button_get_active(togglebutton));
 }
 
@@ -679,13 +674,8 @@ void
 on_prefs_show_log_toggle_toggled       (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-    gboolean setting = gtk_toggle_button_get_active(togglebutton);
-    gboolean oldsetting = config_file_get_bool("Debugging", "ShowLog");
-    
-    if(setting != oldsetting) {
-        config_file_set_bool("Debugging", "ShowLog", setting);
-        for_each_story_window(setting? add_debug_tabs : remove_debug_tabs);
-    }
+    config_file_set_bool("IDESettings", "DebugLogVisible", 
+        gtk_toggle_button_get_active(togglebutton));
 }
 
 /* Get the language associated with this sourceview and update the highlighting

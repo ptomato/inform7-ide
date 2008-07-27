@@ -130,7 +130,7 @@ static void
 edit_node(Skein *skein, gboolean label, Story *thestory, GNode *thenode,
 		  int whichcanvas)
 {
-    double vertical_spacing = (double)config_file_get_int("Skein",
+    double vertical_spacing = (double)config_file_get_int("SkeinSettings",
                                                           "VerticalSpacing");
 	show_node(skein, GOT_USER_ACTION, thenode, thestory);
     thestory->editingskein = TRUE;
@@ -241,7 +241,7 @@ skein_popup_new_thread(GtkMenuItem *menuitem, ClickedNode *clickednode)
 	/* JEEZ I am so sick of GnomeCanvas, it SUCKS ASS */
 	/* Have to copy everything out of clickednode, because it gets invalidated
 	in the redraw */
-    double horizontal_spacing = (double)config_file_get_int("Skein", 
+    double horizontal_spacing = (double)config_file_get_int("SkeinSettings", 
                                                            "HorizontalSpacing");
 	Skein *theskein = clickednode->story->theskein;
 	Story *thestory = clickednode->story;
@@ -260,7 +260,7 @@ skein_popup_insert_knot(GtkMenuItem *menuitem, ClickedNode *clickednode)
 {
 	/* Have to copy everything out of clickednode, because it gets invalidated
 	in the redraw */
-    double horizontal_spacing = (double)config_file_get_int("Skein", 
+    double horizontal_spacing = (double)config_file_get_int("SkeinSettings", 
                                                             "HorizontalSpacing");
 	Skein *theskein = clickednode->story->theskein;
 	Story *thestory = clickednode->story;
@@ -559,7 +559,7 @@ enum {
 gboolean
 draw_node(GNode *node, Story *thestory)
 {
-    double vertical_spacing = (double)config_file_get_int("Skein",
+    double vertical_spacing = (double)config_file_get_int("SkeinSettings",
                                                           "VerticalSpacing");
 
     /* Create a group for the entire node */
@@ -795,7 +795,7 @@ draw_node(GNode *node, Story *thestory)
 void
 skein_layout_and_redraw(Skein *skein, Story *thestory)
 {
-    double horizontal_spacing = (double)config_file_get_int("Skein", 
+    double horizontal_spacing = (double)config_file_get_int("SkeinSettings", 
                                                            "HorizontalSpacing");
 	skein_layout(skein, horizontal_spacing);
     skein_schedule_redraw(skein, thestory);
@@ -821,9 +821,9 @@ skein_schedule_redraw(Skein *skein, Story *thestory)
 gboolean
 skein_redraw(Story *thestory)
 {
-    double horizontal_spacing = (double)config_file_get_int("Skein", 
+    double horizontal_spacing = (double)config_file_get_int("SkeinSettings", 
                                                            "HorizontalSpacing");
-    double vertical_spacing = (double)config_file_get_int("Skein",
+    double vertical_spacing = (double)config_file_get_int("SkeinSettings",
                                                           "VerticalSpacing");
     Skein *skein = thestory->theskein;
     
@@ -867,7 +867,7 @@ skein_redraw(Story *thestory)
                                                     "skein_r"));
                 break;
             case SKEIN_INSPECTOR:
-                if(!config_file_get_bool("Inspectors", "Skein")) {
+                if(!config_file_get_bool("InspectorSettings", "SkeinVisible")) {
                     thestory->drawflag[foo] = TRUE;
                     continue;
                 }
@@ -909,9 +909,9 @@ skein_redraw(Story *thestory)
 void
 show_node(Skein *skein, guint why, GNode *node, Story *thestory)
 {
-    double horizontal_spacing = (double)config_file_get_int("Skein", 
+    double horizontal_spacing = (double)config_file_get_int("SkeinSettings", 
                                                            "HorizontalSpacing");
-    double vertical_spacing = (double)config_file_get_int("Skein",
+    double vertical_spacing = (double)config_file_get_int("SkeinSettings",
                                                           "VerticalSpacing");
     /* Why, oh why, can't GnomeCanvas have a SANE scroll mechanism?
     And a model-view-controller interface? */
@@ -1019,9 +1019,9 @@ on_skein_layout_clicked(GtkToolButton *toolbutton, gpointer user_data)
 #ifdef I_LIKE_SKEIN
 	GtkWidget *dialog = create_skein_spacing_dialog();
 	Story *thestory = get_story(GTK_WIDGET(toolbutton));
-	thestory->old_horizontal_spacing = config_file_get_int("Skein", 
+	thestory->old_horizontal_spacing = config_file_get_int("SkeinSettings", 
 														   "HorizontalSpacing");
-	thestory->old_vertical_spacing = config_file_get_int("Skein", 
+	thestory->old_vertical_spacing = config_file_get_int("SkeinSettings", 
 														 "VerticalSpacing");
 	GtkWidget *horiz = lookup_widget(dialog, "skein_horizontal_spacing");
 	GtkWidget *vert = lookup_widget(dialog, "skein_vertical_spacing");
@@ -1130,29 +1130,25 @@ void
 on_skein_spacing_cancel_clicked(GtkButton *button, Story *thestory)
 {
 	/* Close the dialog */
-	config_file_set_int("Skein", "HorizontalSpacing", 
+	config_file_set_int("SkeinSettings", "HorizontalSpacing", 
 						thestory->old_horizontal_spacing);
-    config_file_set_int("Skein", "VerticalSpacing", 
+    config_file_set_int("SkeinSettings", "VerticalSpacing", 
 						thestory->old_vertical_spacing);
-	skein_layout_and_redraw(thestory->theskein, thestory);
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 }
 
 void
 on_skein_vertical_spacing_value_changed(GtkRange *range, Story *thestory)
 {
-	config_file_set_int("Skein", "VerticalSpacing", 
+	config_file_set_int("SkeinSettings", "VerticalSpacing", 
 						(gint)gtk_range_get_value(range));
-	skein_layout_and_redraw(thestory->theskein, thestory);
 }
 
 void
 on_skein_horizontal_spacing_value_changed(GtkRange *range, Story *thestory)
 {
-	config_file_set_int("Skein", "HorizontalSpacing", 
+	config_file_set_int("SkeinSettings", "HorizontalSpacing", 
 						(gint)gtk_range_get_value(range));
-	skein_invalidate_layout(thestory->theskein);
-	skein_layout_and_redraw(thestory->theskein, thestory);
 }
 
 void

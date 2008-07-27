@@ -397,28 +397,26 @@ on_autocheck_spelling_activate         (GtkMenuItem     *menuitem,
       GTK_CHECK_MENU_ITEM(menuitem));
     gtk_widget_set_sensitive(
       lookup_widget(GTK_WIDGET(menuitem), "check_spelling"), check);
-    config_file_set_bool("Settings", "SpellCheck", check);
+    config_file_set_bool("IDESettings", "SpellCheckDefault", check);
     /* Set the default for new windows to whatever the user chose last */
     
+    GtkTextView *left = 
+        GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "source_l"));
+    GtkTextView *right = 
+        GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "source_r"));
     if(check) {
         GError *err = NULL;
-        if(!gtkspell_new_attach(
-          GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "source_l")),
-          NULL, &err))
+        if(!gtkspell_new_attach(left, NULL, &err))
             error_dialog(
               GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
               err, "Error initializing spell checking: ");
-        else if(!gtkspell_new_attach(
-          GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "source_r")),
-          NULL, &err)) 
+        else if(!gtkspell_new_attach(right, NULL, &err)) 
             error_dialog(
               GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
               err, "Error initializing spell checking: ");
     } else {
-        gtkspell_detach(gtkspell_get_from_text_view(
-          GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "source_l"))));
-        gtkspell_detach(gtkspell_get_from_text_view(
-          GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "source_r"))));
+        gtkspell_detach(gtkspell_get_from_text_view(left));
+        gtkspell_detach(gtkspell_get_from_text_view(right));
         /* BUG in GtkSpell: removing the second one generates error messages */
     }
 }
@@ -620,7 +618,7 @@ on_show_inspectors_activate            (GtkMenuItem     *menuitem,
 {
     extern GtkWidget *inspector_window;
     gtk_widget_show(inspector_window);
-    config_file_set_bool("Settings", "InspectorVisible", TRUE);
+    config_file_set_bool("IDESettings", "InspectorVisible", TRUE);
 }
 
 
@@ -753,17 +751,12 @@ on_next_sub_panel_activate             (GtkMenuItem     *menuitem,
           (currentnotebook == LEFT)? "errors_notebook_l": "errors_notebook_r"));
         /* The last page of the notebook is different, depending on whether we
         are showing the extra debug tabs */
-        if(config_file_get_bool("Debugging", "ShowLog")) {
-            if(gtk_notebook_get_current_page(subnotebook) == TAB_ERRORS_INFORM6)
-                gtk_notebook_set_current_page(subnotebook, TAB_ERRORS_FIRST);
-            else
-                gtk_notebook_next_page(subnotebook);
-        } else {
-            if(gtk_notebook_get_current_page(subnotebook) == TAB_ERRORS_LAST)
-                gtk_notebook_set_current_page(subnotebook, TAB_ERRORS_FIRST);
-            else
-                gtk_notebook_next_page(subnotebook);
-        }
+        int lastpage = config_file_get_bool("IDESettings", "DebugLogVisible")?
+            TAB_ERRORS_INFORM6 : TAB_ERRORS_LAST;
+        if(gtk_notebook_get_current_page(subnotebook) == lastpage)
+            gtk_notebook_set_current_page(subnotebook, TAB_ERRORS_FIRST);
+        else
+            gtk_notebook_next_page(subnotebook);
     } else if(currentpage == TAB_INDEX) {
         GtkNotebook *subnotebook = GTK_NOTEBOOK(lookup_widget(
           GTK_WIDGET(menuitem),

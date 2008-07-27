@@ -269,7 +269,7 @@ Story *open_project(gchar *path) {
     }
     g_free(file_uri);
 #else
-    config_file_set_string("Settings", "LastProject", directory);
+    config_file_set_string("AppSettings", "LastProject", directory);
 #endif /* SUCKY_GNOME */
     
     /* Watch for changes to the source file */
@@ -419,7 +419,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     }
     g_free(file_uri);
 #else
-    config_file_set_string("Settings", "LastProject", directory);
+    config_file_set_string("AppSettings", "LastProject", directory);
 #endif /* SUCKY_GNOME */
     
     /* Start file monitoring again */
@@ -957,7 +957,7 @@ gchar *filename) {
 /* If the "delete build files" option is checked, delete all the build files
 from the project directory */
 void delete_build_files(Story *thestory) {
-    if(config_file_get_bool("Cleaning", "BuildFiles")) {
+    if(config_file_get_bool("IDESettings", "CleanBuildFiles")) {
         delete_from_project_dir(thestory, NULL, "Metadata.iFiction");
         delete_from_project_dir(thestory, NULL, "Release.blurb");
         delete_from_project_dir(thestory, "Build", "auto.inf");
@@ -968,9 +968,11 @@ void delete_build_files(Story *thestory) {
         delete_from_project_dir(thestory, "Build", "output.z8");
         delete_from_project_dir(thestory, "Build", "output.ulx");
         delete_from_project_dir(thestory, "Build", "Problems.html");
+        delete_from_project_dir(thestory, "Build", "gameinfo.dbg");
         delete_from_project_dir(thestory, "Build", "temporary file.inf");
+        delete_from_project_dir(thestory, "Build", "temporary file 2.inf");
         
-        if(config_file_get_bool("Cleaning", "IndexFiles")) {
+        if(config_file_get_bool("IDESettings", "CleanIndexFiles")) {
             delete_from_project_dir(thestory, "Index", "Actions.html");
             delete_from_project_dir(thestory, "Index", "Contents.html");
             delete_from_project_dir(thestory, "Index", "Headings.xml");
@@ -979,6 +981,24 @@ void delete_build_files(Story *thestory) {
             delete_from_project_dir(thestory, "Index", "Rules.html");
             delete_from_project_dir(thestory, "Index", "Scenes.html");
             delete_from_project_dir(thestory, "Index", "World.html");
+            /* Delete the "Details" subdirectory */
+            gchar *details_dir = g_build_filename(thestory->filename, "Index",
+                "Details", NULL);
+            GDir *details = g_dir_open(details_dir, 0, NULL);
+            if(details == NULL) {
+                /* Fail silently */
+                g_free(details_dir);
+                return;
+            }
+            const gchar *dir_entry;
+            while((dir_entry = g_dir_read_name(details)) != NULL) {
+                gchar *filename = g_build_filename(thestory->filename, "Index",
+                    "Details", dir_entry, NULL);
+                g_remove(filename);
+            }
+            g_dir_close(details);
+            g_remove(details_dir);
+            g_free(details_dir);
         }
     }
 }

@@ -244,7 +244,7 @@ static void finish_ni_compiler(GPid pid, gint status, Story *thestory) {
       loadfile);
     g_free(loadfile);
     
-    if(config_file_get_bool("Debugging", "ShowLog")) {
+    if(config_file_get_bool("IDESettings", "DebugLogVisible")) {
         /* Update */
         while(gtk_events_pending())
             g_main_context_iteration(NULL, FALSE);

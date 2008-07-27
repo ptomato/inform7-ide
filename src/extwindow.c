@@ -43,8 +43,8 @@ after_ext_window_realize               (GtkWidget       *widget,
 {
     /* Set the last saved window size and slider position */
     gtk_window_resize(GTK_WINDOW(widget), 
-                      config_file_get_int("Settings", "ExtWindowWidth"),
-                      config_file_get_int("Settings", "ExtWindowHeight"));
+                      config_file_get_int("WindowSettings", "ExtWindowWidth"),
+                      config_file_get_int("WindowSettings", "ExtWindowHeight"));
     
     /* Create some submenus and attach them */
     GtkWidget *menu;
@@ -61,7 +61,7 @@ after_ext_window_realize               (GtkWidget       *widget,
     
     /* Attach the spelling checker to the source view and ensure the correct
     state of the menu */
-    if(config_file_get_bool("Settings", "SpellCheck"))
+    if(config_file_get_bool("IDESettings", "SpellCheckDefault"))
         gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(lookup_widget(widget,
           "xautocheck_spelling")), TRUE);
     else
@@ -267,7 +267,7 @@ on_xautocheck_spelling_activate        (GtkMenuItem     *menuitem,
       GTK_CHECK_MENU_ITEM(menuitem));
     gtk_widget_set_sensitive(
       lookup_widget(GTK_WIDGET(menuitem), "xcheck_spelling"), check);
-    config_file_set_bool("Settings", "SpellCheck", check);
+    config_file_set_bool("IDESettings", "SpellCheckDefault", check);
     /* Set the default for new windows to whatever the user chose last */
     
     if(check) {
@@ -368,8 +368,8 @@ save_ext_window_size(GtkWindow *window)
 {
     gint w, h;
     gtk_window_get_size(window, &w, &h);
-    config_file_set_int("Settings", "ExtWindowWidth", w);
-    config_file_set_int("Settings", "ExtWindowHeight", h);
+    config_file_set_int("WindowSettings", "ExtWindowWidth", w);
+    config_file_set_int("WindowSettings", "ExtWindowHeight", h);
 }
 
 gboolean

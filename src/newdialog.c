@@ -230,7 +230,8 @@ void
 on_new_author_realize                  (GtkWidget       *widget,
                                         gpointer         user_data)
 {
-    gchar *author = g_strstrip(config_file_get_string("User", "Name"));
+    gchar *author = 
+        g_strstrip(config_file_get_string("AppSettings", "AuthorName"));
     gtk_entry_set_text(GTK_ENTRY(widget),
       (author == NULL || strlen(author) == 0)? g_get_real_name() : author);
     g_free(author);
@@ -386,7 +387,7 @@ on_new_druid_extension_page_finish     (GnomeDruidPage  *gnomedruidpage,
     }
 
     /* Save the author name to the config file */
-    config_file_set_string("User", "Name", author);
+    config_file_set_string("AppSettings", "AuthorName", author);
 
     /* Create a new extension struct and initialize it */
     Extension *ext = new_ext();

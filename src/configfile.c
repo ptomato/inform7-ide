@@ -26,6 +26,8 @@
 #include "prefs.h"
 #include "story.h"
 #include "support.h"
+#include "taberrors.h"
+#include "tabskein.h"
 
 /* Enum-to-string lookup tables */
 GConfEnumStringPair font_styling_lookup_table[] = {
@@ -366,6 +368,58 @@ on_config_intelligent_inspector_changed(GConfClient *client, guint id,
     /* update application to reflect new value */
     if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(toggle)) != newvalue)
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
+    /* TODO: Change headings inspector */
+}
+
+static void
+on_config_author_name_changed(GConfClient *client, guint id, GConfEntry *entry,
+                              GtkWidget *editable)
+{
+    const gchar *newvalue = 
+        gconf_value_get_string(gconf_entry_get_value(entry));
+    /* update application to reflect new value */
+    if(strcmp(gtk_entry_get_text(GTK_ENTRY(editable)), newvalue) != 0)
+        gtk_entry_set_text(GTK_ENTRY(editable), newvalue);
+}
+
+static void
+on_config_clean_build_files_changed(GConfClient *client, guint id,
+                                    GConfEntry *entry, GtkWidget *toggle)
+{
+    gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
+    /* update application to reflect new value */
+    if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(toggle)) != newvalue)
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
+    /* make the other checkboxes dependent on this checkbox active or inactive*/
+    gtk_widget_set_sensitive(lookup_widget(toggle, "prefs_clean_index_toggle"),
+        newvalue);
+}
+
+static void
+on_config_show_debug_log_changed(GConfClient *client, guint id,
+                                 GConfEntry *entry, GtkWidget *toggle)
+{
+    gboolean newvalue = gconf_value_get_bool(gconf_entry_get_value(entry));
+    /* update application to reflect new value */
+    if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(toggle)) != newvalue)
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle), newvalue);
+    for_each_story_window(newvalue? add_debug_tabs : remove_debug_tabs);
+}
+
+static gboolean
+update_skein_spacing(GtkWidget *window)
+{
+    Story *thestory = get_story(window);
+    skein_invalidate_layout(thestory->theskein);
+    skein_layout_and_redraw(thestory->theskein, thestory);
+    return FALSE; /* one-shot idle function */
+}
+
+static void
+on_config_skein_spacing_changed(GConfClient *client, guint id,
+                                GConfEntry *entry, GtkWidget *window)
+{
+    for_each_story_window_idle((GSourceFunc)update_skein_spacing);
 }
 
 static void
@@ -428,7 +482,22 @@ static struct KeyToMonitor keys_to_monitor[] = {
       "prefs_auto_indent_toggle" },
     { "SyntaxSettings/AutoNumberSections",
       (GConfClientNotifyFunc)on_config_generic_bool_changed,
-      "prefs_auto_number_toggle" }
+      "prefs_auto_number_toggle" },
+    { "AppSettings/AuthorName",
+      (GConfClientNotifyFunc)on_config_author_name_changed, "prefs_author" },
+    { "IDESettings/CleanBuildFiles",
+      (GConfClientNotifyFunc)on_config_clean_build_files_changed,
+      "prefs_clean_build_toggle" },
+    { "IDESettings/CleanIndexFiles",
+      (GConfClientNotifyFunc)on_config_generic_bool_changed,
+      "prefs_clean_index_toggle" },
+    { "IDESettings/DebugLogVisible",
+      (GConfClientNotifyFunc)on_config_show_debug_log_changed,
+      "prefs_show_log_toggle" },
+    { "SkeinSettings/HorizontalSpacing",
+      (GConfClientNotifyFunc)on_config_skein_spacing_changed, NULL },
+    { "SkeinSettings/VerticalSpacing",
+      (GConfClientNotifyFunc)on_config_skein_spacing_changed, NULL }
 };
 
 #define NUM_KEYS_TO_MONITOR \
@@ -454,9 +523,11 @@ init_config_file()
         gchar *keyname = g_strconcat(GCONF_BASE_PATH, keys_to_monitor[i].name,
                                      NULL);
         gconf_client_notify_add(client, keyname, keys_to_monitor[i].callback,
-                                (gpointer)lookup_widget(prefs_dialog, 
-                                keys_to_monitor[i].widgetname),
-                                NULL, NULL);
+            (keys_to_monitor[i].widgetname)?
+                (gpointer)lookup_widget(prefs_dialog, 
+                    keys_to_monitor[i].widgetname) :
+                NULL,
+            NULL, NULL);
         g_free(keyname);
     }
 

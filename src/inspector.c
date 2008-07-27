@@ -63,8 +63,8 @@ after_inspector_window_realize         (GtkWidget       *widget,
 
     /* Move the window to the saved position */    
     gtk_window_move(GTK_WINDOW(inspector_window),
-      config_file_get_int("Settings", "InspectorPosX"),
-      config_file_get_int("Settings", "InspectorPosY"));
+      config_file_get_int("WindowSettings", "InspectorPosX"),
+      config_file_get_int("WindowSettings", "InspectorPosY"));
 }
 
 
@@ -148,7 +148,7 @@ on_inspector_window_delete             (GtkWidget       *widget,
                                         gpointer         user_data)
 {
     gtk_widget_hide(widget);
-    config_file_set_bool("Settings", "InspectorVisible", FALSE);
+    config_file_set_bool("IDESettings", "InspectorVisible", FALSE);
     return TRUE; /* Interrupt the event */
 }
 
@@ -259,8 +259,8 @@ void refresh_inspector(Story *thestory) {
 void save_inspector_window_position() {
     gint x, y;
     gtk_window_get_position(GTK_WINDOW(inspector_window), &x, &y);
-    config_file_set_int("Settings", "InspectorPosX", x);
-    config_file_set_int("Settings", "InspectorPosY", y);
+    config_file_set_int("WindowSettings", "InspectorPosX", x);
+    config_file_set_int("WindowSettings", "InspectorPosY", y);
 }
 
 

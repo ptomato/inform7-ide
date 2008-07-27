@@ -95,7 +95,7 @@ after_welcome_dialog_realize           (GtkWidget       *widget,
     }
     g_list_free(recent);
 #else
-    filename = config_file_get_string("Settings", "LastProject");
+    filename = config_file_get_string("AppSettings", "LastProject");
     if(filename)
         gtk_widget_set_sensitive(
               lookup_widget(widget, "welcome_reopen_button"), TRUE);
@@ -200,7 +200,7 @@ on_welcome_reopen_button_clicked       (GtkButton       *button,
     g_free(projectname);
     /* Do not free the string from gtk_recent_info_get_uri */
 #else
-    gchar *projectdir = config_file_get_string("Settings", "LastProject");
+    gchar *projectdir = config_file_get_string("AppSettings", "LastProject");
     g_return_if_fail(projectdir);
 #endif /* SUCKY_GNOME */
     
