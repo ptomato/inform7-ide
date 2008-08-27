@@ -22,16 +22,14 @@
 #include <gnome.h>
 #include <gtksourceview/gtksourcebuffer.h>
 
-GtkWidget*
-source_create (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2);
-
-void
-on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
-                                        gpointer         user_data);
-
+GtkWidget* source_create(gchar *widget_name, gchar *string1, gchar *string2,
+                         gint int1, gint int2);
+void on_source_headings_show_menu(GtkMenuToolButton *menutoolbutton,
+                                  gpointer data);
 GtkSourceBuffer *create_natural_inform_source_buffer(gboolean extension);
 void paste_code (GtkSourceBuffer *buffer, gchar *code);
 void jump_to_line(GtkWidget *widget, guint line);
 void renumber_sections(GtkTextBuffer *buffer);
+void shift_selection_right(GtkTextBuffer *buffer);
+void shift_selection_left(GtkTextBuffer *buffer);
 #endif

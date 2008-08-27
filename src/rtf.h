@@ -19,11 +19,9 @@
 
 #include <gnome.h>
 
-void    gtk_text_buffer_set_rtf_text   (GtkTextBuffer *buffer,
-                                        const gchar *rtf_text);
-
-gchar * gtk_text_buffer_get_rtf_text   (GtkTextBuffer *buffer,
-                                        const GtkTextIter *start,
-                                        const GtkTextIter *end);
+void gtk_text_buffer_set_rtf_text(GtkTextBuffer *buffer, const gchar *rtf_text);
+gchar *gtk_text_buffer_get_rtf_text(GtkTextBuffer *buffer,
+                                    const GtkTextIter *start,
+                                    const GtkTextIter *end);
 
 #endif /* RTF_H */

@@ -110,32 +110,26 @@ get_style_scheme(void)
 {
     GtkSourceStyleSchemeManager *manager = get_style_scheme_manager();
     int set = config_file_get_enum("EditorSettings", "ColorSet", 
-                                   color_set_lookup_table);
+      color_set_lookup_table);
     int styling = config_file_get_enum("EditorSettings", "FontStyling",
-                                       font_styling_lookup_table);
+      font_styling_lookup_table);
     int colors = config_file_get_enum("EditorSettings", "ChangeColors",
-                                      change_colors_lookup_table);
+      change_colors_lookup_table);
     
     gchar *schemename = NULL;
     if(colors == CHANGE_COLORS_NEVER)
         schemename = g_strconcat("nocolor-", 
-                                 styling == FONT_STYLING_NONE ? "nostyling" :
-                                 styling == FONT_STYLING_SUBTLE ? "somestyling"
-                                 : "styling",
-                                 NULL);
+          styling == FONT_STYLING_NONE ? "nostyling" :
+          styling == FONT_STYLING_SUBTLE ? "somestyling" : "styling", NULL);
     else
         schemename = g_strconcat(set == COLOR_SET_PSYCHEDELIC ? "psychedelic" :
-                                 set == COLOR_SET_SUBDUED ? "subdued" : 
-                                 "standard", "-",
-                                 colors == CHANGE_COLORS_OCCASIONALLY ? 
-                                 "somecolor" : "color", "-",
-                                 styling == FONT_STYLING_NONE ? "nostyling" :
-                                 styling == FONT_STYLING_SUBTLE ? "somestyling"
-                                 : "styling",
-                                 NULL);
+          set == COLOR_SET_SUBDUED ? "subdued" :  "standard", "-",
+          colors == CHANGE_COLORS_OCCASIONALLY ? "somecolor" : "color", "-",
+          styling == FONT_STYLING_NONE ? "nostyling" :
+          styling == FONT_STYLING_SUBTLE ? "somestyling" : "styling", NULL);
     
   	GtkSourceStyleScheme *scheme =
-  	    gtk_source_style_scheme_manager_get_scheme(manager, schemename);
+  	  gtk_source_style_scheme_manager_get_scheme(manager, schemename);
   	g_free(schemename);
   	return scheme;
 }

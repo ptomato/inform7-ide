@@ -27,44 +27,35 @@
 #include "searchwindow.h"
 
 void
-on_go_toolbutton_clicked               (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+on_go_toolbutton_clicked(GtkToolButton *toolbutton, gpointer data)
 {
-    on_go_activate(GTK_MENU_ITEM(lookup_widget(GTK_WIDGET(toolbutton),
-      "go")), user_data);
+    on_go_activate(GTK_MENU_ITEM(lookup_widget(GTK_WIDGET(toolbutton), "go")), 
+      data);
 }
 
-
 void
-on_replay_toolbutton_clicked           (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+on_replay_toolbutton_clicked(GtkToolButton *toolbutton, gpointer data)
 {
     on_replay_activate(GTK_MENU_ITEM(lookup_widget(GTK_WIDGET(toolbutton),
-      "replay")), user_data);
+      "replay")), data);
 }
 
-
 void
-on_stop_toolbutton_clicked             (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+on_stop_toolbutton_clicked(GtkToolButton *toolbutton, gpointer data)
 {
     on_stop_activate(GTK_MENU_ITEM(lookup_widget(GTK_WIDGET(toolbutton),
-      "stop")), user_data);
+      "stop")), data);
 }
 
-
 void
-on_release_toolbutton_clicked          (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+on_release_toolbutton_clicked(GtkToolButton *toolbutton, gpointer data)
 {
     on_release_activate(GTK_MENU_ITEM(lookup_widget(GTK_WIDGET(toolbutton),
-      "release")), user_data);
+      "release")), data);
 }
 
-
 void
-on_docs_search_activate                (GtkEntry        *entry,
-                                        gpointer         user_data)
+on_docs_search_activate(GtkEntry *entry, gpointer user_data)
 {
     const gchar *search_text = gtk_entry_get_text(entry);
     GList *list = search_doc(search_text, TRUE /*ignore case*/, FIND_CONTAINS);
@@ -73,21 +64,16 @@ on_docs_search_activate                (GtkEntry        *entry,
     gtk_widget_show(search_window);
 }
 
-
 gboolean
-on_docs_search_focus                   (GtkWidget       *widget,
-                                        GdkEventFocus   *event,
-                                        gpointer         user_data)
+on_docs_search_focus(GtkWidget *widget, GdkEventFocus *event, gpointer data)
 {
     gtk_editable_delete_text(GTK_EDITABLE(widget), 0, -1);
     return FALSE;
 }
 
 void
-on_help_toolbutton_clicked             (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+on_help_toolbutton_clicked(GtkToolButton *toolbutton, gpointer data)
 {
     on_inform_help_activate(GTK_MENU_ITEM(lookup_widget(GTK_WIDGET(toolbutton),
-      "inform_help")), user_data);
+      "inform_help")), data);
 }
-

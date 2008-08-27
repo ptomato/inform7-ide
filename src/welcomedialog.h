@@ -25,24 +25,10 @@
 # define SUCKY_GNOME 1
 #endif
 
-void
-after_welcome_dialog_realize           (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_welcome_new_button_clicked          (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_welcome_open_button_clicked         (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_welcome_reopen_button_clicked       (GtkButton       *button,
-                                        gpointer         user_data);
-
-gboolean
-on_welcome_dialog_delete_event         (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+void after_welcome_dialog_realize(GtkWidget *widget, gpointer data);
+void on_welcome_new_button_clicked(GtkButton *button, gpointer data);
+void on_welcome_open_button_clicked(GtkButton *button, gpointer data);
+void on_welcome_reopen_button_clicked(GtkButton *button, gpointer data);
+gboolean on_welcome_dialog_delete_event(GtkWidget *widget, GdkEvent *event,
+                                        gpointer data);
 #endif

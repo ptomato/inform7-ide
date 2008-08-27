@@ -24,11 +24,13 @@
 #include <gtksourceview/gtksourcebuffer.h>
 #include <gtksourceview/gtksourcelanguage.h>
 #include <gtksourceview/gtksourcelanguagemanager.h>
+
 #include "lang.h"
 #include "datafile.h"
 #include "error.h"
 
-void set_buffer_language(GtkSourceBuffer *buffer, gchar *lang)
+void 
+set_buffer_language(GtkSourceBuffer *buffer, gchar *lang)
 {
     /* Set up the Natural Inform highlighting */
     GtkSourceLanguage *language;
@@ -59,7 +61,8 @@ void set_buffer_language(GtkSourceBuffer *buffer, gchar *lang)
     if(language != NULL) {
         gtk_source_buffer_set_language(buffer, language);
     } else {
-        error_dialog(NULL, NULL, "Cannot load %s language definition", lang);
+        error_dialog(NULL, NULL, 
+          _("Cannot load %s source-language highlighting definition"), lang);
     }
     g_object_unref((gpointer)lmanager);
 }

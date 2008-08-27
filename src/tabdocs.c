@@ -26,19 +26,17 @@
 #include "tabdocs.h"
 
 void
-on_docs_contents_l_clicked             (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+on_docs_contents_l_clicked(GtkToolButton *toolbutton, gpointer data)
 {
     gchar *file = get_datafile_path_va("Documentation", "index.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(toolbutton), "docs_l")),
-                   file);
+      file);
     history_push_docpage(get_story(GTK_WIDGET(toolbutton)), LEFT, file);
     g_free(file);
 
     gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(toolbutton), LEFT), 
-                                  TAB_DOCUMENTATION);
+      TAB_DOCUMENTATION);
 }
-
 
 void
 on_docs_contents_r_clicked             (GtkToolButton   *toolbutton,
@@ -46,13 +44,10 @@ on_docs_contents_r_clicked             (GtkToolButton   *toolbutton,
 {
     gchar *file = get_datafile_path_va("Documentation", "index.html", NULL);
     html_load_file(GTK_HTML(lookup_widget(GTK_WIDGET(toolbutton), "docs_r")),
-                   file);
+      file);
     history_push_docpage(get_story(GTK_WIDGET(toolbutton)), RIGHT, file);
     g_free(file);
 
     gtk_notebook_set_current_page(get_notebook(GTK_WIDGET(toolbutton), RIGHT), 
-                                  TAB_DOCUMENTATION);
+      TAB_DOCUMENTATION);
 }
-
-
- 

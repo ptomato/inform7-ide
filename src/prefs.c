@@ -50,8 +50,8 @@ populate_extension_lists(GtkWidget *thiswidget)
     GDir *extensions = g_dir_open(extension_dir, 0, &err);
     g_free(extension_dir);
     if(err) {
-        error_dialog(GTK_WINDOW(thiswidget), err, "Error opening extensions "
-          "directory: ");
+        error_dialog(GTK_WINDOW(thiswidget), err, 
+          _("Error opening extensions directory: "));
         return;
     }
     
@@ -78,8 +78,8 @@ populate_extension_lists(GtkWidget *thiswidget)
         GDir *author = g_dir_open(author_dir, 0, &err);
         g_free(author_dir);
         if(err) {
-            error_dialog(GTK_WINDOW(thiswidget), err, "Error opening "
-              "extensions directory: ");
+            error_dialog(GTK_WINDOW(thiswidget), err, 
+              _("Error opening extensions directory: "));
             return;
         }
         const gchar *author_entry;
@@ -253,8 +253,7 @@ extension_browser_selection_changed(GtkTreeSelection *selection,
 }
 
 void
-on_prefs_dialog_realize                (GtkWidget       *widget,
-                                        gpointer         user_data)
+on_prefs_dialog_realize(GtkWidget *widget, gpointer data)
 {
     /* Set all the controls to their current values according to GConf */
     trigger_config_keys();
@@ -285,14 +284,10 @@ on_prefs_dialog_realize                (GtkWidget       *widget,
     gtk_drag_dest_add_uri_targets(view);
 }
 
-
 gboolean
-on_prefs_i7_extensions_view_drag_drop  (GtkWidget       *widget,
-                                        GdkDragContext  *drag_context,
-                                        gint             x,
-                                        gint             y,
-                                        guint            time,
-                                        gpointer         user_data)
+on_prefs_i7_extensions_view_drag_drop(GtkWidget *widget, 
+                                      GdkDragContext *drag_context, gint x,
+                                      gint y, guint time, gpointer data)
 {
     /* Iterate through the list of target types provided by the source */
     GdkAtom target_type = NULL;
@@ -322,30 +317,29 @@ on_prefs_i7_extensions_view_drag_drop  (GtkWidget       *widget,
 
 
 void
-on_prefs_i7_extensions_view_drag_data_received
-                                       (GtkWidget       *widget,
-                                        GdkDragContext  *drag_context,
-                                        gint             x,
-                                        gint             y,
-                                        GtkSelectionData *data,
-                                        guint            info,
-                                        guint            time,
-                                        gpointer         user_data)
+on_prefs_i7_extensions_view_drag_data_received(GtkWidget *widget,
+                                               GdkDragContext *drag_context,
+                                               gint x, gint y,
+                                               GtkSelectionData *selectiondata,
+                                               guint info, guint time,
+                                               gpointer data)
 {
     gboolean dnd_success = TRUE;
     gchar *type_name = NULL;
     
     /* Check that we got data from source */
-    if((data == NULL) || (data->length < 0))
+    if((selectiondata == NULL) || (selectiondata->length < 0))
         dnd_success = FALSE;
     
     /* Check that we got the format we can use */
-    else if(strcmp((type_name = gdk_atom_name(data->type)), "text/uri-list"))
+    else if(strcmp((type_name = gdk_atom_name(selectiondata->type)), 
+      "text/uri-list"))
         dnd_success = FALSE;
     
     else {  
         /* Do stuff with the data */
-        gchar **extension_files = g_uri_list_extract_uris((gchar *)data->data);
+        gchar **extension_files = g_uri_list_extract_uris(
+          (gchar *)selectiondata->data);
         int foo;
         /* Get a list of URIs to the dropped files */
         for(foo = 0; extension_files[foo] != NULL; foo++) {
@@ -353,7 +347,7 @@ on_prefs_i7_extensions_view_drag_data_received
             gchar *filename = g_filename_from_uri(
               extension_files[foo], NULL, &err);
             if(!filename) {
-                g_warning("Invalid URI: %s", err->message);
+                g_warning(_("Invalid URI: %s"), err->message);
                 g_error_free(err);
                 continue;
             }
@@ -363,7 +357,7 @@ on_prefs_i7_extensions_view_drag_data_received
             if(g_file_test(filename, G_FILE_TEST_IS_DIR)) {
                 GDir *dir = g_dir_open(filename, 0, &err);
                 if(err) {
-                    error_dialog(NULL, err, "Error opening directory %s: ",
+                    error_dialog(NULL, err, _("Error opening directory %s: "),
                       filename);
                     g_free(filename);
                     return;
@@ -395,17 +389,14 @@ on_prefs_i7_extensions_view_drag_data_received
 
 
 void
-on_prefs_font_set_changed              (GtkComboBox     *combobox,
-                                        gpointer         user_data)
+on_prefs_font_set_changed(GtkComboBox *combobox, gpointer data)
 {
     config_file_set_enum("EditorSettings", "FontSet", 
-                         gtk_combo_box_get_active(combobox), 
-                         font_set_lookup_table);
+      gtk_combo_box_get_active(combobox), font_set_lookup_table);
 }
 
 void
-on_prefs_custom_font_font_set          (GtkFontButton   *fontbutton,
-                                        gpointer         user_data)
+on_prefs_custom_font_font_set(GtkFontButton *fontbutton, gpointer data)
 {
     /* Try to extract a font name from the string that we get from the button */
     gchar *fontname = g_strdup(gtk_font_button_get_font_name(fontbutton));
@@ -429,53 +420,42 @@ on_prefs_custom_font_font_set          (GtkFontButton   *fontbutton,
 }
 
 void
-on_prefs_font_styling_changed          (GtkComboBox     *combobox,
-                                        gpointer         user_data)
+on_prefs_font_styling_changed(GtkComboBox *combobox, gpointer data)
 {
     config_file_set_enum("EditorSettings", "FontStyling", 
-                         gtk_combo_box_get_active(combobox),
-                         font_styling_lookup_table);
+      gtk_combo_box_get_active(combobox), font_styling_lookup_table);
 }
 
 void
-on_prefs_font_size_changed             (GtkComboBox     *combobox,
-                                        gpointer         user_data)
+on_prefs_font_size_changed(GtkComboBox *combobox, gpointer data)
 {
     config_file_set_enum("EditorSettings", "FontSize", 
-                         gtk_combo_box_get_active(combobox),
-                         font_size_lookup_table);
+      gtk_combo_box_get_active(combobox), font_size_lookup_table);
 }
 
 void
-on_prefs_change_colors_changed         (GtkComboBox     *combobox,
-                                        gpointer         user_data)
+on_prefs_change_colors_changed(GtkComboBox *combobox, gpointer data)
 {
     config_file_set_enum("EditorSettings", "ChangeColors", 
-                         gtk_combo_box_get_active(combobox),
-                         change_colors_lookup_table);
+      gtk_combo_box_get_active(combobox), change_colors_lookup_table);
 }
 
 void
-on_prefs_color_set_changed             (GtkComboBox     *combobox,
-                                        gpointer         user_data)
+on_prefs_color_set_changed(GtkComboBox *combobox, gpointer data)
 {
     config_file_set_enum("EditorSettings", "ColorSet", 
-                         gtk_combo_box_get_active(combobox),
-                         color_set_lookup_table);
+      gtk_combo_box_get_active(combobox), color_set_lookup_table);
 }
 
 void
-on_tab_ruler_value_changed             (GtkRange        *range,
-                                        gpointer         user_data)
+on_tab_ruler_value_changed(GtkRange *range, gpointer data)
 {
     config_file_set_int("EditorSettings", "TabWidth", 
-                        (int)gtk_range_get_value(range));
+      (int)gtk_range_get_value(range));
 }
 
 gchar*
-on_tab_ruler_format_value              (GtkScale        *scale,
-                                        gdouble          value,
-                                        gpointer         user_data)
+on_tab_ruler_format_value(GtkScale *scale, gdouble value, gpointer data)
 {
     if(value)
         return g_strdup_printf("%.*f spaces", gtk_scale_get_digits(scale),
@@ -484,43 +464,38 @@ on_tab_ruler_format_value              (GtkScale        *scale,
 }
 
 void
-on_prefs_notes_toggle_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_prefs_notes_toggle_toggled(GtkToggleButton *togglebutton, gpointer data)
 {
     config_file_set_bool("InspectorSettings", "NotesVisible",
       gtk_toggle_button_get_active(togglebutton));
 }
 
 void
-on_prefs_headings_toggle_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_prefs_headings_toggle_toggled(GtkToggleButton *togglebutton, gpointer data)
 {
     config_file_set_bool("InspectorSettings", "HeadingsVisible",
       gtk_toggle_button_get_active(togglebutton));
 }
 
 void
-on_prefs_skein_toggle_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_prefs_skein_toggle_toggled(GtkToggleButton *togglebutton, gpointer data)
 {
     config_file_set_bool("InspectorSettings", "SkeinVisible",
       gtk_toggle_button_get_active(togglebutton));
 }
 
 void
-on_prefs_search_toggle_toggled         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_prefs_search_toggle_toggled(GtkToggleButton *togglebutton, gpointer data)
 {
     config_file_set_bool("InspectorSettings", "SearchVisible",
       gtk_toggle_button_get_active(togglebutton));
 }
 
 void
-on_prefs_i7_extension_add_clicked      (GtkButton       *button,
-                                        gpointer         user_data)
+on_prefs_i7_extension_add_clicked(GtkButton *button, gpointer data)
 {
     GtkWidget *dialog = gtk_file_chooser_dialog_new(
-      "Select the extensions to install",
+      _("Select the extensions to install"),
       GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
       GTK_FILE_CHOOSER_ACTION_OPEN, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
@@ -550,8 +525,7 @@ on_prefs_i7_extension_add_clicked      (GtkButton       *button,
 
 
 void
-on_prefs_i7_extension_remove_clicked   (GtkButton       *button,
-                                        gpointer         user_data)
+on_prefs_i7_extension_remove_clicked(GtkButton *button, gpointer data)
 {
     GtkTreeView *view = GTK_TREE_VIEW(lookup_widget(GTK_WIDGET(button),
       "prefs_i7_extensions_view"));
@@ -576,7 +550,10 @@ on_prefs_i7_extension_remove_clicked   (GtkButton       *button,
         GtkWidget *dialog = gtk_message_dialog_new(
           GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
           GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_QUESTION,
-          GTK_BUTTONS_YES_NO, "Are you sure you want to remove %s by %s?", 
+          GTK_BUTTONS_YES_NO, 
+          /* TRANSLATORS: Are you sure you want to remove EXTENSION_NAME by 
+          AUTHOR_NAME?*/
+          _("Are you sure you want to remove %s by %s?"), 
           extname, author);
         gint result = gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
@@ -598,81 +575,70 @@ on_prefs_i7_extension_remove_clicked   (GtkButton       *button,
 }
 
 void
-on_prefs_enable_highlighting_toggle_toggled
-                                        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_prefs_enable_highlighting_toggle_toggled(GtkToggleButton *togglebutton,
+                                            gpointer data)
 {
     config_file_set_bool("SyntaxSettings", "SyntaxHighlighting", 
       gtk_toggle_button_get_active(togglebutton));
 }
 
 void
-on_prefs_follow_symbols_toggle_toggled (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_prefs_follow_symbols_toggle_toggled(GtkToggleButton *togglebutton,
+                                       gpointer data)
 {
     config_file_set_bool("SyntaxSettings", "Intelligence", 
       gtk_toggle_button_get_active(togglebutton));
 }
 
-
 void
-on_prefs_intelligent_inspector_toggle_toggled
-                                        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_prefs_intelligent_inspector_toggle_toggled(GtkToggleButton *togglebutton,
+                                              gpointer data)
 {
     config_file_set_bool("SyntaxSettings", "IntelligentHeadingsInspector",
       gtk_toggle_button_get_active(togglebutton));
 }
 
-
 void
-on_prefs_auto_indent_toggle_toggled    (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_prefs_auto_indent_toggle_toggled(GtkToggleButton *togglebutton,
+                                    gpointer data)
 {
     config_file_set_bool("SyntaxSettings", "AutoIndent",
       gtk_toggle_button_get_active(togglebutton));
 }
 
-
 void
-on_prefs_auto_number_toggle_toggled    (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_prefs_auto_number_toggle_toggled(GtkToggleButton *togglebutton,
+                                    gpointer data)
 {
     config_file_set_bool("SyntaxSettings", "AutoNumberSections",
       gtk_toggle_button_get_active(togglebutton));
 }
 
-
 void
-on_prefs_author_changed                (GtkEditable     *editable,
-                                        gpointer         user_data)
+on_prefs_author_changed(GtkEditable *editable, gpointer data)
 {
     config_file_set_string("AppSettings", "AuthorName",
       gtk_entry_get_text(GTK_ENTRY(editable)));
 }
 
-
 void
-on_prefs_clean_build_toggle_toggled    (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_prefs_clean_build_toggle_toggled(GtkToggleButton *togglebutton,
+                                    gpointer data)
 {
     config_file_set_bool("IDESettings", "CleanBuildFiles", 
       gtk_toggle_button_get_active(togglebutton));
 }
 
-
 void
-on_prefs_clean_index_toggle_toggled    (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_prefs_clean_index_toggle_toggled(GtkToggleButton *togglebutton,
+                                    gpointer data)
 {
     config_file_set_bool("IDESettings", "CleanIndexFiles",
       gtk_toggle_button_get_active(togglebutton));
 }
 
-
 void
-on_prefs_show_log_toggle_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_prefs_show_log_toggle_toggled(GtkToggleButton *togglebutton, gpointer data)
 {
     config_file_set_bool("IDESettings", "DebugLogVisible", 
         gtk_toggle_button_get_active(togglebutton));
@@ -725,8 +691,12 @@ get_font_family(void)
     switch(config_file_get_enum("EditorSettings", "FontSet", 
            font_set_lookup_table)) {
         case FONT_SET_PROGRAMMER:
-            return g_strdup("DejaVu Sans Mono,DejaVu Sans LGC Mono,"
-              "Bitstream Vera Sans Mono,Courier New,Luxi Mono,Monospace");
+            return g_strdup(
+              /* TRANSLATORS: This string is a list of monospace fonts in order
+              of preference. Only change it if you need other fonts to display
+              your language. */
+              _("DejaVu Sans Mono,DejaVu Sans LGC Mono,"
+              "Bitstream Vera Sans Mono,Courier New,Luxi Mono,Monospace"));
         case FONT_SET_CUSTOM:
             customfont = config_file_get_string("EditorSettings", "CustomFont");
             if(customfont)
@@ -735,8 +705,11 @@ get_font_family(void)
         default:
             ;
     }
-    return g_strdup("DejaVu Sans,DejaVu LGC Sans,Bitstream Vera Sans,Arial,"
-                    "Luxi Sans,Sans");
+    return g_strdup(
+     /* TRANSLATORS: This string is a list of sans-serif proportional fonts in
+     order of preference. Only change it if you need other fonts to display your
+     language. */
+     _("DejaVu Sans,DejaVu LGC Sans,Bitstream Vera Sans,Arial,Luxi Sans,Sans"));
 }
 
 /* Return the font size in points for the font size setting */

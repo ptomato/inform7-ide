@@ -22,12 +22,10 @@
 #include <gnome.h>
 
 GtkWidget *custom_gtk_source_view_create(gchar *widget_name, gchar *string1,
-  gchar *string2, gint int1, gint int2);
-  
-GtkWidget *source_example_create (gchar *widget_name, gchar *string1,
-  gchar *string2, gint int1, gint int2);
-                
-GtkWidget *tab_example_create (gchar *widget_name, gchar *string1,
-  gchar *string2, gint int1, gint int2);
+                                         gchar *string2, gint int1, gint int2);
+GtkWidget *source_example_create(gchar *widget_name, gchar *string1,
+                                 gchar *string2, gint int1, gint int2);
+GtkWidget *tab_example_create(gchar *widget_name, gchar *string1, 
+                              gchar *string2, gint int1, gint int2);
 
 #endif /* _WIDGETS_H */

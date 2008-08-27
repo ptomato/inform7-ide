@@ -111,7 +111,7 @@ config_file_set_enum(const gchar *path, const gchar *key, const gint value,
                      GConfEnumStringPair lookup_table[])
 {
     config_file_set_string(path, key, 
-                           gconf_enum_to_string(lookup_table, value));
+      gconf_enum_to_string(lookup_table, value));
 }
 
 /* The string must be freed afterward. Returns NULL if key is unset*/
@@ -174,7 +174,7 @@ get_enum_from_entry(GConfEntry *entry, GConfEnumStringPair lookup_table[])
         return -1;
     int enumvalue = -1;
     if(!gconf_string_to_enum(lookup_table, gconf_value_get_string(value), 
-                             &enumvalue))
+      &enumvalue))
         return -1;
     return enumvalue;
 }
@@ -183,8 +183,8 @@ static void
 set_key_to_default(GConfClient *client, GConfEntry *entry)
 {
     gconf_client_set(client, gconf_entry_get_key(entry), 
-                     gconf_client_get_default_from_schema(client,
-                     gconf_entry_get_key(entry), NULL), NULL);
+      gconf_client_get_default_from_schema(client, gconf_entry_get_key(entry),
+      NULL), NULL);
 }
 
 static void
@@ -214,8 +214,8 @@ on_config_custom_font_changed(GConfClient *client, guint id, GConfEntry *entry,
       gconf_value_get_string(gconf_entry_get_value(entry));
     /* update application to reflect new value */
     if(strncmp(newvalue, 
-               gtk_font_button_get_font_name(GTK_FONT_BUTTON(fontbutton)),
-               strlen(newvalue)) != 0)
+      gtk_font_button_get_font_name(GTK_FONT_BUTTON(fontbutton)),
+      strlen(newvalue)) != 0)
         gtk_font_button_set_font_name(GTK_FONT_BUTTON(fontbutton), newvalue);
     update_font(lookup_widget(fontbutton, "source_example"));
     update_font(lookup_widget(fontbutton, "tab_example"));

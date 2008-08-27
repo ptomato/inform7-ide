@@ -24,7 +24,7 @@
 #include <gtkhtml/gtkhtml-stream.h>
 
 GtkWidget *create_html(gchar *widget_name, gchar *string1, gchar *string2,
-  gint int1, gint int2);
+                       gint int1, gint int2);
 void html_load_file(GtkHTML *html, const gchar *filename);
 void html_load_blank(GtkHTML *html);
 void html_refresh(GtkHTML *html);

@@ -39,7 +39,9 @@ static GSList *storylist = NULL;
 
 /* Create and initialize a new story structure, with main window and source
 buffer and skein, etc. */
-Story *new_story() {
+Story *
+new_story() 
+{
     Story *newstory = g_new0(Story, 1);
 
     newstory->filename = NULL;
@@ -131,7 +133,9 @@ Story *new_story() {
 }
 
 /* Free all the resources from the story */
-void delete_story(Story *oldstory) {
+void 
+delete_story(Story *oldstory) 
+{
     storylist = g_slist_remove(storylist, (gconstpointer)oldstory);
 
     stop_project(oldstory);
@@ -180,7 +184,9 @@ void delete_story(Story *oldstory) {
 
 /* Returns the story struct associated with the main window that is the toplevel
 of widget */
-Story *get_story(GtkWidget *widget) {
+Story *
+get_story(GtkWidget *widget) 
+{
     GSList *iter = storylist;
     /* the following is because the menu items do not share the same toplevel
      as the other widgets? */
@@ -195,7 +201,9 @@ Story *get_story(GtkWidget *widget) {
 }
 
 /* Format and set the filename of a story struct */
-void set_story_filename(Story *thestory, gchar *filename) {
+void 
+set_story_filename(Story *thestory, gchar *filename) 
+{
     if(thestory->filename)
         g_free(thestory->filename);
     thestory->filename = g_strdup(filename);
@@ -206,28 +214,36 @@ void set_story_filename(Story *thestory, gchar *filename) {
 }
 
 /* Carry out func for each story window */
-void for_each_story_window(void (*func)(GtkWidget *)) {
+void 
+for_each_story_window(void (*func)(GtkWidget *)) 
+{
     GSList *iter;
     for(iter = storylist; iter != NULL; iter = g_slist_next(iter))
         func(((Story *)iter->data)->window);
 }
 
 /* Carry out func for each story window in idle time */
-void for_each_story_window_idle(GSourceFunc func) {
+void 
+for_each_story_window_idle(GSourceFunc func) 
+{
     GSList *iter;
     for(iter = storylist; iter != NULL; iter = g_slist_next(iter))
         g_idle_add(func, (gpointer)(((Story *)iter->data)->window));
 }
 
 /* Carry out func for each story buffer */
-void for_each_story_buffer(void (*func)(GtkSourceBuffer *)) {
+void 
+for_each_story_buffer(void (*func)(GtkSourceBuffer *)) 
+{
     GSList *iter;
     for(iter = storylist; iter != NULL; iter = g_slist_next(iter))
         func(((Story *)iter->data)->buffer);
 }
 
 /* Return the extension of the output file of this story */
-gchar *get_story_extension(Story *thestory) {
+gchar *
+get_story_extension(Story *thestory) 
+{
     switch(thestory->story_format) {
         case FORMAT_Z5:
             return "z5";

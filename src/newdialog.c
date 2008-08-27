@@ -45,8 +45,9 @@ enum {
 };
 
 /* Change the description text when the selection changes */
-static void project_type_select_selection_changed(GtkTreeSelection *selection,
-gpointer data)
+static void 
+project_type_select_selection_changed(GtkTreeSelection *selection, 
+                                      gpointer data)
 {
     GtkTreeIter iter;
     GtkTreeModel *model;
@@ -72,18 +73,14 @@ gpointer data)
  * FUNCTIONS FOR THE WHOLE DIALOG
  */
 gboolean
-on_new_dialog_delete_event             (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+on_new_dialog_delete_event(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
-    on_new_cancel_clicked(GNOME_DRUID(lookup_widget(widget, "new_druid")), 
-      user_data);
+    on_new_cancel_clicked(GNOME_DRUID(lookup_widget(widget, "new_druid")),data);
     return TRUE;
 }
 
 void
-on_new_cancel_clicked                  (GnomeDruid      *druid,
-                                        gpointer         user_data)
+on_new_cancel_clicked(GnomeDruid *druid, gpointer data)
 {
     gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(druid)));
     /* If we aren't editing a story, go back to the welcome dialog */
@@ -94,8 +91,7 @@ on_new_cancel_clicked                  (GnomeDruid      *druid,
 }
 
 void
-on_new_druid_realize                   (GtkWidget       *widget,
-                                        gpointer         user_data)
+on_new_druid_realize(GtkWidget *widget, gpointer data)
 {
     GtkTreeView *tree = GTK_TREE_VIEW(
       lookup_widget(widget, "project_type_select"));
@@ -111,27 +107,32 @@ on_new_druid_realize                   (GtkWidget       *widget,
     gtk_tree_store_append(store, &iter_parent, NULL); /* Parent iterator */
     gtk_tree_store_set(store, &iter_parent,
       COLUMN_TYPE, TYPE_NOTHING,
-      COLUMN_TYPE_NAME, "Inform 7",
-      COLUMN_DISPLAY_TEXT, "Please choose a project type.",
+      COLUMN_TYPE_NAME, _("Inform 7"),
+      COLUMN_DISPLAY_TEXT, _("Please choose a project type."),
       -1);
     gtk_tree_store_append(store, &iter_child, &iter_parent); /*Child iterator*/
     gtk_tree_store_set(store, &iter_child,
       COLUMN_TYPE, TYPE_INFORM7, 
-      COLUMN_TYPE_NAME, "New project",
-      COLUMN_DISPLAY_TEXT, "The Inform application can create and edit works of"
-      " interactive fiction which use either Inform 7, a natural-language based"
-      " system, or the more traditional computer programming language Inform 6."
-      " By default, new projects are for Inform 7.",
+      COLUMN_TYPE_NAME, _("New project"),
+      COLUMN_DISPLAY_TEXT, 
+      _("Creates an Inform 7 project. The Inform 7 application is a "
+      "natural-language based system for creating and editing works of "
+      "interactive fiction."),
+/*      _("The Inform application can create and edit works "
+      "of interactive fiction which use either Inform 7, a natural-language "
+      "based system, or the more traditional computer programming language "
+      "Inform 6. By default, new projects are for Inform 7."),*/
       -1);
     gtk_tree_store_append(store, &iter_child, &iter_parent); 
     gtk_tree_store_set(store, &iter_child,
       COLUMN_TYPE, TYPE_EXTENSION,
-      COLUMN_TYPE_NAME, "New set of extension rules",
-      COLUMN_DISPLAY_TEXT, "For experienced users of Inform 7. An extension is "
-      "a set of rules which can be used in more than one work of interactive "
-      "fiction, either for your own use or to be contributed to the community.",
+      COLUMN_TYPE_NAME, _("New set of extension rules"),
+      COLUMN_DISPLAY_TEXT, _("For experienced users of Inform 7. An extension "
+      "is a set of rules which can be used in more than one work of "
+      "interactive fiction, either for your own use or to be contributed to the"
+      " community."),
       -1);
-    gtk_tree_store_append(store, &iter_parent, NULL);
+/*    gtk_tree_store_append(store, &iter_parent, NULL);
     gtk_tree_store_set(store, &iter_parent,
       COLUMN_TYPE, TYPE_NOTHING,
       COLUMN_TYPE_NAME, "Inform 6.3",
@@ -151,7 +152,7 @@ on_new_druid_realize                   (GtkWidget       *widget,
       COLUMN_TYPE_NAME, "New project - with one room",
       COLUMN_DISPLAY_TEXT, "Creates an Inform 6.3 project with a minimum "
       "template of source code in place so that it will compile to a one-room "
-      "game. [Not yet implemented in GNOME Inform 7.]", -1);
+      "game. [Not yet implemented in GNOME Inform 7.]", -1);*/
     
     gtk_tree_view_set_model(tree, GTK_TREE_MODEL(store));
     
@@ -175,9 +176,8 @@ on_new_druid_realize                   (GtkWidget       *widget,
 }
 
 gboolean
-on_new_druid_page1_next                (GnomeDruidPage  *gnomedruidpage,
-                                        GtkWidget       *widget,
-                                        gpointer         user_data)
+on_new_druid_page1_next(GnomeDruidPage *gnomedruidpage, GtkWidget*widget,
+                        gpointer data)
 {
     GtkTreeIter iter;
     GtkTreeModel *model;
@@ -213,9 +213,8 @@ on_new_druid_page1_next                (GnomeDruidPage  *gnomedruidpage,
 
 /* This is the callback for all the "Back" buttons on all the different pages */
 gboolean
-go_back_to_type_page                   (GnomeDruidPage  *gnomedruidpage,
-                                        GtkWidget       *widget,
-                                        gpointer         user_data)
+go_back_to_type_page(GnomeDruidPage *gnomedruidpage, GtkWidget *widget,
+                     gpointer data)
 {
     gnome_druid_set_page(GNOME_DRUID(lookup_widget(widget, "new_druid")),
       GNOME_DRUID_PAGE(lookup_widget(widget, "new_druid_type_page")));
@@ -227,8 +226,7 @@ go_back_to_type_page                   (GnomeDruidPage  *gnomedruidpage,
 /* For new Inform projects and extensions; get the author's name from the config
 file and put it in the "new_author" text entry automatically */
 void
-on_new_author_realize                  (GtkWidget       *widget,
-                                        gpointer         user_data)
+on_new_author_realize(GtkWidget *widget, gpointer data)
 {
     gchar *author = 
         g_strstrip(config_file_get_string("AppSettings", "AuthorName"));
@@ -238,7 +236,9 @@ on_new_author_realize                  (GtkWidget       *widget,
 }
 
 /* Get the project name from the text entry and format it */
-static gchar *new_dialog_get_name(GtkWidget *thiswidget) {
+static gchar *
+new_dialog_get_name(GtkWidget *thiswidget) 
+{
     gchar *name = g_strstrip(gtk_editable_get_chars(
       GTK_EDITABLE(lookup_widget(thiswidget, "new_name")), 0, -1));
     char *ext = strchr((char *)name, '.');
@@ -248,14 +248,18 @@ static gchar *new_dialog_get_name(GtkWidget *thiswidget) {
 }
 
 /* Get the author's name from the text entry and format it */
-static gchar *new_dialog_get_author(GtkWidget *thiswidget) {
+static gchar *
+new_dialog_get_author(GtkWidget *thiswidget) 
+{
     gchar *author = g_strstrip(gtk_editable_get_chars(
       GTK_EDITABLE(lookup_widget(thiswidget, "new_author")), 0, -1));
     return author;
 }
 
 /* Get the filename from the text entry and format it */
-static gchar *new_dialog_get_directory(GtkWidget *thiswidget) {
+static gchar *
+new_dialog_get_directory(GtkWidget *thiswidget) 
+{
     gchar *path = gtk_file_chooser_get_filename(
       GTK_FILE_CHOOSER(lookup_widget(thiswidget, "new_directory")));
     gchar *name = new_dialog_get_name(thiswidget);
@@ -268,9 +272,8 @@ static gchar *new_dialog_get_directory(GtkWidget *thiswidget) {
 }
 
 void
-on_new_druid_inform7_page_finish       (GnomeDruidPage  *gnomedruidpage,
-                                        GtkWidget       *widget,
-                                        gpointer         user_data)
+on_new_druid_inform7_page_finish(GnomeDruidPage *gnomedruidpage, 
+                                 GtkWidget *widget, gpointer data)
 {
     gchar *name = new_dialog_get_name(widget);
     gchar *author = new_dialog_get_author(widget);
@@ -280,7 +283,8 @@ on_new_druid_inform7_page_finish       (GnomeDruidPage  *gnomedruidpage,
     const char* invalid = "\\/:*?\"<>|";
     if(strpbrk((char *)name, invalid)) {
         error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(widget)), NULL,
-          "The project name cannot contain any of the following: %s", invalid);
+          _("The project name cannot contain any of the following: %s"), 
+          invalid);
         return;
     }
 
@@ -308,7 +312,9 @@ on_new_druid_inform7_page_finish       (GnomeDruidPage  *gnomedruidpage,
 
 /* Enable the OK button if data in all fields are filled in
    (filechooser always has a default directory set) */
-void update_new_ok_button(GtkEditable *editable, gpointer user_data) {
+void 
+update_new_ok_button(GtkEditable *editable, gpointer data) 
+{
     gchar *name = new_dialog_get_name(GTK_WIDGET(editable));
     gchar *author = new_dialog_get_author(GTK_WIDGET(editable));
     gboolean ok_finish = !(name == NULL || strlen(name) == 0 || author == NULL
@@ -324,21 +330,27 @@ void update_new_ok_button(GtkEditable *editable, gpointer user_data) {
 }
 
 /* Get the extension name from the text entry and format it */
-static gchar *new_ext_get_name(GtkWidget *thiswidget) {
+static gchar *
+new_ext_get_name(GtkWidget *thiswidget) 
+{
     gchar *name = g_strstrip(gtk_editable_get_chars(
       GTK_EDITABLE(lookup_widget(thiswidget, "new_ext_name")), 0, -1));
     return name;
 }
 
 /* Get the author's name from the text entry and format it */
-static gchar *new_ext_get_author(GtkWidget *thiswidget) {
+static gchar *
+new_ext_get_author(GtkWidget *thiswidget) 
+{
     gchar *author = g_strstrip(gtk_editable_get_chars(
       GTK_EDITABLE(lookup_widget(thiswidget, "new_ext_author")), 0, -1));
     return author;
 }
 
 /* Get the filename from the text entry and format it */
-static gchar *new_ext_get_directory(GtkWidget *thiswidget) {
+static gchar *
+new_ext_get_directory(GtkWidget *thiswidget) 
+{
     gchar *path = gtk_file_chooser_get_filename(
       GTK_FILE_CHOOSER(lookup_widget(thiswidget, "new_ext_directory")));
     gchar *name = new_ext_get_name(thiswidget);
@@ -351,8 +363,7 @@ static gchar *new_ext_get_directory(GtkWidget *thiswidget) {
 /* Enable the OK button if data in all fields are filled in
    (filechooser always has a default directory set) */
 void
-update_new_ext_ok_button               (GtkEditable     *editable,
-                                        gpointer         user_data)
+update_new_ext_ok_button(GtkEditable *editable, gpointer data)
 {
     gchar *name = new_ext_get_name(GTK_WIDGET(editable));
     gchar *author = new_ext_get_author(GTK_WIDGET(editable));
@@ -367,7 +378,6 @@ update_new_ext_ok_button               (GtkEditable     *editable,
     g_free(name);
     g_free(author);
 }
-
 
 void
 on_new_druid_extension_page_finish     (GnomeDruidPage  *gnomedruidpage,
@@ -411,9 +421,8 @@ on_new_druid_extension_page_finish     (GnomeDruidPage  *gnomedruidpage,
 
 /* This function will do something when Inform 6 projects are implemented. */
 void
-on_new_druid_inform6_page_finish       (GnomeDruidPage  *gnomedruidpage,
-                                        GtkWidget       *widget,
-                                        gpointer         user_data)
+on_new_druid_inform6_page_finish(GnomeDruidPage *gnomedruidpage, 
+                                 GtkWidget *widget, gpointer data)
 {
     fprintf(stderr, "Finish!\n");
 }

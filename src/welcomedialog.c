@@ -28,7 +28,9 @@
 #include "welcomedialog.h"
 
 /* Returns the label widget from a GtkButton or NULL if not found */
-static GtkWidget *gtk_button_get_label_widget(GtkWidget *button) {
+static GtkWidget *
+gtk_button_get_label_widget(GtkWidget *button) 
+{
     GtkBin *alignment = GTK_BIN(gtk_bin_get_child(GTK_BIN(button)));
     GtkContainer *hbox = GTK_CONTAINER(gtk_bin_get_child(alignment));
     GList *boxchildren = gtk_container_get_children(hbox);
@@ -44,8 +46,7 @@ static GtkWidget *gtk_button_get_label_widget(GtkWidget *button) {
 }
 
 void
-after_welcome_dialog_realize           (GtkWidget       *widget,
-                                        gpointer         user_data)
+after_welcome_dialog_realize(GtkWidget *widget, gpointer data)
 {
     /* Set the background pixmap for this window */
     GtkRcStyle *newstyle = gtk_widget_get_modifier_style(widget);
@@ -104,8 +105,7 @@ after_welcome_dialog_realize           (GtkWidget       *widget,
 }
 
 void
-on_welcome_new_button_clicked          (GtkButton       *button,
-                                        gpointer         user_data)
+on_welcome_new_button_clicked(GtkButton *button, gpointer data)
 {
     GtkWidget *new_dialog = create_new_dialog();
     gtk_widget_show(new_dialog);
@@ -113,15 +113,14 @@ on_welcome_new_button_clicked          (GtkButton       *button,
 }
 
 void
-on_welcome_open_button_clicked         (GtkButton       *button,
-                                        gpointer         user_data)
+on_welcome_open_button_clicked(GtkButton *button, gpointer data)
 {
     Story *thestory;
 
     gtk_widget_hide(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 
     /* Create a file chooser for *.inform */
-    GtkWidget *dialog = gtk_file_chooser_dialog_new("Open Project",
+    GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Open Project"),
       GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(button))),
       GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -153,8 +152,7 @@ on_welcome_open_button_clicked         (GtkButton       *button,
 }
 
 void
-on_welcome_reopen_button_clicked       (GtkButton       *button,
-                                        gpointer         user_data)
+on_welcome_reopen_button_clicked(GtkButton *button, gpointer data)
 {
 #ifndef SUCKY_GNOME
     GtkRecentManager *manager = gtk_recent_manager_get_default();
@@ -177,7 +175,7 @@ on_welcome_reopen_button_clicked       (GtkButton       *button,
                         g_free(projectname);
                     if((projectname = g_filename_from_uri(
                       gtk_recent_info_get_uri(info), NULL, &err)) == NULL) {
-                        g_warning("Cannot get filename from URI: %s",
+                        g_warning(_("Cannot get filename from URI: %s"),
                           err->message);
                         g_error_free(err);
                     }
@@ -221,9 +219,8 @@ on_welcome_reopen_button_clicked       (GtkButton       *button,
 }
 
 gboolean
-on_welcome_dialog_delete_event         (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+on_welcome_dialog_delete_event(GtkWidget *widget, GdkEvent *event, 
+                               gpointer data)
 {
     gtk_main_quit();
     return FALSE;

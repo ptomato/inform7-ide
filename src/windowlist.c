@@ -22,7 +22,9 @@
 
 /* Returns the number of toplevel windows which are GnomeApp instances; that is,
 project windows and extension windows. */
-int get_num_app_windows() {
+int 
+get_num_app_windows() 
+{
     GList *toplevels = gtk_window_list_toplevels();
     GList *iter;
     int num_items = 0;
@@ -34,7 +36,9 @@ int get_num_app_windows() {
 }
 
 /* Closes all windows, asking if we want to save the documents. */
-void close_all_windows() {
+void 
+close_all_windows() 
+{
     GList *toplevels = gtk_window_list_toplevels();
     GList *iter;
     
@@ -48,7 +52,9 @@ void close_all_windows() {
 /* Update the items in the Window menu so that all open appwindows are displayed
 in it, and connect the callback on_window_list_activate to each menu item with
 a pointer to the window as user_data */
-void update_window_list() {
+void 
+update_window_list() 
+{
     GList *toplevels = gtk_window_list_toplevels();
     GList *tl_iter;
     
@@ -70,7 +76,11 @@ void update_window_list() {
     
     int count = 0;
     for(iter = windowlist; iter != NULL; count++, iter = g_slist_next(iter)) {
-        item.label = g_strdup_printf("%d. %s", count + 1,
+        item.label = g_strdup_printf(
+          /* TRANSLATORS: This string is the format for the names of the windows in
+                   the window list menu, i.e. "1. Sample.inform" */
+          _("%d. %s"), 
+          count + 1,
           gtk_window_get_title(GTK_WINDOW((GtkWidget *)(iter->data))));
         item.user_data = (gpointer)(iter->data);
         memcpy(newitems + count, &item, sizeof(GnomeUIInfo));
@@ -97,11 +107,10 @@ void update_window_list() {
 }
 
 void
-on_window_list_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_window_list_activate(GtkMenuItem *menuitem, GtkWidget *window)
 {
     /* Switch to the selected window */
-    gtk_window_present_with_time(GTK_WINDOW((GtkWidget *)user_data),
+    gtk_window_present_with_time(GTK_WINDOW(window),
       gdk_event_get_time(NULL));
     /* What is the reason we have to add the time stamp?? */
 }

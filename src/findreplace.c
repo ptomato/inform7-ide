@@ -27,19 +27,22 @@
 
 /* Scroll the text view so that the cursor is within the inner 25%-75%, if
 possible. */
-static void scroll_text_view_to_cursor(GtkTextView *view) {
+static void 
+scroll_text_view_to_cursor(GtkTextView *view) 
+{
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(view);
     gtk_text_view_scroll_to_mark(view,
         gtk_text_buffer_get_insert(buffer),
         0.25, FALSE, 0.0, 0.0);
 }
 
-
 /* Searches for the next (or previous) occurrence of the string search_text
 and puts it in the text iterators match_start and match_end */
-static gboolean find_next(const gchar *search_text, GtkTextIter *search_from,
-  GtkTextIter *match_start, GtkTextIter *match_end, gboolean ignore_case,
-  gboolean reverse, int algorithm) {
+static gboolean 
+find_next(const gchar *search_text, GtkTextIter *search_from,
+          GtkTextIter *match_start, GtkTextIter *match_end, 
+          gboolean ignore_case, gboolean reverse, int algorithm) 
+{
     gboolean retval, do_it_again;
     /* It's probably better to implement it this way, i.e. non-recursively, so
       that we don't run out of stack space? */
@@ -72,8 +75,10 @@ static gboolean find_next(const gchar *search_text, GtkTextIter *search_from,
     return retval;
 }
 
-static void find(GtkTextBuffer *buffer, const gchar *text, gboolean ignore_case,
-gboolean wrap, gboolean reverse, int algorithm) {
+static void 
+find(GtkTextBuffer *buffer, const gchar *text, gboolean ignore_case,
+     gboolean wrap, gboolean reverse, int algorithm) 
+{
     GtkTextIter cursor, match_start, match_end;
     GtkWidget *dialog;
 
@@ -105,7 +110,7 @@ gboolean wrap, gboolean reverse, int algorithm) {
                 /* Text does not occur in the whole document */
                 dialog = gtk_message_dialog_new(
                   NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
-                  "Search text not found.");
+                  _("Search text not found."));
                 gtk_dialog_run(GTK_DIALOG(dialog));
                 gtk_widget_destroy(dialog);
                 return;
@@ -114,7 +119,7 @@ gboolean wrap, gboolean reverse, int algorithm) {
             /* Wrap is turned off, text was not found */
             dialog = gtk_message_dialog_new(
               NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
-              "Search text not found.");
+              _("Search text not found."));
             gtk_dialog_run(GTK_DIALOG(dialog));
             gtk_widget_destroy(dialog);
             return;
@@ -122,8 +127,10 @@ gboolean wrap, gboolean reverse, int algorithm) {
     }
 }
 
-static int replace_all(GtkTextBuffer *buffer, const gchar *search_text,
-const gchar *replace_text, gboolean ignore_case, int algorithm) {
+static int 
+replace_all(GtkTextBuffer *buffer, const gchar *search_text,
+            const gchar *replace_text, gboolean ignore_case, int algorithm) 
+{
     GtkTextIter cursor, match_start, match_end;
     
     /* Replace All counts as one action for Undo */
@@ -145,9 +152,11 @@ const gchar *replace_text, gboolean ignore_case, int algorithm) {
     return replace_count;
 }
 
-static void replace(GtkTextBuffer *buffer, const gchar *search_text,
-const gchar *replace_text, gboolean ignore_case, gboolean wrap,
-gboolean reverse, int algorithm, gboolean find_next) {
+static void 
+replace(GtkTextBuffer *buffer, const gchar *search_text,
+        const gchar *replace_text, gboolean ignore_case, gboolean wrap,
+        gboolean reverse, int algorithm, gboolean find_next) 
+{
     GtkTextIter insert, selection_bound;
 
     gtk_text_buffer_get_selection_bounds(buffer, &insert, &selection_bound);
@@ -180,18 +189,15 @@ gboolean reverse, int algorithm, gboolean find_next) {
  */
 
 void
-after_find_dialog_realize              (GtkWidget       *widget,
-                                        gpointer         user_data)
+after_find_dialog_realize(GtkWidget *widget, gpointer data)
 {
     /* Set the find algorithm to "contains" */
     gtk_combo_box_set_active(
       GTK_COMBO_BOX(lookup_widget(widget, "find_algorithm")), FIND_CONTAINS);
 }
 
-
 void
-on_find_text_changed                   (GtkEditable     *editable,
-                                        gpointer         user_data)
+on_find_text_changed(GtkEditable *editable, gpointer data)
 {
     /* Do not free or modify the strings from gtk_entry_get_text */
     const gchar *text = gtk_entry_get_text(GTK_ENTRY(editable));
@@ -209,8 +215,7 @@ on_find_text_changed                   (GtkEditable     *editable,
 /* Callback for when "Find Next" is clicked from a Find dialog that was
   started from an Inform 7 project */
 void
-on_find_next_clicked                   (GtkButton       *button,
-                                        Story           *thestory)
+on_find_next_clicked(GtkButton *button, Story *thestory)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
     find(GTK_TEXT_BUFFER(thestory->buffer),
@@ -232,8 +237,7 @@ on_find_next_clicked                   (GtkButton       *button,
 /* Callback for when "Find Next" is clicked from a Find dialog that was
   started from an extension */
 void
-on_xfind_next_clicked                   (GtkButton       *button,
-                                         Extension       *ext)
+on_xfind_next_clicked(GtkButton *button, Extension *ext)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
     find(GTK_TEXT_BUFFER(ext->buffer),
@@ -250,12 +254,10 @@ on_xfind_next_clicked                   (GtkButton       *button,
       GTK_TEXT_VIEW(lookup_widget(ext->window, "ext_code")));
 }
 
-
 /* Callback for when "Find Previous" is clicked from a Find dialog that was
   started from an Inform 7 project */
 void
-on_find_previous_clicked               (GtkButton       *button,
-                                        Story           *thestory)
+on_find_previous_clicked(GtkButton *button, Story *thestory)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
     find(GTK_TEXT_BUFFER(thestory->buffer),
@@ -277,8 +279,7 @@ on_find_previous_clicked               (GtkButton       *button,
 /* Callback for when "Find Previous" is clicked from a Find dialog that was
   started from an extension */
 void
-on_xfind_previous_clicked              (GtkButton       *button,
-                                        Extension       *ext)
+on_xfind_previous_clicked(GtkButton *button, Extension *ext)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
     find(GTK_TEXT_BUFFER(ext->buffer),
@@ -298,8 +299,7 @@ on_xfind_previous_clicked              (GtkButton       *button,
 /* Callback for when "Replace" is clicked from a Find dialog that was
   started from an I7 project */
 void
-on_find_replace_find_clicked           (GtkButton       *button,
-                                        Story           *thestory)
+on_find_replace_find_clicked(GtkButton *button, Story *thestory)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
     replace(GTK_TEXT_BUFFER(thestory->buffer),
@@ -324,8 +324,7 @@ on_find_replace_find_clicked           (GtkButton       *button,
 /* Callback for when "Replace" is clicked from a Find dialog that was
   started from an extension */
 void
-on_xfind_replace_find_clicked          (GtkButton       *button,
-                                        Extension       *ext)
+on_xfind_replace_find_clicked(GtkButton *button, Extension *ext)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
     replace(GTK_TEXT_BUFFER(ext->buffer),
@@ -348,8 +347,7 @@ on_xfind_replace_find_clicked          (GtkButton       *button,
 /* Callback for when "Replace All" is clicked from a Find dialog that was
 started from an I7 project */
 void
-on_find_replace_all_clicked        (GtkButton       *button,
-                                    Story           *thestory)
+on_find_replace_all_clicked(GtkButton *button, Story *thestory)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
     int replace_count = replace_all(
@@ -369,7 +367,7 @@ on_find_replace_all_clicked        (GtkButton       *button,
     GtkWidget *dialog = gtk_message_dialog_new(
       GTK_WINDOW(thestory->window),
       GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
-      "%d occurences replaced.", replace_count);
+      _("%d occurences replaced."), replace_count);
     gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
 }
@@ -377,8 +375,7 @@ on_find_replace_all_clicked        (GtkButton       *button,
 /* Callback for when "Replace All" is clicked from a Find dialog that was
 started from an extension */
 void
-on_xfind_replace_all_clicked        (GtkButton       *button,
-                                     Extension       *ext)
+on_xfind_replace_all_clicked(GtkButton *button, Extension *ext)
 {
     GtkWidget *thiswidget = GTK_WIDGET(button);
     int replace_count = replace_all(
@@ -398,7 +395,7 @@ on_xfind_replace_all_clicked        (GtkButton       *button,
     GtkWidget *dialog = gtk_message_dialog_new(
       GTK_WINDOW(ext->window),
       GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
-      "%d occurences replaced.", replace_count);
+      _("%d occurences replaced."), replace_count);
     gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
 }

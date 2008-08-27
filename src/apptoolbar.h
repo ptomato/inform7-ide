@@ -21,32 +21,13 @@
 
 #include <gnome.h>
 
-void
-on_go_toolbutton_clicked               (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_replay_toolbutton_clicked           (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_stop_toolbutton_clicked             (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_release_toolbutton_clicked          (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_docs_search_activate                (GtkEntry        *entry,
-                                        gpointer         user_data);
-
-gboolean
-on_docs_search_focus                   (GtkWidget       *widget,
-                                        GdkEventFocus   *event,
-                                        gpointer         user_data);
-void
-on_help_toolbutton_clicked             (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
+void on_go_toolbutton_clicked(GtkToolButton *toolbutton, gpointer data);
+void on_replay_toolbutton_clicked(GtkToolButton *toolbutton, gpointer data);
+void on_stop_toolbutton_clicked(GtkToolButton *toolbutton, gpointer data);
+void on_release_toolbutton_clicked(GtkToolButton *toolbutton, gpointer data);
+void on_docs_search_activate(GtkEntry *entry, gpointer data);
+gboolean on_docs_search_focus(GtkWidget *widget, GdkEventFocus *event, 
+                              gpointer data);
+void on_help_toolbutton_clicked(GtkToolButton *toolbutton, gpointer data);
 
 #endif

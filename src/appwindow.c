@@ -74,19 +74,25 @@ get_focused_widget(GtkWidget *thiswidget)
 }
 
 /* Gets a pointer to either the left or the right notebook in this window */
-GtkNotebook *get_notebook(GtkWidget *thiswidget, int right) {
+GtkNotebook *
+get_notebook(GtkWidget *thiswidget, int right) 
+{
     return GTK_NOTEBOOK(lookup_widget(thiswidget,
       right? "notebook_r" : "notebook_l"));
 }
 
 /* Gets the notebook that currently has the focus */
-GtkNotebook *get_current_notebook(GtkWidget *thiswidget) {
+GtkNotebook *
+get_current_notebook(GtkWidget *thiswidget) 
+{
     return GTK_NOTEBOOK(gtk_container_get_focus_child(GTK_CONTAINER(
       lookup_widget(thiswidget, "facingpages"))));
 }
     
 /* Tells whether the focus is in the left or the right notebook */
-int get_current_notebook_side(GtkWidget *thiswidget) {
+int 
+get_current_notebook_side(GtkWidget *thiswidget) 
+{
     GtkWidget *focus = gtk_container_get_focus_child(
       GTK_CONTAINER(lookup_widget(thiswidget, "facingpages")));
     if(focus == lookup_widget(thiswidget, "notebook_l"))
@@ -98,7 +104,9 @@ int get_current_notebook_side(GtkWidget *thiswidget) {
 
 /* Chooses an appropriate notebook to display tab number newtab in. (From the
 Windows source.) */
-int choose_notebook(GtkWidget *thiswidget, int newtab) {
+int 
+choose_notebook(GtkWidget *thiswidget, int newtab) 
+{
 	/* If either panel is showing the same as the new, use that */
     int right = gtk_notebook_get_current_page(get_notebook(thiswidget, RIGHT));
 	if(right == newtab)
@@ -117,34 +125,55 @@ int choose_notebook(GtkWidget *thiswidget, int newtab) {
 }
 
 /* Displays the message text in the status bar of the current window. */
-void display_status_message(GtkWidget *thiswidget, const gchar *message) {
+void 
+display_status_message(GtkWidget *thiswidget, const gchar *message) 
+{
     gnome_appbar_set_status(GNOME_APPBAR(lookup_widget(thiswidget,
       "main_appbar")), message);
 }
 
 /* Pulses the progress bar */
-void display_status_busy(GtkWidget *thiswidget) {
+void 
+display_status_busy(GtkWidget *thiswidget) 
+{
     gtk_progress_bar_pulse(gnome_appbar_get_progress(GNOME_APPBAR(lookup_widget(
       thiswidget, "main_appbar"))));
 }
 
 /* Displays a percentage in the progress indicator */
-void display_status_percentage(GtkWidget *thiswidget, gdouble fraction) {
+void 
+display_status_percentage(GtkWidget *thiswidget, gdouble fraction) 
+{
     gtk_progress_bar_set_fraction(gnome_appbar_get_progress(
       GNOME_APPBAR(lookup_widget(thiswidget, "main_appbar"))),
       fraction);
 }
 
 /* Clears all status indicators */
-void clear_status(GtkWidget *thiswidget) {
+void 
+clear_status(GtkWidget *thiswidget) 
+{
     GnomeAppBar *bar = GNOME_APPBAR(lookup_widget(thiswidget, "main_appbar"));
     gtk_progress_bar_set_fraction(gnome_appbar_get_progress(bar), 0.0);
     gtk_progress_bar_set_text(gnome_appbar_get_progress(bar), "");
     gnome_appbar_set_status(bar, "");
 }
 
+/* Do the dialog box asking if the user wants to quit the application */
+int
+do_quit_dialog()
+{
+    GtkWidget *dialog = gtk_message_dialog_new(NULL, 0, GTK_MESSAGE_QUESTION, 
+      GTK_BUTTONS_YES_NO, _("Quit GNOME Inform 7?"));
+    gint result = gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+    return result;
+}
+
 /* Create the Open Recent submenu */
-GtkWidget *create_open_recent_submenu() {
+GtkWidget *
+create_open_recent_submenu() 
+{
 #ifndef SUCKY_GNOME
     GtkWidget *recent_menu = gtk_recent_chooser_menu_new();
     gtk_recent_chooser_set_limit(GTK_RECENT_CHOOSER(recent_menu), -1);
@@ -160,13 +189,15 @@ GtkWidget *create_open_recent_submenu() {
 }
 
 /* Create the Open Extension submenu and return it*/
-GtkWidget *create_open_extension_submenu() {
+GtkWidget *
+create_open_extension_submenu() 
+{
     GError *err = NULL;
     gchar *extension_dir = get_extension_path(NULL, NULL);
     GDir *extensions = g_dir_open(extension_dir, 0, &err);
     g_free(extension_dir);
     if(err) {
-        error_dialog(NULL, err, "Error opening extensions directory: ");
+        error_dialog(NULL, err, _("Error opening extensions directory: "));
         return NULL;
     }
     
@@ -192,7 +223,7 @@ GtkWidget *create_open_extension_submenu() {
         GDir *author = g_dir_open(author_dir, 0, &err);
         g_free(author_dir);
         if(err) {
-            error_dialog(NULL, err, "Error opening extensions directory: ");
+            error_dialog(NULL, err, _("Error opening extensions directory: "));
             return NULL;
         }
         const gchar *author_entry;
@@ -236,15 +267,14 @@ GtkWidget *create_open_extension_submenu() {
 
 /* Set up things whenever an app_window is created. */ 
 void
-after_app_window_realize               (GtkWidget       *widget,
-                                        gpointer         user_data)
+after_app_window_realize(GtkWidget *widget, gpointer data)
 {
     /* Set the last saved window size and slider position */
     gtk_window_resize(GTK_WINDOW(widget), 
-                      config_file_get_int("WindowSettings", "AppWindowWidth"),
-                      config_file_get_int("WindowSettings", "AppWindowHeight"));
+      config_file_get_int("WindowSettings", "AppWindowWidth"),
+      config_file_get_int("WindowSettings", "AppWindowHeight"));
     gtk_paned_set_position(GTK_PANED(lookup_widget(widget, "facingpages")),
-                           config_file_get_int("WindowSettings", "SliderPosition"));
+       config_file_get_int("WindowSettings", "SliderPosition"));
     
     /* Create some submenus and attach them */
     GtkWidget *menu;
@@ -278,9 +308,11 @@ after_app_window_realize               (GtkWidget       *widget,
         
     /* Set the Errors/Progress to a monospace font */
     PangoFontDescription *font = pango_font_description_new();
-    pango_font_description_set_family(font, "DejaVu Sans Mono,"
-      "DejaVu LGC Sans Mono,Bitstream Vera Sans Mono,Courier New,Luxi Mono,"
-      "Monospace");
+    pango_font_description_set_family(font,
+    /* TRANSLATORS: Change this list of fonts if your language requires other
+    fonts to display it */
+      _("DejaVu Sans Mono,DejaVu LGC Sans Mono,Bitstream Vera Sans Mono,"
+      "Courier New,Luxi Mono,Monospace"));
     pango_font_description_set_size(font, 10 * PANGO_SCALE);
     gtk_widget_modify_font(lookup_widget(widget, "compiler_output_l"), font);
     gtk_widget_modify_font(lookup_widget(widget, "compiler_output_r"), font);
@@ -323,13 +355,13 @@ after_app_window_realize               (GtkWidget       *widget,
     /* Create empty menus for the Headings and Skein Labels buttons so they 
     become active */
     gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(lookup_widget(widget,
-                                  "source_headings_l")), gtk_menu_new());
+      "source_headings_l")), gtk_menu_new());
     gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(lookup_widget(widget,
-                                  "source_headings_r")), gtk_menu_new());
+      "source_headings_r")), gtk_menu_new());
     gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(lookup_widget(widget,
-                                  "skein_labels_l")), gtk_menu_new());
+      "skein_labels_l")), gtk_menu_new());
     gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(lookup_widget(widget,
-                                  "skein_labels_r")), gtk_menu_new());
+      "skein_labels_r")), gtk_menu_new());
     
     /* Show the inspector window if necessary */
     if(config_file_get_bool("IDESettings", "InspectorVisible")) {
@@ -341,51 +373,40 @@ after_app_window_realize               (GtkWidget       *widget,
 /* Whenever a main window receives the focus, make the inspector display that
    story's data */
 gboolean
-on_app_window_focus_in_event           (GtkWidget       *widget,
-                                        GdkEventFocus   *event,
-                                        gpointer         user_data)
+on_app_window_focus_in_event(GtkWidget *widget, GdkEventFocus *event, 
+                             gpointer data)
 {
     refresh_inspector(get_story(widget));
     return FALSE;
 }
 
 void
-on_back_l_clicked                      (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+on_back_l_clicked(GtkToolButton *toolbutton, gpointer data)
 {
     go_back(get_story(GTK_WIDGET(toolbutton)), LEFT);
 }
 
-
 void
-on_forward_l_clicked                   (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+on_forward_l_clicked(GtkToolButton *toolbutton, gpointer data)
 {
     go_forward(get_story(GTK_WIDGET(toolbutton)), LEFT);
 }
 
-
 void
-on_back_r_clicked                      (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+on_back_r_clicked(GtkToolButton *toolbutton, gpointer data)
 {
     go_back(get_story(GTK_WIDGET(toolbutton)), RIGHT);
 }
 
-
 void
-on_forward_r_clicked                   (GtkToolButton   *toolbutton,
-                                        gpointer         user_data)
+on_forward_r_clicked(GtkToolButton *toolbutton, gpointer data)
 {
     go_forward(get_story(GTK_WIDGET(toolbutton)), RIGHT);
 }
 
-
 void
-after_notebook_l_switch_page           (GtkNotebook     *notebook,
-                                        GtkNotebookPage *page,
-                                        guint            page_num,
-                                        gpointer         user_data)
+after_notebook_l_switch_page(GtkNotebook *notebook, GtkNotebookPage *page,
+                             guint page_num, gpointer data)
 {
     Story *thestory = get_story(GTK_WIDGET(notebook));
     switch(page_num) {
@@ -418,59 +439,49 @@ after_notebook_l_switch_page           (GtkNotebook     *notebook,
 #endif /* I_LIKE_SKEIN */
 }
 
-
 void
-after_errors_notebook_l_switch_page    (GtkNotebook     *notebook,
-                                        GtkNotebookPage *page,
-                                        guint            page_num,
-                                        gpointer         user_data)
+after_errors_notebook_l_switch_page(GtkNotebook *notebook,
+                                    GtkNotebookPage *page, guint page_num,
+                                    gpointer data)
 {
     if(gtk_notebook_get_current_page(get_notebook(GTK_WIDGET(notebook), LEFT))
        == TAB_ERRORS)
         history_push_subtab(get_story(GTK_WIDGET(notebook)), LEFT, TAB_ERRORS,
-                            page_num);
+          page_num);
 }
 
-
 void
-after_index_notebook_l_switch_page     (GtkNotebook     *notebook,
-                                        GtkNotebookPage *page,
-                                        guint            page_num,
-                                        gpointer         user_data)
+after_index_notebook_l_switch_page(GtkNotebook *notebook, GtkNotebookPage *page,
+                                   guint page_num, gpointer data)
 {
     if(gtk_notebook_get_current_page(get_notebook(GTK_WIDGET(notebook), LEFT))
        == TAB_INDEX)
         history_push_subtab(get_story(GTK_WIDGET(notebook)), LEFT, TAB_INDEX,
-                            page_num);
+          page_num);
 }
 
-
 void
-after_notebook_r_switch_page           (GtkNotebook     *notebook,
-                                        GtkNotebookPage *page,
-                                        guint            page_num,
-                                        gpointer         user_data)
+after_notebook_r_switch_page(GtkNotebook *notebook, GtkNotebookPage *page,
+                             guint page_num, gpointer user_data)
 {
     Story *thestory = get_story(GTK_WIDGET(notebook));
     switch(page_num) {
         case TAB_ERRORS:
             history_push_subtab(thestory, RIGHT, page_num,
-                                gtk_notebook_get_current_page(GTK_NOTEBOOK(
-                                lookup_widget(GTK_WIDGET(notebook),
-                                "errors_notebook_r"))));
+              gtk_notebook_get_current_page(GTK_NOTEBOOK(lookup_widget(
+              GTK_WIDGET(notebook), "errors_notebook_r"))));
             break;
         case TAB_INDEX:
             history_push_subtab(thestory, RIGHT, page_num,
-                                gtk_notebook_get_current_page(GTK_NOTEBOOK(
-                                lookup_widget(GTK_WIDGET(notebook),
-                                "index_notebook_r"))));
+              gtk_notebook_get_current_page(GTK_NOTEBOOK(lookup_widget(
+              GTK_WIDGET(notebook), "index_notebook_r"))));
             break;
         case TAB_DOCUMENTATION:
             /* If we're switching to the documentation tab, then we have no URL
             to push. In that case we must be displaying the last one from the
             history. */
             history_push_docpage(thestory, RIGHT,
-                                 history_get_last_docpage(thestory, RIGHT));
+              history_get_last_docpage(thestory, RIGHT));
             break;
         default:
             history_push_tab(thestory, RIGHT, page_num);
@@ -482,32 +493,26 @@ after_notebook_r_switch_page           (GtkNotebook     *notebook,
 #endif /* I_LIKE_SKEIN */
 }
 
-
 void
-after_errors_notebook_r_switch_page    (GtkNotebook     *notebook,
-                                        GtkNotebookPage *page,
-                                        guint            page_num,
-                                        gpointer         user_data)
+after_errors_notebook_r_switch_page(GtkNotebook *notebook,
+                                    GtkNotebookPage *page, guint page_num,
+                                    gpointer data)
 {
     if(gtk_notebook_get_current_page(get_notebook(GTK_WIDGET(notebook), RIGHT))
        == TAB_ERRORS)
         history_push_subtab(get_story(GTK_WIDGET(notebook)), RIGHT, TAB_ERRORS,
-                            page_num);
+          page_num);
 }
 
-
 void
-after_index_notebook_r_switch_page     (GtkNotebook     *notebook,
-                                        GtkNotebookPage *page,
-                                        guint            page_num,
-                                        gpointer         user_data)
+after_index_notebook_r_switch_page(GtkNotebook *notebook, GtkNotebookPage *page,
+                                   guint page_num, gpointer data)
 {
     if(gtk_notebook_get_current_page(get_notebook(GTK_WIDGET(notebook), RIGHT))
        == TAB_INDEX)
         history_push_subtab(get_story(GTK_WIDGET(notebook)), RIGHT, TAB_INDEX,
-                            page_num);
+          page_num);
 }
-
 
 /* Save window size and slider position */
 static void
@@ -518,29 +523,18 @@ save_app_window_size(GtkWindow *window)
     config_file_set_int("WindowSettings", "AppWindowWidth", w);
     config_file_set_int("WindowSettings", "AppWindowHeight", h);
     config_file_set_int("WindowSettings", "SliderPosition",
-                        gtk_paned_get_position(
-                        GTK_PANED(lookup_widget(GTK_WIDGET(window),
-                        "facingpages"))));
+      gtk_paned_get_position(GTK_PANED(lookup_widget(GTK_WIDGET(window),
+      "facingpages"))));
 }
 
-
 gboolean
-on_app_window_delete_event             (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+on_app_window_delete_event(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
     if(verify_save(widget)) {
         Story *thestory = get_story(GTK_WIDGET(widget));
 
-        if(get_num_app_windows() == 1) {
-            GtkWidget *dialog = gtk_message_dialog_new(
-              GTK_WINDOW(thestory->window), GTK_DIALOG_DESTROY_WITH_PARENT,
-              GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "Quit GNOME Inform 7?");
-            gint result = gtk_dialog_run(GTK_DIALOG(dialog));
-            gtk_widget_destroy(dialog);
-            if(result != GTK_RESPONSE_YES)
-                return TRUE;
-        }
+        if(get_num_app_windows() == 1 && do_quit_dialog() != GTK_RESPONSE_YES)
+            return TRUE;
 
         save_app_window_size(GTK_WINDOW(widget));
         delete_story(thestory);
@@ -557,8 +551,7 @@ on_app_window_delete_event             (GtkWidget       *widget,
 the story has not been freed. It will ask if we want to save, but not offer a
 choice to cancel. */
 void
-on_app_window_destroy                  (GtkObject       *object,
-                                        gpointer         user_data)
+on_app_window_destroy(GtkObject *object, gpointer data)
 {
     Story *thestory = get_story(GTK_WIDGET(object));
     if(thestory == NULL)
@@ -572,13 +565,13 @@ on_app_window_destroy                  (GtkObject       *object,
           GTK_DIALOG_DESTROY_WITH_PARENT,
           GTK_MESSAGE_WARNING,
           GTK_BUTTONS_NONE,
-          "<b><big>Save changes to project '%s' before closing?</big></b>",
+          _("<b><big>Save changes to project '%s' before closing?</big></b>"),
           filename);
         gtk_message_dialog_format_secondary_text(
           GTK_MESSAGE_DIALOG(save_changes_dialog),
-          "If you don't save, your changes will be lost.");
+          _("If you don't save, your changes will be lost."));
         gtk_dialog_add_buttons(GTK_DIALOG(save_changes_dialog),
-          "Close _without saving", GTK_RESPONSE_REJECT,
+          _("Close _without saving"), GTK_RESPONSE_REJECT,
           GTK_STOCK_SAVE, GTK_RESPONSE_OK,
           NULL);
         gint result = gtk_dialog_run(GTK_DIALOG(save_changes_dialog));

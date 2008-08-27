@@ -28,11 +28,9 @@ GList *search_project(const gchar *text, Story *thestory, gboolean ignore_case,
 GList *search_extensions(const gchar*text, gboolean ignore_case, int algorithm);
 GtkWidget *new_search_window(GtkWidget *main_window, const gchar *text,
                              GList *results);
-
-void
-on_search_results_view_row_activated   (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data);
+void on_search_results_view_row_activated(GtkTreeView *treeview, 
+                                          GtkTreePath *path,
+                                          GtkTreeViewColumn *column,
+                                          GtkWidget *main_window);
 
 #endif /* _SEARCHWINDOW_H */

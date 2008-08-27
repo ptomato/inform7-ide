@@ -82,145 +82,60 @@ gboolean update_ext_window_tabs(GtkWidget *widget);
 gboolean update_app_window_tabs(GtkWidget *widget);
 gboolean update_app_window_font_sizes(GtkWidget *window);
 void update_source_highlight(GtkSourceBuffer *buffer);
-
-void
-on_prefs_dialog_realize                (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-gboolean
-on_prefs_i7_extensions_view_drag_drop  (GtkWidget       *widget,
-                                        GdkDragContext  *drag_context,
-                                        gint             x,
-                                        gint             y,
-                                        guint            time,
-                                        gpointer         user_data);
-
-void
-on_prefs_i7_extensions_view_drag_data_received
-                                        (GtkWidget       *widget,
-                                        GdkDragContext  *drag_context,
-                                        gint             x,
-                                        gint             y,
-                                        GtkSelectionData *data,
-                                        guint            info,
-                                        guint            time,
-                                        gpointer         user_data);
-
-void
-on_prefs_font_set_realize              (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_prefs_font_styling_realize          (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_prefs_font_size_realize             (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_prefs_change_colors_realize         (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_prefs_color_set_realize             (GtkWidget       *widget,
-                                        gpointer         user_data);
-                                        
-void
-on_prefs_font_set_changed              (GtkComboBox     *combobox,
-                                        gpointer         user_data);
-
-void
-on_prefs_custom_font_font_set          (GtkFontButton   *fontbutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_font_styling_changed          (GtkComboBox     *combobox,
-                                        gpointer         user_data);
-
-void
-on_prefs_font_size_changed             (GtkComboBox     *combobox,
-                                        gpointer         user_data);
-
-void
-on_prefs_change_colors_changed         (GtkComboBox     *combobox,
-                                        gpointer         user_data);
-
-void
-on_prefs_color_set_changed             (GtkComboBox     *combobox,
-                                        gpointer         user_data);
-
-void
-on_tab_ruler_value_changed             (GtkRange        *range,
-                                        gpointer         user_data);
-
-gchar*
-on_tab_ruler_format_value              (GtkScale        *scale,
-                                        gdouble          value,
-                                        gpointer         user_data);
-
-void
-on_prefs_notes_toggle_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_headings_toggle_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_skein_toggle_toggled          (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_search_toggle_toggled         (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_i7_extension_add_clicked      (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_prefs_i7_extension_remove_clicked   (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_prefs_enable_highlighting_toggle_toggled
-                                        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_follow_symbols_toggle_toggled (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_intelligent_inspector_toggle_toggled
-                                        (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_auto_indent_toggle_toggled    (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_auto_number_toggle_toggled    (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_author_changed                (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_prefs_clean_build_toggle_toggled    (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_clean_index_toggle_toggled    (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_prefs_show_log_toggle_toggled       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-                                        
+void on_prefs_dialog_realize(GtkWidget *widget, gpointer data);
+gboolean on_prefs_i7_extensions_view_drag_drop(GtkWidget *widget,
+                                               GdkDragContext  *drag_context,
+                                               gint x, gint y, guint time,
+                                               gpointer data);
+void on_prefs_i7_extensions_view_drag_data_received(GtkWidget *widget,
+                                                    GdkDragContext *
+                                                      drag_context,
+                                                    gint x, gint y,
+                                                    GtkSelectionData *
+                                                      selectiondata,
+                                                    guint info, guint time,
+                                                    gpointer data);
+void on_prefs_font_set_realize(GtkWidget *widget, gpointer data);
+void on_prefs_font_styling_realize(GtkWidget *widget, gpointer data);
+void on_prefs_font_size_realize(GtkWidget *widget, gpointer data);
+void on_prefs_change_colors_realize(GtkWidget *widget, gpointer data);
+void on_prefs_color_set_realize(GtkWidget *widget, gpointer data);
+void on_prefs_font_set_changed(GtkComboBox *combobox, gpointer data);
+void on_prefs_custom_font_font_set(GtkFontButton *fontbutton, gpointer data);
+void on_prefs_font_styling_changed(GtkComboBox *combobox, gpointer data);
+void on_prefs_font_size_changed(GtkComboBox *combobox, gpointer data);
+void on_prefs_change_colors_changed(GtkComboBox *combobox, gpointer data);
+void on_prefs_color_set_changed(GtkComboBox *combobox, gpointer data);
+void on_tab_ruler_value_changed(GtkRange *range, gpointer data);
+gchar *on_tab_ruler_format_value(GtkScale *scale, gdouble value, gpointer data);
+void on_prefs_notes_toggle_toggled(GtkToggleButton *togglebutton,
+                                   gpointer data);
+void on_prefs_headings_toggle_toggled(GtkToggleButton *togglebutton,
+                                      gpointer data);
+void on_prefs_skein_toggle_toggled(GtkToggleButton *togglebutton,
+                                   gpointer data);
+void on_prefs_search_toggle_toggled(GtkToggleButton *togglebutton,
+                                    gpointer data);
+void on_prefs_i7_extension_add_clicked(GtkButton *button, gpointer data);
+void on_prefs_i7_extension_remove_clicked(GtkButton *button, gpointer data);
+void on_prefs_enable_highlighting_toggle_toggled(GtkToggleButton *togglebutton,
+                                                 gpointer data);
+void on_prefs_follow_symbols_toggle_toggled(GtkToggleButton *togglebutton,
+                                            gpointer data);
+void on_prefs_intelligent_inspector_toggle_toggled(GtkToggleButton *
+                                                     togglebutton,
+                                                   gpointer data);
+void on_prefs_auto_indent_toggle_toggled(GtkToggleButton *togglebutton,
+                                         gpointer data);
+void on_prefs_auto_number_toggle_toggled(GtkToggleButton *togglebutton,
+                                         gpointer data);
+void on_prefs_author_changed(GtkEditable *editable, gpointer data);
+void on_prefs_clean_build_toggle_toggled(GtkToggleButton *togglebutton,
+                                         gpointer data);
+void on_prefs_clean_index_toggle_toggled(GtkToggleButton *togglebutton,
+                                         gpointer data);
+void on_prefs_show_log_toggle_toggled(GtkToggleButton *togglebutton,
+                                      gpointer data);
 void update_style(GtkSourceView *thiswidget);
 void update_font(GtkWidget *thiswidget);
 void update_font_size(GtkWidget *thiswidget);
@@ -228,4 +143,5 @@ void update_tabs(GtkSourceView *thiswidget);
 gchar *get_font_family(void);
 int get_font_size(void);
 PangoFontDescription *get_font_description(void);
+
 #endif

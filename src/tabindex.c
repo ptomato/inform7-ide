@@ -25,7 +25,9 @@
 #include "story.h"
 
 /* Load blank pages in all the index tabs */
-/*void blank_index_tabs(GtkWidget *thiswidget) {
+/*void 
+blank_index_tabs(GtkWidget *thiswidget) 
+{
     html_load_blank(GTK_HTML(lookup_widget(thiswidget, "actions_l")));
     html_load_blank(GTK_HTML(lookup_widget(thiswidget, "actions_r")));
     html_load_blank(GTK_HTML(lookup_widget(thiswidget, "contents_l")));
@@ -42,124 +44,73 @@
     html_load_blank(GTK_HTML(lookup_widget(thiswidget, "world_r")));
 }*/
 
+static void
+load_index_file(Story *thestory, const gchar *file, const gchar *lwidget, 
+                const gchar *rwidget)
+{
+    gchar *filename = g_build_filename(thestory->filename, "Index", file, NULL);
+    if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
+        html_load_file(GTK_HTML(lookup_widget(thestory->window, lwidget)),
+          filename);
+        html_load_file(GTK_HTML(lookup_widget(thestory->window, rwidget)),
+          filename);
+    } else {
+        html_load_blank(GTK_HTML(lookup_widget(thestory->window, lwidget)));
+        html_load_blank(GTK_HTML(lookup_widget(thestory->window, rwidget)));
+    }
+    g_free(filename);
+}
+
 /* Idle function to check whether an index file exists and to load it, or a
 blank page if it doesn't exist. */
-static gboolean check_and_load_idle(gpointer thestory) {
+static gboolean 
+check_and_load_idle(Story *thestory) 
+{
     static int counter = TAB_INDEX_FIRST;
-    GtkWidget *widget = ((Story *)thestory)->window;
-    gchar *filename = NULL;
+    GtkWidget *widget = thestory->window;
     
     switch(counter) {
     case TAB_INDEX_ACTIONS:
-        filename = g_build_filename(((Story *)thestory)->filename,
-          "Index", "Actions.html", NULL);
-        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
-            html_load_file(GTK_HTML(lookup_widget(widget, "actions_l")),
-              filename);
-            html_load_file(GTK_HTML(lookup_widget(widget, "actions_r")),
-              filename);
-        } else {
-            html_load_blank(GTK_HTML(lookup_widget(widget, "actions_l")));
-            html_load_blank(GTK_HTML(lookup_widget(widget, "actions_r")));
-        }
+        load_index_file(thestory, "Actions.html", "actions_l", "actions_r");
         break;
     case TAB_INDEX_CONTENTS:
-        filename = g_build_filename(((Story *)thestory)->filename,
-          "Index", "Contents.html", NULL);
-        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
-            html_load_file(GTK_HTML(lookup_widget(widget, "contents_l")),
-              filename);
-            html_load_file(GTK_HTML(lookup_widget(widget, "contents_r")),
-              filename);
-        } else {
-            html_load_blank(GTK_HTML(lookup_widget(widget, "contents_l")));
-            html_load_blank(GTK_HTML(lookup_widget(widget, "contents_r")));
-        }
+        load_index_file(thestory, "Contents.html", "contents_l", 
+          "contents_r");
         break;
     case TAB_INDEX_KINDS:
-        filename = g_build_filename(((Story *)thestory)->filename,
-          "Index", "Kinds.html", NULL);
-        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
-            html_load_file(GTK_HTML(lookup_widget(widget, "kinds_l")),
-              filename);
-            html_load_file(GTK_HTML(lookup_widget(widget, "kinds_r")),
-              filename);
-        } else {
-            html_load_blank(GTK_HTML(lookup_widget(widget, "kinds_l")));
-            html_load_blank(GTK_HTML(lookup_widget(widget, "kinds_r")));
-        }
+        load_index_file(thestory, "Kinds.html", "kinds_l", "kinds_r");
         break;
     case TAB_INDEX_PHRASEBOOK:
-        filename = g_build_filename(((Story *)thestory)->filename,
-          "Index", "Phrasebook.html", NULL);
-        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
-            html_load_file(GTK_HTML(lookup_widget(widget, "phrasebook_l")),
-              filename);
-            html_load_file(GTK_HTML(lookup_widget(widget, "phrasebook_r")),
-              filename);
-        } else {
-            html_load_blank(GTK_HTML(lookup_widget(widget, "phrasebook_l")));
-            html_load_blank(GTK_HTML(lookup_widget(widget, "phrasebook_r")));
-        }
+        load_index_file(thestory, "Phrasebook.html", "phrasebook_l", 
+          "phrasebook_r");
         break;
     case TAB_INDEX_RULES:
-        filename = g_build_filename(((Story *)thestory)->filename,
-          "Index", "Rules.html", NULL);
-        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
-            html_load_file(GTK_HTML(lookup_widget(widget, "rules_l")),
-              filename);
-            html_load_file(GTK_HTML(lookup_widget(widget, "rules_r")),
-              filename);
-        } else {
-            html_load_blank(GTK_HTML(lookup_widget(widget, "rules_l")));
-            html_load_blank(GTK_HTML(lookup_widget(widget, "rules_r")));
-        }
+        load_index_file(thestory, "Rules.html", "rules_l", "rules_r");
         break;
     case TAB_INDEX_SCENES:
-        filename = g_build_filename(((Story *)thestory)->filename,
-          "Index", "Scenes.html", NULL);
-        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
-            html_load_file(GTK_HTML(lookup_widget(widget, "scenes_l")),
-              filename);
-            html_load_file(GTK_HTML(lookup_widget(widget, "scenes_r")),
-              filename);
-        } else {
-            html_load_blank(GTK_HTML(lookup_widget(widget, "scenes_l")));
-            html_load_blank(GTK_HTML(lookup_widget(widget, "scenes_r")));
-        }
+        load_index_file(thestory, "Scenes.html", "scenes_l", "scenes_r");
         break;
     case TAB_INDEX_WORLD:
     default:
-        filename = g_build_filename(((Story *)thestory)->filename,
-          "Index", "World.html", NULL);
-        if(g_file_test(filename, G_FILE_TEST_EXISTS)) {
-            html_load_file(GTK_HTML(lookup_widget(widget, "world_l")),
-              filename);
-            html_load_file(GTK_HTML(lookup_widget(widget, "world_r")),
-              filename);
-        } else {
-            html_load_blank(GTK_HTML(lookup_widget(widget, "world_l")));
-            html_load_blank(GTK_HTML(lookup_widget(widget, "world_r")));
-        }
-        g_free(filename);
+        load_index_file(thestory, "World.html", "world_l", "world_r");
         counter = TAB_INDEX_FIRST; /* next time, load the first tab */
         clear_status(widget);
         return FALSE; /* quit the cycle */
     }
-    
-    g_free(filename);
-    
+        
     /* Update the status bar */
     display_status_percentage(widget,
       (gdouble)counter / (gdouble)TAB_INDEX_LAST);
-    display_status_message(widget, "Reloading index...");
+    display_status_message(widget, _("Reloading index..."));
     
     counter++; /* next time, load the next tab */
     return TRUE; /* make sure there is a next time */
 }
 
 /* Load all the correct files in the index tabs, if they exist */
-void reload_index_tabs(Story *thestory, gboolean wait) {
+void 
+reload_index_tabs(Story *thestory, gboolean wait) 
+{
     if(wait)
         while(check_and_load_idle((gpointer)thestory))
             ;

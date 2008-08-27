@@ -27,7 +27,9 @@
 #include "lang.h"
 
 /* Add the debugging tabs to this main window */
-void add_debug_tabs(GtkWidget *window) {
+void 
+add_debug_tabs(GtkWidget *window) 
+{
     gtk_widget_show(lookup_widget(window, "debugging_page_l"));
     gtk_widget_show(lookup_widget(window, "debugging_page_r"));
     gtk_widget_show(lookup_widget(window, "inform6_page_l"));
@@ -35,7 +37,9 @@ void add_debug_tabs(GtkWidget *window) {
 }
 
 /* Remove the debugging tabs from this window */
-void remove_debug_tabs(GtkWidget *window) {
+void 
+remove_debug_tabs(GtkWidget *window) 
+{
     gtk_widget_hide(lookup_widget(window, "debugging_page_l"));
     gtk_widget_hide(lookup_widget(window, "debugging_page_r"));
     gtk_widget_hide(lookup_widget(window, "inform6_page_l"));
@@ -43,7 +47,9 @@ void remove_debug_tabs(GtkWidget *window) {
 }
 
 /* Set up the Inform 6 highlighting */
-GtkSourceBuffer *create_inform6_source_buffer() {
+GtkSourceBuffer *
+create_inform6_source_buffer() 
+{
     GtkSourceBuffer *i6buffer = gtk_source_buffer_new(NULL);
 
     set_buffer_language(i6buffer, "inform");

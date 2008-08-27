@@ -45,21 +45,24 @@
  * FUNCTIONS FOR SETTING UP FILE MONITORS
  */
 
-static GnomeVFSMonitorHandle *monitor_file(const gchar *filename,
-  GnomeVFSMonitorCallback callback, gpointer data) {
+static GnomeVFSMonitorHandle *
+monitor_file(const gchar *filename, GnomeVFSMonitorCallback callback, 
+             gpointer data) 
+{
     GnomeVFSMonitorHandle *retval;
     GError *err = NULL;
     gchar *file_uri;
 
     if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
         /* fail discreetly */
-        g_warning("Cannot convert project filename to URI: %s", err->message);
+        g_warning(_("Cannot convert project filename to URI: %s"), 
+          err->message);
         g_error_free(err);
         return NULL;
     }
     if(gnome_vfs_monitor_add(&retval, file_uri, GNOME_VFS_MONITOR_FILE,
       callback, data) != GNOME_VFS_OK) {
-        g_warning("Could not start file monitor for %s", file_uri);
+        g_warning(_("Could not start file monitor for %s"), file_uri);
         g_free(file_uri);
         return NULL;
     }
@@ -76,26 +79,26 @@ project_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
       || event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
         /* g_file_set_contents works by deleting and creating */
         GtkWidget *dialog = gtk_message_dialog_new(
-        (GtkWindow *)thestory->window, GTK_DIALOG_DESTROY_WITH_PARENT,
-        GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
-        "The game's source code has been modified from outside Inform.\n"
-        "Do you want to reload it?");
+          (GtkWindow *)thestory->window, GTK_DIALOG_DESTROY_WITH_PARENT,
+          GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
+          _("The game's source code has been modified from outside Inform.\n"
+          "Do you want to reload it?"));
         if(gtk_dialog_run((GtkDialog *)dialog) == GTK_RESPONSE_YES) {
             GError *err = NULL;
             gchar *filename, *text;
             
             /* Read the source */
             if((filename = g_filename_from_uri(info_uri, NULL, &err)) == NULL) {
-                g_warning("Cannot get filename from URI: %s", err->message);
+                g_warning(_("Cannot get filename from URI: %s"), err->message);
                 g_error_free(err);
                 gtk_widget_destroy(dialog);
                 return;
             }
             if(!g_file_get_contents(filename, &text, NULL, &err)) {
                 error_dialog((GtkWindow *)thestory->window, err,
-                "Could not open the project's source file, '%s'.\n\n"
-                "Make sure that this file has not been deleted or renamed. ",
-                filename);
+                  _("Could not open the project's source file, '%s'.\n\n"
+                  "Make sure that this file has not been deleted or renamed. "),
+                  filename);
                 g_error_free(err);
                 gtk_widget_destroy(dialog);
                 g_free(filename);
@@ -126,22 +129,22 @@ extension_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
       || event_type == GNOME_VFS_MONITOR_EVENT_CREATED) {
         GtkWidget *dialog = gtk_message_dialog_new((GtkWindow *)ext->window,
         GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_YES_NO,
-        "The extension's source code has been modified from outside Inform.\n"
-        "Do you want to reload it?");
+          _("The extension's source code has been modified from outside Inform."
+          "\nDo you want to reload it?"));
         if(gtk_dialog_run((GtkDialog *)dialog) == GTK_RESPONSE_YES) {
             GError *err = NULL;
             gchar *filename, *text;
             
             /* Read the source */
             if((filename = g_filename_from_uri(info_uri, NULL, &err)) == NULL) {
-                g_warning("Cannot get filename from URI: %s", err->message);
+                g_warning(_("Cannot get filename from URI: %s"), err->message);
                 g_error_free(err);
                 gtk_widget_destroy(dialog);
                 return;
             }
             if(!g_file_get_contents(filename, &text, NULL, &err)) {
                 error_dialog((GtkWindow *)ext->window, err,
-                "Could not open the extension '%s': ", filename);
+                  _("Could not open the extension '%s': "), filename);
                 g_error_free(err);
                 gtk_widget_destroy(dialog);
                 g_free(filename);
@@ -167,7 +170,9 @@ extension_changed(GnomeVFSMonitorHandle *handle, const gchar *monitor_uri,
 
 /* If the document is not saved, ask the user whether he/she wants to save it.
 Returns TRUE if we can proceed, FALSE if the user cancelled. */
-gboolean verify_save(GtkWidget *thiswidget) {
+gboolean 
+verify_save(GtkWidget *thiswidget) 
+{
     Story *thestory = get_story(thiswidget);
     
     if(gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(thestory->buffer))
@@ -178,12 +183,12 @@ gboolean verify_save(GtkWidget *thiswidget) {
           GTK_DIALOG_DESTROY_WITH_PARENT,
           GTK_MESSAGE_WARNING,
           GTK_BUTTONS_NONE,
-          "<b><big>Save changes to project before closing?</big></b>");
+          _("<b><big>Save changes to project before closing?</big></b>"));
         gtk_message_dialog_format_secondary_text(
           GTK_MESSAGE_DIALOG(save_changes_dialog),
-          "If you don't save, your changes will be lost.");
+          _("If you don't save, your changes will be lost."));
         gtk_dialog_add_buttons(GTK_DIALOG(save_changes_dialog),
-          "Close _without saving", GTK_RESPONSE_REJECT,
+          _("Close _without saving"), GTK_RESPONSE_REJECT,
           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
           GTK_STOCK_SAVE, GTK_RESPONSE_OK,
           NULL);
@@ -205,7 +210,9 @@ gboolean verify_save(GtkWidget *thiswidget) {
 
 /* Read a project directory, loading all the appropriate files into a new
 story struct and returning that */
-Story *open_project(gchar *path) {
+Story *
+open_project(gchar *path) 
+{
     gchar *directory = gnome_vfs_expand_initial_tilde(path);
     gchar *source_dir = g_build_filename(directory, "Source", NULL);    
     GError *err = NULL;
@@ -218,14 +225,16 @@ Story *open_project(gchar *path) {
     filename = g_build_filename(source_dir, "story.ni", NULL);
     g_free(source_dir);
     if(!g_file_get_contents(filename, &text, NULL, &err)) {
-        error_dialog(NULL, err, "Could not open the project's source file, "
-          "'%s'.\n\nMake sure that this file has not been deleted or renamed. ",
+        error_dialog(NULL, err, 
+          _("Could not open the project's source file, '%s'.\n\n"
+          "Make sure that this file has not been deleted or renamed. "),
           filename);
         g_free(filename);
         delete_story(thestory);
         return NULL;
     }
     
+    /* TODO: Should we do this? If we do, do it with a regex! */
     /* Change newline separators to \n */
     if(strstr(text, "\r\n")) {
         gchar **lines = g_strsplit(text, "\r\n", 0);
@@ -247,7 +256,8 @@ Story *open_project(gchar *path) {
     gchar *file_uri;
     if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
         /* fail discreetly */
-        g_warning("Cannot convert project filename to URI: %s", err->message);
+        g_warning(_("Cannot convert project filename to URI: %s"), 
+          err->message);
         g_error_free(err);
         err = NULL; /* clear error */
     } else {
@@ -274,8 +284,7 @@ Story *open_project(gchar *path) {
     
     /* Watch for changes to the source file */
     thestory->monitor = monitor_file(filename,
-                                     (GnomeVFSMonitorCallback)project_changed,
-                                     thestory);
+      (GnomeVFSMonitorCallback)project_changed, thestory);
     g_free(filename);
     
     /* Write the source to the source buffer, clearing the undo history */
@@ -325,8 +334,9 @@ Story *open_project(gchar *path) {
         }
         g_strfreev(lines);
     } else
-        error_dialog(NULL, NULL, "Could not open the project's settings file, "
-          "'%s'. Using default settings.", filename);
+        error_dialog(NULL, NULL, 
+          _("Could not open the project's settings file, '%s'. "
+          "Using default settings."), filename);
     g_free(filename);    
     g_free(directory);
     
@@ -344,7 +354,9 @@ Story *open_project(gchar *path) {
 }
 
 /* Save the project being edited in the topwindow of thiswidget */
-void save_project(GtkWidget *thiswidget, gchar *directory) {
+void 
+save_project(GtkWidget *thiswidget, gchar *directory) 
+{
     gchar *build_dir = g_build_filename(directory, "Build", NULL);
     gchar *index_dir = g_build_filename(directory, "Index", NULL);
     gchar *source_dir = g_build_filename(directory, "Source", NULL);
@@ -361,7 +373,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
       || g_mkdir_with_parents(index_dir, 0777)
       || g_mkdir_with_parents(source_dir, 0777)) {
         error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(thiswidget)), NULL,
-          "Error creating project directory: %s", g_strerror(errno));
+          _("Error creating project directory: %s"), g_strerror(errno));
         g_free(build_dir);
         g_free(index_dir);
         g_free(source_dir);
@@ -382,7 +394,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     g_free(source_dir);
     if(!g_file_set_contents(filename, text, -1, &err)) {
         error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(thiswidget)), err,
-          "Error saving file '%s': ", filename);
+          _("Error saving file '%s': "), filename);
         g_free(filename);
         g_free(text);
         return;
@@ -397,7 +409,8 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     gchar *file_uri;
     if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
         /* fail discreetly */
-        g_warning("Cannot convert project filename to URI: %s", err->message);
+        g_warning(_("Cannot convert project filename to URI: %s"), 
+          err->message);
         g_error_free(err);
         err = NULL; /* clear error */
     } else {
@@ -424,8 +437,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     
     /* Start file monitoring again */
     thestory->monitor = monitor_file(filename,
-                                     (GnomeVFSMonitorCallback)project_changed,
-                                     thestory);
+      (GnomeVFSMonitorCallback)project_changed, thestory);
     g_free(filename);
     
     /* Save the skein */
@@ -437,7 +449,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
     filename = g_build_filename(directory, "notes.rtf", NULL);
     if(!g_file_set_contents(filename, text, -1, &err)) {
         error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(thiswidget)), err,
-          "Error saving file '%s': ", filename);
+          _("Error saving file '%s': "), filename);
         g_free(filename);
         g_free(text);
         return;
@@ -477,7 +489,7 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
       "</plist>\n", NULL);
     if(!g_file_set_contents(filename, text, -1, &err)) {
         error_dialog(GTK_WINDOW(gtk_widget_get_toplevel(thiswidget)), err,
-          "Error saving file '%s': ", filename);
+          _("Error saving file '%s': "), filename);
         g_free(filename);
         g_free(text);
         return;
@@ -493,7 +505,9 @@ void save_project(GtkWidget *thiswidget, gchar *directory) {
 }
 
 /* A version of verify_save for the extension editing window */
-gboolean verify_save_ext(GtkWidget *thiswidget) {
+gboolean 
+verify_save_ext(GtkWidget *thiswidget) 
+{
     Extension *ext = get_ext(thiswidget);
     
     if(gtk_text_buffer_get_modified(GTK_TEXT_BUFFER(ext->buffer))) {
@@ -502,13 +516,13 @@ gboolean verify_save_ext(GtkWidget *thiswidget) {
           GTK_DIALOG_DESTROY_WITH_PARENT,
           GTK_MESSAGE_WARNING,
           GTK_BUTTONS_NONE,
-          "<b><big>Save changes to '%s' before closing?</big></b>",
+          _("<b><big>Save changes to '%s' before closing?</big></b>"),
           ext->filename);
         gtk_message_dialog_format_secondary_text(
           GTK_MESSAGE_DIALOG(save_changes_dialog),
-          "If you don't save, your changes will be lost.");
+          _("If you don't save, your changes will be lost."));
         gtk_dialog_add_buttons(GTK_DIALOG(save_changes_dialog),
-          "Close _without saving", GTK_RESPONSE_REJECT,
+          _("Close _without saving"), GTK_RESPONSE_REJECT,
           GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
           GTK_STOCK_SAVE, GTK_RESPONSE_OK,
           NULL);
@@ -532,8 +546,9 @@ gboolean verify_save_ext(GtkWidget *thiswidget) {
 and returns the extension name and author stored in the locations pointed to by
 'name' and 'author'. If the function returns TRUE, they must be freed
 afterwards. This function was adapted from the Windows source. */
-static gboolean is_valid_extension(const gchar *text, gchar **thename,
-gchar **theauthor) {
+static gboolean 
+is_valid_extension(const gchar *text, gchar **thename, gchar **theauthor) 
+{
     g_return_val_if_fail(text != NULL, FALSE);
     
     /* Separate the first line of the extension */
@@ -618,7 +633,9 @@ gchar **theauthor) {
 }
 
 /* Opens the extension from filename, and returns a new extension struct. */
-Extension *open_extension(gchar *filename) {
+Extension *
+open_extension(gchar *filename) 
+{
     GError *err = NULL;
     gchar *text;
 
@@ -627,11 +644,13 @@ Extension *open_extension(gchar *filename) {
 
     /* Read the source */
     if(!g_file_get_contents(filename, &text, NULL, &err)) {
-        error_dialog(NULL, err, "Could not open the extension '%s': ",filename);
+        error_dialog(NULL, err, _("Could not open the extension '%s': "), 
+          filename);
         delete_ext(ext);
         return NULL;
     }
 
+    /* TODO: see above same code */
     /* Change newline separators to \n */
     if(strstr(text, "\r\n")) {
         gchar **lines = g_strsplit(text, "\r\n", 0);
@@ -661,7 +680,8 @@ Extension *open_extension(gchar *filename) {
     gchar *file_uri;
     if((file_uri = g_filename_to_uri(filename, NULL, &err)) == NULL) {
         /* fail discreetly */
-        g_warning("Cannot convert extension filename to URI: %s", err->message);
+        g_warning(_("Cannot convert extension filename to URI: %s"), 
+          err->message);
         g_error_free(err);
         err = NULL; /* clear error */
     } else {
@@ -685,14 +705,15 @@ Extension *open_extension(gchar *filename) {
 #endif
     
     ext->monitor = monitor_file(filename,
-                                (GnomeVFSMonitorCallback)extension_changed,
-                                ext);
+      (GnomeVFSMonitorCallback)extension_changed, ext);
     
     return ext;
 }
 
 /* Write the extension being edited in the topwindow of thiswidget to disk. */
-void save_extension(GtkWidget *thiswidget) {
+void 
+save_extension(GtkWidget *thiswidget) 
+{
     GError *err = NULL;
     gchar *text;
     Extension *ext = get_ext(thiswidget);
@@ -703,7 +724,8 @@ void save_extension(GtkWidget *thiswidget) {
     gchar *file_uri;
     if((file_uri = g_filename_to_uri(ext->filename, NULL, &err)) == NULL) {
         /* fail discreetly */
-        g_warning("Cannot convert extension filename to URI: %s", err->message);
+        g_warning(_("Cannot convert extension filename to URI: %s"), 
+          err->message);
         g_error_free(err);
         err = NULL; /* clear error */
     } else {
@@ -748,21 +770,22 @@ void save_extension(GtkWidget *thiswidget) {
     g_free(text);
 
     ext->monitor = monitor_file(ext->filename,
-                                (GnomeVFSMonitorCallback)extension_changed,
-                                ext);
+      (GnomeVFSMonitorCallback)extension_changed, ext);
     
     gtk_text_buffer_set_modified(GTK_TEXT_BUFFER(ext->buffer), FALSE);
 }
 
 /* Install the extension at filename into the user's extensions dir */
-void install_extension(const gchar *filename) {
+void 
+install_extension(const gchar *filename) 
+{
     g_return_if_fail(filename != NULL);
     
     gchar *text;
     GError *err = NULL;
     
     if(!g_file_get_contents(filename, &text, NULL, &err)) {
-        error_dialog(NULL, err, "Error reading file '%s': ", filename);
+        error_dialog(NULL, err, _("Error reading file '%s': "), filename);
         g_error_free(err);
         return;
     }
@@ -771,11 +794,11 @@ void install_extension(const gchar *filename) {
     gchar *name = NULL;
     gchar *author = NULL;
     if(!is_valid_extension(text, &name, &author)) {
-        error_dialog(NULL, NULL, "The file '%s' does not seem to be an "
+        error_dialog(NULL, NULL, _("The file '%s' does not seem to be an "
           "extension. Extensions should be saved as UTF-8 text format files, "
           "and should start with a line of one of these forms:\n\n<Extension> "
           "by <Author> begins here.\nVersion <Version> of <Extension> by "
-          "<Author> begins here.", filename);
+          "<Author> begins here."), filename);
         g_free(text);
         return;
     }
@@ -785,7 +808,7 @@ void install_extension(const gchar *filename) {
     
     if(!g_file_test(dir, G_FILE_TEST_EXISTS)) {
         if(g_mkdir_with_parents(dir, 0777) == -1) {
-            error_dialog(NULL, NULL, "Error creating directory '%s'.", dir);
+            error_dialog(NULL, NULL, _("Error creating directory '%s'."), dir);
             g_free(name);
             g_free(author);
             g_free(dir);
@@ -803,8 +826,8 @@ void install_extension(const gchar *filename) {
       || g_file_test(canonicaltarget, G_FILE_TEST_EXISTS)) {
         GtkWidget *dialog = gtk_message_dialog_new(NULL, 0,
           GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
-          "A version of the extension %s by %s is already installed. Do you "
-          "want to overwrite the installed extension with this new one?",
+          _("A version of the extension %s by %s is already installed. Do you "
+          "want to overwrite the installed extension with this new one?"),
           name, author);
         if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_YES) {
             gtk_widget_destroy(dialog);
@@ -818,6 +841,7 @@ void install_extension(const gchar *filename) {
         gtk_widget_destroy(dialog);
     }
     
+    /* TODO : See above same code */
     /* Change newline separators to \n */
     if(strstr(text, "\r\n")) {
         gchar **lines = g_strsplit(text, "\r\n", 0);
@@ -833,8 +857,8 @@ void install_extension(const gchar *filename) {
     
     /* Copy the extension file to the user's extensions dir */
     if(!g_file_set_contents(canonicaltarget, text, -1, &err)) {
-        error_dialog(NULL, NULL, "Error copying file '%s' to '%s': ", filename,
-          canonicaltarget);
+        error_dialog(NULL, NULL, _("Error copying file '%s' to '%s': "), 
+          filename, canonicaltarget);
         g_free(text);
         g_free(targetname);
         g_free(canonicaltarget);
@@ -854,7 +878,7 @@ void install_extension(const gchar *filename) {
         if(g_remove(targetname) == -1) {
             GtkWidget *dialog = gtk_message_dialog_new(NULL,
               GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-              "There was an error removing the old file %s.", targetname);
+              _("There was an error removing the old file %s."), targetname);
             gtk_dialog_run(GTK_DIALOG(dialog));
             gtk_widget_destroy(dialog);
             g_free(targetname);
@@ -869,14 +893,16 @@ void install_extension(const gchar *filename) {
 
 
 /* Delete extension and remove author dir if empty */
-void delete_extension(gchar *author, gchar *extname) {
+void 
+delete_extension(gchar *author, gchar *extname) 
+{
     /* Remove extension, try versions with and without .i7x */
     gchar *filename = get_extension_path(author, extname);
     gchar *canonicalname = g_strconcat(filename, ".i7x", NULL);
     if(g_remove(filename) == -1 && g_remove(canonicalname) == -1) {
         GtkWidget *dialog = gtk_message_dialog_new(NULL,
           GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-          "There was an error removing %s.", filename);
+          _("There was an error removing %s."), filename);
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
         g_free(filename);
@@ -894,7 +920,7 @@ void delete_extension(gchar *author, gchar *extname) {
         if(g_remove(filename) == -1) {
             GtkWidget *dialog = gtk_message_dialog_new(NULL,
               GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-              "There was an error removing %s.", filename);
+              _("There was an error removing %s."), filename);
             gtk_dialog_run(GTK_DIALOG(dialog));
             gtk_widget_destroy(dialog);
             g_free(filename);
@@ -911,7 +937,7 @@ void delete_extension(gchar *author, gchar *extname) {
         if(errno != ENOTEMPTY) {
             GtkWidget *dialog = gtk_message_dialog_new(NULL,
               GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-              "There was an error removing %s.", filename);
+              _("There was an error removing %s."), filename);
             gtk_dialog_run(GTK_DIALOG(dialog));
             gtk_widget_destroy(dialog);
         }
@@ -930,7 +956,7 @@ void delete_extension(gchar *author, gchar *extname) {
         if(g_remove(filename) == -1) {
             GtkWidget *dialog = gtk_message_dialog_new(NULL,
               GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-              "There was an error removing %s.", filename);
+              _("There was an error removing %s."), filename);
             gtk_dialog_run(GTK_DIALOG(dialog));
             gtk_widget_destroy(dialog);
         }
@@ -941,8 +967,9 @@ void delete_extension(gchar *author, gchar *extname) {
 
 /* Helper function to delete a file relative to the project path; does nothing
 if file does not exist */
-static void delete_from_project_dir(Story *thestory, gchar *subdir,
-gchar *filename) {
+static void 
+delete_from_project_dir(Story *thestory, gchar *subdir, gchar *filename) 
+{
     gchar *pathname;
     
     if(subdir)
@@ -956,7 +983,9 @@ gchar *filename) {
 
 /* If the "delete build files" option is checked, delete all the build files
 from the project directory */
-void delete_build_files(Story *thestory) {
+void 
+delete_build_files(Story *thestory) 
+{
     if(config_file_get_bool("IDESettings", "CleanBuildFiles")) {
         delete_from_project_dir(thestory, NULL, "Metadata.iFiction");
         delete_from_project_dir(thestory, NULL, "Release.blurb");

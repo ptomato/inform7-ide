@@ -30,52 +30,17 @@ enum {
     FIND_FULL_WORD
 };
 
-void
-after_find_dialog_realize              (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_find_text_changed                   (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_find_next_clicked                   (GtkButton       *button,
-                                        Story           *thestory);
-
-void
-on_xfind_next_clicked                  (GtkButton       *button,
-                                        Extension       *ext);
-
-void
-on_find_previous_clicked               (GtkButton       *button,
-                                        Story           *thestory);
-
-void
-on_xfind_previous_clicked              (GtkButton       *button,
-                                        Extension       *ext);
-
-void
-on_find_replace_find_clicked           (GtkButton       *button,
-                                        Story           *thestory);
-
-void
-on_xfind_replace_find_clicked          (GtkButton       *button,
-                                        Extension       *ext);
-
-void
-on_find_replace_clicked                (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_xfind_replace_clicked               (GtkButton       *button,
-                                        gpointer         user_data);
-                                        
-void
-on_find_replace_all_clicked            (GtkButton       *button,
-                                        Story           *thestory);
-                                        
-void
-on_xfind_replace_all_clicked           (GtkButton       *button,
-                                        Extension       *ext);
+void after_find_dialog_realize(GtkWidget *widget, gpointer data);
+void on_find_text_changed(GtkEditable *editable, gpointer data);
+void on_find_next_clicked(GtkButton *button, Story *thestory);
+void on_xfind_next_clicked(GtkButton *button, Extension *ext);
+void on_find_previous_clicked(GtkButton *button, Story *thestory);
+void on_xfind_previous_clicked(GtkButton *button, Extension *ext);
+void on_find_replace_find_clicked(GtkButton *button, Story *thestory);
+void on_xfind_replace_find_clicked(GtkButton *button, Extension *ext);
+void on_find_replace_clicked(GtkButton *button, gpointer data);
+void on_xfind_replace_clicked(GtkButton *button, gpointer data);
+void on_find_replace_all_clicked(GtkButton *button, Story *thestory);
+void on_xfind_replace_all_clicked(GtkButton *button, Extension *ext);
   
 #endif

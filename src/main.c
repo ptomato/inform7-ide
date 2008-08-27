@@ -40,6 +40,25 @@
 #include "file.h"
 #include "windowlist.h"
 
+#ifdef ENABLE_NLS
+#  include <libintl.h>
+#  undef _
+#  define _(String) dgettext (PACKAGE, String)
+#  ifdef gettext_noop
+#    define N_(String) gettext_noop (String)
+#  else
+#    define N_(String) (String)
+#  endif
+#else
+#  define textdomain(String) (String)
+#  define gettext(String) (String)
+#  define dgettext(Domain,Message) (Message)
+#  define dcgettext(Domain,Message,Type) (Message)
+#  define bindtextdomain(Domain,Directory) (Domain)
+#  define _(String) (String)
+#  define N_(String) (String)
+#endif
+
 int
 main(int argc, char *argv[])
 {
@@ -63,7 +82,8 @@ main(int argc, char *argv[])
 		{ NULL }
 	};
     GOptionContext *option_context = g_option_context_new(
-      "[FILES...] - Interactive fiction IDE");
+    /* TRANSLATORS: This is the usage string for the --help message */
+      _("[FILES...] - Interactive fiction IDE"));
     g_option_context_add_main_entries(option_context, option_entries, NULL);
     
     /* Retrieve data directory if set externally */

@@ -64,10 +64,10 @@ static GObjectClass* parent_class = NULL;
 static guint skein_signals[LAST_SIGNAL] = { 0 };
 
 static void
-skein_init (Skein *object)
+skein_init(Skein *object)
 {
-    I7_SKEIN_PRIVATE(object)->root = node_create("- start -", "", "", "", FALSE,
-                                                 FALSE, FALSE, 0);
+    I7_SKEIN_PRIVATE(object)->root = node_create(_("- start -"), "", "", "", 
+	  FALSE, FALSE, FALSE, 0);
     I7_SKEIN_PRIVATE(object)->current = I7_SKEIN_PRIVATE(object)->root;
     I7_SKEIN_PRIVATE(object)->played = I7_SKEIN_PRIVATE(object)->root;
     I7_SKEIN_PRIVATE(object)->layout = FALSE;
@@ -75,13 +75,13 @@ skein_init (Skein *object)
 }
 
 static void
-skein_finalize (GObject *object)
+skein_finalize(GObject *object)
 {
 	G_OBJECT_CLASS(parent_class)->finalize(object);
 }
 
 static void
-skein_class_init (SkeinClass *klass)
+skein_class_init(SkeinClass *klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS (klass);
 	parent_class = G_OBJECT_CLASS (g_type_class_peek_parent (klass));
@@ -156,7 +156,7 @@ skein_class_init (SkeinClass *klass)
 }
 
 GType
-skein_get_type (void)
+skein_get_type(void)
 {
 	static GType our_type = 0;
 
@@ -269,15 +269,15 @@ skein_load(Skein *skein, const gchar *path)
     g_free(filename);
     
     if(!xmldoc) {
-        error_dialog(NULL, NULL, "This project's Skein was not found, or it was"
-                     " unreadable.");
+        error_dialog(NULL, NULL, 
+		  _("This project's Skein was not found, or it was unreadable."));
         return;
     }
     
     /* Get the top XML node */
     xmlNode *top = xmlDocGetRootElement(xmldoc);
     if(strcmp((gchar *)top->name, "Skein") != 0) {
-        error_dialog(NULL, NULL, "This project's Skein was unreadable.");
+        error_dialog(NULL, NULL, _("This project's Skein was unreadable."));
         xmlFreeDoc(xmldoc);
         return;
     }
@@ -285,7 +285,7 @@ skein_load(Skein *skein, const gchar *path)
     /* Get the ID of the root node */
     gchar *root_id = get_property_from_node(top, "rootNode");
     if(!root_id) {
-        error_dialog(NULL, NULL, "This project's Skein was unreadable.");
+        error_dialog(NULL, NULL, _("This project's Skein was unreadable."));
         xmlFreeDoc(xmldoc);
         return;
     }
@@ -475,8 +475,8 @@ skein_save(Skein *skein, const gchar *path)
     FILE *skeinfile = fopen(filename, "w");
     g_free(filename);
     if(!skeinfile) {
-        error_dialog(NULL, err, "Error saving file '%s': %s", filename,
-                     g_strerror(errno));
+        error_dialog(NULL, err, _("Error saving file '%s': %s"), filename,
+          g_strerror(errno));
         return;
     }
     
@@ -637,7 +637,7 @@ skein_update_after_playing(Skein *skein, const gchar *transcript)
     if(strlen(transcript)) {
         node_new_transcript_text(I7_SKEIN_PRIVATE(skein)->played, transcript);
         g_signal_emit(skein, skein_signals[SHOW_NODE], 0, GOT_TRANSCRIPT,
-                      (gpointer)I7_SKEIN_PRIVATE(skein)->played);
+          (gpointer)I7_SKEIN_PRIVATE(skein)->played);
     }
 }
 
@@ -823,7 +823,6 @@ get_labels(GNode *node, GSList **labels)
 		get_labels(node, labels);
 }
 
-
 GSList *
 skein_get_labels(Skein *skein)
 {
@@ -832,7 +831,6 @@ skein_get_labels(Skein *skein)
 	labels = g_slist_sort_with_data(labels, (GCompareDataFunc)strcmp, NULL);
 	return labels;
 }
-
 
 static gboolean
 has_labels(GNode *node)
@@ -887,7 +885,7 @@ skein_get_thread_top(Skein *skein, GNode *node)
 {
     while(TRUE) {
         if(G_NODE_IS_ROOT(node)) {
-            g_warning("Unreachable code reached in skein_get_thread_top()");
+            g_assert_not_reached();
             return node;
         }
         if(g_node_n_children(node->parent) != 1)
@@ -1170,10 +1168,10 @@ node_in_thread(GNode *node, GNode *endnode)
     return (endnode == node) || g_node_is_ancestor(node, endnode);
 }
 
-
-
 /* DEBUG */
-static void dump_node_data(GNode *node, gpointer foo) {
+static void 
+dump_node_data(GNode *node, gpointer foo) 
+{
     g_printerr("(%s)", ((NodeData *)(node->data))->line);
     if(g_node_n_children(node)) {
         g_printerr("->(");
@@ -1182,7 +1180,9 @@ static void dump_node_data(GNode *node, gpointer foo) {
     }
 }
 
-void skein_dump(Skein *skein) {
+void 
+skein_dump(Skein *skein) 
+{
     dump_node_data(I7_SKEIN_PRIVATE(skein)->root, NULL);
     g_printerr("\n");
 }

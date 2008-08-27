@@ -26,6 +26,25 @@
 #include <sys/wait.h>
 #include <errno.h>
 
+#ifdef ENABLE_NLS
+#  include <libintl.h>
+#  undef _
+#  define _(String) dgettext (PACKAGE, String)
+#  ifdef gettext_noop
+#    define N_(String) gettext_noop (String)
+#  else
+#    define N_(String) (String)
+#  endif
+#else
+#  define textdomain(String) (String)
+#  define gettext(String) (String)
+#  define dgettext(Domain,Message) (Message)
+#  define dcgettext(Domain,Message,Type) (Message)
+#  define bindtextdomain(Domain,Directory) (Domain)
+#  define _(String) (String)
+#  define N_(String) (String)
+#endif
+
 #ifdef OSSP_UUID
 #  include <ossp/uuid.h> /* For systems with OSSP uuid */
 #else
@@ -69,7 +88,9 @@ static void finish_release(Story *thestory);
     
 /* Start the compiler running the census of extensions. If wait is TRUE, it will
 not do it in the background. */
-void run_census(gboolean wait) {
+void
+run_census(gboolean wait) 
+{
     /* Build the command line */
     gchar **commandline = g_new(gchar *, 5);
     commandline[0] = get_datafile_path_va("Compilers", "ni", NULL);
@@ -91,13 +112,17 @@ void run_census(gboolean wait) {
 }
 
 /* Start the compiling process */
-void compile_project(Story *thestory) {
+void
+compile_project(Story *thestory) 
+{
     prepare_ni_compiler(thestory);
     start_ni_compiler(thestory);
 }
 
 /* Set everything up for using the NI compiler */
-static void prepare_ni_compiler(Story *thestory) {
+static void 
+prepare_ni_compiler(Story *thestory) 
+{
     GError *err = NULL;
     
     /* Output buffer for messages */
@@ -131,7 +156,7 @@ static void prepare_ni_compiler(Story *thestory) {
             == UUID_RC_OK) &&
           (uuid_destroy(uuid) == UUID_RC_OK))) {
             error_dialog(GTK_WINDOW(thestory->window), NULL,
-              "Error creating UUID.");
+              _("Error creating UUID."));
             g_free(uuid_file);
             return;
         }
@@ -144,7 +169,7 @@ static void prepare_ni_compiler(Story *thestory) {
 #endif /* UUID conditional */
         if(!g_file_set_contents(uuid_file, uuid_string, -1, &err)) {
             error_dialog(GTK_WINDOW(thestory->window), err,
-              "Error creating UUID file: ");
+              _("Error creating UUID file: "));
             g_free(uuid_file);
             return;
         }
@@ -155,11 +180,13 @@ static void prepare_ni_compiler(Story *thestory) {
     g_free(uuid_file);
     
     /* Display status message */
-    display_status_message(thestory->window, "Running Natural Inform...");
+    display_status_message(thestory->window, _("Running Natural Inform..."));
 }
 
 /* Display the NI compiler's status in the app status bar */
-static void display_ni_status(gpointer data, gchar *text) {
+static void 
+display_ni_status(gpointer data, gchar *text) 
+{
     GtkProgressBar *progressbar = (GtkProgressBar *)data;
     gint percent;
     gchar *message;
@@ -172,7 +199,9 @@ static void display_ni_status(gpointer data, gchar *text) {
 }
 
 /* Start the NI compiler and set up the callback for when it is finished */
-static void start_ni_compiler(Story *thestory) {
+static void 
+start_ni_compiler(Story *thestory) 
+{
     /* Output buffer for messages */
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
@@ -209,7 +238,9 @@ static void start_ni_compiler(Story *thestory) {
 }
 
 /* Display any errors from the NI compiler and continue on */
-static void finish_ni_compiler(GPid pid, gint status, Story *thestory) {
+static void 
+finish_ni_compiler(GPid pid, gint status, Story *thestory) 
+{
     /* Clear the progress indicator */
     clear_status(thestory->window);
         
@@ -281,7 +312,7 @@ static void finish_ni_compiler(GPid pid, gint status, Story *thestory) {
         int right = choose_notebook(thestory->window, TAB_ERRORS);
         gtk_notebook_set_current_page(get_notebook(thestory->window, right),
           TAB_ERRORS);
-        display_status_message(thestory->window, "Compiling failed.");
+        display_status_message(thestory->window, _("Compiling failed."));
         return;
     }
 
@@ -303,14 +334,17 @@ static void finish_ni_compiler(GPid pid, gint status, Story *thestory) {
     
 
 /* Get ready to run the I6 compiler; right now this does almost nothing */
-static void prepare_i6_compiler(Story *thestory) {
-    display_status_message(thestory->window, "Running Inform 6...");
+static void 
+prepare_i6_compiler(Story *thestory) 
+{
+    display_status_message(thestory->window, _("Running Inform 6..."));
 }
-
 
 /* Determine i6 compiler switches, given the compiler action and the virtual
 machine format. Return string must be freed. */
-static gchar *get_i6_compiler_switches(gboolean release, int format) {
+static gchar *
+get_i6_compiler_switches(gboolean release, int format) 
+{
     gchar *debug_switches, *version_switches, *retval;
     
     /* Switch off strict warnings and debug if the game is for release */
@@ -340,13 +374,17 @@ static gchar *get_i6_compiler_switches(gboolean release, int format) {
     return retval;
 }
 
-static void display_i6_status(GtkProgressBar *progressbar, gchar *text) {
+static void 
+display_i6_status(GtkProgressBar *progressbar, gchar *text) 
+{
     if(strchr(text, '#'))
         gtk_progress_bar_pulse(progressbar);
 }
 
 /* Run the I6 compiler */
-static void start_i6_compiler(Story *thestory) {
+static void 
+start_i6_compiler(Story *thestory) 
+{
     /* Get the text buffer to put our output in */
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
@@ -379,7 +417,9 @@ static void start_i6_compiler(Story *thestory) {
 }
 
 /* Display any errors from Inform 6 and decide what to do next */
-static void finish_i6_compiler(GPid pid, gint status, Story *thestory) {
+static void 
+finish_i6_compiler(GPid pid, gint status, Story *thestory) 
+{
     /* Clear the status bar */
     clear_status(thestory->window);
     
@@ -390,7 +430,7 @@ static void finish_i6_compiler(GPid pid, gint status, Story *thestory) {
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
       
-    gchar *statusmsg = g_strdup_printf("\nCompiler finished with code %d\n",
+    gchar *statusmsg = g_strdup_printf(_("\nCompiler finished with code %d\n"),
       exit_code);
     GtkTextIter iter;
     gtk_text_buffer_get_end_iter(buffer, &iter);
@@ -456,7 +496,7 @@ static void finish_i6_compiler(GPid pid, gint status, Story *thestory) {
         int right = choose_notebook(thestory->window, TAB_ERRORS);
         gtk_notebook_set_current_page(get_notebook(thestory->window, right),
           TAB_ERRORS);
-        display_status_message(thestory->window, "Compiling failed.");
+        display_status_message(thestory->window, _("Compiling failed."));
         return;
     }
     
@@ -482,13 +522,17 @@ static void finish_i6_compiler(GPid pid, gint status, Story *thestory) {
 
 
 /* Get ready to run the CBlorb compiler */
-static void prepare_cblorb_compiler(Story *thestory) {
-    display_status_message(thestory->window, "Running cBlorb...");
+static void 
+prepare_cblorb_compiler(Story *thestory) 
+{
+    display_status_message(thestory->window, _("Running cBlorb..."));
 }
 
 
 /* Run the CBlorb compiler */
-static void start_cblorb_compiler(Story *thestory) {
+static void 
+start_cblorb_compiler(Story *thestory) 
+{
     /* Get buffer for messages */
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(
       GTK_TEXT_VIEW(lookup_widget(thestory->window, "compiler_output_l")));
@@ -511,7 +555,9 @@ static void start_cblorb_compiler(Story *thestory) {
 }
     
 /* Display any errors from cBlorb */
-static void finish_cblorb_compiler(GPid pid, gint status, Story *thestory) {
+static void 
+finish_cblorb_compiler(GPid pid, gint status, Story *thestory) 
+{
     /* Get exit code from CBlorb */
     int exit_code = WIFEXITED(status)? WEXITSTATUS(status) : -1;
     
@@ -533,7 +579,7 @@ static void finish_cblorb_compiler(GPid pid, gint status, Story *thestory) {
           GTK_NOTEBOOK(lookup_widget(thestory->window,
           right? "errors_notebook_r" : "errors_notebook_l")),
           TAB_ERRORS_PROBLEMS);
-        display_status_message(thestory->window, "Compiling failed.");
+        display_status_message(thestory->window, _("Compiling failed."));
         return;
     }
     
@@ -547,9 +593,11 @@ static void finish_cblorb_compiler(GPid pid, gint status, Story *thestory) {
     }
 }
 
-static void finish_common(Story *thestory) {
+static void 
+finish_common(Story *thestory) 
+{
     /* Display status message */
-    display_status_message(thestory->window, "Compiling succeeded.");
+    display_status_message(thestory->window, _("Compiling succeeded."));
                                  
     /* Switch the Errors tab to the Problems page */
     gtk_notebook_set_current_page(GTK_NOTEBOOK(lookup_widget(thestory->window,
@@ -563,7 +611,9 @@ static void finish_common(Story *thestory) {
 }
 
 /* Finish up the user's Refresh Index command */
-static void finish_refresh_index(Story *thestory) {
+static void 
+finish_refresh_index(Story *thestory) 
+{
     finish_common(thestory);
     
     /* Refresh the index and documentation tabs */
@@ -576,9 +626,10 @@ static void finish_refresh_index(Story *thestory) {
       choose_notebook(thestory->window, TAB_INDEX)), TAB_INDEX);
 }
 
-
 /* Finish up the user's Save Debug Build command */
-static void finish_save_debug_build(Story *thestory) {
+static void 
+finish_save_debug_build(Story *thestory) 
+{
     finish_common(thestory);
     
     /* Switch to the Errors tab */
@@ -588,7 +639,7 @@ static void finish_save_debug_build(Story *thestory) {
     
     /* Make a file filter */
     GtkFileFilter *filter = gtk_file_filter_new();
-    gtk_file_filter_set_name(filter, "Game files (.z?,.ulx)");
+    gtk_file_filter_set_name(filter, _("Game files (.z?,.ulx)"));
     gtk_file_filter_add_pattern(filter, "*.ulx");
     gtk_file_filter_add_pattern(filter, "*.z?");
     
@@ -602,7 +653,7 @@ static void finish_save_debug_build(Story *thestory) {
     g_free(name);
     
     /* Create a file chooser */
-    GtkWidget *dialog = gtk_file_chooser_dialog_new("Save debug build",
+    GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save debug build"),
       GTK_WINDOW(thestory->window), GTK_FILE_CHOOSER_ACTION_SAVE,
       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
       GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
@@ -622,7 +673,7 @@ static void finish_save_debug_build(Story *thestory) {
         g_free(oldfile_base);
         
         if(g_rename(oldfile, filename)) {
-            error_dialog(NULL, NULL, "Error copying file '%s' to '%s': ",
+            error_dialog(NULL, NULL, _("Error copying file '%s' to '%s': "),
               oldfile, filename);
             g_free(filename);
             g_free(oldfile);
@@ -644,9 +695,10 @@ static void finish_save_debug_build(Story *thestory) {
     html_refresh(GTK_HTML(lookup_widget(thestory->window, "docs_r")));
 }
 
-
 /* Finish up the user's Go or Replay command */
-static void finish_run(Story *thestory) {
+static void 
+finish_run(Story *thestory) 
+{
     finish_common(thestory);
     
     /* Run the project */
@@ -661,7 +713,9 @@ static void finish_run(Story *thestory) {
 
 /* Finish up the user's Release command by choosing a location to store the
 project */
-static void finish_release(Story *thestory) {
+static void 
+finish_release(Story *thestory) 
+{
     finish_common(thestory);
     
     /* Switch to the Errors tab */
@@ -675,12 +729,12 @@ static void finish_release(Story *thestory) {
     
     if(thestory->story_format == FORMAT_GLULX) {
         blorb_ext = g_strdup("gblorb");
-        gtk_file_filter_set_name(filter, "Glulx games (.ulx,.gblorb)");
+        gtk_file_filter_set_name(filter, _("Glulx games (.ulx,.gblorb)"));
         gtk_file_filter_add_pattern(filter, "*.ulx");
         gtk_file_filter_add_pattern(filter, "*.gblorb");
     } else {
         blorb_ext = g_strdup("zblorb");
-        gtk_file_filter_set_name(filter, "Z-code games (.z?,.zblorb)");
+        gtk_file_filter_set_name(filter, _("Z-code games (.z?,.zblorb)"));
         gtk_file_filter_add_pattern(filter, "*.z?");
         gtk_file_filter_add_pattern(filter, "*.zblorb");
     }
@@ -697,7 +751,8 @@ static void finish_release(Story *thestory) {
     g_free(name);
     
     /* Create a file chooser */
-    GtkWidget *dialog = gtk_file_chooser_dialog_new("Save the game for release",
+    GtkWidget *dialog = gtk_file_chooser_dialog_new(
+      _("Save the game for release"),
       GTK_WINDOW(thestory->window), GTK_FILE_CHOOSER_ACTION_SAVE,
       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
       GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
@@ -732,8 +787,10 @@ static void finish_release(Story *thestory) {
                 GError *err = NULL;
                 if(!g_file_get_contents(oldfile, &contents, &length, &err)
                    || !g_file_set_contents(filename, contents, length, &err)) {
-                    error_dialog(NULL, err, "Error copying file '%s' to '%s': ",
-                                oldfile, filename);
+                    error_dialog(NULL, err, 
+                      /* TRANSLATORS: Error copying OLDFILE to NEWFILE */
+                      _("Error copying file '%s' to '%s': "),
+                      oldfile, filename);
                     g_free(filename);
                     g_free(oldfile);
                     g_free(ext);
@@ -741,8 +798,10 @@ static void finish_release(Story *thestory) {
                     return;
                 }
             } else {
-                error_dialog(NULL, NULL, "Error copying file '%s' to '%s': %s",
-                             oldfile, filename, g_strerror(errno));
+                error_dialog(NULL, NULL, 
+                  /* TRANSLATORS: Error copying OLDFILE to NEWFILE: ERROR_MESSAGE */
+                  _("Error copying file '%s' to '%s': %s"),
+                  oldfile, filename, g_strerror(errno));
                 g_free(filename);
                 g_free(oldfile);
                 g_free(ext);

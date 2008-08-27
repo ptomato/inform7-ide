@@ -33,18 +33,18 @@
 #include "findreplace.h"
 #include "prefs.h"
 #include "windowlist.h"
+#include "tabsource.h"
 
 /* Callbacks for the extension editing window; most of them just call the
 callbacks for the main window */
 
 void
-after_ext_window_realize               (GtkWidget       *widget,
-                                        gpointer         user_data)
+after_ext_window_realize(GtkWidget *widget, gpointer data)
 {
     /* Set the last saved window size and slider position */
     gtk_window_resize(GTK_WINDOW(widget), 
-                      config_file_get_int("WindowSettings", "ExtWindowWidth"),
-                      config_file_get_int("WindowSettings", "ExtWindowHeight"));
+      config_file_get_int("WindowSettings", "ExtWindowWidth"),
+      config_file_get_int("WindowSettings", "ExtWindowHeight"));
     
     /* Create some submenus and attach them */
     GtkWidget *menu;
@@ -68,24 +68,15 @@ after_ext_window_realize               (GtkWidget       *widget,
         gtk_widget_set_sensitive(lookup_widget(widget,"xcheck_spelling"),FALSE);
 }
 
-
 void
-on_xclose_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xclose_activate(GtkMenuItem *menuitem, gpointer data)
 {
     Extension *ext = get_ext(GTK_WIDGET(menuitem));
 
     /* If this was the last window open, ask if we really want to quit */
     if(verify_save_ext(GTK_WIDGET(menuitem))) {
-        if(get_num_app_windows() == 1) {
-            GtkWidget *dialog = gtk_message_dialog_new(
-              GTK_WINDOW(ext->window), GTK_DIALOG_DESTROY_WITH_PARENT,
-              GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "Quit GNOME Inform 7?");
-            gint result = gtk_dialog_run(GTK_DIALOG(dialog));
-            gtk_widget_destroy(dialog);
-            if(result != GTK_RESPONSE_YES)
-                return;
-        }
+        if(get_num_app_windows() == 1 && do_quit_dialog() != GTK_RESPONSE_YES)
+            return;
         delete_ext(ext);
 
         if(get_num_app_windows() == 0)
@@ -93,28 +84,24 @@ on_xclose_activate                     (GtkMenuItem     *menuitem,
     }
 }
 
-
 void
-on_xsave_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xsave_activate(GtkMenuItem *menuitem, gpointer data)
 {
     Extension *ext = get_ext(GTK_WIDGET(menuitem));
 
     if(ext->filename == NULL)
-        on_xsave_as_activate(menuitem, user_data);
+        on_xsave_as_activate(menuitem, data);
     else
         save_extension(GTK_WIDGET(menuitem));
 }
 
-
 void
-on_xsave_as_activate                   (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xsave_as_activate(GtkMenuItem *menuitem, gpointer data)
 {
     Extension *ext = get_ext(GTK_WIDGET(menuitem));
         
     /* Create a file chooser for saving the extension */
-    GtkWidget *dialog = gtk_file_chooser_dialog_new ("Save File",
+    GtkWidget *dialog = gtk_file_chooser_dialog_new(_("Save File"),
       GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
       GTK_FILE_CHOOSER_ACTION_SAVE,
       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -124,7 +111,7 @@ on_xsave_as_activate                   (GtkMenuItem     *menuitem,
 
     if (ext->filename == NULL) {
         gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(dialog),
-          "Untitled document");
+          _("Untitled document"));
     } else
         gtk_file_chooser_set_filename(GTK_FILE_CHOOSER(dialog),     
           ext->filename);
@@ -142,8 +129,7 @@ on_xsave_as_activate                   (GtkMenuItem     *menuitem,
 
 
 void
-on_xrevert_activate                    (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xrevert_activate(GtkMenuItem *menuitem, gpointer data)
 {
     Extension *ext = get_ext(GTK_WIDGET(menuitem));
     
@@ -156,9 +142,9 @@ on_xrevert_activate                    (GtkMenuItem     *menuitem,
     GtkWidget *revert_dialog = gtk_message_dialog_new_with_markup(
       GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
       GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_WARNING, GTK_BUTTONS_NONE,
-      "Are you sure you want to revert to the last saved version?");
+      _("Are you sure you want to revert to the last saved version?"));
     gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(revert_dialog),
-      "All unsaved changes will be lost.");
+      _("All unsaved changes will be lost."));
     gtk_dialog_add_buttons(GTK_DIALOG(revert_dialog),
       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
       GTK_STOCK_REVERT_TO_SAVED, GTK_RESPONSE_OK,
@@ -178,8 +164,7 @@ on_xrevert_activate                    (GtkMenuItem     *menuitem,
 
 
 void
-on_xundo_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xundo_activate(GtkMenuItem *menuitem, gpointer data)
 {
     Extension *ext = get_ext(GTK_WIDGET(menuitem));
 
@@ -187,10 +172,8 @@ on_xundo_activate                      (GtkMenuItem     *menuitem,
         gtk_source_buffer_undo(ext->buffer);
 }
 
-
 void
-on_xredo_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xredo_activate(GtkMenuItem *menuitem, gpointer data)
 {
     Extension *ext = get_ext(GTK_WIDGET(menuitem));
 
@@ -198,50 +181,40 @@ on_xredo_activate                      (GtkMenuItem     *menuitem,
         gtk_source_buffer_redo(ext->buffer);
 }
 
-
 void
-on_xcut_activate                       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xcut_activate(GtkMenuItem *menuitem, gpointer data)
 {
     g_signal_emit_by_name(
       G_OBJECT(lookup_widget(GTK_WIDGET(menuitem), "ext_code")),
       "cut-clipboard", NULL);
 }
 
-
 void
-on_xcopy_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xcopy_activate(GtkMenuItem *menuitem, gpointer data)
 {
     g_signal_emit_by_name(
       G_OBJECT(lookup_widget(GTK_WIDGET(menuitem), "ext_code")),
       "copy-clipboard", NULL);
 }
 
-
 void
-on_xpaste_activate                     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xpaste_activate(GtkMenuItem *menuitem, gpointer data)
 {
     g_signal_emit_by_name(
       G_OBJECT(lookup_widget(GTK_WIDGET(menuitem), "ext_code")),
       "paste-clipboard", NULL);
 }
 
-
 void
-on_xselect_all_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xselect_all_activate(GtkMenuItem *menuitem, gpointer data)
 {
     g_signal_emit_by_name(
       G_OBJECT(lookup_widget(GTK_WIDGET(menuitem), "ext_code")),
       "select-all", TRUE, NULL);
 }
 
-
 void
-on_xfind_activate                      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xfind_activate(GtkMenuItem *menuitem, gpointer data)
 {
     gpointer ext = (gpointer)get_ext(GTK_WIDGET(menuitem));
     GtkWidget *dialog = create_find_dialog();
@@ -260,8 +233,7 @@ on_xfind_activate                      (GtkMenuItem     *menuitem,
 
 
 void
-on_xautocheck_spelling_activate        (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xautocheck_spelling_activate(GtkMenuItem *menuitem, gpointer data)
 {
     gboolean check = gtk_check_menu_item_get_active(
       GTK_CHECK_MENU_ITEM(menuitem));
@@ -277,7 +249,7 @@ on_xautocheck_spelling_activate        (GtkMenuItem     *menuitem,
           NULL, &err))
             error_dialog(
               GTK_WINDOW(gtk_widget_get_toplevel(GTK_WIDGET(menuitem))),
-              err, "Error initializing spell checking: ");
+              err, _("Error initializing spell checking: "));
     } else
         gtkspell_detach(gtkspell_get_from_text_view(
           GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "ext_code"))));
@@ -285,8 +257,7 @@ on_xautocheck_spelling_activate        (GtkMenuItem     *menuitem,
 
 
 void
-on_xcheck_spelling_activate            (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xcheck_spelling_activate(GtkMenuItem *menuitem, gpointer data)
 {
     GtkSpell *spellchecker = gtkspell_get_from_text_view(
       GTK_TEXT_VIEW(lookup_widget(GTK_WIDGET(menuitem), "ext_code")));
@@ -295,71 +266,17 @@ on_xcheck_spelling_activate            (GtkMenuItem     *menuitem,
 }
 
 void
-on_xshift_selection_right_activate     (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xshift_selection_right_activate(GtkMenuItem *menuitem, gpointer data)
 {
-    /* Adapted from gtksourceview.c */
     Extension *ext = get_ext(GTK_WIDGET(menuitem));
-    GtkTextBuffer *buffer = GTK_TEXT_BUFFER(ext->buffer);
-    GtkTextIter start, end;
-    gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
-    gint start_line = gtk_text_iter_get_line(&start);
-    gint end_line = gtk_text_iter_get_line(&end);
-    gint i;
-
-    /* if the end of the selection is before the first character on a line,
-    don't indent it */
-    if((gtk_text_iter_get_visible_line_offset(&end) == 0)
-      && (end_line > start_line))
-        end_line--;
-
-    gtk_text_buffer_begin_user_action(buffer);
-    for(i = start_line; i <= end_line; i++) {
-        GtkTextIter iter;
-        gtk_text_buffer_get_iter_at_line(buffer, &iter, i);
-
-        /* don't add indentation on empty lines */
-        if(gtk_text_iter_ends_line(&iter))
-            continue;
-
-        gtk_text_buffer_insert(buffer, &iter, "\t", -1);
-	}
-	gtk_text_buffer_end_user_action(buffer);
+    shift_selection_right(GTK_TEXT_BUFFER(ext->buffer));
 }
 
-
 void
-on_xshift_selection_left_activate      (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
+on_xshift_selection_left_activate(GtkMenuItem *menuitem, gpointer data)
 {
-    /* Adapted from gtksourceview.c */
     Extension *ext = get_ext(GTK_WIDGET(menuitem));
-    GtkTextBuffer *buffer = GTK_TEXT_BUFFER(ext->buffer);
-    GtkTextIter start, end;
-    gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
-    gint start_line = gtk_text_iter_get_line(&start);
-    gint end_line = gtk_text_iter_get_line(&end);
-    gint i;
-
-    /* if the end of the selection is before the first character on a line,
-    don't indent it */
-	if((gtk_text_iter_get_visible_line_offset(&end) == 0)
-      && (end_line > start_line))
-        end_line--;
-
-    gtk_text_buffer_begin_user_action(buffer);
-    for(i = start_line; i <= end_line; i++) {
-        GtkTextIter iter, iter2;
-
-        gtk_text_buffer_get_iter_at_line(buffer, &iter, i);
-
-        if(gtk_text_iter_get_char(&iter) == '\t') {
-            iter2 = iter;
-            gtk_text_iter_forward_char(&iter2);
-            gtk_text_buffer_delete(buffer, &iter, &iter2);
-        }
-    }
-    gtk_text_buffer_end_user_action(buffer);
+    shift_selection_left(GTK_TEXT_BUFFER(ext->buffer));
 }
 
 /* Save window size */
@@ -373,21 +290,13 @@ save_ext_window_size(GtkWindow *window)
 }
 
 gboolean
-on_ext_window_delete_event             (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+on_ext_window_delete_event (GtkWidget *widget, GdkEvent *event, gpointer data)
 {
     if(verify_save_ext(widget)) {
         Extension *ext = get_ext(GTK_WIDGET(widget));
 
-        if(get_num_app_windows() == 1) {
-            GtkWidget *dialog = gtk_message_dialog_new(NULL, 0,
-              GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "Quit GNOME Inform 7?");
-            gint result = gtk_dialog_run(GTK_DIALOG(dialog));
-            gtk_widget_destroy(dialog);
-            if(result != GTK_RESPONSE_YES)
-                return TRUE;
-        }
+        if(get_num_app_windows() == 1 && do_quit_dialog() != GTK_RESPONSE_YES)
+            return TRUE;
 
         save_ext_window_size(GTK_WINDOW(widget));
         delete_ext(ext);
@@ -405,8 +314,7 @@ on_ext_window_delete_event             (GtkWidget       *widget,
 do anything about it. It asks whether we want to save, but doesn't offer the
 option to cancel. */
 void
-on_ext_window_destroy                  (GtkObject       *object,
-                                        gpointer         user_data)
+on_ext_window_destroy(GtkObject *object, gpointer data)
 {
     Extension *ext = get_ext(GTK_WIDGET(object));
     if(ext == NULL)
@@ -419,13 +327,13 @@ on_ext_window_destroy                  (GtkObject       *object,
           GTK_DIALOG_DESTROY_WITH_PARENT,
           GTK_MESSAGE_WARNING,
           GTK_BUTTONS_NONE,
-          "<b><big>Save changes to '%s' before closing?</big></b>",
+          _("<b><big>Save changes to '%s' before closing?</big></b>"),
           filename);
         gtk_message_dialog_format_secondary_text(
           GTK_MESSAGE_DIALOG(save_changes_dialog),
-          "If you don't save, your changes will be lost.");
+          _("If you don't save, your changes will be lost."));
         gtk_dialog_add_buttons(GTK_DIALOG(save_changes_dialog),
-          "Close _without saving", GTK_RESPONSE_REJECT,
+          _("Close _without saving"), GTK_RESPONSE_REJECT,
           GTK_STOCK_SAVE, GTK_RESPONSE_OK,
           NULL);
         gint result = gtk_dialog_run(GTK_DIALOG(save_changes_dialog));
@@ -441,7 +349,9 @@ on_ext_window_destroy                  (GtkObject       *object,
 }
 
 /* Scroll to the requested line number. */
-void jump_to_line_ext(GtkWidget *widget, gint line) {
+void 
+jump_to_line_ext(GtkWidget *widget, gint line) 
+{
     Extension *ext = get_ext(widget);
     GtkTextIter cursor, line_end;
         

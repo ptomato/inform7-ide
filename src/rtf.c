@@ -21,16 +21,18 @@
 /* The following two functions were adapted from GLib's g_strescape and
    g_strcompress */
 
-static gchar *rtf_escape(const gchar *source) {
+static gchar *
+rtf_escape(const gchar *source) 
+{
     const guchar *p;
     gchar *dest;
     gchar *q;
     
-    g_return_val_if_fail (source != NULL, NULL);
+    g_return_val_if_fail(source != NULL, NULL);
 
-    p = (guchar *) source;
+    p = (guchar *)source;
     /* Each source byte needs max four destination chars ("\tab")*/
-    q = dest = g_malloc (strlen (source) * 4 + 1);
+    q = dest = g_malloc(strlen (source) * 4 + 1);
 
     while (*p) {
         switch (*p) {
@@ -70,9 +72,11 @@ static gchar *rtf_escape(const gchar *source) {
     return dest;
 }
 
-static gchar *rtf_unescape(const gchar *source) {
+static gchar *
+rtf_unescape(const gchar *source) 
+{
     const gchar *p = source;
-    gchar *dest = g_malloc (strlen (source) + 1);
+    gchar *dest = g_malloc(strlen(source) + 1);
     gchar *q = dest;
 
     /* Keywords supported:
@@ -137,12 +141,12 @@ static gchar *rtf_unescape(const gchar *source) {
 }
 
 /* Convert a string of RTF to plain text and put it in the text buffer */
-void    gtk_text_buffer_set_rtf_text   (GtkTextBuffer *buffer,
-                                        const gchar *rtf_text)
+void
+gtk_text_buffer_set_rtf_text(GtkTextBuffer *buffer, const gchar *rtf_text)
 {
     gchar *text;
     if(strncmp(rtf_text, "{\\rtf", 5)) {
-        g_warning("notes.rtf: Invalid RTF");
+        g_warning(_("notes.rtf: Invalid RTF"));
         text = g_strdup("");
     } else
         text = rtf_unescape(rtf_text);
@@ -151,9 +155,9 @@ void    gtk_text_buffer_set_rtf_text   (GtkTextBuffer *buffer,
 }
 
 /* Return a string of RTF corresponding to what Mac OS X would write */
-gchar * gtk_text_buffer_get_rtf_text   (GtkTextBuffer *buffer,
-                                        const GtkTextIter *start,
-                                        const GtkTextIter *end)
+gchar *
+gtk_text_buffer_get_rtf_text(GtkTextBuffer *buffer, const GtkTextIter *start,
+                             const GtkTextIter *end)
 {
     gchar *text = gtk_text_buffer_get_text(buffer, start, end, FALSE);
     gchar *retval;

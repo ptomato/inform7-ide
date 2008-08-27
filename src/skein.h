@@ -124,10 +124,9 @@ void skein_set_expected_text(Skein *skein, GNode *node, const gchar *text);
 GNode *skein_get_thread_top(Skein *skein, GNode *node);
 GNode *skein_get_thread_bottom(Skein *skein, GNode *node);
 gboolean skein_get_modified(Skein *skein);
-
 GNode *node_create(const gchar *line, const gchar *label,
-                  const gchar *transcript, const gchar *expected,
-                  gboolean played, gboolean changed, gboolean temp, int score);
+                   const gchar *transcript, const gchar *expected,
+                   gboolean played, gboolean changed, gboolean temp, int score);
 void node_destroy(GNode *node);
 const gchar *node_get_line(GNode *node);
 void node_set_line(GNode *node, const gchar *line);

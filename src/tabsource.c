@@ -32,8 +32,10 @@
 #include "lang.h"
 #include "tabsource.h"
 
-static void after_source_buffer_delete_range(GtkTextBuffer *buffer,
-  GtkTextIter *start, GtkTextIter *end, gpointer data) {
+static void 
+after_source_buffer_delete_range(GtkTextBuffer *buffer, GtkTextIter *start, 
+                                 GtkTextIter *end, gpointer data) 
+{
     if(!config_file_get_bool("SyntaxSettings", "Intelligence"))
         return;
     /* Reindex the section headings anytime text is deleted, because running after
@@ -45,8 +47,10 @@ static void after_source_buffer_delete_range(GtkTextBuffer *buffer,
     }
 }
 
-static void after_source_buffer_insert_text(GtkTextBuffer *buffer,
-  GtkTextIter *location, gchar *text, gint len, gpointer data) {
+static void 
+after_source_buffer_insert_text(GtkTextBuffer *buffer, GtkTextIter *location, 
+                                gchar *text, gint len, gpointer data)
+{
     /* If the inserted text ended in a newline, then do auto-indenting */
     /* We could use gtk_source_view_set_auto_indent(), but that auto-indents
       leading spaces as well as tabs, and we don't want that */
@@ -123,7 +127,9 @@ static void after_source_buffer_insert_text(GtkTextBuffer *buffer,
 /* Create our default source buffer with Natural Inform highlighting. If
 extension is true, create one with the slightly different Natural Inform
 Extension highlighting. */
-GtkSourceBuffer *create_natural_inform_source_buffer(gboolean extension) {
+GtkSourceBuffer *
+create_natural_inform_source_buffer(gboolean extension) 
+{
     GtkSourceBuffer *buffer = gtk_source_buffer_new(NULL);
 
     /* Set up the Natural Inform highlighting */
@@ -153,8 +159,7 @@ on_headings_menu_item_activate(GtkMenuItem *menuitem, gpointer lineno)
 }
 
 void
-on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
-                                        gpointer         user_data)
+on_source_headings_show_menu(GtkMenuToolButton *menutoolbutton, gpointer data)
 {
     Story *thestory = get_story(GTK_WIDGET(menutoolbutton));
     GtkTextBuffer *buffer = GTK_TEXT_BUFFER(thestory->buffer);
@@ -187,7 +192,7 @@ on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
                         volume = gtk_menu_new();
                         volume_item = gtk_menu_item_new_with_label("");
                         gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(
-                          GTK_BIN(volume_item))), "<b>Volume...</b>");
+                          GTK_BIN(volume_item))), _("<b>Volume...</b>"));
                         gtk_widget_set_sensitive(volume_item, FALSE);
                         gtk_widget_show(volume_item);
                         gtk_menu_shell_append(GTK_MENU_SHELL(volume),
@@ -198,15 +203,15 @@ on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
                     gtk_widget_show(volume_item);
                     gtk_menu_shell_append(GTK_MENU_SHELL(volume), volume_item);
                     g_signal_connect(volume_item, "activate",
-                                     G_CALLBACK(on_headings_menu_item_activate),
-                                     GUINT_TO_POINTER(lineno));
+                      G_CALLBACK(on_headings_menu_item_activate),
+                      GUINT_TO_POINTER(lineno));
                     book = part = chapter = section = NULL;
                 } else if(g_str_has_prefix(lcase, "book ")) {
                     if(!book) {
                         book = gtk_menu_new();
                         book_item = gtk_menu_item_new_with_label("");
                         gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(
-                          GTK_BIN(book_item))), "<b>Book...</b>");
+                          GTK_BIN(book_item))), _("<b>Book...</b>"));
                         gtk_widget_set_sensitive(book_item, FALSE);
                         gtk_widget_show(book_item);
                         gtk_menu_shell_append(GTK_MENU_SHELL(book), book_item);
@@ -219,22 +224,22 @@ on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
                     gtk_widget_show(book_item);
                     gtk_menu_shell_append(GTK_MENU_SHELL(book), book_item);
                     g_signal_connect(book_item, "activate",
-                                     G_CALLBACK(on_headings_menu_item_activate),
-                                     GUINT_TO_POINTER(lineno));
+                      G_CALLBACK(on_headings_menu_item_activate),
+                      GUINT_TO_POINTER(lineno));
                     part = chapter = section = NULL;
                 } else if(g_str_has_prefix(lcase, "part ")) {
                     if(!part) {
                         part = gtk_menu_new();
                         part_item = gtk_menu_item_new_with_label("");
                         gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(
-                          GTK_BIN(part_item))), "<b>Part...</b>");
+                          GTK_BIN(part_item))), _("<b>Part...</b>"));
                         gtk_widget_set_sensitive(part_item, FALSE);
                         gtk_widget_show(part_item);
                         gtk_menu_shell_append(GTK_MENU_SHELL(part), part_item);
                         gtk_widget_show(part);
                         if(book)
                             gtk_menu_item_set_submenu(GTK_MENU_ITEM(book_item),
-                                                      part);
+                              part);
                         else if(volume)
                             gtk_menu_item_set_submenu(
                               GTK_MENU_ITEM(volume_item), part);
@@ -243,15 +248,15 @@ on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
                     gtk_widget_show(part_item);
                     gtk_menu_shell_append(GTK_MENU_SHELL(part), part_item);
                     g_signal_connect(part_item, "activate",
-                                     G_CALLBACK(on_headings_menu_item_activate),
-                                     GUINT_TO_POINTER(lineno));
+                      G_CALLBACK(on_headings_menu_item_activate),
+                      GUINT_TO_POINTER(lineno));
                     chapter = section = NULL;
                 } else if(g_str_has_prefix(lcase, "chapter ")) {
                     if(!chapter) {
                         chapter = gtk_menu_new();
                         chapter_item = gtk_menu_item_new_with_label("");
                         gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(
-                          GTK_BIN(chapter_item))), "<b>Chapter...</b>");
+                          GTK_BIN(chapter_item))), _("<b>Chapter...</b>"));
                         gtk_widget_set_sensitive(chapter_item, FALSE);
                         gtk_widget_show(chapter_item);
                         gtk_menu_shell_append(GTK_MENU_SHELL(chapter),
@@ -259,10 +264,10 @@ on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
                         gtk_widget_show(chapter);
                         if(part)
                             gtk_menu_item_set_submenu(GTK_MENU_ITEM(part_item),
-                                                      chapter);
+                              chapter);
                         else if(book)
                             gtk_menu_item_set_submenu(GTK_MENU_ITEM(book_item),
-                                                      chapter);
+                              chapter);
                         else if(volume)
                             gtk_menu_item_set_submenu(
                               GTK_MENU_ITEM(volume_item), chapter);
@@ -271,15 +276,15 @@ on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
                     gtk_widget_show(chapter_item);
                     gtk_menu_shell_append(GTK_MENU_SHELL(chapter),chapter_item);
                     g_signal_connect(chapter_item, "activate",
-                                     G_CALLBACK(on_headings_menu_item_activate),
-                                     GUINT_TO_POINTER(lineno));
+                      G_CALLBACK(on_headings_menu_item_activate),
+                      GUINT_TO_POINTER(lineno));
                     section = NULL;
                 } else if(g_str_has_prefix(lcase, "section ")) {
                     if(!section) {
                         section = gtk_menu_new();
                         section_item = gtk_menu_item_new_with_label("");
                         gtk_label_set_markup(GTK_LABEL(gtk_bin_get_child(
-                          GTK_BIN(section_item))), "<b>Section...</b>");
+                          GTK_BIN(section_item))), _("<b>Section...</b>"));
                         gtk_widget_set_sensitive(section_item, FALSE);
                         gtk_widget_show(section_item);
                         gtk_menu_shell_append(GTK_MENU_SHELL(section),
@@ -290,10 +295,10 @@ on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
                               GTK_MENU_ITEM(chapter_item), section);
                         else if(part)
                             gtk_menu_item_set_submenu(GTK_MENU_ITEM(part_item),
-                                                                    section);
+                              section);
                         else if(book)
                             gtk_menu_item_set_submenu(GTK_MENU_ITEM(book_item),
-                                                      section);
+                              section);
                         else if(volume)
                             gtk_menu_item_set_submenu(
                               GTK_MENU_ITEM(volume_item), section);
@@ -302,8 +307,8 @@ on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
                     gtk_widget_show(section_item);
                     gtk_menu_shell_append(GTK_MENU_SHELL(section),section_item);
                     g_signal_connect(section_item, "activate",
-                                     G_CALLBACK(on_headings_menu_item_activate),
-                                     GUINT_TO_POINTER(lineno));
+                      G_CALLBACK(on_headings_menu_item_activate),
+                      GUINT_TO_POINTER(lineno));
                 }
                 g_free(text);
                 g_free(lcase);
@@ -315,20 +320,23 @@ on_source_headings_show_menu           (GtkMenuToolButton *menutoolbutton,
     
     /* Set the appropriate menu as the drop-down menu of the button, or an empty
     menu if no headings */
-    gtk_menu_tool_button_set_menu(menutoolbutton, volume? volume: book? book:
-                                  part? part: chapter? chapter: section?
-                                  section: gtk_menu_new());
+    gtk_menu_tool_button_set_menu(menutoolbutton, volume? volume : book? book :
+      part? part : chapter? chapter : section? section : gtk_menu_new());
 }
 
 /* Paste code at the current insert position in buffer, deleting any selection*/
-void paste_code(GtkSourceBuffer *buffer, gchar *code) {
+void 
+paste_code(GtkSourceBuffer *buffer, gchar *code) 
+{
     gtk_text_buffer_delete_selection(GTK_TEXT_BUFFER(buffer), TRUE, TRUE);
     /* Delete selection does nothing if there is no selection */
     gtk_text_buffer_insert_at_cursor(GTK_TEXT_BUFFER(buffer), code, -1);
 }
 
 /* Scroll the source views to the specified line of the source */
-void jump_to_line(GtkWidget *widget, guint line) {
+void 
+jump_to_line(GtkWidget *widget, guint line)
+{
     Story *thestory = get_story(widget);
     GtkTextIter cursor, line_end;
 
@@ -352,7 +360,9 @@ void jump_to_line(GtkWidget *widget, guint line) {
 }
 
 /* Look for all the section headings and renumber them */
-void renumber_sections(GtkTextBuffer *buffer) {
+void 
+renumber_sections(GtkTextBuffer *buffer) 
+{
     GtkTextIter pos, end;
     int volume = 1, book = 1, part = 1, chapter = 1, section = 1;
     
@@ -416,4 +426,67 @@ void renumber_sections(GtkTextBuffer *buffer) {
         	gtk_text_iter_forward_line(&pos);
 	}
     }
+}
+
+/* Shift the selected lines in the buffer one tab to the right */
+void
+shift_selection_right(GtkTextBuffer *buffer)
+{
+    /* Adapted from gtksourceview.c */
+    GtkTextIter start, end;
+    gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
+    gint start_line = gtk_text_iter_get_line(&start);
+    gint end_line = gtk_text_iter_get_line(&end);
+    gint i;
+
+    /* if the end of the selection is before the first character on a line,
+    don't indent it */
+    if((gtk_text_iter_get_visible_line_offset(&end) == 0)
+      && (end_line > start_line))
+        end_line--;
+
+    gtk_text_buffer_begin_user_action(buffer);
+    for(i = start_line; i <= end_line; i++) {
+        GtkTextIter iter;
+        gtk_text_buffer_get_iter_at_line(buffer, &iter, i);
+
+        /* don't add indentation on empty lines */
+        if(gtk_text_iter_ends_line(&iter))
+            continue;
+
+        gtk_text_buffer_insert(buffer, &iter, "\t", -1);
+	}
+	gtk_text_buffer_end_user_action(buffer);
+}
+
+/* Shift the selected lines in the buffer one tab to the left */
+void
+shift_selection_left(GtkTextBuffer *buffer)
+{
+    /* Adapted from gtksourceview.c */
+    GtkTextIter start, end;
+    gtk_text_buffer_get_selection_bounds(buffer, &start, &end);
+    gint start_line = gtk_text_iter_get_line(&start);
+    gint end_line = gtk_text_iter_get_line(&end);
+    gint i;
+
+    /* if the end of the selection is before the first character on a line,
+    don't indent it */
+	if((gtk_text_iter_get_visible_line_offset(&end) == 0)
+      && (end_line > start_line))
+        end_line--;
+
+    gtk_text_buffer_begin_user_action(buffer);
+    for(i = start_line; i <= end_line; i++) {
+        GtkTextIter iter, iter2;
+
+        gtk_text_buffer_get_iter_at_line(buffer, &iter, i);
+
+        if(gtk_text_iter_get_char(&iter) == '\t') {
+            iter2 = iter;
+            gtk_text_iter_forward_char(&iter2);
+            gtk_text_buffer_delete(buffer, &iter, &iter2);
+        }
+    }
+    gtk_text_buffer_end_user_action(buffer);
 }

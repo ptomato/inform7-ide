@@ -44,7 +44,9 @@ struct source_entry {
 };
 
 /* Add the source of a HTML page to the table, with the GtkHTML widget as key*/
-static void source_table_add(GtkHTML *html, gchar *source) {
+static void 
+source_table_add(GtkHTML *html, gchar *source) 
+{
     g_return_if_fail(html != NULL);
     g_return_if_fail(source != NULL);
     
@@ -55,7 +57,9 @@ static void source_table_add(GtkHTML *html, gchar *source) {
 }
 
 /* Remove an entry from the HTML source table */
-static void source_table_remove(GtkHTML *html) {
+static void 
+source_table_remove(GtkHTML *html) 
+{
     g_return_if_fail(html != NULL);
     
     GSList *iter;
@@ -69,7 +73,9 @@ static void source_table_remove(GtkHTML *html) {
 
 /* The GtkHTML widget is now displaying another HTML file, change it in the
 table */
-static void source_table_update(GtkHTML *html, gchar *source) {
+static void 
+source_table_update(GtkHTML *html, gchar *source) 
+{
     g_return_if_fail(html != NULL);
     g_return_if_fail(source != NULL);
     
@@ -82,7 +88,9 @@ static void source_table_update(GtkHTML *html, gchar *source) {
 }
 
 /* Get the HTML source from the table */
-static gchar *source_table_get(GtkHTML *html) {
+static gchar *
+source_table_get(GtkHTML *html) 
+{
     g_return_val_if_fail(html != NULL, NULL);
     
     GSList *iter;
@@ -93,7 +101,9 @@ static gchar *source_table_get(GtkHTML *html) {
 }
 
 /* Get the base path of an URL, for relative paths */
-static gchar *get_base_name(const gchar *url) {
+static gchar *
+get_base_name(const gchar *url) 
+{
     g_return_val_if_fail(url != NULL, NULL);
     
     gchar *newbase = g_malloc(strlen(url));
@@ -134,7 +144,7 @@ unescape_unicode(const gchar *source)
         if(*p == '[' && *(p+1) == '=') {
             gunichar code;
             if(sscanf(p, "[=0x%4X=]", &code) != 1) {
-                g_warning("unescape_unicode: Incorrect character escape!");
+                g_warning(_("unescape_unicode: Incorrect character escape!"));
                 *q = '\0';
                 return dest;
             }
@@ -153,8 +163,9 @@ unescape_unicode(const gchar *source)
 
 /* Find the code to be pasted within one of the pasteCode134, etc. javascript
 functions */
-static gchar *javascript_find_paste_code(const gchar *source,
-const gchar *function_call) {
+static gchar *
+javascript_find_paste_code(const gchar *source, const gchar *function_call) 
+{
     g_return_val_if_fail(source != NULL, NULL);
     g_return_val_if_fail(function_call != NULL, NULL);
     
@@ -194,8 +205,10 @@ const gchar *function_call) {
 already a stream opened at this point, so we do not handle anything that does
 not involve data being written to the GtkHTML widget. That should already have
 been done in on_link_clicked. */
-static void on_url_requested(GtkHTML *html, const gchar *url,
-GtkHTMLStream *handle, gpointer data) {
+static void 
+on_url_requested(GtkHTML *html, const gchar *url, GtkHTMLStream *handle, 
+                 gpointer data) 
+{
     g_return_if_fail(html != NULL);
     g_return_if_fail(url != NULL);
     g_return_if_fail(handle != NULL);
@@ -233,7 +246,7 @@ GtkHTMLStream *handle, gpointer data) {
         g_free(checkfile);
         
         if(!real_file) {
-            error_dialog(NULL, NULL, "Error opening file %s.", url + 8);
+            error_dialog(NULL, NULL, _("Error opening file %s."), url + 8);
             gtk_html_end(html, handle, GTK_HTML_STREAM_ERROR);
             return;
         }
@@ -259,7 +272,7 @@ GtkHTMLStream *handle, gpointer data) {
     
     /* Open "file" and write it to the html widget */
     if(!g_file_get_contents(file, &buf, &length, &err)) {
-        error_dialog(NULL, err, "Error opening file %s: ", file);
+        error_dialog(NULL, err, _("Error opening file %s: "), file);
         gtk_html_end(html, handle, GTK_HTML_STREAM_ERROR);
         g_free(file);
         return;
@@ -370,7 +383,7 @@ on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data)
     } else if(g_str_has_prefix(url, "http:")
       || g_str_has_prefix(url, "mailto:")) {
         if(!gnome_url_show(url, &err)) {
-            error_dialog(NULL, err, "Error opening external viewer for %s: ",
+            error_dialog(NULL, err, _("Error opening external viewer for %s: "),
               url);
         }
         g_free(url);
@@ -407,7 +420,7 @@ on_link_clicked(GtkHTML *html, const gchar *requested_url, gpointer data)
         g_free(url);
         return;
     } else {
-        fprintf(stderr, "Unrecognized protocol: %s\n", url);
+        g_warning(_("Unrecognized protocol: %s\n"), url);
         g_free(url);
         return;
     }
@@ -453,8 +466,9 @@ on_html_destroy(GtkObject *widget, gpointer data)
 
 /* Create a GtkHTML widget and do all the standard stuff that we do to all our
 GtkHTML widgets */
-GtkWidget *create_html(gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
+GtkWidget *
+create_html(gchar *widget_name, gchar *string1, gchar *string2, gint int1, 
+            gint int2)
 {
     GtkWidget *html = gtk_html_new();
     g_signal_connect(html, "url_requested", G_CALLBACK(on_url_requested), NULL);
@@ -466,7 +480,9 @@ GtkWidget *create_html(gchar *widget_name, gchar *string1, gchar *string2,
 }
 
 /* Have the html widget display the HTML file in filename */
-void html_load_file(GtkHTML *html, const gchar *filename) {
+void 
+html_load_file(GtkHTML *html, const gchar *filename) 
+{
     g_return_if_fail(html != NULL);
     g_return_if_fail(filename != NULL || strlen(filename));
     
@@ -488,11 +504,13 @@ void html_load_file(GtkHTML *html, const gchar *filename) {
         return;
     }
     gtk_html_end(html, stream, GTK_HTML_STREAM_ERROR);
-    error_dialog(NULL, err, "Error opening HTML file '%s': ", filename);
+    error_dialog(NULL, err, _("Error opening HTML file '%s': "), filename);
 }
 
 /* Blank the GtkHTML widget */
-void html_load_blank(GtkHTML *html) {
+void 
+html_load_blank(GtkHTML *html) 
+{
     g_return_if_fail(html != NULL);
     
     GtkHTMLStream *stream = gtk_html_begin(html);
@@ -501,7 +519,9 @@ void html_load_blank(GtkHTML *html) {
 }
 
 /* Reload the current page from the "cache" */
-void html_refresh(GtkHTML *html) {
+void 
+html_refresh(GtkHTML *html) 
+{
     g_return_if_fail(html != NULL);
     
     GtkHTMLStream *stream = gtk_html_begin(html);

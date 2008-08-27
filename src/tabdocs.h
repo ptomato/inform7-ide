@@ -21,12 +21,7 @@
 
 #include <gnome.h>
 
-void
-on_docs_contents_l_clicked             (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_docs_contents_r_clicked             (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
+void on_docs_contents_l_clicked(GtkToolButton *toolbutton, gpointer data);
+void on_docs_contents_r_clicked(GtkToolButton *toolbutton, gpointer data);
 
 #endif

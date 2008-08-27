@@ -36,8 +36,8 @@
 #include "gtkterp/gtkterp.h"
 
 /* Callback for when the interpreter is finished */
-static void on_interpreter_exit(GtkTerp *terp, gint exit_code, 
-                                Story *thestory)
+static void 
+on_interpreter_exit(GtkTerp *terp, gint exit_code, Story *thestory)
 {
     gtk_terp_unload_game(terp);
     
@@ -51,20 +51,20 @@ static void on_interpreter_exit(GtkTerp *terp, gint exit_code,
     
     gtk_widget_set_sensitive(lookup_widget(thestory->window, "stop"), FALSE);
     gtk_widget_set_sensitive(lookup_widget(thestory->window, "stop_toolbutton"),
-                             FALSE);
+      FALSE);
 }
 
 /* Grab commands entered by the user and store them in the skein */
-static void catch_input(GtkTerp *terp, const gchar *command,
-                        Story *thestory)
+static void 
+catch_input(GtkTerp *terp, const gchar *command, Story *thestory)
 {
     skein_new_line(thestory->theskein, command);
 }
 
 /* Create the GtkTerp widget and set some preferences */
 GtkWidget*
-game_create (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
+game_create(gchar *widget_name, gchar *string1, gchar *string2, gint int1, 
+            gint int2)
 {
     GtkTerp *terp = GTK_TERP(gtk_terp_new());
     gtk_terp_set_interactive(terp, TRUE);
@@ -74,26 +74,25 @@ game_create (gchar *widget_name, gchar *string1, gchar *string2,
 
 /* Resize the interpreter widget when its parent scroll window is allocated */
 void
-on_game_viewport_l_size_allocate       (GtkWidget       *widget,
-                                        GtkAllocation   *allocation,
-                                        gpointer         user_data)
+on_game_viewport_l_size_allocate(GtkWidget *widget, GtkAllocation *allocation,
+                                 gpointer data)
 {
     resize_game_window(get_story(widget), LEFT, allocation->width,
-                       allocation->height);
+      allocation->height);
 }
 
-
 void
-on_game_viewport_r_size_allocate       (GtkWidget       *widget,
-                                        GtkAllocation   *allocation,
-                                        gpointer         user_data)
+on_game_viewport_r_size_allocate(GtkWidget *widget, GtkAllocation *allocation,
+                                 gpointer data)
 {
     resize_game_window(get_story(widget), RIGHT, allocation->width,
-                       allocation->height);
+      allocation->height);
 }
 
 /* Run the story in the GtkTerp widget */
-void run_project(Story *thestory) {
+void 
+run_project(Story *thestory) 
+{
     int right = choose_notebook(thestory->window, TAB_GAME);
     GtkTerp *terp = GTK_TERP(lookup_widget(thestory->window, right?
       "game_r" : "game_l"));
@@ -105,7 +104,7 @@ void run_project(Story *thestory) {
     GError *err = NULL;
     if(!gtk_terp_load_game(terp, path, &err)) {
         error_dialog(GTK_WINDOW(thestory->window), err,
-                     "Could not load interpreter. ");
+          _("Could not load interpreter: "));
         g_free(path);
         return;
     }
@@ -121,9 +120,9 @@ void run_project(Story *thestory) {
         gtk_terp_set_interactive(terp, FALSE);
     
     if(!gtk_terp_start_game(terp, (thestory->story_format == FORMAT_GLULX)?
-                            GTK_TERP_GLULXE : GTK_TERP_FROTZ, &err)) {
+      GTK_TERP_GLULXE : GTK_TERP_FROTZ, &err)) {
         error_dialog(GTK_WINDOW(thestory->window), err,
-                     "Could not start interpreter");
+          _("Could not start interpreter: "));
         gtk_terp_unload_game(terp);
         return;
     }
@@ -171,7 +170,8 @@ stop_project(Story *thestory)
 }
 
 /* Resize the interpreter */
-void resize_game_window(Story *thestory, int right, guint w, guint h)
+void 
+resize_game_window(Story *thestory, int right, guint w, guint h)
 {
     GtkTerp *terp = GTK_TERP(lookup_widget(thestory->window,
                                            right? "game_r" : "game_l"));

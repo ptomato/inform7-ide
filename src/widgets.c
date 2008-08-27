@@ -25,8 +25,9 @@
 then it becomes the contents of the buffer. If 'int1' is 0, then it is a regular
 buffer, otherwise a Natural Inform source buffer. In the latter case, if 'int2'
 is also nonzero, it will be a Natural Inform Extension source buffer. */
-GtkWidget *custom_gtk_source_view_create (gchar *widget_name, gchar *string1,
-  gchar *string2, gint int1, gint int2)
+GtkWidget *
+custom_gtk_source_view_create(gchar *widget_name, gchar *string1, 
+                              gchar *string2, gint int1, gint int2)
 {
     GtkWidget *source;
     
@@ -54,9 +55,9 @@ GtkWidget *custom_gtk_source_view_create (gchar *widget_name, gchar *string1,
 
 /* Create a GtkSourceView and -Buffer and fill it with the example text */
 /* Damn glade doesn't let you enter newlines or tabs */
-GtkWidget*
-source_example_create (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
+GtkWidget *
+source_example_create(gchar *widget_name, gchar *string1, gchar *string2,
+                      gint int1, gint int2)
 {
     return custom_gtk_source_view_create(widget_name, 
       "\nPart One - the Wharf\n\nThe Customs Wharf is a room. [change the "
@@ -68,10 +69,10 @@ source_example_create (gchar *widget_name, gchar *string1, gchar *string2,
 }
 
 /* Create another GtkSourceView with examples of tab stops */
-GtkWidget*
-tab_example_create (gchar *widget_name, gchar *string1, gchar *string2,
-                gint int1, gint int2)
+GtkWidget *
+tab_example_create(gchar *widget_name, gchar *string1, gchar *string2,
+                   gint int1, gint int2)
 {
     return custom_gtk_source_view_create(widget_name,
-      "\tTab\tTab\tTab\tTab\tTab\tTab\tTab", "", 0, 0);
+      _("\tTab\tTab\tTab\tTab\tTab\tTab\tTab"), "", 0, 0);
 }

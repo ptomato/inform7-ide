@@ -117,7 +117,7 @@ run_command(const gchar *wd, gchar **argv, GtkTextBuffer *output)
       output? &stdout_fd : NULL,   /* where to put stdout file descriptor */
       output? &stderr_fd : NULL,   /* where to put stderr file descriptor */
       &err)) {
-        error_dialog(NULL, err, "Could not spawn process: ");
+        error_dialog(NULL, err, _("Could not spawn process: "));
         return (GPid)0;
     }
     
@@ -139,9 +139,8 @@ set_up_io_channel(gint fd, GtkTextBuffer *output)
     g_io_channel_set_buffered(ioc, FALSE);
     g_io_channel_set_close_on_unref(ioc, TRUE);
     g_io_add_watch_full(ioc, G_PRIORITY_HIGH,
-                        G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL, 
-                        (GIOFunc)write_channel_to_buffer, (gpointer)output,
-                        NULL);
+      G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL, 
+      (GIOFunc)write_channel_to_buffer, (gpointer)output, NULL);
 	g_io_channel_unref(ioc);
 }
 
@@ -169,7 +168,7 @@ run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output,
       output? &stdout_fd : NULL,   /* where to put stdout file descriptor */
       output? &stderr_fd : NULL,   /* where to put stderr file descriptor */
       &err)) {
-        error_dialog(NULL, err, "Could not spawn process: ");
+        error_dialog(NULL, err, _("Could not spawn process: "));
         return (GPid)0;
     }
     
@@ -186,13 +185,6 @@ run_command_hook(const gchar *wd, gchar **argv, GtkTextBuffer *output,
     }
     
     return child_pid;
-}
-
-/* Free the hook data */
-static void
-free_hook_data(gpointer data) 
-{
-    g_free(data);
 }
 
 /* Set up an IO channel from a file descriptor to a GtkTextBuffer */
@@ -212,7 +204,7 @@ set_up_io_channel_hook(gint fd, GtkTextBuffer *output, IOHookFunc *callback,
     
     g_io_add_watch_full(ioc, G_PRIORITY_HIGH,
       G_IO_IN|G_IO_PRI|G_IO_ERR|G_IO_HUP|G_IO_NVAL, 
-      (GIOFunc)write_channel_hook, (gpointer)hook_data, free_hook_data);
+      (GIOFunc)write_channel_hook, (gpointer)hook_data, g_free);
 	g_io_channel_unref(ioc);
 }
 

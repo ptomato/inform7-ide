@@ -24,8 +24,6 @@
 int get_num_app_windows();
 void close_all_windows();
 void update_window_list();
+void on_window_list_activate(GtkMenuItem *menuitem, GtkWidget *window);
 
-void
-on_window_list_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
 #endif

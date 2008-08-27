@@ -38,8 +38,7 @@ GtkWidget *inspector_window;
 static Story *inspecting = NULL;
 
 void
-after_inspector_window_realize         (GtkWidget       *widget,
-                                        gpointer         user_data)
+after_inspector_window_realize(GtkWidget *widget, gpointer data)
 {
     /* Set the find algorithm in the Search inspector to "contains" */
     gtk_combo_box_set_active(
@@ -49,7 +48,7 @@ after_inspector_window_realize         (GtkWidget       *widget,
     /* Make the column of the headings inspector */
     GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
     GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(
-      "Contents",
+      _("Contents"),
       renderer,
       "text", HEADING_TITLE,
       NULL);
@@ -70,8 +69,7 @@ after_inspector_window_realize         (GtkWidget       *widget,
 
 /* Text changed; activate the Search button if there is text in it */
 void
-on_search_inspector_text_changed       (GtkEditable     *editable,
-                                        gpointer         user_data)
+on_search_inspector_text_changed(GtkEditable *editable, gpointer data)
 {
     /* Do not free or modify the strings from gtk_entry_get_text */
     const gchar *text = gtk_entry_get_text(GTK_ENTRY(editable));
@@ -80,11 +78,9 @@ on_search_inspector_text_changed       (GtkEditable     *editable,
       !(text == NULL || strlen(text) == 0));
 }
 
-
 /* The 'Search' button is clicked in the search inspector */
 void
-on_search_inspector_search_clicked     (GtkButton       *button,
-                                        gpointer         user_data)
+on_search_inspector_search_clicked(GtkButton *button, gpointer data)
 {
     /* Find out what we have to search */
     gboolean project = gtk_toggle_button_get_active(
@@ -114,25 +110,27 @@ on_search_inspector_search_clicked     (GtkButton       *button,
     
     if(documentation) {
         docs_results = search_doc(search_text, ignore_case, algorithm);
-        display_status_message(inspecting->window,"Searching documentation...");
+        display_status_message(inspecting->window, 
+          _("Searching documentation..."));
         /* display_status_busy(inspecting->window);*/
     }
     if(extensions) {
         ext_results = search_extensions(search_text, ignore_case, algorithm);
-        display_status_message(inspecting->window, "Searching extensions...");
+        display_status_message(inspecting->window, 
+          _("Searching extensions..."));
         /*display_status_busy(inspecting->window);*/
     }
     if(project) {
         proj_results = search_project(search_text, inspecting, ignore_case,
           algorithm);
-        display_status_message(inspecting->window,"Searching project...");
+        display_status_message(inspecting->window, _("Searching project..."));
         /*display_status_busy(inspecting->window);*/
     }
     
     GList *results = g_list_concat(docs_results, ext_results);
     results = g_list_concat(results, proj_results);
     
-    display_status_message(inspecting->window, "Search complete.");
+    display_status_message(inspecting->window, _("Search complete."));
     GtkWidget *search_window = new_search_window(inspecting->window,
       search_text, results);
     /* 'results' is freed in new_search_window, and so are the concatenated
@@ -140,25 +138,19 @@ on_search_inspector_search_clicked     (GtkButton       *button,
     gtk_widget_show(search_window);
 }
 
-
 /* Hide the window instead of deleting it */
 gboolean
-on_inspector_window_delete             (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
+on_inspector_window_delete(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
     gtk_widget_hide(widget);
     config_file_set_bool("IDESettings", "InspectorVisible", FALSE);
     return TRUE; /* Interrupt the event */
 }
 
-
 /* Jump to the heading when its index entry is double-clicked */
 void
-on_headings_row_activated              (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data)
+on_headings_row_activated(GtkTreeView *treeview, GtkTreePath *path,
+                          GtkTreeViewColumn *column, gpointer data)
 {
     GtkTreeModel *model = gtk_tree_view_get_model(treeview);
     GtkTreeIter iter;
@@ -169,7 +161,9 @@ on_headings_row_activated              (GtkTreeView     *treeview,
 }
 
 /* Show or hide the inspector in the inspector window */
-static void show_inspector(int which, gboolean show) {
+static void 
+show_inspector(int which, gboolean show) 
+{
     GtkWidget *inspector = NULL;
     switch(which) {
       case INSPECTOR_NOTES:
@@ -201,7 +195,9 @@ static void show_inspector(int which, gboolean show) {
 }
 
 /* Show or hide the inspectors according to the user's preferences */
-void update_inspectors() {
+void 
+update_inspectors() 
+{
     /* Show the message that no inspectors are showing; then, if one is showing,
     hide it again */
     gtk_widget_show(lookup_widget(inspector_window, "no_inspector"));
@@ -218,7 +214,9 @@ void update_inspectors() {
 /* Display the data from the story in the inspector. (Do not check whether we
    are already displaying the data from the same story, because this function is
    also called when we just want to refresh the data. */
-void refresh_inspector(Story *thestory) {
+void 
+refresh_inspector(Story *thestory) 
+{
 #ifdef I_LIKE_SKEIN
     /* Erase the previous story's Skein canvas */
     GtkWidget *canvas = lookup_widget(inspector_window, 
@@ -256,16 +254,19 @@ void refresh_inspector(Story *thestory) {
 }
 
 /* Get the position of the inspector window and save it for the next run */
-void save_inspector_window_position() {
+void 
+save_inspector_window_position() 
+{
     gint x, y;
     gtk_window_get_position(GTK_WINDOW(inspector_window), &x, &y);
     config_file_set_int("WindowSettings", "InspectorPosX", x);
     config_file_set_int("WindowSettings", "InspectorPosY", y);
 }
 
-
 /* Reindex the section headings and update them in the inspector window */
-gboolean reindex_headings(gpointer data) {
+gboolean 
+reindex_headings(gpointer data) 
+{
     if(!inspecting)
         return FALSE; /* do nothing */
     

@@ -20,24 +20,9 @@
 
 #include "story.h"
 
-void
-on_z5_button_toggled                   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_z6_button_toggled                   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_z8_button_toggled                   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_glulx_button_toggled                (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_blorb_button_toggled                (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
+void on_z5_button_toggled(GtkToggleButton *togglebutton, gpointer data);
+void on_z6_button_toggled(GtkToggleButton *togglebutton, gpointer data);
+void on_z8_button_toggled(GtkToggleButton *togglebutton, gpointer data);
+void on_glulx_button_toggled(GtkToggleButton *togglebutton, gpointer data);
+void on_blorb_button_toggled(GtkToggleButton *togglebutton, gpointer data);
 void update_settings(Story *thestory);

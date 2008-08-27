@@ -21,53 +21,22 @@
 
 #include <gnome.h>
 
-gboolean
-on_new_dialog_delete_event             (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-void
-on_new_cancel_clicked                  (GnomeDruid      *druid,
-                                        gpointer         user_data);
-
-void
-on_new_druid_realize                   (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-gboolean
-on_new_druid_page1_next                (GnomeDruidPage  *gnomedruidpage,
-                                        GtkWidget       *widget,
-                                        gpointer         user_data);
-
-gboolean
-go_back_to_type_page                   (GnomeDruidPage  *gnomedruidpage,
-                                        GtkWidget       *widget,
-                                        gpointer         user_data);
-void
-on_new_author_realize                  (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_new_druid_inform7_page_finish       (GnomeDruidPage  *gnomedruidpage,
-                                        GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-update_new_ok_button                   (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-
-void
-update_new_ext_ok_button               (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_new_druid_extension_page_finish     (GnomeDruidPage  *gnomedruidpage,
-                                        GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_new_druid_inform6_page_finish       (GnomeDruidPage  *gnomedruidpage,
-                                        GtkWidget       *widget,
-                                        gpointer         user_data);
+gboolean on_new_dialog_delete_event(GtkWidget *widget, GdkEvent *event,
+                                    gpointer data);
+void on_new_cancel_clicked(GnomeDruid *druid, gpointer data);
+void on_new_druid_realize(GtkWidget *widget, gpointer data);
+gboolean on_new_druid_page1_next(GnomeDruidPage *gnomedruidpage,
+                                 GtkWidget *widget, gpointer data);
+gboolean go_back_to_type_page(GnomeDruidPage *gnomedruidpage, GtkWidget *widget,
+                              gpointer data);
+void on_new_author_realize(GtkWidget *widget, gpointer data);
+void on_new_druid_inform7_page_finish(GnomeDruidPage *gnomedruidpage,
+                                      GtkWidget *widget, gpointer data);
+void update_new_ok_button(GtkEditable *editable, gpointer data);
+void update_new_ext_ok_button(GtkEditable *editable, gpointer data);
+void on_new_druid_extension_page_finish(GnomeDruidPage *gnomedruidpage,
+                                        GtkWidget *widget, gpointer data);
+void on_new_druid_inform6_page_finish(GnomeDruidPage *gnomedruidpage,
+                                      GtkWidget *widget, gpointer data);
 
 #endif

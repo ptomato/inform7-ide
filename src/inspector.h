@@ -36,29 +36,13 @@ enum {
     INSPECTOR_LAST = INSPECTOR_SEARCH_FILES
 };    
 
-void
-after_inspector_window_realize         (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-void
-on_search_inspector_text_changed       (GtkEditable     *editable,
-                                        gpointer         user_data);
-
-void
-on_search_inspector_search_clicked     (GtkButton       *button,
-                                        gpointer         user_data);
-
-gboolean
-on_inspector_window_delete             (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_headings_row_activated              (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data);
-
+void after_inspector_window_realize(GtkWidget *widget, gpointer data);
+void on_search_inspector_text_changed(GtkEditable *editable, gpointer data);
+void on_search_inspector_search_clicked(GtkButton *button, gpointer data);
+gboolean on_inspector_window_delete(GtkWidget *widget, GdkEvent *event,
+                                    gpointer data);
+void on_headings_row_activated(GtkTreeView *treeview, GtkTreePath *path,
+                               GtkTreeViewColumn *column, gpointer data);
 void update_inspectors();
 void refresh_inspector(Story *thestory);
 void save_inspector_window_position();

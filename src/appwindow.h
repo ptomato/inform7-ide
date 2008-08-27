@@ -79,77 +79,34 @@ void display_status_message(GtkWidget *thiswidget, const gchar *message);
 void display_status_busy(GtkWidget *thiswidget);
 void display_status_percentage(GtkWidget *thiswidget, gdouble fraction);
 void clear_status(GtkWidget *thiswidget);
+int do_quit_dialog();
 GtkWidget *create_open_recent_submenu();
 GtkWidget *create_open_extension_submenu();
-
-void
-after_app_window_realize               (GtkWidget       *widget,
-                                        gpointer         user_data);
-
-gboolean
-on_app_window_focus_in_event           (GtkWidget       *widget,
-                                        GdkEventFocus   *event,
-                                        gpointer         user_data);
-
-void
-on_back_l_clicked                      (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_forward_l_clicked                   (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_back_r_clicked                      (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-on_forward_r_clicked                   (GtkToolButton   *toolbutton,
-                                        gpointer         user_data);
-
-void
-after_notebook_l_switch_page           (GtkNotebook     *notebook,
-                                        GtkNotebookPage *page,
-                                        guint            page_num,
-                                        gpointer         user_data);
-
-void
-after_errors_notebook_l_switch_page    (GtkNotebook     *notebook,
-                                        GtkNotebookPage *page,
-                                        guint            page_num,
-                                        gpointer         user_data);
-
-void
-after_index_notebook_l_switch_page     (GtkNotebook     *notebook,
-                                        GtkNotebookPage *page,
-                                        guint            page_num,
-                                        gpointer         user_data);
-
-void
-after_notebook_r_switch_page           (GtkNotebook     *notebook,
-                                        GtkNotebookPage *page,
-                                        guint            page_num,
-                                        gpointer         user_data);
-
-void
-after_errors_notebook_r_switch_page    (GtkNotebook     *notebook,
-                                        GtkNotebookPage *page,
-                                        guint            page_num,
-                                        gpointer         user_data);
-
-void
-after_index_notebook_r_switch_page     (GtkNotebook     *notebook,
-                                        GtkNotebookPage *page,
-                                        guint            page_num,
-                                        gpointer         user_data);
-
-gboolean
-on_app_window_delete_event             (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_app_window_destroy                  (GtkObject       *object,
-                                        gpointer         user_data);
+void after_app_window_realize(GtkWidget *widget, gpointer data);
+gboolean on_app_window_focus_in_event(GtkWidget *widget, GdkEventFocus *event,
+                                      gpointer data);
+void on_back_l_clicked(GtkToolButton *toolbutton, gpointer data);
+void on_forward_l_clicked(GtkToolButton *toolbutton, gpointer data);
+void on_back_r_clicked(GtkToolButton *toolbutton, gpointer data);
+void on_forward_r_clicked(GtkToolButton *toolbutton, gpointer data);
+void after_notebook_l_switch_page(GtkNotebook *notebook, GtkNotebookPage *page,
+                                  guint page_num, gpointer data);
+void after_errors_notebook_l_switch_page(GtkNotebook *notebook,
+                                         GtkNotebookPage *page, guint page_num,
+                                         gpointer data);
+void after_index_notebook_l_switch_page(GtkNotebook *notebook,
+                                        GtkNotebookPage *page, guint page_num,
+                                        gpointer data);
+void after_notebook_r_switch_page(GtkNotebook *notebook, GtkNotebookPage *page,
+                                  guint page_num, gpointer data);
+void after_errors_notebook_r_switch_page(GtkNotebook *notebook,
+                                         GtkNotebookPage *page, guint page_num,
+                                         gpointer data);
+void after_index_notebook_r_switch_page(GtkNotebook *notebook,
+                                        GtkNotebookPage *page, guint page_num,
+                                        gpointer data);
+gboolean on_app_window_delete_event(GtkWidget *widget, GdkEvent *event,
+                                    gpointer data);
+void on_app_window_destroy(GtkObject *object, gpointer data);
 
 #endif

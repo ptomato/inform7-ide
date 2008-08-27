@@ -93,12 +93,10 @@ result_free(Result *foo)
 
 /* Callback for double-clicking on one of the search results */
 void
-on_search_results_view_row_activated   (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data)
+on_search_results_view_row_activated(GtkTreeView *treeview, GtkTreePath *path,
+                                     GtkTreeViewColumn *column, 
+                                     GtkWidget *main_window)
 {
-    GtkWidget *main_window = (GtkWidget *)user_data;
     GtkTreeIter iter;
     GtkTreeModel *model = gtk_tree_view_get_model(treeview);
     g_return_if_fail(model);
@@ -188,13 +186,13 @@ new_search_window(GtkWidget *main_window, const gchar *text, GList *results)
     
     GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
     GtkTreeViewColumn *column = gtk_tree_view_column_new_with_attributes(
-      "Context", renderer, 
+      _("Context"), renderer, 
       "text", SEARCH_WINDOW_CONTEXT_COLUMN,
       NULL);
     gtk_tree_view_append_column(view, column);
     renderer = gtk_cell_renderer_text_new();
     column = gtk_tree_view_column_new_with_attributes(
-      "Location", renderer, 
+      _("Location"), renderer, 
       "text", SEARCH_WINDOW_LOCATION_COLUMN,
       NULL);
     gtk_tree_view_append_column(view, column);
@@ -224,7 +222,6 @@ free_doc_index()
     g_list_free(doc_index);
     doc_index = NULL;
 }
-
 
 /* Relevant tags and stuff for the HTML decoder */
 struct tag {
@@ -273,7 +270,6 @@ static struct literal literals[] = {
 
 #define NUM_LITERALS (sizeof(literals) / sizeof(literals[0]))
 
-
 /* Read the specified HTML file and convert it to plain text. Store the text and
 the metadata in the comments in the DocText structure. Returns TRUE on success,
 FALSE on failure. */
@@ -292,7 +288,7 @@ html_decode(const gchar *filename, DocText **doc_text)
 	
 	/* Open the file */
 	if(!g_file_get_contents(filename, &html, NULL, &err)) {
-		g_critical("Error opening file: %s\n", err->message);
+		g_critical(_("Error opening file: %s\n"), err->message);
 		g_error_free(err);
 		return FALSE;
 	}
@@ -370,7 +366,7 @@ html_decode(const gchar *filename, DocText **doc_text)
 				(*doc_text)->title = g_strdup(meta);
 			else if(sscanf(p1, "<!-- SEARCH SECTION \"%[^\"]", meta) == 1)
 				(*doc_text)->section = ((*doc_text)->recipebook)?
-                    g_strconcat("Recipe Book, ", meta, NULL) : g_strdup(meta);
+                  g_strconcat(_("Recipe Book, "), meta, NULL) : g_strdup(meta);
 			else if(sscanf(p1, "<!-- SEARCH SORT \"%[^\"]", meta) == 1)
 				(*doc_text)->sort = g_strdup(meta);
 			else if(strncmp(p1, "<!-- EXAMPLE START -->", 22) == 0)
@@ -425,7 +421,6 @@ html_decode(const gchar *filename, DocText **doc_text)
 	g_string_free(text, TRUE);
 	return TRUE;
 }
-
 
 /* Comparison function to sort the results by source string, placing recipe book
 after regular documentation entries */
@@ -506,7 +501,8 @@ search_doc(const gchar *text, gboolean ignore_case, int algorithm)
         
         GDir *docdir;
         if((docdir = g_dir_open(docpath, 0, &err)) == NULL) {
-            error_dialog(NULL, err, "Could not open documentation directory: ");
+            error_dialog(NULL, err, 
+              _("Could not open documentation directory: "));
             g_free(docpath);
             return NULL;
         }
@@ -599,7 +595,7 @@ search_project(const gchar *text, Story *thestory, gboolean ignore_case,
       &search_from, &context, &lineno)) {
         Result *result = g_new0(Result, 1);
         result->context = context;
-        result->source_location = g_strdup_printf("Story, line %d", lineno);
+        result->source_location = g_strdup_printf(_("Story, line %d"), lineno);
         result->source_sort = g_strdup_printf("%04i", lineno);
         result->source_file = g_strdup("");
         result->result_type = RESULT_TYPE_PROJECT;
@@ -623,7 +619,7 @@ search_extensions(const gchar *text, gboolean ignore_case, int algorithm)
     GDir *extensions = g_dir_open(extension_dir, 0, &err);
     g_free(extension_dir);
     if(err) {
-        error_dialog(NULL, err, "Error opening extensions directory: ");
+        error_dialog(NULL, err, _("Error opening extensions directory: "));
         return NULL;
     }
     
@@ -635,7 +631,7 @@ search_extensions(const gchar *text, gboolean ignore_case, int algorithm)
         GDir *author = g_dir_open(author_dir, 0, &err);
         g_free(author_dir);
         if(err) {
-            error_dialog(NULL, err, "Error opening extensions directory: ");
+            error_dialog(NULL, err, _("Error opening extensions directory: "));
             return NULL;
         }
         const gchar *author_entry;
@@ -643,7 +639,9 @@ search_extensions(const gchar *text, gboolean ignore_case, int algorithm)
             gchar *filename = get_extension_path(dir_entry, author_entry);
             gchar *contents;
             if(!g_file_get_contents(filename, &contents, NULL, &err)) {
-                error_dialog(NULL, err, "Error opening extension '%s' by '%s':",
+                error_dialog(NULL, err, 
+                  /* TRANSLATORS: Error opening EXTENSION_NAME by AUTHOR_NAME */
+                  _("Error opening extension '%s' by '%s':"),
                   author_entry, dir_entry);
                 g_free(filename);
                 return NULL;
@@ -662,9 +660,13 @@ search_extensions(const gchar *text, gboolean ignore_case, int algorithm)
               &search_from, &context, &lineno)) {
                 Result *result = g_new0(Result, 1);
                 result->context = context;
-                result->source_location = g_strdup_printf("%s by %s, line %d",
+                result->source_location = g_strdup_printf(
+                  /* TRANSLATORS: EXTENSION_NAME by AUTHOR_NAME, line NUMBER */
+                  _("%s by %s, line %d"),
                   author_entry, dir_entry, lineno);
-                result->source_sort = g_strdup_printf("%s %04i", author_entry,
+                result->source_sort = g_strdup_printf(
+                  /* TRANSLATORS: EXTENSION_NAME LINE_NUMBER */
+                  _("%s %04i"), author_entry,
                   lineno);
                 result->source_file = g_strdup(filename);
                 result->result_type = RESULT_TYPE_EXTENSION;

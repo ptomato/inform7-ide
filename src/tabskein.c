@@ -281,11 +281,11 @@ can_remove(GNode *node, Story *thestory)
 	{
 		GtkWidget *dialog = gtk_message_dialog_new_with_markup
 			(NULL, 0, GTK_MESSAGE_INFO, GTK_BUTTONS_OK,
-			 "<b>Unable to delete the active branch in the skein</b>");
+			 _("<b>Unable to delete the active branch in the skein</b>"));
 		gtk_message_dialog_format_secondary_text
-			(GTK_MESSAGE_DIALOG(dialog), "It is not possible to delete the "
+			(GTK_MESSAGE_DIALOG(dialog), _("It is not possible to delete the "
 			 "branch of the skein that leads to the current position in the "
-			 "game. To delete this branch, either stop or restart the game.");
+			 "game. To delete this branch, either stop or restart the game."));
 		gtk_dialog_run(GTK_DIALOG(dialog));
     	gtk_widget_destroy(dialog);
 		return FALSE;
@@ -295,8 +295,8 @@ can_remove(GNode *node, Story *thestory)
         return TRUE;
     GtkWidget *dialog = gtk_message_dialog_new
 		(NULL, 0, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO,
-         "This knot has been locked to preserve it. Do you really want to "
-		 "delete it? (This cannot be undone.)");
+         _("This knot has been locked to preserve it. Do you really want to "
+		 "delete it? (This cannot be undone.)"));
     int response = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
     if(response == GTK_RESPONSE_YES)
@@ -360,72 +360,70 @@ on_canvas_item_event(GnomeCanvasItem *item, GdkEvent *event,
     
     /* Pop up the pop-up menu */
     GtkWidget *skeinmenu = gtk_menu_new();
-    GtkWidget *menuitem = gtk_menu_item_new_with_label("Play to here");
+    GtkWidget *menuitem = gtk_menu_item_new_with_label(_("Play to here"));
     gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
     g_signal_connect(menuitem, "activate",
-                     G_CALLBACK(skein_popup_play_to_here), clickednode);
+      G_CALLBACK(skein_popup_play_to_here), clickednode);
     menuitem = gtk_separator_menu_item_new();
     gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
     if(node->parent) { /* if not root */
-        menuitem = gtk_menu_item_new_with_label("Edit");
+        menuitem = gtk_menu_item_new_with_label(_("Edit"));
         gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
         g_signal_connect(menuitem, "activate",
-                         G_CALLBACK(skein_popup_edit), clickednode);
+          G_CALLBACK(skein_popup_edit), clickednode);
         menuitem = gtk_menu_item_new_with_label((node_get_label(node) &&
-                                                 strlen(node_get_label(node)))?
-                                                "Edit Label" : "Add Label");
+          strlen(node_get_label(node)))? _("Edit Label") : _("Add Label"));
         gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
         g_signal_connect(menuitem, "activate",
-                         G_CALLBACK(skein_popup_add_label), clickednode);
+          G_CALLBACK(skein_popup_add_label), clickednode);
     }
-    menuitem = gtk_menu_item_new_with_label("Show in Transcript");
+    menuitem = gtk_menu_item_new_with_label(_("Show in Transcript"));
     gtk_widget_set_sensitive(menuitem, FALSE);
     gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
     if(node->parent) {
         menuitem = gtk_menu_item_new_with_label(node_get_temporary(node)?
-                                                "Lock" : "Unlock");
+          _("Lock") : _("Unlock"));
         gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
         g_signal_connect(menuitem, "activate",
-                         G_CALLBACK(skein_popup_lock), clickednode);
+          G_CALLBACK(skein_popup_lock), clickednode);
         menuitem = gtk_menu_item_new_with_label(node_get_temporary(node)?
-                                                "Lock This Thread" :
-                                                "Unlock This Thread");
+          _("Lock This Thread") : _("Unlock This Thread"));
         gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
         g_signal_connect(menuitem, "activate",
-                         G_CALLBACK(skein_popup_lock_thread), clickednode);
+          G_CALLBACK(skein_popup_lock_thread), clickednode);
     }
     menuitem = gtk_separator_menu_item_new();
     gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
-    menuitem = gtk_menu_item_new_with_label("New Thread");
+    menuitem = gtk_menu_item_new_with_label(_("New Thread"));
     gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
     g_signal_connect(menuitem, "activate",
-                     G_CALLBACK(skein_popup_new_thread), clickednode);
+      G_CALLBACK(skein_popup_new_thread), clickednode);
     if(node->parent) {
-        menuitem = gtk_menu_item_new_with_label("Insert Knot");
+        menuitem = gtk_menu_item_new_with_label(_("Insert Knot"));
         gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
         g_signal_connect(menuitem, "activate",
-                         G_CALLBACK(skein_popup_insert_knot), clickednode);
-        menuitem = gtk_menu_item_new_with_label("Delete");
+          G_CALLBACK(skein_popup_insert_knot), clickednode);
+        menuitem = gtk_menu_item_new_with_label(_("Delete"));
         gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
         g_signal_connect(menuitem, "activate",
-                         G_CALLBACK(skein_popup_delete), clickednode);
-        menuitem = gtk_menu_item_new_with_label("Delete all Below");
+          G_CALLBACK(skein_popup_delete), clickednode);
+        menuitem = gtk_menu_item_new_with_label(_("Delete all Below"));
         gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
         g_signal_connect(menuitem, "activate",
-                         G_CALLBACK(skein_popup_delete_below), clickednode);
-        menuitem = gtk_menu_item_new_with_label("Delete all in Thread");
+          G_CALLBACK(skein_popup_delete_below), clickednode);
+        menuitem = gtk_menu_item_new_with_label(_("Delete all in Thread"));
         gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
         g_signal_connect(menuitem, "activate",
-                         G_CALLBACK(skein_popup_delete_thread), clickednode);
+          G_CALLBACK(skein_popup_delete_thread), clickednode);
     }
     menuitem = gtk_separator_menu_item_new();
     gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
-    menuitem = gtk_menu_item_new_with_label("Save Transcript to here...");
+    menuitem = gtk_menu_item_new_with_label(_("Save Transcript to here..."));
     gtk_widget_set_sensitive(menuitem, FALSE);
     gtk_menu_shell_append(GTK_MENU_SHELL(skeinmenu), menuitem);
     gtk_widget_show_all(skeinmenu);
     gtk_menu_popup(GTK_MENU(skeinmenu), NULL, NULL, NULL, NULL, 
-                   3 /* right button */, event->button.time);
+      3 /* right button */, event->button.time);
     return TRUE;
 }
 
@@ -456,7 +454,6 @@ static GdkPixbuf *bitmaps[NUM_BITMAPS] = {
     NULL, NULL, NULL,
     NULL
 };
-
 
 static void
 free_bitmaps(void)
@@ -498,7 +495,7 @@ load_bitmaps(void)
     
     if(!(filename = get_pixmap_path("Skein-played.png"))
        || !(tempbuf = gdk_pixbuf_new_from_file(filename, &err))) {
-        error_dialog(NULL, err, "Cannot load '%s': ", filename);
+        error_dialog(NULL, err, _("Cannot load '%s': "), filename);
         tempbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 32, 90, 30);
     }
     g_free(filename);
@@ -513,7 +510,7 @@ load_bitmaps(void)
     
     if(!(filename = get_pixmap_path("Skein-unplayed.png"))
        || !(tempbuf = gdk_pixbuf_new_from_file(filename, &err))) {
-        error_dialog(NULL, err, "Cannot load '%s': ", filename);
+        error_dialog(NULL, err, _("Cannot load '%s': "), filename);
         tempbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 32, 90, 30);
     }
     g_free(filename);
@@ -528,7 +525,7 @@ load_bitmaps(void)
 
     if(!(filename = get_pixmap_path("Skein-annotation.png"))
        || !(tempbuf = gdk_pixbuf_new_from_file(filename, &err))) {
-        error_dialog(NULL, err, "Cannot load '%s': ", filename);
+        error_dialog(NULL, err, _("Cannot load '%s': "), filename);
         tempbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 32, 90, 31);
     }
     g_free(filename);
@@ -539,7 +536,7 @@ load_bitmaps(void)
  
     if(!(filename = get_pixmap_path("SkeinDiffersBadge.png"))
        || !(tempbuf = gdk_pixbuf_new_from_file(filename, &err))) {
-        error_dialog(NULL, err, "Cannot load '%s': ", filename);
+        error_dialog(NULL, err, _("Cannot load '%s': "), filename);
         tempbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, TRUE, 32, 90, 31);
     }
     g_free(filename);
@@ -547,7 +544,6 @@ load_bitmaps(void)
     
     g_atexit(free_bitmaps);
 }
-
 
 enum {
     BACKGROUND_PLAYED,
@@ -559,8 +555,8 @@ enum {
 gboolean
 draw_node(GNode *node, Story *thestory)
 {
-    double vertical_spacing = (double)config_file_get_int("SkeinSettings",
-                                                          "VerticalSpacing");
+    double vertical_spacing = 
+	  (double)config_file_get_int("SkeinSettings", "VerticalSpacing");
 
     /* Create a group for the entire node */
     double x = node_get_x(node);

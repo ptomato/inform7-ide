@@ -24,8 +24,7 @@
 #include "tabsettings.h"
 
 void
-on_z5_button_toggled                   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_z5_button_toggled(GtkToggleButton *togglebutton, gpointer data)
 {
     Story *thestory = get_story(GTK_WIDGET(togglebutton));
     gboolean active = gtk_toggle_button_get_active(togglebutton);
@@ -39,10 +38,8 @@ on_z5_button_toggled                   (GtkToggleButton *togglebutton,
         GTK_WIDGET(togglebutton), "z5_button_r")), active);
 }
 
-
 void
-on_z6_button_toggled                   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_z6_button_toggled(GtkToggleButton *togglebutton, gpointer data)
 {
     Story *thestory = get_story(GTK_WIDGET(togglebutton));
     gboolean active = gtk_toggle_button_get_active(togglebutton);
@@ -56,10 +53,8 @@ on_z6_button_toggled                   (GtkToggleButton *togglebutton,
         GTK_WIDGET(togglebutton), "z6_button_r")), active);
 }
 
-
 void
-on_z8_button_toggled                   (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_z8_button_toggled(GtkToggleButton *togglebutton, gpointer data)
 {
     Story *thestory = get_story(GTK_WIDGET(togglebutton));
     gboolean active = gtk_toggle_button_get_active(togglebutton);
@@ -73,10 +68,8 @@ on_z8_button_toggled                   (GtkToggleButton *togglebutton,
         GTK_WIDGET(togglebutton), "z8_button_r")), active);
 }
 
-
 void
-on_glulx_button_toggled                (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_glulx_button_toggled(GtkToggleButton *togglebutton, gpointer data)
 {
     Story *thestory = get_story(GTK_WIDGET(togglebutton));
     gboolean active = gtk_toggle_button_get_active(togglebutton);
@@ -90,10 +83,8 @@ on_glulx_button_toggled                (GtkToggleButton *togglebutton,
         GTK_WIDGET(togglebutton), "glulx_button_r")), active);
 }
 
-
 void
-on_blorb_button_toggled                (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_blorb_button_toggled(GtkToggleButton *togglebutton, gpointer data)
 {
     Story *thestory = get_story(GTK_WIDGET(togglebutton));
     thestory->make_blorb = gtk_toggle_button_get_active(togglebutton);
@@ -104,7 +95,6 @@ on_blorb_button_toggled                (GtkToggleButton *togglebutton,
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lookup_widget(
         GTK_WIDGET(togglebutton), "blorb_button_r")), thestory->make_blorb);
 }
-
 
 /* Select all the right buttons according to the story settings */
 void update_settings(Story *thestory) {
