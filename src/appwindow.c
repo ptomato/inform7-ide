@@ -85,8 +85,11 @@ get_notebook(GtkWidget *thiswidget, int right)
 GtkNotebook *
 get_current_notebook(GtkWidget *thiswidget) 
 {
-    return GTK_NOTEBOOK(gtk_container_get_focus_child(GTK_CONTAINER(
-      lookup_widget(thiswidget, "facingpages"))));
+    GtkNotebook *retval = GTK_NOTEBOOK(gtk_container_get_focus_child(
+      GTK_CONTAINER(lookup_widget(thiswidget, "facingpages"))));
+    if(retval)
+        return retval;
+    return get_notebook(thiswidget, RIGHT);
 }
     
 /* Tells whether the focus is in the left or the right notebook */
@@ -176,7 +179,9 @@ create_open_recent_submenu()
 {
 #ifndef SUCKY_GNOME
     GtkWidget *recent_menu = gtk_recent_chooser_menu_new();
-    gtk_recent_chooser_set_limit(GTK_RECENT_CHOOSER(recent_menu), -1);
+    gtk_recent_chooser_set_limit(GTK_RECENT_CHOOSER(recent_menu), 10);
+    gtk_recent_chooser_set_sort_type(GTK_RECENT_CHOOSER(recent_menu), 
+      GTK_RECENT_SORT_MRU);
     GtkRecentFilter *filter = gtk_recent_filter_new();
     gtk_recent_filter_add_application(filter, "GNOME Inform 7");
     gtk_recent_chooser_set_filter(GTK_RECENT_CHOOSER(recent_menu), filter);

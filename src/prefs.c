@@ -501,7 +501,7 @@ on_prefs_i7_extension_add_clicked(GtkButton *button, gpointer data)
       GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
     gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), TRUE);
     
-    if (gtk_dialog_run(GTK_DIALOG (dialog)) != GTK_RESPONSE_ACCEPT) {
+    if(gtk_dialog_run(GTK_DIALOG(dialog)) != GTK_RESPONSE_ACCEPT) {
         gtk_widget_destroy(dialog);
         return;
     }
@@ -522,7 +522,6 @@ on_prefs_i7_extension_add_clicked(GtkButton *button, gpointer data)
     for_each_extension_window_idle(
       (GSourceFunc)update_ext_window_extensions_menu);
 }
-
 
 void
 on_prefs_i7_extension_remove_clicked(GtkButton *button, gpointer data)
